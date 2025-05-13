@@ -34,7 +34,7 @@
 /**
  * \ingroup core
  * \class QgsIODeviceSensor
- * \brief An abstract class QIODevice-based sensor classes
+ * \brief An abstract class for QIODevice-based sensors.
  * \since QGIS 3.32
  */
 class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
 /**
  * \ingroup core
  * \class QgsTcpSocketSensor
- * \brief A TCP socket sensor class
+ * \brief A TCP socket sensor class.
  * \since QGIS 3.32
  */
 class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
 /**
  * \ingroup core
  * \class QgsUdpSocketSensor
- * \brief A UDP socket sensor class
+ * \brief A UDP socket sensor class.
  * \since QGIS 3.32
  */
 class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
@@ -225,7 +225,7 @@ SIP_IF_FEATURE( HAVE_QTSERIALPORT )
 /**
  * \ingroup core
  * \class QgsSerialPortSensor
- * \brief A serial port sensor class
+ * \brief A serial port sensor class.
  * \since QGIS 3.32
  */
 class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor

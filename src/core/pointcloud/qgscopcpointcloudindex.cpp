@@ -53,14 +53,6 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
-std::unique_ptr<QgsAbstractPointCloudIndex> QgsCopcPointCloudIndex::clone() const
-{
-  QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
-}
-
 void QgsCopcPointCloudIndex::load( const QString &urlString )
 {
   QUrl url = urlString;
@@ -155,12 +147,12 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   std::unique_ptr<QgsPointCloudBlock> block;
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
   {
-    const bool found = fetchNodeHierarchy( n );
-    if ( !found )
-      return nullptr;
+    QByteArray rawBlockData = rawNodeData( n );
+    if ( rawBlockData.isEmpty() )
+      return nullptr; // Error fetching block
+
     mHierarchyMutex.lock();
-    int pointCount = mHierarchy.value( n );
-    auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
+    auto pointCount = mHierarchy.value( n );
     mHierarchyMutex.unlock();
 
     // we need to create a copy of the expression to pass to the decoder
@@ -170,15 +162,6 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
     QgsPointCloudAttributeCollection requestAttributes = request.attributes();
     requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
-    QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
-    std::ifstream file( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
-    file.seekg( blockOffset );
-    file.read( rawBlockData.data(), blockSize );
-    if ( !file )
-    {
-      QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mUri ) );
-      return nullptr;
-    }
     QgsRectangle filterRect = request.filterRect();
 
     block = QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
@@ -232,6 +215,34 @@ QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPoint
          blockOffset, blockSize, pointCount, *mLazInfo.get() );
 }
 
+
+const QByteArray QgsCopcPointCloudIndex::rawNodeData( QgsPointCloudNodeId n ) const
+{
+  const bool found = fetchNodeHierarchy( n );
+  if ( !found )
+    return {};
+  mHierarchyMutex.lock();
+  auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
+  mHierarchyMutex.unlock();
+
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
+  {
+    // Open a new file descriptor so we can read multiple blocks concurrently
+    QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
+    std::ifstream file( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
+    file.seekg( blockOffset );
+    file.read( rawBlockData.data(), blockSize );
+    if ( !file )
+    {
+      QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mUri ) );
+      return {};
+    }
+    return rawBlockData;
+  }
+  else
+    return readRange( blockOffset, blockSize );
+}
+
 QgsCoordinateReferenceSystem QgsCopcPointCloudIndex::crs() const
 {
   return mLazInfo->crs();
@@ -278,6 +289,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   statsEvlrHeader.data_length = statsJson.size();
 
   // Save the EVLRs to the end of the original file (while erasing the existing EVLRs in the file)
+  QMutexLocker locker( &mFileMutex );
   mCopcFile.close();
   std::fstream copcFile;
   copcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios_base::binary | std::iostream::in | std::iostream::out );
@@ -432,26 +444,12 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
-void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
-{
-  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
-
-  // QgsCopcPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mAccessType = mAccessType;
-  destination->mUri = mUri;
-  if ( mAccessType == Qgis::PointCloudAccessType::Local )
-    destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
-  destination->mCopcInfoVlr = mCopcInfoVlr;
-  destination->mHierarchyNodePos = mHierarchyNodePos;
-  destination->mOriginalMetadata = mOriginalMetadata;
-  destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
-}
-
 QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length ) const
 {
   if ( mAccessType == Qgis::PointCloudAccessType::Local )
   {
+    QMutexLocker locker( &mFileMutex );
+
     QByteArray buffer( length, Qt::Initialization::Uninitialized );
     mCopcFile.seekg( offset );
     mCopcFile.read( buffer.data(), length );

@@ -15,8 +15,7 @@
 class QgsPointCloudNodeId
 {
 %Docstring(signature="appended")
-
-Represents a indexed point cloud node's position in octree
+Represents an indexed point cloud node's position in octree.
 
 .. note::
 
@@ -95,8 +94,7 @@ Hash function for indexed nodes
 class QgsPointCloudNode
 {
 %Docstring(signature="appended")
-
-Keeps metadata for indexed point cloud node
+Keeps metadata for an indexed point cloud node.
 
 .. note::
 
@@ -116,8 +114,9 @@ Keeps metadata for indexed point cloud node
                        float error,
                        const QgsBox3D &bounds );
 %Docstring
-Constructs new node object. Should only be called by :py:func:`QgsAbstractPointCloudIndex.getNode()`.
-Bounds should always be computed by :py:func:`QgsPointCloudNode.bounds()`.
+Constructs new node object. Should only be called by
+:py:func:`QgsAbstractPointCloudIndex.getNode()`. Bounds should always be
+computed by :py:func:`QgsPointCloudNode.bounds()`.
 %End
     QgsPointCloudNodeId id() const;
 %Docstring
@@ -133,7 +132,8 @@ Returns IDs of child nodes
 %End
     float error() const;
 %Docstring
-Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
+Returns node's error in map units (used to determine in whether the node
+has enough detail for the current view)
 %End
     QgsBox3D bounds() const;
 %Docstring
@@ -153,11 +153,11 @@ Returns bounding box of specific node
 class QgsPointCloudIndex /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-Smart pointer for :py:class:`QgsAbstractPointCloudIndex`
+Smart pointer for :py:class:`QgsAbstractPointCloudIndex`.
 
-This is a wrapper for :py:class:`QgsAbstractPointCloudIndex`, an index for point cloud
-layers. It contains a shared_pointer, ensuring that concurrent access to the
-index is memory safe.
+This is a wrapper for :py:class:`QgsAbstractPointCloudIndex`, an index
+for point cloud layers. It contains a shared_pointer, ensuring that
+concurrent access to the index is memory safe.
 
 .. versionadded:: 3.42
 %End
@@ -193,9 +193,11 @@ Returns the error that occurred during the loading of the index.
 
     Qgis::PointCloudAccessType accessType() const;
 %Docstring
-Returns the access type of the data
-If the access type is Remote, data will be fetched from an HTTP server either synchronously or asynchronously
-If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
+Returns the access type of the data If the access type is Remote, data
+will be fetched from an HTTP server either synchronously or
+asynchronously If the access type is local, the data is stored locally
+as a file and will only be fetch synchronously ( blocking request with
+nodeData only )
 
 .. note::
 
@@ -227,15 +229,16 @@ Returns the original metadata map
 
     QgsPointCloudStatistics metadataStatistics() const;
 %Docstring
-Returns the object containing the statistics metadata extracted from the dataset
+Returns the object containing the statistics metadata extracted from the
+dataset
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.metadataStatistics`
 %End
 
     bool writeStatistics( QgsPointCloudStatistics &stats );
 %Docstring
-Writes the statistics object ``stats`` into the backing file, if possible.
-Returns true if the data was written successfully.
+Writes the statistics object ``stats`` into the backing file, if
+possible. Returns true if the data was written successfully.
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.writeStatistics`
 %End
@@ -330,9 +333,11 @@ Returns the number of points in one direction in a single node.
 %Docstring
 Sets the string used to define a subset of the point cloud.
 
-:param subset: The subset string to be used in a ``:py:class:`QgsPointCloudExpression```
+:param subset: The subset string to be used in a
+               ``:py:class:`QgsPointCloudExpression```
 
-:return: true if the expression is parsed with no errors, false otherwise
+:return: true if the expression is parsed with no errors, false
+         otherwise
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.setSubsetString`
 %End
@@ -341,7 +346,8 @@ Sets the string used to define a subset of the point cloud.
 %Docstring
 Returns the string used to define a subset of the point cloud.
 
-:return: The subset string or null QString if not implemented by the provider
+:return: The subset string or empty string if not implemented by the
+         provider
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.subsetString`
 %End
@@ -358,9 +364,9 @@ in an implementation-specific dynamic structure.
 
     bool commitChanges( QString *errorMessage /Out/ = 0 );
 %Docstring
-Tries to store pending changes to the data provider.
-If errorMessage is not a null pointer, it will receive
-an error message in case the call failed.
+Tries to store pending changes to the data provider. If errorMessage is
+not a null pointer, it will receive an error message in case the call
+failed.
 
 :return: ``True`` on success, otherwise ``False``
 %End

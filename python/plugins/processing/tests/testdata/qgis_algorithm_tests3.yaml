@@ -178,7 +178,7 @@ tests:
           geometry:
             normalize: True
 
-  - algorithm: qgis:checkvalidity
+  - algorithm: native:checkvalidity
     name: Check validity polygon ring self intersection
     params:
       INPUT_LAYER:
@@ -209,7 +209,7 @@ tests:
             fid: skip
           ignore_crs_check: true
 
-  - algorithm: qgis:checkvalidity
+  - algorithm: native:checkvalidity
     name: Check validity polygon ring self intersection, ignoring self intersections
     params:
       IGNORE_RING_SELF_INTERSECTION: true
@@ -271,10 +271,10 @@ tests:
         pk: id
 
   - algorithm: native:voronoipolygons
-    name: Voronoi with buffer region (GEOS < 3.12)
+    name: Voronoi with buffer region (GEOS < 3.12.2)
     condition:
       geos:
-        less_than: 31200
+        less_than: 31202
     params:
       BUFFER: 10.0
       INPUT:
@@ -290,10 +290,10 @@ tests:
             normalize: True
 
   - algorithm: native:voronoipolygons
-    name: Voronoi with buffer region (GEOS 3.12+)
+    name: Voronoi with buffer region (GEOS 3.12.2+)
     condition:
       geos:
-        at_least: 31200
+        at_least: 31202
     params:
       BUFFER: 10.0
       INPUT:
@@ -543,7 +543,7 @@ tests:
               precision: 7
             fid: skip
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to centroid
     params:
       INPUT:
@@ -555,7 +555,7 @@ tests:
         name: expected/convert_poly_centroid.gml
         type: vector
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to multilinestring
     params:
       INPUT:
@@ -567,7 +567,7 @@ tests:
         name: expected/convert_poly_multiline.gml
         type: vector
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to nodes
     params:
       INPUT:

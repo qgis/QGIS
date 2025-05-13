@@ -610,22 +610,26 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     {
       const tinygltf::Texture &tex = model.textures[pbr.baseColorTexture.index];
 
-      switch ( QgsGltfUtils::imageResourceType( model, tex.source ) )
+      // Source can be undefined if texture is provided by an extension
+      if ( tex.source >= 0 )
       {
-        case QgsGltfUtils::ResourceType::Embedded:
-          textureImage = QgsGltfUtils::extractEmbeddedImage( model, tex.source );
-          break;
-
-        case QgsGltfUtils::ResourceType::Linked:
+        switch ( QgsGltfUtils::imageResourceType( model, tex.source ) )
         {
-          const QString linkedPath = QgsGltfUtils::linkedImagePath( model, tex.source );
-          const QString textureUri = QUrl( contentUri ).resolved( linkedPath ).toString();
-          const QByteArray rep = mIndex.retrieveContent( textureUri, feedback() );
-          if ( !rep.isEmpty() )
+          case QgsGltfUtils::ResourceType::Embedded:
+            textureImage = QgsGltfUtils::extractEmbeddedImage( model, tex.source );
+            break;
+
+          case QgsGltfUtils::ResourceType::Linked:
           {
-            textureImage = QImage::fromData( rep );
+            const QString linkedPath = QgsGltfUtils::linkedImagePath( model, tex.source );
+            const QString textureUri = QUrl( contentUri ).resolved( linkedPath ).toString();
+            const QByteArray rep = mIndex.retrieveContent( textureUri, feedback() );
+            if ( !rep.isEmpty() )
+            {
+              textureImage = QImage::fromData( rep );
+            }
+            break;
           }
-          break;
         }
       }
 

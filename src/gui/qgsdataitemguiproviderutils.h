@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
         connectionNames << item->name();
       }
       QPointer<QgsDataItem> firstParent( items.at( 0 )->parent() );
-      deleteConnectionsPrivate( connectionNames, deleteConnection, firstParent );
+      deleteConnectionsPrivate( connectionNames, deleteConnection, std::move( firstParent ) );
     }
 
     /**
@@ -70,6 +70,41 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      * \since QGIS 3.40
      */
     static const QString uniqueName( const QString &name, const QStringList &connectionNames );
+
+    /**
+     * Handles dropping a vector layer for \a connection items.
+     *
+     * \note Not available in Python bindings
+     */
+    static bool handleDropUriForConnection(
+      std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection,
+      const QgsMimeDataUtils::Uri &sourceUri,
+      const QString &destinationSchema,
+      QgsDataItemGuiContext context,
+      const QString &shortTitle,
+      const QString &longTitle,
+      const QVariantMap &destinationProviderOptions,
+      const std::function<void()> &onSuccessfulCompletion,
+      const std::function<void( Qgis::VectorExportResult error, const QString &errorMessage )> &onError,
+      QObject *connectionContext
+    );
+
+    /**
+     * Handles importing a vector layer for \a connection items.
+     *
+     * \note Not available in Python bindings
+     */
+    static void handleImportVectorLayerForConnection(
+      std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection,
+      const QString &destinationSchema,
+      QgsDataItemGuiContext context,
+      const QString &shortTitle,
+      const QString &longTitle,
+      const QVariantMap &destinationProviderOptions,
+      const std::function<void()> &onSuccessfulCompletion,
+      const std::function<void( Qgis::VectorExportResult error, const QString &errorMessage )> &onError,
+      QObject *connectionContext
+    );
 
 #endif
 

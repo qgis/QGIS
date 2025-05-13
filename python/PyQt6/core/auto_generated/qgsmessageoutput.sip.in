@@ -17,11 +17,12 @@ class QgsMessageOutput
 %Docstring(signature="appended")
 Interface for showing messages from QGIS in GUI independent way.
 
-This class provides abstraction of a dialog for showing output to the user.
-By default :py:class:`QgsMessageConsoleOutput` will be used if not overridden with other
-message output creator function.
+This class provides abstraction of a dialog for showing output to the
+user. By default :py:class:`QgsMessageConsoleOutput` will be used if not
+overridden with other message output creator function.
 
-QGIS application uses :py:class:`QgsMessageView` class for displaying a dialog to the user.
+QGIS application uses :py:class:`QgsMessageView` class for displaying a
+dialog to the user.
 
 Object deletes itself when it's not needed anymore. Children should use
 signal :py:func:`~destroyed` to notify the deletion
@@ -65,8 +66,9 @@ Display the blocking message to the user.
 
     static QgsMessageOutput *createMessageOutput();
 %Docstring
-function that returns new class derived from QgsMessageOutput
-(don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+function that returns new class derived from QgsMessageOutput (don't
+forget to delete it then if showMessage(bool) is not used
+showMessage(bool) deletes the instance)
 %End
 
 };
@@ -75,7 +77,7 @@ function that returns new class derived from QgsMessageOutput
 class QgsMessageOutputConsole : QObject, QgsMessageOutput
 {
 %Docstring(signature="appended")
-Default implementation of message output interface
+Default implementation of message output interface.
 
 This class outputs messages to the standard output. Therefore it might
 be the right choice for apps without GUI.

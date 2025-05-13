@@ -69,7 +69,7 @@
 #include "qgssensorguiregistry.h"
 #include "qgshistoryentry.h"
 #include "qgsstacsourceselectprovider.h"
-
+#include "qgsstoredquerymanager.h"
 #include "qgssettingseditorwidgetregistry.h"
 
 
@@ -226,6 +226,11 @@ QgsInputControllerManager *QgsGui::inputControllerManager()
   return instance()->mInputControllerManager;
 }
 
+QgsStoredQueryManager *QgsGui::storedQueryManager()
+{
+  return instance()->mStoredQueryManager;
+}
+
 void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 {
   instance()->mWindowManager.reset( manager );
@@ -271,6 +276,7 @@ QgsGui::~QgsGui()
   delete mInputControllerManager;
   delete mSettingsRegistryGui;
   delete mSensorGuiRegistry;
+  delete mStoredQueryManager;
   delete mSettingsEditorRegistry;
 }
 
@@ -324,6 +330,7 @@ QgsGui::QgsGui()
 
   mSettingsEditorRegistry = new QgsSettingsEditorWidgetRegistry();
 
+  mStoredQueryManager = new QgsStoredQueryManager();
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too

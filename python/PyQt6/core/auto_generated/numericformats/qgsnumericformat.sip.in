@@ -13,7 +13,7 @@
 class QgsNumericFormatContext
 {
 %Docstring(signature="appended")
-A context for numeric formats
+A context for numeric formats.
 
 .. versionadded:: 3.12
 %End
@@ -30,7 +30,8 @@ A context for numeric formats
 %Docstring
 Constructor for QgsNumericFormatContext.
 
-The context will be populated based on the user's current locale settings.
+The context will be populated based on the user's current locale
+settings.
 %End
 
     QChar thousandsSeparator() const;
@@ -158,7 +159,8 @@ Sets the ``interpretation`` of the numbers being converted.
 
     QgsExpressionContext expressionContext() const;
 %Docstring
-Returns the expression context to use when evaluating :py:class:`QgsExpressions`.
+Returns the expression context to use when evaluating
+:py:class:`QgsExpressions`.
 
 .. seealso:: :py:func:`setExpressionContext`
 
@@ -167,7 +169,8 @@ Returns the expression context to use when evaluating :py:class:`QgsExpressions`
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression ``context`` to use when evaluating :py:class:`QgsExpressions`.
+Sets the expression ``context`` to use when evaluating
+:py:class:`QgsExpressions`.
 
 .. seealso:: :py:func:`expressionContext`
 
@@ -190,9 +193,11 @@ Sets the expression ``context`` to use when evaluating :py:class:`QgsExpressions
 class QgsNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter allows for formatting a numeric value for display, using
-a variety of different formatting techniques (e.g. as scientific notation, currency values,
-percentage values, etc)
+Abstract base class for numeric formatters, which allow for formatting a
+numeric value for display.
+
+Numeric formatters use a variety of different formatting techniques
+(e.g. as scientific notation, currency values, percentage values, etc).
 
 This is an abstract base class and will always need to be subclassed.
 
@@ -234,7 +239,8 @@ This is an abstract base class and will always need to be subclassed.
 %Docstring
 Returns a unique id for this numeric format.
 
-This id is used to identify this numeric format in the registry with :py:func:`QgsNumericFormatRegistry.format()`.
+This id is used to identify this numeric format in the registry with
+:py:func:`QgsNumericFormatRegistry.format()`.
 %End
 
     virtual QString visibleName() const = 0;
@@ -244,14 +250,17 @@ Returns the translated, user-visible name for this format.
 
     virtual int sortKey();
 %Docstring
-Returns a sorting key value, where formats with a lower sort key will be shown earlier in lists.
+Returns a sorting key value, where formats with a lower sort key will be
+shown earlier in lists.
 
-Generally, subclasses should return :py:func:`QgsNumericFormat.sortKey()` as their sorting key.
+Generally, subclasses should return
+:py:func:`QgsNumericFormat.sortKey()` as their sorting key.
 %End
 
     virtual double suggestSampleValue() const;
 %Docstring
-Returns a suggested sample value which nicely represents the current format configuration.
+Returns a suggested sample value which nicely represents the current
+format configuration.
 %End
 
     virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
@@ -275,8 +284,9 @@ The caller takes ownership of the returned object.
 
     virtual QVariantMap configuration( const QgsReadWriteContext &context ) const = 0;
 %Docstring
-Returns the current configuration of the formatter. This value can be used in a call to :py:func:`~QgsNumericFormat.create`
-in order to recreate this formatter in its current state.
+Returns the current configuration of the formatter. This value can be
+used in a call to :py:func:`~QgsNumericFormat.create` in order to
+recreate this formatter in its current state.
 %End
 
     void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

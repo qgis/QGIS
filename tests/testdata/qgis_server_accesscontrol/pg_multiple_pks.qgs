@@ -20,7 +20,7 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer providerKey="postgres" source="dbname='test_g3w-admin' host=localhost port=5432 user='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=&quot;public&quot;.&quot;multiple_pks&quot; (geom)" checked="Qt::Checked" expanded="1" patch_size="-1,-1" legend_split_behavior="0" id="multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70" name="multiple_pks" legend_exp="">
+    <layer-tree-layer providerKey="postgres" source="dbname='test_g3w-admin' service=qgis_test user='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=&quot;public&quot;.&quot;multiple_pks&quot; (geom)" checked="Qt::Checked" expanded="1" patch_size="-1,-1" legend_split_behavior="0" id="multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70" name="multiple_pks" legend_exp="">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -114,7 +114,7 @@
         <ymax>46</ymax>
       </extent>
       <id>multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70</id>
-      <datasource>dbname='test_g3w-admin' host=localhost port=5432 user='ale' password='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table="public"."multiple_pks" (geom)</datasource>
+      <datasource>dbname='test_g3w-admin' service=qgis_test user='ale' password='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table="public"."multiple_pks" (geom)</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1017,7 +1017,7 @@ def my_form_open(dialog, layer, feature):
         <property key="pdfSimplify" value="1"/>
         <property key="pdfTextFormat" value="0"/>
       </customproperties>
-      <Atlas coverageLayerName="multiple_pks" filterFeatures="0" hideCoverage="0" enabled="1" coverageLayerProvider="postgres" filenamePattern="'output_'||@atlas_featurenumber" pageNameExpression="" sortFeatures="0" coverageLayer="multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70" coverageLayerSource="dbname='test_g3w-admin' host=localhost port=5432 user='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=&quot;public&quot;.&quot;multiple_pks&quot; (geom)"/>
+      <Atlas coverageLayerName="multiple_pks" filterFeatures="0" hideCoverage="0" enabled="1" coverageLayerProvider="postgres" filenamePattern="'output_'||@atlas_featurenumber" pageNameExpression="" sortFeatures="0" coverageLayer="multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70" coverageLayerSource="dbname='test_g3w-admin' service=qgis_test user='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=&quot;public&quot;.&quot;multiple_pks&quot; (geom)"/>
     </Layout>
     <Layout units="mm" printResolution="300" worldFileMap="" name="print2">
       <Snapper snapToItems="1" snapToGuides="1" snapToGrid="0" tolerance="5"/>
@@ -1137,7 +1137,7 @@ def my_form_open(dialog, layer, feature):
           <customproperties/>
         </LayoutObject>
       </LayoutItem>
-      <LayoutMultiFrame headerHAlignment="0" useConditionalStyling="0" type="65649" vectorLayerProvider="postgres" gridColor="0,0,0,255" showUniqueRowsOnly="0" showEmptyRows="0" relationId="" featureFilter="" vectorLayerName="multiple_pks" headerMode="0" maxFeatures="30" verticalGrid="1" horizontalGrid="1" emptyTableMessage="" templateUuid="{56aa2eee-99f6-4200-966d-bffab386a445}" source="0" showOnlyVisibleFeatures="0" filterToAtlasIntersection="0" wrapString="" vectorLayerSource="dbname='test_g3w-admin' host=localhost port=5432 user='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=&quot;public&quot;.&quot;multiple_pks&quot; (geom)" emptyTableMode="0" wrapBehavior="0" backgroundColor="255,255,255,255" cellMargin="1" uuid="{56aa2eee-99f6-4200-966d-bffab386a445}" showGrid="1" gridStrokeWidth="1.5" filterFeatures="false" resizeMode="0" vectorLayer="multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70">
+      <LayoutMultiFrame headerHAlignment="0" useConditionalStyling="0" type="65649" vectorLayerProvider="postgres" gridColor="0,0,0,255" showUniqueRowsOnly="0" showEmptyRows="0" relationId="" featureFilter="" vectorLayerName="multiple_pks" headerMode="0" maxFeatures="30" verticalGrid="1" horizontalGrid="1" emptyTableMessage="" templateUuid="{56aa2eee-99f6-4200-966d-bffab386a445}" source="0" showOnlyVisibleFeatures="0" filterToAtlasIntersection="0" wrapString="" vectorLayerSource="dbname='test_g3w-admin' service=qgis_test user='ale' sslmode=disable key='pk1,pk2' estimatedmetadata=true srid=4326 type=Point checkPrimaryKeyUnicity='0' table=&quot;public&quot;.&quot;multiple_pks&quot; (geom)" emptyTableMode="0" wrapBehavior="0" backgroundColor="255,255,255,255" cellMargin="1" uuid="{56aa2eee-99f6-4200-966d-bffab386a445}" showGrid="1" gridStrokeWidth="1.5" filterFeatures="false" resizeMode="0" vectorLayer="multiple_pks_67787984_68b5_423c_bc5e_ce92d8d74d70">
         <childFrame uuid="{58b79eb2-da13-45ea-b969-05c06ddf11be}" templateUuid="{58b79eb2-da13-45ea-b969-05c06ddf11be}"/>
         <LayoutObject>
           <dataDefinedProperties>

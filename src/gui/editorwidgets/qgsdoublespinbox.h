@@ -36,7 +36,9 @@ class QgsSpinBoxLineEdit;
 /**
  * \ingroup gui
  * \brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
+ *
  * The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
+ *
  * This value can then be handled by a special value text.
  */
 class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
@@ -123,7 +125,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     double clearValue() const;
 
     /**
-     * \returns TRUE if the value is equal to the clear value.
+     * Returns TRUE if the value is equal to the clear value.
+     *
      * \see clearValue()
      *
      * \since QGIS 3.42

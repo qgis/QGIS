@@ -23,12 +23,15 @@
  * \brief A parameter for processing algorithms that need a list of input vector layers to construct a TIN.
  *
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
+ *
+ * \code{.py}
  * {
  *   'source':  string that represents identification of the vector layer,
  *   'type': how the vector layer is used : as vertices, structure lines or break lines
  *   'attributeIndex' : the index of the attribute of the vector layer used to defined the Z value of vertices,
  *    if -1, the Z coordinates of features are used
  * }
+ * \endcode
  *
  * \ingroup core
  * \since QGIS 3.16
@@ -106,6 +109,17 @@ class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessin
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterTinInputLayers docs" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterTinInputLayers::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
     }
 };
 

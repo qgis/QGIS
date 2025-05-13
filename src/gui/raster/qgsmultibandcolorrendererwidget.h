@@ -32,12 +32,18 @@ class QgsRasterMinMaxWidget;
 /**
  * \ingroup gui
  * \class QgsMultiBandColorRendererWidget
+ * \brief A widget for configuring a QgsMultiBandColorRenderer.
  */
 class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsMultiBandColorRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsMultiBandColorRendererWidget( layer, extent ); }
 

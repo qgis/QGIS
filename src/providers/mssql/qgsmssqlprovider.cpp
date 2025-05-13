@@ -20,6 +20,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
 #include "qgsmssqlproviderconnection.h"
+#include "qgsmssqlutils.h"
 #include "qgsfeedback.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
@@ -122,31 +123,41 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   }
 
   // Database successfully opened; we can now issue SQL commands.
-  if ( !anUri.schema().isEmpty() )
-    mSchemaName = anUri.schema();
-  else
-    mSchemaName = QStringLiteral( "dbo" );
 
-  if ( !anUri.table().isEmpty() )
+  if ( mSchemaName.isEmpty() && anUri.table().startsWith( '(' ) && anUri.table().endsWith( ')' ) )
   {
-    // the layer name has been specified
-    mTableName = anUri.table();
-    QStringList sl = mTableName.split( '.' );
-    if ( sl.length() == 2 )
-    {
-      mSchemaName = sl[0];
-      mTableName = sl[1];
-    }
-    mTables = QStringList( mTableName );
+    mIsQuery = true;
+    mQuery = anUri.table();
   }
   else
   {
-    // Get a list of table
-    mTables = db.tables( QSql::Tables );
-    if ( !mTables.isEmpty() )
-      mTableName = mTables[0];
+    mIsQuery = false;
+    if ( !anUri.schema().isEmpty() )
+      mSchemaName = anUri.schema();
     else
-      mValid = false;
+      mSchemaName = QStringLiteral( "dbo" );
+
+    if ( !anUri.table().isEmpty() )
+    {
+      // the layer name has been specified
+      mTableName = anUri.table();
+      QStringList sl = mTableName.split( '.' );
+      if ( sl.length() == 2 )
+      {
+        mSchemaName = sl[0];
+        mTableName = sl[1];
+      }
+      mTables = QStringList( mTableName );
+    }
+    else
+    {
+      // Get a list of table
+      mTables = db.tables( QSql::Tables );
+      if ( !mTables.isEmpty() )
+        mTableName = mTables[0];
+      else
+        mValid = false;
+    }
   }
 
   if ( mValid )
@@ -154,9 +165,16 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     if ( !anUri.geometryColumn().isEmpty() )
       mGeometryColName = anUri.geometryColumn();
 
-    if ( mSRId < 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
+    if ( !mIsQuery )
     {
-      loadMetadata();
+      if ( mSRId < 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
+      {
+        loadMetadata();
+      }
+      else
+      {
+        // TODO query??
+      }
     }
     loadFields();
 
@@ -170,7 +188,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     QStringList cols;
     if ( primaryKeyFromGeometryColumnsTable )
     {
-      mPrimaryKeyType = PktUnknown;
+      mPrimaryKeyType = QgsMssqlDatabase::PrimaryKeyType::Unknown;
       mPrimaryKeyAttrs.clear();
       primaryKeyFromGeometryColumnsTable = getPrimaryKeyFromGeometryColumns( cols );
       if ( !primaryKeyFromGeometryColumnsTable )
@@ -195,7 +213,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
         if ( idx < 0 )
         {
           QgsMessageLog::logMessage( tr( "Key field '%1' for view/query not found." ).arg( col ), tr( "MSSQL" ) );
-          mPrimaryKeyType = PktUnknown;
+          mPrimaryKeyType = QgsMssqlDatabase::PrimaryKeyType::Unknown;
           mPrimaryKeyAttrs.clear();
           break;
         }
@@ -204,11 +222,11 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
         if ( mPrimaryKeyAttrs.size() == 0 && ( fld.type() == QMetaType::Type::Int || fld.type() == QMetaType::Type::LongLong || ( fld.type() == QMetaType::Type::Double && fld.precision() == 0 ) ) )
         {
-          mPrimaryKeyType = PktInt;
+          mPrimaryKeyType = QgsMssqlDatabase::PrimaryKeyType::Int;
         }
         else
         {
-          mPrimaryKeyType = PktFidMap;
+          mPrimaryKeyType = QgsMssqlDatabase::PrimaryKeyType::FidMap;
         }
 
         mPrimaryKeyAttrs << idx;
@@ -221,6 +239,15 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
         mSRId = 0;
       }
     }
+  }
+
+
+  if ( mValid && mIsQuery && mPrimaryKeyAttrs.isEmpty() )
+  {
+    const QString error = QStringLiteral( "No primary key could be found for query %1" ).arg( mQuery );
+    QgsDebugError( error );
+    mValid = false;
+    setLastError( error );
   }
 
   //fill type names into sets
@@ -247,55 +274,6 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( new QgsMssqlFeatureSource( this ), true, request ) );
 }
 
-QMetaType::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
-{
-  QMetaType::Type type = QMetaType::Type::UnknownType;
-  if ( sqlTypeName.startsWith( QLatin1String( "decimal" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "numeric" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "real" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "float" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::Double;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "char" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "nchar" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "varchar" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "nvarchar" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "text" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "ntext" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::QString;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "smallint" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "int" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "bit" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "tinyint" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::Int;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "bigint" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::LongLong;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "binary" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "varbinary" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "image" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::QByteArray;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "datetime" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "smalldatetime" ), Qt::CaseInsensitive ) || sqlTypeName.startsWith( QLatin1String( "datetime2" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::QDateTime;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "date" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::QDate;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::QString;
-  }
-  else if ( sqlTypeName.startsWith( QLatin1String( "time" ), Qt::CaseInsensitive ) )
-  {
-    type = QMetaType::Type::QTime;
-  }
-  else
-  {
-    QgsDebugError( QStringLiteral( "Unknown field type: %1" ).arg( sqlTypeName ) );
-    // Everything else just dumped as a string.
-    type = QMetaType::Type::QString;
-  }
-
-  return type;
-}
-
 void QgsMssqlProvider::loadMetadata()
 {
   mSRId = 0;
@@ -303,7 +281,7 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  if ( !LoggedExec( query, QStringLiteral( "SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ) ) ) )
+  if ( !LoggedExec( query, QStringLiteral( "SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2" ).arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) ) ) )
   {
     QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
   }
@@ -373,259 +351,45 @@ void QgsMssqlProvider::setLastError( const QString &error )
 QSqlQuery QgsMssqlProvider::createQuery() const
 {
   std::shared_ptr<QgsMssqlDatabase> conn = connection();
-  QSqlDatabase d = conn->db();
-  if ( !d.isOpen() )
-  {
-    QgsDebugError( "Creating query, but the database is not open!" );
-  }
-  return QSqlQuery( d );
+  return conn->createQuery();
 }
 
 void QgsMssqlProvider::loadFields()
 {
-  bool isIdentity = false;
   mAttributeFields.clear();
   mDefaultValues.clear();
   mComputedColumns.clear();
 
-  // get field spec
-  QSqlQuery query = createQuery();
-  query.setForwardOnly( true );
+  std::shared_ptr<QgsMssqlDatabase> conn = connection();
 
-  const QString sql { QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( mSchemaName, mTableName ) };
+  QgsMssqlDatabase::FieldDetails details;
+  details.geometryColumnName = mGeometryColName;
 
-  // Get computed columns which need to be ignored on insert or update.
-  if ( !LoggedExec( query, sql ) )
+  QString error;
+  const bool result = mIsQuery ? conn->loadQueryFields( details, mQuery, error )
+                               : conn->loadFields( details, mSchemaName, mTableName, error );
+  if ( !result )
   {
-    pushError( query.lastError().text() );
+    pushError( error );
     return;
   }
 
-  while ( query.next() )
-  {
-    mComputedColumns.append( query.value( 0 ).toString() );
-  }
+  mComputedColumns = details.computedColumns;
+  mGeometryColName = details.geometryColumnName;
+  mGeometryColType = details.geometryColumnType;
+  mParser.mIsGeography = details.isGeography;
+  mPrimaryKeyType = details.primaryKeyType;
+  mPrimaryKeyAttrs = details.primaryKeyAttrs;
+  mAttributeFields = details.attributeFields;
+  mDefaultValues = details.defaultValues;
 
-  // Field has unique constraint
-  QSet<QString> setColumnUnique;
-  {
-    const QString sql2 { QStringLiteral( "SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS TC"
-                                         " INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CC ON TC.CONSTRAINT_NAME = CC.CONSTRAINT_NAME"
-                                         " WHERE TC.CONSTRAINT_SCHEMA = '%1' AND TC.TABLE_NAME = '%2' AND TC.CONSTRAINT_TYPE = 'unique'" )
-                           .arg( mSchemaName, mTableName ) };
-    if ( !LoggedExec( query, sql2 ) )
-    {
-      pushError( query.lastError().text() );
-      return;
-    }
-
-    while ( query.next() )
-    {
-      setColumnUnique.insert( query.value( QStringLiteral( "COLUMN_NAME" ) ).toString() );
-    }
-  }
-
-  const QString sql3 { QStringLiteral( "exec sp_columns @table_name = N%1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
-  if ( !LoggedExec( query, sql3 ) )
-  {
-    pushError( query.lastError().text() );
-    return;
-  }
-
-  int i = 0;
-  QStringList pkCandidates;
-  while ( query.next() )
-  {
-    const QString colName = query.value( QStringLiteral( "COLUMN_NAME" ) ).toString();
-    const QString sqlTypeName = query.value( QStringLiteral( "TYPE_NAME" ) ).toString();
-    bool columnIsIdentity = false;
-
-    // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
-    // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-    if ( ( mGeometryColName.isEmpty() && ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) ) )
-         || colName == mGeometryColName )
-    {
-      mGeometryColName = colName;
-      mGeometryColType = sqlTypeName;
-      mParser.mIsGeography = sqlTypeName == QLatin1String( "geography" );
-    }
-    else
-    {
-      const QMetaType::Type sqlType = DecodeSqlType( sqlTypeName );
-      if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
-      {
-        mPrimaryKeyType = PktInt;
-        mPrimaryKeyAttrs << mAttributeFields.size();
-        columnIsIdentity = true;
-        isIdentity = true;
-      }
-      else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
-      {
-        pkCandidates << colName;
-      }
-
-      QgsField field;
-      if ( sqlType == QMetaType::Type::QString )
-      {
-        // Field length in chars is column 7 ("Length") of the sp_columns output,
-        // except for uniqueidentifiers which must use column 6 ("Precision").
-        int length = query.value( sqlTypeName.startsWith( QStringLiteral( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
-        if ( sqlTypeName.startsWith( QLatin1Char( 'n' ) ) )
-        {
-          length = length / 2;
-        }
-        field = QgsField( colName, sqlType, sqlTypeName, length );
-      }
-      else if ( sqlType == QMetaType::Type::Double )
-      {
-        field = QgsField( colName, sqlType, sqlTypeName, query.value( QStringLiteral( "PRECISION" ) ).toInt(), sqlTypeName == QLatin1String( "decimal" ) || sqlTypeName == QLatin1String( "numeric" ) ? query.value( QStringLiteral( "SCALE" ) ).toInt() : -1 );
-      }
-      else if ( sqlType == QMetaType::Type::QDate || sqlType == QMetaType::Type::QDateTime || sqlType == QMetaType::Type::QTime )
-      {
-        field = QgsField( colName, sqlType, sqlTypeName, -1, -1 );
-      }
-      else
-      {
-        field = QgsField( colName, sqlType, sqlTypeName );
-      }
-
-      // Field nullable
-      const bool nullable = query.value( QStringLiteral( "NULLABLE" ) ).toBool();
-
-      // Set constraints
-      QgsFieldConstraints constraints;
-      if ( !nullable )
-        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-      if ( setColumnUnique.contains( colName ) )
-        constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      field.setConstraints( constraints );
-
-      if ( columnIsIdentity )
-      {
-        field.setReadOnly( true );
-      }
-
-      mAttributeFields.append( field );
-
-      // Default value
-      if ( !QgsVariantUtils::isNull( query.value( QStringLiteral( "COLUMN_DEF" ) ) ) )
-      {
-        mDefaultValues.insert( i, query.value( QStringLiteral( "COLUMN_DEF" ) ).toString() );
-      }
-      else if ( columnIsIdentity )
-      {
-        // identity column types don't report a default value clause in the COLUMN_DEF attribute. So we need to fake
-        // one, so that we can correctly indicate that the database is responsible for populating this column.
-        mDefaultValues.insert( i, QStringLiteral( "Autogenerate" ) );
-      }
-
-      ++i;
-    }
-  }
-
-  // get primary key
-  if ( mPrimaryKeyAttrs.isEmpty() )
-  {
-    query.clear();
-    query.setForwardOnly( true );
-    const QString sql4 { QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) };
-    if ( !LoggedExec( query, sql4 ) )
-    {
-      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
-    }
-
-    if ( query.isActive() )
-    {
-      mPrimaryKeyType = PktInt;
-
-      while ( query.next() )
-      {
-        const QString fidColName = query.value( 3 ).toString();
-        const int idx = mAttributeFields.indexFromName( fidColName );
-        const QgsField &fld = mAttributeFields.at( idx );
-
-        if ( !mPrimaryKeyAttrs.isEmpty() || ( fld.type() != QMetaType::Type::Int && fld.type() != QMetaType::Type::LongLong && ( fld.type() != QMetaType::Type::Double || fld.precision() != 0 ) ) )
-          mPrimaryKeyType = PktFidMap;
-
-        mPrimaryKeyAttrs << idx;
-      }
-
-      if ( mPrimaryKeyAttrs.isEmpty() )
-      {
-        mPrimaryKeyType = PktUnknown;
-      }
-    }
-  }
-
-  if ( mPrimaryKeyAttrs.isEmpty() )
-  {
-    const auto constPkCandidates = pkCandidates;
-    for ( const QString &pk : constPkCandidates )
-    {
-      query.clear();
-      query.setForwardOnly( true );
-      const QString sql5 { QStringLiteral( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
-                             .arg( pk, mSchemaName, mTableName ) };
-      if ( !LoggedExec( query, sql5 ) )
-      {
-        QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
-      }
-
-      if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
-      {
-        mPrimaryKeyType = PktInt;
-        mPrimaryKeyAttrs << mAttributeFields.indexFromName( pk );
-        return;
-      }
-    }
-  }
-
-  if ( mPrimaryKeyAttrs.isEmpty() )
+  if ( !mIsQuery && mPrimaryKeyAttrs.isEmpty() )
   {
     const QString error = QStringLiteral( "No primary key could be found on table %1" ).arg( mTableName );
     QgsDebugError( error );
     mValid = false;
     setLastError( error );
   }
-
-  if ( mPrimaryKeyAttrs.size() == 1 && !isIdentity )
-  {
-    // primary key has unique constraints
-    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
-    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-    mAttributeFields[mPrimaryKeyAttrs[0]].setConstraints( constraints );
-  }
-}
-
-QString QgsMssqlProvider::quotedValue( const QVariant &value )
-{
-  if ( QgsVariantUtils::isNull( value ) )
-    return QStringLiteral( "NULL" );
-
-  switch ( value.userType() )
-  {
-    case QMetaType::Type::Int:
-    case QMetaType::Type::LongLong:
-    case QMetaType::Type::Double:
-      return value.toString();
-
-    case QMetaType::Type::Bool:
-      return QString( value.toBool() ? '1' : '0' );
-
-    default:
-    case QMetaType::Type::QString:
-      QString v = value.toString();
-      v.replace( '\'', QLatin1String( "''" ) );
-      if ( v.contains( '\\' ) )
-        return v.replace( '\\', QLatin1String( "\\\\" ) ).prepend( "N'" ).append( '\'' );
-      else
-        return v.prepend( '\'' ).append( '\'' );
-  }
-}
-
-QString QgsMssqlProvider::quotedIdentifier( const QString &value )
-{
-  return QStringLiteral( "[%1]" ).arg( value );
 }
 
 QString QgsMssqlProvider::defaultValueClause( int fieldId ) const
@@ -715,14 +479,20 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
 
   // get the field name
   const QgsField &fld = mAttributeFields.at( index );
-  QString sql = QStringLiteral( "select min([%1]) from " )
-                  .arg( fld.name() );
+  QString sql = QStringLiteral( "SELECT min(%1) FROM " )
+                  .arg( QgsMssqlUtils::quotedIdentifier( fld.name() ) );
 
-  sql += QStringLiteral( "[%1].[%2]" ).arg( mSchemaName, mTableName );
-
-  if ( !mSqlWhereClause.isEmpty() )
+  if ( mIsQuery )
   {
-    sql += QStringLiteral( " where (%1)" ).arg( mSqlWhereClause );
+    sql += QStringLiteral( " (%1) q %2" ).arg( mQuery, !mSqlWhereClause.isEmpty() ? QStringLiteral( " WHERE (%1)" ).arg( mSqlWhereClause ) : QString() );
+  }
+  else
+  {
+    sql += QStringLiteral( " %1.%2" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      sql += " WHERE (" + mSqlWhereClause + ')';
+    }
   }
 
   QSqlQuery query = createQuery();
@@ -756,14 +526,20 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 
   // get the field name
   const QgsField &fld = mAttributeFields.at( index );
-  QString sql = QStringLiteral( "select max([%1]) from " )
-                  .arg( fld.name() );
+  QString sql = QStringLiteral( "SELECT max(%1) FROM " )
+                  .arg( QgsMssqlUtils::quotedIdentifier( fld.name() ) );
 
-  sql += QStringLiteral( "[%1].[%2]" ).arg( mSchemaName, mTableName );
-
-  if ( !mSqlWhereClause.isEmpty() )
+  if ( mIsQuery )
   {
-    sql += QStringLiteral( " where (%1)" ).arg( mSqlWhereClause );
+    sql += QStringLiteral( " (%1) q %2" ).arg( mQuery, !mSqlWhereClause.isEmpty() ? QStringLiteral( " WHERE (%1)" ).arg( mSqlWhereClause ) : QString() );
+  }
+  else
+  {
+    sql += QStringLiteral( " %1.%2" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      sql += " WHERE (" + mSqlWhereClause + ')';
+    }
   }
 
   QSqlQuery query = createQuery();
@@ -798,21 +574,27 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
 
   // get the field name
   const QgsField &fld = mAttributeFields.at( index );
-  QString sql = QStringLiteral( "select distinct " );
+  QString sql = QStringLiteral( "SELECT DISTINCT " );
 
   if ( limit > 0 )
   {
-    sql += QStringLiteral( " top %1 " ).arg( limit );
+    sql += QStringLiteral( " TOP %1 " ).arg( limit );
   }
 
-  sql += QStringLiteral( "[%1] from " )
-           .arg( fld.name() );
+  sql += QStringLiteral( "%1 FROM " ).arg( QgsMssqlUtils::quotedIdentifier( fld.name() ) );
 
-  sql += QStringLiteral( "[%1].[%2]" ).arg( mSchemaName, mTableName );
 
-  if ( !mSqlWhereClause.isEmpty() )
+  if ( mIsQuery )
   {
-    sql += QStringLiteral( " where (%1)" ).arg( mSqlWhereClause );
+    sql += QStringLiteral( " (%1) q %2" ).arg( mQuery, !mSqlWhereClause.isEmpty() ? QStringLiteral( " WHERE (%1)" ).arg( mSqlWhereClause ) : QString() );
+  }
+  else
+  {
+    sql += QStringLiteral( " %1.%2" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      sql += " where (" + mSqlWhereClause + ')';
+    }
   }
 
   QSqlQuery query = createQuery();
@@ -850,24 +632,30 @@ QStringList QgsMssqlProvider::uniqueStringsMatching( int index, const QString &s
 
   // get the field name
   const QgsField &fld = mAttributeFields.at( index );
-  QString sql = QStringLiteral( "select distinct " );
+  QString sql = QStringLiteral( "SELECT DISTINCT " );
 
   if ( limit > 0 )
   {
-    sql += QStringLiteral( " top %1 " ).arg( limit );
+    sql += QStringLiteral( " TOP %1 " ).arg( limit );
   }
 
-  sql += QStringLiteral( "[%1] from " )
-           .arg( fld.name() );
+  sql += QStringLiteral( "%1 FROM " )
+           .arg( QgsMssqlUtils::quotedIdentifier( fld.name() ) );
 
-  sql += QStringLiteral( "[%1].[%2] WHERE" ).arg( mSchemaName, mTableName );
-
-  if ( !mSqlWhereClause.isEmpty() )
+  if ( mIsQuery )
   {
-    sql += QStringLiteral( " (%1) AND" ).arg( mSqlWhereClause );
+    sql += QStringLiteral( " (%1) q WHERE %2" ).arg( mQuery, !mSqlWhereClause.isEmpty() ? QStringLiteral( " (%1) AND " ).arg( mSqlWhereClause ) : QString() );
+  }
+  else
+  {
+    sql += QStringLiteral( " %1.%2 WHERE " ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      sql += QStringLiteral( " (%1) AND " ).arg( mSqlWhereClause );
+    }
   }
 
-  sql += QStringLiteral( " [%1] LIKE '%%2%'" ).arg( fld.name(), substring );
+  sql += QStringLiteral( " %1 LIKE '%%2%'" ).arg( QgsMssqlUtils::quotedIdentifier( fld.name() ), substring );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
@@ -913,28 +701,31 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       return;
   }
 
-  // Get the extents from the spatial index table to speed up load times.
-  // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
-  const QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
-                      " FROM sys.spatial_index_tessellations WHERE object_id = OBJECT_ID('[%1].[%2]')";
-
-  statement = QString( sql ).arg( mSchemaName, mTableName );
-
-  if ( LoggedExec( query, statement ) )
+  if ( !mIsQuery )
   {
-    if ( query.next() && ( !QgsVariantUtils::isNull( query.value( 0 ) ) || !QgsVariantUtils::isNull( query.value( 1 ) ) || !QgsVariantUtils::isNull( query.value( 2 ) ) || !QgsVariantUtils::isNull( query.value( 3 ) ) ) )
+    // Get the extents from the spatial index table to speed up load times.
+    // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
+    const QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
+                        " FROM sys.spatial_index_tessellations WHERE object_id = OBJECT_ID('[%1].[%2]')";
+
+    statement = QString( sql ).arg( mSchemaName, mTableName );
+
+    if ( LoggedExec( query, statement ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Found extents in spatial index" ), 2 );
-      mExtent.setXMinimum( query.value( 0 ).toDouble() );
-      mExtent.setYMinimum( query.value( 1 ).toDouble() );
-      mExtent.setXMaximum( query.value( 2 ).toDouble() );
-      mExtent.setYMaximum( query.value( 3 ).toDouble() );
-      return;
+      if ( query.next() && ( !QgsVariantUtils::isNull( query.value( 0 ) ) || !QgsVariantUtils::isNull( query.value( 1 ) ) || !QgsVariantUtils::isNull( query.value( 2 ) ) || !QgsVariantUtils::isNull( query.value( 3 ) ) ) )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Found extents in spatial index" ), 2 );
+        mExtent.setXMinimum( query.value( 0 ).toDouble() );
+        mExtent.setYMinimum( query.value( 1 ).toDouble() );
+        mExtent.setXMaximum( query.value( 2 ).toDouble() );
+        mExtent.setYMaximum( query.value( 3 ).toDouble() );
+        return;
+      }
     }
-  }
-  else
-  {
-    QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    else
+    {
+      QgsDebugError( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    }
   }
 
   // If we can't find the extents in the spatial index table just do what we normally do.
@@ -944,16 +735,16 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     if ( mGeometryColType == QLatin1String( "geometry" ) )
     {
       if ( mDisableInvalidGeometryHandling )
-        statement = QStringLiteral( "select min([%1].STPointN(1).STX), min([%1].STPointN(1).STY), max([%1].STPointN(1).STX), max([%1].STPointN(1).STY)" ).arg( mGeometryColName );
+        statement = QStringLiteral( "select min(%1.STPointN(1).STX), min(%1.STPointN(1).STY), max(%1.STPointN(1).STX), max(%1.STPointN(1).STY)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
-        statement = QStringLiteral( "select min(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).STX else NULL end), min(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).STY else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).STX else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).STY else NULL end)" ).arg( mGeometryColName );
+        statement = QStringLiteral( "select min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STX else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STY else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STX else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STY else NULL end)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
     }
     else
     {
       if ( mDisableInvalidGeometryHandling )
-        statement = QStringLiteral( "select min([%1].STPointN(1).Long), min([%1].STPointN(1).Lat), max([%1].STPointN(1).Long), max([%1].STPointN(1).Lat)" ).arg( mGeometryColName );
+        statement = QStringLiteral( "select min(%1.STPointN(1).Long), min(%1.STPointN(1).Lat), max(%1.STPointN(1).Long), max(%1.STPointN(1).Lat)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
-        statement = QStringLiteral( "select min(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Long  else NULL end), min(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Lat else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Long else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STPointN(1).Lat else NULL end)" ).arg( mGeometryColName );
+        statement = QStringLiteral( "select min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).Long  else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).Lat else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).Long else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).Lat else NULL end)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
     }
 
     // we will first try to sample a small portion of the table/view, so the count of rows involved
@@ -965,22 +756,28 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     if ( mGeometryColType == QLatin1String( "geometry" ) )
     {
       if ( mDisableInvalidGeometryHandling )
-        statement = QStringLiteral( "select min([%1].STEnvelope().STPointN(1).STX), min([%1].STEnvelope().STPointN(1).STY), max([%1].STEnvelope().STPointN(3).STX), max([%1].STEnvelope().STPointN(3).STY)" ).arg( mGeometryColName );
+        statement = QStringLiteral( "select min(%1.STEnvelope().STPointN(1).STX), min(%1.STEnvelope().STPointN(1).STY), max(%1.STEnvelope().STPointN(3).STX), max(%1.STEnvelope().STPointN(3).STY)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
-        statement = QStringLiteral( "select min(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(1).STX  else NULL end), min(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(1).STY else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(3).STX else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(3).STY else NULL end)" ).arg( mGeometryColName );
+        statement = QStringLiteral( "select min(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(1).STX  else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(1).STY else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(3).STX else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(3).STY else NULL end)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
     }
     else
     {
-      statement = QStringLiteral( "select [%1]" ).arg( mGeometryColName );
+      statement = QStringLiteral( "select %1" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       readAllGeography = true;
     }
   }
 
-  statement += QStringLiteral( " from [%1].[%2]" ).arg( mSchemaName, mTableName );
-
-  if ( !mSqlWhereClause.isEmpty() )
+  if ( mIsQuery )
   {
-    statement += " where (" + mSqlWhereClause + ')';
+    statement += QStringLiteral( " FROM (%1) q %2" ).arg( mQuery, !mSqlWhereClause.isEmpty() ? QStringLiteral( " WHERE (%1)" ).arg( mSqlWhereClause ) : QString() );
+  }
+  else
+  {
+    statement += QStringLiteral( " FROM %1.%2" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+    if ( !mSqlWhereClause.isEmpty() )
+    {
+      statement += " where (" + mSqlWhereClause + ')';
+    }
   }
 
   if ( estimate )
@@ -996,7 +793,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     for ( const auto idx : mPrimaryKeyAttrs )
     {
       const QgsField &fld = mAttributeFields.at( idx );
-      cols += delim + QStringLiteral( "[%1]" ).arg( fld.name() );
+      cols += delim + QgsMssqlUtils::quotedIdentifier( fld.name() );
       delim = QStringLiteral( "," );
     }
 
@@ -1027,10 +824,20 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
   if ( !readAllGeography && query.next() )
   {
-    mExtent.setXMinimum( query.value( 0 ).toDouble() );
-    mExtent.setYMinimum( query.value( 1 ).toDouble() );
-    mExtent.setXMaximum( query.value( 2 ).toDouble() );
-    mExtent.setYMaximum( query.value( 3 ).toDouble() );
+    if ( QgsVariantUtils::isNull( query.value( 0 ) )
+         || QgsVariantUtils::isNull( query.value( 1 ) )
+         || QgsVariantUtils::isNull( query.value( 2 ) )
+         || QgsVariantUtils::isNull( query.value( 3 ) ) )
+    {
+      mExtent.setNull();
+    }
+    else
+    {
+      mExtent.setXMinimum( query.value( 0 ).toDouble() );
+      mExtent.setYMinimum( query.value( 1 ).toDouble() );
+      mExtent.setXMaximum( query.value( 2 ).toDouble() );
+      mExtent.setYMaximum( query.value( 3 ).toDouble() );
+    }
     return;
   }
 
@@ -1042,15 +849,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     if ( geom )
     {
       const QgsRectangle rect = geom->boundingBox();
-
-      if ( rect.xMinimum() < mExtent.xMinimum() )
-        mExtent.setXMinimum( rect.xMinimum() );
-      if ( rect.yMinimum() < mExtent.yMinimum() )
-        mExtent.setYMinimum( rect.yMinimum() );
-      if ( rect.xMaximum() > mExtent.xMaximum() )
-        mExtent.setXMaximum( rect.xMaximum() );
-      if ( rect.yMaximum() > mExtent.yMaximum() )
-        mExtent.setYMaximum( rect.yMaximum() );
+      mExtent.combineExtentWith( rect );
 
       mWkbType = geom->wkbType();
       mSRId = mParser.GetSRSId();
@@ -1061,7 +860,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 // Return the extent of the layer
 QgsRectangle QgsMssqlProvider::extent() const
 {
-  if ( mExtent.isEmpty() )
+  if ( mExtent.isNull() )
     UpdateStatistics( mUseEstimatedMetadata );
   return mExtent;
 }
@@ -1088,13 +887,22 @@ long long QgsMssqlProvider::featureCount() const
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  const QString statement = QStringLiteral(
-                              "SELECT rows"
-                              " FROM sys.tables t"
-                              " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
-                              " WHERE SCHEMA_NAME(t.schema_id) = %1 AND OBJECT_NAME(t.OBJECT_ID) = %2"
-  )
-                              .arg( quotedValue( mSchemaName ), quotedValue( mTableName ) );
+  QString statement;
+  if ( !mIsQuery )
+  {
+    statement = QStringLiteral(
+                  "SELECT rows"
+                  " FROM sys.tables t"
+                  " JOIN sys.partitions p ON t.object_id = p.object_id AND p.index_id IN (0,1)"
+                  " WHERE SCHEMA_NAME(t.schema_id) = %1 AND OBJECT_NAME(t.OBJECT_ID) = %2"
+    )
+                  .arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) );
+  }
+  else
+  {
+    statement = { QStringLiteral( R"raw(SELECT COUNT(*) FROM (%1) q)raw" )
+                    .arg( mQuery ) };
+  }
 
   if ( LoggedExec( query, statement ) && query.next() )
   {
@@ -1104,7 +912,8 @@ long long QgsMssqlProvider::featureCount() const
   {
     // We couldn't get the rows from the sys tables. Can that ever happen?
     // Should just do a select count(*) here.
-    return -1;
+    QgsDebugError( QStringLiteral( "Could not retrieve feature count using %1: %2 " ).arg( statement, query.lastError().text() ) );
+    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
   }
 }
 
@@ -1131,6 +940,9 @@ Qgis::ProviderStyleStorageCapabilities QgsMssqlProvider::styleStorageCapabilitie
 
 bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
+  if ( mIsQuery )
+    return false;
+
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
     if ( it->hasGeometry() && mWkbType == Qgis::WkbType::NoGeometry )
@@ -1201,6 +1013,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
@@ -1299,6 +1114,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
@@ -1408,7 +1226,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
       }
 
-      if ( mPrimaryKeyType == PktInt )
+      if ( mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
       {
         it->setId( query.value( 0 ).toLongLong() );
       }
@@ -1433,11 +1251,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  QString statement;
-
   if ( attributes.isEmpty() )
     return true;
 
+  if ( mIsQuery )
+    return false;
+
+  QString statement = QStringLiteral( "ALTER TABLE %1.%2 ADD " ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) );
+
+  QStringList attributeClauses;
+  attributeClauses.reserve( attributes.size() );
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QString type = it->typeName();
@@ -1452,15 +1275,9 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
         type = QStringLiteral( "%1(%2,%3)" ).arg( type ).arg( it->length() ).arg( it->precision() );
     }
 
-    if ( statement.isEmpty() )
-    {
-      statement = QStringLiteral( "ALTER TABLE [%1].[%2] ADD " ).arg( mSchemaName, mTableName );
-    }
-    else
-      statement += ',';
-
-    statement += QStringLiteral( "[%1] %2" ).arg( it->name(), type );
+    attributeClauses.append( QStringLiteral( "[%1] %2" ).arg( it->name(), type ) );
   }
+  statement += attributeClauses.join( QStringLiteral( ", " ) );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
@@ -1480,6 +1297,9 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 
 bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
+  if ( mIsQuery )
+    return false;
+
   QString statement;
 
   for ( QgsAttributeIds::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
@@ -1516,6 +1336,9 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
 bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
+  if ( mIsQuery )
+    return false;
+
   if ( attr_map.isEmpty() )
     return true;
 
@@ -1553,6 +1376,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( it2.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
 
       if ( mComputedColumns.contains( fld.name() ) )
         continue; // skip computed columns because they are done server side.
@@ -1592,6 +1418,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( it2.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        continue;
 
       if ( mComputedColumns.contains( fld.name() ) )
         continue; // skip computed columns because they are done server side.
@@ -1647,7 +1476,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       return false;
     }
 
-    if ( pkChanged && mPrimaryKeyType == PktFidMap )
+    if ( pkChanged && mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::FidMap )
     {
       const QVariant v = mShared->removeFid( fid );
       QVariantList k = v.toList();
@@ -1673,6 +1502,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
 bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
+  if ( mIsQuery )
+    return false;
+
   if ( geometry_map.isEmpty() )
     return true;
 
@@ -1747,13 +1579,16 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
 bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
+  if ( mIsQuery )
+    return false;
+
   if ( mPrimaryKeyAttrs.isEmpty() )
     return false;
 
   if ( ids.empty() )
     return true; // for consistency providers return true to an empty list
 
-  if ( mPrimaryKeyType == PktInt )
+  if ( mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::Int )
   {
     QString featureIds, delim;
     for ( QgsFeatureIds::const_iterator it = ids.begin(); it != ids.end(); ++it )
@@ -1783,7 +1618,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
       pushError( query.lastError().text() );
     }
   }
-  else if ( mPrimaryKeyType == PktFidMap )
+  else if ( mPrimaryKeyType == QgsMssqlDatabase::PrimaryKeyType::FidMap )
   {
     int i = 0;
 
@@ -1828,21 +1663,28 @@ void QgsMssqlProvider::updateExtents()
 
 Qgis::VectorProviderCapabilities QgsMssqlProvider::capabilities() const
 {
-  Qgis::VectorProviderCapabilities cap = Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::TransactionSupport;
-  bool hasGeom = false;
-  if ( !mGeometryColName.isEmpty() )
+  Qgis::VectorProviderCapabilities cap;
+  const bool hasGeom = !mGeometryColName.isEmpty();
+  if ( !mIsQuery )
   {
-    hasGeom = true;
-    cap |= Qgis::VectorProviderCapability::CreateSpatialIndex;
+    cap |= Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::TransactionSupport;
+    if ( hasGeom )
+    {
+      cap |= Qgis::VectorProviderCapability::CreateSpatialIndex;
+    }
   }
 
   if ( mPrimaryKeyAttrs.isEmpty() )
     return cap;
 
-  if ( hasGeom )
-    cap |= Qgis::VectorProviderCapability::ChangeGeometries;
+  cap |= Qgis::VectorProviderCapability::SelectAtId;
 
-  return cap | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::SelectAtId;
+  if ( hasGeom && !mIsQuery )
+    cap |= Qgis::VectorProviderCapability::ChangeGeometries;
+  if ( !mIsQuery )
+    cap |= Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::DeleteAttributes;
+
+  return cap;
 }
 
 bool QgsMssqlProvider::createSpatialIndex()
@@ -1857,6 +1699,9 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( mGeometryColType == QLatin1String( "geometry" ) )
   {
+    if ( mExtent.isNull() )
+      return false;
+
     statement += QStringLiteral( " USING GEOMETRY_GRID WITH (BOUNDING_BOX =(%1, %2, %3, %4))" ).arg( QString::number( mExtent.xMinimum() ), QString::number( mExtent.yMinimum() ), QString::number( mExtent.xMaximum() ), QString::number( mExtent.yMaximum() ) );
   }
   else
@@ -1977,13 +1822,14 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 
   mSqlWhereClause = theSQL.trimmed();
 
-  QString sql = QStringLiteral( "SELECT count(*) FROM " );
-
-  sql += QStringLiteral( "[%1].[%2]" ).arg( mSchemaName, mTableName );
-
-  if ( !mSqlWhereClause.isEmpty() )
+  QString sql;
+  if ( mIsQuery )
   {
-    sql += QStringLiteral( " WHERE %1" ).arg( mSqlWhereClause );
+    sql = QStringLiteral( "SELECT count(*) FROM %1 q %2" ).arg( mQuery, !mSqlWhereClause.isEmpty() ? QStringLiteral( " WHERE (%1)" ).arg( mSqlWhereClause ) : QString() );
+  }
+  else
+  {
+    sql = QStringLiteral( "SELECT count(*) FROM %1.%2 %3" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ), !mSqlWhereClause.isEmpty() ? QStringLiteral( " WHERE (%1)" ).arg( mSqlWhereClause ) : QString() );
   }
 
   QSqlQuery query = createQuery();
@@ -2045,6 +1891,16 @@ QString QgsMssqlProvider::geometryColumnName() const
 QStringList QgsMssqlProvider::subLayers() const
 {
   return mTables;
+}
+
+Qgis::VectorLayerTypeFlags QgsMssqlProvider::vectorLayerTypeFlags() const
+{
+  Qgis::VectorLayerTypeFlags flags;
+  if ( mValid && mIsQuery )
+  {
+    flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
+  }
+  return flags;
 }
 
 bool QgsMssqlProvider::convertField( QgsField &field )
@@ -2166,15 +2022,13 @@ Qgis::WkbType QgsMssqlProvider::getWkbType( const QString &geometryType )
 }
 
 
-Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString *errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri, QString *errorMessage, const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( options )
-
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -2182,6 +2036,8 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
       *errorMessage = db->errorText();
     return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
+
+  createdLayerUri = uri;
 
   const QString dbName = dsUri.database();
 
@@ -2191,16 +2047,12 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
   QString geometryColumn = dsUri.geometryColumn();
 
   QString primaryKey = dsUri.keyColumn();
-  QString primaryKeyType;
 
   if ( schemaName.isEmpty() )
     schemaName = QStringLiteral( "dbo" );
 
   if ( wkbType != Qgis::WkbType::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = QStringLiteral( "geom" );
-
-  // get the pk's name and type
-  bool createdNewPk = false;
 
   // if no pk name was passed, define the new pk field name
   if ( primaryKey.isEmpty() )
@@ -2216,44 +2068,21 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
         i = 0;
       }
     }
-    createdNewPk = true;
   }
-  else
-  {
-    // search for the passed field
-    for ( int i = 0, n = fields.size(); i < n; ++i )
-    {
-      if ( fields.at( i ).name() == primaryKey )
-      {
-        // found, get the field type
-        QgsField fld = fields.at( i );
-        if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
-        {
-          primaryKeyType = fld.typeName();
-        }
-      }
-    }
-  }
-
-  // if the field doesn't not exist yet, create it as a serial field
-  if ( primaryKeyType.isEmpty() )
-    primaryKeyType = QStringLiteral( "serial" );
 
   QString sql;
   QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
 
   // initialize metadata tables (same as OGR SQL)
-  sql = QString( "IF NOT EXISTS (SELECT * FROM sys.objects WHERE "
-                 "object_id = OBJECT_ID(N'[dbo].[geometry_columns]') AND type in (N'U')) "
+  sql = QString( "IF OBJECT_ID(N'[geometry_columns]', N'U') IS NULL "
                  "CREATE TABLE geometry_columns (f_table_catalog varchar(128) not null, "
                  "f_table_schema varchar(128) not null, f_table_name varchar(256) not null, "
                  "f_geometry_column varchar(256) not null, coord_dimension integer not null, "
                  "srid integer not null, geometry_type varchar(30) not null, "
                  "CONSTRAINT geometry_columns_pk PRIMARY KEY (f_table_catalog, "
                  "f_table_schema, f_table_name, f_geometry_column));\n"
-                 "IF NOT EXISTS (SELECT * FROM sys.objects "
-                 "WHERE object_id = OBJECT_ID(N'[dbo].[spatial_ref_sys]') AND type in (N'U')) "
+                 "IF OBJECT_ID(N'[spatial_ref_sys]', N'U') IS NULL "
                  "CREATE TABLE spatial_ref_sys (srid integer not null "
                  "PRIMARY KEY, auth_name varchar(256), auth_srid integer, srtext varchar(2048), proj4text varchar(2048))" );
 
@@ -2282,7 +2111,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     }
     sql = QStringLiteral( "IF NOT EXISTS (SELECT * FROM spatial_ref_sys WHERE srid=%1) INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (%1, %2, %3, %4, %5)" )
             .arg( srid )
-            .arg( quotedValue( auth_name ), auth_srid, quotedValue( srs.toWkt() ), quotedValue( srs.toProj() ) );
+            .arg( QgsMssqlUtils::quotedValue( auth_name ), auth_srid, QgsMssqlUtils::quotedValue( srs.toWkt() ), QgsMssqlUtils::quotedValue( srs.toProj() ) );
 
     logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
 
@@ -2379,13 +2208,12 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 
   const QgsDataProvider::ProviderOptions providerOptions;
   const Qgis::DataProviderReadFlags flags;
-  QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri(), providerOptions, flags );
+  auto provider = std::make_unique< QgsMssqlProvider >( dsUri.uri(), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Loading of the MSSQL provider failed" );
 
-    delete provider;
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
@@ -2395,38 +2223,42 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
 
   if ( fields.size() > 0 )
   {
-    // if we had to create a primary key column, we start the old columns from 1
-    int offset = createdNewPk ? 1 : 0;
+    const QgsFields providerFields = provider->fields();
+    int offset = providerFields.size();
 
     // get the list of fields
     QList<QgsField> flist;
-    for ( int i = 0, n = fields.size(); i < n; ++i )
+    for ( int originalFieldIndex = 0, n = fields.size(); originalFieldIndex < n; ++originalFieldIndex )
     {
-      QgsField fld = fields.at( i );
-      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
-      {
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), 0 );
-        continue;
-      }
-
-      if ( fld.name() == geometryColumn )
+      QgsField field = fields.at( originalFieldIndex );
+      if ( field.name() == geometryColumn )
       {
         // Found a field with the same name of the geometry column. Skip it!
         continue;
       }
 
-      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( fld ) )
+      const int providerIndex = providerFields.lookupField( field.name() );
+
+      if ( providerIndex >= 0 )
+      {
+        // we've already created this field (i.e. it was set in the CREATE TABLE statement), so
+        // we don't need to re-add it now
+        if ( oldToNewAttrIdxMap )
+          oldToNewAttrIdxMap->insert( originalFieldIndex, providerIndex );
+        continue;
+      }
+
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && !convertField( field ) )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
+          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
 
-        delete provider;
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
-      flist.append( fld );
+      flist.append( field );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), offset++ );
+        oldToNewAttrIdxMap->insert( originalFieldIndex, offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
@@ -2434,7 +2266,6 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
-      delete provider;
       return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
   }
@@ -2492,13 +2323,20 @@ void QgsMssqlProviderMetadata::saveConnection( const QgsAbstractProviderConnecti
   saveConnectionProtected( conn, name );
 }
 
-Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsMssqlProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage, options
+    &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
   );
 }
+
+
+QString buildfTableCatalogClause( const QgsDataSourceUri &dsUri )
+{
+  return QStringLiteral( "f_table_catalog%1" ).arg( dsUri.database().isEmpty() ? QStringLiteral( " IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsMssqlUtils::quotedValue( dsUri.database() ) ) );
+}
+
 
 bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
 {
@@ -2533,16 +2371,16 @@ bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &s
   query.setForwardOnly( true );
   const QString checkQuery = QString( "SELECT styleName"
                                       " FROM layer_styles"
-                                      " WHERE f_table_catalog=%1"
+                                      " WHERE %1"
                                       " AND f_table_schema=%2"
                                       " AND f_table_name=%3"
                                       " AND f_geometry_column=%4"
                                       " AND styleName=%5" )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
-                               .arg( QgsMssqlProvider::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
+                               .arg( buildfTableCatalogClause( dsUri ) )
+                               .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+                               .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+                               .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) )
+                               .arg( QgsMssqlUtils::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
 
   if ( !LoggedExecMetadata( query, checkQuery, uri ) )
   {
@@ -2633,31 +2471,31 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
                         ") VALUES ("
                         "%1,%2,%3,%4,%5,%6,%7,%8,%9,%10%12"
                         ")" )
-          .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-          .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-          .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-          .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
-          .arg( QgsMssqlProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
-          .arg( QgsMssqlProvider::quotedValue( qmlStyle ) )
-          .arg( QgsMssqlProvider::quotedValue( sldStyle ) )
+          .arg( QgsMssqlUtils::quotedValue( dsUri.database() ) )
+          .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+          .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+          .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) )
+          .arg( QgsMssqlUtils::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+          .arg( QgsMssqlUtils::quotedValue( qmlStyle ) )
+          .arg( QgsMssqlUtils::quotedValue( sldStyle ) )
           .arg( useAsDefault ? QStringLiteral( "1" ) : QStringLiteral( "0" ) )
-          .arg( QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
-          .arg( QgsMssqlProvider::quotedValue( dsUri.username() ) )
+          .arg( QgsMssqlUtils::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+          .arg( QgsMssqlUtils::quotedValue( dsUri.username() ) )
           .arg( uiFileColumn )
           .arg( uiFileValue );
 
   const QString checkQuery = QStringLiteral( "SELECT styleName"
                                              " FROM layer_styles"
-                                             " WHERE f_table_catalog=%1"
+                                             " WHERE %1"
                                              " AND f_table_schema=%2"
                                              " AND f_table_name=%3"
                                              " AND f_geometry_column=%4"
                                              " AND styleName=%5" )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-                               .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
-                               .arg( QgsMssqlProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
+                               .arg( buildfTableCatalogClause( dsUri ) )
+                               .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+                               .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+                               .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) )
+                               .arg( QgsMssqlUtils::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
   if ( !LoggedExecMetadata( query, checkQuery, uri ) )
   {
@@ -2674,34 +2512,34 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
                    ",styleSLD=%3"
                    ",description=%4"
                    ",owner=%5"
-                   " WHERE f_table_catalog=%6"
+                   " WHERE %6"
                    " AND f_table_schema=%7"
                    " AND f_table_name=%8"
                    " AND f_geometry_column=%9"
                    " AND styleName=%10" )
             .arg( useAsDefault ? QStringLiteral( "1" ) : QStringLiteral( "0" ) )
-            .arg( QgsMssqlProvider::quotedValue( qmlStyle ) )
-            .arg( QgsMssqlProvider::quotedValue( sldStyle ) )
-            .arg( QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
-            .arg( QgsMssqlProvider::quotedValue( dsUri.username() ) )
-            .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-            .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-            .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-            .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) )
-            .arg( QgsMssqlProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
+            .arg( QgsMssqlUtils::quotedValue( qmlStyle ) )
+            .arg( QgsMssqlUtils::quotedValue( sldStyle ) )
+            .arg( QgsMssqlUtils::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+            .arg( QgsMssqlUtils::quotedValue( dsUri.username() ) )
+            .arg( buildfTableCatalogClause( dsUri ) )
+            .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+            .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+            .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) )
+            .arg( QgsMssqlUtils::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
   }
   if ( useAsDefault )
   {
     const QString removeDefaultSql = QString( "UPDATE layer_styles "
                                               " SET useAsDefault=0"
-                                              " WHERE f_table_catalog=%1"
+                                              " WHERE %1"
                                               " AND f_table_schema=%2"
                                               " AND f_table_name=%3"
                                               " AND f_geometry_column=%4" )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
+                                       .arg( buildfTableCatalogClause( dsUri ) )
+                                       .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+                                       .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+                                       .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
     sql = QStringLiteral( "%1; %2;" ).arg( removeDefaultSql, sql );
   }
 
@@ -2762,15 +2600,15 @@ QString QgsMssqlProviderMetadata::loadStoredStyle( const QString &uri, QString &
 
   const QString selectQmlQuery = QString( "SELECT top 1 styleName, styleQML"
                                           " FROM layer_styles"
-                                          " WHERE f_table_catalog=%1"
+                                          " WHERE %1"
                                           " AND f_table_schema=%2"
                                           " AND f_table_name=%3"
                                           " AND f_geometry_column=%4"
                                           " ORDER BY useAsDefault desc" )
-                                   .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-                                   .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-                                   .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-                                   .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
+                                   .arg( buildfTableCatalogClause( dsUri ) )
+                                   .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+                                   .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+                                   .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
 
   if ( !LoggedExecMetadata( query, selectQmlQuery, uri ) )
   {
@@ -2821,17 +2659,19 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
     return -1;
   }
 
+  const QString fTableCatalogClause = buildfTableCatalogClause( dsUri );
+
   const QString selectRelatedQuery = QString( "SELECT id,styleName,description"
                                               " FROM layer_styles "
-                                              " WHERE f_table_catalog=%1"
+                                              " WHERE %1"
                                               " AND f_table_schema=%2"
                                               " AND f_table_name=%3"
                                               " AND f_geometry_column=%4"
                                               " ORDER BY useasdefault DESC, update_time DESC" )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-                                       .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
+                                       .arg( fTableCatalogClause )
+                                       .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+                                       .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+                                       .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
 
 
   bool queryOk = LoggedExecMetadata( query, selectRelatedQuery, uri );
@@ -2851,12 +2691,12 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
   }
   const QString selectOthersQuery = QString( "SELECT id,styleName,description"
                                              " FROM layer_styles "
-                                             " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4)"
+                                             " WHERE NOT (%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4)"
                                              " ORDER BY update_time DESC" )
-                                      .arg( QgsMssqlProvider::quotedValue( dsUri.database() ) )
-                                      .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
-                                      .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
-                                      .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
+                                      .arg( fTableCatalogClause )
+                                      .arg( QgsMssqlUtils::quotedValue( dsUri.schema() ) )
+                                      .arg( QgsMssqlUtils::quotedValue( dsUri.table() ) )
+                                      .arg( QgsMssqlUtils::quotedValue( dsUri.geometryColumn() ) );
   QgsDebugMsgLevel( selectOthersQuery, 2 );
 
   queryOk = LoggedExecMetadata( query, selectOthersQuery, uri );
@@ -2920,7 +2760,7 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QStrin
   query.setForwardOnly( true );
 
   QString style;
-  const QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsMssqlProvider::quotedValue( styleId ) );
+  const QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsMssqlUtils::quotedValue( styleId ) );
 
   const bool queryOk = LoggedExecMetadata( query, selectQmlQuery, uri );
   if ( !queryOk )
@@ -3178,12 +3018,12 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
 
   switch ( mPrimaryKeyType )
   {
-    case PktInt:
+    case QgsMssqlDatabase::PrimaryKeyType::Int:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       whereClause = QStringLiteral( "[%1]=%2" ).arg( mAttributeFields.at( mPrimaryKeyAttrs[0] ).name(), FID_TO_STRING( featureId ) );
       break;
 
-    case PktFidMap:
+    case QgsMssqlDatabase::PrimaryKeyType::FidMap:
     {
       const QVariantList &pkVals = mShared->lookupKey( featureId );
       if ( !pkVals.isEmpty() )
@@ -3196,7 +3036,7 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); ++i )
         {
           const QgsField &fld = mAttributeFields.at( mPrimaryKeyAttrs[i] );
-          whereClause += QStringLiteral( "%1[%2]=%3" ).arg( delim, fld.name(), quotedValue( pkVals[i] ) );
+          whereClause += QStringLiteral( "%1[%2]=%3" ).arg( delim, fld.name(), QgsMssqlUtils::quotedValue( pkVals[i] ) );
           delim = QStringLiteral( " AND " );
         }
 
@@ -3210,7 +3050,7 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
     }
     break;
 
-    default:
+    case QgsMssqlDatabase::PrimaryKeyType::Unknown:
       Q_ASSERT( !"FAILURE: Primary key unknown" );
       whereClause = QStringLiteral( "NULL IS NOT NULL" );
       break;
@@ -3281,7 +3121,7 @@ bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) cons
                                       "FROM geometry_columns WHERE f_table_name = %1 AND f_table_schema = %2 "
                                       "AND NOT (qgis_xmin IS NULL OR qgis_xmax IS NULL OR qgis_ymin IS NULL OR qgis_ymax IS NULL)" );
 
-  const QString statement = sql.arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
+  const QString statement = sql.arg( QgsMssqlUtils::quotedValue( mTableName ), QgsMssqlUtils::quotedValue( mSchemaName ) );
 
   if ( LoggedExec( query, statement ) && query.isActive() )
   {
@@ -3308,7 +3148,7 @@ bool QgsMssqlProvider::getPrimaryKeyFromGeometryColumns( QStringList &primaryKey
 
   const QString sql = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns "
                                       "WHERE f_table_name = %1 AND f_table_schema = %2 AND NOT qgis_pkey IS NULL" );
-  const QString statement = sql.arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
+  const QString statement = sql.arg( QgsMssqlUtils::quotedValue( mTableName ), QgsMssqlUtils::quotedValue( mSchemaName ) );
 
   if ( LoggedExec( query, statement ) && query.isActive() )
   {

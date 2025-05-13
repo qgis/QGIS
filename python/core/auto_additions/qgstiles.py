@@ -5,3 +5,7 @@ try:
     QgsTileMatrix.fromTileMatrix = staticmethod(QgsTileMatrix.fromTileMatrix)
 except (NameError, AttributeError):
     pass
+try:
+    QgsTileMatrixSet.__virtual_methods__ = ['readXml', 'writeXml']
+except (NameError, AttributeError):
+    pass

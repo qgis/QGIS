@@ -43,8 +43,8 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * \brief The QgsOgcUtils class provides various utility functions for conversion between
- *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
+ * \brief Provides various utility functions for conversion between
+ * OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:
  *
@@ -130,13 +130,13 @@ class CORE_EXPORT QgsOgcUtils
      * Exports the rectangle to GML2 Box
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
+    static QDomElement rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML2 Box
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
+    static QDomElement rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc,
                                           const QString &srsName,
                                           bool invertAxisOrientation,
                                           int precision = 17 );
@@ -145,13 +145,13 @@ class CORE_EXPORT QgsOgcUtils
      * Exports the rectangle to GML3 Envelope
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
+    static QDomElement rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML3 Envelope
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
+    static QDomElement rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc,
         const QString &srsName,
         bool invertAxisOrientation,
         int precision = 17 );
@@ -417,13 +417,13 @@ class QgsOgcUtilsExprToFilter
     bool mGMLUsed;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
-    const QString &mNamespacePrefix;
-    const QString &mNamespaceURI;
-    const QString &mGeometryName;
-    const QString &mSrsName;
+    QString mNamespacePrefix;
+    QString mNamespaceURI;
+    QString mGeometryName;
+    QString mSrsName;
     bool mInvertAxisOrientation;
-    const QMap<QString, QString> &mFieldNameToXPathMap;
-    const QMap<QString, QString> &mNamespacePrefixToUriMap;
+    QMap<QString, QString> mFieldNameToXPathMap;
+    QMap<QString, QString> mNamespacePrefixToUriMap;
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;

@@ -20,6 +20,7 @@
 #include "qgsmultipolygon.h"
 #include "qgsmultilinestring.h"
 #include "qgspainting.h"
+#include "qgssymbollayerutils.h"
 
 //
 // QgsGeometryPaintEngine
@@ -395,42 +396,6 @@ void QgsGeometryPaintEngine::addStrokedLine( const QgsLineString *line, double p
   }
 }
 
-Qgis::EndCapStyle QgsGeometryPaintEngine::penStyleToCapStyle( Qt::PenCapStyle style )
-{
-  switch ( style )
-  {
-    case Qt::FlatCap:
-      return Qgis::EndCapStyle::Flat;
-    case Qt::SquareCap:
-      return Qgis::EndCapStyle::Square;
-    case Qt::RoundCap:
-      return Qgis::EndCapStyle::Round;
-    case Qt::MPenCapStyle:
-      // undocumented?
-      break;
-  }
-
-  return Qgis::EndCapStyle::Round;
-}
-
-Qgis::JoinStyle QgsGeometryPaintEngine::penStyleToJoinStyle( Qt::PenJoinStyle style )
-{
-  switch ( style )
-  {
-    case Qt::MiterJoin:
-    case Qt::SvgMiterJoin:
-      return Qgis::JoinStyle::Miter;
-    case Qt::BevelJoin:
-      return Qgis::JoinStyle::Bevel;
-    case Qt::RoundJoin:
-      return Qgis::JoinStyle::Round;
-    case Qt::MPenJoinStyle:
-      // undocumented?
-      break;
-  }
-  return Qgis::JoinStyle::Round;
-}
-
 // based on QPainterPath::toSubpathPolygons()
 void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, const QTransform &matrix )
 {
@@ -439,8 +404,8 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
 
   const bool transformIsIdentity = matrix.isIdentity();
 
-  const Qgis::EndCapStyle endCapStyle = penStyleToCapStyle( mPen.capStyle() );
-  const Qgis::JoinStyle joinStyle = penStyleToJoinStyle( mPen.joinStyle() );
+  const Qgis::EndCapStyle endCapStyle = QgsSymbolLayerUtils::penCapStyleToEndCapStyle( mPen.capStyle() );
+  const Qgis::JoinStyle joinStyle = QgsSymbolLayerUtils::penJoinStyleToJoinStyle( mPen.joinStyle() );
   const double penWidth = mPen.widthF() <= 0 ? 1 : mPen.widthF();
   const double miterLimit = mPen.miterLimit();
 

@@ -14,9 +14,8 @@
 class CharacterWidget : QWidget
 {
 %Docstring(signature="appended")
-
-A widget for displaying characters available in a preset font, and allowing
-users to select an individual character.
+A widget for displaying characters available in a preset font, and
+allowing users to select an individual character.
 %End
 
 %TypeHeaderCode
@@ -38,7 +37,8 @@ Returns the number of columns of characters shown in the widget.
 
     int squareSize() const;
 %Docstring
-Returns the size (in pixels) of the square used to render each character preview.
+Returns the size (in pixels) of the square used to render each character
+preview.
 %End
 
     QChar character() const;

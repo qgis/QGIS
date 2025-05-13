@@ -8,14 +8,20 @@
 
 
 
-%ModuleHeaderCode
-#include "qgsziputils.h"
+class QgsZipUtils
+{
+%Docstring(signature="appended")
+Provides utility functions for working with zip files.
+
+.. versionadded:: 3.0
 %End
 
-namespace QgsZipUtils
-{
+%TypeHeaderCode
+#include "qgsziputils.h"
+%End
+  public:
 
-  bool isZipFile( const QString &filename );
+    static bool isZipFile( const QString &filename );
 %Docstring
 Returns ``True`` if the file name is a zipped file ( i.e with a '.qgz'
 extension, ``False`` otherwise.
@@ -25,33 +31,39 @@ extension, ``False`` otherwise.
 :return: ``True`` if the file is zipped, ``False`` otherwise
 %End
 
-  bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/, bool checkConsistency = true );
+    static bool unzip( const QString &zip, const QString &dir, QStringList &files /Out/, bool checkConsistency = true );
 %Docstring
 Unzip a zip file in an output directory.
 
 :param zip: The zip filename
 :param dir: The output directory
-:param checkConsistency: Perform additional stricter consistency checks on the archive, and error if they fail (since QGIS 3.30)
+:param checkConsistency: Perform additional stricter consistency checks
+                         on the archive, and error if they fail (since
+                         QGIS 3.30)
 
-:return: - ``False`` if the zip filename does not exist, the output directory does not exist or is not writable.
+:return: - ``False`` if the zip filename does not exist, the output
+           directory does not exist or is not writable.
          - files: The absolute path of unzipped files
 %End
 
-  bool zip( const QString &zip, const QStringList &files );
+    static bool zip( const QString &zip, const QStringList &files, bool overwrite = false );
 %Docstring
-Zip the list of files in the zip file. If the zip file already exists or is
-empty, an error is returned. If an input file does not exist, an error is
-also returned.
+Zip the list of files in the zip file.
+
+If the zip file already exists (and ``overwrite`` is ``False``) or is
+empty, an error is returned. If an input file does not exist, an error
+is also returned.
 
 :param zip: The zip filename
 :param files: The absolute path to files to embed within the zip
+:param overwrite: Set to ``True`` to allow overwriting existing files
+                  (since QGIS 3.44)
 %End
 
 
 
 
-
-  const QStringList files( const QString &zip );
+    static const QStringList files( const QString &zip );
 %Docstring
 Returns the list of files within a ``zip`` file
 

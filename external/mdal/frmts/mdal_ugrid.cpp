@@ -461,7 +461,7 @@ void MDAL::DriverUgrid::ignore1DMeshVariables( const std::string &mesh, std::set
   for ( const std::string &coordinateIt : coordinateVarsToIgnore )
   {
     std::string coordinatesVar = mNcFile->getAttrStr( mesh, coordinateIt );
-    std::vector<std::string> allCoords = MDAL::split( coordinatesVar, " " );
+    std::vector<std::string> allCoords = MDAL::split( coordinatesVar, ' ' );
 
     for ( const std::string &var : allCoords )
     {
@@ -1041,7 +1041,7 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh, const std::string &mes
   }
   else
   {
-    std::vector<std::string> words = MDAL::split( mesh->crs(), ":" );
+    std::vector<std::string> words = MDAL::split( mesh->crs(), ':' );
 
     if ( words[0] == "EPSG" && words.size() > 1 )
     {

@@ -18,8 +18,8 @@ class QgsField
 %Docstring(signature="appended")
 Encapsulate a field in an attribute table or data source.
 
-:py:class:`QgsField` stores metadata about an attribute field, including name, type
-length, and if applicable, precision.
+:py:class:`QgsField` stores metadata about an attribute field, including
+name, type length, and if applicable, precision.
 
 .. note::
 
@@ -45,13 +45,15 @@ length, and if applicable, precision.
 Constructor. Constructs a new QgsField object.
 
 :param name: Field name
-:param type: Field variant type, currently supported: String / Int / Double
-:param typeName: Field type (e.g., char, varchar, text, int, serial, double).
-                 Field types are usually unique to the source and are stored exactly
-                 as returned from the data store.
+:param type: Field variant type, currently supported: String / Int /
+             Double
+:param typeName: Field type (e.g., char, varchar, text, int, serial,
+                 double). Field types are usually unique to the source
+                 and are stored exactly as returned from the data store.
 :param len: Field length
 :param prec: Field precision. Usually decimal places but may also be
-             used in conjunction with other fields types (e.g., variable character fields)
+             used in conjunction with other fields types (e.g., variable
+             character fields)
 :param comment: Comment for the field
 :param subType: If the field is a collection, its element's type. When
                 all the elements don't need to have the same type, leave
@@ -70,13 +72,15 @@ Constructor. Constructs a new QgsField object.
 Constructor. Constructs a new QgsField object.
 
 :param name: Field name
-:param type: Field variant type, currently supported: String / Int / Double
-:param typeName: Field type (e.g., char, varchar, text, int, serial, double).
-                 Field types are usually unique to the source and are stored exactly
-                 as returned from the data store.
+:param type: Field variant type, currently supported: String / Int /
+             Double
+:param typeName: Field type (e.g., char, varchar, text, int, serial,
+                 double). Field types are usually unique to the source
+                 and are stored exactly as returned from the data store.
 :param len: Field length
 :param prec: Field precision. Usually decimal places but may also be
-             used in conjunction with other fields types (e.g., variable character fields)
+             used in conjunction with other fields types (e.g., variable
+             character fields)
 :param comment: Comment for the field
 :param subType: If the field is a collection, its element's type. When
                 all the elements don't need to have the same type, leave
@@ -115,10 +119,12 @@ field alias if set, otherwise the field name.
 
     QString displayNameWithAlias() const /HoldGIL/;
 %Docstring
-Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
+Returns the name to use when displaying this field and adds the alias in
+parenthesis if it is defined.
 
-This will be used when working close to the data structure (i.e. building expressions and queries),
-when the real field name must be shown but the alias is also useful to understand what the field
+This will be used when working close to the data structure (i.e.
+building expressions and queries), when the real field name must be
+shown but the alias is also useful to understand what the field
 represents.
 
 .. seealso:: :py:func:`name`
@@ -130,9 +136,11 @@ represents.
 
     QString displayType( bool showConstraints = false ) const /HoldGIL/;
 %Docstring
-Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
+Returns the type to use when displaying this field, including the length
+and precision of the datatype if applicable.
 
-This will be used when the full datatype with details has to displayed to the user.
+This will be used when the full datatype with details has to displayed
+to the user.
 
 .. seealso:: :py:func:`type`
 
@@ -145,8 +153,9 @@ This will be used when the full datatype with details has to displayed to the us
 %Docstring
 Returns a user friendly, translated representation of the field type.
 
-Unlike :py:func:`~QgsField.displayType`, this method only returns strings representing the field type and does not include
-length, precision or constraint information.
+Unlike :py:func:`~QgsField.displayType`, this method only returns
+strings representing the field type and does not include length,
+precision or constraint information.
 
 .. seealso:: :py:func:`type`
 
@@ -162,18 +171,19 @@ Gets variant type of the field as it will be retrieved from data source
 
     QMetaType::Type subType() const /HoldGIL/;
 %Docstring
-If the field is a collection, gets its element's type.
-When all the elements don't need to have the same type, this returns
+If the field is a collection, gets its element's type. When all the
+elements don't need to have the same type, this returns
 QVariant.Invalid.
 %End
 
     QString typeName() const /HoldGIL/;
 %Docstring
-Gets the field type. Field types vary depending on the data source. Examples
-are char, int, double, blob, geometry, etc. The type is stored exactly as
-the data store reports it, with no attempt to standardize the value.
+Gets the field type. Field types vary depending on the data source.
+Examples are char, int, double, blob, geometry, etc. The type is stored
+exactly as the data store reports it, with no attempt to standardize the
+value.
 
-:return: QString containing the field type
+:return: string containing the field type
 %End
 
     int length() const /HoldGIL/;
@@ -185,9 +195,11 @@ Gets the length of the field.
 
     int precision() const /HoldGIL/;
 %Docstring
-Gets the precision of the field. Not all field types have a related precision.
+Gets the precision of the field. Not all field types have a related
+precision.
 
-:return: int containing the precision or zero if not applicable to the field type.
+:return: int containing the precision or zero if not applicable to the
+         field type.
 %End
 
     QString comment() const /HoldGIL/;
@@ -199,7 +211,8 @@ Returns the field comment
 %Docstring
 Returns the map of field metadata.
 
-Map keys should match values from the :py:class:`Qgis`.FieldMetadataProperty enum.
+Map keys should match values from the
+:py:class:`Qgis`.FieldMetadataProperty enum.
 
 .. seealso:: :py:func:`setMetadata`
 
@@ -220,7 +233,8 @@ Returns a specific metadata ``property``.
 %Docstring
 Sets the map of field ``metadata``.
 
-Map keys should match values from the :py:class:`Qgis`.FieldMetadataProperty enum.
+Map keys should match values from the
+:py:class:`Qgis`.FieldMetadataProperty enum.
 
 .. seealso:: :py:func:`metadata`
 
@@ -273,16 +287,14 @@ Set variant ``type``.
 
     void setSubType( QMetaType::Type subType ) /HoldGIL/;
 %Docstring
-If the field is a collection, set its element's type.
-When all the elements don't need to have the same type, set this to
-QVariant.Invalid.
+If the field is a collection, set its element's type. When all the
+elements don't need to have the same type, set this to QVariant.Invalid.
 %End
 
  void setSubType( QVariant::Type subType ) /HoldGIL,Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-If the field is a collection, set its element's type.
-When all the elements don't need to have the same type, set this to
-QVariant.Invalid.
+If the field is a collection, set its element's type. When all the
+elements don't need to have the same type, set this to QVariant.Invalid.
 
 .. deprecated:: 3.38
 
@@ -317,20 +329,24 @@ Set the field comment
 
     QgsDefaultValue defaultValueDefinition() const /HoldGIL/;
 %Docstring
-Returns the expression used when calculating the default value for the field.
+Returns the expression used when calculating the default value for the
+field.
 
-:return: expression evaluated when calculating default values for field, or an
-         empty string if no default is set
+:return: expression evaluated when calculating default values for field,
+         or an empty string if no default is set
 
 .. seealso:: :py:func:`setDefaultValueDefinition`
 %End
 
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition ) /HoldGIL/;
 %Docstring
-Sets an expression to use when calculating the default value for the field.
+Sets an expression to use when calculating the default value for the
+field.
 
-:param defaultValueDefinition: expression to evaluate when calculating default values for field. Pass
-                               a default constructed :py:class:`QgsDefaultValue` to reset.
+:param defaultValueDefinition: expression to evaluate when calculating
+                               default values for field. Pass a default
+                               constructed :py:class:`QgsDefaultValue`
+                               to reset.
 
 .. seealso:: :py:func:`defaultValueDefinition`
 %End
@@ -351,15 +367,16 @@ Sets constraints which are present for the field.
 
     QString alias() const /HoldGIL/;
 %Docstring
-Returns the alias for the field (the friendly displayed name of the field ),
-or an empty string if there is no alias.
+Returns the alias for the field (the friendly displayed name of the
+field ), or an empty string if there is no alias.
 
 .. seealso:: :py:func:`setAlias`
 %End
 
     void setAlias( const QString &alias ) /HoldGIL/;
 %Docstring
-Sets the alias for the field (the friendly displayed name of the field ).
+Sets the alias for the field (the friendly displayed name of the field
+).
 
 :param alias: field alias, or empty string to remove an existing alias
 
@@ -403,7 +420,8 @@ Converts the provided variant to a compatible format
 
 :param v: The value to convert
 
-:raises ValueError: if the value could not be converted to a compatible format
+:raises ValueError: if the value could not be converted to a compatible
+                    format
 %End
 %MethodCode
     PyObject *sipParseErr = NULL;
@@ -471,32 +489,32 @@ Set the editor widget setup for the field.
 %Docstring
 Gets the editor widget setup for the field.
 
-Defaults may be set by the provider and can be overridden
-by manual field configuration.
+Defaults may be set by the provider and can be overridden by manual
+field configuration.
 
 :return: the value
 %End
 
     void setReadOnly( bool readOnly ) /HoldGIL/;
 %Docstring
-Make field read-only if ``readOnly`` is set to true. This is the case for
-providers which support generated fields for instance.
+Make field read-only if ``readOnly`` is set to true. This is the case
+for providers which support generated fields for instance.
 
 .. versionadded:: 3.18
 %End
 
     bool isReadOnly() const /HoldGIL/;
 %Docstring
-Returns ``True`` if this field is a read-only field. This is the case for
-providers which support generated fields for instance.
+Returns ``True`` if this field is a read-only field. This is the case
+for providers which support generated fields for instance.
 
 .. versionadded:: 3.18
 %End
 
     Qgis::FieldDomainSplitPolicy splitPolicy() const /HoldGIL/;
 %Docstring
-Returns the field's split policy, which indicates how field values should
-be handled during a split operation.
+Returns the field's split policy, which indicates how field values
+should be handled during a split operation.
 
 .. seealso:: :py:func:`setSplitPolicy`
 
@@ -505,8 +523,8 @@ be handled during a split operation.
 
     void setSplitPolicy( Qgis::FieldDomainSplitPolicy policy ) /HoldGIL/;
 %Docstring
-Sets the field's split ``policy``, which indicates how field values should
-be handled during a split operation.
+Sets the field's split ``policy``, which indicates how field values
+should be handled during a split operation.
 
 .. seealso:: :py:func:`splitPolicy`
 
@@ -515,8 +533,8 @@ be handled during a split operation.
 
     Qgis::FieldDuplicatePolicy duplicatePolicy() const /HoldGIL/;
 %Docstring
-Returns the field's duplicate policy, which indicates how field values should
-be handled during a duplicate operation.
+Returns the field's duplicate policy, which indicates how field values
+should be handled during a duplicate operation.
 
 .. seealso:: :py:func:`setDuplicatePolicy`
 
@@ -525,12 +543,32 @@ be handled during a duplicate operation.
 
     void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy ) /HoldGIL/;
 %Docstring
-Sets the field's duplicate ``policy``, which indicates how field values should
-be handled during a duplicate operation.
+Sets the field's duplicate ``policy``, which indicates how field values
+should be handled during a duplicate operation.
 
 .. seealso:: :py:func:`duplicatePolicy`
 
 .. versionadded:: 3.38
+%End
+
+    Qgis::FieldDomainMergePolicy mergePolicy() const /HoldGIL/;
+%Docstring
+Returns the field's merge policy, which indicates how field values
+should be handled during a merge operation.
+
+.. seealso:: :py:func:`setMergePolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) /HoldGIL/;
+%Docstring
+Sets the field's merge ``policy``, which indicates how field values
+should be handled during a merge operation.
+
+.. seealso:: :py:func:`mergePolicy`
+
+.. versionadded:: 3.44
 %End
 
     SIP_PYOBJECT __repr__();

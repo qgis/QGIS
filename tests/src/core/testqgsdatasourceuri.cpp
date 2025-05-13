@@ -25,6 +25,7 @@ class TestQgsDataSourceUri : public QObject
 {
     Q_OBJECT
   private slots:
+    void equality();
     void checkparser();
     void checkparser_data();
     void checkSetConnection();
@@ -269,6 +270,216 @@ void TestQgsDataSourceUri::checkparser_data()
     << ""                          // myparam
     << "public"                    // schema
     ;
+}
+
+void TestQgsDataSourceUri::equality()
+{
+  QgsDataSourceUri uri1;
+  QgsDataSourceUri uri2;
+
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setHost( QStringLiteral( "localhost" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setHost( QStringLiteral( "remote" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setHost( QStringLiteral( "localhost" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setPort( QStringLiteral( "5432" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setPort( QStringLiteral( "5433" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setPort( QStringLiteral( "5432" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setDriver( QStringLiteral( "QPSQL" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setDriver( QStringLiteral( "mssql" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setDriver( QStringLiteral( "QPSQL" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setService( QStringLiteral( "service" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setService( QStringLiteral( "service2" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setService( QStringLiteral( "service" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setDatabase( QStringLiteral( "mydb" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setDatabase( QStringLiteral( "mydb2" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setDatabase( QStringLiteral( "mydb" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setUsername( QStringLiteral( "user" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setUsername( QStringLiteral( "user2" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setUsername( QStringLiteral( "user" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setPassword( QStringLiteral( "pass" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setPassword( QStringLiteral( "pass2" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setPassword( QStringLiteral( "pass" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setSchema( QStringLiteral( "public" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSchema( QStringLiteral( "other" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSchema( QStringLiteral( "public" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setTable( QStringLiteral( "mytable" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setTable( QStringLiteral( "othertable" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setTable( QStringLiteral( "mytable" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setGeometryColumn( QStringLiteral( "geom" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setGeometryColumn( QStringLiteral( "geometry" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setGeometryColumn( QStringLiteral( "geom" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setKeyColumn( QStringLiteral( "id" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setKeyColumn( QStringLiteral( "id" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setSql( QStringLiteral( "WHERE id > 10" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSql( QStringLiteral( "WHERE id < 10" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSql( QStringLiteral( "WHERE id > 10" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setAuthConfigId( QStringLiteral( "abc123" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setAuthConfigId( QStringLiteral( "def123" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setAuthConfigId( QStringLiteral( "abc123" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setSslMode( QgsDataSourceUri::SslAllow );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSslMode( QgsDataSourceUri::SslAllow );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setKeyColumn( QStringLiteral( "pk" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setKeyColumn( QStringLiteral( "id" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setKeyColumn( QStringLiteral( "pk" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setUseEstimatedMetadata( true );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setUseEstimatedMetadata( true );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.disableSelectAtId( true );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.disableSelectAtId( true );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setWkbType( Qgis::WkbType::Point );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setWkbType( Qgis::WkbType::Point );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setSrid( QStringLiteral( "4326" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSrid( QStringLiteral( "3111" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setSrid( QStringLiteral( "4326" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  uri1.setParam( QStringLiteral( "param1" ), QStringLiteral( "value1" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.setParam( QStringLiteral( "param1" ), QStringLiteral( "value2" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  // params are a multi-map!
+  uri2.setParam( QStringLiteral( "param1" ), QStringLiteral( "value1" ) );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  uri2.removeParam( QStringLiteral( "param1" ) );
+  uri2.setParam( QStringLiteral( "param1" ), QStringLiteral( "value1" ) );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
+
+  QgsHttpHeaders headers1;
+  headers1.insert( QStringLiteral( "Authorization" ), QStringLiteral( "Bearer token123" ) );
+  uri1.setHttpHeaders( headers1 );
+  QVERIFY( uri1 != uri2 );
+  QVERIFY( !( uri1 == uri2 ) );
+  QgsHttpHeaders headers2;
+  headers2.insert( QStringLiteral( "Authorization" ), QStringLiteral( "Bearer token123" ) );
+  uri2.setHttpHeaders( headers2 );
+  QVERIFY( uri1 == uri2 );
+  QVERIFY( !( uri1 != uri2 ) );
 }
 
 void TestQgsDataSourceUri::checkparser()

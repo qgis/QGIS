@@ -1,3 +1,2 @@
-Taken from https://github.com/DevHwan/RTree, at the last commit before c++17 support was required
-(https://github.com/DevHwan/RTree/commit/b6688880dfced02879f98dcb24dd8db0d09efce7)
+Taken from https://github.com/nushoin/RTree/commit/a8afc3b4e9c5e210c7c8111e364da24e3021c326
 

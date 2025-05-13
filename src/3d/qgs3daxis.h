@@ -23,24 +23,21 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QViewport>
-#include <Qt3DRender/QPickEvent>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QScreenRayCaster>
 #include <QVector3D>
 
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/QRenderSettings>
-
 #include <QtWidgets/QMenu>
-#include "qgs3dmapsettings.h"
+#include "qgs3daxissettings.h"
 
 #define SIP_NO_FILE
 
 class QgsCameraController;
 class Qgs3DMapScene;
+class Qgs3DAxisRenderView;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Display 3D ortho axis in the main 3D view.
  *
  * Axis are displayed in a dedicated viewport which can be placed all around the main viewport.
@@ -78,6 +75,20 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      */
     QVector3D from3DTo2DLabelPosition( const QVector3D &sourcePos, Qt3DRender::QCamera *sourceCamera, Qt3DRender::QCamera *destCamera );
 
+    /**
+     * Used as callback from renderview when viewport scale factor changes
+     * \since QGIS 3.44
+     */
+    void onViewportScaleFactorChanged( double scaleFactor );
+
+    /**
+     * Returns if the 3D axis controller will handle the specified \a event.
+     *
+     * - TRUE when event is key within Ctrl+[2345689] to handle view orientation
+     * - FALSE when event is mouse click within the 3Daxis space to handle menu and orientation by clicking on cube faces
+     */
+    bool handleEvent( QEvent *event );
+
   public slots:
 
     //! Force update of the axis and the viewport when a setting has changed
@@ -86,14 +97,11 @@ class _3D_EXPORT Qgs3DAxis : public QObject
   private slots:
 
     void onCameraUpdate();
-    void onAxisViewportSizeUpdate( int val = 0 );
+    void onAxisViewportSizeUpdate();
 
     // axis picking and menu
     void onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits );
-
     void onAxisModeChanged( Qgs3DAxisSettings::Mode mode );
-    void onAxisHorizPositionChanged( Qt::AnchorPoint pos );
-    void onAxisVertPositionChanged( Qt::AnchorPoint pos );
     void onCameraViewChange( float pitch, float yaw );
 
     void onCameraViewChangeHome() { onCameraViewChange( 45.0f, 45.0f ); }
@@ -114,15 +122,14 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void updateAxisLabelText( Qt3DExtras::QText2DEntity *textEntity, const QString &text );
     QFont createFont( int pointSize );
 
-    Qt3DRender::QViewport *constructAxisScene( Qt3DCore::QEntity *parent3DScene );
+    void constructAxisScene( Qt3DCore::QEntity *parent3DScene );
     void constructLabelsScene( Qt3DCore::QEntity *parent3DScene );
 
     Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &font, const QMatrix4x4 &rotation, const QVector3D &translation );
 
     // axis picking and menu
     void init3DObjectPicking();
-    bool eventFilter( QObject *watched, QEvent *event ) override;
-    void createKeyboardShortCut();
+    bool handleKeyEvent( QKeyEvent *keyEvent );
     void createMenu();
     void hideMenu();
     void displayMenuAt( const QPoint &position );
@@ -135,10 +142,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     float mCylinderLength = 40.0f;
     int mFontSize = 12;
 
-    Qt3DRender::QViewport *mViewport = nullptr;
-
+    Qgs3DAxisRenderView *mRenderView = nullptr;
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
-    Qt3DRender::QLayer *mAxisObjectLayer = nullptr;
     Qt3DRender::QCamera *mAxisCamera = nullptr;
 
     Qt3DCore::QEntity *mAxisRoot = nullptr;

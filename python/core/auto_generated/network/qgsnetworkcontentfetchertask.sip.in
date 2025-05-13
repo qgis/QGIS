@@ -16,13 +16,14 @@ class QgsNetworkContentFetcherTask : QgsTask
 %Docstring(signature="appended")
 Handles HTTP network content fetching in a background task.
 
-Provides a simple method for fetching remote HTTP content in a :py:class:`QgsTask`.
-Url redirects are automatically handled.
+Provides a simple method for fetching remote HTTP content in a
+:py:class:`QgsTask`. Url redirects are automatically handled.
 
-After constructing a :py:class:`QgsNetworkContentFetcherTask`, callers should
-connect to the :py:class:`QgsNetworkContentFetcherTask`.fetched signal. They can
-then safely access the network :py:func:`~reply` from the connected slot
-without danger of the task being first removed by the :py:class:`QgsTaskManager`.
+After constructing a :py:class:`QgsNetworkContentFetcherTask`, callers
+should connect to the :py:class:`QgsNetworkContentFetcherTask`.fetched
+signal. They can then safely access the network :py:func:`~reply` from
+the connected slot without danger of the task being first removed by the
+:py:class:`QgsTaskManager`.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcher`
 
@@ -37,23 +38,27 @@ without danger of the task being first removed by the :py:class:`QgsTaskManager`
     QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
                                   const QString &description = QString() );
 %Docstring
-Constructor for a QgsNetworkContentFetcherTask which fetches
-the specified ``url``.
+Constructor for a QgsNetworkContentFetcherTask which fetches the
+specified ``url``.
 
-Optionally, authentication configuration can be set via the ``authcfg`` argument.
+Optionally, authentication configuration can be set via the ``authcfg``
+argument.
 
-Since QGIS 3.28 the optional ``description`` can be explicitly set. If not specified, a default task description will be generated.
+Since QGIS 3.28 the optional ``description`` can be explicitly set. If
+not specified, a default task description will be generated.
 %End
 
     QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
                                   const QString &description = QString() );
 %Docstring
-Constructor for a QgsNetworkContentFetcherTask which fetches
-the specified network ``request``.
+Constructor for a QgsNetworkContentFetcherTask which fetches the
+specified network ``request``.
 
-Optionally, authentication configuration can be set via the ``authcfg`` argument.
+Optionally, authentication configuration can be set via the ``authcfg``
+argument.
 
-Since QGIS 3.28 the optional ``description`` can be explicitly set. If not specified, a default task description will be generated.
+Since QGIS 3.28 the optional ``description`` can be explicitly set. If
+not specified, a default task description will be generated.
 %End
 
     ~QgsNetworkContentFetcherTask();
@@ -77,7 +82,8 @@ May return ``None`` if the request has not yet completed.
 
     QString contentDispositionFilename() const;
 %Docstring
-Returns the associated filename from the reply's content disposition header, if present.
+Returns the associated filename from the reply's content disposition
+header, if present.
 
 .. versionadded:: 3.28
 %End
@@ -98,18 +104,19 @@ Returns the fetched content as a string
 
     void fetched();
 %Docstring
-Emitted when the network content has been fetched, regardless
-of whether the fetch was successful or not.
+Emitted when the network content has been fetched, regardless of whether
+the fetch was successful or not.
 
-Users of QgsNetworkContentFetcherTask should connect to this signal,
-and from the associated slot they can then safely access the network :py:func:`~QgsNetworkContentFetcherTask.reply`
-without danger of the task being first removed by the :py:class:`QgsTaskManager`.
+Users of QgsNetworkContentFetcherTask should connect to this signal, and
+from the associated slot they can then safely access the network
+:py:func:`~QgsNetworkContentFetcherTask.reply` without danger of the
+task being first removed by the :py:class:`QgsTaskManager`.
 %End
 
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 %Docstring
-Emitted when an error with ``code`` error occurred while processing the request
-``errorMsg`` is a textual description of the error
+Emitted when an error with ``code`` error occurred while processing the
+request ``errorMsg`` is a textual description of the error
 
 .. versionadded:: 3.22
 %End

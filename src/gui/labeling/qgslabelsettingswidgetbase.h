@@ -43,9 +43,9 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     /**
      * Constructor for QgsLabelSettingsWidgetBase.
      * \param parent parent widget
-     * \param vl associated vector layer
+     * \param vl associated map layer
      */
-    QgsLabelSettingsWidgetBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *vl = nullptr );
+    QgsLabelSettingsWidgetBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapLayer *vl = nullptr );
 
     /**
      * Sets the \a context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     void updateDataDefinedProperty();
 
   private:
-    QgsVectorLayer *mVectorLayer = nullptr;
+    QPointer< QgsMapLayer > mLayer = nullptr;
 
     QgsSymbolWidgetContext mContext;
 };

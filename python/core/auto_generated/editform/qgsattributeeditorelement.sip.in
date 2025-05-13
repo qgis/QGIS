@@ -12,13 +12,13 @@
 class QgsAttributeEditorElement /Abstract/
 {
 %Docstring(signature="appended")
-This is an abstract base class for any elements of a drag and drop form.
+An abstract base class for any elements of a drag and drop form.
 
 This can either be a container which will be represented on the screen
-as a tab widget or a collapsible group box. Or it can be a field which will
-then be represented based on the :py:class:`QgsEditorWidget` type and configuration.
-Or it can be a relation and embed the form of several children of another
-layer.
+as a tab widget or a collapsible group box. Or it can be a field which
+will then be represented based on the :py:class:`QgsEditorWidget` type
+and configuration. Or it can be a relation and embed the form of several
+children of another layer.
 %End
 
 %TypeHeaderCode
@@ -66,8 +66,8 @@ layer.
 Constructor
 
 :param type: The type of the new element.
-:param name:
-:param parent:
+:param name: 
+:param parent: 
 %End
 
     virtual ~QgsAttributeEditorElement();
@@ -114,12 +114,14 @@ Returns a clone of this element. To be implemented by subclasses.
 
     bool showLabel() const;
 %Docstring
-Controls if this element should be labeled with a title (field, relation or groupname).
+Controls if this element should be labeled with a title (field, relation
+or groupname).
 %End
 
     void setShowLabel( bool showLabel );
 %Docstring
-Controls if this element should be labeled with a title (field, relation or groupname).
+Controls if this element should be labeled with a title (field, relation
+or groupname).
 %End
 
     int horizontalStretch() const;

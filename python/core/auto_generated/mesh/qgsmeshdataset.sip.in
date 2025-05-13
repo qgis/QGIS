@@ -16,9 +16,8 @@
 class QgsMeshDatasetIndex
 {
 %Docstring(signature="appended")
-
-:py:class:`QgsMeshDatasetIndex` is index that identifies the dataset group (e.g. wind speed)
-and a dataset in this group (e.g. magnitude of wind speed in particular time)
+An index that identifies the dataset group (e.g. wind speed) and a
+dataset in this group (e.g. magnitude of wind speed in particular time).
 
 .. note::
 
@@ -55,8 +54,7 @@ Returns whether index is valid, ie at least groups is set
 class QgsMeshDatasetValue
 {
 %Docstring(signature="appended")
-
-:py:class:`QgsMeshDatasetValue` represents single dataset value.
+Represents a single mesh dataset value.
 
 Values may be scalar or vector. Nodata values are represented by NaNs.
 
@@ -106,7 +104,8 @@ Sets Y value
 
     double scalar() const;
 %Docstring
-Returns magnitude of vector for vector data or scalar value for scalar data
+Returns magnitude of vector for vector data or scalar value for scalar
+data
 %End
 
     double x() const;
@@ -126,14 +125,15 @@ Returns y value
 class QgsMeshDataBlock
 {
 %Docstring(signature="appended")
+A block of integers/doubles from a mesh dataset.
 
-:py:class:`QgsMeshDataBlock` is a block of integers/doubles that can be used
-to retrieve:
-active flags (e.g. face's active integer flag)
-scalars (e.g. scalar dataset double values)
-vectors (e.g. vector dataset doubles x,y values)
+:py:class:`QgsMeshDataBlock` can be used to retrieve:
 
-data are implicitly shared, so the class can be quickly copied
+- active flags (e.g. face's active integer flag)
+- scalars (e.g. scalar dataset double values)
+- vectors (e.g. vector dataset doubles x,y values)
+
+Data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
 Data can be accessed all at once with :py:func:`~values` (faster) or
@@ -180,23 +180,22 @@ Whether the block is valid
 
     QgsMeshDatasetValue value( int index ) const;
 %Docstring
-Returns a value represented by the index
-For active flag the behavior is undefined
+Returns a value represented by the index For active flag the behavior is
+undefined
 %End
 
     bool active( int index ) const;
 %Docstring
-Returns a value for active flag by the index
-For scalar and vector 2d the behavior is undefined
+Returns a value for active flag by the index For scalar and vector 2d
+the behavior is undefined
 %End
 
     void setActive( const QVector<int> &vals );
 %Docstring
 Sets active flag values.
 
-If the data provider/datasets does not have active
-flag capability (== all values are valid), just
-set block validity by setValid( ``True`` )
+If the data provider/datasets does not have active flag capability (==
+all values are valid), just set block validity by setValid( ``True`` )
 
 :param vals: value vector with size :py:func:`~QgsMeshDataBlock.count`
 
@@ -220,8 +219,8 @@ For scalar and vector 2d the behavior is undefined
 
     QVector<double> values() const;
 %Docstring
-Returns buffer to the array with values
-For vector it is pairs (x1, y1, x2, y2, ... )
+Returns buffer to the array with values For vector it is pairs (x1, y1,
+x2, y2, ... )
 
 .. versionadded:: 3.12
 %End
@@ -230,9 +229,10 @@ For vector it is pairs (x1, y1, x2, y2, ... )
 %Docstring
 Sets values
 
-For scalar datasets, it must have size :py:func:`~QgsMeshDataBlock.count`
-For vector datasets, it must have size 2 * :py:func:`~QgsMeshDataBlock.count`
-For active flag the behavior is undefined
+For scalar datasets, it must have size
+:py:func:`~QgsMeshDataBlock.count` For vector datasets, it must have
+size 2 * :py:func:`~QgsMeshDataBlock.count` For active flag the behavior
+is undefined
 
 .. versionadded:: 3.12
 %End
@@ -247,9 +247,8 @@ Sets block validity
 class QgsMesh3DDataBlock
 {
 %Docstring(signature="appended")
-
-:py:class:`QgsMesh3DDataBlock` is a block of 3d stacked mesh data related N
-faces defined on base mesh frame.
+A block of 3d stacked mesh data related N faces defined on base mesh
+frame.
 
 Data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
@@ -350,14 +349,16 @@ Sets the indexing between faces and volumes
 %Docstring
 Returns the values at volume centers
 
-For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+For vector datasets the number of values is doubled (x1, y1, x2, y2, ...
+)
 %End
 
     QgsMeshDatasetValue value( int volumeIndex ) const;
 %Docstring
 Returns the value at volume centers
 
-:param volumeIndex: volume index relative to :py:func:`~QgsMesh3DDataBlock.firstVolumeIndex`
+:param volumeIndex: volume index relative to
+                    :py:func:`~QgsMesh3DDataBlock.firstVolumeIndex`
 
 :return: value (scalar or vector)
 %End
@@ -366,7 +367,8 @@ Returns the value at volume centers
 %Docstring
 Sets the values at volume centers
 
-For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
+For vector datasets the number of values is doubled (x1, y1, x2, y2, ...
+)
 %End
 
 };
@@ -374,9 +376,8 @@ For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
 class QgsMeshDatasetGroupMetadata
 {
 %Docstring(signature="appended")
-
-:py:class:`QgsMeshDatasetGroupMetadata` is a collection of dataset group metadata
-such as whether the data is vector or scalar, name
+A collection of dataset group metadata such as whether the data is
+vector or scalar, name.
 
 .. note::
 
@@ -417,14 +418,22 @@ Constructs an empty metadata object
 Constructs a valid metadata object
 
 :param name: name of the dataset group
-:param isScalar: dataset contains scalar data, specifically the y-value of :py:class:`QgsMeshDatasetValue` is NaN
-:param dataType: where the data are defined on (vertices, faces or volumes)
-:param minimum: minimum value (magnitude for vectors) present among all group's dataset values
-:param maximum: maximum value (magnitude for vectors) present among all group's dataset values
-:param maximumVerticalLevels: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+:param isScalar: dataset contains scalar data, specifically the y-value
+                 of :py:class:`QgsMeshDatasetValue` is NaN
+:param dataType: where the data are defined on (vertices, faces or
+                 volumes)
+:param minimum: minimum value (magnitude for vectors) present among all
+                group's dataset values
+:param maximum: maximum value (magnitude for vectors) present among all
+                group's dataset values
+:param maximumVerticalLevels: maximum number of vertical levels for 3d
+                              stacked meshes, 0 for 2d meshes
 :param referenceTime: reference time of the dataset group
-:param isTemporal: weither the dataset group is temporal (contains time-related dataset)
-:param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
+:param isTemporal: weither the dataset group is temporal (contains
+                   time-related dataset)
+:param extraOptions: dataset's extra options stored by the provider.
+                     Usually contains the name, time value, time units,
+                     data file vendor, ...
 :param uri: The uri of the dataset
 %End
 
@@ -437,8 +446,9 @@ Returns name of the dataset group
 %Docstring
 Returns the name of the dataset's parent quantity, if available.
 
-The quantity can be used to collect dataset groups which represent a single quantity
-but at different values (e.g. groups which represent different elevations).
+The quantity can be used to collect dataset groups which represent a
+single quantity but at different values (e.g. groups which represent
+different elevations).
 
 .. versionadded:: 3.38
 %End
@@ -467,24 +477,28 @@ Returns whether dataset group has scalar data
 
     bool isTemporal() const;
 %Docstring
-Returns whether the dataset group is temporal (contains time-related dataset)
+Returns whether the dataset group is temporal (contains time-related
+dataset)
 %End
 
     DataType dataType() const;
 %Docstring
-Returns whether dataset group data is defined on vertices or faces or volumes
+Returns whether dataset group data is defined on vertices or faces or
+volumes
 
 .. versionadded:: 3.12
 %End
 
     double minimum() const;
 %Docstring
-Returns minimum scalar value/vector magnitude present for whole dataset group
+Returns minimum scalar value/vector magnitude present for whole dataset
+group
 %End
 
     double maximum() const;
 %Docstring
-Returns maximum scalar value/vector magnitude present for whole dataset group
+Returns maximum scalar value/vector magnitude present for whole dataset
+group
 %End
 
     int maximumVerticalLevelsCount() const;
@@ -506,9 +520,8 @@ Returns the reference time
 class QgsMeshDatasetMetadata
 {
 %Docstring(signature="appended")
-
-:py:class:`QgsMeshDatasetMetadata` is a collection of mesh dataset metadata such
-as whether the data is valid or associated time for the dataset
+Represents mesh dataset metadata, such as whether the data is valid or
+the associated time.
 
 .. note::
 
@@ -537,9 +550,12 @@ Constructs a valid metadata object
 
 :param time: a time which this dataset represents in the dataset group
 :param isValid: dataset is loadad and valid for fetching the data
-:param minimum: minimum value (magnitude for vectors) present among dataset values
-:param maximum: maximum value (magnitude for vectors) present among dataset values
-:param maximumVerticalLevels: maximum number of vertical levels for 3d stacked meshes, 0 for 2d meshes
+:param minimum: minimum value (magnitude for vectors) present among
+                dataset values
+:param maximum: maximum value (magnitude for vectors) present among
+                dataset values
+:param maximumVerticalLevels: maximum number of vertical levels for 3d
+                              stacked meshes, 0 for 2d meshes
 %End
 
     double time() const;
@@ -575,8 +591,7 @@ Returns maximum number of vertical levels for 3d stacked meshes
 class QgsMeshDataset
 {
 %Docstring(signature="appended")
-
-Abstract class that represents a dataset
+Abstract class that represents a mesh dataset.
 
 .. versionadded:: 3.16
 %End
@@ -624,8 +639,7 @@ Returns the values count
 class QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
-
-Abstract class that represents a dataset group
+Abstract class that represents a dataset group.
 
 .. versionadded:: 3.16
 %End
@@ -752,12 +766,14 @@ Calculates the statistics (minimum and maximum)
 
     void setStatisticObsolete() const;
 %Docstring
-Sets statistic obsolete, that means statistic will be recalculated when requested
+Sets statistic obsolete, that means statistic will be recalculated when
+requested
 %End
 
     virtual QStringList datasetGroupNamesDependentOn() const;
 %Docstring
-Returns the dataset group variable name which this dataset group depends on
+Returns the dataset group variable name which this dataset group depends
+on
 %End
 
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
@@ -785,24 +801,27 @@ Sets the reference time of the dataset group
 class QgsMeshDatasetGroupTreeItem
 {
 %Docstring(signature="appended")
-
 Tree item for display of the mesh dataset groups.
-Dataset group is set of datasets with the same name,
-but different control variable (e.g. time)
 
-Support for multiple levels, because groups can have
-subgroups, for example
+Dataset groups are sets of datasets with the same name, but different
+control variable (e.g. time)
 
-Groups:
-Depth
-Minimum
-Maximum
-Velocity
-Wind speed
-Minimum
-Maximum
+Support for multiple levels, because groups can have subgroups, for
+example
 
-Tree items handle also the dependencies between dataset groups represented by these items
+::
+
+     + Groups:
+       + Depth
+         + Minimum
+         + Maximum
+       + Velocity
+       + Wind speed
+          + Minimum
+          + Maximum
+
+Tree items handle also the dependencies between dataset groups
+represented by these items.
 
 .. versionadded:: 3.14
 %End
@@ -824,8 +843,10 @@ Constructor for an empty dataset group tree item
 %Docstring
 Constructor
 
-:param defaultName: the name that will be used to display the item if iot not overrides (:py:func:`setName`)
-:param sourceName: the name used by the source (provider, dataset group store,...)
+:param defaultName: the name that will be used to display the item if
+                    iot not overrides (:py:func:`setName`)
+:param sourceName: the name used by the source (provider, dataset group
+                   store,...)
 :param isVector: whether the dataset group is a vector dataset group
 :param index: index of the dataset group
 %End
@@ -835,7 +856,8 @@ Constructor
 Constructor from a DOM element, constructs also the children
 
 :param itemElement: the DOM element
-:param context: writing context (e.g. for conversion between relative and absolute paths)
+:param context: writing context (e.g. for conversion between relative
+                and absolute paths)
 %End
 
     ~QgsMeshDatasetGroupTreeItem();
@@ -876,12 +898,13 @@ Returns a child
 
     QgsMeshDatasetGroupTreeItem *childFromDatasetGroupIndex( int index );
 %Docstring
-Returns the child with dataset group ``index``
-Searches as depper as needed on the child hierarchy
+Returns the child with dataset group ``index`` Searches as depper as
+needed on the child hierarchy
 
 :param index: the index of the dataset group index
 
-:return: the item with index as dataset group index, None if no item is found
+:return: the item with index as dataset group index, None if no item is
+         found
 %End
 
     int childCount() const;
@@ -893,14 +916,16 @@ Returns the count of children
 
     int totalChildCount() const;
 %Docstring
-Returns the total count of children, that is included deeper children and disabled items
+Returns the total count of children, that is included deeper children
+and disabled items
 
 :return: the total children's count
 %End
 
     QList<int> enabledDatasetGroupIndexes() const;
 %Docstring
-Returns a list of enabled dataset group indexes, included deeper children
+Returns a list of enabled dataset group indexes, included deeper
+children
 
 :return: the list of dataset group indexes
 
@@ -923,17 +948,17 @@ Returns the position of the item in the parent
 
     QString name() const;
 %Docstring
-Returns the name of the item
-This name is the default name if the name has not been overridden (:py:func:`setName`)
+Returns the name of the item This name is the default name if the name
+has not been overridden (:py:func:`setName`)
 
 :return: the name to display
 %End
 
     void setName( const QString &name );
 %Docstring
-Overrides the default name with the name to display.
-The default name is still stored in the item
-but will not be displayed anymore except if the empty string is set.
+Overrides the default name with the name to display. The default name is
+still stored in the item but will not be displayed anymore except if the
+empty string is set.
 
 :param name: to display
 %End
@@ -949,20 +974,18 @@ Returns the name used by the provider to identify the dataset
 
     bool isVector() const;
 %Docstring
-
-:return: whether the dataset group is vector
+Return ``True`` if the dataset group is vector.
 %End
 
     int datasetGroupIndex() const;
 %Docstring
-
-:return: the dataset group index
+Returns the dataset group index.
 %End
 
     bool isEnabled() const;
 %Docstring
-
-:return: whether the item is enabled, that is if it is displayed in view
+Returns ``True`` if the item is enabled, i.e. if it is displayed in
+view.
 %End
 
     void setIsEnabled( bool isEnabled );
@@ -974,21 +997,20 @@ Sets whether the item is enabled, that is if it is displayed in view
 
     QString defaultName() const;
 %Docstring
-
-:return: the default name
+Returns the default name.
 %End
 
     QgsMeshDatasetGroup::Type datasetGroupType() const;
 %Docstring
-
-:return: the dataset group type
+Returns the dataset group type.
 
 .. versionadded:: 3.16
 %End
 
     QList<int> groupIndexDependencies() const;
 %Docstring
-Returns a list of group index corresponding to dataset group that depends on the dataset group represented by this item
+Returns a list of group index corresponding to dataset group that
+depends on the dataset group represented by this item
 
 :return: list of group index
 %End
@@ -1011,7 +1033,8 @@ Set parameters of the item in accordance with the dataset group
 
     void setPersistentDatasetGroup( const QString &uri );
 %Docstring
-Set parameters of the item in accordance with the persistent dataset group with ``uri``
+Set parameters of the item in accordance with the persistent dataset
+group with ``uri``
 
 :param uri: uri of the persistent dataset group
 
@@ -1023,7 +1046,8 @@ Set parameters of the item in accordance with the persistent dataset group with 
 Writes the item and its children in a DOM document
 
 :param doc: the DOM document
-:param context: writing context (e.g. for conversion between relative and absolute paths)
+:param context: writing context (e.g. for conversion between relative
+                and absolute paths)
 
 :return: the dom element where the item is written
 %End

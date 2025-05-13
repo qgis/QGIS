@@ -25,7 +25,7 @@
 /**
  * \ingroup core
  * \class QgsColorSchemeRegistry
- * \brief Registry of color schemes
+ * \brief Registry of color schemes.
  *
  * A registry of QgsColorScheme color schemes. This class can be created directly, or
  * accessed via a QgsApplication::colorSchemeRegistry().

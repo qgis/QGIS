@@ -47,9 +47,10 @@ Reset block
 
     bool isValid() const /HoldGIL/;
 %Docstring
-Returns ``True`` if the block is valid (correctly filled with data).
-An empty block may still be valid (if zero size block was requested).
-If the block is not valid, error may be retrieved by :py:func:`~QgsRasterBlock.error` method.
+Returns ``True`` if the block is valid (correctly filled with data). An
+empty block may still be valid (if zero size block was requested). If
+the block is not valid, error may be retrieved by
+:py:func:`~QgsRasterBlock.error` method.
 %End
 
     void setValid( bool valid ) /HoldGIL/;
@@ -59,9 +60,9 @@ Mark block as valid or invalid
 
     bool isEmpty() const;
 %Docstring
-Returns ``True`` if block is empty, i.e. its size is 0 (zero rows or cols).
-This method does not return ``True`` if size is not zero and all values are
-'no data' (null).
+Returns ``True`` if block is empty, i.e. its size is 0 (zero rows or
+cols). This method does not return ``True`` if size is not zero and all
+values are 'no data' (null).
 %End
 
     static int typeSize( Qgis::DataType dataType ) /HoldGIL/;
@@ -76,12 +77,31 @@ Data type size in bytes.
 
     static bool typeIsNumeric( Qgis::DataType type );
 %Docstring
-Returns ``True`` if data type is numeric
+Returns ``True`` if a data type is numeric.
+
+.. seealso:: :py:func:`typeIsComplex`
+
+.. seealso:: :py:func:`typeIsColor`
+%End
+
+    static bool typeIsComplex( Qgis::DataType type );
+%Docstring
+Returns ``True`` if a data type is a complex number type.
+
+.. seealso:: :py:func:`typeIsNumeric`
+
+.. seealso:: :py:func:`typeIsColor`
+
+.. versionadded:: 3.44
 %End
 
     static bool typeIsColor( Qgis::DataType type );
 %Docstring
-Returns ``True`` if data type is color
+Returns ``True`` if a data type is a color type.
+
+.. seealso:: :py:func:`typeIsNumeric`
+
+.. seealso:: :py:func:`typeIsComplex`
 %End
 
     Qgis::DataType dataType() const  /HoldGIL/;
@@ -110,8 +130,9 @@ For given data type returns wider type and sets no data value
     bool hasNoData() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the block may contain no data. It does not guarantee
-that it really contains any no data. It can be used to speed up processing.
-Not the difference between this method and :py:func:`~QgsRasterBlock.hasNoDataValue`.
+that it really contains any no data. It can be used to speed up
+processing. Not the difference between this method and
+:py:func:`~QgsRasterBlock.hasNoDataValue`.
 
 :return: ``True`` if the block may contain no data
 %End
@@ -129,8 +150,8 @@ Sets cell value that will be considered as "no data".
 
     void resetNoDataValue() /HoldGIL/;
 %Docstring
-Reset no data value: if there was a no data value previously set,
-it will be discarded.
+Reset no data value: if there was a no data value previously set, it
+will be discarded.
 
 .. seealso:: :py:func:`noDataValue`
 
@@ -323,10 +344,11 @@ Set the whole block to no data except specified rectangle
 
     void setIsData( int row, int column ) /HoldGIL/;
 %Docstring
-Remove no data flag on pixel. If the raster block does not have an explicit
-no data value set then an internal map of no data pixels is maintained for the block.
-In this case it is possible to reset a pixel to flag it as having valid data using this
-method. This method has no effect for raster blocks with an explicit no data value set.
+Remove no data flag on pixel. If the raster block does not have an
+explicit no data value set then an internal map of no data pixels is
+maintained for the block. In this case it is possible to reset a pixel
+to flag it as having valid data using this method. This method has no
+effect for raster blocks with an explicit no data value set.
 
 :param row: row index
 :param column: column index
@@ -334,21 +356,58 @@ method. This method has no effect for raster blocks with an explicit no data val
 
     void setIsData( qgssize index ) /HoldGIL/;
 %Docstring
-Remove no data flag on pixel. If the raster block does not have an explicit
-no data value set then an internal map of no data pixels is maintained for the block.
-In this case it is possible to reset a pixel to flag it as having valid data using this
-method. This method has no effect for raster blocks with an explicit no data value set.
+Remove no data flag on pixel. If the raster block does not have an
+explicit no data value set then an internal map of no data pixels is
+maintained for the block. In this case it is possible to reset a pixel
+to flag it as having valid data using this method. This method has no
+effect for raster blocks with an explicit no data value set.
 
 :param index: data matrix index (long type in Python)
 %End
 
+
+    void fill( double value );
+%Docstring
+Fills the whole block with a constant ``value``.
+
+This method only applies to numeric raster blocks, not color blocks or
+complex number data types.
+
+:raises ValueError: if the block is an empty, non-numeric or complex
+                    number type raster block.
+
+.. versionadded:: 3.44
+%End
+%MethodCode
+    if ( !QgsRasterBlock::typeIsNumeric( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsRasterBlock::typeIsComplex( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill a block with %1 complex data type" ).arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( sipCpp->isEmpty() )
+    {
+      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot fill an empty block" ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->fill( a0 );
+    }
+%End
+
     QByteArray data() const;
 %Docstring
-Gets access to raw data.
-The returned QByteArray instance is not a copy of the data: it only refers to the array
-owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
-still exists. Writing to the returned QByteArray will not affect the original data:
-a deep copy of the data will be made and only the local copy will be modified.
+Gets access to raw data. The returned QByteArray instance is not a copy
+of the data: it only refers to the array owned by the QgsRasterBlock,
+therefore it is only valid while the QgsRasterBlock object still exists.
+Writing to the returned QByteArray will not affect the original data: a
+deep copy of the data will be made and only the local copy will be
+modified.
 
 .. note::
 
@@ -357,11 +416,11 @@ a deep copy of the data will be made and only the local copy will be modified.
 
     void setData( const QByteArray &data, int offset = 0 );
 %Docstring
-Rewrite raw pixel data.
-If the data array is shorter than the internal array within the raster block object,
-pixels at the end will stay untouched. If the data array is longer than the internal
-array, only the initial data from the input array will be used.
-Optionally it is possible to set non-zero offset (in bytes) if the input data should
+Rewrite raw pixel data. If the data array is shorter than the internal
+array within the raster block object, pixels at the end will stay
+untouched. If the data array is longer than the internal array, only the
+initial data from the input array will be used. Optionally it is
+possible to set non-zero offset (in bytes) if the input data should
 overwrite data somewhere in the middle of the internal buffer.
 %End
 
@@ -372,8 +431,8 @@ overwrite data somewhere in the middle of the internal buffer.
 
     static QString printValue( double value, bool localized = false );
 %Docstring
-Print double value with all necessary significant digits.
-It is ensured that conversion back to double gives the same number.
+Print double value with all necessary significant digits. It is ensured
+that conversion back to double gives the same number.
 
 :param value: the value to be printed
 :param localized: if ``True``, use localized number format
@@ -393,7 +452,8 @@ Convert data to different type.
 
     QImage image() const;
 %Docstring
-Returns an image containing the block data, if the block's data type is color.
+Returns an image containing the block data, if the block's data type is
+color.
 %End
 
     bool setImage( const QImage *image );
@@ -426,8 +486,8 @@ Sets the last error
 
     static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
 %Docstring
-For extent and width, height find rectangle covered by subextent.
-The output rect has x oriented from left to right and y from top to bottom
+For extent and width, height find rectangle covered by subextent. The
+output rect has x oriented from left to right and y from top to bottom
 (upper-left to lower-right orientation).
 
 :param extent: extent, usually the larger
@@ -462,7 +522,9 @@ Returns the minimum value present in the raster block.
    will refer to any instance of this minimum.
 
 
-:return: - ``True`` if a minimum value was found, or ``False`` if it could not be found (eg due to non-numeric data types).
+
+:return: - ``True`` if a minimum value was found, or ``False`` if it
+           could not be found (eg due to non-numeric data types).
          - minimum: minimum value present
          - row: row containing minimum value pixel
          - column: column containing minimum value pixel
@@ -484,7 +546,9 @@ Returns the maximum value present in the raster block.
    will refer to any instance only of this maximum.
 
 
-:return: - ``True`` if a maximum value was found, or ``False`` if it could not be found (eg due to non-numeric data types).
+
+:return: - ``True`` if a maximum value was found, or ``False`` if it
+           could not be found (eg due to non-numeric data types).
          - maximum: maximum value present
          - row: row containing maximum value pixel
          - column: column containing maximum value pixel
@@ -510,7 +574,10 @@ Returns the minimum and maximum value present in the raster block.
    will refer to any of instances of these values.
 
 
-:return: - ``True`` if a minimum and maximum value were found, or ``False`` if they could not be found (eg due to non-numeric data types).
+
+:return: - ``True`` if a minimum and maximum value were found, or
+           ``False`` if they could not be found (eg due to non-numeric
+           data types).
          - minimum: minimum value present
          - minimumRow: row containing minimum value pixel
          - minimumColumn: column containing minimum value pixel

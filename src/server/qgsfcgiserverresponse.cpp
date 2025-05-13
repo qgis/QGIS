@@ -23,12 +23,15 @@
 #include "qgsmessagelog.h"
 #include <fcgi_stdio.h>
 #include <QDebug>
+#include <QThread>
 
 #include "qgslogger.h"
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <chrono>
 
 //
 // QgsFCGXStreamData copied from libfcgi FCGX_Stream_Data
@@ -54,37 +57,57 @@ typedef struct QgsFCGXStreamData
 } QgsFCGXStreamData;
 #endif
 
-QgsSocketMonitoringThread::QgsSocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback )
-  : mIsResponseFinished( isResponseFinished )
-  , mFeedback( feedback )
+// to be able to use 333ms expression as a duration
+using namespace std::chrono_literals;
+
+
+// QgsSocketMonitoringThread constructor
+QgsSocketMonitoringThread::QgsSocketMonitoringThread( std::shared_ptr<QgsFeedback> feedback )
+  : mFeedback( std::move( feedback ) )
   , mIpcFd( -1 )
 {
-  setObjectName( "FCGI socket monitor" );
-  Q_ASSERT( mIsResponseFinished );
   Q_ASSERT( mFeedback );
+
+  mShouldStop.store( false );
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
   if ( FCGI_stdout && FCGI_stdout->fcgx_stream && FCGI_stdout->fcgx_stream->data )
   {
-    QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdin->fcgx_stream->data );
+    QgsFCGXStreamData *stream = static_cast<QgsFCGXStreamData *>( FCGI_stdout->fcgx_stream->data );
     if ( stream && stream->reqDataPtr )
     {
       mIpcFd = stream->reqDataPtr->ipcFd;
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdin stream data is null! Socket monitoring disable." ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdout stream data is null! Socket monitoring disabled." ), //
+                                 QStringLiteral( "FCGIServer" ),                                                   //
+                                 Qgis::MessageLevel::Warning );
     }
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdin is null! Socket monitoring disable." ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( QStringLiteral( "FCGI_stdout is null! Socket monitoring disabled." ), //
+                               QStringLiteral( "FCGIServer" ),                                       //
+                               Qgis::MessageLevel::Warning );
   }
 #endif
 }
 
+// Informs the thread to quit
+void QgsSocketMonitoringThread::stop()
+{
+  mShouldStop.store( true );
+  // Release the mutex so the try_lock in the thread will not wait anymore and
+  // the thread will end its loop as we have set 'mShouldStop' to true
+  mMutex.unlock();
+}
+
 void QgsSocketMonitoringThread::run()
 {
+  // Lock the thread mutex: every try_lock will take 333ms
+  mMutex.lock();
+
   if ( mIpcFd < 0 )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Socket monitoring disabled: no socket fd!" ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
@@ -92,33 +115,75 @@ void QgsSocketMonitoringThread::run()
   }
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
+  quint64 threadId = reinterpret_cast<quint64>( QThread::currentThreadId() );
+
   char c;
-  while ( !*mIsResponseFinished )
+
+  fd_set setOptions;
+  FD_ZERO( &setOptions );        // clear the set
+  FD_SET( mIpcFd, &setOptions ); // add our file descriptor to the set
+
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 10000; // max 10ms of timeout for select
+
+  while ( !mShouldStop.load() )
   {
-    const ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT ); // see https://stackoverflow.com/a/12402596
-    if ( x < 0 )
-    {
-      // Ie. we are still connected but we have an 'error' as there is nothing to read
-      QgsDebugMsgLevel( QStringLiteral( "FCGIServer: remote socket still connected. errno: %1" ).arg( errno ), 5 );
-    }
-    else
+    // 'select' function will check if the socket is still valid after a 10ms timeout
+    // see https://stackoverflow.com/a/30395738
+    int rv = select( mIpcFd + 1, &setOptions, NULL, NULL, &timeout );
+    if ( rv == -1 )
     {
       // socket closed, nothing can be read
-      QgsDebugMsgLevel( QStringLiteral( "FCGIServer: remote socket has been closed! errno: %1" ).arg( errno ), 2 );
+      QgsMessageLog::logMessage( QStringLiteral( "FCGIServer %1: remote socket has been closed (select)! errno: %2" ) //
+                                   .arg( threadId )
+                                   .arg( errno ),
+                                 QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
       mFeedback->cancel();
       break;
     }
+    else
+    {
+      // check if there is something in the socket without reading it and without blocking
+      // see https://stackoverflow.com/a/12402596
+      const ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT );
+      if ( x != 0 )
+      {
+        // Ie. we are still connected but we have an 'error' as there is nothing to read
+        QgsDebugMsgLevel( QStringLiteral( "FCGIServer %1: remote socket still connected. errno: %2, x: %3" ) //
+                            .arg( threadId )
+                            .arg( errno )
+                            .arg( x ),
+                          5 );
+      }
+      else
+      {
+        // socket closed, nothing can be read
+        QgsMessageLog::logMessage( QStringLiteral( "FCGIServer %1: remote socket has been closed (recv)! errno: %2, x: %3" ) //
+                                     .arg( threadId )
+                                     .arg( errno )
+                                     .arg( x ),
+                                   QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
+        mFeedback->cancel();
+        break;
+      }
+    }
 
-    QThread::msleep( 333L );
+    // If lock is acquired this means the response has finished and we will exit the while loop
+    // else we will wait max for 333ms.
+    if ( mMutex.try_lock_for( 333ms ) )
+      mMutex.unlock();
   }
 
-  if ( *mIsResponseFinished )
+  if ( mShouldStop.load() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "FCGIServer: socket monitoring quits normally." ), 2 );
+    QgsMessageLog::logMessage( QStringLiteral( "FCGIServer::run %1: socket monitoring quits normally." ).arg( threadId ), QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Info );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "FCGIServer: socket monitoring quits: no more socket." ), 2 );
+    QgsMessageLog::logMessage( QStringLiteral( "FCGIServer::run %1: socket monitoring quits: no more socket." ) //
+                                 .arg( threadId ),                                                              //
+                               QStringLiteral( "FCGIServer" ), Qgis::MessageLevel::Warning );
   }
 #endif
 }
@@ -134,15 +199,21 @@ QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
   mBuffer.open( QIODevice::ReadWrite );
   setDefaultHeaders();
 
-  mSocketMonitoringThread = std::make_unique<QgsSocketMonitoringThread>( &mFinished, mFeedback.get() );
-  mSocketMonitoringThread->start();
+  mSocketMonitoringThread = std::make_unique<QgsSocketMonitoringThread>( mFeedback );
+
+  // Start the monitoring thread
+  mThread = std::thread( &QgsSocketMonitoringThread::run, mSocketMonitoringThread.get() );
 }
 
 QgsFcgiServerResponse::~QgsFcgiServerResponse()
 {
   mFinished = true;
-  mSocketMonitoringThread->exit();
-  mSocketMonitoringThread->wait();
+
+  // Inform the thread to quit asap
+  mSocketMonitoringThread->stop();
+
+  // Just to be sure
+  mThread.join();
 }
 
 void QgsFcgiServerResponse::removeHeader( const QString &key )
@@ -285,5 +356,5 @@ void QgsFcgiServerResponse::truncate()
 
 void QgsFcgiServerResponse::setDefaultHeaders()
 {
-  setHeader( QStringLiteral( "Server" ), QStringLiteral( " QGIS FCGI server - QGIS version %1" ).arg( Qgis::version() ) );
+  mHeaders.insert( QStringLiteral( "Server" ), QStringLiteral( " QGIS FCGI server - QGIS version %1" ).arg( Qgis::version() ) );
 }

@@ -37,6 +37,19 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsNineCellFilter
 {
   public:
+    //! Result of the calculation \since QGIS 3.44
+    enum class Result : int
+    {
+      Success = 0,           //!< Operation completed successfully
+      InputLayerError = 1,   //!< Error reading input file
+      DriverError = 2,       //!< Could not open the driver for the specified format
+      CreateOutputError = 3, //!< Error creating output file
+      InputBandError = 4,    //!< Error reading input raster band
+      OutputBandError = 5,   //!< Error reading output raster band
+      RasterSizeError = 6,   //!< Raster height is too small (need at least 3 rows)
+      Canceled = 7,          //!< User canceled calculation
+    };
+
     //! Constructor that takes input file, output file and output format (GDAL string)
     QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
     virtual ~QgsNineCellFilter() = default;
@@ -44,9 +57,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
      * \param feedback feedback object that receives update and that is checked for cancellation.
-     * \returns 0 in case of success
+     * \returns QgsNineCellFilter::Result::Success in case of success or error value on failure.
      */
-    int processRaster( QgsFeedback *feedback = nullptr );
+    Result processRaster( QgsFeedback *feedback = nullptr );
 
     double cellSizeX() const { return mCellSizeX; }
     void setCellSizeX( double size ) { mCellSizeX = size; }
@@ -60,6 +73,22 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     void setInputNodataValue( double value ) { mInputNodataValue = value; }
     double outputNodataValue() const { return mOutputNodataValue; }
     void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
+
+    /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44
+     */
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
 
     /**
      * Calculates output value from nine input values. The input values and the output
@@ -103,9 +132,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * \brief processRasterCPU executes the computation on the CPU
      * \param feedback instance of QgsFeedback, to allow for progress monitoring and cancellation
-     * \return an opaque integer for error codes: 0 in case of success
+     * \returns QgsNineCellFilter::Result::Success in case of success or error value on failure
      */
-    int processRasterCPU( QgsFeedback *feedback = nullptr );
+    Result processRasterCPU( QgsFeedback *feedback = nullptr );
 
 #ifdef HAVE_OPENCL
 
@@ -113,9 +142,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      * \brief processRasterGPU executes the computation on the GPU
      * \param source path to the OpenCL source file
      * \param feedback instance of QgsFeedback, to allow for progress monitoring and cancellation
-     * \return an opaque integer for error codes: 0 in case of success
+     * \returns QgsNineCellFilter::Result::Success in case of success or error value on failure
      */
-    int processRasterGPU( const QString &source, QgsFeedback *feedback = nullptr );
+    Result processRasterGPU( const QString &source, QgsFeedback *feedback = nullptr );
 
     /**
      * \brief addExtraRasterParams allow derived classes to add parameters needed
@@ -138,13 +167,14 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     QString mInputFile;
     QString mOutputFile;
     QString mOutputFormat;
+    QStringList mCreationOptions;
 
     double mCellSizeX = -1.0;
     double mCellSizeY = -1.0;
     //! The nodata value of the input layer
-    float mInputNodataValue = -1.0;
+    double mInputNodataValue = -1.0;
     //! The nodata value of the output layer
-    float mOutputNodataValue = -1.0;
+    double mOutputNodataValue = -9999.0;
     //! Scale factor for z-value if x-/y- units are different to z-units (111120 for degree->meters and 370400 for degree->feet)
     double mZFactor = 1.0;
 };

@@ -32,48 +32,33 @@
          <string>WFS Options</string>
         </property>
         <layout class="QGridLayout" name="gridLayout1">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lblVersion">
+         <item row="5" column="0">
+          <widget class="QLabel" name="lblFeatureMode">
            <property name="text">
-            <string>Version</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="mWfsVersionDetectButton">
-           <property name="text">
-            <string>Detect</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="3">
-          <widget class="QCheckBox" name="cbxWfsIgnoreAxisOrientation">
-           <property name="text">
-            <string>Ignore axis orientation (WFS 1.1/WFS 2.0)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="lblMaxNumFeatures">
-           <property name="text">
-            <string>Max. number of features</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Feature mode&lt;br/&gt;(Simple vs Complex)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QComboBox" name="cmbVersion"/>
          </item>
-         <item row="4" column="1" colspan="2">
-          <widget class="QLineEdit" name="txtPageSize">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request when paging is enabled. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0" colspan="3">
+         <item row="7" column="0" colspan="3">
           <widget class="QCheckBox" name="cbxWfsInvertAxisOrientation">
            <property name="text">
             <string>Invert axis orientation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="mComboHttpMethod"/>
+         </item>
+         <item row="8" column="0" colspan="2">
+          <widget class="QCheckBox" name="cbxWfsUseGml2EncodingForTransactions">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This might be necessary on some &lt;span style=&quot; font-weight:600;&quot;&gt;broken&lt;/span&gt; ESRI map servers when using WFS-T 1.1.0.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Use GML2 encoding for transactions</string>
            </property>
           </widget>
          </item>
@@ -84,15 +69,33 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="lblFeaturePaging">
+         <item row="2" column="0">
+          <widget class="QLabel" name="lblMaxNumFeatures">
            <property name="text">
-            <string>Feature paging</string>
+            <string>Max. number of features</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="QComboBox" name="cmbFeaturePaging"/>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblVersion">
+           <property name="text">
+            <string>Version</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" colspan="3">
+          <widget class="QCheckBox" name="cbxWfsIgnoreAxisOrientation">
+           <property name="text">
+            <string>Ignore axis orientation (WFS 1.1/WFS 2.0)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="lblVersion_2">
+           <property name="text">
+            <string>Preferred HTTP method</string>
+           </property>
+          </widget>
          </item>
          <item row="2" column="1" colspan="2">
           <widget class="QLineEdit" name="txtMaxNumFeatures">
@@ -101,13 +104,30 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="0" colspan="2">
-          <widget class="QCheckBox" name="cbxWfsUseGml2EncodingForTransactions">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This might be necessary on some &lt;span style=&quot; font-weight:600;&quot;&gt;broken&lt;/span&gt; ESRI map servers when using WFS-T 1.1.0.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="mWfsVersionDetectButton">
            <property name="text">
-            <string>Use GML2 encoding for transactions</string>
+            <string>Detect</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" colspan="2">
+          <widget class="QLineEdit" name="txtPageSize">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request when paging is enabled. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" colspan="2">
+          <widget class="QComboBox" name="cmbFeaturePaging"/>
+         </item>
+         <item row="5" column="1" colspan="2">
+          <widget class="QComboBox" name="mComboWfsFeatureMode"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lblFeaturePaging">
+           <property name="text">
+            <string>Feature paging</string>
            </property>
           </widget>
          </item>
@@ -380,9 +400,11 @@
   <tabstop>txtUrl</tabstop>
   <tabstop>cmbVersion</tabstop>
   <tabstop>mWfsVersionDetectButton</tabstop>
+  <tabstop>mComboHttpMethod</tabstop>
   <tabstop>txtMaxNumFeatures</tabstop>
   <tabstop>cmbFeaturePaging</tabstop>
   <tabstop>txtPageSize</tabstop>
+  <tabstop>mComboWfsFeatureMode</tabstop>
   <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWfsInvertAxisOrientation</tabstop>
   <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>

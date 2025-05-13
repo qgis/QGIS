@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgstest.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsunsetattributevalue.h"
 
 class TestQgsField : public QObject
 {
@@ -207,6 +208,9 @@ void TestQgsField::gettersSetters()
 
   field.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   QCOMPARE( field.duplicatePolicy(), Qgis::FieldDuplicatePolicy::UnsetField );
+
+  field.setMergePolicy( Qgis::FieldDomainMergePolicy::GeometryWeighted );
+  QCOMPARE( field.mergePolicy(), Qgis::FieldDomainMergePolicy::GeometryWeighted );
 
   field.setMetadata( { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } } );
   QMap<int, QVariant> expected { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } };
@@ -603,6 +607,9 @@ void TestQgsField::convertCompatible()
   QVERIFY( stringField.convertCompatible( nullDouble ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::QString );
   QVERIFY( nullDouble.isNull() );
+  QVariant unsetValue = QgsUnsetAttributeValue( QStringLiteral( "Autonumber" ) );
+  QVERIFY( stringField.convertCompatible( unsetValue ) );
+  QCOMPARE( static_cast<QMetaType::Type>( unsetValue.userType() ), qMetaTypeId< QgsUnsetAttributeValue >() );
 
   //test double
   const QgsField doubleField( QStringLiteral( "double" ), QMetaType::Type::Double, QStringLiteral( "double" ) );
@@ -636,6 +643,9 @@ void TestQgsField::convertCompatible()
   QVERIFY( doubleField.convertCompatible( nullDouble ) );
   QCOMPARE( static_cast<QMetaType::Type>( nullDouble.userType() ), QMetaType::Type::Double );
   QVERIFY( nullDouble.isNull() );
+  unsetValue = QgsUnsetAttributeValue( QStringLiteral( "Autonumber" ) );
+  QVERIFY( doubleField.convertCompatible( unsetValue ) );
+  QCOMPARE( static_cast<QMetaType::Type>( unsetValue.userType() ), qMetaTypeId< QgsUnsetAttributeValue >() );
 
   //test special rules
 

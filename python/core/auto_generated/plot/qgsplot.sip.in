@@ -181,7 +181,8 @@ Ownership of ``format`` is transferred to the plot.
 
     QString labelSuffix() const;
 %Docstring
-Returns the axis label suffix, or an empty string if no label suffix is to be used.
+Returns the axis label suffix, or an empty string if no label suffix is
+to be used.
 
 .. seealso:: :py:func:`setLabelSuffix`
 
@@ -192,7 +193,8 @@ Returns the axis label suffix, or an empty string if no label suffix is to be us
 
     void setLabelSuffix( const QString &suffix );
 %Docstring
-Sets the axis label ``suffix``. Set to an empty string if no label suffix is to be used.
+Sets the axis label ``suffix``. Set to an empty string if no label
+suffix is to be used.
 
 .. seealso:: :py:func:`labelSuffix`
 
@@ -232,8 +234,9 @@ class Qgs2DPlot : QgsPlot
 %Docstring(signature="appended")
 Base class for 2-dimensional plot/chart/graphs.
 
-The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
-can implement the :py:func:`~renderContent` method to render their actual plot content.
+The base class is responsible for rendering the axis, grid lines and
+chart area. Subclasses can implement the :py:func:`~renderContent`
+method to render their actual plot content.
 
 .. warning::
 
@@ -269,42 +272,49 @@ Renders the plot.
 %Docstring
 Renders the plot content.
 
-Subclasses can implement this method to render the actual plot content (e.g. bar charts, scatter plots).
-This method will be called after the chart background and grid are rendered, but before the chart border is rendered.
+Subclasses can implement this method to render the actual plot content
+(e.g. bar charts, scatter plots). This method will be called after the
+chart background and grid are rendered, but before the chart border is
+rendered.
 
 The default implementation does nothing.
 
-The ``plotArea`` argument specifies that area of the plot which corresponds to the actual plot content. Implementations
-should take care to scale values accordingly to render points correctly inside this plot area.
+The ``plotArea`` argument specifies that area of the plot which
+corresponds to the actual plot content. Implementations should take care
+to scale values accordingly to render points correctly inside this plot
+area.
 %End
 
     QSizeF size() const;
 %Docstring
-Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
+Returns the overall size of the plot (in millimeters) (including titles
+and other components which sit outside the plot area).
 
 .. seealso:: :py:func:`setSize`
 %End
 
     void setSize( QSizeF size );
 %Docstring
-Sets the overall ``size`` of the plot (including titles and over components which sit outside the plot area).
+Sets the overall ``size`` of the plot (including titles and over
+components which sit outside the plot area).
 
 .. seealso:: :py:func:`size`
 %End
 
     QRectF interiorPlotArea( QgsRenderContext &context ) const;
 %Docstring
-Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
-outside the plot area).
+Returns the area of the plot which corresponds to the actual plot
+content (excluding all titles and other components which sit outside the
+plot area).
 %End
 
     void calculateOptimisedIntervals( QgsRenderContext &context );
 %Docstring
-Automatically sets the grid and label intervals to optimal values
-for display in the given render ``context``.
+Automatically sets the grid and label intervals to optimal values for
+display in the given render ``context``.
 
-Intervals will be calculated in order to avoid overlapping axis labels and to ensure
-round values are shown.
+Intervals will be calculated in order to avoid overlapping axis labels
+and to ensure round values are shown.
 %End
 
     double xMinimum() const;
@@ -432,7 +442,7 @@ Sets the ``margins`` of the plot area (in millimeters)
 class QgsPlotDefaultSettings
 {
 %Docstring(signature="appended")
-Manages default settings for plot objects
+Manages default settings for plot objects.
 
 .. warning::
 
@@ -467,7 +477,8 @@ Returns the default line symbol to use for axis minor grid lines.
 
     static QgsFillSymbol *chartBackgroundSymbol() /Factory/;
 %Docstring
-Returns the default fill symbol to use for the chart area background fill.
+Returns the default fill symbol to use for the chart area background
+fill.
 
 .. seealso:: :py:func:`chartBorderSymbol`
 %End

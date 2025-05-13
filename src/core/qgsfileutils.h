@@ -26,7 +26,7 @@
 /**
  * \ingroup core
  * \class QgsFileUtils
- * \brief Class for file utilities.
+ * \brief Contains utilities for working with files.
  */
 class CORE_EXPORT QgsFileUtils
 {

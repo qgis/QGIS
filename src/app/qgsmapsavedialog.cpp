@@ -64,6 +64,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
   mDevicePixelRatio = ms.devicePixelRatio();
+  mLockAspectRatio->setLocked( true );
 
   mResolutionSpinBox->setValue( static_cast<int>( std::round( mDpi ) ) );
 
@@ -261,6 +262,7 @@ void QgsMapSaveDialog::updateScale( double scale )
   QgsScaleCalculator calculator;
   calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
   calculator.setDpi( mDpi );
+  calculator.setMethod( QgsProject::instance()->scaleMethod() );
 
   const double oldScale = calculator.calculate( mExtent, mSize.width() );
   const double scaleRatio = scale / oldScale;

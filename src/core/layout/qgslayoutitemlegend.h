@@ -231,17 +231,17 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     /**
      * Returns reference to modifiable legend style.
      */
-    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
+    QgsLegendStyle &rstyle( Qgis::LegendComponent s );
 
     /**
      * Returns legend style.
      */
-    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    QgsLegendStyle style( Qgis::LegendComponent s ) const;
 
     /**
      * Sets the style of \a component to \a style for the legend.
      */
-    void setStyle( QgsLegendStyle::Style component, const QgsLegendStyle &style );
+    void setStyle( Qgis::LegendComponent component, const QgsLegendStyle &style );
 
     /**
      * Returns the font settings for a legend \a component.
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      *
      * \deprecated QGIS 3.40. Use QgsLegendStyle::textFormat() from style() instead.
      */
-    Q_DECL_DEPRECATED QFont styleFont( QgsLegendStyle::Style component ) const SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QFont styleFont( Qgis::LegendComponent component ) const SIP_DEPRECATED;
 
     /**
      * Sets the style \a font for a legend \a component.
@@ -257,17 +257,17 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      *
      * \deprecated QGIS 3.40. Use QgsLegendStyle::setTextFormat() from style() instead.
      */
-    Q_DECL_DEPRECATED void setStyleFont( QgsLegendStyle::Style component, const QFont &font ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void setStyleFont( Qgis::LegendComponent component, const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Set the \a margin for a legend \a component.
      */
-    void setStyleMargin( QgsLegendStyle::Style component, double margin );
+    void setStyleMargin( Qgis::LegendComponent component, double margin );
 
     /**
      * Set the \a margin for a particular \a side of a legend \a component.
      */
-    void setStyleMargin( QgsLegendStyle::Style component, QgsLegendStyle::Side side, double margin );
+    void setStyleMargin( Qgis::LegendComponent component, QgsLegendStyle::Side side, double margin );
 
     /**
      * Returns the spacing in-between lines in layout units.
@@ -531,6 +531,30 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \see setRasterStrokeColor()
      */
     void setRasterStrokeWidth( double width );
+
+    /**
+     * Returns the maximum line length (in millimeters) allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * If the returned value is 0, then no automatic wrapping will occur.
+     *
+     * \see setAutoWrapLinesAfter()
+     *
+     * \since QGIS 3.44
+     */
+    double autoWrapLinesAfter() const;
+
+    /**
+     * Sets the maximum line \a length (in millimeters) allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * If \a length is 0, then no automatic wrapping will occur.
+     *
+     * \see autoWrapLinesAfter()
+     *
+     * \since QGIS 3.44
+     */
+    void setAutoWrapLinesAfter( double length );
 
     /**
      * Sets the \a map to associate with the legend.

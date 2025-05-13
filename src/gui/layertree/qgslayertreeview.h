@@ -38,7 +38,7 @@ class QgsLayerTreeFilterProxyModel;
 /**
  * \ingroup gui
  *
- * \brief The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
+ * \brief A proxy model for QgsLayerTreeModel, supporting
  * private layers and text filtering.
  *
  * \since QGIS 3.18
@@ -99,8 +99,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
 /**
  * \ingroup gui
- * \brief The QgsLayerTreeView class extends QTreeView and provides some additional functionality
- * when working with a layer tree.
+ * \brief Extends QTreeView and provides additional functionality when working with a layer tree.
  *
  * The view updates expanded state of layer tree nodes and also listens to changes
  * to expanded states in the layer tree.

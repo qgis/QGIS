@@ -20,16 +20,15 @@ class QgsLayerMetadataProviderResult: QgsLayerMetadata
 {
 %Docstring(signature="appended")
 Result record of layer metadata provider search.
-The result contains QGIS metadata information and all information
-that is required by QGIS to load the layer and to filter
-the results.
+
+The result contains QGIS metadata information and all information that
+is required by QGIS to load the layer and to filter the results.
 
 The class extends :py:class:`QgsLayerMetadata` by adding information
-taken directly from the provider which is required for
-filtering (geographic extent) or because the actual
-values may be different by those stored in the metadata
-(CRS authid) or totally missing from the metadata
-(data provider name and layer type).
+taken directly from the provider which is required for filtering
+(geographic extent) or because the actual values may be different by
+those stored in the metadata (CRS authid) or totally missing from the
+metadata (data provider name and layer type).
 
 .. versionadded:: 3.28
 %End
@@ -128,8 +127,8 @@ class QgsLayerMetadataSearchResults
 Container of result records from a layer metadata search.
 
 Contains the records of the layer metadata provider that matched the
-search criteria and the list of the errors that occurred while
-searching for metadata.
+search criteria and the list of the errors that occurred while searching
+for metadata.
 
 .. versionadded:: 3.28
 %End
@@ -179,20 +178,27 @@ Layer metadata provider backend interface.
 
     virtual QString id() const = 0;
 %Docstring
-Returns the id of the layer metadata provider implementation, usually the name of the data provider
-but it may be another unique identifier.
+Returns the id of the layer metadata provider implementation, usually
+the name of the data provider but it may be another unique identifier.
 %End
 
     virtual QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
-Searches for metadata optionally filtering by search string and geographic extent.
+Searches for metadata optionally filtering by search string and
+geographic extent.
 
 :param searchContext: context for the metadata search.
-:param searchString: defines a filter to limit the results to the records where the search string appears in the "identifier", "title" or "abstract" metadata fields, a case-insensitive comparison is used for the match.
-:param geographicExtent: defines a filter where the spatial extent matches the given extent in EPSG:4326
+:param searchString: defines a filter to limit the results to the
+                     records where the search string appears in the
+                     "identifier", "title" or "abstract" metadata
+                     fields, a case-insensitive comparison is used for
+                     the match.
+:param geographicExtent: defines a filter where the spatial extent
+                         matches the given extent in EPSG:4326
 :param feedback: can be used to monitor and control the search process.
 
-:return: a :py:class:`QgsLayerMetadataSearchResult` object with a list of metadata and errors
+:return: a :py:class:`QgsLayerMetadataSearchResult` object with a list
+         of metadata and errors
 %End
 
 };

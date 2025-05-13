@@ -137,9 +137,17 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
   for ( int i = 0; i < lineString.vertexCount(); ++i )
   {
     QgsPoint p = lineString.pointN( i );
-    float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
-
-    vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), z );
+    if ( geocentricCoordinates )
+    {
+      // TODO: implement altitude clamping when dealing with geocentric coordinates
+      // where Z coordinate is not altitude and can't be used directly...
+      vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), static_cast<float>( p.z() - origin.z() ) );
+    }
+    else
+    {
+      const float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
+      vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), static_cast<float>( z - origin.z() ) );
+    }
     indexes << vertices.count() - 1;
   }
 

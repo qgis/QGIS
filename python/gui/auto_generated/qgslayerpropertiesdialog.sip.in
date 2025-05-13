@@ -13,7 +13,8 @@
 class QgsLayerPropertiesDialog : QgsOptionsDialogBase /Abstract/
 {
 %Docstring(signature="appended")
-Base class for "layer properties" dialogs, containing common utilities for handling functionality in these dialog.
+Base class for "layer properties" dialogs, containing common utilities
+for handling functionality in these dialogs.
 
 .. warning::
 
@@ -33,7 +34,9 @@ Constructor for QgsLayerPropertiesDialog.
 
 :param layer: associated map layer
 :param canvas: associated map canvas
-:param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "VectorLayerProperties".
+:param settingsKey: :py:class:`QgsSettings` subgroup key for
+                    saving/restore ui states, e.g.
+                    "VectorLayerProperties".
 :param parent: parent object (owner)
 :param fl: widget flags
 :param settings: custom :py:class:`QgsSettings` pointer
@@ -43,7 +46,8 @@ Constructor for QgsLayerPropertiesDialog.
 %Docstring
 Sets the metadata ``widget`` and ``page`` associated with the dialog.
 
-This must be called in order for the standard metadata loading/saving functionality to be available.
+This must be called in order for the standard metadata loading/saving
+functionality to be available.
 %End
 
     virtual void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
@@ -131,8 +135,8 @@ Reloads the default style for the layer.
   protected:
     void initialize();
 %Docstring
-Initialize the dialog. Must be called in the subclass constructor
-as the final call.
+Initialize the dialog. Must be called in the subclass constructor as the
+final call.
 %End
 
     void refocusDialog();
@@ -166,8 +170,9 @@ Rolls back changes made to the layer.
 %Docstring
 Handles opening a ``url`` from the dialog.
 
-If the ``url`` refers to a local file then a file explorer will be opened pointing to the file.
-If it refers to a remote link then a web browser will be opened instead.
+If the ``url`` refers to a local file then a file explorer will be
+opened pointing to the file. If it refers to a remote link then a web
+browser will be opened instead.
 %End
 
 };

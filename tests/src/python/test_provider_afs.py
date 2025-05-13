@@ -12,7 +12,6 @@ __author__ = "Nyall Dawson"
 __date__ = "2018-02-16"
 __copyright__ = "Copyright 2018, Nyall Dawson"
 
-import hashlib
 import tempfile
 
 from qgis.PyQt.QtCore import (
@@ -56,47 +55,6 @@ from qgis.testing import start_app, QgisTestCase
 from providertestbase import ProviderTestCase
 
 
-def sanitize(endpoint, x):
-    if x.startswith("/query"):
-        x = x[len("/query") :]
-        endpoint = endpoint + "_query"
-
-    if len(endpoint + x) > 150:
-        ret = endpoint + hashlib.md5(x.encode()).hexdigest()
-        # print('Before: ' + endpoint + x)
-        # print('After:  ' + ret)
-        return ret
-    return endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
-        ">", "_"
-    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
-
-
-class MessageLogger(QObject):
-
-    def __init__(self, tag=None):
-        QObject.__init__(self)
-        self.log = []
-        self.tag = tag
-
-    def __enter__(self):
-        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
-        return self
-
-    def __exit__(self, type, value, traceback):
-        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
-
-    def logMessage(self, msg, tag, level):
-        if tag == self.tag or not self.tag:
-            self.log.append(msg.encode("UTF-8"))
-
-    def messages(self):
-        return self.log
-
-
 class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
     def treat_date_as_datetime(self):
@@ -120,7 +78,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         # replaced by a forward slash so that QUrl can process it
         cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")
         endpoint = cls.basetestpath + "/fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(QgisTestCase.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -148,7 +106,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            QgisTestCase.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -166,7 +127,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 '/query?f=json_where="cnt" > 100 and "cnt" < 410&returnIdsOnly=true',
             ),
@@ -186,7 +147,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 '/query?f=json_where="cnt" > 100 and "cnt" < 400&returnIdsOnly=true',
             ),
@@ -205,7 +166,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint, "/query?f=json_where=\"name\"='Apple'&returnIdsOnly=true"
             ),
             "wb",
@@ -222,7 +183,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json_where=\"name\"='AppleBearOrangePear'&returnIdsOnly=true",
             ),
@@ -239,7 +200,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 '/query?f=json&where="cnt" > 100 and "cnt" < 410&returnIdsOnly=true&geometry=-70.000000,70.000000,-60.000000,75.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects',
             ),
@@ -257,7 +218,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 '/query?f=json&where="cnt" > 100 and "cnt" < 410&returnIdsOnly=true&geometry=-71.000000,65.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects',
             ),
@@ -285,7 +246,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         cls.source = cls.vl.dataProvider()
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -443,7 +404,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=3,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -547,7 +508,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=3,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -651,7 +612,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
             ),
@@ -752,7 +713,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -814,7 +775,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&where=1=1&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
             ),
@@ -833,7 +794,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&where==1=&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
             ),
@@ -852,7 +813,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&where=1=1&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects",
             ),
@@ -871,7 +832,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint, "/query?f=json&where=\"name\"='Apple'&returnExtentOnly=true"
             ),
             "wb",
@@ -890,7 +851,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            QgisTestCase.sanitize_local_url(
                 endpoint,
                 "/query?f=json&where=\"name\"='AppleBearOrangePear'&returnExtentOnly=true",
             ),
@@ -979,7 +940,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         # delete capability
         endpoint = self.basetestpath + "/delete_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -998,7 +959,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1030,7 +994,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         # add capability
         endpoint = self.basetestpath + "/delete_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1066,7 +1030,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         )
         # update capability
         endpoint = self.basetestpath + "/delete_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                     {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1104,7 +1068,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         )
 
         # circular strings
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                     {"currentVersion":10.22,"id":1,"name":"QGIS Test","allowTrueCurvesUpdates":true,"type":"Feature Layer","description":
@@ -1173,7 +1137,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """Test that object id fields not named OBJECTID work correctly"""
 
         endpoint = self.basetestpath + "/oid_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1194,7 +1158,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1212,7 +1179,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            self.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -1259,11 +1226,104 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         f = vl.getFeature(0)
         self.assertTrue(f.isValid())
 
+    def testNoCrs(self):
+        """Test retrieval of features in their original service CRS"""
+
+        endpoint = self.basetestpath + "/oid_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}"""
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "objectIdFieldName": "OBJECTID1",
+         "objectIds": [
+          5,
+          3,
+          1,
+          2,
+          4
+         ]
+        }
+        """
+            )
+
+        with open(
+            self.sanitize_local_url(
+                endpoint,
+                "/query?f=json&objectIds=5,3,1,2,4&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+        {
+         "displayFieldName": "LABEL",
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID1","type":"esriFieldTypeOID","alias":"OBJECTID1","domain":null},
+          {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+          {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+          {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID1": 5,
+            "pk": 5,
+            "cnt": -200,
+            "name": null
+           },
+           "geometry": {
+            "x": -71.123,
+            "y": 78.23
+           }
+          }
+         ]
+        }"""
+            )
+
+        # Create test layer
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "'",
+            "test",
+            "arcgisfeatureserver",
+        )
+        self.assertTrue(vl.isValid())
+
+        f = vl.getFeature(0)
+        self.assertTrue(f.isValid())
+
     def testDateTime(self):
         """Test that datetime fields work correctly"""
 
         endpoint = self.basetestpath + "/oid_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1284,7 +1344,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1312,7 +1375,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         )
 
         with open(
-            sanitize(
+            self.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -1377,7 +1440,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """Test that metadata is correctly acquired from provider"""
 
         endpoint = self.basetestpath + "/metadata_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1396,7 +1459,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1425,7 +1491,9 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         md = vl.metadata()
         self.assertEqual(md.extent(), extent)
         self.assertEqual(md.crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
-        self.assertEqual(md.identifier(), "http://" + sanitize(endpoint, ""))
+        self.assertEqual(
+            md.identifier(), "http://" + self.sanitize_local_url(endpoint, "")
+        )
         self.assertEqual(md.parentIdentifier(), "http://" + self.basetestpath + "/2")
         self.assertEqual(md.type(), "dataset")
         self.assertEqual(md.abstract(), "QGIS Provider Test Layer")
@@ -1434,14 +1502,14 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         l = QgsLayerMetadata.Link()
         l.name = "Source"
         l.type = "WWW:LINK"
-        l.url = "http://" + sanitize(endpoint, "")
+        l.url = "http://" + self.sanitize_local_url(endpoint, "")
         self.assertEqual(md.links(), [l])
 
     def testFieldAlias(self):
         """Test that field aliases are correctly acquired from provider"""
 
         endpoint = self.basetestpath + "/alias_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1460,7 +1528,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1490,7 +1561,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """Test that the categorized renderer is correctly acquired from provider"""
 
         endpoint = self.basetestpath + "/renderer_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -1571,7 +1642,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1604,7 +1678,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """
 
         endpoint = self.basetestpath + "/class_breaks_renderer_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""{
       "currentVersion": 11.2,
@@ -1758,7 +1832,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -1810,7 +1887,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         """
 
         endpoint = self.basetestpath + "/class_breaks_renderer_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""{
   "currentVersion": 11.2,
@@ -2066,7 +2143,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2143,7 +2223,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         are returned. Thanks Jack. Thack.
         """
         endpoint = self.basetestpath + "/multipoint_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2162,7 +2242,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2186,7 +2269,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
 
         self.assertTrue(vl.isValid())
         with open(
-            sanitize(
+            self.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=1,2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -2247,7 +2330,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         Test fields with a domain are mapped to value map wrapper, for correct value display
         """
         endpoint = self.basetestpath + "/domain_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2289,7 +2372,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2324,7 +2410,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         Test timeinfo parsing
         """
         endpoint = self.basetestpath + "/temporal1_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2353,7 +2439,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2401,7 +2490,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         Test timeinfo parsing
         """
         endpoint = self.basetestpath + "/temporal2_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2430,7 +2519,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2480,7 +2572,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         Test connecting to a image server endpoints works as a footprint featureserver
         """
         endpoint = self.basetestpath + "/imageserver_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
         {
@@ -2680,7 +2772,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2708,7 +2803,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testDelete(self):
         # delete capability
         endpoint = self.basetestpath + "/delete_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2727,7 +2822,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2740,7 +2838,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 """
             )
 
-        delete_endpoint = sanitize(endpoint, "/deleteFeatures")
+        delete_endpoint = self.sanitize_local_url(endpoint, "/deleteFeatures")
         with open(delete_endpoint, "wb") as f:
             f.write(
                 b"""{
@@ -2770,7 +2868,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testAddSuccess(self):
         # add capability
         endpoint = self.basetestpath + "/delete_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2789,7 +2887,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2802,7 +2903,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 """
             )
 
-        add_endpoint = sanitize(endpoint, "/addFeatures")
+        add_endpoint = self.sanitize_local_url(endpoint, "/addFeatures")
         with open(add_endpoint, "wb") as f:
             f.write(
                 b"""{
@@ -2841,7 +2942,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testAddFail(self):
         # add capability
         endpoint = self.basetestpath + "/delete_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2860,7 +2961,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2873,7 +2977,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 """
             )
 
-        add_endpoint = sanitize(endpoint, "/addFeatures")
+        add_endpoint = self.sanitize_local_url(endpoint, "/addFeatures")
         with open(add_endpoint, "wb") as f:
             f.write(
                 b"""{
@@ -2916,7 +3020,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testChangeAttributeValuesSuccess(self):
         # add capability
         endpoint = self.basetestpath + "/change_attr_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -2939,7 +3043,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -2953,7 +3060,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            self.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=1&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -2993,7 +3100,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         }"""
             )
 
-        add_endpoint = sanitize(endpoint, "/updateFeatures")
+        add_endpoint = self.sanitize_local_url(endpoint, "/updateFeatures")
         with open(add_endpoint, "wb") as f:
             f.write(
                 b"""{
@@ -3026,7 +3133,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testChangeGeometriesSuccess(self):
         # add capability
         endpoint = self.basetestpath + "/change_geom_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -3049,7 +3156,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -3063,7 +3173,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            self.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=1&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -3103,7 +3213,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         }"""
             )
 
-        add_endpoint = sanitize(endpoint, "/updateFeatures")
+        add_endpoint = self.sanitize_local_url(endpoint, "/updateFeatures")
         with open(add_endpoint, "wb") as f:
             f.write(
                 b"""{
@@ -3138,7 +3248,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
     def testChangeFeaturesSuccess(self):
         # add capability
         endpoint = self.basetestpath + "/change_geom_test_fake_qgis_http_endpoint"
-        with open(sanitize(endpoint, "?f=json"), "wb") as f:
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
             f.write(
                 b"""
                 {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
@@ -3161,7 +3271,10 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"), "wb"
+            self.sanitize_local_url(
+                endpoint, "/query?f=json_where=1=1&returnIdsOnly=true"
+            ),
+            "wb",
         ) as f:
             f.write(
                 b"""
@@ -3176,7 +3289,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
             )
 
         with open(
-            sanitize(
+            self.sanitize_local_url(
                 endpoint,
                 "/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false",
             ),
@@ -3227,7 +3340,7 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
         }"""
             )
 
-        add_endpoint = sanitize(endpoint, "/updateFeatures")
+        add_endpoint = self.sanitize_local_url(endpoint, "/updateFeatures")
         with open(add_endpoint, "wb") as f:
             f.write(
                 b"""{

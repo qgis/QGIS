@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * \brief Item that represents a layer that can be opened with one of the providers
+ * \brief A browser item that represents a layer that can be opened with one of the providers.
 */
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconVectorTile();
     //! Returns icon for point cloud layer
     static QIcon iconPointCloud();
-    //! \returns the layer name
+    //! Returns the layer name
     virtual QString layerName() const { return name(); }
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 

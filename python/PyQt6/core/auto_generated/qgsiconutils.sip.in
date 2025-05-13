@@ -29,7 +29,8 @@ Returns the icon for a vector layer whose geometry ``type`` is provided.
 
     static QIcon iconForGeometryType( Qgis::GeometryType typeGroup );
 %Docstring
-Returns the icon for a vector layer whose geometry ``typeGroup`` is provided.
+Returns the icon for a vector layer whose geometry ``typeGroup`` is
+provided.
 
 .. versionadded:: 3.28
 %End
@@ -68,7 +69,8 @@ Returns an icon representing raster layers.
 
     static QIcon iconDefaultLayer();
 %Docstring
-Returns a default icon for layers, which aren't the standard raster/vector/... types.
+Returns a default icon for layers, which aren't the standard
+raster/vector/... types.
 %End
 
     static QIcon iconMesh();

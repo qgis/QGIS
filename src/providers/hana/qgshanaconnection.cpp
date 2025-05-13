@@ -582,7 +582,7 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
     "SELECT DISTINCT(SCHEMA_NAME) FROM SYS.EFFECTIVE_PRIVILEGES WHERE "
     "OBJECT_TYPE IN ('SCHEMA', 'TABLE', 'VIEW') AND "
     "SCHEMA_NAME LIKE ? AND "
-    "SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS' AND "
+    "SCHEMA_NAME NOT LIKE_REGEXPR '^(SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS|XSSQLCC_)$' AND "
     "PRIVILEGE IN ('SELECT', 'CREATE ANY') AND "
     "USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'"
   );
@@ -862,7 +862,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
 {
   QString sql = QStringLiteral( "SELECT SCHEMA_NAME, SCHEMA_OWNER FROM SYS.SCHEMAS WHERE "
                                 "HAS_PRIVILEGES = 'TRUE' AND %1 AND "
-                                "SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS|XSSQLCC_'" )
+                                "SCHEMA_NAME NOT LIKE_REGEXPR '^(SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS|XSSQLCC_)$'" )
                   .arg( !ownerName.isEmpty() ? QStringLiteral( "SCHEMA_OWNER = ?" ) : QStringLiteral( "SCHEMA_OWNER IS NOT NULL" ) );
 
   QVector<QgsHanaSchemaProperty> list;

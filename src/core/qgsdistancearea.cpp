@@ -49,7 +49,7 @@ QgsDistanceArea::QgsDistanceArea()
   mInvFlattening = -1.0;
   const QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
   setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context ); // WGS 84
-  setEllipsoid( geoNone() );
+  setEllipsoid( Qgis::geoNone() );
 }
 
 QgsDistanceArea::~QgsDistanceArea() = default;
@@ -77,7 +77,7 @@ QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &other )
 
 bool QgsDistanceArea::willUseEllipsoid() const
 {
-  return mEllipsoid != geoNone();
+  return mEllipsoid != Qgis::geoNone();
 }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
@@ -89,9 +89,9 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
   // Shortcut if ellipsoid is none.
-  if ( ellipsoid == geoNone() )
+  if ( ellipsoid == Qgis::geoNone() )
   {
-    mEllipsoid = geoNone();
+    mEllipsoid = Qgis::geoNone();
     mGeod.reset();
     return true;
   }
@@ -189,7 +189,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
         return 0.0;
 
       double area = 0;
-      QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( surface );
+      const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( surface );
       if ( curvePolygon )
       {
         QgsPolygon *polygon = curvePolygon->surfaceToPolygon();
@@ -269,7 +269,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsCurvePolygon *curvePolygon = qgsgeometry_cast<QgsCurvePolygon *>( *surfaceIt );
+    const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( *surfaceIt );
     if ( curvePolygon )
     {
       QgsPolygon *poly = curvePolygon->surfaceToPolygon();
@@ -462,7 +462,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
   double lat = p2y;
   double lon = p2x;
 
-  if ( mEllipsoid == geoNone() )
+  if ( mEllipsoid == Qgis::geoNone() )
   {
     fractionAlongLine = ( 180 - p1x ) / ( p2x - p1x );
     if ( p1.x() >= 180 )
@@ -861,7 +861,7 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
 void QgsDistanceArea::computeAreaInit() const
 {
   //don't try to perform calculations if no ellipsoid
-  if ( mEllipsoid == geoNone() )
+  if ( mEllipsoid == Qgis::geoNone() )
   {
     mGeod.reset();
     return;

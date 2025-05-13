@@ -25,6 +25,7 @@
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprofilepoint.h"
+#include "qgslinesymbol.h"
 
 class QgsElevationProfilePlotItem;
 class QgsElevationProfileCrossHairsItem;
@@ -264,6 +265,26 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void setBackgroundColor( const QColor &color );
 
+    /**
+     * Returns the symbol used to draw the subsections.
+     *
+     * \see setSubsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    QgsLineSymbol *subsectionsSymbol()
+    {
+      return mSubsectionsSymbol.get();
+    }
+
+    /**
+     * Sets the \a symbol used to draw the subsections. If \a symbol is NULLPTR, the subsections are not drawn.
+     * Ownership of \a symbol is transferred.
+     *
+     * \see subsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    void setSubsectionsSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
   signals:
 
     /**
@@ -347,6 +368,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     bool mForceRegenerationAfterCurrentJobCompletes = false;
 
     static constexpr double MAX_ERROR_PIXELS = 2;
+
+    std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
 };
 
 #endif // QGSELEVATIONPROFILECANVAS_H

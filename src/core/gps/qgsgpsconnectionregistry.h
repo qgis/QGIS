@@ -27,7 +27,7 @@ class QgsGpsConnection;
 
 /**
  * \ingroup core
- * \brief A class to register / unregister existing GPS connections such that the information
+ * \brief Registers existing GPS connections such that the information
  * is available to all classes and plugins.
  *
  * QgsGpsConnectionRegistry is not usually directly created, but rather accessed through

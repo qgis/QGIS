@@ -32,7 +32,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 {
   if ( mLayerData.empty() )
   {
-    return Success;
+    return QgsInterpolator::Result::Success;
   }
 
   //reserve initial memory for 100000 vertices
@@ -46,23 +46,23 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
   for ( const LayerData &layer : std::as_const( mLayerData ) )
   {
     if ( feedback && feedback->isCanceled() )
-      return Canceled;
+      return QgsInterpolator::Result::Canceled;
 
     QgsFeatureSource *source = layer.source;
     if ( !source )
     {
-      return InvalidSource;
+      return QgsInterpolator::Result::InvalidSource;
     }
 
     QgsAttributeList attList;
     switch ( layer.valueSource )
     {
-      case ValueAttribute:
+      case QgsInterpolator::ValueSource::Attribute:
         attList.push_back( layer.interpolationAttribute );
         break;
 
-      case ValueZ:
-      case ValueM:
+      case QgsInterpolator::ValueSource::Z:
+      case QgsInterpolator::ValueSource::M:
         break;
     }
 
@@ -77,7 +77,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
     while ( fit.nextFeature( feature ) )
     {
       if ( feedback && feedback->isCanceled() )
-        return Canceled;
+        return QgsInterpolator::Result::Canceled;
 
       progress += featureStep;
       if ( feedback )
@@ -85,7 +85,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 
       switch ( layer.valueSource )
       {
-        case ValueAttribute:
+        case QgsInterpolator::ValueSource::Attribute:
         {
           QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
           if ( QgsVariantUtils::isNull( attributeVariant ) ) //attribute not found, something must be wrong (e.g. NULL value)
@@ -100,18 +100,18 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
           break;
         }
 
-        case ValueZ:
-        case ValueM:
+        case QgsInterpolator::ValueSource::Z:
+        case QgsInterpolator::ValueSource::M:
           break;
       }
 
       if ( !addVerticesToCache( feature.geometry(), layer.valueSource, attributeValue ) )
-        return FeatureGeometryError;
+        return QgsInterpolator::Result::FeatureGeometryError;
     }
     layerCount++;
   }
 
-  return Success;
+  return QgsInterpolator::Result::Success;
 }
 
 bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue )
@@ -122,16 +122,16 @@ bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource s
   //validate source
   switch ( source )
   {
-    case ValueAttribute:
+    case QgsInterpolator::ValueSource::Attribute:
       break;
 
-    case ValueM:
+    case QgsInterpolator::ValueSource::M:
       if ( !geom.constGet()->isMeasure() )
         return false;
       else
         break;
 
-    case ValueZ:
+    case QgsInterpolator::ValueSource::Z:
       if ( !geom.constGet()->is3D() )
         return false;
       else
@@ -142,15 +142,15 @@ bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource s
   {
     switch ( source )
     {
-      case ValueM:
+      case QgsInterpolator::ValueSource::M:
         mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).m() ) );
         break;
 
-      case ValueZ:
+      case QgsInterpolator::ValueSource::Z:
         mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
         break;
 
-      case ValueAttribute:
+      case QgsInterpolator::ValueSource::Attribute:
         mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
         break;
     }

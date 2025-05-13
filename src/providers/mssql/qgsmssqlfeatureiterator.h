@@ -42,7 +42,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
 
   private:
     QgsFields mFields;
-    QgsMssqlPrimaryKeyType mPrimaryKeyType;
+    QgsMssqlDatabase::PrimaryKeyType mPrimaryKeyType;
     QList<int> mPrimaryKeyAttrs;
     std::shared_ptr<QgsMssqlSharedData> mShared;
     long mSRId;
@@ -56,6 +56,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     // current layer name
     QString mSchemaName;
     QString mTableName;
+    QString mQuery;
 
     // login
     QString mUserName;

@@ -40,6 +40,28 @@ struct Options
     bool dummy;
 };
 
+template<typename T>
+struct Xyz
+{
+    T x;
+    T y;
+    T z;
+};
+
+struct Transform
+{
+    bool valid() const
+    {
+        return (scale.x != 0 && scale.y != 0.0 && scale.z != 0 &&
+            !std::isnan(offset.x) && !std::isnan(offset.y) && !std::isnan(offset.z));
+    }
+
+    Xyz<double> scale {};
+    Xyz<double> offset { std::numeric_limits<double>::quiet_NaN(),
+                         std::numeric_limits<double>::quiet_NaN(),
+                         std::numeric_limits<double>::quiet_NaN() };
+};
+
 struct BaseInfo
 {
 public:
@@ -51,7 +73,6 @@ public:
 
     Options opts;
     pdal::BOX3D bounds;
-    pdal::BOX3D trueBounds;
     size_t pointSize;
     std::string outputFile;
     DimInfoList dimInfo;
@@ -63,12 +84,11 @@ public:
     uint16_t fileSourceId {0};
     std::string systemId;
     std::string generatingSoftware { "Untwine" };
-
-    using d3 = std::array<double, 3>;
-    d3 scale { -1.0, -1.0, -1.0 };
-    d3 offset { std::numeric_limits<double>::quiet_NaN(),
-                std::numeric_limits<double>::quiet_NaN(),
-                std::numeric_limits<double>::quiet_NaN()};
+    Transform xform { { 0.0, 0.0, 0.0 },                             // scale
+                      { std::numeric_limits<double>::quiet_NaN(),    // offset
+                        std::numeric_limits<double>::quiet_NaN(),
+                        std::numeric_limits<double>::quiet_NaN() } };
+    uint64_t numPoints;
 };
 
 // We make a special dimension to store the bits (class flags, scanner channel, scan dir, eofl).

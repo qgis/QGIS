@@ -17,8 +17,7 @@
 #define QGSWFSNEWCONNECTION_H
 
 #include "qgsnewhttpconnection.h"
-#include "qgswfsconstants.h"
-#include "qgswfscapabilities.h"
+#include "qgswfsgetcapabilities.h"
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 
@@ -42,7 +41,7 @@ class QgsWFSNewConnection : public QgsNewHttpConnection
     void startOapifLandingPageRequest();
     void startOapifApiRequest();
 
-    std::unique_ptr<QgsWfsCapabilities> mCapabilities;
+    std::unique_ptr<QgsWfsGetCapabilitiesRequest> mCapabilities;
     std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
     std::unique_ptr<QgsOapifApiRequest> mOAPIFApi;
 };

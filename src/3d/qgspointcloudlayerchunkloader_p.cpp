@@ -148,14 +148,17 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( cons
 {
   mSymbol.reset( symbol );
 
-  try
+  if ( context.crs().type() != Qgis::CrsType::Geocentric ) // extent is not used for globe
   {
-    mExtent = mCoordinateTransform.transformBoundingBox( mRenderContext.extent(), Qgis::TransformDirection::Reverse );
-  }
-  catch ( const QgsCsException & )
-  {
-    // bad luck, can't reproject for some reason
-    QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
+    try
+    {
+      mExtent = mCoordinateTransform.transformBoundingBox( mRenderContext.extent(), Qgis::TransformDirection::Reverse );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason
+      QgsDebugError( QStringLiteral( "Transformation of extent failed." ) );
+    }
   }
 }
 
@@ -255,6 +258,9 @@ static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCl
     QgsPointCloudNodeId p = parentIds.takeLast();
     QgsChunkNodeId childNodeId( p.d(), p.x(), p.y(), p.z() );
 
+    if ( !chunk->hasChildrenPopulated() )
+      return nullptr;
+
     QgsChunkNode *chunkChild = nullptr;
     QgsChunkNode *const *children = chunk->children();
     for ( int i = 0; i < chunk->childCount(); ++i )
@@ -287,9 +293,11 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
     mChunkUpdaterFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
 
     connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
-      QList<QgsChunkNode *> nodes;
-      nodes << findChunkNodeFromNodeId( mRootNode, n );
-      updateNodes( nodes, mChunkUpdaterFactory.get() );
+      QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
+      if ( node )
+      {
+        updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
+      }
     } );
   }
 }

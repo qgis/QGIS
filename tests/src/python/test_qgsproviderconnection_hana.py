@@ -16,6 +16,8 @@ import os
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsProviderRegistry,
+    QgsDataSourceUri,
+    Qgis,
 )
 from qgis.testing import unittest
 
@@ -49,9 +51,11 @@ class TestPyQgsProviderConnectionHana(
         if "QGIS_HANA_TEST_DB" in os.environ:
             cls.uri = os.environ["QGIS_HANA_TEST_DB"]
         cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
-        cls.schemaName = QgsHanaProviderUtils.generateSchemaName(
-            cls.conn, "qgis_test_provider_conn"
-        )
+
+        schemaPrefix = "qgis_test_providerconn"
+        QgsHanaProviderUtils.dropOldTestSchemas(cls.conn, schemaPrefix)
+
+        cls.schemaName = QgsHanaProviderUtils.generateSchemaName(cls.conn, schemaPrefix)
 
         QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, cls.schemaName)
         # Create test layers
@@ -65,12 +69,14 @@ class TestPyQgsProviderConnectionHana(
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QgsHanaProviderUtils.cleanUp(cls.conn, cls.schemaName)
+        QgsHanaProviderUtils.dropSchemaIfExists(cls.conn, cls.schemaName)
         cls.conn.close()
         super().tearDownClass()
 
     def getUniqueSchemaName(self, name):
-        return "qgis_test_" + QgsHanaProviderUtils.generateSchemaName(self.conn, name)
+        return "qgis_test_providerconn_" + QgsHanaProviderUtils.generateSchemaName(
+            self.conn, name
+        )
 
     def createProviderMetadata(self):
         return QgsProviderRegistry.instance().providerMetadata(self.providerKey)
@@ -178,6 +184,93 @@ class TestPyQgsProviderConnectionHana(
         self.assertEqual(
             conn.table(self.schemaName, "some_data").primaryKeyColumns(), ["pk"]
         )
+
+    def test_createVectorLayerExporterDestinationUri(self):
+        """
+        Test createVectorLayerExporterDestinationUri
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("hana")
+        conn = md.createConnection(self.uri, {})
+
+        export_options = (
+            QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions()
+        )
+        export_options.layerName = "new_layer"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertFalse(res_ds.schema())
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.schema = "dest_schema"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.wkbType = Qgis.WkbType.Point
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geom")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.geometryColumn = "geometry"
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.primaryKeyColumns = ["pk"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertEqual(res_ds.keyColumn(), "pk")
 
 
 if __name__ == "__main__":

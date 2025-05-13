@@ -21,6 +21,10 @@
 #include "qgsray3d.h"
 
 #include "qgs3dexportobject.h"
+#include "qgs3dmapscene.h"
+#include "qgscameracontroller.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgsrasterlayer.h"
 
 #include <QSize>
 #include <QtMath>
@@ -33,6 +37,23 @@ static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps 
 static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, double eps )
 {
   return qgsDoubleNear( q1.x(), q2.x(), eps ) && qgsDoubleNear( q1.y(), q2.y(), eps ) && qgsDoubleNear( q1.z(), q2.z(), eps ) && qgsDoubleNear( q1.scalar(), q2.scalar(), eps );
+}
+
+static bool isPointInFrontOfPlane( const QgsVector3D &point, const QgsVector3D &planePoint, const QgsVector3D &planeNormal )
+{
+  return QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0;
+}
+
+static bool isPointOutsideClippingPlanes( const QgsVector3D &point, const QVector<QgsVector3D> &planePoints, const QList<QVector4D> &clippingPlanes )
+{
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    if ( !isPointInFrontOfPlane( point, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      return true;
+    };
+  }
+  return false;
 }
 
 /**
@@ -57,8 +78,9 @@ class TestQgs3DUtils : public QgsTest
     void testExportToObj();
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
-
-  private:
+    void testScreenPointToMapCoordinates();
+    void testLineSegmentToClippingPlanes();
+    void testLineSegmentToCameraPose();
 };
 
 //runs before all tests
@@ -493,6 +515,85 @@ void TestQgs3DUtils::testDecomposeTransformMatrix()
   QVERIFY( qgsVectorNear( s2, QVector3D( 1, 1, 1 ), 1e-6 ) );
   QVERIFY( qgsVectorNear( t2, QVector3D( 500, 600, 700 ), 1e-6 ) );
   QVERIFY( qgsQuaternionNear( r2, q2, 1e-6 ) );
+}
+
+void TestQgs3DUtils::testScreenPointToMapCoordinates()
+{
+  QgsRasterLayer *layer = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  Qgs3DMapSettings map;
+  map.setCrs( layer->crs() );
+  map.setExtent( layer->extent() );
+  map.setLayers( QList<QgsMapLayer *>() << layer );
+  QgsOffscreen3DEngine engine;
+  const Qgs3DMapScene *scene = new Qgs3DMapScene( map, &engine );
+  const QgsPoint mapPoint = Qgs3DUtils::screenPointToMapCoordinates( QPoint( 50, 50 ), QSize( 100, 100 ), scene->cameraController(), &map );
+
+  // this placement is weird, but it fixes the clang-tidy warning
+  delete scene;
+  QGSCOMPARENEAR( mapPoint.x(), 321900, 2 );
+  QGSCOMPARENEAR( mapPoint.y(), 129901, 2 );
+  QGSCOMPARENEAR( mapPoint.z(), -252, 2 );
+}
+
+void TestQgs3DUtils::testLineSegmentToClippingPlanes()
+{
+  const QgsVector3D point1( 20, 20, 0 );
+  const QgsVector3D point2( 50, 50, 0 );
+  const QgsVector3D testPointInside( 35, 35, 0 );
+  const QgsVector3D testPointOutside( 0, 0, 0 );
+  QVector<QgsVector3D> planePoints( { point1, QgsVector3D( 13, 27, 0 ), point2, QgsVector3D( 27, 13, 0 ) } );
+
+  QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point1, point2, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+
+  //verify that it works in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point2, QgsVector3D( 27, 13, 0 ), point1, QgsVector3D( 13, 27, 0 ) };
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+
+  // verify that it works for perpendicular line too
+  const QgsVector3D point3( 50, 20, 0 );
+  const QgsVector3D point4( 20, 50, 0 );
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point3, point4, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point3, QgsVector3D( 43, 13, 0 ), point4, QgsVector3D( 57, 27, 0 ) };
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+
+  // verify that it works for perpendicular line in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point4, QgsVector3D( 57, 27, 0 ), point3, QgsVector3D( 43, 13, 0 ) };
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+}
+
+void TestQgs3DUtils::testLineSegmentToCameraPose()
+{
+  const QgsVector3D origin( 0, 0, 0 );
+  const QgsVector3D startPoint( 20, 20, 0 );
+  const QgsVector3D endPoint( 82, 82, 0 );
+  QgsDoubleRange elevationRange( 0, 20 );
+  constexpr float fieldOfView = 90;
+
+  // test 1: the distance between start point and end point is longer than elevation range
+  QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
+  QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 10 ) );
+  QCOMPARE( camPose.pitchAngle(), 90 );
+  QCOMPARE( camPose.headingAngle(), 45 );
+  QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 46, 0.2 );
+
+  // test 2: the distance between start point and end point is smaller than elevation range
+  elevationRange = QgsDoubleRange( 0, 100 );
+  camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
+  QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 50 ) );
+  QCOMPARE( camPose.pitchAngle(), 90 );
+  QCOMPARE( camPose.headingAngle(), 45 );
+  QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 52.5, 0.2 );
 }
 
 

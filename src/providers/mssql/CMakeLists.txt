@@ -11,6 +11,7 @@ set(MSSQL_SRCS
   qgsmssqlsqlquerybuilder.cpp
   qgsmssqltransaction.cpp
   qgsmssqldatabase.cpp
+  qgsmssqlutils.cpp
 )
 
 if (WITH_GUI)

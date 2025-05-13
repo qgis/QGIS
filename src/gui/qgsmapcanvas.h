@@ -1011,7 +1011,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     double zoomOutFactor() const;
 
     /**
-     * \returns List of resolutions to which to "snap to" when zooming the map
+     * Returns the list of resolutions to which to "snap to" when zooming the map.
+     *
      * \see setZoomResolutions()
      * \since QGIS 3.12
      */

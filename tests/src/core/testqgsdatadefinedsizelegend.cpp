@@ -80,7 +80,7 @@ void TestQgsDataDefinedSizeLegend::testBasic()
   props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,255,0" );
 
-  settings.setSymbol( QgsMarkerSymbol::createSimple( props ) ); // takes ownership
+  settings.setSymbol( QgsMarkerSymbol::createSimple( props ).release() ); // takes ownership
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 
@@ -113,7 +113,7 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
   props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,255,0" );
 
-  settings.setSymbol( QgsMarkerSymbol::createSimple( props ) ); // takes ownership
+  settings.setSymbol( QgsMarkerSymbol::createSimple( props ).release() ); // takes ownership
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 

@@ -43,7 +43,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
      */
     explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
 
-    //! The authentication configuration ID, if valid, otherwise null QString
+    //! The authentication configuration ID, if valid, otherwise an empty QString
     QString const configId();
 
     //! Whether to allow no ID to be set

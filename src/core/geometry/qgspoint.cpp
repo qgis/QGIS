@@ -686,9 +686,7 @@ void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint &
 
 double QgsPoint::azimuth( const QgsPoint &other ) const
 {
-  const double dx = other.x() - mX;
-  const double dy = other.y() - mY;
-  return ( std::atan2( dx, dy ) * 180.0 / M_PI );
+  return QgsGeometryUtilsBase::azimuth( mX, mY, other.x(), other.y() );
 }
 
 double QgsPoint::inclination( const QgsPoint &other ) const

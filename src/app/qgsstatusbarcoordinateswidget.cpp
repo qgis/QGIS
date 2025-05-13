@@ -371,9 +371,9 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->redrawAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
+void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &mapPoint )
 {
-  mLastCoordinate = p;
+  mLastCoordinate = mapPoint;
   mLastCoordinateCrs = mMapCanvas->mapSettings().destinationCrs();
   updateCoordinateDisplay();
 }

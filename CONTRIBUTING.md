@@ -14,7 +14,7 @@ You can help us **by submitting bug reports or fixing bugs** in the [QGIS bug tr
 
 If you wish to contribute patches you can:
 
-1. [Fork the project](https://help.github.com/forking/)
+1. [Fork the project](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)
 2. Install the [pre-commit](https://pre-commit.com/) hook: `pre-commit install --install-hooks` (version 4.1+ required)
 3. Make your changes
 4. Commit to your repository

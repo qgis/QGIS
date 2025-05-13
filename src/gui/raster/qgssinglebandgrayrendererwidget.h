@@ -29,11 +29,17 @@ class QgsRasterMinMaxWidget;
 /**
  * \ingroup gui
  * \class QgsSingleBandGrayRendererWidget
+ * \brief A widget for configuring a QgsSingleBandGrayRenderer.
  */
 class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {
     Q_OBJECT
   public:
+    /**
+     * Constructor for QgsSingleBandGrayRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }

@@ -46,6 +46,7 @@ const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS = {
   QStringLiteral( "metadataInDatabase" ),
   QStringLiteral( "session_role" ),
   QStringLiteral( "allowRasterOverviewTables" ),
+  QStringLiteral( "schema" ),
 };
 
 const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );
@@ -82,7 +83,7 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
 }
 
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration )
-  : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+  : QgsAbstractDatabaseProviderConnection( QgsPostgresConn::connectionInfo( uri, false ), configuration )
 {
   mProviderKey = QStringLiteral( "postgres" );
   setDefaultCapabilities();
@@ -132,7 +133,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 
-  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment;
+  mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment
+                    | Qgis::DatabaseProviderConnectionCapability2::SetTableComment;
 
   // see https://www.postgresql.org/docs/current/ddl-system-columns.html
   mIllegalFieldNames = {
@@ -164,8 +166,10 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
+
   QMap<int, int> map;
   QString errCause;
+  QString createdLayerUri;
   Qgis::VectorExportResult res = QgsPostgresProvider::createEmptyLayer(
     newUri.uri(),
     fields,
@@ -173,6 +177,7 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
     srs,
     overwrite,
     &map,
+    createdLayerUri,
     &errCause,
     options
   );
@@ -180,6 +185,20 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema, co
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QString QgsPostgresProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const
+{
+  QgsDataSourceUri destUri( uri() );
+
+  destUri.setTable( options.layerName );
+  destUri.setSchema( options.schema );
+  destUri.setGeometryColumn( options.wkbType != Qgis::WkbType::NoGeometry ? ( options.geometryColumn.isEmpty() ? QStringLiteral( "geom" ) : options.geometryColumn ) : QString() );
+  if ( !options.primaryKeyColumns.isEmpty() )
+    destUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+
+  providerOptions.clear();
+  return destUri.uri( false );
 }
 
 QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
@@ -216,7 +235,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
   QString errCause;
   // TODO: set flags from the connection if flags argument is 0
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ), -1, false, feedback );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( dsUri, false ), -1, false, feedback );
   if ( feedback && feedback->isCanceled() )
     return {};
 
@@ -240,7 +259,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
     }
     else
     {
-      ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, false, schema );
+      ok = conn->supportedLayers( properties, false, aspatial, false, schema );
     }
 
     if ( !ok )
@@ -398,14 +417,14 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
 QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
-  return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
+  return execSqlPrivate( sql, resolveTypes, feedback, std::move( pgconn ) ).rows();
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
   if ( !pgconn )
   {
-    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
+    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
   }
 
   std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes );
@@ -727,6 +746,12 @@ void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, c
                        .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedIdentifier( fieldName ), QgsPostgresConn::quotedValue( comment ) ) );
 }
 
+void QgsPostgresProviderConnection::setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const
+{
+  executeSqlPrivate( QStringLiteral( "COMMENT ON TABLE %1.%2 IS %3;" )
+                       .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedValue( comment ) ) );
+}
+
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   return tablesPrivate( schema, QString(), flags, feedback );
@@ -752,7 +777,7 @@ QStringList QgsPostgresProviderConnection::schemas() const
   QStringList schemas;
   QString errCause;
   const QgsDataSourceUri dsUri { uri() };
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( dsUri, false ) );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection failed: %1" ).arg( uri() );
@@ -809,6 +834,10 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
     {
       settings.setValue( p, configuration().value( p ) );
     }
+    else
+    {
+      settings.remove( p );
+    }
   }
   settings.endGroup();
   settings.endGroup();
@@ -828,7 +857,7 @@ QIcon QgsPostgresProviderConnection::icon() const
 QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri { uri() }.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( QgsDataSourceUri { uri() }, false ) );
   if ( conn )
   {
     types = conn->nativeTypes();
@@ -858,6 +887,16 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsPostgresProvider
 QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   return QgsPostgresProviderMetadataUtils::searchLayerMetadata( searchContext, uri(), searchString, geographicExtent, feedback );
+}
+
+Qgis::DatabaseProviderTableImportCapabilities QgsPostgresProviderConnection::tableImportCapabilities() const
+{
+  return Qgis::DatabaseProviderTableImportCapability::SetGeometryColumnName | Qgis::DatabaseProviderTableImportCapability::SetPrimaryKeyName;
+}
+
+QString QgsPostgresProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "id" );
 }
 
 QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const

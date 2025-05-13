@@ -27,7 +27,7 @@
 /**
  * \class QgsPrecalculatedTextMetrics
   * \ingroup core
-  * \brief Contains precalculated properties regarding text metrics for text to be renderered at a later stage.
+  * \brief Contains precalculated properties regarding text metrics for text to be rendered at a later stage.
   * \note Not available in Python bindings
   * \since QGIS 3.20
  */

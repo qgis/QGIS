@@ -90,7 +90,7 @@ void TestQgsMaskingWidget::testTreeWidget()
   polys->labeling()->setSettings( labelSettings );
 
   QgsMaskMarkerSymbolLayer *maskLayer = new QgsMaskMarkerSymbolLayer();
-  maskLayer->setSubSymbol( QgsMarkerSymbol::createSimple( { { QStringLiteral( "size" ), 6 } } ) );
+  maskLayer->setSubSymbol( QgsMarkerSymbol::createSimple( { { QStringLiteral( "size" ), 6 } } ).release() );
   QgsCategorizedSymbolRenderer *renderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( points->renderer() );
   QVERIFY( renderer );
   const QgsCategoryList categories = renderer->categories();

@@ -24,7 +24,8 @@ A widget for configuring :py:class:`QgsTextFormat` tab positions.
   public:
     QgsTabPositionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTabPositionWidget, with the specified ``parent`` widget
+Constructor for QgsTabPositionWidget, with the specified ``parent``
+widget
 %End
 
     void setPositions( const QList<QgsTextFormat::Tab> &positions );
@@ -43,7 +44,8 @@ Returns the tab positions defined in the widget.
 
     void setUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the unit type used for the tab positions (used to update interface labels).
+Sets the unit type used for the tab positions (used to update interface
+labels).
 %End
 
   signals:
@@ -58,7 +60,7 @@ Emitted when positions are changed in the widget.
 class QgsTabPositionDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog to enter a custom dash space pattern for lines
+A dialog for entering a custom dash space pattern for lines.
 
 .. versionadded:: 3.42
 %End
@@ -88,7 +90,8 @@ Returns the tab positions defined in the dialog.
 
     void setUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the unit type used for the tab positions (used to update interface labels).
+Sets the unit type used for the tab positions (used to update interface
+labels).
 %End
 
 };

@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgsmodelviewtool.h"
+#include "qgsmodelviewtoollink.h"
 #include "qgsmodelviewrubberband.h"
 #include <memory>
 
@@ -71,6 +72,8 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
 
     //! Rubber band item
     std::unique_ptr<QgsModelViewRubberBand> mRubberBand;
+
+    std::unique_ptr<QgsModelViewToolLink> mLinkTool = nullptr;
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;

@@ -271,6 +271,17 @@ QgsMessageBar *QgsBrowserWidget::messageBar()
   return mMessageBar;
 }
 
+void QgsBrowserWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  mModel->setMapCanvas( canvas );
+}
+
+QgsMapCanvas *QgsBrowserWidget::mapCanvas()
+{
+  return mMapCanvas;
+}
+
 void QgsBrowserWidget::setDisabledDataItemsKeys( const QStringList &filter )
 {
   mDisabledDataItemsKeys = filter;
@@ -460,6 +471,7 @@ QgsDataItemGuiContext QgsBrowserWidget::createContext()
 {
   QgsDataItemGuiContext context;
   context.setMessageBar( mMessageBar );
+  context.setMapCanvas( mMapCanvas );
   context.setView( mBrowserView );
   return context;
 }

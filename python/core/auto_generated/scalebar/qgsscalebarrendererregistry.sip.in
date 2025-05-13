@@ -12,10 +12,10 @@
 class QgsScaleBarRendererRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsScaleBarRendererRegistry` manages registered scalebar renderers.
+A registry which manages registered scalebar renderers.
 
-A reference to the :py:class:`QgsScaleBarRendererRegistry` can be obtained from
-:py:func:`QgsApplication.scalebarRendererRegistry()`.
+A reference to the :py:class:`QgsScaleBarRendererRegistry` can be
+obtained from :py:func:`QgsApplication.scalebarRendererRegistry()`.
 
 .. versionadded:: 3.14
 %End
@@ -27,9 +27,11 @@ A reference to the :py:class:`QgsScaleBarRendererRegistry` can be obtained from
 
     explicit QgsScaleBarRendererRegistry();
 %Docstring
-You should not normally need to create your own scalebar renderer registry.
+You should not normally need to create your own scalebar renderer
+registry.
 
-Use the one provided by `:py:func:`QgsApplication.scalebarRendererRegistry()`` instead.
+Use the one provided by
+`:py:func:`QgsApplication.scalebarRendererRegistry()`` instead.
 %End
     ~QgsScaleBarRendererRegistry();
 
@@ -41,7 +43,8 @@ Returns a list of the renderer ids currently contained in the registry.
     QStringList sortedRendererList() const;
 %Docstring
 Returns a list of the renderer ids currently contained in the registry,
-sorted in an order respecting the renderer's sort keys and display strings.
+sorted in an order respecting the renderer's sort keys and display
+strings.
 %End
 
     void addRenderer( QgsScaleBarRenderer *renderer /Transfer/ );
@@ -58,15 +61,16 @@ Removes the renderer with matching ``id`` from the registry.
 
     QgsScaleBarRenderer *renderer( const QString &id ) const /TransferBack/;
 %Docstring
-Creates a new scalebar renderer by ``id``. If there is no such ``id`` registered,
-``None`` will be returned instead.
+Creates a new scalebar renderer by ``id``. If there is no such ``id``
+registered, ``None`` will be returned instead.
 
 The caller takes ownership of the returned object.
 %End
 
     QString visibleName( const QString &id ) const;
 %Docstring
-Returns the translated, user-visible name for the renderer with matching ``id``.
+Returns the translated, user-visible name for the renderer with matching
+``id``.
 %End
 
     int sortKey( const QString &id ) const;

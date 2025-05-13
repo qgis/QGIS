@@ -13,9 +13,11 @@
 class QgsVariableEditorWidget : QWidget
 {
 %Docstring(signature="appended")
-A tree based widget for editing expression context scope variables. The widget allows editing
-variables from a :py:class:`QgsExpressionContextScope`, and can optionally also show inherited
-variables from a :py:class:`QgsExpressionContext`.
+A tree based widget for editing expression context scope variables.
+
+The widget allows editing variables from a
+:py:class:`QgsExpressionContextScope`, and can optionally also show
+inherited variables from a :py:class:`QgsExpressionContext`.
 %End
 
 %TypeHeaderCode
@@ -33,9 +35,9 @@ Constructor for QgsVariableEditorWidget.
 
     void setContext( QgsExpressionContext *context );
 %Docstring
-Overwrites the :py:class:`QgsExpressionContext` for the widget. Setting a context
-allows the widget to show all inherited variables for the context,
-and highlight any overridden variables within scopes.
+Overwrites the :py:class:`QgsExpressionContext` for the widget. Setting
+a context allows the widget to show all inherited variables for the
+context, and highlight any overridden variables within scopes.
 
 :param context: expression context
 
@@ -44,16 +46,17 @@ and highlight any overridden variables within scopes.
 
     QgsExpressionContext *context() const;
 %Docstring
-Returns the current expression context for the widget. QgsVariableEditorWidget widgets
-are created with an empty context by default.
+Returns the current expression context for the widget.
+QgsVariableEditorWidget widgets are created with an empty context by
+default.
 
 .. seealso:: :py:func:`setContext`
 %End
 
     void setEditableScopeIndex( int scopeIndex );
 %Docstring
-Sets the editable scope for the widget. Only variables from the editable scope can
-be modified by users.
+Sets the editable scope for the widget. Only variables from the editable
+scope can be modified by users.
 
 :param scopeIndex: index of current editable scope. Set to -1 to disable
                    editing and make the widget read-only.
@@ -72,9 +75,9 @@ Returns the current editable scope for the widget.
 
     void setSettingGroup( const QString &group );
 %Docstring
-Sets the setting group for the widget. QgsVariableEditorWidget widgets with
-the same setting group will synchronise their settings, e.g., the size
-of columns in the tree widget.
+Sets the setting group for the widget. QgsVariableEditorWidget widgets
+with the same setting group will synchronise their settings, e.g., the
+size of columns in the tree widget.
 
 :param group: setting group
 
@@ -83,9 +86,9 @@ of columns in the tree widget.
 
     QString settingGroup() const;
 %Docstring
-Returns the setting group for the widget. QgsVariableEditorWidget widgets with
-the same setting group will synchronise their settings, e.g., the size
-of columns in the tree widget.
+Returns the setting group for the widget. QgsVariableEditorWidget
+widgets with the same setting group will synchronise their settings,
+e.g., the size of columns in the tree widget.
 
 :return: setting group name
 
@@ -94,17 +97,17 @@ of columns in the tree widget.
 
     QVariantMap variablesInActiveScope() const;
 %Docstring
-Returns a map variables set within the editable scope. Read only variables are not
-returned. This method can be used to retrieve the variables edited an added by
-users via the widget.
+Returns a map variables set within the editable scope. Read only
+variables are not returned. This method can be used to retrieve the
+variables edited an added by users via the widget.
 %End
 
   public slots:
 
     void reloadContext();
 %Docstring
-Reloads all scopes from the editor's current context. This method should be called
-after adding or removing scopes from the attached context.
+Reloads all scopes from the editor's current context. This method should
+be called after adding or removing scopes from the attached context.
 
 .. seealso:: :py:func:`context`
 %End

@@ -14,7 +14,29 @@
 class QgsMapLayerComboBox : QComboBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list of layers
+A combobox which displays a dynamic list of layers from a QGIS project.
+
+:py:class:`QgsMapLayerComboBox` is automatically populated with all the
+layers from the project. Any changes to the project's layers are
+immediately reflected in the combobox, such as addition of new layers,
+layer renaming, or layer removal. Accordingly, this widget should ALWAYS
+be used when presenting a choice of layers to a user, instead of
+manually populated comboboxes.
+
+In addition to the automatic layer population,
+:py:class:`QgsMapLayerComboBox` also presents a user-friendly choice of
+layers by showing standard icons representing the different layer types
+(eg raster, mesh, or polygon/point/line icons for vector layers).
+Helpful tooltips will be shown if the user hovers over any of the
+layers, helping guide the user to the correct layer choice.
+
+Optionally, the list of available layers can be filtered to a subset of
+the project's layers (such as only showing raster layers, or only
+spatial layers) by calling :py:func:`~setFilters`.
+
+By default, the combobox will be populated using layers from the current
+project (see :py:func:`QgsProject.instance()`), however a specific
+source project can be set via :py:func:`~setProject`.
 %End
 
 %TypeHeaderCode
@@ -23,7 +45,9 @@ The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list
   public:
     explicit QgsMapLayerComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
+QgsMapLayerComboBox creates a combo box to display the list of layers
+currently in the project.
+
 The layers can be filtered and/or ordered.
 %End
 
@@ -31,7 +55,8 @@ The layers can be filtered and/or ordered.
 %Docstring
 Sets ``filters`` for the layers displayed in the combo box.
 
-This method allows filtering layers according to layer type and/or geometry type.
+This method allows filtering layers according to layer type and/or
+geometry type.
 
 .. seealso:: :py:func:`filters`
 %End
@@ -74,7 +99,8 @@ Returns a list of layers which should be excluded from the combo box.
 
     void setExcludedProviders( const QStringList &providers );
 %Docstring
-Sets a list of data providers which should be excluded from the combobox.
+Sets a list of data providers which should be excluded from the
+combobox.
 
 .. seealso:: :py:func:`excludedProviders`
 %End
@@ -90,7 +116,8 @@ Returns the list of data providers which are excluded from the combobox.
 %Docstring
 Sets the ``project`` from which map layers are shown.
 
-If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
+If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be
+used.
 
 .. versionadded:: 3.24
 %End
@@ -98,16 +125,19 @@ If ``project`` is ``None`` then :py:func:`QgsProject.instance()` will be used.
 
     void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
-Sets whether an optional empty layer ("not set") option is shown in the combo box.
+Sets whether an optional empty layer ("not set") option is shown in the
+combo box.
 
-Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text and icon for the empty layer item to be set.
+Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the
+text and icon for the empty layer item to be set.
 
 .. seealso:: :py:func:`allowEmptyLayer`
 %End
 
     bool allowEmptyLayer() const;
 %Docstring
-Returns ``True`` if the combo box allows the empty layer ("not set") choice.
+Returns ``True`` if the combo box allows the empty layer ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyLayer`
 %End
@@ -128,16 +158,18 @@ Returns ``True`` if the combo box shows the layer's CRS.
 
     void setAdditionalItems( const QStringList &items );
 %Docstring
-Sets a list of additional (non map layer) items to include at the end of the combobox.
-These may represent additional layers such as layers which are not included in the map
-layer registry, or paths to layers which have not yet been loaded into QGIS.
+Sets a list of additional (non map layer) items to include at the end of
+the combobox. These may represent additional layers such as layers which
+are not included in the project, or paths to layers which have not yet
+been loaded into QGIS.
 
 .. seealso:: :py:func:`additionalItems`
 %End
 
     QStringList additionalItems() const;
 %Docstring
-Returns the list of additional (non map layer) items included at the end of the combo box.
+Returns the list of additional (non map layer) items included at the end
+of the combo box.
 
 .. seealso:: :py:func:`setAdditionalItems`
 %End
@@ -146,8 +178,8 @@ Returns the list of additional (non map layer) items included at the end of the 
 %Docstring
 Sets a list of additional ``layers`` to include in the combobox.
 
-This method allows adding additional layers, which are not part of a project's
-layers, into the combobox.
+This method allows adding additional layers, which are not part of a
+project's layers, into the combobox.
 
 .. seealso:: :py:func:`additionalLayers`
 
@@ -172,7 +204,8 @@ Returns the current layer selected in the combo box.
 
     QgsMapLayer *layer( int layerIndex ) const;
 %Docstring
-Returns the layer currently shown at the specified index within the combo box.
+Returns the layer currently shown at the specified index within the
+combo box.
 
 :param layerIndex: position of layer to return
 

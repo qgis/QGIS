@@ -17,7 +17,8 @@
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-A class for marking vertices of features using e.g. circles or 'x'.
+A map canvas item for marking vertices of features using e.g. circles or
+'x'.
 %End
 
 %TypeHeaderCode
@@ -85,8 +86,8 @@ Returns the stroke color for the marker.
 
     void setFillColor( const QColor &color );
 %Docstring
-Sets the fill ``color`` for the marker. This setting only
-applies to some icon types.
+Sets the fill ``color`` for the marker. This setting only applies to
+some icon types.
 
 .. seealso:: :py:func:`fillColor`
 
@@ -95,8 +96,8 @@ applies to some icon types.
 
     QColor fillColor() const;
 %Docstring
-Returns the fill ``color`` for the marker. This setting only
-applies to some icon types.
+Returns the fill ``color`` for the marker. This setting only applies to
+some icon types.
 
 .. seealso:: :py:func:`setFillColor`
 

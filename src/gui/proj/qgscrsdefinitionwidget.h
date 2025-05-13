@@ -24,7 +24,7 @@
 class QgsCoordinateReferenceSystem;
 
 /**
- * \brief A widget for definition a custom coordinate reference system.
+ * \brief A widget for defining a custom coordinate reference system.
  * \ingroup gui
  * \since QGIS 3.24
 */

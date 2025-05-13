@@ -11,7 +11,7 @@
 class QgsHeatmapRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-A renderer which draws points as a live heatmap
+A renderer which draws points as a live heatmap.
 %End
 
 %TypeHeaderCode
@@ -33,20 +33,8 @@ A renderer which draws points as a live heatmap
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
-%Docstring
-
-.. note::
-
-   symbolForFeature2 in Python bindings
-%End
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
-%Docstring
-
-.. note::
-
-   symbol2 in Python bindings
-%End
     virtual QString dump() const;
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
@@ -80,7 +68,8 @@ Returns the color ramp used for shading the heatmap.
 %Docstring
 Sets the color ramp to use for shading the heatmap.
 
-:param ramp: color ramp for heatmap. Ownership of ramp is transferred to the renderer.
+:param ramp: color ramp for heatmap. Ownership of ramp is transferred to
+             the renderer.
 
 .. seealso:: :py:func:`colorRamp`
 %End
@@ -185,8 +174,8 @@ Sets the map unit scale used for the heatmap's radius
 %Docstring
 Returns the maximum value used for shading the heatmap.
 
-:return: maximum value for heatmap shading. If 0, then maximum value will be automatically
-         calculated.
+:return: maximum value for heatmap shading. If 0, then maximum value
+         will be automatically calculated.
 
 .. seealso:: :py:func:`setMaximumValue`
 %End
@@ -195,8 +184,8 @@ Returns the maximum value used for shading the heatmap.
 %Docstring
 Sets the maximum value used for shading the heatmap.
 
-:param value: maximum value for heatmap shading. Set to 0 for automatic calculation of
-              maximum value.
+:param value: maximum value for heatmap shading. Set to 0 for automatic
+              calculation of maximum value.
 
 .. seealso:: :py:func:`maximumValue`
 %End
@@ -205,8 +194,9 @@ Sets the maximum value used for shading the heatmap.
 %Docstring
 Returns the render quality used for drawing the heatmap.
 
-:return: render quality. A value of 1 indicates maximum quality, and increasing the
-         value will result in faster drawing but lower quality rendering.
+:return: render quality. A value of 1 indicates maximum quality, and
+         increasing the value will result in faster drawing but lower
+         quality rendering.
 
 .. seealso:: :py:func:`setRenderQuality`
 %End
@@ -215,26 +205,31 @@ Returns the render quality used for drawing the heatmap.
 %Docstring
 Sets the render quality used for drawing the heatmap.
 
-:param quality: render quality. A value of 1 indicates maximum quality, and increasing the
-                value will result in faster drawing but lower quality rendering.
+:param quality: render quality. A value of 1 indicates maximum quality,
+                and increasing the value will result in faster drawing
+                but lower quality rendering.
 
 .. seealso:: :py:func:`renderQuality`
 %End
 
     QString weightExpression() const;
 %Docstring
-Returns the expression used for weighting points when generating the heatmap.
+Returns the expression used for weighting points when generating the
+heatmap.
 
-:return: point weight expression. If empty, all points are equally weighted.
+:return: point weight expression. If empty, all points are equally
+         weighted.
 
 .. seealso:: :py:func:`setWeightExpression`
 %End
 
     void setWeightExpression( const QString &expression );
 %Docstring
-Sets the expression used for weighting points when generating the heatmap.
+Sets the expression used for weighting points when generating the
+heatmap.
 
-:param expression: point weight expression. If set to empty, all points are equally weighted.
+:param expression: point weight expression. If set to empty, all points
+                   are equally weighted.
 
 .. seealso:: :py:func:`weightExpression`
 %End

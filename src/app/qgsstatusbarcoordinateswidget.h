@@ -58,7 +58,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void weAreBored();
 
   private slots:
-    void showMouseCoordinates( const QgsPointXY &p );
+    void showMouseCoordinates( const QgsPointXY &mapPoint );
     void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();

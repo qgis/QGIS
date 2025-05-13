@@ -61,7 +61,9 @@ class TestQgsPdalProvider : public QgsTest
     void querySublayers();
     void brokenPath();
     void validLayer();
-    void testCopcGeneration();
+    void testTextReader();
+    void testCopcGenerationLasFile();
+    void testCopcGenerationTextFile();
 
   private:
     QString mTestDataDir;
@@ -223,12 +225,47 @@ void TestQgsPdalProvider::validLayer()
   QCOMPARE( layer->pointCount(), 253 );
 }
 
-void TestQgsPdalProvider::testCopcGeneration()
+void TestQgsPdalProvider::testTextReader()
+{
+  QgsPointCloudLayer::LayerOptions options;
+  options.skipIndexGeneration = true;
+
+  auto layer = std::make_unique<QgsPointCloudLayer>(
+    mTestDataDir + QStringLiteral( "point_clouds/text/cloud.txt" ),
+    QStringLiteral( "layer" ),
+    QStringLiteral( "pdal" ),
+    options
+  );
+  QVERIFY( layer->isValid() );
+
+  QCOMPARE( layer->crs().authid(), "" );
+  QGSCOMPARENEAR( layer->extent().xMinimum(), 473850.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), 6374925.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), 488625.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), 6375000.0, 0.1 );
+  QCOMPARE( layer->dataProvider()->polygonBounds().asWkt( 0 ), QStringLiteral( "Polygon ((473850 6374925, 488625 6374925, 488625 6375000, 473850 6375000, 473850 6374925))" ) );
+
+  QCOMPARE( layer->dataProvider()->pointCount(), 320 );
+  QCOMPARE( layer->pointCount(), 320 );
+}
+
+void TestQgsPdalProvider::testCopcGenerationLasFile()
 {
   const QTemporaryDir dir;
   QString outputPath = dir.path() + QDir::separator() + "cloud.copc.laz";
   QVERIFY( dir.isValid() );
   QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), outputPath );
+  QVERIFY( task.run() );
+  const QFileInfo fi( outputPath );
+  QVERIFY( fi.exists() );
+}
+
+void TestQgsPdalProvider::testCopcGenerationTextFile()
+{
+  const QTemporaryDir dir;
+  QString outputPath = dir.path() + QDir::separator() + "cloud.copc.txt";
+  QVERIFY( dir.isValid() );
+  QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/text/cloud.txt" ), outputPath );
   QVERIFY( task.run() );
   const QFileInfo fi( outputPath );
   QVERIFY( fi.exists() );

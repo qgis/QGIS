@@ -34,6 +34,7 @@
 #include "moc_qgswfsprovider.cpp"
 #include "qgswfscapabilities.h"
 #include "qgswfsdescribefeaturetype.h"
+#include "qgswfsgetcapabilities.h"
 #include "qgswfstransactionrequest.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
@@ -65,7 +66,7 @@
 const QString QgsWFSProvider::WFS_PROVIDER_KEY = QStringLiteral( "WFS" );
 const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provider" );
 
-QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps )
+QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &options, const QgsWfsCapabilities &caps )
   : QgsVectorDataProvider( uri, options )
   , mShared( new QgsWFSSharedData( uri ) )
 {
@@ -352,7 +353,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
 {
   public:
     QgsWFSProviderSQLColumnRefValidator(
-      const QgsWfsCapabilities::Capabilities &caps,
+      const QgsWfsCapabilities &caps,
       const QString &defaultTypeName,
       const QMap<QString, QString> &mapTypenameAliasToTypename,
       const QMap<QString, QgsFields> &mapTypenameToFields,
@@ -367,7 +368,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;
 
   private:
-    const QgsWfsCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities mCaps;
     QString mDefaultTypeName;
     const QMap<QString, QString> &mMapTableAliasToName;
     const QMap<QString, QgsFields> &mMapTypenameToFields;
@@ -377,7 +378,7 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
 };
 
 QgsWFSProviderSQLColumnRefValidator::QgsWFSProviderSQLColumnRefValidator(
-  const QgsWfsCapabilities::Capabilities &caps,
+  const QgsWfsCapabilities &caps,
   const QString &defaultTypeName,
   const QMap<QString, QString> &mapTypenameAliasToTypename,
   const QMap<QString, QgsFields> &mapTypenameToFields,
@@ -1531,7 +1532,11 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc, const QB
   geometryMaybeMissing = false;
   bool mayTryWithGMLAS = false;
   bool ret = readAttributesFromSchemaWithoutGMLAS( schemaDoc, prefixedTypename, geometryAttribute, fields, geomType, errorMsg, mayTryWithGMLAS );
-  if ( singleLayerContext && mayTryWithGMLAS && GDALGetDriverByName( "GMLAS" ) )
+
+  // Only consider GMLAS / ComplexFeatures mode if FeatureMode=DEFAULT and there
+  // is no edition capabilities, or if explicitly requested.
+  // Cf https://github.com/qgis/QGIS/pull/61493
+  if ( ( ( mShared->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::Default && ( mCapabilities & Qgis::VectorProviderCapability::AddFeatures ) == 0 ) || mShared->mURI.featureMode() == QgsWFSDataSourceURI::FeatureMode::ComplexFeatures ) && singleLayerContext && mayTryWithGMLAS && GDALGetDriverByName( "GMLAS" ) )
   {
     QString geometryAttributeGMLAS;
     QgsFields fieldsGMLAS;
@@ -2637,7 +2642,15 @@ bool QgsWFSProvider::getCapabilities()
           QgsDebugMsgLevel( "dst:" + mShared->mSourceCrs.authid(), 4 );
 
           ct.setBallparkTransformsAreAppropriate( true );
-          mShared->mCapabilityExtent = ct.transformBoundingBox( r, Qgis::TransformDirection::Forward );
+          try
+          {
+            mShared->mCapabilityExtent = ct.transformBoundingBox( r, Qgis::TransformDirection::Forward );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugError( QStringLiteral( "Error transforming layer extent: %1" ).arg( e.what() ) );
+            mShared->mCapabilityExtent = r;
+          }
         }
         else
         {
@@ -2738,11 +2751,11 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
+QgsWfsCapabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
 {
   static QMutex mutex;
-  static std::map<QUrl, std::pair<QDateTime, QgsWfsCapabilities::Capabilities>> gCacheCaps;
-  QgsWfsCapabilities getCapabilities( uri );
+  static std::map<QUrl, std::pair<QDateTime, QgsWfsCapabilities>> gCacheCaps;
+  QgsWfsGetCapabilitiesRequest getCapabilities( uri );
   QUrl requestUrl = getCapabilities.requestUrl();
 
   QDateTime now = QDateTime::currentDateTime();
@@ -2757,7 +2770,7 @@ QgsWfsCapabilities::Capabilities QgsWFSProvider::getCachedCapabilities( const QS
       return iter->second.second;
     }
   }
-  QgsWfsCapabilities::Capabilities caps;
+  QgsWfsCapabilities caps;
   const bool synchronous = true;
   const bool forceRefresh = false;
   if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )

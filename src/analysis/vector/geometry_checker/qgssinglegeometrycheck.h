@@ -138,6 +138,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
  * \ingroup analysis
  *
  * \brief Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
+ *
  * Classic examples are validity checks like self-intersection.
  *
  * Subclasses need to implement the processGeometry method.

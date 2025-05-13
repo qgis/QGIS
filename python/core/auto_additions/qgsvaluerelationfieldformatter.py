@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/fieldformatter/qgsvaluerelationfieldformatter.h
 try:
     QgsValueRelationFieldFormatter.ValueRelationItem.__attribute_docs__ = {'group': 'Value used to regroup items during sorting (since QGIS 3.38)'}
+    QgsValueRelationFieldFormatter.ValueRelationItem.__annotations__ = {'group': 'object'}
     QgsValueRelationFieldFormatter.ValueRelationItem.__group__ = ['fieldformatter']
 except (NameError, AttributeError):
     pass
@@ -14,6 +15,7 @@ try:
     QgsValueRelationFieldFormatter.expressionParentFormVariables = staticmethod(QgsValueRelationFieldFormatter.expressionParentFormVariables)
     QgsValueRelationFieldFormatter.expressionIsUsable = staticmethod(QgsValueRelationFieldFormatter.expressionIsUsable)
     QgsValueRelationFieldFormatter.resolveLayer = staticmethod(QgsValueRelationFieldFormatter.resolveLayer)
+    QgsValueRelationFieldFormatter.__overridden_methods__ = ['id', 'representValue', 'sortValue', 'createCache', 'availableValues']
     QgsValueRelationFieldFormatter.__group__ = ['fieldformatter']
 except (NameError, AttributeError):
     pass

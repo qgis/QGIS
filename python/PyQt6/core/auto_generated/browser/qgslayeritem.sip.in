@@ -11,7 +11,8 @@
 class QgsLayerItem : QgsDataItem
 {
 %Docstring(signature="appended")
-Item that represents a layer that can be opened with one of the providers
+A browser item that represents a layer that can be opened with one of
+the providers.
 %End
 
 %TypeHeaderCode
@@ -47,7 +48,8 @@ Returns the associated map layer type.
 
     static Qgis::BrowserLayerType typeFromMapLayer( QgsMapLayer *layer );
 %Docstring
-Returns the layer item type corresponding to a :py:class:`QgsMapLayer` ``layer``.
+Returns the layer item type corresponding to a :py:class:`QgsMapLayer`
+``layer``.
 
 .. versionadded:: 3.6
 %End
@@ -88,8 +90,8 @@ Returns the icon name of the given ``layerType``
 
  virtual bool deleteLayer() /Deprecated="Since 3.10. "/;
 %Docstring
-Delete this layer item
-Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead
+Delete this layer item Use
+:py:class:`QgsDataItemGuiProvider`.deleteLayer instead
 
 .. deprecated:: 3.10
 %End
@@ -125,16 +127,15 @@ Returns icon for point cloud layer
 %End
     virtual QString layerName() const;
 %Docstring
-
-:return: the layer name
+Returns the layer name
 %End
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
     const QgsLayerMetadata &layerMetadata() const;
 %Docstring
-Returns layer's metadata, it may be a default constructed metadata
-if metadata is not explicitly set.
+Returns layer's metadata, it may be a default constructed metadata if
+metadata is not explicitly set.
 
 .. versionadded:: 3.28
 %End

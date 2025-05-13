@@ -12,7 +12,8 @@
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
-A unary node is either negative as in boolean (not) or as in numbers (minus).
+A unary node is either negative as in boolean (not) or as in numbers
+(minus).
 %End
 
 %TypeHeaderCode
@@ -28,7 +29,8 @@ A unary node is either negative as in boolean (not) or as in numbers (minus).
 
     QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::UnaryOperator op, QgsExpressionNode *operand /Transfer/ );
 %Docstring
-A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
+A node unary operator is modifying the value of ``operand`` by negating
+it with ``op``.
 %End
     ~QgsExpressionNodeUnaryOperator();
 
@@ -71,8 +73,8 @@ Returns the node the operator will operate upon.
 
     QString text() const;
 %Docstring
-Returns a the name of this operator without the operands.
-I.e. "NOT" or "-"
+Returns a the name of this operator without the operands. I.e. "NOT" or
+"-"
 %End
 
 };
@@ -177,7 +179,8 @@ Returns the node to the right of the operator.
 
     int precedence() const;
 %Docstring
-Returns the precedence index for the operator. Higher values have higher precedence.
+Returns the precedence index for the operator. Higher values have higher
+precedence.
 %End
 
     bool leftAssociative() const;
@@ -187,8 +190,8 @@ Returns ``True`` if the operator is left-associative.
 
     QString text() const;
 %Docstring
-Returns a the name of this operator without the operands.
-I.e. "AND", "OR", ...
+Returns a the name of this operator without the operands. I.e. "AND",
+"OR", ...
 %End
 
 };
@@ -196,7 +199,8 @@ I.e. "AND", "OR", ...
 class QgsExpressionNodeIndexOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
-A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+An indexing expression operator, which allows use of square brackets []
+to reference map and array items.
 
 .. versionadded:: 3.6
 %End
@@ -265,7 +269,9 @@ SQL-like BETWEEN and NOT BETWEEN predicates.
 
     QgsExpressionNodeBetweenOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode *nodeLowerBound /Transfer/, QgsExpressionNode *nodeHigherBound /Transfer/, bool negate = false );
 %Docstring
-This node tests if the result of ``node`` is between the result of ``nodeLowerBound`` and ``nodeHigherBound`` nodes. Optionally it can be inverted with ``negate`` which by default is ``False``.
+This node tests if the result of ``node`` is between the result of
+``nodeLowerBound`` and ``nodeHigherBound`` nodes. Optionally it can be
+inverted with ``negate`` which by default is ``False``.
 %End
 
     ~QgsExpressionNodeBetweenOperator();
@@ -326,7 +332,9 @@ An expression node for value IN or NOT IN clauses.
 
     QgsExpressionNodeInOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode::NodeList *list /Transfer/, bool notin = false );
 %Docstring
-This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is ``False``.
+This node tests if the result of ``node`` is in the result of ``list``.
+Optionally it can be inverted with ``notin`` which by default is
+``False``.
 %End
     ~QgsExpressionNodeInOperator();
 
@@ -337,7 +345,8 @@ Returns the expression node.
 
     bool isNotIn() const;
 %Docstring
-Returns ``True`` if this node is a "NOT IN" operator, or ``False`` if the node is a normal "IN" operator.
+Returns ``True`` if this node is a "NOT IN" operator, or ``False`` if
+the node is a normal "IN" operator.
 %End
 
     QgsExpressionNode::NodeList *list() const;
@@ -380,8 +389,8 @@ An expression node for expression functions.
 
     QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args /Transfer/ );
 %Docstring
-A function node consists of an index of the function in the global function array and
-a list of arguments that will be passed to it.
+A function node consists of an index of the function in the global
+function array and a list of arguments that will be passed to it.
 %End
 
     ~QgsExpressionNodeFunction();
@@ -435,7 +444,8 @@ Returns a list of arguments specified for the function.
 
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
 %Docstring
-Tests whether the provided argument list is valid for the matching function
+Tests whether the provided argument list is valid for the matching
+function
 %End
 
 };
@@ -453,7 +463,8 @@ An expression node for literal values.
 
     QgsExpressionNodeLiteral( const QVariant &value );
 %Docstring
-Constructor for QgsExpressionNodeLiteral, with the specified literal ``value``.
+Constructor for QgsExpressionNodeLiteral, with the specified literal
+``value``.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -500,7 +511,7 @@ Returns a string representation of the node's literal value.
 class QgsExpressionNodeColumnRef : QgsExpressionNode
 {
 %Docstring(signature="appended")
-An expression node which takes it value from a feature's field.
+An expression node which takes its value from a feature's field.
 %End
 
 %TypeHeaderCode
@@ -510,8 +521,8 @@ An expression node which takes it value from a feature's field.
 
     QgsExpressionNodeColumnRef( const QString &name );
 %Docstring
-Constructor for QgsExpressionNodeColumnRef, referencing the column
-with the specified ``name``.
+Constructor for QgsExpressionNodeColumnRef, referencing the column with
+the specified ``name``.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -564,7 +575,8 @@ An expression node for CASE WHEN clauses.
     class WhenThen
 {
 %Docstring(signature="appended")
-Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
+Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an
+expression.
 %End
 
 %TypeHeaderCode
@@ -588,7 +600,8 @@ Gets a deep copy of this WhenThen combination.
 %Docstring
 The expression that makes the WHEN part of the condition.
 
-:return: The expression node that makes the WHEN part of the condition check.
+:return: The expression node that makes the WHEN part of the condition
+         check.
 %End
 
 
@@ -596,7 +609,8 @@ The expression that makes the WHEN part of the condition.
 %Docstring
 The expression node that makes the THEN result part of the condition.
 
-:return: The expression node that makes the THEN result part of the condition.
+:return: The expression node that makes the THEN result part of the
+         condition.
 %End
 
       private:
@@ -606,7 +620,8 @@ The expression node that makes the THEN result part of the condition.
 
     QgsExpressionNodeCondition( QgsExpressionNodeCondition::WhenThenList *conditions, QgsExpressionNode *elseExp = 0 );
 %Docstring
-Create a new node with the given list of ``conditions`` and an optional ``elseExp`` expression.
+Create a new node with the given list of ``conditions`` and an optional
+``elseExp`` expression.
 %End
 
 

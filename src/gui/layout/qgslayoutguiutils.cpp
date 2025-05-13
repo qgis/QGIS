@@ -231,7 +231,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
         break;
     }
 
+    label->beginCommand( QObject::tr( "Resize to Text" ) );
     label->adjustSizeToText( reference );
+    label->endCommand();
   } );
 
   registry->addLayoutItemGuiMetadata( labelItemMetadata.release() );
@@ -251,9 +253,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     {
       // for right-to-left locales, use an appropriate default layout
       legend->setSymbolAlignment( Qt::AlignRight );
-      legend->rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
-      legend->rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
-      legend->rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+      legend->rstyle( Qgis::LegendComponent::Group ).setAlignment( Qt::AlignRight );
+      legend->rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( Qt::AlignRight );
+      legend->rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( Qt::AlignRight );
       legend->setTitleAlignment( Qt::AlignRight );
     }
 
@@ -265,21 +267,21 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
       QFont font;
       QgsFontUtils::setFontFamily( font, defaultFontString );
 
-      QgsTextFormat f = legend->rstyle( QgsLegendStyle::Title ).textFormat();
+      QgsTextFormat f = legend->rstyle( Qgis::LegendComponent::Title ).textFormat();
       f.setFont( font );
-      legend->rstyle( QgsLegendStyle::Title ).setTextFormat( f );
+      legend->rstyle( Qgis::LegendComponent::Title ).setTextFormat( f );
 
-      f = legend->rstyle( QgsLegendStyle::Group ).textFormat();
+      f = legend->rstyle( Qgis::LegendComponent::Group ).textFormat();
       f.setFont( font );
-      legend->rstyle( QgsLegendStyle::Group ).setTextFormat( f );
+      legend->rstyle( Qgis::LegendComponent::Group ).setTextFormat( f );
 
-      f = legend->rstyle( QgsLegendStyle::Subgroup ).textFormat();
+      f = legend->rstyle( Qgis::LegendComponent::Subgroup ).textFormat();
       f.setFont( font );
-      legend->rstyle( QgsLegendStyle::Subgroup ).setTextFormat( f );
+      legend->rstyle( Qgis::LegendComponent::Subgroup ).setTextFormat( f );
 
-      f = legend->rstyle( QgsLegendStyle::SymbolLabel ).textFormat();
+      f = legend->rstyle( Qgis::LegendComponent::SymbolLabel ).textFormat();
       f.setFont( font );
-      legend->rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( f );
+      legend->rstyle( Qgis::LegendComponent::SymbolLabel ).setTextFormat( f );
     }
 
     legend->updateLegend();
@@ -293,6 +295,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   scalebarItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
     QgsLayoutItemScaleBar *scalebar = qobject_cast<QgsLayoutItemScaleBar *>( item );
     Q_ASSERT( scalebar );
+
+    // default to project's scale calculation method
+    scalebar->setMethod( scalebar->layout()->project()->scaleMethod() );
 
     // try to find a good map to link the scalebar with by default
     if ( QgsLayoutItemMap *targetMap = findSensibleDefaultLinkedMapItem( scalebar ) )

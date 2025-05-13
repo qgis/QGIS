@@ -12,8 +12,7 @@
 class QgsLayoutItemComboBox : QComboBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayoutItemComboBox` class is a combo box which displays items of
-a matching type from a layout.
+A combo box which displays items of a matching type from a layout.
 %End
 
 %TypeHeaderCode
@@ -22,10 +21,10 @@ a matching type from a layout.
   public:
     explicit QgsLayoutItemComboBox( QWidget *parent /TransferThis/ = 0, QgsLayout *layout = 0 );
 %Docstring
-QgsLayoutItemComboBox creates a combo box to display a list of items in a
-``layout``. The items can optionally be filtered by type.
-If ``layout`` is not set, no items will be shown
-until :py:func:`~QgsLayoutItemComboBox.setCurrentLayout` is called
+QgsLayoutItemComboBox creates a combo box to display a list of items in
+a ``layout``. The items can optionally be filtered by type. If
+``layout`` is not set, no items will be shown until
+:py:func:`~QgsLayoutItemComboBox.setCurrentLayout` is called
 %End
 
     void setCurrentLayout( QgsLayout *layout );
@@ -46,8 +45,9 @@ Returns the current layout containing the items shown in the combo box.
 %Docstring
 Sets a filter for the item type to show in the combo box.
 
-:param itemType: type of items to show. Set to :py:class:`QgsLayoutItemRegistry`.LayoutItem to
-                 show all items.
+:param itemType: type of items to show. Set to
+                 :py:class:`QgsLayoutItemRegistry`.LayoutItem to show
+                 all items.
 
 .. seealso:: :py:func:`itemType`
 %End
@@ -115,7 +115,8 @@ Returns ``None`` if no flag based filtering is occurring.
 
     QgsLayoutItem *item( int index ) const;
 %Docstring
-Returns the item currently shown at the specified ``index`` within the combo box.
+Returns the item currently shown at the specified ``index`` within the
+combo box.
 
 .. seealso:: :py:func:`currentItem`
 %End

@@ -39,14 +39,18 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
     void insert( const QString &uuid, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Insert(
+      float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      uuid );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Insert(
+        aMin,
+        aMax,
+        uuid );
     }
 
     /**
@@ -58,14 +62,18 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
     void remove( const QString &uuid, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Remove(
+      float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      uuid );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Remove(
+        aMin,
+        aMax,
+        uuid );
     }
 
     /**
@@ -76,14 +84,17 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
     bool intersects( const QgsRectangle &bounds, const std::function< bool( const QString &uuid )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Search(
+      float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      callback );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Search(
+        aMin, aMax,
+        callback );
       return true;
     }
 
@@ -111,7 +122,7 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
 
   QgsDataProvider::ProviderOptions providerOptions;
   providerOptions.transformContext = options.transformContext;
-  mDataProvider = new QgsAnnotationLayerDataProvider( providerOptions, Qgis::DataProviderReadFlags() );
+  mDataProvider = std::make_unique<QgsAnnotationLayerDataProvider>( providerOptions, Qgis::DataProviderReadFlags() );
 
   mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   mPaintEffect->setEnabled( false );
@@ -121,7 +132,7 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
 {
   emit willBeDeleted();
   qDeleteAll( mItems );
-  delete mDataProvider;
+
 }
 
 void QgsAnnotationLayer::reset()
@@ -598,14 +609,14 @@ QgsDataProvider *QgsAnnotationLayer::dataProvider()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider;
+  return mDataProvider.get();
 }
 
 const QgsDataProvider *QgsAnnotationLayer::dataProvider() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mDataProvider;
+  return mDataProvider.get();
 }
 
 QString QgsAnnotationLayer::htmlMetadata() const

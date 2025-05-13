@@ -15,10 +15,12 @@
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAdvancedDigitizingDockWidget` class is a dockable widget
-used to handle the CAD tools on top of a selection of map tools.
-It handles both the UI and the constraints. Constraints are applied
-by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
+A dockable widget used to handle the CAD tools on top of a selection of
+map tools.
+
+It handles both the UI and the constraints. Constraints are applied by
+implementing filters called from
+:py:class:`QgsMapToolAdvancedDigitizing`.
 %End
 
 %TypeHeaderCode
@@ -46,8 +48,9 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     class CadConstraint
 {
 %Docstring(signature="appended")
-The CadConstraint is a class for all basic constraints (angle/distance/x/y).
-It contains all values (locked, value, relative) and pointers to corresponding widgets.
+The CadConstraint is a class for all basic constraints
+(angle/distance/x/y). It contains all values (locked, value, relative)
+and pointers to corresponding widgets.
 
 .. note::
 
@@ -71,8 +74,10 @@ Constructor for CadConstraint.
 
 :param lineEdit: associated line edit for constraint value
 :param lockerButton: associated button for locking constraint
-:param relativeButton: optional button for toggling relative constraint mode
-:param repeatingLockButton: optional button for toggling repeating lock mode
+:param relativeButton: optional button for toggling relative constraint
+                       mode
+:param repeatingLockButton: optional button for toggling repeating lock
+                            mode
 %End
 
         LockMode lockMode() const;
@@ -89,8 +94,9 @@ Is any kind of lock mode enabled
 
         bool isRepeatingLock() const;
 %Docstring
-Returns ``True`` if a repeating lock is set for the constraint. Repeating locks are not
-automatically cleared after a new point is added.
+Returns ``True`` if a repeating lock is set for the constraint.
+Repeating locks are not automatically cleared after a new point is
+added.
 
 .. seealso:: :py:func:`setRepeatingLock`
 %End
@@ -117,10 +123,11 @@ Set the lock mode
 
         void setRepeatingLock( bool repeating );
 %Docstring
-Sets whether a repeating lock is set for the constraint. Repeating locks are not
-automatically cleared after a new point is added.
+Sets whether a repeating lock is set for the constraint. Repeating locks
+are not automatically cleared after a new point is added.
 
-:param repeating: set to ``True`` to set the lock to repeat automatically
+:param repeating: set to ``True`` to set the lock to repeat
+                  automatically
 
 .. seealso:: :py:func:`isRepeatingLock`
 %End
@@ -135,7 +142,8 @@ Set if the constraint should be treated relative
 Set the value of the constraint
 
 :param value: new value for constraint
-:param updateWidget: set to ``False`` to prevent automatically updating the associated widget's value
+:param updateWidget: set to ``False`` to prevent automatically updating
+                     the associated widget's value
 %End
 
         QString displayValue() const;
@@ -157,7 +165,8 @@ Toggle relative mode
 
         int precision() const;
 %Docstring
-Returns the numeric precision (decimal places) to show in the associated widget.
+Returns the numeric precision (decimal places) to show in the associated
+widget.
 
 .. seealso:: :py:func:`setPrecision`
 
@@ -166,7 +175,8 @@ Returns the numeric precision (decimal places) to show in the associated widget.
 
         void setPrecision( int precision );
 %Docstring
-Sets the numeric precision (decimal places) to show in the associated widget.
+Sets the numeric precision (decimal places) to show in the associated
+widget.
 
 .. seealso:: :py:func:`precision`
 
@@ -210,7 +220,9 @@ Create an advanced digitizing dock widget
 
 :param canvas: The map canvas on which the widget operates
 :param parent: The parent
-:param userInputWidget: The user input widget on which tools can add widget overlays on top of the map canvas (since QGIS 3.40)
+:param userInputWidget: The user input widget on which tools can add
+                        widget overlays on top of the map canvas (since
+                        QGIS 3.40)
 %End
     ~QgsAdvancedDigitizingDockWidget();
 
@@ -220,20 +232,23 @@ Filter key events to e.g. toggle construction mode or adapt constraints
 
 :param e: A mouse event (may be modified)
 
-:return: If the event is hidden (construction mode hides events from the maptool)
+:return: If the event is hidden (construction mode hides events from the
+         maptool)
 %End
 
     bool applyConstraints( QgsMapMouseEvent *e );
 %Docstring
-apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
+apply the CAD constraints. The will modify the position of the map event
+in map coordinates by applying the CAD constraints.
 
 :return: ``False`` if no solution was found (invalid constraints)
 %End
 
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 %Docstring
-align to segment for between line constraint.
-If between line constraints are used, this will determine the angle to be locked depending on the snapped segment.
+align to segment for between line constraint. If between line
+constraints are used, this will determine the angle to be locked
+depending on the snapped segment.
 %End
 
     void processCanvasPressEvent( QgsMapMouseEvent *event );
@@ -253,14 +268,16 @@ Processes the canvas release ``event``.
 
     void setTool( QgsAdvancedDigitizingTool *tool );
 %Docstring
-Sets an advanced digitizing tool which will take over digitizing until the tool is close.
+Sets an advanced digitizing tool which will take over digitizing until
+the tool is close.
 
 .. versionadded:: 3.40
 %End
 
     QgsAdvancedDigitizingTool *tool() const;
 %Docstring
-Returns the current advanced digitizing tool. Returns ``None`` if not set.
+Returns the current advanced digitizing tool. Returns ``None`` if not
+set.
 
 .. versionadded:: 3.40
 %End
@@ -269,7 +286,8 @@ Returns the current advanced digitizing tool. Returns ``None`` if not set.
 %Docstring
 unlock all constraints
 
-:param releaseRepeatingLocks: set to ``False`` to preserve the lock for any constraints set to repeating lock mode
+:param releaseRepeatingLocks: set to ``False`` to preserve the lock for
+                              any constraints set to repeating lock mode
 %End
 
     void clear();
@@ -308,8 +326,9 @@ Sets whether M is enabled
 
     bool constructionMode() const;
 %Docstring
-Returns whether the construction mode is activated. The construction mode is used to draw intermediate
-points that will not be part of a geometry being digitized.
+Returns whether the construction mode is activated. The construction
+mode is used to draw intermediate points that will not be part of a
+geometry being digitized.
 %End
 
     QgsVectorLayer *constructionGuidesLayer() const;
@@ -387,7 +406,8 @@ Returns the ``CadConstraint``
 
     Qgis::LineExtensionSide lineExtensionSide() const;
 %Docstring
-Returns on which side of the constraint line extension point, the line was created
+Returns on which side of the constraint line extension point, the line
+was created
 %End
 
     const CadConstraint *constraintXyVertex() const;
@@ -397,12 +417,14 @@ Returns the ``CadConstraint``
 
     double softLockX() const;
 %Docstring
-Returns the X value of the X soft lock. The value is NaN is the constraint isn't magnetized to a line
+Returns the X value of the X soft lock. The value is NaN is the
+constraint isn't magnetized to a line
 %End
 
     double softLockY() const;
 %Docstring
-Returns the Y value of the Y soft lock. The value is NaN is the constraint isn't magnetized to a line
+Returns the Y value of the Y soft lock. The value is NaN is the
+constraint isn't magnetized to a line
 %End
 
     void toggleConstraintDistance();
@@ -430,7 +452,8 @@ Returns the snap matches whose vertices have been locked
 %Docstring
 Removes all points from the locked snap vertex list
 
-:param force: Clears the list even if the constraints that use it are still locked.
+:param force: Clears the list even if the constraints that use it are
+              still locked.
 
 .. versionadded:: 3.26
 %End
@@ -463,15 +486,16 @@ Updates the current ``point`` in the CAD point list
 %Docstring
 Configures list of current CAD points
 
-Some map tools may find it useful to override list of CAD points that is otherwise
-automatically populated when user clicks with left mouse button on map canvas.
+Some map tools may find it useful to override list of CAD points that is
+otherwise automatically populated when user clicks with left mouse
+button on map canvas.
 %End
 
     QgsPoint currentPointV2( bool *exists = 0 ) const;
 %Docstring
-The last point.
-Helper for the CAD point list. The CAD point list is the list of points
-currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+The last point. Helper for the CAD point list. The CAD point list is the
+list of points currently digitized. It contains both "normal" points and
+intermediate points (construction mode).
 
 .. versionadded:: 3.22
 %End
@@ -485,9 +509,9 @@ Returns the last CAD point, in a map ``layer``'s coordinates.
 
  QgsPointXY currentPoint( bool *exists = 0 ) const /Deprecated="Since 3.22. Use currentPointV2() instead."/;
 %Docstring
-The last point.
-Helper for the CAD point list. The CAD point list is the list of points
-currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+The last point. Helper for the CAD point list. The CAD point list is the
+list of points currently digitized. It contains both "normal" points and
+intermediate points (construction mode).
 
 .. deprecated:: 3.22
 
@@ -495,16 +519,16 @@ currently digitized. It contains both  "normal" points and intermediate points (
 %End
     QgsPoint previousPointV2( bool *exists = 0 ) const;
 %Docstring
-The previous point.
-Helper for the CAD point list. The CAD point list is the list of points
-currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+The previous point. Helper for the CAD point list. The CAD point list is
+the list of points currently digitized. It contains both "normal" points
+and intermediate points (construction mode).
 %End
 
  QgsPointXY previousPoint( bool *exists = 0 ) const /Deprecated="Since 3.22. Use previousPointV2() instead."/;
 %Docstring
-The previous point.
-Helper for the CAD point list. The CAD point list is the list of points
-currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+The previous point. Helper for the CAD point list. The CAD point list is
+the list of points currently digitized. It contains both "normal" points
+and intermediate points (construction mode).
 
 .. deprecated:: 3.22
 
@@ -512,16 +536,16 @@ currently digitized. It contains both  "normal" points and intermediate points (
 %End
     QgsPoint penultimatePointV2( bool *exists = 0 ) const;
 %Docstring
-The penultimate point.
-Helper for the CAD point list. The CAD point list is the list of points
-currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+The penultimate point. Helper for the CAD point list. The CAD point list
+is the list of points currently digitized. It contains both "normal"
+points and intermediate points (construction mode).
 %End
 
  QgsPointXY penultimatePoint( bool *exists = 0 ) const /Deprecated="Since 3.22. Use penultimatePointV2() instead."/;
 %Docstring
-The penultimate point.
-Helper for the CAD point list. The CAD point list is the list of points
-currently digitized. It contains both  "normal" points and intermediate points (construction mode).
+The penultimate point. Helper for the CAD point list. The CAD point list
+is the list of points currently digitized. It contains both "normal"
+points and intermediate points (construction mode).
 
 .. deprecated:: 3.22
 
@@ -549,15 +573,17 @@ Returns the action used to enable/disable the tools
 
     void enable();
 %Docstring
-Enables the tool (call this when an appropriate map tool is set and in the condition to make use of
-cad digitizing)
-Normally done automatically from :py:func:`QgsMapToolAdvancedDigitizing.activate()` but may need to be fine tuned
-if the map tool depends on preconditions like a feature selection.
+Enables the tool (call this when an appropriate map tool is set and in
+the condition to make use of cad digitizing) Normally done automatically
+from :py:func:`QgsMapToolAdvancedDigitizing.activate()` but may need to
+be fine tuned if the map tool depends on preconditions like a feature
+selection.
 %End
 
     void disable();
 %Docstring
-Disable the widget. Normally done automatically from :py:func:`QgsMapToolAdvancedDigitizing.deactivate()`.
+Disable the widget. Normally done automatically from
+:py:func:`QgsMapToolAdvancedDigitizing.deactivate()`.
 %End
 
     void updateCadPaintItem();
@@ -567,11 +593,11 @@ Updates canvas item that displays constraints on the ma
 
     void setX( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the X value on the widget.
-Can be used to set constraints by external widgets.
+Set the X value on the widget. Can be used to set constraints by
+external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -582,11 +608,11 @@ Can be used to set constraints by external widgets.
 
     void setY( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the Y value on the widget.
-Can be used to set constraints by external widgets.
+Set the Y value on the widget. Can be used to set constraints by
+external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -597,11 +623,11 @@ Can be used to set constraints by external widgets.
 
     void setZ( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the Z value on the widget.
-Can be used to set constraints by external widgets.
+Set the Z value on the widget. Can be used to set constraints by
+external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -612,11 +638,11 @@ Can be used to set constraints by external widgets.
 
     void setM( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the M value on the widget.
-Can be used to set constraints by external widgets.
+Set the M value on the widget. Can be used to set constraints by
+external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -627,11 +653,11 @@ Can be used to set constraints by external widgets.
 
     void setAngle( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the angle value on the widget.
-Can be used to set constraints by external widgets.
+Set the angle value on the widget. Can be used to set constraints by
+external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -642,11 +668,11 @@ Can be used to set constraints by external widgets.
 
     void setDistance( const QString &value, WidgetSetMode mode );
 %Docstring
-Set the distance value on the widget.
-Can be used to set constraints by external widgets.
+Set the distance value on the widget. Can be used to set constraints by
+external widgets.
 
 :param mode: What type of interaction to emulate
-:param value: The value (as a QString, as it could be an expression)
+:param value: The value (as a string, as it could be an expression)
 
 .. note::
 
@@ -698,20 +724,22 @@ Remove any previously emitted warnings (if any)
 
     void pointChangedV2( const QgsPoint &point );
 %Docstring
-Sometimes a constraint may change the current point out of a mouse event. This happens normally
-when a constraint is toggled.
+Sometimes a constraint may change the current point out of a mouse
+event. This happens normally when a constraint is toggled.
 
-:param point: The last known digitizing point. Can be used to emulate a mouse event.
+:param point: The last known digitizing point. Can be used to emulate a
+              mouse event.
 
 .. versionadded:: 3.22
 %End
 
  void pointChanged( const QgsPointXY &point ) /Deprecated="Since 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead."/;
 %Docstring
-Sometimes a constraint may change the current point out of a mouse event. This happens normally
-when a constraint is toggled.
+Sometimes a constraint may change the current point out of a mouse
+event. This happens normally when a constraint is toggled.
 
-:param point: The last known digitizing point. Can be used to emulate a mouse event.
+:param point: The last known digitizing point. Can be used to emulate a
+              mouse event.
 
 .. deprecated:: 3.22
 
@@ -734,8 +762,9 @@ Emitted whenever CAD is enabled or disabled
 
     void valueXChanged( const QString &value );
 %Docstring
-Emitted whenever the X ``value`` changes (either the mouse moved, or the user changed the input).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the X ``value`` changes (either the mouse moved, or the
+user changed the input). Could be used by widgets that must reflect the
+current advanced digitizing state.
 
 .. note::
 
@@ -746,8 +775,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void valueYChanged( const QString &value );
 %Docstring
-Emitted whenever the Y ``value`` changes (either the mouse moved, or the user changed the input).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Y ``value`` changes (either the mouse moved, or the
+user changed the input). Could be used by widgets that must reflect the
+current advanced digitizing state.
 
 .. note::
 
@@ -758,8 +788,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void valueZChanged( const QString &value );
 %Docstring
-Emitted whenever the Z ``value`` changes (either the mouse moved, or the user changed the input).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Z ``value`` changes (either the mouse moved, or the
+user changed the input). Could be used by widgets that must reflect the
+current advanced digitizing state.
 
 .. note::
 
@@ -770,8 +801,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void valueMChanged( const QString &value );
 %Docstring
-Emitted whenever the M ``value`` changes (either the mouse moved, or the user changed the input).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the M ``value`` changes (either the mouse moved, or the
+user changed the input). Could be used by widgets that must reflect the
+current advanced digitizing state.
 
 .. note::
 
@@ -782,8 +814,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void valueAngleChanged( const QString &value );
 %Docstring
-Emitted whenever the angle ``value`` changes (either the mouse moved, or the user changed the input).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the angle ``value`` changes (either the mouse moved, or
+the user changed the input). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 .. note::
 
@@ -794,8 +827,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void valueDistanceChanged( const QString &value );
 %Docstring
-Emitted whenever the distance ``value`` changes (either the mouse moved, or the user changed the input).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the distance ``value`` changes (either the mouse moved,
+or the user changed the input). Could be used by widgets that must
+reflect the current advanced digitizing state.
 
 .. note::
 
@@ -806,8 +840,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void valueBearingChanged( const QString &value );
 %Docstring
-Emitted whenever the bearing ``value`` changes.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the bearing ``value`` changes. Could be used by widgets
+that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -818,8 +852,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void lockXChanged( bool locked );
 %Docstring
-Emitted whenever the X parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the X parameter is ``locked``. Could be used by widgets
+that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -830,8 +864,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void lockYChanged( bool locked );
 %Docstring
-Emitted whenever the Y parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Y parameter is ``locked``. Could be used by widgets
+that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -842,8 +876,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void lockZChanged( bool locked );
 %Docstring
-Emitted whenever the Z parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Z parameter is ``locked``. Could be used by widgets
+that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -854,8 +888,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void lockMChanged( bool locked );
 %Docstring
-Emitted whenever the M parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the M parameter is ``locked``. Could be used by widgets
+that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -866,8 +900,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void lockAngleChanged( bool locked );
 %Docstring
-Emitted whenever the angle parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the angle parameter is ``locked``. Could be used by
+widgets that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -878,8 +912,8 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void lockDistanceChanged( bool locked );
 %Docstring
-Emitted whenever the distance parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the distance parameter is ``locked``. Could be used by
+widgets that must reflect the current advanced digitizing state.
 
 .. note::
 
@@ -890,8 +924,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void relativeXChanged( bool relative );
 %Docstring
-Emitted whenever the X parameter is toggled between absolute and relative.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the X parameter is toggled between absolute and
+relative. Could be used by widgets that must reflect the current
+advanced digitizing state.
 
 :param relative: Whether the X parameter is relative or not.
 
@@ -904,8 +939,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void relativeYChanged( bool relative );
 %Docstring
-Emitted whenever the Y parameter is toggled between absolute and relative.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Y parameter is toggled between absolute and
+relative. Could be used by widgets that must reflect the current
+advanced digitizing state.
 
 :param relative: Whether the Y parameter is relative or not.
 
@@ -918,8 +954,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void relativeZChanged( bool relative );
 %Docstring
-Emitted whenever the Z parameter is toggled between absolute and relative.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Z parameter is toggled between absolute and
+relative. Could be used by widgets that must reflect the current
+advanced digitizing state.
 
 :param relative: Whether the Z parameter is relative or not.
 
@@ -932,8 +969,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void relativeMChanged( bool relative );
 %Docstring
-Emitted whenever the M parameter is toggled between absolute and relative.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the M parameter is toggled between absolute and
+relative. Could be used by widgets that must reflect the current
+advanced digitizing state.
 
 :param relative: Whether the M parameter is relative or not.
 
@@ -946,8 +984,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void relativeAngleChanged( bool relative );
 %Docstring
-Emitted whenever the angleX parameter is toggled between absolute and relative.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the angleX parameter is toggled between absolute and
+relative. Could be used by widgets that must reflect the current
+advanced digitizing state.
 
 :param relative: Whether the angle parameter is relative or not.
 
@@ -960,8 +999,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void softLockLineExtensionChanged( bool locked );
 %Docstring
-Emitted whenever the soft line extension parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the soft line extension parameter is ``locked``. Could
+be used by widgets that must reflect the current advanced digitizing
+state.
 
 .. note::
 
@@ -972,8 +1012,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void softLockXyChanged( bool locked );
 %Docstring
-Emitted whenever the soft x/y extension parameter is ``locked``.
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the soft x/y extension parameter is ``locked``. Could
+be used by widgets that must reflect the current advanced digitizing
+state.
 
 .. note::
 
@@ -985,9 +1026,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void enabledChangedX( bool enabled );
 %Docstring
-Emitted whenever the X field is enabled or disabled. Depending on the context, some parameters
-do not make sense (e.g. you need a previous point to define a distance).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the X field is enabled or disabled. Depending on the
+context, some parameters do not make sense (e.g. you need a previous
+point to define a distance). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 :param enabled: Whether the X parameter is enabled or not.
 
@@ -1000,9 +1042,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void enabledChangedY( bool enabled );
 %Docstring
-Emitted whenever the Y field is enabled or disabled. Depending on the context, some parameters
-do not make sense (e.g. you need a previous point to define a distance).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Y field is enabled or disabled. Depending on the
+context, some parameters do not make sense (e.g. you need a previous
+point to define a distance). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 :param enabled: Whether the Y parameter is enabled or not.
 
@@ -1015,9 +1058,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void enabledChangedZ( bool enabled );
 %Docstring
-Emitted whenever the Z field is enabled or disabled. Depending on the context, some parameters
-do not make sense (e.g. you need a previous point to define a distance).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the Z field is enabled or disabled. Depending on the
+context, some parameters do not make sense (e.g. you need a previous
+point to define a distance). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 :param enabled: Whether the Z parameter is enabled or not.
 
@@ -1030,9 +1074,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void enabledChangedM( bool enabled );
 %Docstring
-Emitted whenever the M field is enabled or disabled. Depending on the context, some parameters
-do not make sense (e.g. you need a previous point to define a distance).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the M field is enabled or disabled. Depending on the
+context, some parameters do not make sense (e.g. you need a previous
+point to define a distance). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 :param enabled: Whether the M parameter is enabled or not.
 
@@ -1045,9 +1090,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void enabledChangedAngle( bool enabled );
 %Docstring
-Emitted whenever the angle field is enabled or disabled. Depending on the context, some parameters
-do not make sense (e.g. you need a previous point to define a distance).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the angle field is enabled or disabled. Depending on
+the context, some parameters do not make sense (e.g. you need a previous
+point to define a distance). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 :param enabled: Whether the angle parameter is enabled or not.
 
@@ -1060,9 +1106,10 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void enabledChangedDistance( bool enabled );
 %Docstring
-Emitted whenever the distance field is enabled or disabled. Depending on the context, some parameters
-do not make sense (e.g. you need a previous point to define a distance).
-Could be used by widgets that must reflect the current advanced digitizing state.
+Emitted whenever the distance field is enabled or disabled. Depending on
+the context, some parameters do not make sense (e.g. you need a previous
+point to define a distance). Could be used by widgets that must reflect
+the current advanced digitizing state.
 
 :param enabled: Whether the distance parameter is enabled or not.
 
@@ -1075,8 +1122,9 @@ Could be used by widgets that must reflect the current advanced digitizing state
 
     void focusOnXRequested();
 %Docstring
-Emitted whenever the X field should get the focus using the shortcuts (X).
-Could be used by widgets to capture the focus when a field is being edited.
+Emitted whenever the X field should get the focus using the shortcuts
+(X). Could be used by widgets to capture the focus when a field is being
+edited.
 
 .. note::
 
@@ -1087,8 +1135,9 @@ Could be used by widgets to capture the focus when a field is being edited.
 
     void focusOnYRequested();
 %Docstring
-Emitted whenever the Y field should get the focus using the shortcuts (Y).
-Could be used by widgets to capture the focus when a field is being edited.
+Emitted whenever the Y field should get the focus using the shortcuts
+(Y). Could be used by widgets to capture the focus when a field is being
+edited.
 
 .. note::
 
@@ -1099,8 +1148,9 @@ Could be used by widgets to capture the focus when a field is being edited.
 
     void focusOnZRequested();
 %Docstring
-Emitted whenever the Z field should get the focus using the shortcuts (Z).
-Could be used by widgets to capture the focus when a field is being edited.
+Emitted whenever the Z field should get the focus using the shortcuts
+(Z). Could be used by widgets to capture the focus when a field is being
+edited.
 
 .. note::
 
@@ -1111,8 +1161,9 @@ Could be used by widgets to capture the focus when a field is being edited.
 
     void focusOnMRequested();
 %Docstring
-Emitted whenever the M field should get the focus using the shortcuts (M).
-Could be used by widgets to capture the focus when a field is being edited.
+Emitted whenever the M field should get the focus using the shortcuts
+(M). Could be used by widgets to capture the focus when a field is being
+edited.
 
 .. note::
 
@@ -1123,8 +1174,9 @@ Could be used by widgets to capture the focus when a field is being edited.
 
     void focusOnAngleRequested();
 %Docstring
-Emitted whenever the angle field should get the focus using the shortcuts (A).
-Could be used by widgets to capture the focus when a field is being edited.
+Emitted whenever the angle field should get the focus using the
+shortcuts (A). Could be used by widgets to capture the focus when a
+field is being edited.
 
 .. note::
 
@@ -1135,8 +1187,9 @@ Could be used by widgets to capture the focus when a field is being edited.
 
     void focusOnDistanceRequested();
 %Docstring
-Emitted whenever the distance field should get the focus using the shortcuts (D).
-Could be used by widgets to capture the focus when a field is being edited.
+Emitted whenever the distance field should get the focus using the
+shortcuts (D). Could be used by widgets to capture the focus when a
+field is being edited.
 
 .. note::
 
@@ -1147,7 +1200,8 @@ Could be used by widgets to capture the focus when a field is being edited.
 
     void valueCommonAngleSnappingChanged( double angle );
 %Docstring
-Emitted whenever the snapping to common angle option changes, angle = 0 means that the functionality is disabled.
+Emitted whenever the snapping to common angle option changes, angle = 0
+means that the functionality is disabled.
 
 .. versionadded:: 3.32
 %End

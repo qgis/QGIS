@@ -26,7 +26,7 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   setOffset( 0.0 );
   setOffsetUnit( Qgis::RenderUnit::Millimeters );
 
-  mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mSymbol = QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsArrowSymbolLayer::~QgsArrowSymbolLayer() = default;
@@ -108,7 +108,7 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QVariantMap &props )
 
   l->restoreOldDataDefinedProperties( props );
 
-  l->setSubSymbol( QgsFillSymbol::createSimple( props ) );
+  l->setSubSymbol( QgsFillSymbol::createSimple( props ).release() );
 
   return l;
 }
@@ -223,6 +223,20 @@ void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
   mSymbol->stopRender( context.renderContext() );
+}
+
+void QgsArrowSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
+void QgsArrowSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
 }
 
 inline qreal euclidean_distance( QPointF po, QPointF pd )

@@ -13,7 +13,7 @@
 class QgsAuthConfigSelect : QWidget
 {
 %Docstring(signature="appended")
-Selector widget for authentication configs
+Selector widget for authentication configs.
 %End
 
 %TypeHeaderCode
@@ -26,7 +26,8 @@ Create a dialog for setting an associated authentication config, either
 from existing configs, or creating/removing them from auth database
 
 :param parent: Parent widget
-:param dataprovider: The key of the calling layer provider, if applicable
+:param dataprovider: The key of the calling layer provider, if
+                     applicable
 %End
 
     void setConfigId( const QString &authcfg );
@@ -75,7 +76,7 @@ Clear and hide small message bar
 class QgsAuthConfigUriEdit : QDialog
 {
 %Docstring(signature="appended")
-Dialog wrapper of select widget to edit an authcfg in a data source URI
+Dialog wrapper of select widget to edit an authcfg in a data source URI.
 %End
 
 %TypeHeaderCode
@@ -84,11 +85,14 @@ Dialog wrapper of select widget to edit an authcfg in a data source URI
   public:
     explicit QgsAuthConfigUriEdit( QWidget *parent /TransferThis/ = 0, const QString &datauri = QString(), const QString &dataprovider = QString() );
 %Docstring
-Construct wrapper dialog for select widget to edit an authcfg in a data source URI
+Construct wrapper dialog for select widget to edit an authcfg in a data
+source URI
 
 :param parent: Parent widget
-:param datauri: URI QString with of without an authcfg=ID string
-:param dataprovider: The key of the calling layer provider, if applicable
+:param datauri: URI string optionally containing a ``authcfg=ID``
+                substring
+:param dataprovider: The key of the calling layer provider, if
+                     applicable
 %End
 
     void setDataSourceUri( const QString &datauri );

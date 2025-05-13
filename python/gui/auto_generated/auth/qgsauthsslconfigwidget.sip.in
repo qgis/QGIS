@@ -14,7 +14,7 @@
 class QgsAuthSslConfigWidget : QWidget
 {
 %Docstring(signature="appended")
-Widget for editing an SSL server configuration
+Widget for editing an SSL server configuration.
 %End
 
 %TypeHeaderCode
@@ -27,7 +27,8 @@ Construct a widget for editing an SSL server certificate configuration
 
 :param parent: Parent widget
 :param cert: SSL server certificate object
-:param hostport: Unique host:port to associate with the server certificate
+:param hostport: Unique host:port to associate with the server
+                 certificate
 :param connectionCAs: List of trusted Certificate Authorities objects
 %End
 
@@ -173,7 +174,8 @@ Emitted when the enabled state of the configuration changes
 
     void certFoundInAuthDatabase( bool found );
 %Docstring
-Emitted when an certificate of same SHA hash is found in authentication database
+Emitted when an certificate of same SHA hash is found in authentication
+database
 %End
 
     void hostPortValidityChanged( bool valid );
@@ -192,7 +194,7 @@ Emitted when the configuration can be saved changes
 class QgsAuthSslConfigDialog : QDialog
 {
 %Docstring(signature="appended")
-Dialog wrapper of widget for editing an SSL server configuration
+Dialog wrapper of widget for editing an SSL server configuration.
 %End
 
 %TypeHeaderCode
@@ -205,7 +207,8 @@ Construct wrapper dialog for the SSL config widget
 
 :param parent: Parent widget
 :param cert: SSL server certificate object
-:param hostport: Unique host:port to associate with the server certificate
+:param hostport: Unique host:port to associate with the server
+                 certificate
 %End
 
     QgsAuthSslConfigWidget *sslCustomConfigWidget();

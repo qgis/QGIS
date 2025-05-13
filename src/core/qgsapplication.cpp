@@ -132,6 +132,8 @@ const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = n
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettingsTree::sTreeSvg, QStringList() );
 
+const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections = new QgsSettingsEntryInteger( QStringLiteral( "connection-pool-maximum-concurrent-connections" ), QgsSettingsTree::sTreeCore, 4, QObject::tr( "Maximum number of concurrent connections per connection pool" ), Qgis::SettingsOptions(), 4, 999 );
+
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
 #include <pwd.h>
@@ -1424,38 +1426,8 @@ QString QgsApplication::osName()
 
 int QgsApplication::systemMemorySizeMb()
 {
-#if defined(Q_OS_ANDROID)
-  return -1;
-#elif defined(Q_OS_MAC)
-  return -1;
-#elif defined(Q_OS_WIN)
-  MEMORYSTATUSEX memoryStatus;
-  ZeroMemory( &memoryStatus, sizeof( MEMORYSTATUSEX ) );
-  memoryStatus.dwLength = sizeof( MEMORYSTATUSEX );
-  if ( GlobalMemoryStatusEx( &memoryStatus ) )
-  {
-    return memoryStatus.ullTotalPhys / ( 1024 * 1024 );
-  }
-  else
-  {
-    return -1;
-  }
-#elif defined(Q_OS_LINUX)
-  constexpr int megabyte = 1024 * 1024;
-  struct sysinfo si;
-  sysinfo( &si );
-  return si.totalram / megabyte;
-#elif defined(Q_OS_FREEBSD)
-  return -1;
-#elif defined(Q_OS_OPENBSD)
-  return -1;
-#elif defined(Q_OS_NETBSD)
-  return -1;
-#elif defined(Q_OS_UNIX)
-  return -1;
-#else
-  return -1;
-#endif
+  // Bytes to Mb (using 1024 * 1024)
+  return static_cast<int>( CPLGetUsablePhysicalRAM() / 1048576 );
 }
 
 QString QgsApplication::platform()
@@ -2135,7 +2107,7 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
 
 int QgsApplication::maxConcurrentConnectionsPerPool() const
 {
-  return CONN_POOL_MAX_CONCURRENT_CONNS;
+  return settingsConnectionPoolMaximumConcurrentConnections->value();
 }
 
 void QgsApplication::setTranslation( const QString &translation )

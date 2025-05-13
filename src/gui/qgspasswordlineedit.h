@@ -27,7 +27,7 @@
  * \class QgsPasswordLineEdit
  * \ingroup gui
  * \brief QLineEdit subclass with built in support for showing/hiding
- * entered password.
+ * the entered password.
  */
 class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 {

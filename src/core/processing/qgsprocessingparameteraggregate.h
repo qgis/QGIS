@@ -22,7 +22,7 @@
 /**
  * \ingroup core
  * \brief A parameter for "aggregate" configurations, which consist of a definition
- * of desired output fields, types, and aggregate used to populate then.
+ * of desired output fields, types, and aggregate used to populate them.
  *
  * Designed for use with the "Aggregate" algorithm.
  *
@@ -110,6 +110,18 @@ class CORE_EXPORT QgsProcessingParameterTypeAggregate : public QgsProcessingPara
     {
       return QStringList() << QObject::tr( "list[dict]: list of aggregate definitions as dictionaries" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterAggregate::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
+
 };
 
 ///@endcond

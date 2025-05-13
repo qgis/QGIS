@@ -125,6 +125,9 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setAccessMethod( QgsAuthOAuth2Config::AccessMethod::Header );
     config->setCustomHeader( QStringLiteral( "x-auth" ) );
     config->setRequestTimeout( 30 ); // in seconds
+    QVariantMap extraTokens;
+    extraTokens.insert( "id_token", "X-QGS-OPENID" );
+    config->setExtraTokens( extraTokens );
     QVariantMap queryPairs;
     queryPairs.insert( "pf.username", "myusername" );
     queryPairs.insert( "pf.password", "mypassword" );
@@ -147,6 +150,9 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "    \"configType\": 1,\n"
            "    \"customHeader\": \"x-auth\",\n"
            "    \"description\": \"A test config\",\n"
+           "    \"extraTokens\": {\n"
+           "        \"id_token\": \"X-QGS-OPENID\"\n"
+           "    },\n"
            "    \"grantFlow\": 0,\n"
            "    \"id\": \"abc1234\",\n"
            "    \"name\": \"MyConfig\",\n"
@@ -178,6 +184,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "\"configType\":1,"
            "\"customHeader\":\"x-auth\","
            "\"description\":\"A test config\","
+           "\"extraTokens\":{\"id_token\":\"X-QGS-OPENID\"},"
            "\"grantFlow\":0,"
            "\"id\":\"abc1234\","
            "\"name\":\"MyConfig\","
@@ -215,6 +222,9 @@ QVariantMap TestQgsAuthOAuth2Method::baseVariantMap()
   vmap.insert( "password", "mypassword" );
   vmap.insert( "persistToken", false );
   vmap.insert( "customHeader", "x-auth" );
+  QVariantMap extraTokens;
+  extraTokens.insert( "id_token", "X-QGS-OPENID" );
+  vmap.insert( "extraTokens", extraTokens );
   QVariantMap qpairs;
   qpairs.insert( "pf.password", "mypassword" );
   qpairs.insert( "pf.username", "myusername" );

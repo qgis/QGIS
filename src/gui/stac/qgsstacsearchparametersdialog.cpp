@@ -19,8 +19,10 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsstaccollection.h"
+#include "qgsstaccontroller.h"
 
 #include <QPushButton>
+#include <QScrollBar>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QMenu>
@@ -28,8 +30,9 @@
 
 ///@cond PRIVATE
 
-QgsStacSearchParametersDialog::QgsStacSearchParametersDialog( QgsMapCanvas *canvas, QWidget *parent )
+QgsStacSearchParametersDialog::QgsStacSearchParametersDialog( QgsStacController *stac, QgsMapCanvas *canvas, QWidget *parent )
   : QDialog( parent )
+  , mStac( stac )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -64,6 +67,7 @@ QgsStacSearchParametersDialog::QgsStacSearchParametersDialog( QgsMapCanvas *canv
   connect( mCollectionsFilterLineEdit, &QgsFilterLineEdit::textChanged, mCollectionsProxyModel, &QSortFilterProxyModel::setFilterFixedString );
   connect( mSelectAllCollectionsButton, &QPushButton::clicked, this, &QgsStacSearchParametersDialog::selectAllCollections );
   connect( mDeselectAllCollectionsButton, &QPushButton::clicked, this, &QgsStacSearchParametersDialog::deselectAllCollections );
+  connect( mCollectionsListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsStacSearchParametersDialog::onCollectionsListViewScroll );
   connect( mTemporalToolButton, &QToolButton::clicked, this, &QgsStacSearchParametersDialog::readTemporalExtentsFromProject );
 }
 
@@ -90,17 +94,6 @@ void QgsStacSearchParametersDialog::accept()
       mSelectedCollections.insert( mCollectionsModel->data( index, Qt::UserRole ).toString() );
   }
 
-  // if none was checked, check them all!
-  if ( mSelectedCollections.isEmpty() )
-  {
-    for ( int i = 0; i < mCollectionsModel->rowCount(); ++i )
-    {
-      const QModelIndex index = mCollectionsModel->index( i, 0 );
-      mCollectionsModel->setData( index, Qt::Checked, Qt::CheckStateRole );
-      mSelectedCollections.insert( mCollectionsModel->data( index, Qt::UserRole ).toString() );
-    }
-  }
-
   QDialog::accept();
 }
 
@@ -125,6 +118,11 @@ void QgsStacSearchParametersDialog::reject()
 void QgsStacSearchParametersDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mSpatialExtent->setMapCanvas( canvas );
+}
+
+void QgsStacSearchParametersDialog::setCollectionsUrl( const QString &url )
+{
+  mCollectionsUrl = url;
 }
 
 bool QgsStacSearchParametersDialog::hasTemporalFilter() const
@@ -172,16 +170,21 @@ QSet<QString> QgsStacSearchParametersDialog::selectedCollections() const
   return mSelectedCollections;
 }
 
-void QgsStacSearchParametersDialog::setCollections( const QVector<QgsStacCollection *> &collections )
+void QgsStacSearchParametersDialog::clearCollections()
 {
   qDeleteAll( mCollections );
+  mCollections.clear();
   mSelectedCollections.clear();
   mCollectionsModel->clear();
-  mCollectionsGroupBox->setChecked( false );
-  mCollections = collections;
+  mCollectionsFilterEnabled = false;
+}
+
+void QgsStacSearchParametersDialog::appendCollections( const QVector<QgsStacCollection *> &collections )
+{
+  mCollections.append( collections );
 
   QTextDocument descr;
-  for ( QgsStacCollection *c : std::as_const( mCollections ) )
+  for ( QgsStacCollection *c : collections )
   {
     descr.setMarkdown( c->description() );
 
@@ -191,7 +194,6 @@ void QgsStacSearchParametersDialog::setCollections( const QVector<QgsStacCollect
     i->setCheckable( true );
     i->setCheckState( Qt::Checked );
     mCollectionsModel->appendRow( i );
-    mSelectedCollections.insert( c->id() );
   }
 }
 
@@ -202,9 +204,11 @@ QVector<QgsStacCollection *> QgsStacSearchParametersDialog::collections() const
 
 QString QgsStacSearchParametersDialog::activeFiltersPreview()
 {
-  QString str = tr( "%1/%2 Collections" )
-                  .arg( mCollectionsFilterEnabled ? mSelectedCollections.size() : mCollectionsModel->rowCount() )
-                  .arg( mCollectionsModel->rowCount() );
+  QString str;
+  if ( mSelectedCollections.isEmpty() || !mCollectionsFilterEnabled )
+    str = tr( "All Collections" );
+  else
+    str = tr( "%1/%2 Collections" ).arg( mSelectedCollections.size() ).arg( mCollectionsModel->rowCount() );
 
   if ( mSpatialFilterEnabled )
   {
@@ -233,6 +237,15 @@ void QgsStacSearchParametersDialog::deselectAllCollections()
   {
     const QModelIndex index = mCollectionsProxyModel->index( i, 0 );
     mCollectionsProxyModel->setData( index, Qt::Unchecked, Qt::CheckStateRole );
+  }
+}
+
+void QgsStacSearchParametersDialog::onCollectionsListViewScroll( int value )
+{
+  if ( !mCollectionsUrl.isEmpty() && value == mCollectionsListView->verticalScrollBar()->maximum() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Scrolled to end, fetching next page" ), 3 );
+    mStac->fetchCollectionsAsync( mCollectionsUrl );
   }
 }
 

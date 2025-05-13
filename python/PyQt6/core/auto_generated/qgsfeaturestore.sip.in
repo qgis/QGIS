@@ -33,7 +33,8 @@ Returns the store's field list.
 
     void setFields( const QgsFields &fields );
 %Docstring
-Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
+Sets the store's ``fields``. Every contained feature's fields will be
+reset to match ``fields``.
 
 .. seealso:: :py:func:`fields`
 %End

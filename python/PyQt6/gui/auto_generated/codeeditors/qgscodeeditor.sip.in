@@ -37,14 +37,14 @@ Returns an interpreter specific state value.
 %Docstring
 Returns the current interpreter state.
 
-The actual interpretation of the returned values depend on
-the interpreter subclass.
+The actual interpretation of the returned values depend on the
+interpreter subclass.
 %End
 
     virtual QString promptForState( int state ) const = 0;
 %Docstring
-Returns the interactive prompt string to use for the
-interpreter, given a ``state``.
+Returns the interactive prompt string to use for the interpreter, given
+a ``state``.
 %End
 
   protected:
@@ -53,7 +53,8 @@ interpreter, given a ``state``.
 Pure virtual method for executing commands in the interpreter.
 
 Subclasses must implement this method. It will be called internally
-whenever the public :py:func:`~QgsCodeInterpreter.exec` method is called.
+whenever the public :py:func:`~QgsCodeInterpreter.exec` method is
+called.
 %End
 
 };
@@ -106,9 +107,11 @@ Construct a new code editor.
 
 :param parent: The parent QWidget
 :param title: The title to show in the code editor dialog
-:param folding: ``False``: Enable folding for code editor (deprecated, use ``flags`` instead)
+:param folding: ``False``: Enable folding for code editor (deprecated,
+                use ``flags`` instead)
 :param margin: ``False``: Enable margin for code editor (deprecated)
-:param flags: flags controlling behavior of code editor (since QGIS 3.28)
+:param flags: flags controlling behavior of code editor (since QGIS
+              3.28)
 :param mode: code editor mode (since QGIS 3.30)
 %End
 
@@ -135,7 +138,8 @@ Returns the associated scripting language capabilities.
 
     static QString languageToString( Qgis::ScriptLanguage language );
 %Docstring
-Returns a user-friendly, translated name of the specified script ``language``.
+Returns a user-friendly, translated name of the specified script
+``language``.
 
 .. versionadded:: 3.30
 %End
@@ -206,11 +210,12 @@ made a selection.
 %Docstring
 Returns the default color for the specified ``role``.
 
-The optional ``theme`` argument can be used to specify a color ``theme``. A blank
-``theme`` indicates the default color scheme.
+The optional ``theme`` argument can be used to specify a color
+``theme``. A blank ``theme`` indicates the default color scheme.
 
-Available themes are stored in :py:class:`QgsCodeEditorColorSchemeRegistry`, and can be retrieved
-via :py:func:`QgsGui.codeEditorColorSchemeRegistry()`.
+Available themes are stored in
+:py:class:`QgsCodeEditorColorSchemeRegistry`, and can be retrieved via
+:py:func:`QgsGui.codeEditorColorSchemeRegistry()`.
 
 .. versionadded:: 3.16
 %End
@@ -219,8 +224,8 @@ via :py:func:`QgsGui.codeEditorColorSchemeRegistry()`.
 %Docstring
 Returns the color to use in the editor for the specified ``role``.
 
-This color will be the default theme color for the role, unless the user has manually
-selected a custom color scheme for the editor.
+This color will be the default theme color for the role, unless the user
+has manually selected a custom color scheme for the editor.
 
 .. seealso:: :py:func:`setColor`
 
@@ -231,10 +236,11 @@ selected a custom color scheme for the editor.
 %Docstring
 Sets the ``color`` to use in the editor for the specified ``role``.
 
-This color will be stored as the new default color for the role, to be used for all code editors.
+This color will be stored as the new default color for the role, to be
+used for all code editors.
 
-Set ``color`` to an invalid QColor in order to clear the stored color value and reset it to
-the default color.
+Set ``color`` to an invalid QColor in order to clear the stored color
+value and reset it to the default color.
 
 .. seealso:: :py:func:`color`
 
@@ -251,7 +257,8 @@ Returns the monospaced font to use for code editors.
 
     void addWarning( int lineNumber, const QString &warning );
 %Docstring
-Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
+Adds a ``warning`` message and indicator to the specified a
+``lineNumber``.
 
 .. seealso:: :py:func:`clearWarnings`
 
@@ -339,18 +346,18 @@ Convenience function to set the cursor position as a linear index
 
     int selectionStart() const;
 %Docstring
-Convenience function to return the start of the selection as a linear index
-Contrary to the getSelection method, this method returns the cursor position if
-no selection is made.
+Convenience function to return the start of the selection as a linear
+index Contrary to the getSelection method, this method returns the
+cursor position if no selection is made.
 
 .. versionadded:: 3.36
 %End
 
     int selectionEnd() const;
 %Docstring
-Convenience function to return the end of the selection as a linear index
-Contrary to the getSelection method, this method returns the cursor position if
-no selection is made.
+Convenience function to return the end of the selection as a linear
+index Contrary to the getSelection method, this method returns the
+cursor position if no selection is made.
 
 .. versionadded:: 3.36
 %End
@@ -366,9 +373,9 @@ Convenience function to set the selection using linear indexes
 
     int wrapPosition( int line = -1 );
 %Docstring
-Returns the linear position of the start of the last wrapped part for the specified line, or
-for the current line if line = -1
-If wrapping is disabled, returns -1 instead
+Returns the linear position of the start of the last wrapped part for
+the specified line, or for the current line if line = -1 If wrapping is
+disabled, returns -1 instead
 
 .. versionadded:: 3.40
 %End
@@ -376,8 +383,9 @@ If wrapping is disabled, returns -1 instead
 
     int editingTimeoutInterval() const;
 %Docstring
-Returns the timeout (in milliseconds) threshold for the :py:func:`~QgsCodeEditor.editingTimeout` signal to be emitted
-after an edit.
+Returns the timeout (in milliseconds) threshold for the
+:py:func:`~QgsCodeEditor.editingTimeout` signal to be emitted after an
+edit.
 
 .. seealso:: :py:func:`setEditingTimeoutInterval`
 
@@ -393,24 +401,24 @@ Runs a command in the editor.
 
 An :py:func:`~QgsCodeEditor.interpreter` must be set.
 
-Since QGIS 3.32, if ``skipHistory`` is ``True`` then the command will not be automatically
-added to the widget's history.
+Since QGIS 3.32, if ``skipHistory`` is ``True`` then the command will
+not be automatically added to the widget's history.
 
 .. versionadded:: 3.30
 %End
 
     virtual void moveCursorToStart();
 %Docstring
-Moves the cursor to the start of the document and scrolls to ensure
-it is visible.
+Moves the cursor to the start of the document and scrolls to ensure it
+is visible.
 
 .. versionadded:: 3.28
 %End
 
     virtual void moveCursorToEnd();
 %Docstring
-Moves the cursor to the end of the document and scrolls to ensure
-it is visible.
+Moves the cursor to the end of the document and scrolls to ensure it is
+visible.
 
 .. versionadded:: 3.28
 %End
@@ -450,7 +458,8 @@ Shows the command history dialog.
 
     void removeHistoryCommand( int index );
 %Docstring
-Removes the command at the specified ``index`` from the history of the code editor.
+Removes the command at the specified ``index`` from the history of the
+code editor.
 
 .. versionadded:: 3.30
 %End
@@ -479,7 +488,8 @@ Clears the entire persistent history of commands run in the editor.
 
     bool writeHistoryFile();
 %Docstring
-Stores the commands executed in the editor to the persistent history file.
+Stores the commands executed in the editor to the persistent history
+file.
 
 .. versionadded:: 3.30
 %End
@@ -488,7 +498,9 @@ Stores the commands executed in the editor to the persistent history file.
 %Docstring
 Applies code reformatting to the editor.
 
-This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the
+:py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from
+:py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -497,7 +509,9 @@ This is only supported for editors which return the :py:class:`Qgis`.ScriptLangu
 %Docstring
 Applies syntax checking to the editor.
 
-This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.CheckSyntax capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the
+:py:class:`Qgis`.ScriptLanguageCapability.CheckSyntax capability from
+:py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -506,7 +520,9 @@ This is only supported for editors which return the :py:class:`Qgis`.ScriptLangu
 %Docstring
 Toggle comment for the selected text.
 
-This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.ToggleComment capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the
+:py:class:`Qgis`.ScriptLanguageCapability.ToggleComment capability from
+:py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -523,8 +539,9 @@ Adjust the width of the scroll bar to fit the content.
 
     void setEditingTimeoutInterval( int timeout );
 %Docstring
-Sets the ``timeout`` (in milliseconds) threshold for the :py:func:`~QgsCodeEditor.editingTimeout` signal to be emitted
-after an edit.
+Sets the ``timeout`` (in milliseconds) threshold for the
+:py:func:`~QgsCodeEditor.editingTimeout` signal to be emitted after an
+edit.
 
 .. seealso:: :py:func:`editingTimeoutInterval`
 
@@ -537,14 +554,16 @@ after an edit.
 
     void sessionHistoryCleared();
 %Docstring
-Emitted when the history of commands run in the current session is cleared.
+Emitted when the history of commands run in the current session is
+cleared.
 
 .. versionadded:: 3.30
 %End
 
     void persistentHistoryCleared();
 %Docstring
-Emitted when the persistent history of commands run in the editor is cleared.
+Emitted when the persistent history of commands run in the editor is
+cleared.
 
 .. versionadded:: 3.30
 %End
@@ -586,7 +605,8 @@ Returns ``True`` if a ``font`` is a fixed pitch font.
 
     virtual void initializeLexer();
 %Docstring
-Called when the dialect specific code lexer needs to be initialized (or reinitialized).
+Called when the dialect specific code lexer needs to be initialized (or
+reinitialized).
 
 The default implementation does nothing.
 
@@ -609,14 +629,16 @@ Returns the font to use in the lexer.
 
     void runPostLexerConfigurationTasks();
 %Docstring
-Performs tasks which must be run after a lexer has been set for the widget.
+Performs tasks which must be run after a lexer has been set for the
+widget.
 
 .. versionadded:: 3.16
 %End
 
     void updateSoftHistory();
 %Docstring
-Updates the soft history by storing the current editor text in the history.
+Updates the soft history by storing the current editor text in the
+history.
 
 .. versionadded:: 3.30
 %End
@@ -634,11 +656,12 @@ Triggers an update of the interactive prompt part of the editor.
 
     virtual void populateContextMenu( QMenu *menu );
 %Docstring
-Called when the context ``menu`` for the widget is about to be shown, after it
-has been fully populated with the standard actions created by the base class.
+Called when the context ``menu`` for the widget is about to be shown,
+after it has been fully populated with the standard actions created by
+the base class.
 
-This method provides an opportunity for subclasses to add additional non-standard
-actions to the context menu.
+This method provides an opportunity for subclasses to add additional
+non-standard actions to the context menu.
 
 .. versionadded:: 3.30
 %End
@@ -647,7 +670,9 @@ actions to the context menu.
 %Docstring
 Applies code reformatting to a ``string`` and returns the result.
 
-This is only supported for editors which return the :py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from :py:func:`~QgsCodeEditor.languageCapabilities`.
+This is only supported for editors which return the
+:py:class:`Qgis`.ScriptLanguageCapability.Reformat capability from
+:py:func:`~QgsCodeEditor.languageCapabilities`.
 
 .. versionadded:: 3.32
 %End
@@ -659,6 +684,13 @@ Shows a user facing message (eg a warning message).
 The default implementation uses QMessageBox.
 
 .. versionadded:: 3.32
+%End
+
+    void toggleLineComments( const QString &commentPrefix );
+%Docstring
+Toggles comment for selected lines with the given comment prefix.
+
+.. versionadded:: 3.44
 %End
 
 };

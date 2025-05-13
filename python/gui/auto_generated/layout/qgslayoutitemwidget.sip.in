@@ -13,12 +13,14 @@
 class QgsLayoutConfigObject : QObject
 {
 %Docstring(signature="appended")
+An object for property widgets for layout items.
 
-An object for property widgets for layout items. All layout config type widgets should contain
-this object.
+All layout config type widgets should contain this object.
 
-If you are creating a new :py:class:`QgsLayoutItem` configuration widget, you should instead
-inherit from :py:class:`QgsLayoutItemBaseWidget` (rather then directly working with :py:class:`QgsLayoutConfigObject`).
+If you are creating a new :py:class:`QgsLayoutItem` configuration
+widget, you should instead inherit from
+:py:class:`QgsLayoutItemBaseWidget` (rather then directly working with
+:py:class:`QgsLayoutConfigObject`).
 %End
 
 %TypeHeaderCode
@@ -27,13 +29,15 @@ inherit from :py:class:`QgsLayoutItemBaseWidget` (rather then directly working w
   public:
     QgsLayoutConfigObject( QWidget *parent /TransferThis/, QgsLayoutObject *layoutObject );
 %Docstring
-Constructor for QgsLayoutConfigObject, linked with the specified ``layoutObject``.
+Constructor for QgsLayoutConfigObject, linked with the specified
+``layoutObject``.
 %End
 
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty key );
 %Docstring
-Registers a data defined ``button``, setting up its initial value, connections and description.
-The corresponding property ``key`` must be specified.
+Registers a data defined ``button``, setting up its initial value,
+connections and description. The corresponding property ``key`` must be
+specified.
 %End
 
     void updateDataDefinedButton( QgsPropertyOverrideButton *button );
@@ -57,9 +61,9 @@ Returns the atlas for the layout, if available
 class QgsLayoutItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
+A base class for property widgets for layout items.
 
-A base class for property widgets for layout items. All layout item widgets should inherit from
-this base class.
+All layout item widgets should inherit from this base class.
 %End
 
 %TypeHeaderCode
@@ -68,7 +72,8 @@ this base class.
   public:
     QgsLayoutItemBaseWidget( QWidget *parent /TransferThis/, QgsLayoutObject *layoutObject );
 %Docstring
-Constructor for QgsLayoutItemBaseWidget, linked with the specified ``layoutObject``.
+Constructor for QgsLayoutItemBaseWidget, linked with the specified
+``layoutObject``.
 %End
 
     QgsLayoutObject *layoutObject();
@@ -78,26 +83,25 @@ Returns the layout object associated with this widget.
 
     bool setItem( QgsLayoutItem *item );
 %Docstring
-Sets the current ``item`` to show in the widget. If ``True`` is returned, ``item``
-was an acceptable type for display in this widget and the widget has been
-updated to match ``item``'s properties.
+Sets the current ``item`` to show in the widget. If ``True`` is
+returned, ``item`` was an acceptable type for display in this widget and
+the widget has been updated to match ``item``'s properties.
 
-If ``False`` is returned, then the widget could not be successfully updated
-to show the properties of ``item``.
+If ``False`` is returned, then the widget could not be successfully
+updated to show the properties of ``item``.
 %End
 
     virtual void setReportTypeString( const QString &string );
 %Docstring
 Sets the ``string`` to use to describe the current report type (e.g.
-"atlas" or "report").
-Subclasses which display this text to users should override this
-and update their widget labels accordingly.
+"atlas" or "report"). Subclasses which display this text to users should
+override this and update their widget labels accordingly.
 %End
 
     virtual void setDesignerInterface( QgsLayoutDesignerInterface *iface );
 %Docstring
-Sets the the layout designer interface in which the widget is
-being shown.
+Sets the the layout designer interface in which the widget is being
+shown.
 
 .. versionadded:: 3.6
 %End
@@ -112,13 +116,15 @@ Sets the master layout associated with the item.
   protected:
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
 %Docstring
-Registers a data defined ``button``, setting up its initial value, connections and description.
-The corresponding property ``key`` must be specified.
+Registers a data defined ``button``, setting up its initial value,
+connections and description. The corresponding property ``key`` must be
+specified.
 %End
 
     void updateDataDefinedButton( QgsPropertyOverrideButton *button );
 %Docstring
-Updates a previously registered data defined button to reflect the item's current properties.
+Updates a previously registered data defined button to reflect the
+item's current properties.
 %End
 
     QgsVectorLayer *coverageLayer() const;
@@ -128,13 +134,13 @@ Returns the current layout context coverage layer (if set).
 
     virtual bool setNewItem( QgsLayoutItem *item );
 %Docstring
-Attempts to update the widget to show the properties
-for the specified ``item``.
+Attempts to update the widget to show the properties for the specified
+``item``.
 
 Subclasses can override this if they support changing items in place.
 
-Implementations must return ``True`` if the item was accepted and
-the widget was updated.
+Implementations must return ``True`` if the item was accepted and the
+widget was updated.
 %End
 
     QgsLayoutAtlas *layoutAtlas() const;
@@ -148,8 +154,9 @@ Returns the atlas for the layout (if available)
 class QgsLayoutItemPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
-This widget can be embedded into other layout item widgets.
+A widget for controlling the common properties of layout items (e.g.
+position and size, background, stroke, frame). This widget can be
+embedded into other layout item widgets.
 %End
 
 %TypeHeaderCode
@@ -158,7 +165,8 @@ This widget can be embedded into other layout item widgets.
   public:
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 %Docstring
-Constructs a QgsLayoutItemPropertiesWidget with a ``parent`` and for the given layout ``item``.
+Constructs a QgsLayoutItemPropertiesWidget with a ``parent`` and for the
+given layout ``item``.
 %End
 
     QgsLayoutItem::ReferencePoint positionMode() const;

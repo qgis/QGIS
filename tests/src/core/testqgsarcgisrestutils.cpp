@@ -307,8 +307,8 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( fontMarkerLayer->fontFamily(), QString( "Arial" ) );
   QCOMPARE( fontMarkerLayer->offset(), QPointF( 0, 0 ) );
   QCOMPARE( fontMarkerLayer->angle(), 45 );
-  QCOMPARE( fontMarkerLayer->horizontalAnchorPoint(), QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left );
-  QCOMPARE( fontMarkerLayer->verticalAnchorPoint(), QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom );
+  QCOMPARE( fontMarkerLayer->horizontalAnchorPoint(), Qgis::HorizontalAnchorPoint::Left );
+  QCOMPARE( fontMarkerLayer->verticalAnchorPoint(), Qgis::VerticalAnchorPoint::Bottom );
   QColor mainColor = fontMarkerLayer->color();
   QCOMPARE( mainColor.name(), QStringLiteral( "#4e4e4e" ) );
   QColor strokeColor = fontMarkerLayer->strokeColor();

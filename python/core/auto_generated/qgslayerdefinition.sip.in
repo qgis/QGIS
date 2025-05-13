@@ -14,11 +14,13 @@
 class QgsLayerDefinition
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerDefinition` class holds generic methods for loading/exporting QLR files.
+Holds generic methods for loading/exporting QLR files.
 
-QLR files are an export of the layer xml including the style and datasource location.  There is no link
-to the QLR file once loaded.  Consider the QLR file a mini project file for layers and styles.  QLR
-files also store the layer tree info for the exported layers, including group information.
+QLR files are an export of the layer xml including the style and
+datasource location. There is no link to the QLR file once loaded.
+Consider the QLR file a mini project file for layers and styles. QLR
+files also store the layer tree info for the exported layers, including
+group information.
 %End
 
 %TypeHeaderCode
@@ -28,13 +30,15 @@ files also store the layer tree info for the exported layers, including group in
 
     static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0 );
 %Docstring
-Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
+Loads the QLR at path into QGIS. New layers are added to given project
+into layer tree specified by rootGroup
 
 :param path: file path to the qlr
 :param project: the current project
 :param rootGroup: the layer tree group to insert the qlr content
 :param insertMethod: method for layer tree (since QGIS 3.38)
-:param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
+:param insertPoint: describes where in rootGroup the qlr layers/groups
+                    shall be inserted (since QGIS 3.38)
 
 :return: - true in case of success
          - errorMessage: the returned error message
@@ -42,14 +46,16 @@ Loads the QLR at path into QGIS.  New layers are added to given project into lay
 
     static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = 0 );
 %Docstring
-Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
+Loads the QLR from the XML document. New layers are added to given
+project into layer tree specified by rootGroup
 
 :param doc: the xml document
 :param project: the current project
 :param rootGroup: the layer tree group to insert the qlr content
 :param context: the read write context
 :param insertMethod: method for layer tree (since QGIS 3.38)
-:param insertPoint: describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
+:param insertPoint: describes where in rootGroup the qlr layers/groups
+                    shall be inserted (since QGIS 3.38)
 
 :return: - true in case of success
          - errorMessage: the returned error message
@@ -59,9 +65,10 @@ Loads the QLR from the XML document.  New layers are added to given project into
 %Docstring
 Exports the selected layer tree nodes to a QLR file.
 
-This method uses the :py:func:`QgsProject.instance()`'s file path setting to determine whether absolute
-or relative paths are written. Use the variant with an explicit argument for file path type
-for control over this setting.
+This method uses the :py:func:`QgsProject.instance()`'s file path
+setting to determine whether absolute or relative paths are written. Use
+the variant with an explicit argument for file path type for control
+over this setting.
 
 :param path: file path for exported QLR file
 :param selectedTreeNodes: layer tree nodes to include in the QLR file
@@ -76,7 +83,8 @@ Exports the selected layer tree nodes to a QLR file.
 
 :param path: file path for exported QLR file
 :param selectedTreeNodes: layer tree nodes to include in the QLR file
-:param pathType: specifies whether absolute or relative file paths should be used.
+:param pathType: specifies whether absolute or relative file paths
+                 should be used.
 
 :return: - ``True`` if the export was successful
          - errorMessage: any error messages generated during the export
@@ -91,10 +99,11 @@ Exports the selected layer tree nodes to a QLR XML document.
 
     static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer *> &layers, const QgsReadWriteContext &context );
 %Docstring
-Returns the given layer as a layer definition document
-Layer definitions store the data source as well as styling and custom properties.
+Returns the given layer as a layer definition document Layer definitions
+store the data source as well as styling and custom properties.
 
-Layer definitions can be used to load a layer and styling all from a single file.
+Layer definitions can be used to load a layer and styling all from a
+single file.
 
 This is a low-level routine that does not write layer tree.
 
@@ -103,16 +112,17 @@ This is a low-level routine that does not write layer tree.
 
     static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Creates new layers from a layer definition document.
-This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
+Creates new layers from a layer definition document. This is a low-level
+routine that does not resolve layer ID conflicts, dependencies and joins
 
 .. seealso:: :py:func:`loadLayerDefinition`
 %End
 
     static QList<QgsMapLayer *> loadLayerDefinitionLayers( const QString &qlrfile ) /Factory/;
 %Docstring
-Creates new layers from a layer definition file (.QLR)
-This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
+Creates new layers from a layer definition file (.QLR) This is a
+low-level routine that does not resolve layer ID conflicts, dependencies
+and joins
 
 .. seealso:: :py:func:`loadLayerDefinition`
 %End
@@ -120,7 +130,8 @@ This is a low-level routine that does not resolve layer ID conflicts, dependenci
     class DependencySorter
 {
 %Docstring(signature="appended")
-Class used to work with layer dependencies stored in a XML project or layer definition file
+Handles sorting of dependencies stored in a XML project or layer
+definition file.
 %End
 
 %TypeHeaderCode
@@ -144,12 +155,14 @@ Constructor
 
         QVector<QDomNode> sortedLayerNodes() const;
 %Docstring
-Gets the layer nodes in an order where they can be loaded incrementally without dependency break
+Gets the layer nodes in an order where they can be loaded incrementally
+without dependency break
 %End
 
         QStringList sortedLayerIds() const;
 %Docstring
-Gets the layer IDs in an order where they can be loaded incrementally without dependency break
+Gets the layer IDs in an order where they can be loaded incrementally
+without dependency break
 %End
 
         bool hasCycle() const;
@@ -164,7 +177,8 @@ Whether some dependency is missing
 
         bool isLayerDependent( const QString &layerId ) const;
 %Docstring
-Returns whether the layer associated with the``layerId`` is dependent from another layer
+Returns whether the layer associated with the``layerId`` is dependent
+from another layer
 
 .. versionadded:: 3.32
 %End

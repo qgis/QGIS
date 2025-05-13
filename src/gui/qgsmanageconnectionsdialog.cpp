@@ -527,6 +527,8 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
     el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( { QStringLiteral( "wfs" ), connections[i] } ) );
     el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( { QStringLiteral( "wfs" ), connections[i] } ) );
     el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( { QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "httpMethod" ), QgsOwsConnection::settingsPreferredHttpMethod->value( { QStringLiteral( "wfs" ), connections[i] } ) == Qgis::HttpMethod::Post ? QStringLiteral( "post" ) : QStringLiteral( "get" ) );
+    el.setAttribute( QStringLiteral( "featureMode" ), QgsOwsConnection::settingsWfsFeatureMode->value( { QStringLiteral( "wfs" ), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -558,7 +560,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
     el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
     el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
     el.setAttribute( QStringLiteral( "publicOnly" ), settings.value( path + "/publicOnly", "0" ).toString() );
-
+    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema" ).toString() );
     el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
 
     if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
@@ -1080,6 +1082,8 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( QStringLiteral( "pagingenabled" ) ), { QStringLiteral( "wfs" ), connectionName } );
     QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ).toInt(), { QStringLiteral( "wfs" ), connectionName } );
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ).toInt(), { QStringLiteral( "wfs" ), connectionName } );
+    QgsOwsConnection::settingsPreferredHttpMethod->setValue( child.attribute( QStringLiteral( "httpMethod" ) ).compare( QLatin1String( "post" ), Qt::CaseInsensitive ) == 0 ? Qgis::HttpMethod::Post : Qgis::HttpMethod::Get, { QStringLiteral( "wfs" ), connectionName } );
+    QgsOwsConnection::settingsWfsFeatureMode->setValue( child.attribute( QStringLiteral( "featureMode" ) ), { QStringLiteral( "wfs" ), connectionName } );
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
@@ -1180,6 +1184,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
     settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
+    settings.setValue( QStringLiteral( "/schema" ), child.attribute( QStringLiteral( "schema" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();

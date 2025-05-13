@@ -45,7 +45,7 @@ class QgsProject;
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Definition of the world.
  *
  * \warning Qgs3DMapSettings are a QObject subclass, and accordingly are not
@@ -72,6 +72,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Returns the 3D scene's 2D extent in the 3D scene's CRS
      *
+     * The extent is ignored in globe scenes (which always show the whole globe).
+     *
      * \see crs()
      * \since QGIS 3.30
      */
@@ -79,8 +81,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Sets the 3D scene's 2D \a extent in the 3D scene's CRS, while also setting the scene's origin to the extent's center
+     *
      * This needs to be called during initialization, as terrain will only be generated
      * within this extent and layer 3D data will only be loaded within this extent too.
+     *
+     * The extent is ignored in globe scenes (which always show the whole globe).
      *
      * \see setOrigin()
      * \see setCrs()
@@ -128,6 +133,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Returns mode of the 3D scene - whether it is represented as a globe
+     * (when using Geocentric CRS such as EPSG:4978), or whether it is
+     * a local scene when using a projected CRS.
+     *
+     * In case of globe scene, we always show the whole globe and extent() is ignored.
+     * \since QGIS 3.44
+     */
+    Qgis::SceneMode sceneMode() const;
 
     /**
      * Returns the coordinate transform context, which stores various

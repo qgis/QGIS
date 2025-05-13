@@ -15,8 +15,9 @@ class QgsTreeWidgetItem : QTreeWidgetItem
 %Docstring(signature="appended")
 QTreeWidgetItem subclass with custom handling for item sorting.
 
-:py:class:`QgsTreeWidgetItem` allows for items to be sorted using a specified user role, and
-also correctly handles sorting numeric or mixed text and numeric values.
+:py:class:`QgsTreeWidgetItem` allows for items to be sorted using a
+specified user role, and also correctly handles sorting numeric or mixed
+text and numeric values.
 %End
 
 %TypeHeaderCode
@@ -42,7 +43,8 @@ Constructor for QgsTreeWidgetItem
 %Docstring
 Constructor for QgsTreeWidgetItem
 
-:param strings: list of strings containing text for each column in the item
+:param strings: list of strings containing text for each column in the
+                item
 :param type: item type
 %End
 
@@ -51,7 +53,8 @@ Constructor for QgsTreeWidgetItem
 Constructor for QgsTreeWidgetItem
 
 :param view: parent QTreeWidget view
-:param strings: list of strings containing text for each column in the item
+:param strings: list of strings containing text for each column in the
+                item
 :param type: item type
 %End
 
@@ -77,7 +80,8 @@ Constructor for QgsTreeWidgetItem
 Constructor for QgsTreeWidgetItem
 
 :param parent: QTreeWidgetItem item
-:param strings: list of strings containing text for each column in the item
+:param strings: list of strings containing text for each column in the
+                item
 :param type: item type
 %End
 
@@ -92,9 +96,9 @@ Constructor for QgsTreeWidgetItem
 
     void setSortData( int column, const QVariant &value );
 %Docstring
-Sets the custom sort data for a specified column. If set, this value will be used when
-sorting the item instead of the item's display text. If not set, the item's display
-text will be used when sorting.
+Sets the custom sort data for a specified column. If set, this value
+will be used when sorting the item instead of the item's display text.
+If not set, the item's display text will be used when sorting.
 
 :param column: column index
 :param value: sort value
@@ -104,28 +108,29 @@ text will be used when sorting.
 
     QVariant sortData( int column ) const;
 %Docstring
-Returns the custom sort data for a specified column. If set, this value will be used when
-sorting the item instead of the item's display text. If not set, the item's display
-text will be used when sorting.
+Returns the custom sort data for a specified column. If set, this value
+will be used when sorting the item instead of the item's display text.
+If not set, the item's display text will be used when sorting.
 
 .. seealso:: :py:func:`setSortData`
 %End
 
     void setAlwaysOnTopPriority( int priority );
 %Docstring
-Sets a the item to display always on top of other items in the widget, regardless of the
-sort column and sort or display value for the item.
+Sets a the item to display always on top of other items in the widget,
+regardless of the sort column and sort or display value for the item.
 
-:param priority: priority for sorting always on top items. Items with a lower priority will
-                 be placed above items with a higher priority.
+:param priority: priority for sorting always on top items. Items with a
+                 lower priority will be placed above items with a higher
+                 priority.
 
 .. seealso:: :py:func:`alwaysOnTopPriority`
 %End
 
     int alwaysOnTopPriority() const;
 %Docstring
-Returns the item's priority when it is set to show always on top. Items with a lower priority will
-be placed above items with a higher priority.
+Returns the item's priority when it is set to show always on top. Items
+with a lower priority will be placed above items with a higher priority.
 
 :return: priority, or -1 if item is not set to show always on top
 
@@ -142,7 +147,8 @@ be placed above items with a higher priority.
 class QgsTreeWidgetItemObject : QObject, QgsTreeWidgetItem
 {
 %Docstring(signature="appended")
-Custom :py:class:`QgsTreeWidgetItem` with extra signals when item is edited.
+Custom :py:class:`QgsTreeWidgetItem` with extra signals when the item is
+edited.
 %End
 
 %TypeHeaderCode
@@ -158,7 +164,8 @@ Constructor for QgsTreeWidgetItemObject
 
     explicit QgsTreeWidgetItemObject( QTreeWidget *parent /TransferThis/, int type = Type );
 %Docstring
-Constructs a tree widget item of the specified type and appends it to the items in the given parent.
+Constructs a tree widget item of the specified type and appends it to
+the items in the given parent.
 %End
 
     virtual void setData( int column, int role, const QVariant &value );
@@ -170,7 +177,8 @@ Sets the value for the item's column and role to the given value.
   signals:
     void itemEdited( QTreeWidgetItem *item, int column );
 %Docstring
-Emitted when the contents of the column in the specified item has been edited by the user.
+Emitted when the contents of the column in the specified item has been
+edited by the user.
 %End
 };
 

@@ -7,3 +7,7 @@ QgsMapCanvasInteractionBlocker.Interaction.__doc__ = """Available interactions t
 
 """
 # --
+try:
+    QgsMapCanvasInteractionBlocker.__abstract_methods__ = ['blockCanvasInteraction']
+except (NameError, AttributeError):
+    pass

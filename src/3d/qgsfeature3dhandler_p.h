@@ -37,7 +37,7 @@ class QgsFeature;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Interface to be implemented by 3D symbol implementations in order to generate 3D entities.
  */
 class QgsFeature3DHandler

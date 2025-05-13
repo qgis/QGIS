@@ -64,12 +64,10 @@ void QgsArchive::clear()
 
 bool QgsArchive::zip( const QString &filename )
 {
-  const QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
-  const QString uuid = QUuid::createUuid().toString();
-  QFile tmpFile( tempPath + QDir::separator() + uuid );
+  const QString tempPath( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-project-XXXXXX.zip" ) ) );
 
   // zip content
-  if ( ! QgsZipUtils::zip( tmpFile.fileName(), mFiles ) )
+  if ( ! QgsZipUtils::zip( tempPath, mFiles, true ) )
   {
     const QString err = QObject::tr( "Unable to zip content" );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
@@ -93,17 +91,17 @@ bool QgsArchive::zip( const QString &filename )
   // Clear temporary flag (see GH #32118)
   DWORD dwAttrs;
 #ifdef UNICODE
-  dwAttrs = GetFileAttributes( qUtf16Printable( tmpFile.fileName() ) );
-  SetFileAttributes( qUtf16Printable( tmpFile.fileName() ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+  dwAttrs = GetFileAttributes( qUtf16Printable( tempPath ) );
+  SetFileAttributes( qUtf16Printable( tempPath ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
 #else
-  dwAttrs = GetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ) );
-  SetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+  dwAttrs = GetFileAttributes( tempPath.toLocal8Bit( ).data( ) );
+  SetFileAttributes( tempPath.toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
 #endif
 
 #endif // Q_OS_WIN
 
   // save zip archive
-  if ( ! tmpFile.rename( target ) )
+  if ( !QFile::rename( tempPath, target ) )
   {
     const QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( target );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );

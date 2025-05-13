@@ -179,6 +179,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
       refresh();
     } );
 
+    mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
+    connect( QgsProject::instance(), &QgsProject::scaleMethodChanged, this, [=] {
+      mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
+      updateScale();
+      refresh();
+    } );
+
     connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
       QgsCoordinateReferenceSystem crs = mSettings.destinationCrs();
       crs.updateDefinition();
@@ -1006,7 +1013,7 @@ void QgsMapCanvas::previewJobFinished()
 
   if ( mMap )
   {
-    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().extent() );
+    mMap->addPreviewImage( job->renderedImage(), job->mapSettings().visiblePolygon() );
     mPreviewJobs.removeAll( job );
 
     int number = job->property( "number" ).toInt();
@@ -3517,37 +3524,40 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
-
-  //canvas preview jobs aren't compatible with rotation
-  // TODO fix this
-  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
-    return;
-
   schedulePreviewJob( 0 );
 }
 
 void QgsMapCanvas::startPreviewJob( int number )
 {
-  QgsRectangle mapRect = mSettings.visibleExtent();
-
   if ( number == 4 )
     number += 1;
 
   int j = number / 3;
   int i = number % 3;
 
+  QgsMapSettings mapSettings = mSettings;
+  mapSettings.setRotation( 0 );
+  const QgsRectangle mapRect = mapSettings.visibleExtent();
+  QgsPointXY jobCenter = mapRect.center();
+  const double dx = ( i - 1 ) * mapRect.width();
+  const double dy = ( 1 - j ) * mapRect.height();
+  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
+  {
+    const double radians = mSettings.rotation() * M_PI / 180;
+    const double rdx = dx * cos( radians ) - dy * sin( radians );
+    const double rdy = dy * cos( radians ) + dx * sin( radians );
+    jobCenter.setX( jobCenter.x() + rdx );
+    jobCenter.setY( jobCenter.y() + rdy );
+  }
+  else
+  {
+    jobCenter.setX( jobCenter.x() + dx );
+    jobCenter.setY( jobCenter.y() + dy );
+  }
+  const QgsRectangle jobExtent = QgsRectangle::fromCenterAndSize( jobCenter, mapRect.width(), mapRect.height() );
+
   //copy settings, only update extent
   QgsMapSettings jobSettings = mSettings;
-
-  double dx = ( i - 1 ) * mapRect.width();
-  double dy = ( 1 - j ) * mapRect.height();
-  QgsRectangle jobExtent = mapRect;
-
-  jobExtent.setXMaximum( jobExtent.xMaximum() + dx );
-  jobExtent.setXMinimum( jobExtent.xMinimum() + dx );
-  jobExtent.setYMaximum( jobExtent.yMaximum() + dy );
-  jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
-
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, false );
   jobSettings.setFlag( Qgis::MapSettingsFlag::RenderPreviewJob, true );
@@ -3558,7 +3568,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   const QList<QgsMapLayer *> layers = jobSettings.layers();
   QList<QgsMapLayer *> previewLayers;
   QgsDataProvider::PreviewContext context;
-  context.maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
+  context.maxRenderingTimeMs = Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS;
   for ( QgsMapLayer *layer : layers )
   {
     if ( layer->customProperty( QStringLiteral( "rendering/noPreviewJobs" ), false ).toBool() )
@@ -3608,7 +3618,7 @@ void QgsMapCanvas::stopPreviewJobs()
 void QgsMapCanvas::schedulePreviewJob( int number )
 {
   mPreviewTimer.setSingleShot( true );
-  mPreviewTimer.setInterval( PREVIEW_JOB_DELAY_MS );
+  mPreviewTimer.setInterval( Qgis::PREVIEW_JOB_DELAY_MS );
   disconnect( mPreviewTimerConnection );
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [=]() {
     startPreviewJob( number );

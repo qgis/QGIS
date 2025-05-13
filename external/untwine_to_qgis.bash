@@ -20,7 +20,7 @@ echo "untwine_to_qgis: Remove old version"
 rm -rf $UNTWINE_QGIS_DIR/*
 
 echo "untwine_to_qgis: Copy new version"
-rsync -r $UNTWINE_DIR/ $UNTWINE_QGIS_DIR/ --exclude="CMakeLists.txt*" --exclude="cmake/" --exclude="README.md" --exclude=".git" --exclude=".gitignore" --exclude=".github/" --exclude="ci/" --exclude="lazperf/" --exclude=".gitattributes" --exclude="test/" --exclude="build*/"
+rsync -r $UNTWINE_DIR/ $UNTWINE_QGIS_DIR/ --exclude="CMakeLists.txt*" --exclude="cmake/" --exclude="README.md" --exclude="HOWTORELEASE.md" --exclude=".git" --exclude=".gitignore" --exclude=".github/" --exclude="ci/" --exclude="lazperf/" --exclude=".gitattributes" --exclude="test/" --exclude="build*/"
 
 echo "untwine_to_qgis: Done"
 cd $PWD

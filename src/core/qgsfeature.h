@@ -76,6 +76,9 @@ class CORE_EXPORT QgsFeature
     QgsAttributes attributes = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
     sipRes = PyObject_GetIter( attrs );
+    // PyObject_GetIter has added a ref to attrs - we need to decrement the ref from sipConvertFromType,
+    // so that the garbage collector will delete attrs when the iterator is deleted
+    Py_DECREF( attrs );
     % End
 #endif
 

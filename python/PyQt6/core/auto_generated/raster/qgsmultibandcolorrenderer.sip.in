@@ -13,24 +13,38 @@
 class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
 %Docstring(signature="appended")
-Renderer for multiband images with the color components
+Renderer for multiband images with the color components.
 %End
 
 %TypeHeaderCode
 #include "qgsmultibandcolorrenderer.h"
 %End
   public:
+
     QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement *redEnhancement = 0, QgsContrastEnhancement *greenEnhancement = 0,
-                               QgsContrastEnhancement *blueEnhancement = 0 );
+                               QgsContrastEnhancement *redEnhancement /Transfer/ = 0,
+                               QgsContrastEnhancement *greenEnhancement /Transfer/ = 0,
+                               QgsContrastEnhancement *blueEnhancement /Transfer/ = 0 );
+%Docstring
+Constructor for QgsMultiBandColorRenderer.
+
+:param input: input raster interface
+:param redBand: band number for red channel
+:param greenBand: band number for green channel
+:param blueBand: band number for blue channel
+:param redEnhancement: optional contrast enhancement for red channel.
+                       Ownership is transferred to the renderer.
+:param greenEnhancement: optional contrast enhancement for green
+                         channel. Ownership is transferred to the
+                         renderer.
+:param blueEnhancement: optional contrast enhancement for blue channel.
+                        Ownership is transferred to the renderer.
+%End
     ~QgsMultiBandColorRenderer();
 
 
     virtual QgsMultiBandColorRenderer *clone() const /Factory/;
 
-%Docstring
-QgsMultiBandColorRenderer cannot be copied. Use :py:func:`~QgsMultiBandColorRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 
@@ -40,11 +54,46 @@ QgsMultiBandColorRenderer cannot be copied. Use :py:func:`~QgsMultiBandColorRend
 
 
     int redBand() const;
+%Docstring
+Returns the band number for the red channel.
+
+.. seealso:: :py:func:`setRedBand`
+%End
+
     void setRedBand( int band );
+%Docstring
+Sets the ``band`` number for the red channel.
+
+.. seealso:: :py:func:`redBand`
+%End
+
     int greenBand() const;
+%Docstring
+Returns the band number for the green channel.
+
+.. seealso:: :py:func:`setRedBand`
+%End
+
     void setGreenBand( int band );
+%Docstring
+Sets the ``band`` number for the green channel.
+
+.. seealso:: :py:func:`greenBand`
+%End
+
     int blueBand() const;
+%Docstring
+Returns the band number for the blue channel.
+
+.. seealso:: :py:func:`setRedBand`
+%End
+
     void setBlueBand( int band );
+%Docstring
+Sets the ``band`` number for the blue channel.
+
+.. seealso:: :py:func:`blueBand`
+%End
 
     const QgsContrastEnhancement *redContrastEnhancement() const;
 %Docstring
@@ -126,7 +175,9 @@ Ownership of the enhancement is transferred.
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
 

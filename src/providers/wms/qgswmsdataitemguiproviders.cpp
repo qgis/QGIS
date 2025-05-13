@@ -46,21 +46,25 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 {
   if ( QgsWMSConnectionItem *connItem = qobject_cast<QgsWMSConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
-    menu->addAction( actionRefresh );
-
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsWMSConnectionItem *> wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
+
+    if ( wmsConnectionItems.size() == 1 )
+    {
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( wmsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString &connectionName ) { QgsWMSConnection::deleteConnection( connectionName ); }, context );
@@ -175,15 +179,19 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 {
   if ( QgsXyzLayerItem *layerItem = qobject_cast<QgsXyzLayerItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
-    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
-    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsXyzLayerItem *> xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
+
+    if ( xyzConnectionItems.size() == 1 )
+    {
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
+      connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+      connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( xyzConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString &connectionName ) { QgsXyzConnectionUtils::deleteConnection( connectionName ); }, context );

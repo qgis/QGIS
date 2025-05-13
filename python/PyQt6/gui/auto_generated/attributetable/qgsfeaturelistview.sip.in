@@ -13,7 +13,8 @@
 class QgsFeatureListView : QListView
 {
 %Docstring(signature="appended")
-Shows a list of features and renders a edit button next to each feature.
+Shows a list of features and renders an edit button next to each
+feature.
 
 Accepts a display expression to define the way, features are rendered.
 Uses a :py:class:`QgsFeatureListModel` as source model.
@@ -40,7 +41,8 @@ Returns the layer cache
 
     virtual void setModel( QgsFeatureListModel *featureListModel );
 %Docstring
-Set the :py:class:`QgsFeatureListModel` which is used to retrieve information
+Set the :py:class:`QgsFeatureListModel` which is used to retrieve
+information
 
 :param featureListModel: The model to use
 %End
@@ -54,8 +56,8 @@ Gets the featureListModel used by this view
 
     bool setDisplayExpression( const QString &displayExpression );
 %Docstring
-The display expression is an expression used to render the fields into a single string
-which is displaied.
+The display expression is an expression used to render the fields into a
+single string which is displaied.
 
 :param displayExpression: The expression used to render the feature
 
@@ -73,7 +75,8 @@ Returns the expression which is currently used to render the features.
 
     QString parserErrorString();
 %Docstring
-Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
+Returns a detailed message about errors while parsing a
+:py:class:`QgsExpression`.
 
 :return: A message containing information about the parser error.
 %End
@@ -96,7 +99,7 @@ Sets if the currently shown form has received any edit events so far.
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager:
+:param featureSelectionManager: 
 %End
 
   protected:
@@ -140,7 +143,8 @@ Emitted whenever the display expression is successfully changed
 
     void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 %Docstring
-Emitted when the context menu is created to add the specific actions to it
+Emitted when the context menu is created to add the specific actions to
+it
 
 :param menu: is the already created context menu
 :param atIndex: is the position of the current feature in the model

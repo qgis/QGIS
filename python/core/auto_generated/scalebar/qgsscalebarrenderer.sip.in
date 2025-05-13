@@ -14,8 +14,8 @@ class QgsScaleBarRenderer
 %Docstring(signature="appended")
 Abstract base class for scale bar renderers.
 
-Scalebar renderer subclasses implement custom drawing logic, with the possibility to implement
-custom labeling.
+Scalebar renderer subclasses implement custom drawing logic, with the
+possibility to implement custom labeling.
 %End
 
 %TypeHeaderCode
@@ -53,7 +53,7 @@ custom labeling.
 
       double scale;
 
-      Flags flags;
+      QgsScaleBarRenderer::Flags flags;
 
       bool isValid() const;
 %Docstring
@@ -92,34 +92,40 @@ Returns the user friendly, translated name for the renderer.
 
     virtual Flags flags() const;
 %Docstring
-Returns the scalebar rendering flags, which dictates the renderer's behavior.
+Returns the scalebar rendering flags, which dictates the renderer's
+behavior.
 
 .. versionadded:: 3.14
 %End
 
     virtual int sortKey() const;
 %Docstring
-Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
+Returns a sorting key value, where renderers with a lower sort key will
+be shown earlier in lists.
 
-Generally, subclasses should return :py:func:`QgsScaleBarRenderer.sortKey()` as their sorting key.
+Generally, subclasses should return
+:py:func:`QgsScaleBarRenderer.sortKey()` as their sorting key.
 %End
 
     virtual QgsScaleBarRenderer *clone() const = 0 /Factory/;
 %Docstring
-Returns a clone of the renderer. The caller takes ownership of the returned value.
+Returns a clone of the renderer. The caller takes ownership of the
+returned value.
 %End
 
     virtual void draw( QgsRenderContext &context,
                        const QgsScaleBarSettings &settings,
                        const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const = 0;
 %Docstring
-Draws the scalebar using the specified ``settings`` and ``scaleContext`` to a destination render ``context``.
+Draws the scalebar using the specified ``settings`` and ``scaleContext``
+to a destination render ``context``.
 %End
 
  virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
         const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const /Deprecated="Since 3.40. Use the version with a QgsRenderContext instead."/;
 %Docstring
-Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
+Calculates the required box size (in millimeters) for a scalebar using
+the specified ``settings`` and ``scaleContext``.
 
 .. deprecated:: 3.40
 
@@ -130,14 +136,16 @@ Calculates the required box size (in millimeters) for a scalebar using the speci
                                      const QgsScaleBarSettings &settings,
                                      const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 %Docstring
-Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
+Calculates the required box size (in millimeters) for a scalebar using
+the specified ``settings`` and ``scaleContext``.
 
 .. versionadded:: 3.14
 %End
 
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 %Docstring
-Applies any default settings relating to the scalebar to the passed ``settings`` object.
+Applies any default settings relating to the scalebar to the passed
+``settings`` object.
 
 Returns ``True`` if settings were applied.
 
@@ -150,7 +158,8 @@ Returns ``True`` if settings were applied.
                             const QgsScaleBarSettings &settings,
                             const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 %Docstring
-Draws default scalebar labels using the specified ``settings`` and ``scaleContext`` to a destination render ``context``.
+Draws default scalebar labels using the specified ``settings`` and
+``scaleContext`` to a destination render ``context``.
 %End
 
     QString firstLabelString( const QgsScaleBarSettings &settings ) const;
@@ -160,7 +169,8 @@ Returns the text used for the first label in the scalebar.
 
  double firstLabelXOffset( const QgsScaleBarSettings &settings ) const /Deprecated="Since 3.40. Use the version with QgsRenderContext instead."/;
 %Docstring
-Returns the x-offset (in millimeters) used for the first label in the scalebar.
+Returns the x-offset (in millimeters) used for the first label in the
+scalebar.
 
 .. deprecated:: 3.40
 
@@ -169,7 +179,8 @@ Returns the x-offset (in millimeters) used for the first label in the scalebar.
 
     double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context, const ScaleBarContext &scaleContext ) const;
 %Docstring
-Returns the x-offset (in render context painter units) used for the first label in the scalebar.
+Returns the x-offset (in render context painter units) used for the
+first label in the scalebar.
 
 .. versionadded:: 3.2
 %End

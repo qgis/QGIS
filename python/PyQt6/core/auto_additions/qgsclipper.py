@@ -7,6 +7,7 @@ QgsClipper.ZMax = QgsClipper.Boundary.ZMax
 QgsClipper.ZMin = QgsClipper.Boundary.ZMin
 try:
     QgsClipper.__attribute_docs__ = {'MAX_X': 'Maximum X-coordinate of the rectangular box used for clipping.', 'MIN_X': 'Minimum X-coordinate of the rectangular box used for clipping.', 'MAX_Y': 'Maximum Y-coordinate of the rectangular box used for clipping.', 'MIN_Y': 'Minimum Y-coordinate of the rectangular box used for clipping.'}
+    QgsClipper.__annotations__ = {'MAX_X': float, 'MIN_X': float, 'MAX_Y': float, 'MIN_Y': float}
     QgsClipper.trimFeature = staticmethod(QgsClipper.trimFeature)
     QgsClipper.trimPolygon = staticmethod(QgsClipper.trimPolygon)
     QgsClipper.clippedLine = staticmethod(QgsClipper.clippedLine)

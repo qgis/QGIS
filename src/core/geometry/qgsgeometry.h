@@ -904,7 +904,7 @@ class CORE_EXPORT QgsGeometry
      * \param epsilon epsilon for segment snapping
      * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &nextVertexIndex SIP_OUT, int *leftOrRightOfSegment SIP_OUT = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &nextVertexIndex SIP_OUT, int *leftOrRightOfSegment SIP_OUT = nullptr, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const;
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
@@ -1105,11 +1105,7 @@ class CORE_EXPORT QgsGeometry
           QVector<QgsPointXY> topologyTestPoints;
 
           QVector<QgsPointXY> *splitLine = reinterpret_cast<QVector<QgsPointXY> *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-          if ( sipIsErr )
-          {
-            sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
-          }
-          else
+          if ( !sipIsErr )
           {
             Qgis::GeometryOperationResult result = sipCpp->splitGeometry( *splitLine, newGeometries, a1, topologyTestPoints, a2 );
 
@@ -1122,6 +1118,7 @@ class CORE_EXPORT QgsGeometry
             PyTuple_SET_ITEM( sipRes, 1, o1 );
             PyTuple_SET_ITEM( sipRes, 2, o2 );
           }
+          sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
         }
 
         else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) &&
@@ -1131,11 +1128,7 @@ class CORE_EXPORT QgsGeometry
           QVector<QgsPoint> topologyTestPoints;
 
           QVector<QgsPoint> *splitLine = reinterpret_cast<QVector<QgsPoint> *>( sipConvertToType( a0, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-          if ( sipIsErr )
-          {
-            sipReleaseType( splitLine, sipType_QVector_0100QgsPoint, state );
-          }
-          else
+          if ( !sipIsErr )
           {
             Qgis::GeometryOperationResult result = sipCpp->splitGeometry( *splitLine, newGeometries, a1, topologyTestPoints, a2 );
 
@@ -1148,6 +1141,7 @@ class CORE_EXPORT QgsGeometry
             PyTuple_SET_ITEM( sipRes, 1, o1 );
             PyTuple_SET_ITEM( sipRes, 2, o2 );
           }
+          sipReleaseType( splitLine, sipType_QVector_0100QgsPoint, state );
         }
         else
         {
@@ -2229,6 +2223,10 @@ class CORE_EXPORT QgsGeometry
      * to Z, M or ZM versions.
      * By default 0.0 is used for Z and M.
      *
+     * Since QGIS 3.44, the parameters \a avoidDuplicates controls whether to keep duplicated nodes (e.g. start/end of rings)
+     * when promoting polygon geometries to points.
+     * By default duplicated nodes are ignored.
+     *
      * \note This method is much stricter than convertToType(), as it considers the exact WKB type
      * of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
      * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
@@ -2236,7 +2234,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.14
      */
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0 ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true ) const;
 
     /**
      * Try to convert the geometry to the requested type
@@ -3031,15 +3029,12 @@ class CORE_EXPORT QgsGeometry
             QgsPolylineXY *p1;
             p0 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
             p1 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
-            if ( sipIsErr )
-            {
-              sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
-              sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
-            }
-            else
+            if ( !sipIsErr )
             {
               sipRes = QgsGeometry::compare( *p0, *p1, a2 );
             }
+            sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
+            sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
           }
           else if ( PyList_Check( o0 ) && PyList_Check( o1 ) &&
                     PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
@@ -3058,15 +3053,12 @@ class CORE_EXPORT QgsGeometry
                 QgsPolygonXY *p1;
                 p0 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
                 p1 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
-                if ( sipIsErr )
-                {
-                  sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
-                  sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
-                }
-                else
+                if ( !sipIsErr )
                 {
                   sipRes = QgsGeometry::compare( *p0, *p1, a2 );
                 }
+                sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
+                sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
               }
               else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) &&
                         PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
@@ -3085,15 +3077,12 @@ class CORE_EXPORT QgsGeometry
                     QgsMultiPolygonXY *p1;
                     p0 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
                     p1 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
-                    if ( sipIsErr )
-                    {
-                      sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );
-                      sipReleaseType( p1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state1 );
-                    }
-                    else
+                    if ( !sipIsErr )
                     {
                       sipRes = QgsGeometry::compare( *p0, *p1, a2 );
                     }
+                    sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );
+                    sipReleaseType( p1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state1 );
                   }
                 }
               }

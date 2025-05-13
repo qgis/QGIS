@@ -21,11 +21,10 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 
 
-
 class QgsLayoutTableStyle
 {
 %Docstring(signature="appended")
-Styling option for a layout table cell
+Styling option for a layout table cell.
 %End
 
 %TypeHeaderCode
@@ -43,7 +42,8 @@ Styling option for a layout table cell
 %Docstring
 Writes the style's properties to XML for storage.
 
-:param styleElem: an existing QDomElement in which to store the style's properties.
+:param styleElem: an existing QDomElement in which to store the style's
+                  properties.
 :param doc: QDomDocument for the destination XML.
 
 .. seealso:: :py:func:`readXml`
@@ -63,8 +63,8 @@ Reads the style's properties from XML.
 class QgsLayoutTable: QgsLayoutMultiFrame
 {
 %Docstring(signature="appended")
-A class to display a table in the print layout, and allow
-the table to span over multiple frames
+Displays a table in the print layout, and allows the table to span over
+multiple frames.
 %End
 
 %TypeHeaderCode
@@ -122,14 +122,16 @@ Constructor for QgsLayoutTable, belonging to the specified ``layout``.
 
     void setCellMargin( double margin );
 %Docstring
-Sets the ``margin`` distance in mm between cell borders and their contents.
+Sets the ``margin`` distance in mm between cell borders and their
+contents.
 
 .. seealso:: :py:func:`cellMargin`
 %End
 
     double cellMargin() const;
 %Docstring
-Returns the margin distance between cell borders and their contents in mm.
+Returns the margin distance between cell borders and their contents in
+mm.
 
 .. seealso:: :py:func:`setCellMargin`
 %End
@@ -143,8 +145,8 @@ Sets the behavior ``mode`` for empty tables with no content rows.
 
     EmptyTableMode emptyTableBehavior() const;
 %Docstring
-Returns the behavior mode for empty tables. This property controls
-how the table is drawn if it contains no content rows.
+Returns the behavior mode for empty tables. This property controls how
+the table is drawn if it contains no content rows.
 
 .. seealso:: :py:func:`setEmptyTableBehavior`
 %End
@@ -152,8 +154,8 @@ how the table is drawn if it contains no content rows.
     void setEmptyTableMessage( const QString &message );
 %Docstring
 Sets the ``message`` for empty tables with no content rows. This message
-is displayed in the table body if the empty table behavior is
-set to ShowMessage.
+is displayed in the table body if the empty table behavior is set to
+ShowMessage.
 
 .. seealso:: :py:func:`emptyTableMessage`
 
@@ -163,8 +165,8 @@ set to ShowMessage.
     QString emptyTableMessage() const;
 %Docstring
 Returns the message for empty tables with no content rows. This message
-is displayed in the table body if the empty table behavior is
-set to ShowMessage.
+is displayed in the table body if the empty table behavior is set to
+ShowMessage.
 
 .. seealso:: :py:func:`setEmptyTableMessage`
 
@@ -173,7 +175,8 @@ set to ShowMessage.
 
     void setShowEmptyRows( bool showEmpty );
 %Docstring
-Sets whether empty rows should be drawn. Tables default to hiding empty rows.
+Sets whether empty rows should be drawn. Tables default to hiding empty
+rows.
 
 :param showEmpty: set to ``True`` to show empty rows in the table
 
@@ -281,16 +284,16 @@ Returns the horizontal alignment for table headers.
 
     void setHeaderMode( HeaderMode mode );
 %Docstring
-Sets the display ``mode`` for headers in the table. This property controls
-if and where headers are shown in the table.
+Sets the display ``mode`` for headers in the table. This property
+controls if and where headers are shown in the table.
 
 .. seealso:: :py:func:`headerMode`
 %End
 
     HeaderMode headerMode() const;
 %Docstring
-Returns the display mode for headers in the table. This property controls
-if and where headers are shown in the table.
+Returns the display mode for headers in the table. This property
+controls if and where headers are shown in the table.
 
 .. seealso:: :py:func:`setHeaderMode`
 %End
@@ -517,39 +520,43 @@ Returns the color used for the background of the table.
 
     void setWrapBehavior( WrapBehavior behavior );
 %Docstring
-Sets the wrap ``behavior`` for the table, which controls how text within cells is
-automatically wrapped.
+Sets the wrap ``behavior`` for the table, which controls how text within
+cells is automatically wrapped.
 
 .. seealso:: :py:func:`wrapBehavior`
 %End
 
     WrapBehavior wrapBehavior() const;
 %Docstring
-Returns the wrap behavior for the table, which controls how text within cells is
-automatically wrapped.
+Returns the wrap behavior for the table, which controls how text within
+cells is automatically wrapped.
 
 .. seealso:: :py:func:`setWrapBehavior`
 %End
 
     QgsLayoutTableColumns &columns();
 %Docstring
-Returns a reference to the list of :py:class:`QgsLayoutTableColumns` shown in the table
+Returns a reference to the list of :py:class:`QgsLayoutTableColumns`
+shown in the table
 
 .. seealso:: :py:func:`setColumns`
 %End
 
     void setColumns( const QgsLayoutTableColumns &columns );
 %Docstring
-Replaces the columns in the table with a specified list of :py:class:`QgsLayoutTableColumns`.
+Replaces the columns in the table with a specified list of
+:py:class:`QgsLayoutTableColumns`.
 
-:param columns: list of :py:class:`QgsLayoutTableColumns` to show in table.
+:param columns: list of :py:class:`QgsLayoutTableColumns` to show in
+                table.
 
 .. seealso:: :py:func:`columns`
 %End
 
     QgsLayoutTableSortColumns &sortColumns();
 %Docstring
-Returns a reference to the list of :py:class:`QgsLayoutTableSortColumns` shown in the table.
+Returns a reference to the list of :py:class:`QgsLayoutTableSortColumns`
+shown in the table.
 
 .. warning::
 
@@ -563,9 +570,11 @@ Returns a reference to the list of :py:class:`QgsLayoutTableSortColumns` shown i
 
     void setSortColumns( const QgsLayoutTableSortColumns &sortColumns );
 %Docstring
-Replaces the sorting columns in the table with a specified list of :py:class:`QgsLayoutTableSortColumns`.
+Replaces the sorting columns in the table with a specified list of
+:py:class:`QgsLayoutTableSortColumns`.
 
-:param sortColumns: list of :py:class:`QgsLayoutTableColumns` used to sort the table.
+:param sortColumns: list of :py:class:`QgsLayoutTableColumns` used to
+                    sort the table.
 
 .. warning::
 
@@ -598,19 +607,22 @@ Fetches the contents used for the cells in the table.
 
 :return: ``True`` if table contents were successfully retrieved.
 
-:param contents: :py:class:`QgsLayoutTableContents` to store retrieved row data in
+:param contents: :py:class:`QgsLayoutTableContents` to store retrieved
+                 row data in
 %End
 
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 %Docstring
-Returns the conditional style to use for the cell at ``row``, ``column``.
+Returns the conditional style to use for the cell at ``row``,
+``column``.
 
 .. versionadded:: 3.12
 %End
 
     virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const /Factory/;
 %Docstring
-Creates a new :py:class:`QgsExpressionContextScope` for the cell at ``row``, ``column``.
+Creates a new :py:class:`QgsExpressionContextScope` for the cell at
+``row``, ``column``.
 
 .. versionadded:: 3.16
 %End
@@ -659,9 +671,9 @@ Returns the current contents of the table. Excludes header cells.
 
     virtual void refreshAttributes();
 %Docstring
-Refreshes the contents shown in the table by querying for new data.
-This also causes the column widths and size of the table to change to accommodate the
-new data.
+Refreshes the contents shown in the table by querying for new data. This
+also causes the column widths and size of the table to change to
+accommodate the new data.
 %End
 
     virtual void recalculateFrameSizes();
@@ -706,16 +718,21 @@ Calculates the maximum height of text shown in rows.
 
     int rowsVisible( QgsRenderContext &context, double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
 %Docstring
-Calculates how many content rows would be visible within a frame of the specified
-height.
+Calculates how many content rows would be visible within a frame of the
+specified height.
 
 :param context: render context
 :param frameHeight: height of frame
-:param firstRow: index of first row visible in frame (where 0 = first row in table)
-:param includeHeader: set to ``True`` if frame would include a header row
-:param includeEmptyRows: set to ``True`` to also include rows which would be empty in the returned count. For instance,
-                         if the frame would include all table content rows and have space left for extra rows then setting this parameter
-                         to ``True`` would also include a count of these extra blank rows.
+:param firstRow: index of first row visible in frame (where 0 = first
+                 row in table)
+:param includeHeader: set to ``True`` if frame would include a header
+                      row
+:param includeEmptyRows: set to ``True`` to also include rows which
+                         would be empty in the returned count. For
+                         instance, if the frame would include all table
+                         content rows and have space left for extra rows
+                         then setting this parameter to ``True`` would
+                         also include a count of these extra blank rows.
 
 :return: number of visible content rows (excluding header row)
 %End
@@ -726,10 +743,14 @@ Calculates how many content rows are visible within a given frame.
 
 :param context: render context
 :param frameIndex: index number for frame
-:param firstRow: index of first row visible in frame (where 0 = first row in table)
-:param includeEmptyRows: set to ``True`` to also include rows which would be empty in the returned count. For instance,
-                         if the frame would include all table content rows and have space left for extra rows then setting this parameter
-                         to ``True`` would also include a count of these extra blank rows.
+:param firstRow: index of first row visible in frame (where 0 = first
+                 row in table)
+:param includeEmptyRows: set to ``True`` to also include rows which
+                         would be empty in the returned count. For
+                         instance, if the frame would include all table
+                         content rows and have space left for extra rows
+                         then setting this parameter to ``True`` would
+                         also include a count of these extra blank rows.
 
 :return: number of visible content rows (excludes header rows)
 %End
@@ -750,8 +771,10 @@ Draws the horizontal grid lines for the table.
 
 :param context: destination render context
 :param firstRow: index corresponding to first row shown in frame
-:param lastRow: index corresponding to last row shown in frame. If greater than the number of content rows in the
-                table, then the default row height will be used for the remaining rows.
+:param lastRow: index corresponding to last row shown in frame. If
+                greater than the number of content rows in the table,
+                then the default row height will be used for the
+                remaining rows.
 :param drawHeaderLines: set to ``True`` to include for the table header
 
 .. seealso:: :py:func:`drawVerticalGridLines`
@@ -775,7 +798,8 @@ Checks whether a table contents contains a given row
 
     virtual QgsTextFormat textFormatForCell( int row, int column ) const;
 %Docstring
-Returns the text format to use for the cell at the specified ``row`` and ``column``.
+Returns the text format to use for the cell at the specified ``row`` and
+``column``.
 
 .. seealso:: :py:func:`textFormatForHeader`
 
@@ -784,7 +808,8 @@ Returns the text format to use for the cell at the specified ``row`` and ``colum
 
     virtual QgsTextFormat textFormatForHeader( int column ) const;
 %Docstring
-Returns the text format to use for the header cell at the specified ``column``.
+Returns the text format to use for the header cell at the specified
+``column``.
 
 .. seealso:: :py:func:`textFormatForCell`
 
@@ -793,7 +818,8 @@ Returns the text format to use for the header cell at the specified ``column``.
 
     virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
 %Docstring
-Returns the horizontal alignment to use for the cell at the specified ``row`` and ``column``.
+Returns the horizontal alignment to use for the cell at the specified
+``row`` and ``column``.
 
 .. seealso:: :py:func:`verticalAlignmentForCell`
 
@@ -802,7 +828,8 @@ Returns the horizontal alignment to use for the cell at the specified ``row`` an
 
     virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
 %Docstring
-Returns the vertical alignment to use for the cell at the specified ``row`` and ``column``.
+Returns the vertical alignment to use for the cell at the specified
+``row`` and ``column``.
 
 .. seealso:: :py:func:`horizontalAlignmentForCell`
 

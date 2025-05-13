@@ -46,7 +46,7 @@ endif()
 
 set(ENABLE_MSSQLTEST_CPP FALSE CACHE BOOL "Enable MSSQL provider C++ tests")
 if (ENABLE_MSSQLTEST_CPP)
-  add_qgis_test(testqgsmssqlprovider.cpp MODULE provider LINKEDLIBRARIES provider_mssql_a qgis_core LABELS "MSSQL")
+  add_qgis_test(testqgsmssqlprovider.cpp MODULE provider LINKEDLIBRARIES provider_mssql_a qgis_core LABELS "SQLSERVER")
   # also depend on dynamic lib, so that building this test will also build the dynamic lib
   add_dependencies(test_provider_mssqlprovider provider_mssql)
 endif()

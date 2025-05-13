@@ -13,11 +13,12 @@
 class QgsMapUnitScale
 {
 %Docstring(signature="appended")
-Struct for storing maximum and minimum scales for measurements in map units
+Struct for storing maximum and minimum scales for measurements in map
+units.
 
-For measurements in map units, a minimum and a maximum scale can be defined.
-Outside this range, the measurements aren't scaled anymore proportionally to
-the map scale.
+For measurements in map units, a minimum and a maximum scale can be
+defined. Outside this range, the measurements aren't scaled anymore
+proportionally to the map scale.
 %End
 
 %TypeHeaderCode
@@ -31,7 +32,16 @@ Constructor for QgsMapUnitScale
 
 :param minScale: minimum allowed scale, or 0.0 if no minimum scale set
 :param maxScale: maximum allowed scale, or 0.0 if no maximum scale set
-                 The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+                 The scale values indicates the scale denominator, e.g.
+                 1000.0 for a 1:1000 map.
+%End
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the scale is null, i.e. it is a default constructed
+QgsMapUnitScale.
+
+.. versionadded:: 3.44
 %End
 
     double minScale;
@@ -45,8 +55,8 @@ Constructor for QgsMapUnitScale
 
     double computeMapUnitsPerPixel( const QgsRenderContext &c ) const;
 %Docstring
-Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
-set for the object.
+Computes a map units per pixel scaling factor, respecting the minimum
+and maximum scales set for the object.
 
 :param c: render context
 

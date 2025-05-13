@@ -10,11 +10,10 @@
 
 
 
-
 class QgsOrderByDialog : QDialog
 {
 %Docstring(signature="appended")
-This is a dialog to build and manage a list of order by clauses.
+A dialog to build and manage a list of order by clauses.
 %End
 
 %TypeHeaderCode

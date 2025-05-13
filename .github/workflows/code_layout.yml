@@ -162,7 +162,7 @@ jobs:
               silversearcher-ag
 
       - name: Retrieve changed files
-        uses: tj-actions/changed-files@v45
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c #v46
         id: changed_files
         with:
           separator: " "
@@ -170,8 +170,8 @@ jobs:
       - name: Spell Test
         if: steps.changed_files.outputs.any_changed == 'true'
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
-        run: echo "$ALL_CHANGED_FILES" | ./scripts/spell_check/check_spelling.sh
+          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.changed_files }}
+        run: ./scripts/spell_check/check_spelling.sh
 
   sip_check:
     runs-on: ubuntu-latest

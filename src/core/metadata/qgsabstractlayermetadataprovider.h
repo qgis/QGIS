@@ -43,6 +43,7 @@ struct CORE_EXPORT QgsMetadataSearchContext
 /**
  * \ingroup core
  * \brief Result record of layer metadata provider search.
+ *
  * The result contains QGIS metadata information and all information
  * that is required by QGIS to load the layer and to filter
  * the results.

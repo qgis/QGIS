@@ -12,16 +12,15 @@
 class QgsDataSourceSelectWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
-select an existing data source.
+Embeds the browser view to select an existing data source.
 
-By default any layer type can be chosen, the valid layer
-type can be restricted by setting a layer type filter with
-setLayerTypeFilter(layerType) or by activating the filter
-directly from the constructor.
+By default any layer type can be chosen, the valid layer type can be
+restricted by setting a layer type filter with
+setLayerTypeFilter(layerType) or by activating the filter directly from
+the constructor.
 
-To retrieve the selected data source, :py:func:`~uri` can be called and it
-will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
+To retrieve the selected data source, :py:func:`~uri` can be called and
+it will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
 .. versionadded:: 3.14
 %End
@@ -32,11 +31,14 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
   public:
     QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
-Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
+Constructs a QgsDataSourceSelectWidget, optionally filtering by layer
+type
 
-:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
+:param browserModel: an existing browser model (typically from app), if
+                     ``None`` an instance will be created
 :param setFilterByLayerType: activates filtering by layer type
-:param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
+:param layerType: sets the layer type filter, this is in effect only if
+                  filtering by layer type is also active
 :param parent: the object
 %End
 
@@ -65,9 +67,11 @@ Sets a description label
 %Docstring
 Expands out a file ``path`` in the view.
 
-The ``path`` must correspond to a valid directory existing on the file system.
+The ``path`` must correspond to a valid directory existing on the file
+system.
 
-Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select the path too.
+Since QGIS 3.38 the ``selectPath`` argument can be used to automatically
+select the path too.
 
 .. versionadded:: 3.28
 %End
@@ -108,7 +112,8 @@ Scroll to last selected index and expand it's children
 
     void validationChanged( bool isValid );
 %Docstring
-This signal is emitted whenever the validation status of the widget changes.
+This signal is emitted whenever the validation status of the widget
+changes.
 
 :param isValid: ``True`` if the current status of the widget is valid
 %End
@@ -129,16 +134,16 @@ Emitted when an item is triggered, e.g. via a double-click.
 class QgsDataSourceSelectDialog : QDialog
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
-select an existing data source.
+A dialog which embeds the browser view to select an existing data
+source.
 
-By default any layer type can be chosen, the valid layer
-type can be restricted by setting a layer type filter with
-setLayerTypeFilter(layerType) or by activating the filter
-directly from the constructor.
+By default any layer type can be chosen, the valid layer type can be
+restricted by setting a layer type filter with
+setLayerTypeFilter(layerType) or by activating the filter directly from
+the constructor.
 
-To retrieve the selected data source, :py:func:`~uri` can be called and it
-will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
+To retrieve the selected data source, :py:func:`~uri` can be called and
+it will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 
 .. versionadded:: 3.6
 %End
@@ -149,11 +154,14 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
   public:
     QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
-Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
+Constructs a QgsDataSourceSelectDialog, optionally filtering by layer
+type
 
-:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
+:param browserModel: an existing browser model (typically from app), if
+                     ``None`` an instance will be created
 :param setFilterByLayerType: activates filtering by layer type
-:param layerType: sets the layer type filter, this is in effect only if filtering by layer type is also active
+:param layerType: sets the layer type filter, this is in effect only if
+                  filtering by layer type is also active
 :param parent: the object
 %End
 
@@ -179,9 +187,11 @@ Sets a description label
 %Docstring
 Expands out a file ``path`` in the view.
 
-The ``path`` must correspond to a valid directory existing on the file system.
+The ``path`` must correspond to a valid directory existing on the file
+system.
 
-Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select the path too.
+Since QGIS 3.38 the ``selectPath`` argument can be used to automatically
+select the path too.
 
 .. versionadded:: 3.28
 %End

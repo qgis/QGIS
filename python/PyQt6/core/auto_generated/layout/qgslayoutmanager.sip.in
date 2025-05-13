@@ -12,15 +12,15 @@
 class QgsLayoutManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages storage of a set of layouts.
 
-:py:class:`QgsLayoutManager` handles the storage, serializing and deserializing
-of print layouts and reports. Usually this class is not constructed directly, but
-rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.layoutManager()`.
+:py:class:`QgsLayoutManager` handles the storage, serializing and
+deserializing of print layouts and reports. Usually this class is not
+constructed directly, but rather accessed through a
+:py:class:`QgsProject` via :py:func:`QgsProject.layoutManager()`.
 
-:py:class:`QgsLayoutManager` retains ownership of all the layouts contained
-in the manager.
+:py:class:`QgsLayoutManager` retains ownership of all the layouts
+contained in the manager.
 %End
 
 %TypeHeaderCode
@@ -30,17 +30,18 @@ in the manager.
 
     explicit QgsLayoutManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsLayoutManager. The project will become the parent object for this
-manager.
+Constructor for QgsLayoutManager. The project will become the parent
+object for this manager.
 %End
 
     ~QgsLayoutManager();
 
     bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
 %Docstring
-Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
-Returns ``True`` if the addition was successful, or ``False`` if the layout could not be added (eg
-as a result of a duplicate layout name).
+Adds a ``layout`` to the manager. Ownership of the layout is transferred
+to the manager. Returns ``True`` if the addition was successful, or
+``False`` if the layout could not be added (eg as a result of a
+duplicate layout name).
 
 .. seealso:: :py:func:`removeLayout`
 
@@ -49,9 +50,10 @@ as a result of a duplicate layout name).
 
     bool removeLayout( QgsMasterLayoutInterface *layout );
 %Docstring
-Removes a ``layout`` from the manager. The layout is deleted.
-Returns ``True`` if the removal was successful, or ``False`` if the removal failed (eg as a result
-of removing a layout which is not contained in the manager).
+Removes a ``layout`` from the manager. The layout is deleted. Returns
+``True`` if the removal was successful, or ``False`` if the removal
+failed (eg as a result of removing a layout which is not contained in
+the manager).
 
 .. seealso:: :py:func:`addLayout`
 
@@ -81,8 +83,8 @@ Returns a list of all print layouts contained in the manager.
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
-Returns the layout with a matching name, or ``None`` if no matching layouts
-were found.
+Returns the layout with a matching name, or ``None`` if no matching
+layouts were found.
 %End
 
     bool readXml( const QDomElement &element, const QDomDocument &doc );
@@ -102,24 +104,24 @@ Returns a DOM element representing the state of the manager.
 
     QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
 %Docstring
-Duplicates an existing ``layout`` from the manager. The new
-layout will automatically be stored in the manager.
-Returns the new layout if duplication was successful.
+Duplicates an existing ``layout`` from the manager. The new layout will
+automatically be stored in the manager. Returns the new layout if
+duplication was successful.
 %End
 
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 %Docstring
-Generates a unique title for a new layout of the specified ``type``, which does not
-clash with any already contained by the manager.
+Generates a unique title for a new layout of the specified ``type``,
+which does not clash with any already contained by the manager.
 %End
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-within the contained layouts.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated within the contained layouts.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -157,7 +159,6 @@ Emitted when a layout is renamed
 class QgsLayoutManagerModel : QAbstractListModel
 {
 %Docstring(signature="appended")
-
 List model representing the print layouts and reports available in a
 layout manager.
 
@@ -177,7 +178,8 @@ layout manager.
 
     explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsLayoutManagerModel, showing the layouts from the specified ``manager``.
+Constructor for QgsLayoutManagerModel, showing the layouts from the
+specified ``manager``.
 %End
 
     virtual int rowCount( const QModelIndex &parent ) const;
@@ -205,14 +207,16 @@ Returns the model index corresponding to a ``layout``.
 
     void setAllowEmptyLayout( bool allowEmpty );
 %Docstring
-Sets whether an optional empty layout ("not set") option is present in the model.
+Sets whether an optional empty layout ("not set") option is present in
+the model.
 
 .. seealso:: :py:func:`allowEmptyLayout`
 %End
 
     bool allowEmptyLayout() const;
 %Docstring
-Returns ``True`` if the model allows the empty layout ("not set") choice.
+Returns ``True`` if the model allows the empty layout ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyLayout`
 %End
@@ -223,8 +227,7 @@ Returns ``True`` if the model allows the empty layout ("not set") choice.
 class QgsLayoutManagerProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
-QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`
+QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`.
 
 .. versionadded:: 3.8
 %End
@@ -278,8 +281,8 @@ Returns the current filter string, if set.
 
     void setFilterString( const QString &filter );
 %Docstring
-Sets a ``filter`` string, such that only layouts with names containing the
-specified string will be shown.
+Sets a ``filter`` string, such that only layouts with names containing
+the specified string will be shown.
 
 .. seealso:: :py:func:`filterString`
 

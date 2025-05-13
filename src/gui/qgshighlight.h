@@ -43,7 +43,7 @@ class QgsFeatureRenderer;
 
 /**
  * \ingroup gui
- * \brief A class for highlight features on the map.
+ * \brief Highlights features on the map.
  *
  * The QgsHighlight class provides a transparent overlay canvas item
  * for highlighting features or geometries on a map canvas.

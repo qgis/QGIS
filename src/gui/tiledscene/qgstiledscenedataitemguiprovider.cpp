@@ -31,15 +31,18 @@ void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 {
   if ( QgsTiledSceneLayerItem *layerItem = qobject_cast<QgsTiledSceneLayerItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsTiledSceneLayerItem *> sceneConnectionItems = QgsDataItem::filteredItems<QgsTiledSceneLayerItem>( selection );
+    if ( sceneConnectionItems.size() == 1 )
+    {
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( sceneConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [sceneConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( sceneConnectionItems, []( const QString &connectionName ) { QgsTiledSceneProviderConnection( QString() ).remove( connectionName ); }, context );

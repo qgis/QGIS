@@ -74,6 +74,35 @@ class PyQgsMapUnitScale(unittest.TestCase):
 
         self.assertEqual(c1, c2)
 
+    def testIsNull(self):
+        # test isNull
+        c1 = QgsMapUnitScale()
+        self.assertTrue(c1.isNull())
+
+        c1 = QgsMapUnitScale()
+        c1.minScale = 1000
+        self.assertFalse(c1.isNull())
+
+        c1 = QgsMapUnitScale()
+        c1.maxScale = 1000
+        self.assertFalse(c1.isNull())
+
+        c1 = QgsMapUnitScale()
+        c1.minSizeMMEnabled = True
+        self.assertFalse(c1.isNull())
+
+        c1 = QgsMapUnitScale()
+        c1.maxSizeMMEnabled = True
+        self.assertFalse(c1.isNull())
+
+        c1 = QgsMapUnitScale()
+        c1.minSizeMM = 3
+        self.assertFalse(c1.isNull())
+
+        c1 = QgsMapUnitScale()
+        c1.maxSizeMM = 3
+        self.assertFalse(c1.isNull())
+
     def testMapUnitsPerPixel(self):
         # test computeMapUnitsPerPixel
 

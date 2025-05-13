@@ -14,8 +14,9 @@ typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 class QgsConditionalLayerStyles : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsConditionalLayerStyles` class holds conditional style information
-for a layer. This includes field styles and full row styles.
+Holds conditional style information for a layer.
+
+This includes field styles and full row styles.
 %End
 
 %TypeHeaderCode
@@ -25,7 +26,8 @@ for a layer. This includes field styles and full row styles.
 
     QgsConditionalLayerStyles( QObject *parent = 0 );
 %Docstring
-Constructor for QgsConditionalLayerStyles, with the specified ``parent`` object.
+Constructor for QgsConditionalLayerStyles, with the specified ``parent``
+object.
 %End
 
     QgsConditionalStyles rowStyles() const;
@@ -37,8 +39,8 @@ Returns a list of row styles associated with the layer.
 
     void setRowStyles( const QgsConditionalStyles &styles );
 %Docstring
-Sets the conditional ``styles`` that apply to full rows of data in the attribute table.
-Each row will check be checked against each rule.
+Sets the conditional ``styles`` that apply to full rows of data in the
+attribute table. Each row will check be checked against each rule.
 
 .. seealso:: :py:func:`rowStyles`
 %End
@@ -54,7 +56,8 @@ Returns a style associated to a constraint failure.
 
     void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );
 %Docstring
-Set the conditional ``styles`` for a field, with the specified ``fieldName``.
+Set the conditional ``styles`` for a field, with the specified
+``fieldName``.
 
 The field value is inserted into a 'value' variable to conduct
 expression checks.
@@ -64,7 +67,8 @@ expression checks.
 
     QList<QgsConditionalStyle> fieldStyles( const QString &fieldName ) const;
 %Docstring
-Returns the conditional styles set for the field with matching ``fieldName``.
+Returns the conditional styles set for the field with matching
+``fieldName``.
 
 .. seealso:: :py:func:`setFieldStyles`
 %End
@@ -121,7 +125,8 @@ Conditional styling for a rule.
 %Docstring
 Check if the rule matches using the given value and feature
 
-:param value: The current value being checked. The "value" variable from the context is replaced with this value.
+:param value: The current value being checked. The "value" variable from
+              the context is replaced with this value.
 :param context: Expression context for evaluating rule expression
 
 :return: ``True`` of the rule matches against the given feature
@@ -138,17 +143,19 @@ If ``size`` is not specified, a default size will be used.
 
     void setName( const QString &value );
 %Docstring
-Set the name of the style.  Names are optional but handy for display
+Set the name of the style. Names are optional but handy for display
 
 :param value: The name given to the style
 %End
 
     void setRule( const QString &value );
 %Docstring
-Set the rule for the style.  Rules should be of :py:class:`QgsExpression` syntax.
-Special value of \@value is replaced at run time with the check value
+Set the rule for the style. Rules should be of :py:class:`QgsExpression`
+syntax. Special value of \@value is replaced at run time with the check
+value
 
-:param value: The :py:class:`QgsExpression` style rule to use for this style
+:param value: The :py:class:`QgsExpression` style rule to use for this
+              style
 %End
 
     void setBackgroundColor( const QColor &value );
@@ -216,8 +223,8 @@ The text color set for style
 
     bool validTextColor() const;
 %Docstring
-Check if the text color is valid for render.
-Valid colors are non invalid QColors and a color with a > 0 alpha
+Check if the text color is valid for render. Valid colors are non
+invalid QColors and a color with a > 0 alpha
 
 :return: ``True`` of the color set for text is valid.
 %End
@@ -231,8 +238,8 @@ The background color for style
 
     bool validBackgroundColor() const;
 %Docstring
-Check if the background color is valid for render.
-Valid colors are non invalid QColors and a color with a > 0 alpha
+Check if the background color is valid for render. Valid colors are non
+invalid QColors and a color with a > 0 alpha
 
 :return: ``True`` of the color set for background is valid.
 %End
@@ -249,39 +256,40 @@ The font for the style
 The condition rule set for the style. Rule may contain variable \@value
 to represent the current value
 
-:return: QString of the current set rule
+:return: string of the current set rule
 %End
 
     bool isValid() const;
 %Docstring
-isValid Check if this rule is valid.  A valid rule has one or more properties
-set.
+isValid Check if this rule is valid. A valid rule has one or more
+properties set.
 
 :return: ``True`` if the rule is valid.
 %End
 
     static QList<QgsConditionalStyle> matchingConditionalStyles( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
 %Docstring
-Find and return the matching styles for the value and feature.
-If no match is found a invalid QgsConditionalStyle is return.
+Find and return the matching styles for the value and feature. If no
+match is found a invalid QgsConditionalStyle is return.
 
-:return: A conditional style that matches the value and feature.
-         Check with :py:func:`QgsConditionalStyle.isValid()`
+:return: A conditional style that matches the value and feature. Check
+         with :py:func:`QgsConditionalStyle.isValid()`
 %End
 
     static QgsConditionalStyle matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context );
 %Docstring
-Find and return the matching style for the value and feature.
-If no match is found a invalid QgsConditionalStyle is return.
+Find and return the matching style for the value and feature. If no
+match is found a invalid QgsConditionalStyle is return.
 
-:return: A conditional style that matches the value and feature.
-         Check with :py:func:`QgsConditionalStyle.isValid()`
+:return: A conditional style that matches the value and feature. Check
+         with :py:func:`QgsConditionalStyle.isValid()`
 %End
 
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
 %Docstring
-Compress a list of styles into a single style.  This can be used to stack the elements of the
-styles. The font of the last style is used in the output.
+Compress a list of styles into a single style. This can be used to stack
+the elements of the styles. The font of the last style is used in the
+output.
 
 :param styles: The list of styles to compress down
 

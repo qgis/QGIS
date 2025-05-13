@@ -24,7 +24,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmarkersymbol.h"
-
+#include "qgssldexportcontext.h"
 #include <QDomElement>
 #include <QPainter>
 
@@ -44,9 +44,15 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
 
 void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  mRenderer->toSld( doc, element, props );
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
 }
 
+bool QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return mRenderer->toSld( doc, element, context );
+}
 
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {

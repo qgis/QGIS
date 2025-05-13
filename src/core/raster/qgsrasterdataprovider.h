@@ -51,7 +51,7 @@ class QgsRasterIdentifyResult;
 class QgsMapSettings;
 
 /**
- * \brief Handles asynchronous download of images
+ * \brief Handles asynchronous download of images.
  * \ingroup core
  */
 class CORE_EXPORT QgsImageFetcher : public QObject
@@ -439,6 +439,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+
     //! Creates a new dataset with mDataSourceURI
     static QgsRasterDataProvider *create( const QString &providerKey,
                                           const QString &uri,
@@ -505,6 +507,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note since QGIS 3.22
      */
     static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
+
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Validates creation options for a specific dataset and destination format.

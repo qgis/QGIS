@@ -425,6 +425,8 @@ QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &p
     return QObject::tr( "Rectangular Polyconic" );
   if ( projection == QLatin1String( "sinu" ) )
     return QObject::tr( "Sinusoidal (Sanson-Flamsteed)" );
+  if ( projection == QLatin1String( "spilhaus" ) )
+    return QObject::tr( "Spilhaus" );
   if ( projection == QLatin1String( "somerc" ) )
     return QObject::tr( "Swiss Oblique Mercator" );
   if ( projection == QLatin1String( "stere" ) )

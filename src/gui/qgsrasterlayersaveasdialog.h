@@ -29,6 +29,7 @@ class QgsRasterFormatOptionsWidget;
 /**
  * \ingroup gui
  * \class QgsRasterLayerSaveAsDialog
+ * \brief A dialog for configuring raster layer export parameters.
  */
 class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {
@@ -87,7 +88,16 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     QString outputLayerName() const;
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
-    QStringList createOptions() const;
+
+    /**
+     * \deprecated QGIS 3.44. Use creationOptions() instead.
+     */
+    Q_DECL_DEPRECATED QStringList createOptions() const;
+    /**
+     * Raster creation options set for the output layer.
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const;
     QgsRectangle outputRectangle() const;
     QgsRasterRangeList noData() const;
 

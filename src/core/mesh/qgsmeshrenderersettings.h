@@ -30,7 +30,7 @@
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for mesh object
+ * \brief Represents a mesh renderer settings for mesh objects.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 
   private:
     bool mEnabled = false;
-    double mLineWidth = DEFAULT_LINE_WIDTH;
+    double mLineWidth = Qgis::DEFAULT_LINE_WIDTH;
     Qgis::RenderUnit mLineWidthUnit = Qgis::RenderUnit::Millimeters;
     QColor mColor = Qt::black;
 };
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for scalar datasets
+ * \brief Represents a mesh renderer settings for scalar datasets.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for vector datasets displayed with arrows
+ * \brief Represents a mesh renderer settings for vector datasets displayed with arrows.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
 /**
  * \ingroup core
  *
- * \brief Represents a streamline renderer settings for vector datasets displayed by streamlines
+ * \brief Represents a streamline renderer settings for vector datasets displayed by streamlines.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
 /**
  * \ingroup core
  *
- * \brief Represents a trace renderer settings for vector datasets displayed by particle traces
+ * \brief Represents a trace renderer settings for vector datasets displayed by particle traces.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for vector datasets displayed with wind barbs
+ * \brief Represents a mesh renderer settings for vector datasets displayed with wind barbs.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -510,7 +510,7 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
 /**
  * \ingroup core
  *
- * \brief Represents a renderer settings for vector datasets
+ * \brief Represents a renderer settings for vector datasets.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -686,7 +686,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 
     Symbology mDisplayingMethod = Arrows;
 
-    double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
+    double mLineWidth = Qgis::DEFAULT_LINE_WIDTH; //in millimeters
     QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
     QgsInterpolatedLineColor::ColoringMethod mColoringMethod = QgsInterpolatedLineColor::SingleColor;
@@ -705,7 +705,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 /**
  * \ingroup core
  *
- * \brief Represents all mesh renderer settings
+ * \brief Represents all mesh renderer settings.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

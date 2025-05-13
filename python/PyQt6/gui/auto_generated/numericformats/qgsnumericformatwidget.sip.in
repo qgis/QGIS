@@ -11,7 +11,8 @@
 class QgsNumericFormatWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-Base class for widgets which allow control over the properties of :py:class:`QgsNumericFormat` subclasses
+Base class for widgets which allow control over the properties of
+:py:class:`QgsNumericFormat` subclasses.
 
 .. versionadded:: 3.12
 %End
@@ -43,8 +44,8 @@ Ownership of the returned object is transferred to the caller
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the widget when required.
+Register an expression context generator class that will be used to
+retrieve an expression context for the widget when required.
 
 .. versionadded:: 3.40
 %End
@@ -67,7 +68,8 @@ Emitted whenever the configuration of the numeric format is changed.
 class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsBasicNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsBasicNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -78,7 +80,8 @@ A widget which allow control over the properties of a :py:class:`QgsBasicNumeric
   public:
     QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsBasicNumericFormatWidget, initially showing the
+specified ``format``.
 %End
     ~QgsBasicNumericFormatWidget();
 
@@ -93,7 +96,8 @@ Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``f
 class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsBearingNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -104,7 +108,8 @@ A widget which allow control over the properties of a :py:class:`QgsBearingNumer
   public:
     QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsBearingNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsBearingNumericFormatWidget, initially showing the
+specified ``format``.
 %End
     ~QgsBearingNumericFormatWidget();
 
@@ -118,7 +123,8 @@ Constructor for QgsBearingNumericFormatWidget, initially showing the specified `
 class QgsBearingNumericFormatDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+A dialog which allows control over the properties of a
+:py:class:`QgsBearingNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -129,7 +135,8 @@ A dialog which allow control over the properties of a :py:class:`QgsBearingNumer
   public:
     QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsBearingNumericFormatDialog, initially showing the specified ``format``.
+Constructor for QgsBearingNumericFormatDialog, initially showing the
+specified ``format``.
 %End
 
     QgsBearingNumericFormat *format() /Factory/;
@@ -147,7 +154,8 @@ Ownership of the returned object is transferred to the caller
 class QgsGeographicCoordinateNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsGeographicCoordinateNumericFormat`.
 
 .. versionadded:: 3.26
 %End
@@ -158,7 +166,8 @@ A widget which allow control over the properties of a :py:class:`QgsGeographicCo
   public:
     QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsGeographicCoordinateNumericFormatWidget, initially
+showing the specified ``format``.
 %End
     ~QgsGeographicCoordinateNumericFormatWidget();
 
@@ -172,7 +181,8 @@ Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing th
 class QgsGeographicCoordinateNumericFormatDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allow control over the properties of a :py:class:`QgsGeographicCoordinateNumericFormat`.
+A dialog which allows control over the properties of a
+:py:class:`QgsGeographicCoordinateNumericFormat`.
 
 .. versionadded:: 3.26
 %End
@@ -183,7 +193,8 @@ A dialog which allow control over the properties of a :py:class:`QgsGeographicCo
   public:
     QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified ``format``.
+Constructor for QgsGeographicCoordinateNumericFormatDialog, initially
+showing the specified ``format``.
 %End
 
     QgsGeographicCoordinateNumericFormat *format() /Factory/;
@@ -201,7 +212,8 @@ Ownership of the returned object is transferred to the caller
 class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsCurrencyNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsCurrencyNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -212,7 +224,8 @@ A widget which allow control over the properties of a :py:class:`QgsCurrencyNume
   public:
     QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsCurrencyNumericFormatWidget, initially showing the
+specified ``format``.
 %End
     ~QgsCurrencyNumericFormatWidget();
 
@@ -228,7 +241,8 @@ Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified 
 class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsPercentageNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsPercentageNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -239,7 +253,8 @@ A widget which allow control over the properties of a :py:class:`QgsPercentageNu
   public:
     QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsPercentageNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsPercentageNumericFormatWidget, initially showing the
+specified ``format``.
 %End
     ~QgsPercentageNumericFormatWidget();
 
@@ -255,7 +270,8 @@ Constructor for QgsPercentageNumericFormatWidget, initially showing the specifie
 class QgsScientificNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsScientificNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsScientificNumericFormat`.
 
 .. versionadded:: 3.12
 %End
@@ -266,7 +282,8 @@ A widget which allow control over the properties of a :py:class:`QgsScientificNu
   public:
     QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsScientificNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsScientificNumericFormatWidget, initially showing the
+specified ``format``.
 %End
     ~QgsScientificNumericFormatWidget();
 
@@ -281,7 +298,8 @@ Constructor for QgsScientificNumericFormatWidget, initially showing the specifie
 class QgsFractionNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsFractionNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsFractionNumericFormat`.
 
 .. versionadded:: 3.14
 %End
@@ -292,7 +310,8 @@ A widget which allow control over the properties of a :py:class:`QgsFractionNume
   public:
     QgsFractionNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsFractionNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsFractionNumericFormatWidget, initially showing the
+specified ``format``.
 %End
     ~QgsFractionNumericFormatWidget();
 
@@ -307,7 +326,8 @@ Constructor for QgsFractionNumericFormatWidget, initially showing the specified 
 class QgsExpressionBasedNumericFormatWidget : QgsNumericFormatWidget
 {
 %Docstring(signature="appended")
-A widget which allow control over the properties of a :py:class:`QgsExpressionBasedNumericFormat`.
+A widget which allows control over the properties of a
+:py:class:`QgsExpressionBasedNumericFormat`.
 
 .. versionadded:: 3.40
 %End
@@ -318,7 +338,8 @@ A widget which allow control over the properties of a :py:class:`QgsExpressionBa
   public:
     QgsExpressionBasedNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsExpressionBasedNumericFormatWidget, initially showing the specified ``format``.
+Constructor for QgsExpressionBasedNumericFormatWidget, initially showing
+the specified ``format``.
 %End
     ~QgsExpressionBasedNumericFormatWidget();
 

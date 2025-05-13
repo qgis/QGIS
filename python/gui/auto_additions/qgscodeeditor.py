@@ -56,18 +56,23 @@ QgsCodeEditor.Flag.baseClass = QgsCodeEditor
 QgsCodeEditor.Flags.baseClass = QgsCodeEditor
 Flags = QgsCodeEditor  # dirty hack since SIP seems to introduce the flags in module
 try:
-    QgsCodeEditor.__attribute_docs__ = {'SEARCH_RESULT_INDICATOR': 'Indicator index for search results', 'sessionHistoryCleared': 'Emitted when the history of commands run in the current session is cleared.\n\n.. versionadded:: 3.30\n', 'persistentHistoryCleared': 'Emitted when the persistent history of commands run in the editor is cleared.\n\n.. versionadded:: 3.30\n', 'helpRequested': 'Emitted when documentation was requested for the specified ``word``.\n\n.. versionadded:: 3.42\n', 'editingTimeout': 'Emitted when either:\n\n1. 1 second has elapsed since the last text change in the widget\n2. or, immediately after the widget has lost focus after its text was changed.\n\n.. seealso:: :py:func:`editingTimeoutInterval`\n\n.. versionadded:: 3.42\n'}
+    QgsCodeEditor.__attribute_docs__ = {'SEARCH_RESULT_INDICATOR': 'Indicator index for search results', 'sessionHistoryCleared': 'Emitted when the history of commands run in the current session is\ncleared.\n\n.. versionadded:: 3.30\n', 'persistentHistoryCleared': 'Emitted when the persistent history of commands run in the editor is\ncleared.\n\n.. versionadded:: 3.30\n', 'helpRequested': 'Emitted when documentation was requested for the specified ``word``.\n\n.. versionadded:: 3.42\n', 'editingTimeout': 'Emitted when either:\n\n1. 1 second has elapsed since the last text change in the widget\n2. or, immediately after the widget has lost focus after its text was changed.\n\n.. seealso:: :py:func:`editingTimeoutInterval`\n\n.. versionadded:: 3.42\n'}
+    QgsCodeEditor.__annotations__ = {'SEARCH_RESULT_INDICATOR': int}
     QgsCodeEditor.languageToString = staticmethod(QgsCodeEditor.languageToString)
     QgsCodeEditor.defaultColor = staticmethod(QgsCodeEditor.defaultColor)
     QgsCodeEditor.color = staticmethod(QgsCodeEditor.color)
     QgsCodeEditor.setColor = staticmethod(QgsCodeEditor.setColor)
     QgsCodeEditor.getMonospaceFont = staticmethod(QgsCodeEditor.getMonospaceFont)
     QgsCodeEditor.isFixedPitch = staticmethod(QgsCodeEditor.isFixedPitch)
+    QgsCodeEditor.__virtual_methods__ = ['language', 'languageCapabilities', 'moveCursorToStart', 'moveCursorToEnd', 'checkSyntax', 'toggleComment', 'initializeLexer', 'populateContextMenu', 'reformatCodeString', 'showMessage']
+    QgsCodeEditor.__overridden_methods__ = ['callTip', 'setText', 'focusOutEvent', 'keyPressEvent', 'contextMenuEvent', 'eventFilter']
     QgsCodeEditor.__signal_arguments__ = {'helpRequested': ['word: str']}
     QgsCodeEditor.__group__ = ['codeeditors']
 except (NameError, AttributeError):
     pass
 try:
+    QgsCodeInterpreter.__virtual_methods__ = ['currentState']
+    QgsCodeInterpreter.__abstract_methods__ = ['promptForState', 'execCommandImpl']
     QgsCodeInterpreter.__group__ = ['codeeditors']
 except (NameError, AttributeError):
     pass

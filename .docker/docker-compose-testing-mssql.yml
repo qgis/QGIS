@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: QGIStestSQLServer1234
+    ports:
+      - 1433:1433
+
+  qgis-deps:
+    tty: true
+    image: qgis3-build-deps-binary-image
+    volumes:
+      - ${QGIS_WORKSPACE}:/root/QGIS
+    links:
+      - mssql
+    env_file:
+      - docker-variables.env
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=en_US.UTF-8
+    cap_add:
+      - NET_ADMIN

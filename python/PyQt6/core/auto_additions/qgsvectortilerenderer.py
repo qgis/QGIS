@@ -1,9 +1,11 @@
 # The following has been generated automatically from src/core/vectortile/qgsvectortilerenderer.h
 try:
-    QgsVectorTileRendererData.__group__ = ['vectortile']
+    QgsVectorTileRenderer.__virtual_methods__ = ['requiredLayers', 'resolveReferences']
+    QgsVectorTileRenderer.__abstract_methods__ = ['type', 'clone', 'startRender', 'stopRender', 'renderBackground', 'renderTile', 'willRenderFeature', 'renderSelectedFeatures', 'writeXml', 'readXml']
+    QgsVectorTileRenderer.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass
 try:
-    QgsVectorTileRenderer.__group__ = ['vectortile']
+    QgsVectorTileRendererData.__group__ = ['vectortile']
 except (NameError, AttributeError):
     pass

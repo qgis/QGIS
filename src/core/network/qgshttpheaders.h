@@ -35,7 +35,7 @@ class QgsSettings;
 
 /**
  * \ingroup core
- * \brief This class implements simple http header management.
+ * \brief Implements simple HTTP header management.
  * \since QGIS 3.24
  */
 class CORE_EXPORT QgsHttpHeaders
@@ -195,6 +195,9 @@ class CORE_EXPORT QgsHttpHeaders
 
     QgsHttpHeaders &operator = ( const QMap<QString, QVariant> &headers ) SIP_SKIP;
 
+    bool operator==( const QgsHttpHeaders &other ) const;
+    bool operator!=( const QgsHttpHeaders &other ) const;
+
     /**
      * \brief insert a \a key with the specific \a value
      * \param key a key to add
@@ -203,7 +206,7 @@ class CORE_EXPORT QgsHttpHeaders
     void insert( const QString &key, const QVariant &value );
 
     /**
-     * \return the list of all http header keys
+     * Returns the list of all HTTP header keys.
      */
     QList<QString> keys() const;
 

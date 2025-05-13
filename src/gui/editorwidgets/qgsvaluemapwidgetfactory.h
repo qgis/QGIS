@@ -24,9 +24,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsValueMapWidgetFactory
+ * \brief Editor widget factory for value map widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsValueMapWidgetFactory : public QgsEditorWidgetFactory
 {
   public:

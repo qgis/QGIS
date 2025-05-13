@@ -71,6 +71,7 @@ class TestQgsLayerTree : public QObject
     void testRasterSymbolNode();
     void testLayersEditable();
     void testInsertLayerBelow();
+    void testGroupReadWriteXMlServerProperties();
 
   private:
     QgsLayerTreeGroup *mRoot = nullptr;
@@ -530,11 +531,11 @@ void TestQgsLayerTree::testLegendSymbolCategorized()
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsMarkerSymbol::createSimple( props ), QStringLiteral( "a" ) ) );
+  renderer->addCategory( QgsRendererCategory( "a", QgsMarkerSymbol::createSimple( props ).release(), QStringLiteral( "a" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ff00" ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsMarkerSymbol::createSimple( props ), QStringLiteral( "b" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsMarkerSymbol::createSimple( props ).release(), QStringLiteral( "b" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#0000ff" ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsMarkerSymbol::createSimple( props ), QStringLiteral( "c" ) ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsMarkerSymbol::createSimple( props ).release(), QStringLiteral( "c" ) ) );
   testRendererLegend( renderer );
 }
 
@@ -547,11 +548,11 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
-  renderer->addClass( QgsRendererRange( 1, 2, QgsMarkerSymbol::createSimple( props ), QStringLiteral( "a" ) ) );
+  renderer->addClass( QgsRendererRange( 1, 2, QgsMarkerSymbol::createSimple( props ).release(), QStringLiteral( "a" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ff00" ) );
-  renderer->addClass( QgsRendererRange( 2, 3, QgsMarkerSymbol::createSimple( props ), QStringLiteral( "b" ) ) );
+  renderer->addClass( QgsRendererRange( 2, 3, QgsMarkerSymbol::createSimple( props ).release(), QStringLiteral( "b" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#0000ff" ) );
-  renderer->addClass( QgsRendererRange( 3, 4, QgsMarkerSymbol::createSimple( props ), QStringLiteral( "c" ) ) );
+  renderer->addClass( QgsRendererRange( 3, 4, QgsMarkerSymbol::createSimple( props ).release(), QStringLiteral( "c" ) ) );
   testRendererLegend( renderer );
 }
 
@@ -562,11 +563,11 @@ void TestQgsLayerTree::testLegendSymbolRuleBased()
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
-  root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ), 0, 0, QStringLiteral( "\"col1\"=1" ) ) );
+  root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ).release(), 0, 0, QStringLiteral( "\"col1\"=1" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ff00" ) );
-  root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ), 0, 0, QStringLiteral( "\"col1\"=2" ) ) );
+  root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ).release(), 0, 0, QStringLiteral( "\"col1\"=2" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#0000ff" ) );
-  root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ), 0, 0, QStringLiteral( "ELSE" ) ) );
+  root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ).release(), 0, 0, QStringLiteral( "ELSE" ) ) );
   QgsRuleBasedRenderer *renderer = new QgsRuleBasedRenderer( root );
   testRendererLegend( renderer );
 }
@@ -661,7 +662,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ffff" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
-  renderer->setLegendSymbolItem( symbolList.at( 2 ).ruleKey(), QgsMarkerSymbol::createSimple( props ) );
+  renderer->setLegendSymbolItem( symbolList.at( 2 ).ruleKey(), QgsMarkerSymbol::createSimple( props ).release() );
   m->refreshLayerLegend( n );
   symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbolList.at( 2 ).ruleKey() ) );
   QVERIFY( symbolNode );
@@ -1038,6 +1039,35 @@ void TestQgsLayerTree::testInsertLayerBelow()
   // Check the order of the layers
   QCOMPARE( root.findLayerIds(), QStringList() << topLayer->id() << bottomLayer->id() );
 }
+
+void TestQgsLayerTree::testGroupReadWriteXMlServerProperties()
+{
+  // test retro compatibility for project before 3.44
+
+  QgsLayerTreeGroup *group = mRoot->insertGroup( 0, QStringLiteral( "test_grp" ) );
+
+  QDomDocument doc( QStringLiteral( "test-layer-tree-group" ) );
+  QDomElement parentElem = doc.createElement( "root" );
+  QgsReadWriteContext context;
+
+  group->setCustomProperty( QStringLiteral( "wmsShortName" ), QStringLiteral( "testShortName" ) );
+  group->setCustomProperty( QStringLiteral( "wmsTitle" ), QStringLiteral( "testTitle" ) );
+  group->setCustomProperty( QStringLiteral( "wmsAbstract" ), QStringLiteral( "testAbstract" ) );
+
+  group->writeXml( parentElem, context );
+
+  std::unique_ptr<QgsLayerTreeGroup> newGroup( QgsLayerTreeGroup::readXml( parentElem.firstChildElement(), context ) );
+  QCOMPARE( newGroup->serverProperties()->shortName(), QStringLiteral( "testShortName" ) );
+  QCOMPARE( newGroup->serverProperties()->title(), QStringLiteral( "testTitle" ) );
+  QCOMPARE( newGroup->serverProperties()->abstract(), QStringLiteral( "testAbstract" ) );
+
+  QVERIFY( !newGroup->customProperty( QStringLiteral( "wmsShortName" ) ).isValid() );
+  QVERIFY( !newGroup->customProperty( QStringLiteral( "wmsTitle" ) ).isValid() );
+  QVERIFY( !newGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).isValid() );
+
+  mRoot->removeChildNode( group );
+}
+
 
 QGSTEST_MAIN( TestQgsLayerTree )
 #include "testqgslayertree.moc"

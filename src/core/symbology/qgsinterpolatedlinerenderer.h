@@ -29,7 +29,9 @@ class QgsRenderContext;
 /**
  * \ingroup core
  *
- * \brief Class defining color to render mesh datasets. The color can vary depending on the dataset value.
+ * \brief Defines color interpolation for rendering mesh datasets.
+ *
+ * The color can vary depending on the dataset value.
  *
  * \since QGIS 3.14
  */
@@ -118,7 +120,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
  * \ingroup core
  *
  * \class QgsInterpolatedLineWidth
- * \brief Represents a width than can vary depending on values
+ * \brief Represents a width that can vary depending on values.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineWidth
@@ -175,11 +177,11 @@ class CORE_EXPORT QgsInterpolatedLineWidth
   private:
     bool mIsWidthVariable = false;
 
-    double mFixedWidth = DEFAULT_LINE_WIDTH;
+    double mFixedWidth = Qgis::DEFAULT_LINE_WIDTH;
 
     double mMinimumValue = 0;
     double mMaximumValue = 10;
-    double mMinimumWidth = DEFAULT_LINE_WIDTH;
+    double mMinimumWidth = Qgis::DEFAULT_LINE_WIDTH;
     double mMaximumWidth = 3;
     bool mIgnoreOutOfRange = false;
     bool mUseAbsoluteValue = false;
@@ -276,8 +278,9 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 /**
  * \ingroup core
  * \class QgsInterpolatedLineSymbolLayer
- * \brief A symbol layer that represents vector layer line feature as interpolated line
- * The interpolation is done between two values defined at the extremities
+ * \brief A symbol layer that represents vector layer line features as interpolated lines.
+ *
+ * The interpolation is done between two values defined at the extremities.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer

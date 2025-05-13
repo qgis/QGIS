@@ -163,7 +163,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * Set \a storageType storage type unique identifier as defined in QgsExternalStorageRegistry or
-     * null QString if there is no storage defined, only file selection.
+     * an empty QString if there is no storage defined, only file selection.
      * \see storageType
      * \since QGIS 3.22
      */
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     /**
      * Returns storage type unique identifier as defined in QgsExternalStorageRegistry.
-     * Returns null QString if there is no storage defined, only file selection.
+     * Returns an empty QString if there is no storage defined, only file selection.
      * \see setStorageType
      * \since QGIS 3.22
      */

@@ -749,7 +749,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
       }
       else if ( QgsExpressionNodeInOperator *inOp = dynamic_cast<QgsExpressionNodeInOperator *>( node ) )
       {
-        if ( inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
+        if ( inOp->isNotIn() || inOp->node()->nodeType() != QgsExpressionNode::ntColumnRef )
         {
           return false;
         }
@@ -1530,7 +1530,7 @@ QString QgsExpressionNodeLiteral::valueAsString() const
     case QMetaType::Type::Int:
       return QString::number( mValue.toInt() );
     case QMetaType::Type::Double:
-      return QString::number( mValue.toDouble() );
+      return qgsDoubleToString( mValue.toDouble() );
     case QMetaType::Type::LongLong:
       return QString::number( mValue.toLongLong() );
     case QMetaType::Type::QString:

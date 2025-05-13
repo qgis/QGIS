@@ -293,7 +293,7 @@ namespace QgsWms
         QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
         // layer titles - hidden or not
-        QgsLegendRenderer::setNodeLegendStyle( nodeLayer, parameters.layerTitleAsBool() ? QgsLegendStyle::Subgroup : QgsLegendStyle::Hidden );
+        QgsLegendRenderer::setNodeLegendStyle( nodeLayer, parameters.layerTitleAsBool() ? Qgis::LegendComponent::Subgroup : Qgis::LegendComponent::Hidden );
         // rule item titles
         if ( !parameters.ruleLabelAsBool() )
         {

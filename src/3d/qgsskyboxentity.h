@@ -38,7 +38,7 @@ class QgsImageTexture;
  * \brief Base class for all skybox types.
  *
  * It holds the common member data between different skybox entity types
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
@@ -73,7 +73,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 /**
  * \brief A skybox constructed from a panoramic image.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
@@ -99,9 +99,9 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 };
 
 /**
- * \brief A skybox constructed from a 6 cube faces.
+ * \brief A skybox constructed from 6 cube faces.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity

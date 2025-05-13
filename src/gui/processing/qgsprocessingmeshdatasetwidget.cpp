@@ -193,7 +193,7 @@ void QgsProcessingMeshDatasetGroupsWidget::selectCurrentActiveDatasetGroup()
   setValue( options );
 }
 
-QgsProcessingMeshDatasetGroupsWidgetWrapper::QgsProcessingMeshDatasetGroupsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingMeshDatasetGroupsWidgetWrapper::QgsProcessingMeshDatasetGroupsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {}
 
@@ -202,7 +202,7 @@ QString QgsProcessingMeshDatasetGroupsWidgetWrapper::parameterType() const
   return QgsProcessingParameterMeshDatasetGroups::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingMeshDatasetGroupsWidgetWrapper( parameter, type );
 }
@@ -217,8 +217,8 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::postInitialize( const QList<Qg
   QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers ); //necessary here?
   switch ( type() )
   {
-    case QgsProcessingGui::Standard:
-    case QgsProcessingGui::Batch:
+    case Qgis::ProcessingMode::Standard:
+    case Qgis::ProcessingMode::Batch:
     {
       for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
       {
@@ -233,7 +233,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::postInitialize( const QList<Qg
       }
     }
     break;
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Modeler:
       break;
   }
 }
@@ -264,19 +264,6 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
 
   if ( mWidget )
     mWidget->setMeshLayer( meshLayer, layerFromProject );
-}
-
-QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
-                       << QgsProcessingParameterString::typeName()
-                       << QgsProcessingParameterNumber::typeName();
-}
-
-QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputString::typeName()
-                       << QgsProcessingOutputNumber::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
@@ -323,7 +310,7 @@ void QgsProcessingMeshDatasetGroupsWidget::updateSummaryText()
   mLineEdit->setText( tr( "%n option(s) selected", nullptr, mValue.count() ) );
 }
 
-QgsProcessingMeshDatasetTimeWidgetWrapper::QgsProcessingMeshDatasetTimeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingMeshDatasetTimeWidgetWrapper::QgsProcessingMeshDatasetTimeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
@@ -333,7 +320,7 @@ QString QgsProcessingMeshDatasetTimeWidgetWrapper::parameterType() const
   return QgsProcessingParameterMeshDatasetTime::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingMeshDatasetTimeWidgetWrapper( parameter, type );
 }
@@ -343,8 +330,8 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
   QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers ); //necessary here?
   switch ( type() )
   {
-    case QgsProcessingGui::Standard:
-    case QgsProcessingGui::Batch:
+    case Qgis::ProcessingMode::Standard:
+    case Qgis::ProcessingMode::Batch:
     {
       const QgsAbstractProcessingParameterWidgetWrapper *layerParameterWrapper = nullptr;
       const QgsAbstractProcessingParameterWidgetWrapper *datasetGroupsParameterWrapper = nullptr;
@@ -366,7 +353,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
       break;
     }
 
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Modeler:
       break;
   }
 }
@@ -420,20 +407,6 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperVal
     datasetGroupsIndexes << variantIndex.toInt();
 
   mWidget->setDatasetGroupIndexes( datasetGroupsIndexes );
-}
-
-QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterMeshDatasetTime::typeName()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterDateTime::typeName();
-}
-
-QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList()
-         << QgsProcessingOutputString::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()

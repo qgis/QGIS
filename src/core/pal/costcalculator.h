@@ -68,7 +68,7 @@ namespace pal
 
   /**
    * \ingroup core
-   * \brief Calculates distance from a label candidate to nearest polygon ring.
+   * \brief Calculates distance from a label candidate to the nearest polygon ring.
    * \note not available in Python bindings
    * \since QGIS 3.12
    */

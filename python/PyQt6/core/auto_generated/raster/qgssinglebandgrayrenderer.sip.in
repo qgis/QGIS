@@ -32,9 +32,6 @@ Raster renderer pipe for single band gray.
 
     virtual QgsSingleBandGrayRenderer *clone() const /Factory/;
 
-%Docstring
-QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 
@@ -45,7 +42,6 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
 
  int grayBand() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
-
 .. deprecated:: 3.38
 
    Use :py:func:`~QgsSingleBandGrayRenderer.inputBand` instead.
@@ -53,7 +49,6 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
 
  void setGrayBand( int band ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
 %Docstring
-
 .. deprecated:: 3.38
 
    Use :py:func:`~QgsSingleBandGrayRenderer.setInputBand` instead.
@@ -84,7 +79,9 @@ Takes ownership
     virtual QList<int> usesBands() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     const QgsColorRampLegendNodeSettings *legendSettings() const;

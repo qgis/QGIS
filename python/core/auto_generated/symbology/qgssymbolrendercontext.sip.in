@@ -11,6 +11,9 @@
 
 class QgsSymbolRenderContext
 {
+%Docstring(signature="appended")
+Encapsulates the context in which a symbol is being rendered.
+%End
 
 %TypeHeaderCode
 #include "qgssymbolrendercontext.h"
@@ -22,14 +25,15 @@ class QgsSymbolRenderContext
 %Docstring
 Constructor for QgsSymbolRenderContext
 
-:param c:
-:param u:
+:param c: 
+:param u: 
 :param opacity: value between 0 (fully transparent) and 1 (fully opaque)
-:param selected: set to ``True`` if symbol should be drawn in a "selected" state
+:param selected: set to ``True`` if symbol should be drawn in a
+                 "selected" state
 :param renderHints: flags controlling rendering behavior
-:param f:
-:param fields:
-:param mapUnitScale:
+:param f: 
+:param fields: 
+:param mapUnitScale: 
 %End
 
     ~QgsSymbolRenderContext();
@@ -45,8 +49,9 @@ Returns a reference to the context's render context.
 %Docstring
 Sets the original value variable value for data defined symbology
 
-:param value: value for original value variable. This usually represents the symbol property value
-              before any data defined overrides have been applied.
+:param value: value for original value variable. This usually represents
+              the symbol property value before any data defined
+              overrides have been applied.
 %End
 
  Qgis::RenderUnit outputUnit() const /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
@@ -69,7 +74,6 @@ Sets the output unit for the context.
 
  QgsMapUnitScale mapUnitScale() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Will be removed in QGIS 4.0.
@@ -77,7 +81,6 @@ Sets the output unit for the context.
 
  void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Will be removed in QGIS 4.0.
@@ -87,7 +90,8 @@ Sets the output unit for the context.
 %Docstring
 Returns the opacity for the symbol.
 
-:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:return: opacity value between 0 (fully transparent) and 1 (fully
+         opaque)
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -96,21 +100,24 @@ Returns the opacity for the symbol.
 %Docstring
 Sets the ``opacity`` for the symbol.
 
-:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
 
     bool selected() const;
 %Docstring
-Returns ``True`` if symbols should be rendered using the selected symbol coloring and style.
+Returns ``True`` if symbols should be rendered using the selected symbol
+coloring and style.
 
 .. seealso:: :py:func:`setSelected`
 %End
 
     void setSelected( bool selected );
 %Docstring
-Sets whether symbols should be rendered using the selected symbol coloring and style.
+Sets whether symbols should be rendered using the selected symbol
+coloring and style.
 
 .. seealso:: :py:func:`selected`
 %End
@@ -124,8 +131,8 @@ Returns the rendering hint flags for the symbol.
 
     bool forceVectorRendering() const;
 %Docstring
-Returns ``True`` if symbol must be rendered using vector methods, and optimisations
-like pre-rendered images must be disabled.
+Returns ``True`` if symbol must be rendered using vector methods, and
+optimisations like pre-rendered images must be disabled.
 
 .. versionadded:: 3.40
 %End
@@ -162,19 +169,22 @@ Sets the geometry type for the original feature geometry being rendered.
 
     Qgis::GeometryType originalGeometryType() const;
 %Docstring
-Returns the geometry type for the original feature geometry being rendered. This can be
-useful if symbol layers alter their appearance based on geometry type - eg offsetting a
-simple line style will look different if the simple line is rendering a polygon feature
-(a closed buffer) vs a line feature (an unclosed offset line).
+Returns the geometry type for the original feature geometry being
+rendered. This can be useful if symbol layers alter their appearance
+based on geometry type - eg offsetting a simple line style will look
+different if the simple line is rendering a polygon feature (a closed
+buffer) vs a line feature (an unclosed offset line).
 
 .. seealso:: :py:func:`originalGeometryType`
 %End
 
     QgsFields fields() const;
 %Docstring
-Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
-to allow symbols with data-defined properties prepare the expressions
-(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty :py:class:`QgsFields` object).
+Fields of the layer. Currently only available in
+:py:func:`~QgsSymbolRenderContext.startRender` calls to allow symbols
+with data-defined properties prepare the expressions (other times
+:py:func:`~QgsSymbolRenderContext.fields` returns an empty
+:py:class:`QgsFields` object).
 %End
 
     int geometryPartCount() const;
@@ -199,7 +209,6 @@ Sets the part number of current geometry
 
  double outputLineWidth( double width ) const /Deprecated="Since 3.40. Use the size conversion methods in QgsRenderContext instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Use the size conversion methods in :py:class:`QgsRenderContext` instead.
@@ -207,7 +216,6 @@ Sets the part number of current geometry
 
  double outputPixelSize( double size ) const /Deprecated="Since 3.40. Use the size conversion methods in QgsRenderContext instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Use the size conversion methods in :py:class:`QgsRenderContext` instead.
@@ -216,7 +224,8 @@ Sets the part number of current geometry
 
     QgsExpressionContextScope *expressionContextScope();
 %Docstring
-This scope is always available when a symbol of this type is being rendered.
+This scope is always available when a symbol of this type is being
+rendered.
 
 :return: An expression scope for details about this symbol
 %End
@@ -232,7 +241,8 @@ Will take ownership.
 
     const QgsLegendPatchShape *patchShape() const;
 %Docstring
-Returns the symbol patch shape, to use if rendering symbol preview icons.
+Returns the symbol patch shape, to use if rendering symbol preview
+icons.
 
 .. seealso:: :py:func:`setPatchShape`
 
@@ -241,7 +251,8 @@ Returns the symbol patch shape, to use if rendering symbol preview icons.
 
     void setPatchShape( const QgsLegendPatchShape &shape );
 %Docstring
-Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
+Sets the symbol patch ``shape``, to use if rendering symbol preview
+icons.
 
 .. seealso:: :py:func:`patchShape`
 

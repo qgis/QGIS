@@ -12,8 +12,11 @@
 class QgsLegendFilterButton : QToolButton
 {
 %Docstring(signature="appended")
-A tool button that allows enabling or disabling legend filter by contents of the map.
-An additional pop down menu allows defining a boolean expression to refine the filtering.
+A tool button that allows enabling or disabling legend filter by
+contents of the map.
+
+An additional pop down menu allows defining a boolean expression to
+refine the filtering.
 %End
 
 %TypeHeaderCode
@@ -34,28 +37,26 @@ Returns the current text used as filter expression
 
     void setExpressionText( const QString &expression );
 %Docstring
-Sets the current text used as filter expression.
-This will update the menu
+Sets the current text used as filter expression. This will update the
+menu
 %End
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the button when required.
+Register an expression context generator class that will be used to
+retrieve an expression context for the button when required.
 
 .. versionadded:: 3.32
 %End
 
     QgsVectorLayer *vectorLayer() const;
 %Docstring
-Returns the current associated vectorLayer
-May be ``None``
+Returns the current associated vectorLayer May be ``None``
 %End
 
     void setVectorLayer( QgsVectorLayer *layer );
 %Docstring
-Sets the associated vectorLayer
-May be ``None``
+Sets the associated vectorLayer May be ``None``
 %End
 
   signals:

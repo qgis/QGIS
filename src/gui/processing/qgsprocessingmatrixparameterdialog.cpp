@@ -179,6 +179,15 @@ QgsProcessingMatrixParameterPanel::QgsProcessingMatrixParameterPanel( QWidget *p
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingMatrixParameterPanel::showDialog );
 }
 
+QVariantList QgsProcessingMatrixParameterPanel::value() const
+{
+  // if editing widget is still open, use the value currently shown in that widget
+  if ( mPanelWidget )
+    return mPanelWidget->table();
+
+  return mTable;
+}
+
 void QgsProcessingMatrixParameterPanel::setValue( const QVariantList &value )
 {
   mTable = value;
@@ -190,14 +199,14 @@ void QgsProcessingMatrixParameterPanel::showDialog()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsProcessingMatrixParameterPanelWidget *widget = new QgsProcessingMatrixParameterPanelWidget( this, mParam, mTable );
+    mPanelWidget = new QgsProcessingMatrixParameterPanelWidget( this, mParam, mTable );
 
-    widget->setPanelTitle( mParam->description() );
+    mPanelWidget->setPanelTitle( mParam->description() );
 
-    panel->openPanel( widget );
+    panel->openPanel( mPanelWidget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] {
-      setValue( widget->table() );
+    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [=] {
+      setValue( mPanelWidget->table() );
     } );
   }
 }

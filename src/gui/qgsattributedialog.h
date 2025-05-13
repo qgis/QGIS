@@ -34,6 +34,7 @@ class QgsActionMenu;
 /**
  * \ingroup gui
  * \class QgsAttributeDialog
+ * \brief An attribute table dialog for a vector layer.
  */
 class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionContextGenerator
 {

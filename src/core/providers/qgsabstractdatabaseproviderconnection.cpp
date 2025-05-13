@@ -56,6 +56,10 @@ Qgis::SqlLayerDefinitionCapabilities QgsAbstractDatabaseProviderConnection::sqlL
   return mSqlLayerDefinitionCapabilities;
 }
 
+QString QgsAbstractDatabaseProviderConnection::createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &, QVariantMap & ) const
+{
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'createVectorLayerExporterDestinationUri' is not supported" ) );
+}
 
 QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
@@ -1044,6 +1048,16 @@ QSet<QString> QgsAbstractDatabaseProviderConnection::illegalFieldNames() const
   return mIllegalFieldNames;
 }
 
+QString QgsAbstractDatabaseProviderConnection::defaultPrimaryKeyColumnName() const
+{
+  return QStringLiteral( "pk" );
+}
+
+QString QgsAbstractDatabaseProviderConnection::defaultGeometryColumnName() const
+{
+  return QStringLiteral( "geom" );
+}
+
 QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFieldDomainTypes() const
 {
   return {};
@@ -1186,6 +1200,12 @@ QgsVectorLayer *QgsAbstractDatabaseProviderConnection::createSqlVectorLayer( con
 {
   checkCapability( Capability::SqlLayers );
   return nullptr;
+}
+
+bool QgsAbstractDatabaseProviderConnection::validateSqlVectorLayer( const SqlVectorLayerOptions &, QString & ) const
+{
+  checkCapability( Capability::SqlLayers );
+  return true;
 }
 
 void QgsAbstractDatabaseProviderConnection::deleteSpatialIndex( const QString &, const QString &, const QString & ) const
@@ -1386,6 +1406,11 @@ void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain
 void QgsAbstractDatabaseProviderConnection::setFieldAlias( const QString &, const QString &, const QString &, const QString & ) const
 {
   checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias );
+}
+
+void QgsAbstractDatabaseProviderConnection::setTableComment( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetTableComment );
 }
 
 void QgsAbstractDatabaseProviderConnection::setFieldComment( const QString &, const QString &, const QString &, const QString & ) const

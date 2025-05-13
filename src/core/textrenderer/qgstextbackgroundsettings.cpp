@@ -684,11 +684,11 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
       const QString symbolElementName = symbolElement.attribute( QStringLiteral( "name" ) );
       if ( symbolElementName == QLatin1String( "markerSymbol" ) )
       {
-        setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ) );
+        setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ).release() );
       }
       else if ( symbolElementName == QLatin1String( "fillSymbol" ) )
       {
-        setFillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ) );
+        setFillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
       }
     }
   }

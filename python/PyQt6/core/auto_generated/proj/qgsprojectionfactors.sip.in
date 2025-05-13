@@ -11,7 +11,8 @@
 class QgsProjectionFactors
 {
 %Docstring(signature="appended")
-contains various cartographic properties, such as scale factors, angular distortion and meridian convergence.
+Contains various cartographic properties, such as scale factors, angular
+distortion and meridian convergence.
 
 .. versionadded:: 3.20
 %End
@@ -23,7 +24,8 @@ contains various cartographic properties, such as scale factors, angular distort
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the factors are valid, or ``False`` if they could not be calculated.
+Returns ``True`` if the factors are valid, or ``False`` if they could
+not be calculated.
 %End
 
     double meridionalScale() const;
@@ -53,7 +55,8 @@ Meridian/parallel angle (in degrees), θ′, at coordinate (λ,ϕ).
 
     double meridianConvergence() const;
 %Docstring
-Meridian convergence (in degrees) at coordinate (λ,ϕ). Sometimes also described as grid declination.
+Meridian convergence (in degrees) at coordinate (λ,ϕ). Sometimes also
+described as grid declination.
 %End
 
     double tissotSemimajor() const;

@@ -49,10 +49,17 @@ void QgsFuzzifyRasterAlgorithmBase::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "HEIGHT_IN_PIXELS" ), QObject::tr( "Height in pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Fuzzified raster" ) ) );
 }
@@ -84,16 +91,21 @@ bool QgsFuzzifyRasterAlgorithmBase::prepareAlgorithm( const QVariantMap &paramet
 
 QVariantMap QgsFuzzifyRasterAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( mDataType, mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
@@ -239,7 +251,10 @@ void QgsFuzzifyRasterLinearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -365,7 +380,10 @@ void QgsFuzzifyRasterPowerMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -468,7 +486,10 @@ void QgsFuzzifyRasterLargeMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -572,7 +593,10 @@ void QgsFuzzifyRasterSmallMembershipAlgorithm::fuzzify( QgsRasterDataProvider *d
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -676,7 +700,10 @@ void QgsFuzzifyRasterGaussianMembershipAlgorithm::fuzzify( QgsRasterDataProvider
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 
@@ -781,7 +808,10 @@ void QgsFuzzifyRasterNearMembershipAlgorithm::fuzzify( QgsRasterDataProvider *de
         fuzzifiedBlock->setValue( row, column, fuzzifiedValue );
       }
     }
-    destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationProvider->writeBlock( fuzzifiedBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationProvider->error().summary() ) );
+    }
   }
 }
 

@@ -13,24 +13,25 @@
 class QgsTinInterpolator : QgsInterpolator
 {
 %Docstring(signature="appended")
-Interpolation in a triangular irregular network
+Interpolation in a triangular irregular network.
 %End
 
 %TypeHeaderCode
 #include "qgstininterpolator.h"
 %End
   public:
-    enum TinInterpolation
+    enum class TinInterpolation
     {
       Linear,
       CloughTocher,
     };
 
-    QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = 0 );
+    QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, QgsTinInterpolator::TinInterpolation interpolation = QgsTinInterpolator::TinInterpolation::Linear, QgsFeedback *feedback = 0 );
 %Docstring
-Constructor for QgsTinInterpolator.
-The ``feedback`` object specifies an optional :py:class:`QgsFeedback` object for progress reports and cancellation support.
-Ownership of ``feedback`` is not transferred and callers must ensure that it exists for the lifetime of this object.
+Constructor for QgsTinInterpolator. The ``feedback`` object specifies an
+optional :py:class:`QgsFeedback` object for progress reports and
+cancellation support. Ownership of ``feedback`` is not transferred and
+callers must ensure that it exists for the lifetime of this object.
 %End
     ~QgsTinInterpolator();
 
@@ -40,8 +41,8 @@ Ownership of ``feedback`` is not transferred and callers must ensure that it exi
     static QgsFields triangulationFields();
 %Docstring
 Returns the fields output by features when saving the triangulation.
-These fields should be used when creating
-a suitable feature sink for :py:func:`~QgsTinInterpolator.setTriangulationSink`
+These fields should be used when creating a suitable feature sink for
+:py:func:`~QgsTinInterpolator.setTriangulationSink`
 
 .. seealso:: :py:func:`setTriangulationSink`
 %End
@@ -50,8 +51,9 @@ a suitable feature sink for :py:func:`~QgsTinInterpolator.setTriangulationSink`
 %Docstring
 Sets the optional ``sink`` for saving the triangulation features.
 
-The sink must be setup to accept LineString features, with fields matching
-those returned by :py:func:`~QgsTinInterpolator.triangulationFields`.
+The sink must be setup to accept LineString features, with fields
+matching those returned by
+:py:func:`~QgsTinInterpolator.triangulationFields`.
 
 .. seealso:: :py:func:`triangulationFields`
 %End

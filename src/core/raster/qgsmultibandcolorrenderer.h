@@ -27,14 +27,26 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * \brief Renderer for multiband images with the color components
+  * \brief Renderer for multiband images with the color components.
 */
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
+
+    /**
+     * Constructor for QgsMultiBandColorRenderer.
+     * \param input input raster interface
+     * \param redBand band number for red channel
+     * \param greenBand band number for green channel
+     * \param blueBand band number for blue channel
+     * \param redEnhancement optional contrast enhancement for red channel. Ownership is transferred to the renderer.
+     * \param greenEnhancement optional contrast enhancement for green channel. Ownership is transferred to the renderer.
+     * \param blueEnhancement optional contrast enhancement for blue channel. Ownership is transferred to the renderer.
+     */
     QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement *redEnhancement = nullptr, QgsContrastEnhancement *greenEnhancement = nullptr,
-                               QgsContrastEnhancement *blueEnhancement = nullptr );
+                               QgsContrastEnhancement *redEnhancement SIP_TRANSFER = nullptr,
+                               QgsContrastEnhancement *greenEnhancement SIP_TRANSFER = nullptr,
+                               QgsContrastEnhancement *blueEnhancement SIP_TRANSFER = nullptr );
     ~QgsMultiBandColorRenderer() override;
 
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
@@ -49,11 +61,46 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
+    /**
+     * Returns the band number for the red channel.
+     *
+     * \see setRedBand()
+     */
     int redBand() const { return mRedBand; }
+
+    /**
+     * Sets the \a band number for the red channel.
+     *
+     * \see redBand()
+     */
     void setRedBand( int band ) { mRedBand = band; }
+
+    /**
+     * Returns the band number for the green channel.
+     *
+     * \see setRedBand()
+     */
     int greenBand() const { return mGreenBand; }
+
+    /**
+     * Sets the \a band number for the green channel.
+     *
+     * \see greenBand()
+     */
     void setGreenBand( int band ) { mGreenBand = band; }
+
+    /**
+     * Returns the band number for the blue channel.
+     *
+     * \see setRedBand()
+     */
     int blueBand() const { return mBlueBand; }
+
+    /**
+     * Sets the \a band number for the blue channel.
+     *
+     * \see blueBand()
+     */
     void setBlueBand( int band ) { mBlueBand = band; }
 
     /**
@@ -63,7 +110,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see greenContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *redContrastEnhancement() const { return mRedContrastEnhancement; }
+    const QgsContrastEnhancement *redContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the red channel.
@@ -83,7 +130,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see redContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *greenContrastEnhancement() const { return mGreenContrastEnhancement; }
+    const QgsContrastEnhancement *greenContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the green channel.
@@ -103,7 +150,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see redContrastEnhancement()
      * \see greenContrastEnhancement()
      */
-    const QgsContrastEnhancement *blueContrastEnhancement() const { return mBlueContrastEnhancement; }
+    const QgsContrastEnhancement *blueContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the blue channel.
@@ -121,7 +168,8 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QList<int> usesBands() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
@@ -145,13 +193,13 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );
 #endif
 
-    int mRedBand;
-    int mGreenBand;
-    int mBlueBand;
+    int mRedBand = 1;
+    int mGreenBand = 1;
+    int mBlueBand = 1;
 
-    QgsContrastEnhancement *mRedContrastEnhancement = nullptr;
-    QgsContrastEnhancement *mGreenContrastEnhancement = nullptr;
-    QgsContrastEnhancement *mBlueContrastEnhancement = nullptr;
+    std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
+    std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
 
 };
 

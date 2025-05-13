@@ -295,7 +295,7 @@ void QgsProcessingVectorTileWriterLayersWidget::updateSummaryText()
 // QgsProcessingVectorTileWriterLayersWidgetWrapper
 //
 
-QgsProcessingVectorTileWriterLayersWidgetWrapper::QgsProcessingVectorTileWriterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingVectorTileWriterLayersWidgetWrapper::QgsProcessingVectorTileWriterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
@@ -305,7 +305,7 @@ QString QgsProcessingVectorTileWriterLayersWidgetWrapper::parameterType() const
   return QgsProcessingParameterVectorTileWriterLayers::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorTileWriterLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorTileWriterLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingVectorTileWriterLayersWidgetWrapper( parameter, type );
 }
@@ -341,16 +341,6 @@ void QgsProcessingVectorTileWriterLayersWidgetWrapper::setWidgetValue( const QVa
 QVariant QgsProcessingVectorTileWriterLayersWidgetWrapper::widgetValue() const
 {
   return mPanel ? mPanel->value() : QVariant();
-}
-
-QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList();
-}
-
-QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList();
 }
 
 /// @endcond

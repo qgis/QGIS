@@ -195,7 +195,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
 
     case Qgis::WkbType::CompoundCurve:
     {
-      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( curve );
+      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve *>( curve );
       for ( int i = 0; i < compoundCurve->nCurves(); ++i )
       {
         std::vector<QgsGeometry> segments = curveAsSingleSegments( compoundCurve->curveAt( i ), true );

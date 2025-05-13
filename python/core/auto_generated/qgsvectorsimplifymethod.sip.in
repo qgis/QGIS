@@ -12,7 +12,8 @@
 class QgsVectorSimplifyMethod
 {
 %Docstring(signature="appended")
-This class contains information how to simplify geometries fetched from a vector layer
+Contains settings for simplifying geometries fetched from a vector
+layer.
 %End
 
 %TypeHeaderCode
@@ -47,11 +48,15 @@ Gets the local simplification algorithm of the vector layer managed
 
     void setTolerance( double tolerance );
 %Docstring
-Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
+Sets the tolerance of simplification in map units. Represents the
+maximum distance in map units between two coordinates which can be
+considered equal
 %End
     double tolerance() const;
 %Docstring
-Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
+Gets the tolerance of simplification in map units. Represents the
+maximum distance in map units between two coordinates which can be
+considered equal
 %End
 
     void setThreshold( float threshold );
@@ -65,11 +70,13 @@ Gets the simplification threshold of the vector layer managed
 
     void setForceLocalOptimization( bool localOptimization );
 %Docstring
-Sets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
+Sets where the simplification executes, after fetch the geometries from
+provider, or when supported, in provider before fetch the geometries
 %End
     bool forceLocalOptimization() const;
 %Docstring
-Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
+Gets where the simplification executes, after fetch the geometries from
+provider, or when supported, in provider before fetch the geometries
 %End
 
     void setMaximumScale( float maximumScale );

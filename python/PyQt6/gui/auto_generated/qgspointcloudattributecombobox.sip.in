@@ -14,8 +14,11 @@
 class QgsPointCloudAttributeComboBox : QComboBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsPointCloudAttributeComboBox` is a combo box which displays the list of attributes of a given point cloud layer.
-It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically update attributes according to a chosen layer.
+A combobox which displays the list of attributes of a given point cloud
+layer.
+
+It might be combined with a :py:class:`QgsMapLayerComboBox` to
+automatically update attributes according to a chosen layer.
 
 .. versionadded:: 3.18
 %End
@@ -26,13 +29,16 @@ It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically upd
   public:
     explicit QgsPointCloudAttributeComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsPointCloudAttributeComboBox creates a combo box to display the fields of a layer.
-The layer can be either manually given or dynamically set by connecting the signal :py:class:`QgsMapLayerComboBox`.layerChanged to the slot setLayer.
+QgsPointCloudAttributeComboBox creates a combo box to display the fields
+of a layer. The layer can be either manually given or dynamically set by
+connecting the signal :py:class:`QgsMapLayerComboBox`.layerChanged to
+the slot setLayer.
 %End
 
     void setFilters( QgsPointCloudAttributeProxyModel::Filters filters );
 %Docstring
-Sets ``filters`` to allow filtering available attributes according to the attribute properties.
+Sets ``filters`` to allow filtering available attributes according to
+the attribute properties.
 
 .. seealso:: :py:func:`filters`
 %End
@@ -46,14 +52,16 @@ Returns the current filters used for filtering available attributes.
 
     void setAllowEmptyAttributeName( bool allowEmpty );
 %Docstring
-Sets whether an optional empty attribute ("not set") option is shown in the combo box.
+Sets whether an optional empty attribute ("not set") option is shown in
+the combo box.
 
 .. seealso:: :py:func:`allowEmptyAttributeName`
 %End
 
     bool allowEmptyAttributeName() const;
 %Docstring
-Returns ``True`` if the combo box allows the empty field ("not set") choice.
+Returns ``True`` if the combo box allows the empty field ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyAttributeName`
 %End
@@ -74,9 +82,12 @@ Returns the layer currently associated with the combobox.
 %Docstring
 Manually sets the ``attributes`` to use for the combo box.
 
-This method should only be used when the combo box ISN'T associated with a :py:func:`~QgsPointCloudAttributeComboBox.layer`
-and needs to show the fields from an arbitrary attribute collection instead. Calling
-:py:func:`~QgsPointCloudAttributeComboBox.setAttributes` will automatically clear any existing :py:func:`~QgsPointCloudAttributeComboBox.layer`.
+This method should only be used when the combo box ISN'T associated with
+a :py:func:`~QgsPointCloudAttributeComboBox.layer` and needs to show the
+fields from an arbitrary attribute collection instead. Calling
+:py:func:`~QgsPointCloudAttributeComboBox.setAttributes` will
+automatically clear any existing
+:py:func:`~QgsPointCloudAttributeComboBox.layer`.
 
 .. seealso:: :py:func:`attributes`
 %End
@@ -85,8 +96,10 @@ and needs to show the fields from an arbitrary attribute collection instead. Cal
 %Docstring
 Returns the attributes currently shown in the combobox.
 
-This will either be attributes from the associated :py:func:`~QgsPointCloudAttributeComboBox.layer` or the attributes
-manually set by a call to :py:func:`~QgsPointCloudAttributeComboBox.setAttributes`.
+This will either be attributes from the associated
+:py:func:`~QgsPointCloudAttributeComboBox.layer` or the attributes
+manually set by a call to
+:py:func:`~QgsPointCloudAttributeComboBox.setAttributes`.
 %End
 
   signals:
@@ -99,8 +112,9 @@ Emitted when the currently selected attribute changes.
 
     void setLayer( QgsMapLayer *layer );
 %Docstring
-Sets the layer for which fields are listed in the combobox. If no layer is set
-or a non-point cloud layer is set then the combobox will be empty.
+Sets the layer for which fields are listed in the combobox. If no layer
+is set or a non-point cloud layer is set then the combobox will be
+empty.
 
 .. seealso:: :py:func:`layer`
 %End

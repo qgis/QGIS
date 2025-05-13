@@ -23,7 +23,7 @@ email                : hugo dot mercier at oslandia dot com
 
 /**
  * \ingroup core
- * \brief Class to manipulate the definition of a virtual layer
+ * \brief Manipulates the definition of a virtual layer.
  *
  * It is used to extract parameters from an initial virtual layer definition as well as
  * to store the complete, expanded definition once types have been detected.
@@ -34,8 +34,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 
     /**
      * \ingroup core
-     * \brief A SourceLayer is either a reference to a live layer in the registry
-     * or all the parameters needed to load it (provider key, source, etc.)
+     * \brief Either a reference to a live layer in the registry
+     * or all the parameters needed to load it (provider key, source, etc.).
      */
     class CORE_EXPORT SourceLayer
     {
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Convert the definition into a QUrl
     QUrl toUrl() const;
 
-    //! Convert into a QString that can be read by the virtual layer provider
+    //! Converts the definition into a QString that can be read by the virtual layer provider
     QString toString() const;
 
     //! Add a live layer source layer

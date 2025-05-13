@@ -13,13 +13,14 @@
 class QgsLayerTreeFilterProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-:py:class:`QgsLayerTreeFilterProxyModel` is a sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
+A sort filter proxy model to easily reproduce the legend/layer tree in a
+tree view.
 
-Layers are checkable by default.
-Symbology nodes will not be shown.
+Layers are checkable by default. Symbology nodes will not be shown.
 Layers can be filtered by their type.
 
-For more complex use-cases, the model can be re-implemented to allow a different interaction or to add more columns.
+For more complex use-cases, the model can be re-implemented to allow a
+different interaction or to add more columns.
 
 .. versionadded:: 3.14
 %End
@@ -81,8 +82,8 @@ Defaults to ``True``.
 
     void setFilters( Qgis::LayerFilters filters );
 %Docstring
-Defines the type layers (vector, raster, etc) shown in the tree
-If the list is empty, all types are shown.
+Defines the type layers (vector, raster, etc) shown in the tree If the
+list is empty, all types are shown.
 %End
 
     virtual int columnCount( const QModelIndex &parent ) const;

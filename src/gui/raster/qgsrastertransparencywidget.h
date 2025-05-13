@@ -33,7 +33,7 @@ class QgsPointXY;
 
 /**
  * \ingroup gui
- * \brief Widget to control a layers transparency and related options
+ * \brief A widget for controlling a raster layer's transparency and related options.
  */
 class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private QgsExpressionContextGenerator, public Ui::QgsRasterTransparencyWidget
 {

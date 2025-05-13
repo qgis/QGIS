@@ -41,7 +41,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   QSize size = QSize( mTextureSize );
 
   QgsRectangle clippedExtent = extent;
-  if ( mMap.terrainGenerator()->type() == QgsTerrainGenerator::Flat )
+  if ( mMap.sceneMode() == Qgis::SceneMode::Local && mMap.terrainGenerator()->type() == QgsTerrainGenerator::Flat )
   {
     // The flat terrain generator might have non-square tiles, clipped at the scene's extent.
     // We need to produce non-square textures for those cases.
@@ -171,7 +171,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   QgsMapSettings mapSettings;
 
   mapSettings.setOutputSize( mTextureSize );
-  mapSettings.setDestinationCrs( mMap.crs() );
+  mapSettings.setDestinationCrs( mMap.sceneMode() == Qgis::SceneMode::Globe ? mMap.crs().toGeographicCrs() : mMap.crs() );
   mapSettings.setBackgroundColor( mMap.backgroundColor() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabeling, mMap.showLabels() );
   mapSettings.setFlag( Qgis::MapSettingsFlag::Render3DMap );

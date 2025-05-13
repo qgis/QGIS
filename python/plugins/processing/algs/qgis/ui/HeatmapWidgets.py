@@ -190,13 +190,22 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
             return
 
         for wrapper in wrappers:
-            if wrapper.parameterDefinition().name() == self.param.parent_layer:
+            if (
+                wrapper.parameterDefinition().name()
+                == self.parameterDefinition().parent_layer
+            ):
                 self.setSource(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
-            elif wrapper.parameterDefinition().name() == self.param.radius_param:
+            elif (
+                wrapper.parameterDefinition().name()
+                == self.parameterDefinition().radius_param
+            ):
                 self.setRadius(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.radiusChanged)
-            elif wrapper.parameterDefinition().name() == self.param.radius_field_param:
+            elif (
+                wrapper.parameterDefinition().name()
+                == self.parameterDefinition().radius_field_param
+            ):
                 self.setSource(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.radiusFieldChanged)
 

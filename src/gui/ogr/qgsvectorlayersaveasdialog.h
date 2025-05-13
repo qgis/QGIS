@@ -27,7 +27,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief Class to select destination file, type and CRS for ogr layers
+ * \brief A dialog for configuring vector layer save to file operations.
  */
 class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
 {

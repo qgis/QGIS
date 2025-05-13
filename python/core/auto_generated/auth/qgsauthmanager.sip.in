@@ -15,11 +15,12 @@
 class QgsAuthManager : QObject
 {
 %Docstring(signature="appended")
-Singleton offering an interface to manage the authentication configuration database
-and to utilize configurations through various authentication method plugins
+Singleton which offers an interface to manage the authentication
+configuration database and to utilize configurations through various
+authentication method plugins.
 
-:py:class:`QgsAuthManager` should not usually be directly created, but rather accessed through
-:py:func:`QgsApplication.authManager()`.
+:py:class:`QgsAuthManager` should not usually be directly created, but
+rather accessed through :py:func:`QgsApplication.authManager()`.
 %End
 
 %TypeHeaderCode
@@ -37,7 +38,8 @@ and to utilize configurations through various authentication method plugins
 
  bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated="Since 3.36. Use setup() or ensureInitialized() instead."/;
 %Docstring
-init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+init initialize QCA, prioritize qca-ossl plugin and optionally set up
+the authentication database
 
 :param pluginPath: the plugin path
 :param authDatabasePath: the authentication DB path
@@ -57,11 +59,12 @@ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authen
 %Docstring
 Sets up the authentication manager configuration.
 
-This method does not initialize the authentication framework, instead that is deferred
-to lazy-initialize when required.
+This method does not initialize the authentication framework, instead
+that is deferred to lazy-initialize when required.
 
 :param pluginPath: the plugin path
-:param authDatabasePath: the authentication DB URI (or just the file path for SQLite)
+:param authDatabasePath: the authentication DB URI (or just the file
+                         path for SQLite)
 
 .. seealso:: :py:func:`ensureInitialized`
 %End
@@ -87,7 +90,8 @@ Returns the authentication configuration storage registry.
 
  QSqlDatabase authDatabaseConnection() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead."/;
 %Docstring
-Sets up the application instance of the authentication database connection
+Sets up the application instance of the authentication database
+connection
 
 .. deprecated:: 3.40
 
@@ -105,15 +109,17 @@ Name of the authentication database table that stores configs
 
     const QString methodConfigTableName() const;
 %Docstring
-Returns the database table from the first ready storage that stores authentication configs,
-or an empty string if none available. The table is prefixed with schema and escaped if necessary.
+Returns the database table from the first ready storage that stores
+authentication configs, or an empty string if none available. The table
+is prefixed with schema and escaped if necessary.
 
 .. versionadded:: 3.40
 %End
 
  const QString authDatabaseServersTable() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead."/;
 %Docstring
-Name of the authentication database table that stores server exceptions/configs
+Name of the authentication database table that stores server
+exceptions/configs
 
 .. deprecated:: 3.40
 
@@ -128,12 +134,14 @@ Whether QCA has the qca-ossl plugin, which a base run-time requirement
 
     const QString disabledMessage() const;
 %Docstring
-Standard message for when QCA's qca-ossl plugin is missing and system is disabled
+Standard message for when QCA's qca-ossl plugin is missing and system is
+disabled
 %End
 
  const QString authenticationDatabasePath() const;
 %Docstring
-The standard authentication database file in ~/.qgis3/ or defined location
+The standard authentication database file in ~/.qgis3/ or defined
+location
 
 .. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
 
@@ -144,7 +152,8 @@ The standard authentication database file in ~/.qgis3/ or defined location
 
     static bool isFilesystemBasedDatabase( const QString &uri );
 %Docstring
-Returns the ``True`` if the ``uri`` is a filesystem-based database (SQLite).
+Returns the ``True`` if the ``uri`` is a filesystem-based database
+(SQLite).
 %End
 
 
@@ -157,7 +166,8 @@ Returns the authentication database connection URI.
 
     const QString authenticationDatabaseUriStripped() const;
 %Docstring
-Returns the authentication database connection URI with the password stripped.
+Returns the authentication database connection URI with the password
+stripped.
 
 .. versionadded:: 3.40
 %End
@@ -171,24 +181,28 @@ Main call to initially set or continually check master password is set
 
    If it is not set, the user is asked for its input
 
-:param verify: Whether password's hash was saved in authentication database
+:param verify: Whether password's hash was saved in authentication
+               database
 %End
 
     bool setMasterPassword( const QString &password, bool verify = false );
 %Docstring
-Overloaded call to reset master password or set it initially without user interaction
+Overloaded call to reset master password or set it initially without
+user interaction
 
 .. note::
 
    Only use this in trusted reset functions, unit tests or user/app setup scripts!
 
 :param password: Password to use
-:param verify: Whether password's hash was saved in authentication database
+:param verify: Whether password's hash was saved in authentication
+               database
 %End
 
     bool verifyMasterPassword( const QString &compare = QString() );
 %Docstring
-Verify the supplied master password against any existing hash in authentication database
+Verify the supplied master password against any existing hash in
+authentication database
 
 .. note::
 
@@ -199,7 +213,8 @@ Verify the supplied master password against any existing hash in authentication 
 
     bool masterPasswordIsSet() const;
 %Docstring
-Whether master password has be input and verified, i.e. authentication database is accessible
+Whether master password has be input and verified, i.e. authentication
+database is accessible
 %End
 
     bool masterPasswordHashInDatabase() const;
@@ -230,7 +245,8 @@ configs with the new password.
 
 :param newpass: New master password to replace existing
 :param oldpass: Current master password to replace existing
-:param keepbackup: Whether to keep the generated backup of current database (if using file-based storage)
+:param keepbackup: Whether to keep the generated backup of current
+                   database (if using file-based storage)
 :param backuppath: Where the backup is located, if kept
 %End
 
@@ -239,7 +255,8 @@ configs with the new password.
 
     void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted );
 %Docstring
-Re-emit a signal to schedule an optional erase of authentication database.
+Re-emit a signal to schedule an optional erase of authentication
+database.
 
 .. note::
 
@@ -247,8 +264,9 @@ Re-emit a signal to schedule an optional erase of authentication database.
    so that the slot can ask for another emit later, if the slot noticies the current GUI
    processing state is not ready for interacting with the user, e.g. project is still loading
 
-:param emitted: Setting to ``False`` will cause signal to be emitted by the schedule timer.
-                Setting to ``True`` will stop any emitting, but will not stop the schedule timer.
+:param emitted: Setting to ``False`` will cause signal to be emitted by
+                the schedule timer. Setting to ``True`` will stop any
+                emitting, but will not stop the schedule timer.
 %End
 
     QString authManTag() const;
@@ -258,12 +276,14 @@ Simple text tag describing authentication system for message logs
 
     bool registerCoreAuthMethods();
 %Docstring
-Instantiate and register existing C++ core authentication methods from plugins
+Instantiate and register existing C++ core authentication methods from
+plugins
 %End
 
     QgsAuthMethodConfigsMap availableAuthMethodConfigs( const QString &dataprovider = QString() );
 %Docstring
-Gets mapping of authentication config ids and their base configs (not decrypted data)
+Gets mapping of authentication config ids and their base configs (not
+decrypted data)
 %End
 
     void updateConfigAuthMethods();
@@ -282,7 +302,7 @@ Gets authentication method from the config/provider cache
 %Docstring
 Gets key of authentication method associated with config ID
 
-:param authcfg:
+:param authcfg: 
 %End
 
     QStringList authMethodsKeys( const QString &dataprovider = QString() );
@@ -312,9 +332,10 @@ Gets authentication method edit widget via its key
 
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
 %Docstring
-Gets supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
+Gets supported authentication method expansion(s), e.g. NetworkRequest |
+DataSourceURI, as flags
 
-:param authcfg:
+:param authcfg: 
 %End
 
     const QString uniqueConfigId() const;
@@ -338,7 +359,8 @@ Returns whether a string includes an authcfg ID token
 
     QString configIdRegex() const;
 %Docstring
-Returns the regular expression for authcfg=.{7} key/value token for authentication ids
+Returns the regular expression for authcfg=.{7} key/value token for
+authentication ids
 %End
 
     QStringList configIds() const;
@@ -351,7 +373,8 @@ Gets list of authentication ids from database
 Store an authentication config in the database
 
 :param mconfig: Associated authentication config id
-:param overwrite: If set to ``True``, pre-existing authentication configurations will be overwritten
+:param overwrite: If set to ``True``, pre-existing authentication
+                  configurations will be overwritten
 
 :return: Whether operation succeeded
 %End
@@ -371,7 +394,8 @@ Load an authentication config from the database into subclass
 
 :param authcfg: Associated authentication config id
 :param mconfig: Subclassed config to load into
-:param full: Whether to decrypt and populate all sensitive data in subclass
+:param full: Whether to decrypt and populate all sensitive data in
+             subclass
 
 :return: Whether operation succeeded
 %End
@@ -402,14 +426,16 @@ Import authentication configurations from an XML file
 
 :param filename: The file path from which the XML content will be read
 :param password: A password string to decrypt the XML content
-:param overwrite: If set to ``True``, pre-existing authentication configurations will be overwritten
+:param overwrite: If set to ``True``, pre-existing authentication
+                  configurations will be overwritten
 
 .. versionadded:: 3.20
 %End
 
     bool removeAllAuthenticationConfigs();
 %Docstring
-Clear all authentication configs from table in database and from provider caches
+Clear all authentication configs from table in database and from
+provider caches
 
 :return: Whether operation succeeded
 %End
@@ -440,7 +466,8 @@ Provider call to update a QNetworkRequest with an authentication config
 
 :param request: The QNetworkRequest
 :param authcfg: Associated authentication config id
-:param dataprovider: Provider key filter, offering logic branching in authentication method
+:param dataprovider: Provider key filter, offering logic branching in
+                     authentication method
 
 :return: Whether operation succeeded
 %End
@@ -448,11 +475,13 @@ Provider call to update a QNetworkRequest with an authentication config
     bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
                              const QString &dataprovider = QString() );
 %Docstring
-Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
+Provider call to update a QNetworkReply with an authentication config
+(used to skip known SSL errors, etc.)
 
 :param reply: The QNetworkReply
 :param authcfg: Associated authentication config id
-:param dataprovider: Provider key filter, offering logic branching in authentication method
+:param dataprovider: Provider key filter, offering logic branching in
+                     authentication method
 
 :return: Whether operation succeeded
 %End
@@ -460,11 +489,14 @@ Provider call to update a QNetworkReply with an authentication config (used to s
     bool updateDataSourceUriItems( QStringList &connectionItems /In,Out/, const QString &authcfg,
                                    const QString &dataprovider = QString() );
 %Docstring
-Provider call to update a :py:class:`QgsDataSourceUri` with an authentication config
+Provider call to update a :py:class:`QgsDataSourceUri` with an
+authentication config
 
-:param connectionItems: The connection items, e.g. username=myname, of :py:class:`QgsDataSourceUri`
+:param connectionItems: The connection items, e.g. username=myname, of
+                        :py:class:`QgsDataSourceUri`
 :param authcfg: Associated authentication config id
-:param dataprovider: Provider key filter, offering logic branching in authentication method
+:param dataprovider: Provider key filter, offering logic branching in
+                     authentication method
 
 :return: Whether operation succeeded
 %End
@@ -476,7 +508,8 @@ Provider call to update a QNetworkProxy with an authentication config
 
 :param proxy: the QNetworkProxy
 :param authcfg: Associated authentication config id
-:param dataprovider: Provider key filter, offering logic branching in authentication method
+:param dataprovider: Provider key filter, offering logic branching in
+                     authentication method
 
 :return: Whether operation succeeded
 %End
@@ -484,18 +517,27 @@ Provider call to update a QNetworkProxy with an authentication config
 
     bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
 %Docstring
-Store an authentication setting (stored as string via QVariant( value ).toString() )
+Stores an authentication setting.
+
+The ``value`` will be stored as a string, using QVariant.toString().
+
+.. seealso:: :py:func:`authSetting`
 %End
 
     QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 %Docstring
-authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+Returns a previously set authentication setting.
+
+The value will be retrieved as a string, regardless of the value type
+used when calling :py:func:`~QgsAuthManager.storeAuthSetting`.
 
 :param key: setting key
-:param defaultValue:
+:param defaultValue: 
 :param decrypt: if the value needs decrypted
 
-:return: QVariant( QString ) authentication setting
+:return: authentication setting string
+
+.. seealso:: :py:func:`storeAuthSetting`
 %End
 
     bool existsAuthSetting( const QString &key );
@@ -531,7 +573,8 @@ certIdentity get a certificate identity by ``id`` (sha hash)
 
     const QStringList certIdentityBundleToPem( const QString &id );
 %Docstring
-certIdentityBundleToPem get a certificate identity bundle by ``id`` (sha hash) returned as PEM text
+certIdentityBundleToPem get a certificate identity bundle by ``id`` (sha
+hash) returned as PEM text
 
 :param id: sha hash
 
@@ -571,7 +614,8 @@ Store an SSL certificate custom config
 
     const QgsAuthConfigSslServer sslCertCustomConfig( const QString &id, const QString &hostport );
 %Docstring
-sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
+sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha
+hash) and ``hostport`` (host:port)
 
 :param id: sha hash
 :param hostport: string host:port
@@ -581,7 +625,8 @@ sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha hash) an
 
     const QgsAuthConfigSslServer sslCertCustomConfigByHost( const QString &hostport );
 %Docstring
-sslCertCustomConfigByHost get an SSL certificate custom config by ``hostport`` (host:port)
+sslCertCustomConfigByHost get an SSL certificate custom config by
+``hostport`` (host:port)
 
 :param hostport: host:port
 
@@ -613,12 +658,14 @@ Utility function to dump the cache for debug purposes
 
     bool updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer &config );
 %Docstring
-Update ignored SSL error cache with possible ignored SSL errors, using server config
+Update ignored SSL error cache with possible ignored SSL errors, using
+server config
 %End
 
     bool updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors );
 %Docstring
-Update ignored SSL error cache with possible ignored SSL errors, using sha:host:port key
+Update ignored SSL error cache with possible ignored SSL errors, using
+sha:host:port key
 %End
 
     bool rebuildIgnoredSslErrorCache();
@@ -680,7 +727,8 @@ databaseCAs get database-stored certificate authorities
 
     const QMap<QString, QSslCertificate> mappedDatabaseCAs();
 %Docstring
-mappedDatabaseCAs get sha1-mapped database-stored certificate authorities
+mappedDatabaseCAs get sha1-mapped database-stored certificate
+authorities
 
 :return: sha1-mapped certificate authorities
 %End
@@ -700,9 +748,10 @@ Store user trust value for a certificate
 %Docstring
 certTrustPolicy get whether certificate ``cert`` is trusted by user
 
-:param cert:
+:param cert: 
 
-:return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+:return: DefaultTrust if certificate sha not in trust table, i.e.
+         follows default trust policy
 %End
 
     bool removeCertTrustPolicies( const QList<QSslCertificate> &certs );
@@ -717,11 +766,13 @@ Remove a certificate authority
 
     QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 %Docstring
-certificateTrustPolicy get trust policy for a particular certificate ``cert``
+certificateTrustPolicy get trust policy for a particular certificate
+``cert``
 
-:param cert:
+:param cert: 
 
-:return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+:return: DefaultTrust if certificate sha not in trust table, i.e.
+         follows default trust policy
 %End
 
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
@@ -769,14 +820,16 @@ Rebuild trusted certificate authorities cache
 
     const QList<QSslCertificate> trustedCaCertsCache();
 %Docstring
-trustedCaCertsCache cache of trusted certificate authorities, ready for network connections
+trustedCaCertsCache cache of trusted certificate authorities, ready for
+network connections
 
 :return: list of certificates
 %End
 
     const QByteArray trustedCaCertsPemText();
 %Docstring
-trustedCaCertsPemText get concatenated string of all trusted CA certificates
+trustedCaCertsPemText get concatenated string of all trusted CA
+certificates
 
 :return: bye array with all PEM encoded trusted CAs
 %End
@@ -819,10 +872,12 @@ Store the password manager into the wallet
 
     static QString passwordHelperDisplayName( bool titleCase = false );
 %Docstring
-Returns a translated display name of the password helper (platform dependent).
+Returns a translated display name of the password helper (platform
+dependent).
 
-If ``titleCase`` is ``True`` then a title case version of the string will be returned. Otherwise
-a mid-sentence case version will be returned.
+If ``titleCase`` is ``True`` then a title case version of the string
+will be returned. Otherwise a mid-sentence case version will be
+returned.
 
 .. versionadded:: 3.42
 %End
@@ -834,19 +889,20 @@ a mid-sentence case version will be returned.
 
     void passwordHelperFailure();
 %Docstring
-Signals emitted on password helper failure,
-mainly used in the tests to exit main application loop
+Signals emitted on password helper failure, mainly used in the tests to
+exit main application loop
 %End
 
     void passwordHelperSuccess();
 %Docstring
-Signals emitted on password helper success,
-mainly used in the tests to exit main application loop
+Signals emitted on password helper success, mainly used in the tests to
+exit main application loop
 %End
 
  void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const /Deprecated="Since 3.40. Use messageLog() instead."/;
 %Docstring
-Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
+Custom logging signal to relay to console output and
+:py:class:`QgsMessageLog`
 
 :param message: Message to send
 :param tag: Associated tag (title)
@@ -861,7 +917,8 @@ Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 
     void messageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
 %Docstring
-Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
+Custom logging signal to relay to console output and
+:py:class:`QgsMessageLog`
 
 :param message: Message to send
 :param tag: Associated tag (title)
@@ -874,7 +931,8 @@ Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 
  void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) /Deprecated="Since 3.40. Use passwordHelperMessageLog() instead."/;
 %Docstring
-Custom logging signal to inform the user about master password <-> password manager interactions
+Custom logging signal to inform the user about master password <->
+password manager interactions
 
 :param message: Message to send
 :param tag: Associated tag (title)
@@ -889,7 +947,8 @@ Custom logging signal to inform the user about master password <-> password mana
 
     void passwordHelperMessageLog( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
-Custom logging signal to inform the user about master password <-> password manager interactions
+Custom logging signal to inform the user about master password <->
+password manager interactions
 
 :param message: Message to send
 :param tag: Associated tag (title)
@@ -909,12 +968,14 @@ Emitted when a password has been verify (or not)
 
     void authDatabaseEraseRequested();
 %Docstring
-Emitted when a user has indicated they may want to erase the authentication db.
+Emitted when a user has indicated they may want to erase the
+authentication db.
 %End
 
     void authDatabaseChanged();
 %Docstring
-Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
+Emitted when the authentication db is significantly changed, e.g. large
+record removal, erased, etc.
 %End
 
   public slots:
@@ -925,7 +986,8 @@ Clear all authentication configs from authentication method caches
 
     void clearCachedConfig( const QString &authcfg );
 %Docstring
-Clear an authentication config from its associated authentication method cache
+Clear an authentication config from its associated authentication method
+cache
 %End
 
   protected:

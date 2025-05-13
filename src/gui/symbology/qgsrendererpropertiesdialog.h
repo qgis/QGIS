@@ -39,6 +39,7 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsRendererPropertiesDialog
+ * \brief A dialog for configuring vector layer renderers.
  */
 class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRendererPropsDialogBase
 {

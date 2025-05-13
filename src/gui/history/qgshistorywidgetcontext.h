@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 
 class QgsMessageBar;
+class QgsHistoryWidget;
 
 /**
  * \ingroup gui
@@ -46,8 +47,25 @@ class GUI_EXPORT QgsHistoryWidgetContext
      */
     QgsMessageBar *messageBar() const;
 
+    /**
+     * Sets the parent history \a widget.
+     *
+     * \see historyWidget()
+     * \since QGIS 3.44
+     */
+    void setHistoryWidget( QgsHistoryWidget *widget );
+
+    /**
+     * Returns the parent history widget.
+     *
+     * \see setHistoryWidget()
+     * \since QGIS 3.44
+     */
+    QgsHistoryWidget *historyWidget() const;
+
   private:
     QgsMessageBar *mMessageBar = nullptr;
+    QgsHistoryWidget *mHistoryWidget = nullptr;
 };
 
 #endif // QGSHISTORYWIDGETCONTEXT_H

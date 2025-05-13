@@ -14,7 +14,8 @@
 class QgsServerSettingsEnv : QObject
 {
 %Docstring(signature="appended")
-Provides some enum describing the environment currently supported for configuration.
+Provides some enum describing the environment currently supported for
+configuration.
 %End
 
 %TypeHeaderCode
@@ -60,6 +61,7 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_LANDING_PAGE_PREFIX,
       QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
       QGIS_SERVER_PROJECT_CACHE_STRATEGY,
+      QGIS_SERVER_PROJECT_CACHE_SIZE,
       QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
       QGIS_SERVER_APPLICATION_NAME,
       QGIS_SERVER_CAPABILITIES_CACHE_SIZE,
@@ -69,7 +71,8 @@ Provides some enum describing the environment currently supported for configurat
 class QgsServerSettings
 {
 %Docstring(signature="appended")
-Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
+Provides a way to retrieve settings by prioritizing according to
+environment variables, ini file and default values.
 %End
 
 %TypeHeaderCode
@@ -91,7 +94,8 @@ Load settings according to current environment variables.
 %Docstring
 Load setting for a specific environment variable name.
 
-:return: ``True`` if loading is successful, ``False`` in case of an invalid name.
+:return: ``True`` if loading is successful, ``False`` in case of an
+         invalid name.
 %End
 
     void logSummary() const;
@@ -110,7 +114,8 @@ Returns the ini file loaded by QSetting.
 %Docstring
 Returns parallel rendering setting.
 
-:return: ``True`` if parallel rendering is activated, ``False`` otherwise.
+:return: ``True`` if parallel rendering is activated, ``False``
+         otherwise.
 %End
 
     int maxThreads() const;
@@ -129,7 +134,8 @@ Returns the log level.
 
     bool logProfile() const;
 %Docstring
-Returns ``True`` if profile information has to be added to the logs, default value is ``False``.
+Returns ``True`` if profile information has to be added to the logs,
+default value is ``False``.
 
 .. note::
 
@@ -144,7 +150,8 @@ Returns ``True`` if profile information has to be added to the logs, default val
 %Docstring
 Returns the QGS project file to use.
 
-:return: the path of the QGS project or an empty string if none is defined.
+:return: the path of the QGS project or an empty string if none is
+         defined.
 %End
 
     QString logFile() const;
@@ -158,7 +165,8 @@ Returns the log file.
 %Docstring
 Returns whether logging to stderr is activated.
 
-:return: ``True`` if logging to stderr is activated, ``False`` otherwise.
+:return: ``True`` if logging to stderr is activated, ``False``
+         otherwise.
 
 .. versionadded:: 3.4
 %End
@@ -197,7 +205,8 @@ Show group (thousand) separator
 
     int wmsMaxHeight() const;
 %Docstring
-Returns the server-wide max height of a WMS GetMap request. The lower one of this and the project configuration is used.
+Returns the server-wide max height of a WMS GetMap request. The lower
+one of this and the project configuration is used.
 
 :return: the max height of a WMS GetMap request.
 
@@ -206,7 +215,8 @@ Returns the server-wide max height of a WMS GetMap request. The lower one of thi
 
     int wmsMaxWidth() const;
 %Docstring
-Returns the server-wide max width of a WMS GetMap request. The lower one of this and the project configuration is used.
+Returns the server-wide max width of a WMS GetMap request. The lower one
+of this and the project configuration is used.
 
 :return: the max width of a WMS GetMap request.
 
@@ -240,31 +250,36 @@ Returns the landing page base URL regular expression, defaults to `/`.
 
     QString apiResourcesDirectory() const;
 %Docstring
-Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.
+Returns the server-wide base directory where HTML templates and static
+assets (e.g. images, js and css files) are searched for.
 
-The default path is calculated by joining :py:func:`QgsApplication.pkgDataPath()` with "resources/server/api", this path
-can be changed by setting the environment variable QGIS_SERVER_API_RESOURCES_DIRECTORY.
+The default path is calculated by joining
+:py:func:`QgsApplication.pkgDataPath()` with "resources/server/api",
+this path can be changed by setting the environment variable
+QGIS_SERVER_API_RESOURCES_DIRECTORY.
 
 .. versionadded:: 3.10
 %End
 
     qlonglong apiWfs3MaxLimit() const;
 %Docstring
-Returns the server-wide maximum allowed value for \"limit\" in a features request.
+Returns the server-wide maximum allowed value for \"limit\" in a
+features request.
 
-The default value is 10000, this value can be changed by setting the environment
-variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
+The default value is 10000, this value can be changed by setting the
+environment variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
 
 .. versionadded:: 3.10
 %End
 
     bool ignoreBadLayers() const;
 %Docstring
-Returns ``True`` if the bad layers are ignored and ``False`` when the presence of a
-bad layers invalidates the whole project making it unavailable.
+Returns ``True`` if the bad layers are ignored and ``False`` when the
+presence of a bad layers invalidates the whole project making it
+unavailable.
 
-The default value is ``True``, this value can be changed by setting the environment
-variable QGIS_SERVER_IGNORE_BAD_LAYERS.
+The default value is ``True``, this value can be changed by setting the
+environment variable QGIS_SERVER_IGNORE_BAD_LAYERS.
 
 .. versionadded:: 3.10.5
 %End
@@ -273,8 +288,8 @@ variable QGIS_SERVER_IGNORE_BAD_LAYERS.
 %Docstring
 Returns ``True`` if the reading flag trust layer metadata is activated.
 
-The default value is ``False``, this value can be changed by setting the environment
-variable QGIS_SERVER_TRUST_LAYER_METADATA.
+The default value is ``False``, this value can be changed by setting the
+environment variable QGIS_SERVER_TRUST_LAYER_METADATA.
 
 .. versionadded:: 3.16
 %End
@@ -283,8 +298,8 @@ variable QGIS_SERVER_TRUST_LAYER_METADATA.
 %Docstring
 Returns ``True`` if the reading flag force layer read only is activated.
 
-The default value is ``False``, this value can be changed by setting the environment
-variable QGIS_SERVER_FORCE_READONLY_LAYERS.
+The default value is ``False``, this value can be changed by setting the
+environment variable QGIS_SERVER_FORCE_READONLY_LAYERS.
 
 .. versionadded:: 3.28
 %End
@@ -292,10 +307,11 @@ variable QGIS_SERVER_FORCE_READONLY_LAYERS.
     bool getPrintDisabled() const;
 %Docstring
 Returns ``True`` if WMS GetPrint request is disabled and the project's
-reading flag :py:class:`QgsProject`.ReadFlag.FlagDontLoadLayouts is activated.
+reading flag :py:class:`QgsProject`.ReadFlag.FlagDontLoadLayouts is
+activated.
 
-The default value is ``False``, this value can be changed by setting the environment
-variable QGIS_SERVER_DISABLE_GETPRINT.
+The default value is ``False``, this value can be changed by setting the
+environment variable QGIS_SERVER_DISABLE_GETPRINT.
 
 .. versionadded:: 3.16
 %End
@@ -309,31 +325,42 @@ Returns the service URL from the setting.
 
     int projectCacheCheckInterval() const;
 %Docstring
-Returns the config cache check interval (in ms) for the 'periodic' strategy.
+Returns the config cache check interval (in ms) for the 'periodic'
+strategy.
 
 .. versionadded:: 3.26
 %End
 
     QString projectCacheStrategy() const;
 %Docstring
-Returns the project's cache strategy
-The default value is 'filesystem', the value can be changed by setting the environment
-variable QGIS_SERVER_PROJECT_CACHE_STRATEGY.
-Possible values are:
+Returns the project's cache strategy The default value is 'filesystem',
+the value can be changed by setting the environment variable
+QGIS_SERVER_PROJECT_CACHE_STRATEGY. Possible values are:
 
-- 'filesystem': Use file system watcher for notifying projects change. Note that it works
-  only with projects stored in files and not across mounted NFS volumes on Linux.
-- 'periodic': Timer based periodic check for project's changes. Works with all storage backend.
+- 'filesystem': Use file system watcher for notifying projects change.
+  Note that it works only with projects stored in files and not across
+  mounted NFS volumes on Linux.
+- 'periodic': Timer based periodic check for project's changes. Works
+  with all storage backend.
 - 'off': Disable completely internal project's cache handling
 
 .. versionadded:: 3.26
 %End
 
+    int projectCacheSize() const;
+%Docstring
+Returns the projects cache size The default value is 100, the value can
+be changed by setting the environment variable
+QGIS_SERVER_PROJECT_CACHE_SIZE.
+
+.. versionadded:: 3.44
+%End
+
     QStringList allowedExtraSqlTokens() const;
 %Docstring
 Returns the list of strings that represent the allowed extra SQL tokens
-accepted as components of a feature filter.
-The default value is an empty string, the value can be changed by setting the environment
+accepted as components of a feature filter. The default value is an
+empty string, the value can be changed by setting the environment
 variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
 
 .. versionadded:: 3.28
@@ -341,10 +368,11 @@ variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
 
     QString applicationName() const;
 %Docstring
-Returns the QGIS Server application name.
-The default value is the concatenation of :py:func:`QgsApplication.applicationName()`
-and :py:func:`QgsApplication.platform()` separated by a space, the value can be changed
-by setting the environment variable QGIS_SERVER_APPLICATION_NAME.
+Returns the QGIS Server application name. The default value is the
+concatenation of :py:func:`QgsApplication.applicationName()` and
+:py:func:`QgsApplication.platform()` separated by a space, the value can
+be changed by setting the environment variable
+QGIS_SERVER_APPLICATION_NAME.
 
 .. versionadded:: 3.30
 %End
@@ -358,9 +386,9 @@ Returns the string representation of a setting.
 
     int capabilitiesCacheSize() const;
 %Docstring
-Returns the maximum number of project capabilities to cache.
-The default value is 40 and the value can be changed
-by setting the environment variable QGIS_SERVER_CAPABILITIES_CACHE_SIZE.
+Returns the maximum number of project capabilities to cache. The default
+value is 40 and the value can be changed by setting the environment
+variable QGIS_SERVER_CAPABILITIES_CACHE_SIZE.
 
 .. versionadded:: 3.31
 %End

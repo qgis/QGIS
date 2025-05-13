@@ -23,6 +23,7 @@
 /**
  * \ingroup gui
  * \class QgsSmartGroupCondition
+ * \brief A widget for configuring the conditions attached to a style smart group.
  */
 class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGroupConditionWidget
 {
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 /**
  * \ingroup gui
  * \class QgsSmartGroupEditorDialog
+ * \brief A dialog for configuring a style smart group.
  */
 class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmartGroupEditorDialogBase
 {

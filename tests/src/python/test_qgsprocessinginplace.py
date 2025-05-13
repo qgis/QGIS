@@ -1132,10 +1132,6 @@ class TestQgsProcessingInPlace(QgisTestCase):
             alg, parameters, context=context, feedback=feedback, raise_exceptions=True
         )
 
-        pks = set()
-        for f in gpkg_layer.getFeatures():
-            pks.add(f.attribute(0))
-
         self.assertTrue(gpkg_layer.commitChanges())
 
     def test_regenerate_fid(self):

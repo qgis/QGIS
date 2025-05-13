@@ -12,7 +12,8 @@
 class QgsFormAnnotation : QgsAnnotation
 {
 %Docstring(signature="appended")
-An annotation item that embeds a designer form showing the feature attribute
+An annotation item that embeds a designer form showing the feature
+attribute.
 %End
 
 %TypeHeaderCode

@@ -18,10 +18,13 @@
 class QgsNetworkStrategy
 {
 %Docstring(signature="appended")
-:py:class:`QgsNetworkStrategy` defines strategy used for calculation of the edge cost. For example it can
-take into account travel distance, amount of time or money. Currently there are two strategies
-implemented in the analysis library: :py:class:`QgsNetworkDistanceStrategy` and :py:class:`QgsNetworkSpeedStrategy`.
-:py:class:`QgsNetworkStrategy` implemented using "strategy" design pattern.
+Defines strategy used for calculation of the edge cost in networks.
+
+For example it can take into account travel distance, amount of time or
+money. Currently there are two strategies implemented in the analysis
+library: :py:class:`QgsNetworkDistanceStrategy` and
+:py:class:`QgsNetworkSpeedStrategy`. :py:class:`QgsNetworkStrategy`
+implemented using "strategy" design pattern.
 %End
 
 %TypeHeaderCode
@@ -42,8 +45,8 @@ implemented in the analysis library: :py:class:`QgsNetworkDistanceStrategy` and 
 
     virtual QSet<int> requiredAttributes() const;
 %Docstring
-Returns a list of the source layer attributes needed for cost calculation.
-This is method called by :py:class:`QgsGraphDirector`.
+Returns a list of the source layer attributes needed for cost
+calculation. This is method called by :py:class:`QgsGraphDirector`.
 %End
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;

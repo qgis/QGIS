@@ -15,11 +15,15 @@
 class QgsDualView : QStackedWidget
 {
 %Docstring(signature="appended")
-This widget is used to show the attributes of a set of features of a :py:class:`QgsVectorLayer`.
+This widget is used to show the attributes of a set of features of a
+:py:class:`QgsVectorLayer`.
+
 The attributes can be edited.
-It supports two different layouts: the table layout, in which the attributes for the features
-are shown in a table and the editor layout, where the features are shown as a selectable list
-and the attributes for the currently selected feature are shown in a form.
+
+It supports two different layouts: the table layout, in which the
+attributes for the features are shown in a table and the editor layout,
+where the features are shown as a selectable list and the attributes for
+the currently selected feature are shown in a form.
 %End
 
 %TypeHeaderCode
@@ -59,9 +63,12 @@ Has to be called to initialize the dual view.
                   :py:class:`QgsAttributeTableFilterModel`.ShowVisible)
 :param request: Use a modified request to limit the shown features
 :param context: The context in which this view is shown
-:param loadFeatures: whether to initially load all features into the view. If set to
-                     ``False``, limited features can later be loaded using :py:func:`~QgsDualView.setFilterMode`
-:param showFirstFeature: whether to initially show the first feature form upon initializing the dual view
+:param loadFeatures: whether to initially load all features into the
+                     view. If set to ``False``, limited features can
+                     later be loaded using
+                     :py:func:`~QgsDualView.setFilterMode`
+:param showFirstFeature: whether to initially show the first feature
+                         form upon initializing the dual view
 %End
 
     void setView( ViewMode view );
@@ -84,7 +91,7 @@ Returns the current view mode.
 %Docstring
 Set the filter mode
 
-:param filterMode:
+:param filterMode: 
 %End
 
     QgsAttributeTableFilterModel::FilterMode filterMode();
@@ -96,7 +103,8 @@ Gets the filter mode
 
     void setSelectedOnTop( bool selectedOnTop );
 %Docstring
-Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
+Toggle the selectedOnTop flag. If enabled, selected features will be
+moved to top.
 
 :param selectedOnTop: ``True``: Show selected features on top.
                       ``False``: Use defined sorting column.
@@ -111,8 +119,8 @@ Returns the number of features on the layer.
 
     int filteredFeatureCount();
 %Docstring
-Returns the number of features which are currently visible, according to the
-filter restrictions
+Returns the number of features which are currently visible, according to
+the filter restrictions
 
 :return: Number of features
 %End
@@ -130,8 +138,8 @@ Set a list of currently visible features
 
     void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
 %Docstring
-Sets the expression and Updates the filtered features in the filter model.
-It is called when the filter expression changed.
+Sets the expression and Updates the filtered features in the filter
+model. It is called when the filter expression changed.
 
 .. versionadded:: 3.10.3
 %End
@@ -143,7 +151,8 @@ Gets a list of currently visible feature ids.
 
     QgsAttributeTableModel *masterModel() const;
 %Docstring
-Returns the model which has the information about all features (not only filtered)
+Returns the model which has the information about all features (not only
+filtered)
 
 :return: The master model
 %End
@@ -171,8 +180,8 @@ Returns the table view
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 %Docstring
-Set the attribute table config which should be used to control
-the appearance of the attribute table.
+Set the attribute table config which should be used to control the
+appearance of the attribute table.
 %End
 
     void setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder = Qt::AscendingOrder );
@@ -194,8 +203,9 @@ The config used for the attribute table.
 
     static QgsAttributeList requiredAttributes( const QgsVectorLayer *layer );
 %Docstring
-Returns the list of required attributes according to the attribute table configuration of the ``layer``,
-only visible attributes and virtual fields referenced fields are returned.
+Returns the list of required attributes according to the attribute table
+configuration of the ``layer``, only visible attributes and virtual
+fields referenced fields are returned.
 
 .. versionadded:: 3.32
 %End
@@ -206,15 +216,16 @@ only visible attributes and virtual fields referenced fields are returned.
 %Docstring
 Set the current edit selection in the AttributeEditor mode.
 
-:param fids: A list of edited features (Currently only one at a time is supported)
+:param fids: A list of edited features (Currently only one at a time is
+             supported)
 %End
 
     bool saveEditChanges();
 %Docstring
 saveEditChanges
 
-:return: ``True`` if the saving was OK. ``False`` is possible due to connected
-         validation logic.
+:return: ``True`` if the saving was OK. ``False`` is possible due to
+         connected validation logic.
 %End
 
     void openConditionalStyles();
@@ -243,10 +254,11 @@ Cancel the progress dialog (if any)
 
     void parentFormValueChanged( const QString &attribute, const QVariant &value );
 %Docstring
-Called in embedded forms when an ``attribute`` ``value`` in the parent form has changed.
+Called in embedded forms when an ``attribute`` ``value`` in the parent
+form has changed.
 
-Notify the form widgets that something has changed in case they
-have filter expression that depend on the parent form scope.
+Notify the form widgets that something has changed in case they have
+filter expression that depend on the parent form scope.
 
 .. versionadded:: 3.14
 %End
@@ -282,7 +294,8 @@ Emitted when the form changes mode.
 
     void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 %Docstring
-Emitted when selecting context menu on the feature list to create the context menu individually
+Emitted when selecting context menu on the feature list to create the
+context menu individually
 
 :param menu: context menu
 :param fid: feature id of the selected feature
@@ -296,6 +309,9 @@ Emitted when selecting context menu on the feature list to create the context me
 
 class QgsAttributeTableAction : QAction
 {
+%Docstring(signature="appended")
+A QAction subclass for map layer actions shown in an attribute table.
+%End
 
 %TypeHeaderCode
 #include "qgsdualview.h"
@@ -314,6 +330,9 @@ Create a new attribute table action.
 
 class QgsAttributeTableMapLayerAction : QAction
 {
+%Docstring(signature="appended")
+A QAction for attribute table map layer actions.
+%End
 
 %TypeHeaderCode
 #include "qgsdualview.h"

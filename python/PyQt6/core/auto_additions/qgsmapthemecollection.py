@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/qgsmapthemecollection.h
 try:
     QgsMapThemeCollection.MapThemeLayerRecord.__attribute_docs__ = {'isVisible': '``True`` if the layer is visible in the associated theme.\n\n.. versionadded:: 3.14', 'usingCurrentStyle': 'Whether current style is valid and should be applied', 'currentStyle': 'Name of the current style of the layer', 'usingLegendItems': 'Whether checkedLegendItems should be applied', 'checkedLegendItems': 'Rule keys of check legend items in layer tree model', 'expandedLegendItems': 'Rule keys of expanded legend items in layer tree view.\n\n.. versionadded:: 3.2', 'expandedLayerNode': "Whether the layer's tree node is expanded\n(only to be applied if the parent MapThemeRecord has the information about expanded nodes stored)\n\n.. versionadded:: 3.2"}
+    QgsMapThemeCollection.MapThemeLayerRecord.__annotations__ = {'isVisible': bool, 'usingCurrentStyle': bool, 'currentStyle': str, 'usingLegendItems': bool, 'checkedLegendItems': 'Set[str]', 'expandedLegendItems': 'Set[str]', 'expandedLayerNode': bool}
 except (NameError, AttributeError):
     pass
 try:

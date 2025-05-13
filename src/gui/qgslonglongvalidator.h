@@ -28,6 +28,7 @@
 /**
  * \ingroup gui
  * \class QgsLongLongValidator
+ * \brief A QValidator which allows validation of long long values.
  */
 class GUI_EXPORT QgsLongLongValidator : public QValidator
 {

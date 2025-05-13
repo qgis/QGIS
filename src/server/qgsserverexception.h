@@ -34,7 +34,7 @@ using namespace nlohmann;
 
 /**
  * \ingroup server
- * \class  QgsServerException
+ * \class QgsServerException
  * \brief Exception base class for server exceptions.
  */
 #ifndef SIP_RUN
@@ -49,14 +49,14 @@ class SERVER_EXPORT QgsServerException
     QgsServerException( const QString &message, int responseCode = 500 );
 
     /**
-     * \returns the return HTTP response code associated with this exception
+     * Returns the return HTTP response code associated with this exception.
      */
     int responseCode() const { return mResponseCode; }
 
     /**
      * Formats the exception for sending to client
      *
-     * \param responseFormat QString to store the content type of the response format.
+     * \param responseFormat will be set to the content type of the response format.
      * \returns QByteArray The formatted response.
      *
      * The default implementation returns text/xml format.
@@ -69,7 +69,7 @@ class SERVER_EXPORT QgsServerException
 
 /**
  * \ingroup server
- * \class  QgsOgcServiceException
+ * \class QgsOgcServiceException
  * \brief Exception base class for service exceptions.
  *
  * Note that this exception is associated with a default return code 200 which may be
@@ -110,8 +110,8 @@ class SERVER_EXPORT QgsOgcServiceException
 
 /**
  * \ingroup server
- * \class  QgsBadRequestException
- * \brief Exception thrown in case of malformed request
+ * \class QgsBadRequestException
+ * \brief Exception thrown in case of malformed requests.
  * \since QGIS 3.4
  */
 #ifndef SIP_RUN
@@ -134,7 +134,7 @@ class SERVER_EXPORT QgsBadRequestException : public QgsOgcServiceException
 
 /**
  * \ingroup server
- * \class  QgsServerApiException
+ * \class QgsServerApiException
  * \brief Exception base class for API exceptions.
  *
  * Note that this exception is associated with a default return code 200 which may be
@@ -174,7 +174,7 @@ class SERVER_EXPORT QgsServerApiException : public QgsServerException
 
 /**
  * \ingroup server
- * \class  QgsServerApiInternalServerError
+ * \class QgsServerApiInternalServerError
  * \brief Internal server error API exception.
  *
  * Note that this exception is associated with a default return code 500 which may be
@@ -195,7 +195,7 @@ class SERVER_EXPORT QgsServerApiInternalServerError : public QgsServerApiExcepti
 
 /**
  * \ingroup server
- * \class  QgsServerApiNotFoundError
+ * \class QgsServerApiNotFoundError
  * \brief Not found error API exception.
  *
  * Note that this exception is associated with a default return code 404 which may be
@@ -216,7 +216,7 @@ class SERVER_EXPORT QgsServerApiNotFoundError : public QgsServerApiException
 
 /**
  * \ingroup server
- * \class  QgsServerApiBadRequestException
+ * \class QgsServerApiBadRequestException
  * \brief Bad request error API exception.
  *
  * Note that this exception is associated with a default return code 400 which may be
@@ -237,8 +237,8 @@ class SERVER_EXPORT QgsServerApiBadRequestException : public QgsServerApiExcepti
 
 /**
  * \ingroup server
- * \class  QgsServerApiPermissionDeniedException
- * \brief Forbidden (permission denied) 403
+ * \class QgsServerApiPermissionDeniedException
+ * \brief Raised when a request is a Forbidden (permission denied) 403.
  *
  * Note that this exception is associated with a default return code 403 which may be
  * not appropriate in some situations.
@@ -257,8 +257,8 @@ class SERVER_EXPORT QgsServerApiPermissionDeniedException : public QgsServerApiE
 
 /**
  * \ingroup server
- * \class  QgsServerApiImproperlyConfiguredException
- * \brief  configuration error on the server prevents to serve the request, which would be valid otherwise.
+ * \class QgsServerApiImproperlyConfiguredException
+ * \brief Raised when a configuration error on the server prevents to serve the request, which would be valid otherwise.
  *
  * Note that this exception is associated with a default return code 500 which may be
  * not appropriate in some situations.
@@ -278,8 +278,8 @@ class SERVER_EXPORT QgsServerApiImproperlyConfiguredException : public QgsServer
 
 /**
  * \ingroup server
- * \class  QgsServerApiNotImplementedException
- * \brief  this method is not yet implemented
+ * \class QgsServerApiNotImplementedException
+ * \brief Raised when the client requested a method that is not yet implemented.
  *
  * Note that this exception is associated with a default return code 500 which may be
  * not appropriate in some situations.
@@ -299,8 +299,8 @@ class SERVER_EXPORT QgsServerApiNotImplementedException : public QgsServerApiExc
 
 /**
  * \ingroup server
- * \class  QgsServerApiInvalidMimeTypeException
- * \brief  the client sent an invalid mime type in the "Accept" header
+ * \class QgsServerApiInvalidMimeTypeException
+ * \brief Raised when the client sent an invalid mime type in the "Accept" header.
  *
  * Note that this exception is associated with a default return code 406
  *

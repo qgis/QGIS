@@ -26,6 +26,7 @@ try:
     QgsGcpTransformerInterface.methodToString = staticmethod(QgsGcpTransformerInterface.methodToString)
     QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
     QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)
+    QgsGcpTransformerInterface.__abstract_methods__ = ['clone', 'updateParametersFromGcps', 'minimumGcpCount', 'method']
     QgsGcpTransformerInterface.__group__ = ['georeferencing']
 except (NameError, AttributeError):
     pass

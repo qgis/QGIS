@@ -167,12 +167,18 @@ class QgsPalettedRendererProxyModel : public QSortFilterProxyModel
 /**
  * \ingroup gui
  * \class QgsPalettedRendererWidget
+ * \brief A widget for configuring QgsPalettedRasterRenderer.
  */
 class GUI_EXPORT QgsPalettedRendererWidget : public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsSingleBandPseudoColorRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget() override;
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }

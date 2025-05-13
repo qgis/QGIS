@@ -207,8 +207,10 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             response = QgsBufferServerResponse()
             self.server.handleRequest(request, response)
             self.assertEqual(
-                bytes(response.body()),
-                b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n',
+                self.strip_version_xmlns(bytes(response.body())),
+                self.strip_version_xmlns(
+                    b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n'
+                ),
             )
 
         _test_error("http://server.qgis.org/index.json")

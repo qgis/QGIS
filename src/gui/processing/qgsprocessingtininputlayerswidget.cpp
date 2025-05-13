@@ -340,7 +340,7 @@ void QgsProcessingTinInputLayersDelegate::setModelData( QWidget *editor, QAbstra
   model->setData( index, comboType->currentData(), Qt::EditRole );
 }
 
-QgsProcessingTinInputLayersWidgetWrapper::QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingTinInputLayersWidgetWrapper::QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {}
 
@@ -349,18 +349,10 @@ QString QgsProcessingTinInputLayersWidgetWrapper::parameterType() const
   return QStringLiteral( "tininputlayers" );
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingTinInputLayersWidgetWrapper( parameter, type );
 }
-
-QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterTinInputLayers::typeName();
-}
-
-QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleOutputTypes() const { return QStringList(); }
 
 QWidget *QgsProcessingTinInputLayersWidgetWrapper::createWidget()
 {

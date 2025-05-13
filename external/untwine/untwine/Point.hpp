@@ -10,8 +10,9 @@
  *                                                                           *
  ****************************************************************************/
 
-
 #pragma once
+
+#include "Common.hpp"
 
 namespace untwine
 {
@@ -49,6 +50,18 @@ public:
             return d;
         }
 
+    void quantize(const Transform& xform)
+    {
+        auto quant = [](double d, double scale, double offset) -> double
+        {
+            return std::round((d - offset) / scale) * scale + offset;
+        };
+
+        x(quant(x(), xform.scale.x, xform.offset.x));
+        y(quant(y(), xform.scale.y, xform.offset.y));
+        z(quant(z(), xform.scale.z, xform.offset.z));
+    }
+
     char *cdata() const
         { return reinterpret_cast<char *>(m_data); }
     double *ddata() const
@@ -56,6 +69,22 @@ public:
 
 private:
     uint8_t *m_data;
+
+    void x(double d)
+    {
+        memcpy(ddata(), &d, sizeof(d));
+    }
+
+    void y(double d)
+    {
+        memcpy(ddata() + 1, &d, sizeof(d));
+    }
+
+    void z(double d)
+    {
+        memcpy(ddata() + 2, &d, sizeof(d));
+    }
+
 };
 
 } // namespace untwine

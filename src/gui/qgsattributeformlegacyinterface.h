@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * \brief This class helps to support legacy open form scripts to be compatible with the new
+ * \brief Helps to support legacy open form scripts to be compatible with the new
  * QgsAttributeForm style interface.
  * \note not available in Python bindings
  */

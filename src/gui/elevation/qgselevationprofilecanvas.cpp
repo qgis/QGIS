@@ -37,7 +37,6 @@
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsscreenhelper.h"
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgsprofilesourceregistry.h"
 
 #include <QWheelEvent>
@@ -265,6 +264,15 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         imagePainter.end();
 
         painter->drawImage( QPointF( 0, 0 ), mImage );
+      }
+    }
+
+    void setSubsectionsSymbol( QgsLineSymbol *symbol )
+    {
+      if ( mRenderer )
+      {
+        mRenderer->setSubsectionsSymbol( symbol );
+        updatePlot();
       }
     }
 
@@ -891,6 +899,11 @@ void QgsElevationProfileCanvas::refresh()
   generationContext.setMapUnitsPerDistancePixel( mProfileCurve->length() / mPlotItem->plotArea().width() );
   mCurrentJob->setContext( generationContext );
 
+  if ( mSubsectionsSymbol )
+  {
+    mCurrentJob->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
+  }
+
   mCurrentJob->startGeneration();
   mPlotItem->setRenderer( mCurrentJob );
 
@@ -1427,4 +1440,11 @@ void QgsElevationProfileCanvas::clear()
 void QgsElevationProfileCanvas::setSnappingEnabled( bool enabled )
 {
   mSnappingEnabled = enabled;
+}
+
+void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
+{
+  mSubsectionsSymbol.reset( symbol );
+  std::unique_ptr<QgsLineSymbol> plotItemSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
+  mPlotItem->setSubsectionsSymbol( plotItemSymbol.release() );
 }

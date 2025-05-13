@@ -406,8 +406,8 @@ bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteConte
   const QDomElement symbolElm = styleElm.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElm.isNull() )
   {
-    QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElm, context );
-    setSymbol( symbol );
+    std::unique_ptr< QgsSymbol > symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElm, context );
+    setSymbol( symbol.release() );
   }
   return true;
 }

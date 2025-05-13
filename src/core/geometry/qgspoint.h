@@ -93,14 +93,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       sipIsErr = 0;
 
       QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( p, sipType_QgsPointXY, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         sipCpp = new sipQgsPoint( QgsPoint( *p ) );
       }
+      sipReleaseType( p, sipType_QgsPointXY, state );
     }
     else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
@@ -108,14 +105,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       sipIsErr = 0;
 
       QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
-      if ( sipIsErr )
-      {
-        sipReleaseType( p, sipType_QPointF, state );
-      }
-      else
+      if ( !sipIsErr )
       {
         sipCpp = new sipQgsPoint( QgsPoint( *p ) );
       }
+      sipReleaseType( p, sipType_QPointF, state );
     }
     else if (
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
@@ -628,12 +622,29 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Cast the \a geom to a QgsPoint.
      * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsPoint *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
         return static_cast<const QgsPoint *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsPoint.
+     * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsPoint *cast( QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
+        return static_cast<QgsPoint *>( geom );
       return nullptr;
     }
 #endif

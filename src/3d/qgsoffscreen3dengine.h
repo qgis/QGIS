@@ -50,7 +50,7 @@ namespace Qt3DLogic
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Off-screen 3D engine implementation. It is useful for recording rendered 3D scenes of arbitrary size.
  *
  * \note While the on-screen 3D engine also allows capturing of images, its limitation is that

@@ -320,6 +320,39 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         myCount = myLayer.featureCount()
         self.assertEqual(myCount, 6)
 
+    def test_attribute_iteration(self):
+        layer = QgsVectorLayer(
+            self.get_test_data_path("lines.shp").as_posix(), "Lines", "ogr"
+        )
+        self.assertTrue(layer.isValid())
+        all_attrs = [
+            [attr for attr in feat.attributes()] for feat in layer.getFeatures()
+        ]
+        self.assertCountEqual(
+            all_attrs,
+            [
+                ["Highway", 1.0],
+                ["Highway", 1.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+            ],
+        )
+
+        all_attrs = [[attr for attr in feat] for feat in layer.getFeatures()]
+        self.assertCountEqual(
+            all_attrs,
+            [
+                ["Highway", 1.0],
+                ["Highway", 1.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+                ["Arterial", 2.0],
+            ],
+        )
+
     # undo stack
     def testUndoStack(self):
         layer = createLayerWithOnePoint()

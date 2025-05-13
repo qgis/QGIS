@@ -41,12 +41,11 @@ class QgsTextDocumentMetrics;
 
 /**
  * \ingroup core
- * \brief The QgsLegendRendererItem class is abstract interface for legend items
+ * \brief An abstract interface for legend items
  * returned from QgsMapLayerLegend implementation.
  *
  * The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
  * and customized look.
- *
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
@@ -584,7 +583,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying arbitrary label with icon.
+ * \brief Implementation of legend node interface for displaying arbitrary labels with icons.
  *
  */
 class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
@@ -623,8 +622,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying arbitrary raster image
- *
+ * \brief Implementation of legend node interface for displaying arbitrary raster images.
  */
 class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -660,7 +658,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying raster legend entries
+ * \brief Implementation of legend node interface for displaying raster legend entries.
  *
  */
 class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
@@ -722,7 +720,7 @@ class QgsImageFetcher;
 
 /**
  * \ingroup core
- * \brief Implementation of legend node interface for displaying WMS legend entries
+ * \brief Implementation of legend node interface for displaying WMS legend entries.
  *
  */
 class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
@@ -786,7 +784,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * \brief Produces legend node with a marker symbol
+ * \brief A legend node with a marker symbol.
  */
 class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -811,13 +809,13 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
 
   private:
     void cacheImage() const;
-    QgsDataDefinedSizeLegend *mSettings = nullptr;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mSettings;
     mutable QImage mImage;
 };
 
 /**
  * \ingroup core
- * \brief Produces legend node for a labeling text symbol
+ * \brief A legend node for a labeling text symbol.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode

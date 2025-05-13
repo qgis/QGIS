@@ -22,6 +22,7 @@
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -46,21 +47,25 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
   if ( QgsWfsConnectionItem *connItem = qobject_cast<QgsWfsConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
-    menu->addAction( actionRefresh );
-
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate );
-
     const QList<QgsWfsConnectionItem *> wfsConnectionItems = QgsDataItem::filteredItems<QgsWfsConnectionItem>( selection );
+
+    if ( wfsConnectionItems.size() == 1 )
+    {
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
     QAction *actionDelete = new QAction( wfsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [wfsConnectionItems, context] {
       QgsDataItemGuiProviderUtils::deleteConnections( wfsConnectionItems, []( const QString &connectionName ) { QgsWfsConnection::deleteConnection( connectionName ); }, context );
@@ -113,11 +118,15 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsPagesize->setValue( QgsOwsConnection::settingsPagesize->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPagingEnabled->setValue( QgsOwsConnection::settingsPagingEnabled->value( detailsParameters ), newDetailsParameters );
 
+  QgsOwsConnection::settingsPreferredHttpMethod->setValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ), newDetailsParameters );
+
   QgsOwsConnection::settingsUsername->setValue( QgsOwsConnection::settingsUsername->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPassword->setValue( QgsOwsConnection::settingsPassword->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsAuthCfg->setValue( QgsOwsConnection::settingsAuthCfg->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsHeaders->setValue( QgsOwsConnection::settingsHeaders->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsWfsFeatureMode->setValue( QgsOwsConnection::settingsWfsFeatureMode->value( detailsParameters ), newDetailsParameters );
 
   item->parent()->refreshConnections();
 }

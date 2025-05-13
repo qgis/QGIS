@@ -26,7 +26,7 @@ class QgsRasterLayer;
 
 /**
  * \ingroup gui
- * \brief A widget to select format-specific raster saving options
+ * \brief A widget to select format-specific raster saving options.
  */
 class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
@@ -158,11 +158,11 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::
 
     QString settingsKey( QString profile ) const SIP_FORCE;
     QString currentProfileKey() const SIP_FORCE;
-    QString createOptions( const QString &profile ) const SIP_FORCE;
-    void deleteCreateOptions( const QString &profile ) SIP_FORCE;
-    void setCreateOptions() SIP_FORCE;
-    void setCreateOptions( const QString &profile, const QString &options ) SIP_FORCE;
-    void setCreateOptions( const QString &profile, const QStringList &list ) SIP_FORCE;
+    QString creationOptions( const QString &profile ) const SIP_FORCE;
+    void deleteCreationOptions( const QString &profile ) SIP_FORCE;
+    void setCreationOptions() SIP_FORCE;
+    void setCreationOptions( const QString &profile, const QString &options ) SIP_FORCE;
+    void setCreationOptions( const QString &profile, const QStringList &options ) SIP_FORCE;
     QStringList profiles() const SIP_FORCE;
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
     QString pseudoFormat() const SIP_FORCE;

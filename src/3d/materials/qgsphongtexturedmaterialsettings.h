@@ -25,8 +25,8 @@
 class QDomElement;
 
 /**
- * \ingroup 3d
- * \brief A phong shading model with diffuse texture map.
+ * \ingroup qgis_3d
+ * \brief A Phong shading model with diffuse texture map.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.

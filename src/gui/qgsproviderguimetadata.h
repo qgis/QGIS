@@ -33,7 +33,7 @@ class QgsMapLayerConfigWidgetFactory;
 
 /**
  * \ingroup gui
- * \brief Holds data for GUI part of the data providers
+ * \brief Holds data for the GUI part of the data providers.
  *
  * \since QGIS 3.10
  */

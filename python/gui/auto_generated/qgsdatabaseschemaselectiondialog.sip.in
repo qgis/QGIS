@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatabaseschemaselectiondialog.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsDatabaseSchemaSelectionDialog : QDialog
+{
+%Docstring(signature="appended")
+Dialog which displays selection of a schema for a specific database
+connection.
+
+.. warning::
+
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsdatabaseschemaselectiondialog.h"
+%End
+  public:
+    explicit QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseSchemaSelectionDialog, for the specified
+``connection``.
+
+Ownership of ``connection`` is transferred.
+%End
+
+    QString selectedSchema() const;
+%Docstring
+Returns the name of the current schema selected in the combo box.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatabaseschemaselectiondialog.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

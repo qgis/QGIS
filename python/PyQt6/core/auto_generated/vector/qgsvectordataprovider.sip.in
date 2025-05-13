@@ -16,10 +16,10 @@ typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring(signature="appended")
-This is the base class for vector data providers.
+Base class for vector data providers.
 
-Data providers abstract the retrieval and writing (where supported)
-of feature and attribute information from a spatial datasource.
+Data providers abstract the retrieval and writing (where supported) of
+feature and attribute information from a spatial datasource.
 %End
 
 %TypeHeaderCode
@@ -35,26 +35,36 @@ of feature and attribute information from a spatial datasource.
 %Docstring
 Constructor for a vector data provider.
 
-The ``uri`` argument specifies the uniform resource locator (URI) for the associated dataset.
+The ``uri`` argument specifies the uniform resource locator (URI) for
+the associated dataset.
 
-Additional creation options are specified within the ``options`` value and since QGIS 3.16 creation flags are specified within the ``flags`` value.
+Additional creation options are specified within the ``options`` value
+and since QGIS 3.16 creation flags are specified within the ``flags``
+value.
 %End
 
     virtual QgsAbstractFeatureSource *featureSource() const = 0 /Factory/;
 %Docstring
-Returns feature source object that can be used for querying provider's data. The returned feature source
-is independent from provider - any changes to provider's state (e.g. change of subset string) will not be
-reflected in the feature source, therefore it can be safely used for processing in background without
-having to care about possible changes within provider that may happen concurrently. Also, even in the case
-of provider being deleted, any feature source obtained from the provider will be kept alive and working
-(they are independent and owned by the caller).
+Returns feature source object that can be used for querying provider's
+data. The returned feature source is independent from provider - any
+changes to provider's state (e.g. change of subset string) will not be
+reflected in the feature source, therefore it can be safely used for
+processing in background without having to care about possible changes
+within provider that may happen concurrently. Also, even in the case of
+provider being deleted, any feature source obtained from the provider
+will be kept alive and working (they are independent and owned by the
+caller).
 
-Sometimes there are cases when some data needs to be shared between vector data provider and its feature source.
-In such cases, the implementation must ensure that the data is not susceptible to run condition. For example,
-if it is possible that both feature source and provider may need reading/writing to some shared data at the
-same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
+Sometimes there are cases when some data needs to be shared between
+vector data provider and its feature source. In such cases, the
+implementation must ensure that the data is not susceptible to run
+condition. For example, if it is possible that both feature source and
+provider may need reading/writing to some shared data at the same time,
+some synchronization mechanisms must be used (e.g. mutexes) to prevent
+data corruption.
 
-:return: new instance of :py:class:`QgsAbstractFeatureSource` (caller is responsible for deleting it)
+:return: new instance of :py:class:`QgsAbstractFeatureSource` (caller is
+         responsible for deleting it)
 %End
 
     virtual QString storageType() const;
@@ -67,7 +77,8 @@ Returns the permanent storage type for this layer as a friendly name.
 %Docstring
 Query the provider for features specified in request.
 
-:param request: feature request describing parameters of features to return
+:param request: feature request describing parameters of features to
+                return
 
 :return: iterator for matching features from provider
 %End
@@ -122,8 +133,9 @@ Returns the vector layer type flags.
 Will always return FeatureAvailability.FeaturesAvailable or
 FeatureAvailability.NoFeaturesAvailable.
 
-Calls :py:func:`~QgsVectorDataProvider.empty` internally. Providers should override :py:func:`~QgsVectorDataProvider.empty`
-instead if they provide an optimized version of this call.
+Calls :py:func:`~QgsVectorDataProvider.empty` internally. Providers
+should override :py:func:`~QgsVectorDataProvider.empty` instead if they
+provide an optimized version of this call.
 
 .. seealso:: :py:func:`empty`
 
@@ -146,8 +158,8 @@ Returns the fields associated with this data provider.
 
     virtual QString dataComment() const;
 %Docstring
-Returns a short comment for the data that this provider is
-providing access to (e.g. the comment for postgres table).
+Returns a short comment for the data that this provider is providing
+access to (e.g. the comment for postgres table).
 %End
 
     virtual QVariant minimumValue( int index ) const;
@@ -158,8 +170,8 @@ Returns the minimum value of an attribute
 :param index: the index of the attribute
 
 Default implementation walks all numeric attributes and caches minimal
-and maximal values. If provider has facilities to retrieve minimal
-value directly, override this function.
+and maximal values. If provider has facilities to retrieve minimal value
+directly, override this function.
 %End
 
     virtual QVariant maximumValue( int index ) const;
@@ -170,19 +182,20 @@ Returns the maximum value of an attribute
 :param index: the index of the attribute
 
 Default implementation walks all numeric attributes and caches minimal
-and maximal values. If provider has facilities to retrieve maximal
-value directly, override this function.
+and maximal values. If provider has facilities to retrieve maximal value
+directly, override this function.
 %End
 
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
         QgsFeedback *feedback = 0 ) const;
 %Docstring
-Returns unique string values of an attribute which contain a specified subset string. Subset
-matching is done in a case-insensitive manner.
+Returns unique string values of an attribute which contain a specified
+subset string. Subset matching is done in a case-insensitive manner.
 
 :param index: the index of the attribute
 :param substring: substring to match (case insensitive)
-:param limit: maxmum number of the values to return, or -1 to return all unique values
+:param limit: maxmum number of the values to return, or -1 to return all
+              unique values
 :param feedback: optional feedback object for canceling request
 
 :return: list of unique strings containing substring
@@ -195,14 +208,16 @@ matching is done in a case-insensitive manner.
                                 bool &ok,
                                 QgsFeatureIds *fids = 0 ) const;
 %Docstring
-Calculates an aggregated value from the layer's features. The base implementation does nothing,
-but subclasses can override this method to handoff calculation of aggregates to the provider.
+Calculates an aggregated value from the layer's features. The base
+implementation does nothing, but subclasses can override this method to
+handoff calculation of aggregates to the provider.
 
 :param aggregate: aggregate to calculate
 :param index: the index of the attribute to calculate aggregate over
 :param parameters: parameters controlling aggregate calculation
 :param context: expression context for filter
-:param ok: will be set to ``True`` if calculation was successfully performed by the data provider
+:param ok: will be set to ``True`` if calculation was successfully
+           performed by the data provider
 :param fids: list of fids to filter, otherwise will use all fids
 
 :return: calculated aggregate value
@@ -210,8 +225,9 @@ but subclasses can override this method to handoff calculation of aggregates to 
 
     virtual void enumValues( int index, QStringList &enumList /Out/ ) const;
 %Docstring
-Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
-or if the given attribute is not an enum type.
+Returns the possible enum values of an attribute. Returns an empty
+stringlist if a provider does not support enum types or if the given
+attribute is not an enum type.
 
 :param index: the index of the attribute
 
@@ -225,7 +241,8 @@ or if the given attribute is not an enum type.
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 %Docstring
-Deletes one or more features from the provider. This requires the DeleteFeatures capability.
+Deletes one or more features from the provider. This requires the
+DeleteFeatures capability.
 
 :param id: list containing feature ids to delete
 
@@ -236,8 +253,10 @@ Deletes one or more features from the provider. This requires the DeleteFeatures
 
     virtual bool truncate();
 %Docstring
-Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
-Providers with the FastTruncate capability will use an optimised method to truncate the layer.
+Removes all features from the layer. This requires either the
+FastTruncate or DeleteFeatures capability. Providers with the
+FastTruncate capability will use an optimised method to truncate the
+layer.
 
 :return: ``True`` in case of success and ``False`` in case of failure.
 
@@ -248,7 +267,8 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 %Docstring
 Cancels the current reloading of data.
 
-:return: ``True`` if the reloading has been correctly interrupted, ``False`` otherwise
+:return: ``True`` if the reloading has been correctly interrupted,
+         ``False`` otherwise
 
 .. seealso:: :py:func:`reloadData`
 
@@ -257,16 +277,18 @@ Cancels the current reloading of data.
 
     virtual bool addAttributes( const QList<QgsField> &attributes );
 %Docstring
-Adds new ``attributes`` to the provider. Returns ``True`` in case of success and ``False`` in case of failure.
-If attributes are added using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
+Adds new ``attributes`` to the provider. Returns ``True`` in case of
+success and ``False`` in case of failure. If attributes are added using
+this method then :py:func:`QgsVectorLayer.updateFields()` must be called
 manually to ensure that the layer's field are correctly reported.
 %End
 
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 %Docstring
-Deletes existing ``attributes`` from the provider.
-If attributes are deleted using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
-manually to ensure that the layer's field are correctly reported.
+Deletes existing ``attributes`` from the provider. If attributes are
+deleted using this method then :py:func:`QgsVectorLayer.updateFields()`
+must be called manually to ensure that the layer's field are correctly
+reported.
 
 :param attributes: a set containing indices of attributes
 
@@ -275,9 +297,9 @@ manually to ensure that the layer's field are correctly reported.
 
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
 %Docstring
-Renames existing attributes.
-If attributes are renamed using this method then :py:func:`QgsVectorLayer.updateFields()` must be called
-manually to ensure that the layer's field are correctly reported.
+Renames existing attributes. If attributes are renamed using this method
+then :py:func:`QgsVectorLayer.updateFields()` must be called manually to
+ensure that the layer's field are correctly reported.
 
 :param renamedAttributes: map of attribute index to new attribute name
 
@@ -286,9 +308,9 @@ manually to ensure that the layer's field are correctly reported.
 
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 %Docstring
-Changes attribute values of existing features. This should
-succeed if the provider reports the ChangeAttributeValues capability.
-The method returns ``False`` if the provider does not have ChangeAttributeValues
+Changes attribute values of existing features. This should succeed if
+the provider reports the ChangeAttributeValues capability. The method
+returns ``False`` if the provider does not have ChangeAttributeValues
 capability or if any of the changes could not be successfully applied.
 
 :param attr_map: a map containing changed attributes
@@ -299,55 +321,61 @@ capability or if any of the changes could not be successfully applied.
     virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
                                  const QgsGeometryMap &geometry_map );
 %Docstring
-Changes attribute values and geometries of existing features. This should
-succeed if the provider reports both the ChangeAttributeValues and
-ChangeGeometries capabilities. Providers which report the ChangeFeatures
-capability implement an optimised version of this method.
+Changes attribute values and geometries of existing features. This
+should succeed if the provider reports both the ChangeAttributeValues
+and ChangeGeometries capabilities. Providers which report the
+ChangeFeatures capability implement an optimised version of this method.
 
 :param attr_map: a map containing changed attributes
-:param geometry_map: A :py:class:`QgsGeometryMap` whose index contains the feature IDs
-                     that will have their geometries changed.
-                     The second map parameter being the new geometries themselves
+:param geometry_map: A :py:class:`QgsGeometryMap` whose index contains
+                     the feature IDs that will have their geometries
+                     changed. The second map parameter being the new
+                     geometries themselves
 
 :return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual QVariant defaultValue( int fieldIndex ) const;
 %Docstring
-Returns any literal default values which are present at the provider for a specified
-field index. Important - this should ONLY be called when creating an attribute to insert
-directly into the database. Do not call this method for non-feature creation or modification,
-e.g., when validating an attribute or to compare it against an existing value, as calling it
-can cause changes to the underlying data source (e.g., Postgres provider where the default value
-is calculated as a result of a sequence). It is recommended that you instead use the methods
-in :py:class:`QgsVectorLayerUtils` such as :py:func:`QgsVectorLayerUtils.createFeature()`
-so that default value handling and validation is automatically carried out.
+Returns any literal default values which are present at the provider for
+a specified field index. Important - this should ONLY be called when
+creating an attribute to insert directly into the database. Do not call
+this method for non-feature creation or modification, e.g., when
+validating an attribute or to compare it against an existing value, as
+calling it can cause changes to the underlying data source (e.g.,
+Postgres provider where the default value is calculated as a result of a
+sequence). It is recommended that you instead use the methods in
+:py:class:`QgsVectorLayerUtils` such as
+:py:func:`QgsVectorLayerUtils.createFeature()` so that default value
+handling and validation is automatically carried out.
 
 .. seealso:: :py:func:`defaultValueClause`
 %End
 
     virtual QString defaultValueClause( int fieldIndex ) const;
 %Docstring
-Returns any default value clauses which are present at the provider for a specified
-field index. These clauses are usually SQL fragments which must be evaluated by the
-provider, e.g., sequence values.
+Returns any default value clauses which are present at the provider for
+a specified field index. These clauses are usually SQL fragments which
+must be evaluated by the provider, e.g., sequence values.
 
 .. seealso:: :py:func:`defaultValue`
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 %Docstring
-Returns any constraints which are present at the provider for a specified
-field index.
+Returns any constraints which are present at the provider for a
+specified field index.
 
 .. seealso:: :py:func:`skipConstraintCheck`
 %End
 
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 %Docstring
-Returns ``True`` if a constraint check should be skipped for a specified field (e.g., if
-the value returned by :py:func:`~QgsVectorDataProvider.defaultValue` is trusted implicitly. An optional attribute value can be
-passed which can help refine the skip constraint check.
+Returns ``True`` if a constraint check should be skipped for a specified
+field (e.g., if the value returned by
+:py:func:`~QgsVectorDataProvider.defaultValue` is trusted implicitly. An
+optional attribute value can be passed which can help refine the skip
+constraint check.
 
 .. seealso:: :py:func:`fieldConstraints`
 %End
@@ -356,16 +384,18 @@ passed which can help refine the skip constraint check.
 %Docstring
 Changes geometries of existing features
 
-:param geometry_map: A :py:class:`QgsGeometryMap` whose index contains the feature IDs
-                     that will have their geometries changed.
-                     The second map parameter being the new geometries themselves
+:param geometry_map: A :py:class:`QgsGeometryMap` whose index contains
+                     the feature IDs that will have their geometries
+                     changed. The second map parameter being the new
+                     geometries themselves
 
 :return: ``True`` in case of success and ``False`` in case of failure
 %End
 
     virtual bool createSpatialIndex();
 %Docstring
-Creates a spatial index on the datasource (if supported by the provider type).
+Creates a spatial index on the datasource (if supported by the provider
+type).
 
 :return: ``True`` in case of success
 %End
@@ -377,10 +407,10 @@ Create an attribute index on the datasource
 
     virtual Qgis::VectorProviderCapabilities capabilities() const;
 %Docstring
-Returns flags containing the supported capabilities
-\note, some capabilities may change depending on whether
-a spatial filter is active on this provider, so it may
-be prudent to check this value per intended operation.
+Returns flags containing the supported capabilities \note, some
+capabilities may change depending on whether a spatial filter is active
+on this provider, so it may be prudent to check this value per intended
+operation.
 
 .. seealso:: :py:func:`attributeEditCapabilities`
 %End
@@ -403,8 +433,8 @@ Returns the provider's supported attribute editing capabilities.
 %Docstring
 Set encoding used for accessing data from layer.
 
-An empty encoding string indicates that the provider should automatically
-select the most appropriate encoding for the data source.
+An empty encoding string indicates that the provider should
+automatically select the most appropriate encoding for the data source.
 
 .. warning::
 
@@ -429,12 +459,14 @@ Returns the index of a field name or -1 if the field does not exist
 
     QMap<QString, int> fieldNameMap() const;
 %Docstring
-Returns a map where the key is the name of the field and the value is its index
+Returns a map where the key is the name of the field and the value is
+its index
 %End
 
     virtual QgsAttributeList attributeIndexes() const;
 %Docstring
-Returns list of indexes to fetch all attributes in :py:func:`~QgsVectorDataProvider.nextFeature`
+Returns list of indexes to fetch all attributes in
+:py:func:`~QgsVectorDataProvider.nextFeature`
 %End
 
     virtual QgsAttributeList pkAttributeIndexes() const;
@@ -487,8 +519,8 @@ Returns the names of the supported types
 
     virtual bool doesStrictFeatureTypeCheck() const;
 %Docstring
-Returns ``True`` if the provider is strict about the type of inserted features
-(e.g. no multipolygon in a polygon layer)
+Returns ``True`` if the provider is strict about the type of inserted
+features (e.g. no multipolygon in a polygon layer)
 %End
 
     static QStringList availableEncodings();
@@ -513,17 +545,22 @@ Gets recorded errors
 
     virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
-Creates a new vector layer feature renderer, using provider backend specific information.
+Creates a new vector layer feature renderer, using provider backend
+specific information.
 
-The ``configuration`` map can be used to pass provider-specific configuration maps to the provider to
-allow customization of the returned renderer. Support and format of ``configuration`` varies by provider.
+The ``configuration`` map can be used to pass provider-specific
+configuration maps to the provider to allow customization of the
+returned renderer. Support and format of ``configuration`` varies by
+provider.
 
-When called with an empty ``configuration`` map the provider's default renderer will be returned.
+When called with an empty ``configuration`` map the provider's default
+renderer will be returned.
 
-This method returns a new renderer and the caller takes ownership of the returned object.
+This method returns a new renderer and the caller takes ownership of the
+returned object.
 
-Only providers which report the CreateRenderer capability will return a feature renderer. Other
-providers will return ``None``.
+Only providers which report the CreateRenderer capability will return a
+feature renderer. Other providers will return ``None``.
 
 .. versionadded:: 3.2
 %End
@@ -532,15 +569,19 @@ providers will return ``None``.
 %Docstring
 Creates labeling settings, using provider backend specific information.
 
-The ``configuration`` map can be used to pass provider-specific configuration maps to the provider to
-allow customization of the returned labeling object. Support and format of ``configuration`` varies by provider.
+The ``configuration`` map can be used to pass provider-specific
+configuration maps to the provider to allow customization of the
+returned labeling object. Support and format of ``configuration`` varies
+by provider.
 
-When called with an empty ``configuration`` map the provider's default labeling settings will be returned.
+When called with an empty ``configuration`` map the provider's default
+labeling settings will be returned.
 
-This method returns a new labeling settings and the caller takes ownership of the returned object.
+This method returns a new labeling settings and the caller takes
+ownership of the returned object.
 
-Only providers which report the CreateLabeling capability will return labeling settings. Other
-providers will return ``None``.
+Only providers which report the CreateLabeling capability will return
+labeling settings. Other providers will return ``None``.
 
 .. versionadded:: 3.6
 %End
@@ -566,7 +607,6 @@ Returns the transaction this data provider is included in, if any.
 
  virtual void forceReload() /Deprecated="Since 3.12. Will be removed in QGIS 4.0 - use reloadData() instead."/;
 %Docstring
-
 .. deprecated:: 3.12
 
    Will be removed in QGIS 4.0 - use :py:func:`~QgsVectorDataProvider.reloadData` instead.
@@ -574,7 +614,8 @@ Returns the transaction this data provider is included in, if any.
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
-Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+Gets the list of layer ids on which this layer depends. This in
+particular determines the order of layer loading.
 %End
 
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
@@ -589,7 +630,8 @@ Discover the available relations with the given layers.
 
     virtual QVariantMap metadata() const;
 %Docstring
-Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
+Gets metadata, dependent on the provider type, that will be display in
+the metadata tab of the layer properties.
 
 :return: The provider metadata
 %End
@@ -622,8 +664,8 @@ Returns ``True`` if the data source has metadata, ``False`` otherwise.
 
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 %Docstring
-Handles any post-clone operations required after this vector data provider was cloned
-from the ``source`` provider.
+Handles any post-clone operations required after this vector data
+provider was cloned from the ``source`` provider.
 
 .. versionadded:: 3.8.1
 %End
@@ -645,8 +687,8 @@ Signals an error in this provider
 
     void clearMinMaxCache();
 %Docstring
-Invalidates the min/max cache. This will force the provider to recalculate the
-cache the next time it is requested.
+Invalidates the min/max cache. This will force the provider to
+recalculate the cache the next time it is requested.
 %End
 
     void fillMinMaxCache() const;
@@ -660,14 +702,16 @@ Push a notification about errors that happened in this providers scope.
 Errors should be translated strings that require the users immediate
 attention.
 
-For general debug information use :py:func:`QgsMessageLog.logMessage()` instead.
+For general debug information use :py:func:`QgsMessageLog.logMessage()`
+instead.
 %End
 
     QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 %Docstring
 Converts the geometry to the provider type if possible / necessary
 
-:return: the converted geometry or ``None`` if no conversion was necessary or possible
+:return: the converted geometry or ``None`` if no conversion was
+         necessary or possible
 
 .. note::
 
@@ -676,16 +720,18 @@ Converts the geometry to the provider type if possible / necessary
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
 %Docstring
-Set the list of native types supported by this provider.
-Usually done in the constructor.
+Set the list of native types supported by this provider. Usually done in
+the constructor.
 %End
 
 
     static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
 %Docstring
-Converts the ``geometry`` to the provider geometry type ``providerGeometryType`` if possible / necessary
+Converts the ``geometry`` to the provider geometry type
+``providerGeometryType`` if possible / necessary
 
-:return: the converted geometry or ``None`` if no conversion was necessary or possible
+:return: the converted geometry or ``None`` if no conversion was
+         necessary or possible
 
 .. versionadded:: 3.34
 %End

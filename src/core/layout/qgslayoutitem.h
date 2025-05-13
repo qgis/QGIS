@@ -280,6 +280,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendGroupFont, //!< Legend group font
       UndoLegendLayerFont, //!< Legend layer font
       UndoLegendItemFont, //!< Legend item font
+      UndoLegendAutoWrapAfter, //!< Legend auto wrap lines after distance. \since QGIS 3.44
       UndoScaleBarLineWidth, //!< Scalebar line width
       UndoScaleBarSegmentSize, //!< Scalebar segment size
       UndoScaleBarSegmentsLeft, //!< Scalebar segments left
@@ -316,6 +317,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoElevationProfileMaximumDistance, //!< Change elevation profile maximum distance
       UndoElevationProfileMinimumElevation, //!< Change elevation profile minimum elevation
       UndoElevationProfileMaximumElevation, //!< Change elevation profile maximum elevation
+      UndoElevationProfileSubsectionLines, //!< Change elevation profile subsection indicator symbol. \since QGIS 3.44
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
@@ -1381,6 +1383,3 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItem::Flags )
 
 #endif //QGSLAYOUTITEM_H
-
-
-

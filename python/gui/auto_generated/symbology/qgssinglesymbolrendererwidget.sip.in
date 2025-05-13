@@ -11,6 +11,9 @@
 
 class QgsSingleSymbolRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring :py:class:`QgsSingleSymbolRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgssinglesymbolrendererwidget.h"

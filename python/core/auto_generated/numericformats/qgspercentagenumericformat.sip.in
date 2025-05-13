@@ -10,7 +10,8 @@
 class QgsPercentageNumericFormat : QgsBasicNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter which returns a text representation of a percentage value.
+A numeric formater which returns a text representation of a percentage
+value.
 
 .. versionadded:: 3.12
 %End

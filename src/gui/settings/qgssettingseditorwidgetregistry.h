@@ -28,7 +28,7 @@ class QgsSettingsEditorWidgetWrapper;
 
 /**
  * \ingroup gui
- * \brief This class manages editor widgets for settings
+ * \brief A registry that manages editor widgets for settings.
  *
  * \since QGIS 3.32
  */

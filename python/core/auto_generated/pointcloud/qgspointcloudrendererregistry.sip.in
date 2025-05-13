@@ -29,11 +29,14 @@ Stores metadata about one point cloud renderer class.
 
     QgsPointCloudRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
-Constructor for QgsPointCloudRendererAbstractMetadata, with the specified ``name``.
+Constructor for QgsPointCloudRendererAbstractMetadata, with the
+specified ``name``.
 
-The ``visibleName`` argument gives a translated, user friendly string identifying the renderer type.
+The ``visibleName`` argument gives a translated, user friendly string
+identifying the renderer type.
 
-The ``icon`` argument can be used to specify an icon representing the renderer.
+The ``icon`` argument can be used to specify an icon representing the
+renderer.
 %End
     virtual ~QgsPointCloudRendererAbstractMetadata();
 
@@ -46,7 +49,8 @@ Returns the unique name of the renderer. This value is not translated.
 
     QString visibleName() const;
 %Docstring
-Returns a friendly display name of the renderer. This value is translated.
+Returns a friendly display name of the renderer. This value is
+translated.
 
 .. seealso:: :py:func:`name`
 %End
@@ -67,8 +71,9 @@ Sets an ``icon`` representing the renderer.
 
     virtual QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
-Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
-Pure virtual function: must be implemented in derived classes.
+Returns new instance of the renderer given the DOM element. Returns
+``None`` on error. Pure virtual function: must be implemented in derived
+classes.
 %End
 
 
@@ -79,7 +84,8 @@ Pure virtual function: must be implemented in derived classes.
 class QgsPointCloudRendererMetadata : QgsPointCloudRendererAbstractMetadata
 {
 %Docstring(signature="appended")
-Convenience metadata class that uses static functions to create point cloud renderer and its widget.
+Convenience metadata class that uses static functions to create point
+cloud renderer and its widget.
 
 .. versionadded:: 3.18
 %End
@@ -107,7 +113,8 @@ class QgsPointCloudRendererRegistry
 %Docstring(signature="appended")
 Registry of 2D renderers for point clouds.
 
-:py:class:`QgsPointCloudRendererRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsPointCloudRendererRegistry` is not usually directly
+created, but rather accessed through
 :py:func:`QgsApplication.pointCloudRendererRegistry()`.
 
 .. versionadded:: 3.18
@@ -128,8 +135,9 @@ Adds a renderer to the registry. Takes ownership of the metadata object.
 
 :param metadata: renderer metadata
 
-:return: ``True`` if renderer was added successfully, or ``False`` if renderer could not
-         be added (e.g., a renderer with a duplicate name already exists)
+:return: ``True`` if renderer was added successfully, or ``False`` if
+         renderer could not be added (e.g., a renderer with a duplicate
+         name already exists)
 %End
 
     bool removeRenderer( const QString &rendererName );
@@ -138,14 +146,14 @@ Removes a renderer from registry.
 
 :param rendererName: name of renderer to remove from registry
 
-:return: ``True`` if renderer was successfully removed, or ``False`` if matching
-         renderer could not be found
+:return: ``True`` if renderer was successfully removed, or ``False`` if
+         matching renderer could not be found
 %End
 
     QgsPointCloudRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 %Docstring
-Returns the metadata for a specified renderer. Returns ``None`` if a matching
-renderer was not found in the registry.
+Returns the metadata for a specified renderer. Returns ``None`` if a
+matching renderer was not found in the registry.
 %End
 
     QStringList renderersList() const;
@@ -162,8 +170,9 @@ Caller takes ownership of the returned renderer.
 
     static QgsPointCloudCategoryList classificationAttributeCategories( const QgsPointCloudLayer *layer );
 %Docstring
-Returns a list of categories using the available Classification classes of a specified ``layer``, along with
-default colors and translated names for the 19 classes (0-18) of point data record formats 6-10
+Returns a list of categories using the available Classification classes
+of a specified ``layer``, along with default colors and translated names
+for the 19 classes (0-18) of point data record formats 6-10
 %End
   private:
     QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );

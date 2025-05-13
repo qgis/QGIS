@@ -12,7 +12,7 @@
 class QgsMapLayerStyleCategoriesModel : QAbstractListModel
 {
 %Docstring(signature="appended")
-Model for layer style categories
+Model for layer style categories.
 
 .. versionadded:: 3.14
 %End
@@ -28,7 +28,8 @@ Model for layer style categories
 
     explicit QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent = 0 );
 %Docstring
-Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer ``type``.
+Constructor for QgsMapLayerStyleCategoriesModel, for the specified layer
+``type``.
 %End
 
     void setCategories( QgsMapLayer::StyleCategories categories );
@@ -62,7 +63,7 @@ Defines if the model should list the AllStyleCategories entry
 class QgsCategoryDisplayLabelDelegate : QItemDelegate
 {
 %Docstring(signature="appended")
-A label delegate being able to display html encoded content
+A label delegate able to display HTML encoded content.
 
 .. versionadded:: 3.40
 %End

@@ -26,8 +26,9 @@ class QLineEdit;
 
 /**
  * \ingroup gui
- * \brief New name, for example new layer name dialog. If existing names are provided,
- * the dialog warns users if an entered name already exists.
+ * \brief A dialog for prompting users for a new name, for example new layer name dialog.
+ *
+ * If existing names are provided, the dialog warns users if an entered name already exists.
  */
 class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
@@ -73,6 +74,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     /**
      * Returns whether users are permitted to overwrite existing names.
      * \see setOverwriteEnabled()
+     * \see setShowExistingNamesCompleter()
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
@@ -110,6 +112,19 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \since QGIS 3.22
      */
     void setRegularExpression( const QString &expression );
+
+    /**
+     * Sets whether a completer for existing names should be used in the line edit.
+     *
+     * This is not shown by default. If the dialog is expected to be used in a context
+     * where overwriting is permitted, consider enabling this so that users can more
+     * easily enter an existing name.
+     *
+     * \see overwriteEnabled()
+     *
+     * \since QGIS 3.44
+     */
+    void setShowExistingNamesCompleter( bool show );
 
     /**
      * Name entered by user.

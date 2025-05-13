@@ -10,6 +10,9 @@
 
 class QgsEllipseSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsEllipseSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgsellipsesymbollayerwidget.h"

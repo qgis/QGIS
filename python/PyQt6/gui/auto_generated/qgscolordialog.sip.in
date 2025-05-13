@@ -13,8 +13,10 @@
 class QgsColorDialog : QDialog
 {
 %Docstring(signature="appended")
-A custom QGIS dialog for selecting a color. Has many improvements over the standard Qt color picker dialog, including
-hue wheel supports, color swatches, and a color sampler.
+A custom QGIS dialog for selecting a color.
+
+Has many improvements over the standard Qt color picker dialog,
+including hue wheel supports, color swatches, and a color sampler.
 %End
 
 %TypeHeaderCode
@@ -46,8 +48,8 @@ Sets the title for the color dialog
 
     void setAllowOpacity( bool allowOpacity );
 %Docstring
-Sets whether opacity modification (transparency) is permitted
-for the color dialog. Defaults to ``True``.
+Sets whether opacity modification (transparency) is permitted for the
+color dialog. Defaults to ``True``.
 
 :param allowOpacity: set to ``False`` to disable opacity modification
 %End
@@ -59,9 +61,11 @@ Returns a color selection from a color dialog.
 :param initialColor: the initial color of the selection dialog.
 :param parent: parent widget
 :param title: the title of the dialog.
-:param allowOpacity: set to ``True`` to allow modification of color opacity value (transparency)
+:param allowOpacity: set to ``True`` to allow modification of color
+                     opacity value (transparency)
 
-:return: Selected color on :py:func:`~QgsColorDialog.accepted` or initialColor on :py:func:`~QgsColorDialog.rejected`.
+:return: Selected color on :py:func:`~QgsColorDialog.accepted` or
+         initialColor on :py:func:`~QgsColorDialog.rejected`.
 %End
 
   signals:

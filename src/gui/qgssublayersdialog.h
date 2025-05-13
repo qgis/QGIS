@@ -26,6 +26,7 @@
 /**
  * \ingroup gui
  * \class QgsSublayersDialog
+ * \brief Presents a choice of sublayers.
  * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase

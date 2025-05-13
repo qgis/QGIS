@@ -8,6 +8,12 @@ try:
     QgsCircle.from3TangentsMulti = staticmethod(QgsCircle.from3TangentsMulti)
     QgsCircle.fromExtent = staticmethod(QgsCircle.fromExtent)
     QgsCircle.minimalCircleFrom3Points = staticmethod(QgsCircle.minimalCircleFrom3Points)
+    QgsCircle.calculateSegments = staticmethod(QgsCircle.calculateSegments)
+    QgsCircle.calculateSegmentsStandard = staticmethod(QgsCircle.calculateSegmentsStandard)
+    QgsCircle.calculateSegmentsAdaptive = staticmethod(QgsCircle.calculateSegmentsAdaptive)
+    QgsCircle.calculateSegmentsByAreaError = staticmethod(QgsCircle.calculateSegmentsByAreaError)
+    QgsCircle.calculateSegmentsByConstant = staticmethod(QgsCircle.calculateSegmentsByConstant)
+    QgsCircle.__overridden_methods__ = ['area', 'perimeter', 'setSemiMajorAxis', 'setSemiMinorAxis', 'boundingBox', 'toString']
     QgsCircle.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

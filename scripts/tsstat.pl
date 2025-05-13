@@ -77,7 +77,7 @@ my $translators= {
 	'pt_BR' => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
 	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar, José Macau',
 	'ro' => 'Sorin Călinică, Tudor Bărăscu, Georgiana Ioanovici, Alex Bădescu, Lonut Losifescu-Enescu, Bogdan Pacurar',
-	'ru' => 'Alexander Bruy, Artem Popov',
+	'ru' => 'Eduard Kazakov, Maxim Dubinin',
 	'sc' => 'Valerio Pinna',
 	'sk' => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	'sl' => 'Jože Detečnik, Dejan Gregor, Jaka Kranjc',
@@ -207,8 +207,17 @@ rename "i18n/CMakeLists.txt", "i18n/CMakeLists.txt.temp" || die "cannot rename i
 open I, "i18n/CMakeLists.txt.temp";
 open O, ">i18n/CMakeLists.txt";
 while(<I>) {
-	if( /^SET\(TS_FILES /i ) {
-		print O "set(TS_FILES " . join( " ", map { "qgis_$_\.ts"; } @ts ) . ")\n";
+	if( /^SET\(TS_FILES (.*)\)/i ) {
+		my @oldts = split /\s+/, $1;
+		my @newts = map { "qgis_$_\.ts"; } @ts;
+		for my $ts (@oldts) {
+			die "FATAL: $ts was dropped\n" if exists $ENV{CONSIDER_TS_DROP_FATAL} && ! grep /^$ts$/, @newts;
+			print STDERR "WARNING: $ts dropped\n" unless grep /^$ts$/, @newts;
+		}
+		for my $ts (@newts) {
+			print STDERR "INFO: $ts added\n" unless grep /^$ts$/, @oldts;
+		}
+		print O "set(TS_FILES " . join( " ", @newts ) . ")\n";
 	} else {
 		print O;
 	}

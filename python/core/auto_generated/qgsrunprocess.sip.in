@@ -15,10 +15,10 @@
 class QgsRunProcess: QObject /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-A class that executes an external program/script.
+Executes an external program/script.
 
-It can optionally capture the standard output and error from the
-process and displays them in a dialog box.
+It can optionally capture the standard output and error from the process
+and displays them in a dialog box.
 
 On some platforms (e.g. iOS) , the process execution is skipped
 https://lists.qt-project.org/pipermail/development/2015-July/022205.html
@@ -33,11 +33,11 @@ https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 
     static QStringList splitCommand( const QString &command );
 %Docstring
-Splits the string ``command`` into a list of tokens, and returns
-the list.
+Splits the string ``command`` into a list of tokens, and returns the
+list.
 
-Tokens with spaces can be surrounded by double quotes; three
-consecutive double quotes represent the quote character itself.
+Tokens with spaces can be surrounded by double quotes; three consecutive
+double quotes represent the quote character itself.
 
 .. versionadded:: 3.18
 %End
@@ -57,11 +57,13 @@ consecutive double quotes represent the quote character itself.
 class QgsBlockingProcess : QObject
 {
 %Docstring(signature="appended")
-A thread safe class for performing blocking (sync) execution of external processes.
+A thread safe class for performing blocking (sync) execution of external
+processes.
 
-This class should be used whenever a blocking process run is required. Unlike implementations
-which rely on QApplication.processEvents() or creation of a QEventLoop, this class is completely
-thread safe and can be used on either the main thread or background threads without issue.
+This class should be used whenever a blocking process run is required.
+Unlike implementations which rely on QApplication.processEvents() or
+creation of a QEventLoop, this class is completely thread safe and can
+be used on either the main thread or background threads without issue.
 
 Not available on some platforms (e.g. iOS)
 https://lists.qt-project.org/pipermail/development/2015-July/022205.html
@@ -76,15 +78,18 @@ https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 
     QgsBlockingProcess( const QString &program, const QStringList &arguments );
 %Docstring
-Constructor for the given ``program``, with the specified list of ``arguments``.
+Constructor for the given ``program``, with the specified list of
+``arguments``.
 
-After construction, call :py:func:`~QgsBlockingProcess.run` to start the process execution.
+After construction, call :py:func:`~QgsBlockingProcess.run` to start the
+process execution.
 %End
 
 
     void setStdOutHandler( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a handler function to call whenever content is written by the process to stdout.
+Sets a handler function to call whenever content is written by the
+process to stdout.
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -102,7 +107,8 @@ Sets a handler function to call whenever content is written by the process to st
 
     void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a ``handler`` function to call whenever content is written by the process to stderr.
+Sets a ``handler`` function to call whenever content is written by the
+process to stderr.
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -121,19 +127,22 @@ Sets a ``handler`` function to call whenever content is written by the process t
 %Docstring
 Runs the process, and blocks until execution finishes.
 
-The optional ``feedback`` argument can be used to specify a feedback object for cancellation/process termination.
+The optional ``feedback`` argument can be used to specify a feedback
+object for cancellation/process termination.
 
 After execution completes, the process' result code will be returned.
 %End
 
     QProcess::ExitStatus exitStatus() const;
 %Docstring
-After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process'
+exit status.
 %End
 
     QProcess::ProcessError processError() const;
 %Docstring
-After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' reported error.
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process'
+reported error.
 
 Returns QProcess.UnknownError if no error occurred.
 %End

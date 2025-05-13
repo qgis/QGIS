@@ -125,14 +125,14 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * \see nodeLegendStyle()
      */
-    static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
+    static void setNodeLegendStyle( QgsLayerTreeNode *node, Qgis::LegendComponent style );
 
     /**
      * Returns the style for the given \a node, within the specified \a model.
      *
      * \see setNodeLegendStyle()
      */
-    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
+    static Qgis::LegendComponent nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 
   private:
 
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsLegendRenderer
     /**
      * Returns the style of the given \a node.
      */
-    QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node );
+    Qgis::LegendComponent nodeLegendStyle( QgsLayerTreeNode *node );
 
     QgsLayerTreeModel *mLegendModel = nullptr;
     std::unique_ptr< QgsLayerTreeFilterProxyModel >mProxyModel;

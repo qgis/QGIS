@@ -35,7 +35,7 @@ class QgsFeature;
 
 /**
  * \ingroup core
- * \brief Description of feature class in GML
+ * \brief Description of feature class in GML.
 */
 class CORE_EXPORT QgsGmlFeatureClass
 {
@@ -79,6 +79,7 @@ class CORE_EXPORT QgsGmlFeatureClass
 /**
  * \ingroup core
  * \class QgsGmlSchema
+ * \brief Represents a GML schema.
  */
 class CORE_EXPORT QgsGmlSchema : public QObject
 {

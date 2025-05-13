@@ -13,7 +13,8 @@
 class QgsLabelSettingsWidgetBase : QgsPanelWidget, protected QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
-Base class for widgets which allow customization of label engine properties, such as label placement settings.
+Base class for widgets which allow customization of label engine
+properties, such as label placement settings.
 
 .. versionadded:: 3.12
 %End
@@ -22,36 +23,40 @@ Base class for widgets which allow customization of label engine properties, suc
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-    QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
+    QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsMapLayer *vl = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetBase.
 
 :param parent: parent widget
-:param vl: associated vector layer
+:param vl: associated map layer
 %End
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the ``context`` in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`context`
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
 
     virtual void setGeometryType( Qgis::GeometryType type );
 %Docstring
-Sets the geometry ``type`` of the features to customize the widget accordingly.
+Sets the geometry ``type`` of the features to customize the widget
+accordingly.
 %End
 
     QgsPropertyCollection dataDefinedProperties() const;
 %Docstring
-Returns the current data defined properties state as specified in the widget.
+Returns the current data defined properties state as specified in the
+widget.
 
 .. seealso:: :py:func:`updateDataDefinedProperties`
 
@@ -67,8 +72,8 @@ Sets the current data defined properties to show in the widget.
 
     virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
 %Docstring
-Updates a data defined ``properties`` collection, correctly setting the values
-for any properties related to this widget.
+Updates a data defined ``properties`` collection, correctly setting the
+values for any properties related to this widget.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
@@ -93,9 +98,9 @@ Emitted when an auxiliary field is created in the widget.
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
 %Docstring
-Registers a data defined override ``button``. Handles setting up connections
-for the button and initializing the button to show the correct descriptions
-and help text for the associated property.
+Registers a data defined override ``button``. Handles setting up
+connections for the button and initializing the button to show the
+correct descriptions and help text for the associated property.
 %End
 
 
@@ -117,7 +122,8 @@ A blocking dialog containing a :py:class:`QgsLabelSettingsWidgetBase`.
 %Docstring
 Constructor for QgsLabelSettingsWidgetDialog.
 
-:param widget: label settings widget to embed in the dialog. Ownership is transferred to the dialog.
+:param widget: label settings widget to embed in the dialog. Ownership
+               is transferred to the dialog.
 :param parent: parent widget
 %End
 

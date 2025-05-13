@@ -293,9 +293,11 @@ bool QgsPdalProvider::load( const QString &uri )
 
     if ( pdal::Reader *reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
     {
-      pdal::Options options;
-      options.add( pdal::Option( "filename", uri.toStdString() ) );
-      reader->setOptions( options );
+      {
+        pdal::Options options;
+        options.add( pdal::Option( "filename", uri.toStdString() ) );
+        reader->setOptions( std::move( options ) );
+      }
       pdal::PointTable table;
       reader->prepare( table );
 

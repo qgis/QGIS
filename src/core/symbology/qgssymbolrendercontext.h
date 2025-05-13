@@ -29,6 +29,7 @@ class QgsExpressionContextScope;
 /**
  * \ingroup core
  * \class QgsSymbolRenderContext
+ * \brief Encapsulates the context in which a symbol is being rendered.
  */
 class CORE_EXPORT QgsSymbolRenderContext
 {

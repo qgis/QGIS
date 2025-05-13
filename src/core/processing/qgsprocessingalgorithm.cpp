@@ -134,6 +134,11 @@ QVariantMap QgsProcessingAlgorithm::preprocessParameters( const QVariantMap &par
   return parameters;
 }
 
+QVariantMap QgsProcessingAlgorithm::autogenerateParameterValues( const QVariantMap &, const QString &, Qgis::ProcessingMode ) const
+{
+  return {};
+}
+
 QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
 {
   return mProvider;

@@ -10,7 +10,8 @@
 class QgsScientificNumericFormat : QgsBasicNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter which returns a scientific notation representation of a value.
+A numeric formater which returns a scientific notation representation of
+a value.
 
 .. versionadded:: 3.12
 %End

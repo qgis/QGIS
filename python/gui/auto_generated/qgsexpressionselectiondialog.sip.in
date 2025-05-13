@@ -13,10 +13,12 @@
 class QgsExpressionSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
-This class offers a dialog to change feature selections.
+A dialog for selecting features by expression.
+
 To do so, a :py:class:`QgsExpressionBuilderWidget` is shown in a dialog.
-It offers the possibilities to create a new selection, add to the current selection
-remove from the current selection or select within the current selection.
+It offers the possibilities to create a new selection, add to the
+current selection remove from the current selection or select within the
+current selection.
 %End
 
 %TypeHeaderCode
@@ -28,7 +30,8 @@ remove from the current selection or select within the current selection.
 Creates a new selection dialog.
 
 :param layer: The layer on which the selection is to be performed.
-:param startText: A default expression text to be applied (Defaults to empty)
+:param startText: A default expression text to be applied (Defaults to
+                  empty)
 :param parent: parent object (owner)
 %End
 
@@ -60,8 +63,8 @@ Sets geometry calculator used in distance/area calculations.
 
     void setMessageBar( QgsMessageBar *messageBar );
 %Docstring
-Sets the message bar to display feedback from the dialog. This is used when zooming to
-features to display the count of selected features.
+Sets the message bar to display feedback from the dialog. This is used
+when zooming to features to display the count of selected features.
 
 :param messageBar: target message bar
 %End
@@ -75,8 +78,7 @@ Sets a map canvas associated with the dialog.
     virtual void closeEvent( QCloseEvent *closeEvent );
 
 %Docstring
-Implementation for closeEvent
-Saves the window geometry
+Implementation for closeEvent Saves the window geometry
 
 :param closeEvent: Event object. Unused.
 %End
@@ -84,8 +86,8 @@ Saves the window geometry
     virtual void done( int r );
 
 %Docstring
-Implementation for done (default behavior when pressing esc)
-Calls close, so the window geometry gets saved and the object deleted.
+Implementation for done (default behavior when pressing esc) Calls
+close, so the window geometry gets saved and the object deleted.
 
 :param r: Result value. Unused.
 %End

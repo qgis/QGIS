@@ -24,9 +24,10 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsUuidWidgetFactory
+ * \brief Editor widget factory for UUID widgets.
+ *
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsUuidWidgetFactory : public QgsEditorWidgetFactory
 {
   public:

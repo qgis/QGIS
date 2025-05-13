@@ -41,7 +41,7 @@ namespace Qt3DRender
 ///@cond PRIVATE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief A PBR metal rough material.
  * \since QGIS 3.36
  */

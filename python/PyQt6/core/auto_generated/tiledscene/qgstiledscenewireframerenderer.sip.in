@@ -51,9 +51,10 @@ Constructor for QgsTiledSceneWireframeRenderer.
 Creates a textured renderer from an XML ``element``.
 %End
 
-    static QgsFillSymbol *createDefaultFillSymbol() /Factory/;
+    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol();
 %Docstring
-Returns a copy of the default fill symbol used to render triangles in the wireframe.
+Returns a copy of the default fill symbol used to render triangles in
+the wireframe.
 
 .. seealso:: :py:func:`setFillSymbol`
 %End
@@ -74,9 +75,10 @@ Ownership of ``symbol`` is transferred.
 .. seealso:: :py:func:`fillSymbol`
 %End
 
-    static QgsLineSymbol *createDefaultLineSymbol() /Factory/;
+    static std::unique_ptr< QgsLineSymbol > createDefaultLineSymbol();
 %Docstring
-Returns a copy of the default line symbol used to render lines in the wireframe.
+Returns a copy of the default line symbol used to render lines in the
+wireframe.
 
 .. seealso:: :py:func:`setLineSymbol`
 %End
@@ -99,16 +101,16 @@ Ownership of ``symbol`` is transferred.
 
     bool useTextureColors() const;
 %Docstring
-Returns ``True`` if representative colors from the textures will be used to recolor
-the symbols used to render the wireframe.
+Returns ``True`` if representative colors from the textures will be used
+to recolor the symbols used to render the wireframe.
 
 .. seealso:: :py:func:`setUseTextureColors`
 %End
 
     void setUseTextureColors( bool enabled );
 %Docstring
-Sets whether representative colors from the textures should be used to recolor
-the symbols used to render the wireframe.
+Sets whether representative colors from the textures should be used to
+recolor the symbols used to render the wireframe.
 
 .. seealso:: :py:func:`useTextureColors`
 %End

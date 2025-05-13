@@ -27,8 +27,7 @@
 /**
  * \class QgsLayoutItemComboBox
  * \ingroup gui
- * \brief The QgsLayoutItemComboBox class is a combo box which displays items of
- * a matching type from a layout.
+ * \brief A combo box which displays items of a matching type from a layout.
  */
 class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
 {

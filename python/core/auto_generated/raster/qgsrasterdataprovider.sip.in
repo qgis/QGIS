@@ -17,7 +17,7 @@
 class QgsImageFetcher : QObject
 {
 %Docstring(signature="appended")
-Handles asynchronous download of images
+Handles asynchronous download of images.
 %End
 
 %TypeHeaderCode
@@ -76,10 +76,11 @@ Base class for raster data providers.
 %Docstring
 Constructor for QgsRasterDataProvider.
 
-The ``uri`` argument gives a provider-specific uri indicating the underlying data
-source and it's parameters.
+The ``uri`` argument gives a provider-specific uri indicating the
+underlying data source and it's parameters.
 
-The ``options`` argument specifies generic provider options and since QGIS 3.16 creation flags are specified within the ``flags`` value.
+The ``options`` argument specifies generic provider options and since
+QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
     virtual QgsRasterDataProvider *clone() const = 0;
@@ -87,7 +88,8 @@ The ``options`` argument specifies generic provider options and since QGIS 3.16 
 
     virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 %Docstring
-Returns flags containing the supported capabilities of the data provider.
+Returns flags containing the supported capabilities of the data
+provider.
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
@@ -103,16 +105,16 @@ Returns data type for the band specified by number
 
     virtual QgsFields fields() const;
 %Docstring
-Returns the fields of the raster layer for data providers that expose them,
-the default implementation returns an empty list.
+Returns the fields of the raster layer for data providers that expose
+them, the default implementation returns an empty list.
 
 .. versionadded:: 3.14
 %End
     virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
 %Docstring
-Returns source data type for the band specified by number,
-source data type may be shorter than dataType
+Returns source data type for the band specified by number, source data
+type may be shorter than dataType
 %End
 
     virtual Qgis::RasterColorInterpretation colorInterpretation( int bandNo ) const;
@@ -122,8 +124,8 @@ Returns data type for the band specified by number
 
     QString colorName( Qgis::RasterColorInterpretation colorInterpretation ) const;
 %Docstring
-Returns a string color name representation of a color interpretation.
-It is translated since QGIS 3.40
+Returns a string color name representation of a color interpretation. It
+is translated since QGIS 3.40
 %End
 
     virtual bool reload();
@@ -146,10 +148,12 @@ Read band offset for raster value
 
     virtual QSize maximumTileSize() const;
 %Docstring
-Returns the maximum tile size in pixels for the data provider.
-By default, the maximum tile size is set to :py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_WIDTH x
-:py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_HEIGHT but can be overridden in subclasses (e.g. WMS
-can retrieve that information from the GetCapabilities document).
+Returns the maximum tile size in pixels for the data provider. By
+default, the maximum tile size is set to
+:py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_WIDTH x
+:py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_HEIGHT but can be
+overridden in subclasses (e.g. WMS can retrieve that information from
+the GetCapabilities document).
 
 .. versionadded:: 3.40
 %End
@@ -227,14 +231,23 @@ Returns a new image downloader for the raster legend.
 %Docstring
 Creates pyramid overviews.
 
-:param pyramidList: a list of :py:class:`QgsRasterPyramids` to create overviews for. The :py:func:`QgsRasterPyramid.setBuild()` flag
-                    should be set to ``True`` for every layer where pyramids are desired.
-:param resamplingMethod: resampling method to use when creating the pyramids. The :py:func:`~QgsRasterDataProvider.pyramidResamplingMethods` method
-                         can be used to retrieve a list of valid resampling methods available for specific raster data providers.
+:param pyramidList: a list of :py:class:`QgsRasterPyramids` to create
+                    overviews for. The
+                    :py:func:`QgsRasterPyramid.setBuild()` flag should
+                    be set to ``True`` for every layer where pyramids
+                    are desired.
+:param resamplingMethod: resampling method to use when creating the
+                         pyramids. The
+                         :py:func:`~QgsRasterDataProvider.pyramidResamplingMethods`
+                         method can be used to retrieve a list of valid
+                         resampling methods available for specific
+                         raster data providers.
 :param format: raster pyramid format.
-:param configOptions: optional configuration options which are passed to the specific data provider
-                      for use during pyramid creation.
-:param feedback: optional feedback argument for progress reports and cancellation support.
+:param configOptions: optional configuration options which are passed to
+                      the specific data provider for use during pyramid
+                      creation.
+:param feedback: optional feedback argument for progress reports and
+                 cancellation support.
 
 .. seealso:: :py:func:`buildPyramidList`
 
@@ -247,17 +260,22 @@ Creates pyramid overviews.
 %Docstring
 Returns the raster layers pyramid list.
 
-This method returns a list of pyramid layers which are valid for the data provider. The returned list
-is a complete list of all possible layers, and includes both pyramids layers which currently exist and
-layers which have not yet been constructed. To know which of the pyramid layers
-ACTUALLY exists you need to look at the :py:func:`QgsRasterPyramid.getExists()` member for each value in the
+This method returns a list of pyramid layers which are valid for the
+data provider. The returned list is a complete list of all possible
+layers, and includes both pyramids layers which currently exist and
+layers which have not yet been constructed. To know which of the pyramid
+layers ACTUALLY exists you need to look at the
+:py:func:`QgsRasterPyramid.getExists()` member for each value in the
 list.
 
-The returned list is suitable for passing to the :py:func:`~QgsRasterDataProvider.buildPyramids` method. First, modify the returned list
-by calling `QgsRasterPyramid.setBuild( ``True`` )` for every layer you want to create pyramids for, and then
-pass the modified list to :py:func:`~QgsRasterDataProvider.buildPyramids`.
+The returned list is suitable for passing to the
+:py:func:`~QgsRasterDataProvider.buildPyramids` method. First, modify
+the returned list by calling `QgsRasterPyramid.setBuild( ``True`` )` for
+every layer you want to create pyramids for, and then pass the modified
+list to :py:func:`~QgsRasterDataProvider.buildPyramids`.
 
-:param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
+:param overviewList: used to construct the pyramid list (optional), when
+                     empty the list is defined by the provider.
 
 .. seealso:: :py:func:`buildPyramids`
 
@@ -268,8 +286,9 @@ pass the modified list to :py:func:`~QgsRasterDataProvider.buildPyramids`.
 %Docstring
 Returns ``True`` if raster has at least one existing pyramid.
 
-The :py:func:`~QgsRasterDataProvider.buildPyramidList` method can be used to retrieve additional details about potential and existing
-pyramid layers.
+The :py:func:`~QgsRasterDataProvider.buildPyramidList` method can be
+used to retrieve additional details about potential and existing pyramid
+layers.
 
 .. seealso:: :py:func:`buildPyramidList`
 
@@ -279,12 +298,12 @@ pyramid layers.
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 %Docstring
 Identify raster value(s) found on the point position. The context
-parameters extent, width and height are important to identify
-on the same zoom level as a displayed map and to do effective
-caching (WCS). If context params are not specified the highest
-resolution is used. :py:func:`~QgsRasterDataProvider.capabilities` may be used to test if format
-is supported by provider. Values are set to 'no data' or empty string
-if point is outside data source extent.
+parameters extent, width and height are important to identify on the
+same zoom level as a displayed map and to do effective caching (WCS). If
+context params are not specified the highest resolution is used.
+:py:func:`~QgsRasterDataProvider.capabilities` may be used to test if
+format is supported by provider. Values are set to 'no data' or empty
+string if point is outside data source extent.
 
 :param point: coordinates in data source CRS
 :param format: result format
@@ -293,11 +312,13 @@ if point is outside data source extent.
 :param height: context height
 :param dpi: context dpi
 
-:return: :py:class:`QgsRaster`.IdentifyFormatValue: map of values for each band, keys are band numbers
-         (from 1).
-         :py:class:`QgsRaster`.IdentifyFormatFeature: map of :py:class:`QgsRasterFeatureList` for each sublayer
-         :py:class:`QgsRaster`.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
-         Empty if failed or there are no results.
+:return: :py:class:`QgsRaster`.IdentifyFormatValue: map of values for
+         each band, keys are band numbers (from 1).
+         :py:class:`QgsRaster`.IdentifyFormatFeature: map of
+         :py:class:`QgsRasterFeatureList` for each sublayer
+         :py:class:`QgsRaster`.IdentifyFormatHtml: map of HTML strings
+         for each sublayer (WMS). Empty if failed or there are no
+         results.
 
 .. note::
 
@@ -311,15 +332,15 @@ if point is outside data source extent.
                            bool *ok /Out/ = 0,
                            const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 %Docstring
-Samples a raster value from the specified ``band`` found at the ``point`` position. The context
-parameters ``boundingBox``, ``width`` and ``height`` are important to identify
-on the same zoom level as a displayed map and to do effective
-caching (WCS). If context params are not specified the highest
-resolution is used.
+Samples a raster value from the specified ``band`` found at the
+``point`` position. The context parameters ``boundingBox``, ``width``
+and ``height`` are important to identify on the same zoom level as a
+displayed map and to do effective caching (WCS). If context params are
+not specified the highest resolution is used.
 
-If ``ok`` is specified and the point is outside data source extent, or an invalid
-band number was specified, then ``ok`` will be set to ``False``. In this case the function will return
-a NaN value.
+If ``ok`` is specified and the point is outside data source extent, or
+an invalid band number was specified, then ``ok`` will be set to
+``False``. In this case the function will return a NaN value.
 
 .. seealso:: :py:func:`identify` which is much more flexible but considerably less efficient.
 
@@ -330,20 +351,20 @@ a NaN value.
 %Docstring
 Returns the caption error text for the last error in this provider
 
-If an operation returns 0 (e.g. :py:func:`~QgsRasterDataProvider.draw`), this function
-returns the text of the error associated with the failure.
-Interactive users of this provider can then, for example,
-call a QMessageBox to display the contents.
+If an operation returns 0 (e.g. :py:func:`~QgsRasterDataProvider.draw`),
+this function returns the text of the error associated with the failure.
+Interactive users of this provider can then, for example, call a
+QMessageBox to display the contents.
 %End
 
     virtual QString lastError() = 0;
 %Docstring
 Returns the verbose error text for the last error in this provider
 
-If an operation returns 0 (e.g. :py:func:`~QgsRasterDataProvider.draw`), this function
-returns the text of the error associated with the failure.
-Interactive users of this provider can then, for example,
-call a QMessageBox to display the contents.
+If an operation returns 0 (e.g. :py:func:`~QgsRasterDataProvider.draw`),
+this function returns the text of the error associated with the failure.
+Interactive users of this provider can then, for example, call a
+QMessageBox to display the contents.
 %End
 
     virtual QString lastErrorFormat();
@@ -363,7 +384,8 @@ Sets the output device resolution.
 
     virtual QDateTime timestamp() const;
 %Docstring
-Time stamp of data source in the moment when data/metadata were loaded by provider
+Time stamp of data source in the moment when data/metadata were loaded
+by provider
 %End
 
     virtual QDateTime dataTimestamp() const;
@@ -373,8 +395,10 @@ Current time stamp of data source
 
     virtual bool isEditable() const;
 %Docstring
-Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
-By default providers are not editable. Use :py:func:`~QgsRasterDataProvider.setEditable` method to enable/disable editing.
+Checks whether the provider is in editing mode, i.e. raster write
+operations will be accepted. By default providers are not editable. Use
+:py:func:`~QgsRasterDataProvider.setEditable` method to enable/disable
+editing.
 
 .. seealso:: :py:func:`setEditable`
 
@@ -383,8 +407,9 @@ By default providers are not editable. Use :py:func:`~QgsRasterDataProvider.setE
 
     virtual bool setEditable( bool enabled );
 %Docstring
-Turns on/off editing mode of the provider. When in editing mode, it is possible
-to overwrite data of the provider using :py:func:`~QgsRasterDataProvider.writeBlock` calls.
+Turns on/off editing mode of the provider. When in editing mode, it is
+possible to overwrite data of the provider using
+:py:func:`~QgsRasterDataProvider.writeBlock` calls.
 
 :return: ``True`` if the switch to/from editing mode was successful
 
@@ -409,15 +434,16 @@ Writes into the provider datasource
 %Docstring
 Writes pixel data from a raster block into the provider data source.
 
-This will override previously stored pixel values. It is assumed that cells in the passed
-raster block are aligned with the cells of the data source. If raster block does not cover
-the whole area of the data source, only a subset of pixels covered by the raster block
-will be overwritten. By default, writing of raster data starts from the first cell
-of the raster - it is possible to set offset in pixels by specifying non-zero
-xOffset and yOffset values.
+This will override previously stored pixel values. It is assumed that
+cells in the passed raster block are aligned with the cells of the data
+source. If raster block does not cover the whole area of the data
+source, only a subset of pixels covered by the raster block will be
+overwritten. By default, writing of raster data starts from the first
+cell of the raster - it is possible to set offset in pixels by
+specifying non-zero xOffset and yOffset values.
 
-Writing is supported only by some data providers. Provider has to be in editing mode
-in order to allow write operations.
+Writing is supported only by some data providers. Provider has to be in
+editing mode in order to allow write operations.
 
 .. seealso:: :py:func:`isEditable`
 
@@ -425,6 +451,7 @@ in order to allow write operations.
 
 :return: ``True`` on success
 %End
+
 
     static QgsRasterDataProvider *create( const QString &providerKey,
                                           const QString &uri,
@@ -452,8 +479,8 @@ Remove dataset
 
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 %Docstring
-Returns a list of pyramid resampling method name and label pairs
-for given provider
+Returns a list of pyramid resampling method name and label pairs for
+given provider
 %End
 
     struct VirtualRasterInputLayers
@@ -476,7 +503,8 @@ for given provider
 
     static QgsRasterDataProvider::VirtualRasterParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = 0 );
 %Docstring
-Decodes the URI returning a struct with all the parameters for :py:class:`QgsVirtualRasterProvider` class
+Decodes the URI returning a struct with all the parameters for
+:py:class:`QgsVirtualRasterProvider` class
 
 .. note::
 
@@ -500,9 +528,11 @@ Encodes the URI starting from the struct .
    since QGIS 3.22
 %End
 
+
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format );
 %Docstring
-Validates creation options for a specific dataset and destination format.
+Validates creation options for a specific dataset and destination
+format.
 
 .. note::
 
@@ -516,7 +546,8 @@ Validates creation options for a specific dataset and destination format.
     virtual QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
         const QStringList &configOptions, const QString &fileFormat );
 %Docstring
-Validates pyramid creation options for a specific dataset and destination format
+Validates pyramid creation options for a specific dataset and
+destination format
 
 .. note::
 
@@ -563,18 +594,20 @@ Step height for raster iterations.
 
     virtual QList< double > nativeResolutions() const;
 %Docstring
-Returns a list of native resolutions if available, i.e. map units per pixel at which the raster source
-was originally created.
+Returns a list of native resolutions if available, i.e. map units per
+pixel at which the raster source was originally created.
 
-Resolutions are calculated in the provider's :py:func:`~QgsRasterDataProvider.crs`.
+Resolutions are calculated in the provider's
+:py:func:`~QgsRasterDataProvider.crs`.
 
 .. versionadded:: 3.8.0
 %End
 
     virtual bool ignoreExtents() const;
 %Docstring
-Returns ``True`` if the extents reported by the data provider are not reliable
-and it's possible that there is renderable content outside of these extents.
+Returns ``True`` if the extents reported by the data provider are not
+reliable and it's possible that there is renderable content outside of
+these extents.
 
 .. versionadded:: 3.10.0
 %End
@@ -587,14 +620,16 @@ and it's possible that there is renderable content outside of these extents.
 
     virtual QgsPoint transformCoordinates( const QgsPoint &point, TransformType type );
 %Docstring
-Transforms coordinates between source image coordinate space [0..width]x[0..height] and
-layer coordinate space (georeferenced coordinates). Often this transformation is a simple
-2D affine transformation (offset and scaling), but rasters with different georeferencing
-methods like GCPs (ground control points) or RPCs (rational polynomial coefficients) may
-require a more complex transform.
+Transforms coordinates between source image coordinate space
+[0..width]x[0..height] and layer coordinate space (georeferenced
+coordinates). Often this transformation is a simple 2D affine
+transformation (offset and scaling), but rasters with different
+georeferencing methods like GCPs (ground control points) or RPCs
+(rational polynomial coefficients) may require a more complex transform.
 
-If the transform fails (input coordinates are outside of the valid range or data provider
-does not support this functionality), an empty point is returned.
+If the transform fails (input coordinates are outside of the valid range
+or data provider does not support this functionality), an empty point is
+returned.
 
 .. versionadded:: 3.14
 %End
@@ -683,16 +718,17 @@ Returns maximum oversampling factor for zoomed-out operations.
 
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 %Docstring
-Returns the (possibly ``None``) attribute table for the specified ``bandNumber``.
+Returns the (possibly ``None``) attribute table for the specified
+``bandNumber``.
 
 .. versionadded:: 3.30
 %End
 
     void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable /Transfer/ );
 %Docstring
-Set the attribute table to ``attributeTable`` for the specified ``bandNumber``,
-if the ``attributeTable`` is ``None`` any existing attribute table for the specified
-band will be removed.
+Set the attribute table to ``attributeTable`` for the specified
+``bandNumber``, if the ``attributeTable`` is ``None`` any existing
+attribute table for the specified band will be removed.
 
 .. note::
 
@@ -703,15 +739,17 @@ band will be removed.
 
     void removeAttributeTable( int bandNumber );
 %Docstring
-Remove the attribute table for the specified ``bandNumber``.
-If the attribute table does not exist this method does nothing.
+Remove the attribute table for the specified ``bandNumber``. If the
+attribute table does not exist this method does nothing.
 
 .. versionadded:: 3.30
 %End
 
     bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage /Out/ = 0 ) const;
 %Docstring
-Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+Writes the filesystem-based attribute table for the specified
+``bandNumber`` to ``path``, optionally reporting any error in
+``errorMessage``, returns ``True`` on success.
 
 :return: ``True`` on success
 
@@ -724,7 +762,9 @@ Writes the filesystem-based attribute table for the specified ``bandNumber`` to 
 
     bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage /Out/ = 0 );
 %Docstring
-Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+Loads the filesystem-based attribute table for the specified
+``bandNumber`` from ``path``, optionally reporting any error in
+``errorMessage``, returns ``True`` on success.
 
 :return: ``True`` on success
 
@@ -735,9 +775,11 @@ Loads the filesystem-based attribute table for the specified ``bandNumber`` from
 
     virtual bool readNativeAttributeTable( QString *errorMessage /Out/  = 0 );
 %Docstring
-Reads the native attribute table, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
-The default implementation does nothing and returns ``False``.
-Data providers that have NativeRasterAttributeTable provider capability will try to read the native attribute table.
+Reads the native attribute table, optionally reporting any error in
+``errorMessage``, returns ``True`` on success. The default
+implementation does nothing and returns ``False``. Data providers that
+have NativeRasterAttributeTable provider capability will try to read the
+native attribute table.
 
 :return: ``True`` on success
 
@@ -751,7 +793,8 @@ Data providers that have NativeRasterAttributeTable provider capability will try
 
     void statusChanged( const QString & ) const;
 %Docstring
-Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
+Emit a message to be displayed on status bar, usually used by network
+providers (WMS,WCS)
 %End
 
 
@@ -766,7 +809,9 @@ Returns ``True`` if user no data contains value
 
     void copyBaseSettings( const QgsRasterDataProvider &other );
 %Docstring
-Copy member variables from other raster data provider. Useful for implementation of :py:func:`~QgsRasterDataProvider.clone` method in subclasses
+Copy member variables from other raster data provider. Useful for
+implementation of :py:func:`~QgsRasterDataProvider.clone` method in
+subclasses
 %End
 
 

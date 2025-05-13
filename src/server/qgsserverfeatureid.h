@@ -28,32 +28,24 @@ class QgsVectorDataProvider;
 class QgsFeature;
 class QgsFeatureRequest;
 
-
-#ifdef SIP_RUN
-% ModuleHeaderCode
-#include "qgsserverfeatureid.h"
-  % End
-#endif
-
-
-  /**
+/**
  * \ingroup server
- * \brief The QgsServerFeatureId namespace provides a way to use primary keys for
- * feature id.
+ * \brief Contains utility functions for using primary keys for feature IDs.
  * \since QGIS 3.4.9
  */
-  namespace QgsServerFeatureId
+class SERVER_EXPORT QgsServerFeatureId
 {
-  /**
+  public:
+    /**
    * Returns the feature id based on primary keys.
    * \param feature the feature
    * \param pkAttributes the primary keys list
    * \returns the feature id based on primary keys
    * \since QGIS 3.4.9
    */
-  SERVER_EXPORT QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
+    static QString getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes );
 
-  /**
+    /**
    * Returns the feature request based on feature ids build with primary keys.
    * \param featureRequest the feature request to update
    * \param serverFids the feature ids build with QgsServerFeatureId::getServerFid
@@ -61,23 +53,23 @@ class QgsFeatureRequest;
    * \returns the feature request updated
    * \since QGIS 3.4.9
    */
-  SERVER_EXPORT QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest & featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
+    static QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest &featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
 
-  /**
+    /**
    * Returns the expression feature id based on primary keys.
    * \param serverFid the feature id build with primary keys
    * \param provider the vector layer provider to provide fields and primary keys list
    * \returns the feature id based on primary keys
    * \since QGIS 3.4.9
    */
-  SERVER_EXPORT QString getExpressionFromServerFid( const QString &serverFid, const QgsVectorDataProvider *provider );
+    static QString getExpressionFromServerFid( const QString &serverFid, const QgsVectorDataProvider *provider );
 
-  /**
+    /**
    * Returns the primary keys separator
    * \returns @@ the primary keys separator
    * \since QGIS 3.4.9
    */
-  SERVER_EXPORT QString pkSeparator();
+    static QString pkSeparator();
 };
 
 #endif

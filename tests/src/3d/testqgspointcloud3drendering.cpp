@@ -251,7 +251,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -286,7 +286,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -307,29 +307,45 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
 
   scene->cameraController()->resetView( 90 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 1.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 0.5 );
+  // First, without clipping
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img_no_clipping, QString(), 80, QSize( 0, 0 ), 15 );
+
+  // Enable clipping
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                               << QVector4D( 0.866025, -0.5, 0, 1.0 )
+                                               << QVector4D( 0.5, 0.866025, 0, 0.5 );
   scene->enableClipping( clipPlanesEquations );
 
+  QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  // When running the test on Travis, it would initially return empty rendered image.
-  // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  // find a better fix in the future.
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor_clipping", "pointcloud_3d_singlecolor_clipping", img_clipping, QString(), 80, QSize( 0, 0 ), 15 );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor_clipping", "pointcloud_3d_singlecolor_clipping", img, QString(), 80, QSize( 0, 0 ), 15 );
-
+  // disable clipping
   scene->disableClipping();
 
-  Qgs3DUtils::captureSceneImage( engine, scene );
-  // When running the test on Travis, it would initially return empty rendered image.
-  // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  // find a better fix in the future.
-  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img2, QString(), 80, QSize( 0, 0 ), 15 );
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img_no_clipping_again, QString(), 80, QSize( 0, 0 ), 15 );
+
+  // enable clipping again
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor_clipping", "pointcloud_3d_singlecolor_clipping", img_clipping_again, QString(), 80, QSize( 0, 0 ), 15 );
+
+  // disable clipping a second time
+  scene->disableClipping();
+
+  QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_singlecolor", "pointcloud_3d_singlecolor", img_no_clipping_final, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
@@ -338,7 +354,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -377,7 +393,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -414,7 +430,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -454,7 +470,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
@@ -494,7 +510,6 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  map->setOrigin( QgsVector3D( filteredExtent.center().x(), filteredExtent.center().y(), 0 ) );
   map->setExtent( filteredExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;

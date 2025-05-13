@@ -428,6 +428,13 @@ class CORE_EXPORT QgsProcessingUtils
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
 
     /**
+     * Returns the index of the output matching \a name for a specified \a algorithm.
+     * Matching is done in a case-insensitive manner.
+     * \since QGIS 3.44
+     */
+    static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
+
+    /**
      * Converts a source vector \a layer to a file path of a vector layer of compatible format.
      *
      * If the specified \a layer is not of the format listed in the

@@ -14,7 +14,8 @@
 class QgsLocatorResult
 {
 %Docstring(signature="appended")
-Encapsulates properties of an individual matching result found by a :py:class:`QgsLocatorFilter`.
+Encapsulates properties of an individual matching result found by a
+:py:class:`QgsLocatorFilter`.
 %End
 
 %TypeHeaderCode
@@ -68,10 +69,9 @@ Set ``userData`` for the locator result
 
         ResultAction( int id, QString text, QString iconPath = QString() );
 %Docstring
-Constructor for ResultAction
-The ``id`` used to recognized the action when the result is triggered.
-It should be 0 or greater as otherwise, the result will be triggered
-normally.
+Constructor for ResultAction The ``id`` used to recognized the action
+when the result is triggered. It should be 0 or greater as otherwise,
+the result will be triggered normally.
 %End
         int id;
         QString text;
@@ -129,7 +129,8 @@ clone of the original filter.
 
     virtual QString name() const = 0;
 %Docstring
-Returns the unique name for the filter. This should be an untranslated string identifying the filter.
+Returns the unique name for the filter. This should be an untranslated
+string identifying the filter.
 
 .. seealso:: :py:func:`displayName`
 %End
@@ -181,60 +182,63 @@ results from this filter.
 
     virtual QStringList prepare( const QString &string, const QgsLocatorContext &context );
 %Docstring
-Prepares the filter instance for an upcoming search for the specified ``string``. This method is always called
-from the main thread, and individual filter subclasses should perform whatever
-tasks are required in order to allow a subsequent search to safely execute
-on a background thread.
-The method returns an autocompletion list
+Prepares the filter instance for an upcoming search for the specified
+``string``. This method is always called from the main thread, and
+individual filter subclasses should perform whatever tasks are required
+in order to allow a subsequent search to safely execute on a background
+thread. The method returns an autocompletion list
 %End
 
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
-Retrieves the filter results for a specified search ``string``. The ``context``
-argument encapsulates the context relating to the search (such as a map
-extent to prioritize).
+Retrieves the filter results for a specified search ``string``. The
+``context`` argument encapsulates the context relating to the search
+(such as a map extent to prioritize).
 
-Implementations of :py:func:`~QgsLocatorFilter.fetchResults` should emit the :py:func:`~QgsLocatorFilter.resultFetched`
-signal whenever they encounter a matching result.
+Implementations of :py:func:`~QgsLocatorFilter.fetchResults` should emit
+the :py:func:`~QgsLocatorFilter.resultFetched` signal whenever they
+encounter a matching result.
 
-Subclasses should periodically check the ``feedback`` object to determine
-whether the query has been canceled. If so, the subclass should return
-from this method as soon as possible.
+Subclasses should periodically check the ``feedback`` object to
+determine whether the query has been canceled. If so, the subclass
+should return from this method as soon as possible.
 
-This will be called from a background thread unless :py:func:`~QgsLocatorFilter.flags` returns the
-QgsLocatorFilter.FlagFast flag.
+This will be called from a background thread unless
+:py:func:`~QgsLocatorFilter.flags` returns the QgsLocatorFilter.FlagFast
+flag.
 %End
 
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 %Docstring
-Triggers a filter ``result`` from this filter. This is called when
-one of the results obtained by a call to :py:func:`~QgsLocatorFilter.fetchResults` is triggered
-by a user. The filter subclass must implement logic here
-to perform the desired operation for the search result.
-E.g. a file search filter would open file associated with the triggered
-result.
+Triggers a filter ``result`` from this filter. This is called when one
+of the results obtained by a call to
+:py:func:`~QgsLocatorFilter.fetchResults` is triggered by a user. The
+filter subclass must implement logic here to perform the desired
+operation for the search result. E.g. a file search filter would open
+file associated with the triggered result.
 %End
 
     virtual void resultSelected( const QgsLocatorResult &result );
 %Docstring
-This is called when the ``result`` is selected by the user.
-The filter subclass can implement logic here.
+This is called when the ``result`` is selected by the user. The filter
+subclass can implement logic here.
 
 .. versionadded:: 3.40
 %End
 
     virtual void resultDeselected( const QgsLocatorResult &result );
 %Docstring
-This is called when a ``result`` is deselected.
-The filter subclass can implement logic here.
+This is called when a ``result`` is deselected. The filter subclass can
+implement logic here.
 
 .. versionadded:: 3.40
 %End
 
     virtual void triggerResultFromAction( const QgsLocatorResult &result, const int actionId );
 %Docstring
-Triggers a filter ``result`` from this filter for an entry in the context menu.
-The entry is identified by its ``actionId`` as specified in the result of this filter.
+Triggers a filter ``result`` from this filter for an entry in the
+context menu. The entry is identified by its ``actionId`` as specified
+in the result of this filter.
 
 .. seealso:: :py:func:`triggerResult`
 
@@ -243,10 +247,10 @@ The entry is identified by its ``actionId`` as specified in the result of this f
 
     virtual void clearPreviousResults();
 %Docstring
-This method will be called on main thread on the original filter (not a clone)
-before fetching results or before triggering a result to clear any change made
-by a former call to triggerResult.
-For instance, this can be used to remove any on-canvas rubber bands which have been created
+This method will be called on main thread on the original filter (not a
+clone) before fetching results or before triggering a result to clear
+any change made by a former call to triggerResult. For instance, this
+can be used to remove any on-canvas rubber bands which have been created
 when a previous search result was triggered.
 
 .. versionadded:: 3.2
@@ -254,24 +258,21 @@ when a previous search result was triggered.
 
     bool useWithoutPrefix() const;
 %Docstring
-Returns ``True`` if the filter should be used when no prefix
-is entered.
+Returns ``True`` if the filter should be used when no prefix is entered.
 
 .. seealso:: :py:func:`setUseWithoutPrefix`
 %End
 
     void setUseWithoutPrefix( bool useWithoutPrefix );
 %Docstring
-Sets whether the filter should be used when no prefix
-is entered.
+Sets whether the filter should be used when no prefix is entered.
 
 .. seealso:: :py:func:`useWithoutPrefix`
 %End
 
     QString activePrefix() const;
 %Docstring
-Returns the prefix in use in the locator
-is entered.
+Returns the prefix in use in the locator is entered.
 
 .. seealso:: :py:func:`setActivePrefix`
 
@@ -281,16 +282,16 @@ is entered.
 
     static bool stringMatches( const QString &candidate, const QString &search );
 %Docstring
-Tests a ``candidate`` string to see if it should be considered a match for
-a specified ``search`` string.
-Filter subclasses should use this method when comparing strings instead
-of directly using QString.contains() or Python 'in' checks.
+Tests a ``candidate`` string to see if it should be considered a match
+for a specified ``search`` string. Filter subclasses should use this
+method when comparing strings instead of directly using
+QString.contains() or Python 'in' checks.
 %End
 
     static double fuzzyScore( const QString &candidate, const QString &search );
 %Docstring
-Tests a ``candidate`` string to see how likely it is a match for
-a specified ``search`` string.
+Tests a ``candidate`` string to see how likely it is a match for a
+specified ``search`` string.
 
 .. versionadded:: 3.14
 %End
@@ -318,9 +319,10 @@ Should return ``True`` if the filter has a configuration widget.
 
     virtual void openConfigWidget( QWidget *parent = 0 );
 %Docstring
-Opens the configuration widget for the filter (if it has one), with the specified ``parent`` widget.
-The base class implementation does nothing. Subclasses can override this to show their own
-custom configuration widget.
+Opens the configuration widget for the filter (if it has one), with the
+specified ``parent`` widget. The base class implementation does nothing.
+Subclasses can override this to show their own custom configuration
+widget.
 
 .. note::
 
@@ -341,7 +343,8 @@ Logs a ``message`` to the log panel
 
     int fetchResultsDelay() const;
 %Docstring
-Returns the delay (in milliseconds) for the filter to wait prior to fetching results.
+Returns the delay (in milliseconds) for the filter to wait prior to
+fetching results.
 
 .. seealso:: :py:func:`setFetchResultsDelay`
 
@@ -350,7 +353,8 @@ Returns the delay (in milliseconds) for the filter to wait prior to fetching res
 
     void setFetchResultsDelay( int delay );
 %Docstring
-Sets a ``delay`` (in milliseconds) for the filter to wait prior to fetching results.
+Sets a ``delay`` (in milliseconds) for the filter to wait prior to
+fetching results.
 
 .. seealso:: :py:func:`fetchResultsDelay`
 
@@ -371,7 +375,8 @@ Emitted when the filter finishes fetching results.
     void resultFetched( const QgsLocatorResult &result );
 %Docstring
 Should be emitted by filters whenever they encounter a matching result
-during within their :py:func:`~QgsLocatorFilter.fetchResults` implementation.
+during within their :py:func:`~QgsLocatorFilter.fetchResults`
+implementation.
 %End
 
 };

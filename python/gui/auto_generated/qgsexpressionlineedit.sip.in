@@ -12,17 +12,18 @@
 class QgsExpressionLineEdit : QWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsExpressionLineEdit` widget includes a line edit for entering expressions
-together with a button to open the expression creation dialog.
+A widget which includes a line edit for entering expressions together
+with a button to open the expression creation dialog.
 
-This widget is designed for use in contexts where no layer fields are available for
-use in an expression. In contexts where the expression is directly associated with
-a layer and fields can be used, then :py:class:`QgsFieldExpressionWidget` is a more appropriate
-choice as it gives users direct access to select fields from a drop-down list.
+This widget is designed for use in contexts where no layer fields are
+available for use in an expression. In contexts where the expression is
+directly associated with a layer and fields can be used, then
+:py:class:`QgsFieldExpressionWidget` is a more appropriate choice as it
+gives users direct access to select fields from a drop-down list.
 
-:py:class:`QgsExpressionLineEdit` also supports a multiline editor mode which is useful where
-more space is available for the widget, but where :py:class:`QgsExpressionBuilderWidget`
-is too complex or large for use.
+:py:class:`QgsExpressionLineEdit` also supports a multiline editor mode
+which is useful where more space is available for the widget, but where
+:py:class:`QgsExpressionBuilderWidget` is too complex or large for use.
 %End
 
 %TypeHeaderCode
@@ -63,9 +64,9 @@ Sets whether the widget should show a multiline text editor.
 
     QString expectedOutputFormat() const;
 %Docstring
-Returns the expected format string, which is shown in the expression builder dialog for the widget.
-This is purely a text format and no expression validation
-is done against it.
+Returns the expected format string, which is shown in the expression
+builder dialog for the widget. This is purely a text format and no
+expression validation is done against it.
 
 .. seealso:: :py:func:`setExpectedOutputFormat`
 
@@ -74,8 +75,9 @@ is done against it.
 
     void setExpectedOutputFormat( const QString &expected );
 %Docstring
-Set the ``expected`` format string, which is shown in the expression builder dialog for the widget.
-This is purely a text format and no expression validation is done against it.
+Set the ``expected`` format string, which is shown in the expression
+builder dialog for the widget. This is purely a text format and no
+expression validation is done against it.
 
 .. seealso:: :py:func:`expectedOutputFormat`
 
@@ -91,10 +93,10 @@ Set the geometry calculator used in the expression dialog.
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
-Sets a layer associated with the widget. Required in order to get the fields and values
-from the layer.
-This will also automatically register the layer as expression context generator if
-no generator has been set before or the previous layer has been used as generator.
+Sets a layer associated with the widget. Required in order to get the
+fields and values from the layer. This will also automatically register
+the layer as expression context generator if no generator has been set
+before or the previous layer has been used as generator.
 
 .. seealso:: :py:func:`registerExpressionContextGenerator`
 %End
@@ -111,17 +113,19 @@ Returns the current expression shown in the widget.
 Determines if the current expression is valid.
 
 
+
 :return: - ``True`` if the current expression is valid.
-         - expressionError: any generated error message 
+         - expressionError: any generated error message
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
-Register an expression context generator class that will be used to retrieve
-an expression context for the widget.
+Register an expression context generator class that will be used to
+retrieve an expression context for the widget.
 
-:param generator: A :py:class:`QgsExpressionContextGenerator` class that will be used to
-                  create an expression context when required.
+:param generator: A :py:class:`QgsExpressionContextGenerator` class that
+                  will be used to create an expression context when
+                  required.
 %End
 
   signals:

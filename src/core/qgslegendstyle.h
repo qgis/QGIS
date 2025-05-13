@@ -37,18 +37,6 @@ class CORE_EXPORT QgsLegendStyle
 {
   public:
 
-    //! Component of legends which can be styled
-    enum Style
-    {
-      Undefined, //!< Should not happen, only if corrupted project file
-      Hidden, //!< Special style, item is hidden including margins around
-      Title, //!< Legend title
-      Group, //!< Legend group title
-      Subgroup, //!< Legend subgroup title
-      Symbol, //!< Symbol icon (excluding label)
-      SymbolLabel, //!< Symbol label (excluding icon)
-    };
-
     // TODO QGIS 4.0 - use Qt enum instead
 
     //! Margin sides
@@ -166,6 +154,14 @@ class CORE_EXPORT QgsLegendStyle
     void readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
+     * Updates any data-defined properties in the style, using the specified
+     * render \a context.
+     *
+     * \since QGIS 3.42
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
+
+    /**
      * Returns the name for a style component as a string.
      *
      * This is a non-localised version, for internal use.
@@ -173,19 +169,19 @@ class CORE_EXPORT QgsLegendStyle
      * \see styleFromName()
      * \see styleLabel()
      */
-    static QString styleName( Style s );
+    static QString styleName( Qgis::LegendComponent s );
 
     /**
      * Returns the style from name string.
      * \see styleName()
      */
-    static Style styleFromName( const QString &styleName );
+    static Qgis::LegendComponent styleFromName( const QString &styleName );
 
     /**
      * Returns a translated string representing a style component, for use in UI.
      * \see styleName()
      */
-    static QString styleLabel( Style s );
+    static QString styleLabel( Qgis::LegendComponent s );
 
   private:
     QgsTextFormat mTextFormat;

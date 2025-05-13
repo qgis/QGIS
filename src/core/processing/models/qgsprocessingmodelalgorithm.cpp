@@ -1322,6 +1322,14 @@ QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextS
   return scope.release();
 }
 
+QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( param->type() );
+  if ( !paramType )
+    return QgsProcessingModelChildParameterSources();
+  return availableSourcesForChild( childId, paramType->acceptedParameterTypes(), paramType->acceptedOutputTypes(), paramType->acceptedDataTypes( param ) );
+}
+
 QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QStringList &parameterTypes, const QStringList &outputTypes, const QList<int> &dataTypes ) const
 {
   QgsProcessingModelChildParameterSources sources;

@@ -32,7 +32,9 @@
 #include "qgscolorrampimpl.h"
 #include "qgsfillsymbol.h"
 #include "qgscolorutils.h"
-
+#include "qgsgeos.h"
+#include "qgspolygon.h"
+#include "qgssldexportcontext.h"
 #include <algorithm>
 #include <QPainter>
 #include <QDomDocument>
@@ -577,16 +579,24 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
 
 void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  if ( mPenStyle == Qt::NoPen )
-    return;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
 
+bool QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  if ( mPenStyle == Qt::NoPen )
+    return true;
+
+  const QVariantMap props = context.extraProperties();
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
   if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
     symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
   // <Stroke>
   QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
@@ -595,7 +605,7 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
   double width = QgsSymbolLayerUtils::rescaleUom( mWidth, mWidthUnit, props );
   QVector<qreal> customDashVector = QgsSymbolLayerUtils::rescaleUom( mCustomDashVector, mCustomDashPatternUnit, props );
-  QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, width,
+  QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, context, width,
                                   &mPenJoinStyle, &mPenCapStyle, &customDashVector );
 
   // <se:PerpendicularOffset>
@@ -606,6 +616,7 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( offset ) ) );
     symbolizerElem.appendChild( perpOffsetElem );
   }
+  return true;
 }
 
 QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
@@ -2498,6 +2509,14 @@ QgsMarkerLineSymbolLayer *QgsMarkerLineSymbolLayer::clone() const
 
 void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap props = context.extraProperties();
   for ( int i = 0; i < mMarker->symbolLayerCount(); i++ )
   {
     QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
@@ -2506,7 +2525,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     element.appendChild( symbolizerElem );
 
     // <Geometry>
-    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
     QString gap;
     if ( placements() & Qgis::MarkerLinePlacement::FirstVertex )
@@ -2543,21 +2562,21 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
     if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+      markerLayer->writeSldMarker( doc, graphicStrokeElem, context );
     }
     else if ( layer )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
+      QgsDebugError( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) );
     }
     else
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "Missing marker line symbol layer. Skip it." ) ) );
+      QgsDebugError( QStringLiteral( "Missing marker line symbol layer. Skip it." ) );
     }
 
     if ( !gap.isEmpty() )
     {
       QDomElement gapElem = doc.createElement( QStringLiteral( "se:Gap" ) );
-      QgsSymbolLayerUtils::createExpressionElement( doc, gapElem, gap );
+      QgsSymbolLayerUtils::createExpressionElement( doc, gapElem, gap, context );
       graphicStrokeElem.appendChild( gapElem );
     }
 
@@ -2569,6 +2588,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
       symbolizerElem.appendChild( perpOffsetElem );
     }
   }
+  return true;
 }
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
@@ -2609,11 +2629,11 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 
   std::unique_ptr< QgsMarkerSymbol > marker;
 
-  QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
+  std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
-    layers.append( l );
+    layers.append( l.release() );
     marker.reset( new QgsMarkerSymbol( layers ) );
   }
 
@@ -2625,7 +2645,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   if ( !gapElem.isNull() )
   {
     bool ok;
-    double d = gapElem.firstChild().nodeValue().toDouble( &ok );
+    double d = gapElem.firstChild().firstChild().nodeValue().toDouble( &ok );
     if ( ok )
       interval = d;
   }
@@ -3824,7 +3844,7 @@ QgsFilledLineSymbolLayer::QgsFilledLineSymbolLayer( double width, QgsFillSymbol 
   : QgsLineSymbolLayer()
 {
   mWidth = width;
-  mFill.reset( fillSymbol ? fillSymbol : static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mFill = fillSymbol ? std::unique_ptr< QgsFillSymbol >( fillSymbol ) : QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsFilledLineSymbolLayer::~QgsFilledLineSymbolLayer() = default;
@@ -3849,7 +3869,7 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
     width = props[QStringLiteral( "width" )].toDouble();
   }
 
-  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ) );
+  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ).release() );
 
   if ( props.contains( QStringLiteral( "line_width_unit" ) ) )
   {
@@ -3904,6 +3924,20 @@ void QgsFilledLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   }
 }
 
+void QgsFilledLineSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  installMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
+void QgsFilledLineSymbolLayer::stopFeatureRender( const QgsFeature &, QgsRenderContext &context )
+{
+  removeMasks( context, true );
+
+  // The base class version passes this on to the subsymbol, but we deliberately don't do that here.
+}
+
 void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
@@ -3952,44 +3986,67 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
 
-  // stroke out the path using the correct line cap/join style. We'll then use this as the fill polygon
-  QPainterPathStroker stroker;
-  stroker.setWidth( scaledWidth );
-  stroker.setCapStyle( cap );
-  stroker.setJoinStyle( join );
-
-  QPolygonF polygon;
-  if ( qgsDoubleNear( offset, 0 ) )
+  if ( points.count() >= 2 )
   {
-    QPainterPath path;
-    path.addPolygon( points );
-    const QPainterPath stroke = stroker.createStroke( path ).simplified();
-    const QPolygonF polygon = stroke.toFillPolygon();
-    if ( !polygon.isEmpty() )
-    {
-      mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
-    }
-  }
-  else
-  {
-    double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
-    {
-      // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
-      // and clamp it to a reasonable range. It's the best we can do in this situation!
-      scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 );
-    }
+    std::unique_ptr< QgsAbstractGeometry > ls = QgsLineString::fromQPolygonF( points );
+    geos::unique_ptr lineGeom;
 
-    const QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
-    for ( const QPolygonF &part : mline )
+    if ( !qgsDoubleNear( offset, 0 ) )
     {
-      QPainterPath path;
-      path.addPolygon( part );
-      const QPainterPath stroke = stroker.createStroke( path ).simplified();
-      const QPolygonF polygon = stroke.toFillPolygon();
-      if ( !polygon.isEmpty() )
+      double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
       {
-        mFill->renderPolygon( polygon, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
+        // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
+        // and clamp it to a reasonable range. It's the best we can do in this situation!
+        scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 );
+      }
+
+      const Qgis::GeometryType geometryType = context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line;
+      if ( geometryType == Qgis::GeometryType::Polygon )
+      {
+        auto inputPoly = std::make_unique< QgsPolygon >( static_cast< QgsLineString * >( ls.release() ) );
+        geos::unique_ptr g( QgsGeos::asGeos( inputPoly.get() ) );
+        lineGeom = QgsGeos::buffer( g.get(), -scaledOffset, 0, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Miter, 2 );
+        // the result is a polygon => extract line work
+        QgsGeometry polygon( QgsGeos::fromGeos( lineGeom.get() ) );
+        QVector<QgsGeometry> parts = polygon.coerceToType( Qgis::WkbType::MultiLineString );
+        if ( !parts.empty() )
+        {
+          lineGeom = QgsGeos::asGeos( parts.at( 0 ).constGet() );
+        }
+        else
+        {
+          lineGeom.reset();
+        }
+      }
+      else
+      {
+        geos::unique_ptr g( QgsGeos::asGeos( ls.get() ) );
+        lineGeom = QgsGeos::offsetCurve( g.get(), scaledOffset, 0, Qgis::JoinStyle::Miter, 8.0 );
+      }
+    }
+    else
+    {
+      lineGeom = QgsGeos::asGeos( ls.get() );
+    }
+
+    if ( lineGeom )
+    {
+      geos::unique_ptr buffered = QgsGeos::buffer( lineGeom.get(), scaledWidth / 2, 8,
+                                  QgsSymbolLayerUtils::penCapStyleToEndCapStyle( cap ),
+                                  QgsSymbolLayerUtils::penJoinStyleToJoinStyle( join ), 8 );
+      if ( buffered )
+      {
+        // convert to rings
+        std::unique_ptr< QgsAbstractGeometry > bufferedGeom = QgsGeos::fromGeos( buffered.get() );
+        const QList< QList< QPolygonF > > parts = QgsSymbolLayerUtils::toQPolygonF( bufferedGeom.get(), Qgis::SymbolType::Fill );
+        for ( const QList< QPolygonF > &polygon : parts )
+        {
+          QVector< QPolygonF > rings;
+          for ( int i = 1; i < polygon.size(); ++i )
+            rings << polygon.at( i );
+          mFill->renderPolygon( polygon.value( 0 ), &rings, context.feature(), context.renderContext(), -1, useSelectedColor );
+        }
       }
     }
   }

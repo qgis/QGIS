@@ -81,11 +81,11 @@ void TestQgsOgrProviderGui::cleanupTestCase()
 
 void TestQgsOgrProviderGui::testGpkgDataItemRename()
 {
-  QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
-  f.open();
-  f.close();
-  const QString fileName { f.fileName() };
-  f.remove();
+  QTemporaryFile tmpFile( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-XXXXXX.gpkg" ) ) );
+  tmpFile.open();
+  tmpFile.close();
+  const QString fileName { tmpFile.fileName() };
+  tmpFile.remove();
   QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ), fileName ) );
 
   // create geopackage item and populate it with layers

@@ -56,13 +56,26 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
   public slots:
     void setEnabled( bool enabled ) override;
 
+    void parentFormValueChanged( const QString &attribute, const QVariant &value ) override;
+
   private slots:
     void foreignKeysChanged( const QVariantList &values );
 
   protected:
     void updateConstraintWidgetStatus() override;
 
+    /**
+     * Will be called when a value in the current edited form or table row changes
+     *
+     * \param attribute The name of the attribute that changed.
+     * \param newValue     The new value of the attribute.
+     * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
+     * \since QGIS 3.42.2
+     */
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+
   private:
+    void aboutToSave() override;
     void updateValues( const QVariant &val, const QVariantList &additionalValues = QVariantList() ) override;
 
     QString mExpression;

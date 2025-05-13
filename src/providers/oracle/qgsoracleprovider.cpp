@@ -1394,9 +1394,17 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         QVariant value = attributevec.value( fieldId[i], QVariant() );
 
         QgsField fld = field( fieldId[i] );
-        if ( ( value.isNull() && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() ) || ( value.toString() == defaultValues[i] ) )
+        if ( ( QgsVariantUtils::isNull( value ) && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() )
+             || ( value.toString() == defaultValues[i] )
+             || value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
         {
           value = evaluateDefaultExpression( defaultValues[i], fld.type() );
+        }
+        else if ( QgsVariantUtils::isNull( value ) )
+        {
+          // don't use typed null variants, always use invalid variants. Otherwise the connection
+          // may incorrectly try to coerce a null value to the variant type
+          value = QVariant();
         }
         features->setAttribute( fieldId[i], value );
 
@@ -1852,6 +1860,10 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
           if ( mAlwaysGenerated.at( siter.key() ) )
           {
             QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
+            continue;
+          }
+          if ( siter.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          {
             continue;
           }
 
@@ -3064,7 +3076,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
 }
 
 
-Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &createdLayerUri, QString &errorMessage, const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( wkbType )
   Q_UNUSED( options )
@@ -3072,6 +3084,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
   QString ownerName = dsUri.schema();
+  createdLayerUri = uri;
 
   QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ), 2 );
 
@@ -3540,11 +3553,11 @@ QgsTransaction *QgsOracleProviderMetadata::createTransaction( const QString &con
 
 // ---------------------------------------------------------------------------
 
-Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsOracleProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    oldToNewAttrIdxMap, errorMessage, options
+    oldToNewAttrIdxMap, createdLayerUri, errorMessage, options
   );
 }
 

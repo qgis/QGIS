@@ -51,6 +51,7 @@ class proximity(GdalAlgorithm):
     UNITS = "UNITS"
     NODATA = "NODATA"
     OPTIONS = "OPTIONS"
+    CREATION_OPTIONS = "CREATION_OPTIONS"
     EXTRA = "EXTRA"
     DATA_TYPE = "DATA_TYPE"
     OUTPUT = "OUTPUT"
@@ -93,15 +94,18 @@ class proximity(GdalAlgorithm):
                 parentLayerParameterName=self.INPUT,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.VALUES,
-                self.tr(
-                    "A list of pixel values in the source image to be considered target pixels"
-                ),
-                optional=True,
+        values_param = QgsProcessingParameterString(
+            self.VALUES,
+            self.tr("List of target pixels"),
+            optional=True,
+        )
+        values_param.setHelp(
+            self.tr(
+                "Comma-separated list of pixel values in the source image to consider as target pixels. If not specified, all non-zero pixels will be considered target pixels."
             )
         )
+        self.addParameter(values_param)
+
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.UNITS,
@@ -114,34 +118,47 @@ class proximity(GdalAlgorithm):
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.MAX_DISTANCE,
-                self.tr("The maximum distance to be generated"),
+                self.tr("The maximum distance to generate"),
                 type=QgsProcessingParameterNumber.Type.Double,
                 minValue=0.0,
                 defaultValue=0.0,
                 optional=True,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.REPLACE,
-                self.tr(
-                    "Value to be applied to all pixels that are within the -maxdist of target pixels"
-                ),
-                type=QgsProcessingParameterNumber.Type.Double,
-                defaultValue=0.0,
-                optional=True,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.NODATA,
-                self.tr("Nodata value to use for the destination proximity raster"),
-                type=QgsProcessingParameterNumber.Type.Double,
-                defaultValue=0.0,
-                optional=True,
-            )
-        )
 
+        replace_param = QgsProcessingParameterNumber(
+            self.REPLACE,
+            self.tr(
+                "Value to apply to pixels within the maximum distance of target pixels"
+            ),
+            type=QgsProcessingParameterNumber.Type.Double,
+            defaultValue=0.0,
+            optional=True,
+        )
+        replace_param.setHelp(
+            self.tr(
+                "Value to apply to all pixels within the maximum distance of target pixels (including the target pixels) instead of a distance value"
+            )
+        )
+        self.addParameter(replace_param)
+
+        nodata_param = QgsProcessingParameterNumber(
+            self.NODATA,
+            self.tr("Nodata value to use for the destination proximity raster"),
+            type=QgsProcessingParameterNumber.Type.Double,
+            defaultValue=0.0,
+            optional=True,
+        )
+        nodata_param.setHelp(
+            self.tr(
+                "NoData value to use for the pixels beyond the maximum distance. "
+                "If not provided, it will be set to the one from the output band, or ultimately to 65535."
+            )
+        )
+        self.addParameter(nodata_param)
+
+        # backwards compatibility parameter
+        # TODO QGIS 4: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -149,10 +166,25 @@ class proximity(GdalAlgorithm):
             optional=True,
         )
         options_param.setFlags(
-            options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            options_param.flags() | QgsProcessingParameterDefinition.Flag.Hidden
         )
         options_param.setMetadata({"widget_wrapper": {"widget_type": "rasteroptions"}})
         self.addParameter(options_param)
+
+        creation_options_param = QgsProcessingParameterString(
+            self.CREATION_OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        creation_options_param.setFlags(
+            creation_options_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
+        creation_options_param.setMetadata(
+            {"widget_wrapper": {"widget_type": "rasteroptions"}}
+        )
+        self.addParameter(creation_options_param)
 
         extra_param = QgsProcessingParameterString(
             self.EXTRA,
@@ -257,6 +289,10 @@ class proximity(GdalAlgorithm):
         arguments.append("-of")
         arguments.append(output_format)
 
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 

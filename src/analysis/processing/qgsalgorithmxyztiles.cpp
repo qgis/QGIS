@@ -200,6 +200,8 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     feedback->pushWarning( QObject::tr( "Background color setting ignored, the JPG format only supports fully opaque colors" ) );
   }
 
+  mScaleMethod = project->scaleMethod();
+
   return true;
 }
 
@@ -241,6 +243,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );
     settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
+    settings.setScaleMethod( mScaleMethod );
     if ( mTileFormat == QLatin1String( "PNG" ) || mBackgroundColor.alpha() == 255 )
     {
       settings.setBackgroundColor( mBackgroundColor );

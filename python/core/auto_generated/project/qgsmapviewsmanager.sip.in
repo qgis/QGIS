@@ -12,12 +12,12 @@
 class QgsMapViewsManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages storage of a set of views.
 
-:py:class:`QgsMapViewsManager` handles the storage, serializing and deserializing
-of views. Usually this class is not constructed directly, but rather
-accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.viewsManager()`.
+:py:class:`QgsMapViewsManager` handles the storage, serializing and
+deserializing of views. Usually this class is not constructed directly,
+but rather accessed through a :py:class:`QgsProject` via
+:py:func:`QgsProject.viewsManager()`.
 
 .. versionadded:: 3.24
 %End
@@ -29,8 +29,8 @@ accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.viewsManager(
 
     explicit QgsMapViewsManager( QgsProject *project /TransferThis/ );
 %Docstring
-Constructor for QgsMapViewsManager. The project will become the parent object for this
-manager.
+Constructor for QgsMapViewsManager. The project will become the parent
+object for this manager.
 %End
 
     bool readXml( const QDomElement &element, const QDomDocument &doc );
@@ -72,7 +72,8 @@ Renames the 3D view named ``oldTitle`` to ``newTitle``
   signals:
     void views3DListChanged();
 %Docstring
-Emitted when the views list has changed (whenever a view was removed, added, renamed..)
+Emitted when the views list has changed (whenever a view was removed,
+added, renamed..)
 %End
 
 };

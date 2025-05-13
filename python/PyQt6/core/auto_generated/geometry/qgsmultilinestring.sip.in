@@ -27,7 +27,8 @@ Constructor for an empty multilinestring geometry.
 
     QgsMultiLineString( const QList< QgsLineString > &linestrings ) /HoldGIL/;
 %Docstring
-Constructor for a multilinestring containing the specified ``linestrings``.
+Constructor for a multilinestring containing the specified
+``linestrings``.
 
 The ``linestrings`` will be internally cloned.
 
@@ -36,9 +37,11 @@ The ``linestrings`` will be internally cloned.
 
     QgsMultiLineString( const QList< QgsLineString * > &linestrings /Transfer/ ) /HoldGIL/;
 %Docstring
-Constructor for a multilinestring containing the specified ``linestrings``.
+Constructor for a multilinestring containing the specified
+``linestrings``.
 
-Ownership of the ``linestrings`` will be transferred to the multilinestring.
+Ownership of the ``linestrings`` will be transferred to the
+multilinestring.
 
 .. versionadded:: 3.38
 %End
@@ -88,7 +91,8 @@ Returns the line string with the specified ``index``.
     virtual QgsMultiCurve *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type :py:class:`QgsMultiCurve`
+Returns the geometry converted to the more generic curve type
+:py:class:`QgsMultiCurve`
 
 :return: the converted geometry. Caller takes ownership
 %End
@@ -108,8 +112,9 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
 
     QgsMultiLineString *measuredLine( double start, double end ) const /Factory/;
 %Docstring
-Re-write the measure ordinate (or add one, if it isn't already there) interpolating
-the measure between the supplied ``start`` and ``end`` values.
+Re-write the measure ordinate (or add one, if it isn't already there)
+interpolating the measure between the supplied ``start`` and ``end``
+values.
 
 .. versionadded:: 3.36
 %End

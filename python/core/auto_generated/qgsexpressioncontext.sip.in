@@ -13,9 +13,11 @@
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring(signature="appended")
-Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
-standard :py:class:`QgsExpression`.Function in that it requires an implemented
-:py:func:`~clone` method.
+Expression function for use within a
+:py:class:`QgsExpressionContextScope`.
+
+This differs from a standard :py:class:`QgsExpression`.Function in that
+it requires an implemented :py:func:`~clone` method.
 %End
 
 %TypeHeaderCode
@@ -73,13 +75,17 @@ Returns a clone of the function.
 class QgsExpressionContextScope
 {
 %Docstring(signature="appended")
-Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
+Single scope for storing variables and functions for use within a
+:py:class:`QgsExpressionContext`.
 
-Examples include a project's scope, which could contain information about the current project such as
-the project file's location. :py:class:`QgsExpressionContextScope` can encapsulate both variables (static values)
-and functions(which are calculated only when an expression is evaluated).
+Examples include a project's scope, which could contain information
+about the current project such as the project file's location.
+:py:class:`QgsExpressionContextScope` can encapsulate both variables
+(static values) and functions(which are calculated only when an
+expression is evaluated).
 
-See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContextScope` objects.
+See :py:class:`QgsExpressionContextUtils` for helper methods for working
+with :py:class:`QgsExpressionContextScope` objects.
 %End
 
 %TypeHeaderCode
@@ -94,11 +100,14 @@ See :py:class:`QgsExpressionContextUtils` for helper methods for working with :p
 %Docstring
 Constructor for StaticVariable.
 
-:param name: variable name (should be unique within the QgsExpressionContextScope)
+:param name: variable name (should be unique within the
+             QgsExpressionContextScope)
 :param value: initial variable value
 :param readOnly: ``True`` if variable should not be editable by users
-:param isStatic: ``True`` if the variable will not change during the lifteime of an iterator.
-:param description: optional translated description of variable, for use in expression builder widgets
+:param isStatic: ``True`` if the variable will not change during the
+                 lifteime of an iterator.
+:param description: optional translated description of variable, for use
+                    in expression builder widgets
 %End
 
       QString name;
@@ -131,18 +140,21 @@ Returns the friendly display name of the context scope.
 
     void setVariable( const QString &name, const QVariant &value, bool isStatic = false );
 %Docstring
-Convenience method for setting a variable in the context scope by ``name`` name and ``value``. If a variable
-with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
-If the ``isStatic`` parameter is set to ``True``, this variable can be cached during the execution
-of :py:func:`QgsExpression.prepare()`.
+Convenience method for setting a variable in the context scope by
+``name`` name and ``value``. If a variable with the same name is already
+set then its value is overwritten, otherwise a new variable is added to
+the scope. If the ``isStatic`` parameter is set to ``True``, this
+variable can be cached during the execution of
+:py:func:`QgsExpression.prepare()`.
 
 .. seealso:: :py:func:`addVariable`
 %End
 
     void addVariable( const QgsExpressionContextScope::StaticVariable &variable );
 %Docstring
-Adds a variable into the context scope. If a variable with the same name is already set then its
-value is overwritten, otherwise a new variable is added to the scope.
+Adds a variable into the context scope. If a variable with the same name
+is already set then its value is overwritten, otherwise a new variable
+is added to the scope.
 
 :param variable: definition of variable to insert
 
@@ -157,8 +169,8 @@ Removes a variable from the context scope, if found.
 
 :param name: name of variable to remove
 
-:return: ``True`` if variable was removed from the scope, ``False`` if matching variable was not
-         found within the scope
+:return: ``True`` if variable was removed from the scope, ``False`` if
+         matching variable was not found within the scope
 %End
 
     bool hasVariable( const QString &name ) const;
@@ -180,7 +192,8 @@ Retrieves a variable's value from the scope.
 
 :param name: variable name
 
-:return: variable value, or invalid QVariant if matching variable could not be found
+:return: variable value, or invalid QVariant if matching variable could
+         not be found
 
 .. seealso:: :py:func:`hasVariable`
 
@@ -198,17 +211,17 @@ Returns a list of variable names contained within the scope.
 
     QStringList filteredVariableNames() const;
 %Docstring
-Returns a filtered and sorted list of variable names contained within the scope.
-Hidden variable names will be excluded, and the list will be sorted so that
-read only variables are listed first.
+Returns a filtered and sorted list of variable names contained within
+the scope. Hidden variable names will be excluded, and the list will be
+sorted so that read only variables are listed first.
 
 .. seealso:: :py:func:`variableNames`
 %End
 
     bool isReadOnly( const QString &name ) const;
 %Docstring
-Tests whether the specified variable is read only and should not be editable
-by users.
+Tests whether the specified variable is read only and should not be
+editable by users.
 
 :param name: variable name
 
@@ -223,8 +236,8 @@ be cached.
 
     QString description( const QString &name ) const;
 %Docstring
-Returns the translated description for the variable with the specified ``name``
-(if set).
+Returns the translated description for the variable with the specified
+``name`` (if set).
 %End
 
     int variableCount() const;
@@ -274,7 +287,8 @@ Retrieves a list of names of functions contained in the scope.
 Adds a function to the scope.
 
 :param name: function name
-:param function: function to insert. Ownership is transferred to the scope.
+:param function: function to insert. Ownership is transferred to the
+                 scope.
 
 .. seealso:: :py:func:`addVariable`
 %End
@@ -338,8 +352,8 @@ Sets the geometry associated with the scope.
 
     void setGeometry( const QgsGeometry &geometry );
 %Docstring
-Convenience function for setting a ``geometry`` for the scope. Any existing
-geometry set by the scope will be overwritten.
+Convenience function for setting a ``geometry`` for the scope. Any
+existing geometry set by the scope will be overwritten.
 
 .. seealso:: :py:func:`removeGeometry`
 
@@ -401,9 +415,8 @@ Returns the list of variables hidden within the scope.
 
     void setHiddenVariables( const QStringList &hiddenVariables );
 %Docstring
-
-Sets the list of variables intended to be hidden in the
-expression builder dialog and widget.
+Sets the list of variables intended to be hidden in the expression
+builder dialog and widget.
 
 .. seealso:: :py:func:`hiddenVariables`
 
@@ -417,9 +430,8 @@ expression builder dialog and widget.
 
     void addHiddenVariable( const QString &hiddenVariable );
 %Docstring
-
-Adds the passed variable to a list of hidden variables that
-won't be visible in the expression builder dialog and widget.
+Adds the passed variable to a list of hidden variables that won't be
+visible in the expression builder dialog and widget.
 
 .. seealso:: :py:func:`hiddenVariables`
 
@@ -432,7 +444,6 @@ won't be visible in the expression builder dialog and widget.
 
     void removeHiddenVariable( const QString &hiddenVariable );
 %Docstring
-
 Removes the passed variable from a list of hidden variables.
 
 .. seealso:: :py:func:`hiddenVariables`
@@ -448,9 +459,9 @@ Removes the passed variable from a list of hidden variables.
 %Docstring
 Adds a layer ``store`` to the scope.
 
-Ownership of the ``store`` is not transferred to the scope, it is the caller's
-responsibility to ensure that the store remains alive for the duration of the
-expression context.
+Ownership of the ``store`` is not transferred to the scope, it is the
+caller's responsibility to ensure that the store remains alive for the
+duration of the expression context.
 
 .. seealso:: :py:func:`layerStores`
 
@@ -471,15 +482,18 @@ Returns the list of layer stores associated with the scope.
 class QgsExpressionContext
 {
 %Docstring(signature="appended")
-Expression contexts are used to encapsulate the parameters around which a :py:class:`QgsExpression` should
-be evaluated.
+Expression contexts are used to encapsulate the parameters around which
+a :py:class:`QgsExpression` should be evaluated.
 
-:py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
-their evaluated result. A :py:class:`QgsExpressionContext` consists of a stack of :py:class:`QgsExpressionContextScope` objects,
-where scopes added later to the stack will override conflicting variables and functions from scopes
-lower in the stack.
+:py:class:`QgsExpressions` can then utilize the information stored
+within a context to contextualise their evaluated result. A
+:py:class:`QgsExpressionContext` consists of a stack of
+:py:class:`QgsExpressionContextScope` objects, where scopes added later
+to the stack will override conflicting variables and functions from
+scopes lower in the stack.
 
-See :py:class:`QgsExpressionContextUtils` for helper methods for working with :py:class:`QgsExpressionContext` objects.
+See :py:class:`QgsExpressionContextUtils` for helper methods for working
+with :py:class:`QgsExpressionContext` objects.
 %End
 
 %TypeHeaderCode
@@ -491,8 +505,8 @@ See :py:class:`QgsExpressionContextUtils` for helper methods for working with :p
 
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
 %Docstring
-Initializes the context with given list of scopes.
-Ownership of the scopes is transferred to the stack.
+Initializes the context with given list of scopes. Ownership of the
+scopes is transferred to the stack.
 %End
 
     QgsExpressionContext( const QgsExpressionContext &other );
@@ -516,13 +530,14 @@ Check whether a variable is specified by any scope within the context.
 
     QVariant variable( const QString &name ) const;
 %Docstring
-Fetches a matching variable from the context. The variable will be fetched
-from the last scope contained within the context which has a matching
-variable set.
+Fetches a matching variable from the context. The variable will be
+fetched from the last scope contained within the context which has a
+matching variable set.
 
 :param name: variable name
 
-:return: variable value if matching variable exists in the context, otherwise an invalid QVariant
+:return: variable value if matching variable exists in the context,
+         otherwise an invalid QVariant
 
 .. seealso:: :py:func:`hasVariable`
 
@@ -531,15 +546,15 @@ variable set.
 
     QVariantMap variablesToMap() const;
 %Docstring
-Returns a map of variable name to value representing all the expression variables
-contained by the context.
+Returns a map of variable name to value representing all the expression
+variables contained by the context.
 %End
 
     bool isHighlightedVariable( const QString &name ) const;
 %Docstring
-Returns ``True`` if the specified variable ``name`` is intended to be highlighted to the
-user. This is used by the expression builder to more prominently display the
-variable.
+Returns ``True`` if the specified variable ``name`` is intended to be
+highlighted to the user. This is used by the expression builder to more
+prominently display the variable.
 
 .. seealso:: :py:func:`setHighlightedVariables`
 
@@ -557,8 +572,9 @@ Returns the current list of variables highlighted within the context.
 
     void setHighlightedVariables( const QStringList &variableNames );
 %Docstring
-Sets the list of variable names within the context intended to be highlighted to the user. This
-is used by the expression builder to more prominently display these variables.
+Sets the list of variable names within the context intended to be
+highlighted to the user. This is used by the expression builder to more
+prominently display these variables.
 
 :param variableNames: variable names to highlight
 
@@ -569,9 +585,9 @@ is used by the expression builder to more prominently display these variables.
 
     bool isHighlightedFunction( const QString &name ) const;
 %Docstring
-Returns ``True`` if the specified function ``name`` is intended to be highlighted to the
-user. This is used by the expression builder to more prominently display the
-function.
+Returns ``True`` if the specified function ``name`` is intended to be
+highlighted to the user. This is used by the expression builder to more
+prominently display the function.
 
 .. seealso:: :py:func:`setHighlightedFunctions`
 
@@ -582,11 +598,13 @@ function.
 
     void setHighlightedFunctions( const QStringList &names );
 %Docstring
-Sets the list of function ``names`` intended to be highlighted to the user. This
-is used by the expression builder to more prominently display these functions.
+Sets the list of function ``names`` intended to be highlighted to the
+user. This is used by the expression builder to more prominently display
+these functions.
 
-Note that these function names may include standard functions which are not functions
-specific to this context, and these standard functions will also be highlighted to users.
+Note that these function names may include standard functions which are
+not functions specific to this context, and these standard functions
+will also be highlighted to users.
 
 .. seealso:: :py:func:`isHighlightedFunction`
 
@@ -597,9 +615,9 @@ specific to this context, and these standard functions will also be highlighted 
 
     QgsExpressionContextScope *activeScopeForVariable( const QString &name );
 %Docstring
-Returns the currently active scope from the context for a specified variable name.
-As scopes later in the stack override earlier contexts, this will be the last matching
-scope which contains a matching variable.
+Returns the currently active scope from the context for a specified
+variable name. As scopes later in the stack override earlier contexts,
+this will be the last matching scope which contains a matching variable.
 
 :param name: variable name
 
@@ -634,20 +652,24 @@ Returns a list of scopes contained within the stack.
 
     int indexOfScope( QgsExpressionContextScope *scope ) const;
 %Docstring
-Returns the index of the specified scope if it exists within the context.
+Returns the index of the specified scope if it exists within the
+context.
 
 :param scope: scope to find
 
-:return: index of scope, or -1 if scope was not found within the context.
+:return: index of scope, or -1 if scope was not found within the
+         context.
 %End
 
     int indexOfScope( const QString &scopeName ) const;
 %Docstring
-Returns the index of the first scope with a matching name within the context.
+Returns the index of the first scope with a matching name within the
+context.
 
 :param scopeName: name of scope to find
 
-:return: index of scope, or -1 if scope was not found within the context.
+:return: index of scope, or -1 if scope was not found within the
+         context.
 %End
 
     QStringList variableNames() const;
@@ -667,8 +689,8 @@ Returns a list of variables names set by all scopes in the context.
 
     QStringList filteredVariableNames() const;
 %Docstring
-Returns a filtered list of variables names set by all scopes in the context. The included
-variables are those which should be seen by users.
+Returns a filtered list of variables names set by all scopes in the
+context. The included variables are those which should be seen by users.
 
 :return: filtered list of unique variable names
 
@@ -677,20 +699,23 @@ variables are those which should be seen by users.
 
     bool isReadOnly( const QString &name ) const;
 %Docstring
-Returns whether a variable is read only, and should not be modifiable by users.
+Returns whether a variable is read only, and should not be modifiable by
+users.
 
 :param name: variable name
 
-:return: ``True`` if variable is read only. Read only status will be taken from last
-         matching scope which contains a matching variable.
+:return: ``True`` if variable is read only. Read only status will be
+         taken from last matching scope which contains a matching
+         variable.
 %End
 
     QString description( const QString &name ) const;
 %Docstring
-Returns a translated description string for the variable with specified ``name``.
+Returns a translated description string for the variable with specified
+``name``.
 
-If no specific description has been provided for the variable, the value from
-:py:func:`QgsExpression.variableHelpText()` will be returned.
+If no specific description has been provided for the variable, the value
+from :py:func:`QgsExpression.variableHelpText()` will be returned.
 %End
 
     bool hasFunction( const QString &name ) const;
@@ -715,9 +740,9 @@ Retrieves a list of function names contained in the context.
 
     QgsExpressionFunction *function( const QString &name ) const;
 %Docstring
-Fetches a matching function from the context. The function will be fetched
-from the last scope contained within the context which has a matching
-function set.
+Fetches a matching function from the context. The function will be
+fetched from the last scope contained within the context which has a
+matching function set.
 
 :param name: function name
 
@@ -733,8 +758,8 @@ Returns the number of scopes contained in the context.
 
     void appendScope( QgsExpressionContextScope *scope /Transfer/ );
 %Docstring
-Appends a scope to the end of the context. This scope will override
-any matching variables or functions provided by existing scopes within the
+Appends a scope to the end of the context. This scope will override any
+matching variables or functions provided by existing scopes within the
 context. Ownership of the scope is transferred to the stack.
 
 :param scope: expression context to append to context
@@ -742,9 +767,9 @@ context. Ownership of the scope is transferred to the stack.
 
     void appendScopes( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
 %Docstring
-Appends a list of scopes to the end of the context. This scopes will override
-any matching variables or functions provided by existing scopes within the
-context. Ownership of the scopes is transferred to the stack.
+Appends a list of scopes to the end of the context. This scopes will
+override any matching variables or functions provided by existing scopes
+within the context. Ownership of the scopes is transferred to the stack.
 
 :param scopes: scopes to append to context
 %End
@@ -783,9 +808,9 @@ Convenience function for retrieving the feature for the context, if set.
 
     void setGeometry( const QgsGeometry &geometry );
 %Docstring
-Convenience function for setting a ``geometry`` for the context. The geometry
-will be set within the last scope of the context, so will override any
-existing geometries within the context.
+Convenience function for setting a ``geometry`` for the context. The
+geometry will be set within the last scope of the context, so will
+override any existing geometries within the context.
 
 .. seealso:: :py:func:`geometry`
 
@@ -803,7 +828,8 @@ Returns ``True`` if the context has a geometry associated with it.
 
     QgsGeometry geometry() const;
 %Docstring
-Convenience function for retrieving the geometry for the context, if set.
+Convenience function for retrieving the geometry for the context, if
+set.
 
 .. seealso:: :py:func:`setGeometry`
 
@@ -832,15 +858,16 @@ Convenience function for retrieving the fields for the context, if set.
 %Docstring
 Sets the original value variable value for the context.
 
-:param value: value for original value variable. This usually represents an original widget
-              value before any data defined overrides have been applied.
+:param value: value for original value variable. This usually represents
+              an original widget value before any data defined overrides
+              have been applied.
 %End
 
     void setCachedValue( const QString &key, const QVariant &value ) const;
 %Docstring
-Sets a value to cache within the expression context. This can be used to cache the results
-of expensive expression sub-calculations, to speed up future evaluations using the same
-expression context.
+Sets a value to cache within the expression context. This can be used to
+cache the results of expensive expression sub-calculations, to speed up
+future evaluations using the same expression context.
 
 :param key: unique key for retrieving cached value
 :param value: value to cache
@@ -854,7 +881,8 @@ expression context.
 
     bool hasCachedValue( const QString &key ) const;
 %Docstring
-Returns ``True`` if the expression context contains a cached value with a matching key.
+Returns ``True`` if the expression context contains a cached value with
+a matching key.
 
 :param key: unique key used to store cached value
 
@@ -867,8 +895,9 @@ Returns ``True`` if the expression context contains a cached value with a matchi
 
     QVariant cachedValue( const QString &key ) const;
 %Docstring
-Returns the matching cached value, if set. This can be used to retrieve the previously stored results
-of an expensive expression sub-calculation.
+Returns the matching cached value, if set. This can be used to retrieve
+the previously stored results of an expensive expression
+sub-calculation.
 
 :param key: unique key used to store cached value
 
@@ -904,9 +933,9 @@ Returns the list of layer stores associated with the context.
 Sets the destination layer ``store`` for any layers loaded during
 expression evaluation.
 
-Ownership of the ``store`` is not transferred to the context, it is the caller's
-responsibility to ensure that the store remains alive for the duration of the
-expression context.
+Ownership of the ``store`` is not transferred to the context, it is the
+caller's responsibility to ensure that the store remains alive for the
+duration of the expression context.
 
 .. seealso:: :py:func:`loadedLayerStore`
 
@@ -925,11 +954,11 @@ expression evaluation.
 
     void setFeedback( QgsFeedback *feedback );
 %Docstring
-Attach a ``feedback`` object that can be queried regularly by the expression engine to check
-if expression evaluation should be canceled.
+Attach a ``feedback`` object that can be queried regularly by the
+expression engine to check if expression evaluation should be canceled.
 
-Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
-for the lifetime of the expression context.
+Ownership of ``feedback`` is NOT transferred, and the caller must take
+care that it exists for the lifetime of the expression context.
 
 .. seealso:: :py:func:`feedback`
 
@@ -938,8 +967,8 @@ for the lifetime of the expression context.
 
     QgsFeedback *feedback() const;
 %Docstring
-Returns the feedback object that can be queried regularly by the expression to check
-if evaluation should be canceled, if set.
+Returns the feedback object that can be queried regularly by the
+expression to check if evaluation should be canceled, if set.
 
 .. seealso:: :py:func:`setFeedback`
 
@@ -950,10 +979,13 @@ if evaluation should be canceled, if set.
 %Docstring
 Returns a unique hash representing the current state of the context.
 
-:param variables: optional names of a subset of variables to include in the hash. If not specified, all variables will be considered.
+:param variables: optional names of a subset of variables to include in
+                  the hash. If not specified, all variables will be
+                  considered.
 
 :return: - calculated hash
-         - ok: ``True`` if the hash could be generated, or false if e.g. a variable value is of a type which cannot be hashed
+         - ok: ``True`` if the hash could be generated, or false if e.g.
+           a variable value is of a type which cannot be hashed
 
 .. versionadded:: 3.40
 %End

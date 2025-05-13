@@ -43,6 +43,11 @@ QgsPointLocator *QgsSnappingUtils::locatorForLayer( QgsVectorLayer *vl )
   {
     QgsPointLocator *vlpl = new QgsPointLocator( vl, destinationCrs(), mMapSettings.transformContext(), nullptr );
     connect( vlpl, &QgsPointLocator::initFinished, this, &QgsSnappingUtils::onInitFinished );
+    connect( vl, &QObject::destroyed, this, [this, vl]()
+    {
+      delete mLocators.take( vl );
+    } );
+
     mLocators.insert( vl, vlpl );
   }
   return mLocators.value( vl );

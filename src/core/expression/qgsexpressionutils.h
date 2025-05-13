@@ -24,6 +24,7 @@
 #include "qgsvariantutils.h"
 #include "qgsfeaturerequest.h"
 #include "qgsreferencedgeometry.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QDate>
 #include <QDateTime>
@@ -364,6 +365,13 @@ class CORE_EXPORT QgsExpressionUtils
         parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );
       return 0;
     }
+
+    /**
+     * Tries to convert a \a value to a coordinate reference system.
+     *
+     * \since QGIS 3.42
+     */
+    static QgsCoordinateReferenceSystem getCrsValue( const QVariant &value, QgsExpression *parent );
 
     static QgsExpressionNode *getNode( const QVariant &value, QgsExpression *parent )
     {

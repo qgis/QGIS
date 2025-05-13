@@ -181,7 +181,7 @@ class TestQgsRasterFileWriter(QgisTestCase):
         provider = source.dataProvider()
         fw = QgsRasterFileWriter(test_gpkg)
         fw.setOutputFormat("gpkg")
-        fw.setCreateOptions(["RASTER_TABLE=imported_table", "APPEND_SUBDATASET=YES"])
+        fw.setCreationOptions(["RASTER_TABLE=imported_table", "APPEND_SUBDATASET=YES"])
 
         pipe = QgsRasterPipe()
         self.assertTrue(pipe.set(provider.clone()))

@@ -15,7 +15,8 @@
 class QgsZonalStatistics
 {
 %Docstring(signature="appended")
-A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
+Calculates raster statistics (count, sum, mean) for a polygon or
+multipolygon layer and appends the results as attributes.
 %End
 
 %TypeHeaderCode
@@ -24,9 +25,11 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
   public:
     QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 %Docstring
-Convenience constructor for QgsZonalStatistics, using an input raster layer.
+Convenience constructor for QgsZonalStatistics, using an input raster
+layer.
 
-The raster layer must exist for the lifetime of the zonal statistics calculation.
+The raster layer must exist for the lifetime of the zonal statistics
+calculation.
 
 .. warning::
 
@@ -38,23 +41,28 @@ The raster layer must exist for the lifetime of the zonal statistics calculation
 %Docstring
 Constructor for QgsZonalStatistics, using a QgsRasterInterface.
 
-The ``polygonLayer`` gives the vector layer containing the (multi)polygon features corresponding to the
-different zones. This layer will be modified, adding extra attributes for each of the zonal statistics
-calculated.
+The ``polygonLayer`` gives the vector layer containing the
+(multi)polygon features corresponding to the different zones. This layer
+will be modified, adding extra attributes for each of the zonal
+statistics calculated.
 
-Pixel values for each zone are taken from the raster ``rasterInterface``. The constructor must also
-be given various properties relating to the input raster, such as the raster CRS (``rasterCrs``),
-and the size (X and Y) in map units for each raster pixel. The source raster band is specified
-via ``rasterBand``, where a value of 1 corresponds to the first band.
+Pixel values for each zone are taken from the raster
+``rasterInterface``. The constructor must also be given various
+properties relating to the input raster, such as the raster CRS
+(``rasterCrs``), and the size (X and Y) in map units for each raster
+pixel. The source raster band is specified via ``rasterBand``, where a
+value of 1 corresponds to the first band.
 
-If the CRS of the ``polygonLayer`` and ``rasterCrs`` differ, the calculation will automatically
-reproject the zones to ensure valid results are calculated.
+If the CRS of the ``polygonLayer`` and ``rasterCrs`` differ, the
+calculation will automatically reproject the zones to ensure valid
+results are calculated.
 
-The ``attributePrefix`` argument specifies an optional prefix to use when creating the
-new fields for each calculated statistic.
+The ``attributePrefix`` argument specifies an optional prefix to use
+when creating the new fields for each calculated statistic.
 
-Finally, the calculated statistics can be set via the ``stats`` argument. A new field will be
-added to ``polygonLayer`` for each statistic calculated.
+Finally, the calculated statistics can be set via the ``stats``
+argument. A new field will be added to ``polygonLayer`` for each
+statistic calculated.
 
 .. warning::
 
@@ -81,7 +89,8 @@ Returns the friendly display name for a ``statistic``.
 
     static QString shortName( Qgis::ZonalStatistic statistic );
 %Docstring
-Returns a short, friendly display name for a ``statistic``, suitable for use in a field name.
+Returns a short, friendly display name for a ``statistic``, suitable for
+use in a field name.
 
 .. seealso:: :py:func:`displayName`
 
@@ -93,7 +102,9 @@ Returns a short, friendly display name for a ``statistic``, suitable for use in 
     static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics ) /PyName=calculateStatistics/;
 %Docstring
 Calculates the specified ``statistics`` for the pixels of ``rasterBand``
-in ``rasterInterface`` (a raster layer :py:func:`~QgsZonalStatistics.dataProvider` ) within polygon ``geometry``.
+in ``rasterInterface`` (a raster layer
+:py:func:`~QgsZonalStatistics.dataProvider` ) within polygon
+``geometry``.
 
 Returns a map of statistic to result value.
 

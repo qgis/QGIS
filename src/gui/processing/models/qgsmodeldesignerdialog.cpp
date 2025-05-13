@@ -67,7 +67,7 @@ Qt::ItemFlags QgsModelerToolboxModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags f = QgsProcessingToolboxProxyModel::flags( index );
   const QModelIndex sourceIndex = mapToSource( index );
-  if ( toolboxModel()->isAlgorithm( sourceIndex ) )
+  if ( toolboxModel()->isAlgorithm( sourceIndex ) || toolboxModel()->isParameter( sourceIndex ) )
   {
     f = f | Qt::ItemIsDragEnabled;
   }
@@ -78,7 +78,6 @@ Qt::DropActions QgsModelerToolboxModel::supportedDragActions() const
 {
   return Qt::CopyAction;
 }
-
 
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
@@ -117,10 +116,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
-  mAlgorithmsTree->header()->setVisible( false );
-  mAlgorithmSearchEdit->setShowSearchIcon( true );
-  mAlgorithmSearchEdit->setPlaceholderText( tr( "Search…" ) );
-  connect( mAlgorithmSearchEdit, &QgsFilterLineEdit::textChanged, mAlgorithmsTree, &QgsProcessingToolboxTreeView::setFilterString );
+  mToolboxTree->header()->setVisible( false );
+  mToolboxSearchEdit->setShowSearchIcon( true );
+  mToolboxSearchEdit->setPlaceholderText( tr( "Search…" ) );
+  connect( mToolboxSearchEdit, &QgsFilterLineEdit::textChanged, mToolboxTree, &QgsProcessingToolboxTreeView::setFilterString );
 
   mInputsTreeWidget->header()->setVisible( false );
   mInputsTreeWidget->setAlternatingRowColors( true );
@@ -231,30 +230,33 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mMenuEdit->insertSeparator( mActionDeleteComponents );
 
   mAlgorithmsModel = new QgsModelerToolboxModel( this );
-  mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
+  mToolboxTree->setToolboxProxyModel( mAlgorithmsModel );
 
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::Filter::Modeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {
     filters |= QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues;
   }
-  mAlgorithmsTree->setFilters( filters );
-  mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );
-  mAlgorithmsTree->setDropIndicatorShown( true );
+  mToolboxTree->setFilters( filters );
+  mToolboxTree->setDragDropMode( QTreeWidget::DragOnly );
+  mToolboxTree->setDropIndicatorShown( true );
 
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [=]( const QString &algorithmId, const QPointF &pos ) {
     addAlgorithm( algorithmId, pos );
   } );
-  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]() {
-    if ( mAlgorithmsTree->selectedAlgorithm() )
-      addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
+  connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
+
+  connect( mToolboxTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [=]( const QModelIndex & ) {
+    if ( mToolboxTree->selectedAlgorithm() )
+      addAlgorithm( mToolboxTree->selectedAlgorithm()->id(), QPointF() );
+    if ( mToolboxTree->selectedParameterType() )
+      addInput( mToolboxTree->selectedParameterType()->id(), QPointF() );
   } );
+
   connect( mInputsTreeWidget, &QgsModelDesignerInputsTreeWidget::doubleClicked, this, [=]( const QModelIndex & ) {
     const QString parameterType = mInputsTreeWidget->currentItem()->data( 0, Qt::UserRole ).toString();
     addInput( parameterType, QPointF() );
   } );
-
-  connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
 
   // Ctrl+= should also trigger a zoom in action
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
@@ -337,10 +339,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     mUndoStack->endMacro();
     mIgnoreUndoStackChanges--;
   } );
-  connect( mView, &QgsModelGraphicsView::beginCommand, this, [=]( const QString &text ) {
+  connect( mView, &QgsModelGraphicsView::commandBegun, this, [=]( const QString &text ) {
     beginUndoCommand( text );
   } );
-  connect( mView, &QgsModelGraphicsView::endCommand, this, [=] {
+  connect( mView, &QgsModelGraphicsView::commandEnded, this, [=] {
     endUndoCommand();
   } );
   connect( mView, &QgsModelGraphicsView::deleteSelectedItems, this, [=] {

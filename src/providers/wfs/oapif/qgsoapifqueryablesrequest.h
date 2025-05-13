@@ -22,7 +22,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
 
-//! Manages the conformance request
+//! Manages the queryable request
 class QgsOapifQueryablesRequest : public QgsBaseNetworkRequest
 {
     Q_OBJECT

@@ -12,13 +12,11 @@
   }, {
     "arg": "source_crs",
     "optional": true,
-    "description": "an optional string representing the source CRS of the points. By default the current layer's CRS is used."
-
+    "description": "an optional string or CRS object representing the source CRS of the points. By default the current layer's CRS is used."
   }, {
     "arg": "ellipsoid",
     "optional": true,
-    "description": "an optional string representing the acronym or the authority:ID (eg 'EPSG:7030') of the ellipsoid on which the bearing should be measured. By default the current project's ellipsoid setting is used."  
-
+    "description": "an optional string representing the acronym or the authority ID (e.g., 'EPSG:7030') of the ellipsoid on which the bearing should be measured. By default the current project's ellipsoid setting is used."
   }],
   "examples": [{
     "expression": "degrees( bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030') )",

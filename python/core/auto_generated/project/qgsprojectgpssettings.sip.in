@@ -12,8 +12,8 @@
 class QgsProjectGpsSettings : QObject
 {
 %Docstring(signature="appended")
-Contains settings and properties relating to how a :py:class:`QgsProject` should interact
-with a GPS device.
+Contains settings and properties relating to how a
+:py:class:`QgsProject` should interact with a GPS device.
 
 .. versionadded:: 3.30
 %End
@@ -26,14 +26,16 @@ with a GPS device.
 
     QgsProjectGpsSettings( QObject *parent = 0 );
 %Docstring
-Constructor for QgsProjectGpsSettings with the specified ``parent`` object.
+Constructor for QgsProjectGpsSettings with the specified ``parent``
+object.
 %End
 
     ~QgsProjectGpsSettings();
 
     void resolveReferences( const QgsProject *project );
 %Docstring
-Resolves reference to layers from stored layer ID (if it has not been resolved already)
+Resolves reference to layers from stored layer ID (if it has not been
+resolved already)
 %End
 
     void reset();
@@ -57,8 +59,8 @@ Returns a DOM element representing the settings.
 
     bool automaticallyAddTrackVertices() const;
 %Docstring
-Returns ``True`` if track vertices should be automatically created whenever
-new locations are received from the GPS device.
+Returns ``True`` if track vertices should be automatically created
+whenever new locations are received from the GPS device.
 
 .. seealso:: :py:func:`setAutomaticallyAddTrackVertices`
 
@@ -68,8 +70,8 @@ new locations are received from the GPS device.
     bool automaticallyCommitFeatures() const;
 %Docstring
 Returns ``True`` if features created from GPS locations should be
-immediately committed to their target layers (skipping the usual
-layer edit buffer).
+immediately committed to their target layers (skipping the usual layer
+edit buffer).
 
 .. seealso:: :py:func:`setAutomaticallyCommitFeatures`
 
@@ -78,8 +80,8 @@ layer edit buffer).
 
     bool destinationFollowsActiveLayer() const;
 %Docstring
-Returns ``True`` if the destination layer for storing features digitized from GPS
-should follow the current active layer automatically.
+Returns ``True`` if the destination layer for storing features digitized
+from GPS should follow the current active layer automatically.
 
 .. seealso:: :py:func:`setDestinationFollowsActiveLayer`
 
@@ -88,7 +90,8 @@ should follow the current active layer automatically.
 
     QgsVectorLayer *destinationLayer() const;
 %Docstring
-Returns the destination layer to be used for storing features digitized from GPS.
+Returns the destination layer to be used for storing features digitized
+from GPS.
 
 .. note::
 
@@ -113,8 +116,9 @@ Returns the map of destination layer ID to target time stamp field name.
 
     QString destinationTimeStampField() const;
 %Docstring
-Returns the destination time stamp field name for the current :py:func:`~QgsProjectGpsSettings.destinationLayer`,
-or an empty string if time stamps should not be automatically saved.
+Returns the destination time stamp field name for the current
+:py:func:`~QgsProjectGpsSettings.destinationLayer`, or an empty string
+if time stamps should not be automatically saved.
 
 .. seealso:: :py:func:`destinationTimeStampFields`
 
@@ -125,8 +129,8 @@ or an empty string if time stamps should not be automatically saved.
 
     void setAutomaticallyAddTrackVertices( bool enabled );
 %Docstring
-Sets whether track vertices should be automatically created whenever
-new locations are received from the GPS device.
+Sets whether track vertices should be automatically created whenever new
+locations are received from the GPS device.
 
 .. seealso:: :py:func:`automaticallyAddTrackVertices`
 
@@ -135,9 +139,8 @@ new locations are received from the GPS device.
 
     void setAutomaticallyCommitFeatures( bool enabled );
 %Docstring
-Sets whether features created from GPS locations should be
-immediately committed to their target layers (skipping the usual
-layer edit buffer).
+Sets whether features created from GPS locations should be immediately
+committed to their target layers (skipping the usual layer edit buffer).
 
 .. seealso:: :py:func:`automaticallyCommitFeatures`
 
@@ -146,8 +149,8 @@ layer edit buffer).
 
     void setDestinationFollowsActiveLayer( bool follow );
 %Docstring
-Sets whether the destination layer for storing features digitized from GPS
-should follow the current active layer automatically.
+Sets whether the destination layer for storing features digitized from
+GPS should follow the current active layer automatically.
 
 .. seealso:: :py:func:`destinationFollowsActiveLayer`
 
@@ -156,7 +159,8 @@ should follow the current active layer automatically.
 
     void setDestinationLayer( QgsVectorLayer *layer );
 %Docstring
-Sets the destination ``layer`` to be used for storing features digitized from GPS.
+Sets the destination ``layer`` to be used for storing features digitized
+from GPS.
 
 .. note::
 
@@ -170,11 +174,11 @@ Sets the destination ``layer`` to be used for storing features digitized from GP
 
     void setDestinationTimeStampField( QgsVectorLayer *layer, const QString &field );
 %Docstring
-Sets the destination field name for automatically storing timestamps in the
-specified destination ``layer``.
+Sets the destination field name for automatically storing timestamps in
+the specified destination ``layer``.
 
-Set ``field`` argument to an empty string if time stamps should
-not be automatically saved.
+Set ``field`` argument to an empty string if time stamps should not be
+automatically saved.
 
 .. seealso:: :py:func:`destinationTimeStampFields`
 
@@ -185,7 +189,8 @@ not be automatically saved.
 
     void automaticallyAddTrackVerticesChanged( bool enabled );
 %Docstring
-Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyAddTrackVertices` setting
+Emitted whenever the
+:py:func:`~QgsProjectGpsSettings.automaticallyAddTrackVertices` setting
 is changed.
 
 .. seealso:: :py:func:`automaticallyAddTrackVertices`
@@ -195,8 +200,9 @@ is changed.
 
     void automaticallyCommitFeaturesChanged( bool enabled );
 %Docstring
-Emitted whenever the :py:func:`~QgsProjectGpsSettings.automaticallyCommitFeatures` setting
-is changed.
+Emitted whenever the
+:py:func:`~QgsProjectGpsSettings.automaticallyCommitFeatures` setting is
+changed.
 
 .. seealso:: :py:func:`automaticallyCommitFeatures`
 
@@ -205,7 +211,8 @@ is changed.
 
     void destinationFollowsActiveLayerChanged( bool follows );
 %Docstring
-Emitted whenever the :py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` setting
+Emitted whenever the
+:py:func:`~QgsProjectGpsSettings.destinationFollowsActiveLayer` setting
 is changed.
 
 .. seealso:: :py:func:`destinationFollowsActiveLayer`
@@ -228,8 +235,8 @@ is changed.
 Emitted whenever the destination field for automatic time stamps is
 changed.
 
-The ``field`` argument will be an empty string if time stamps should
-not be automatically saved.
+The ``field`` argument will be an empty string if time stamps should not
+be automatically saved.
 
 .. seealso:: :py:func:`destinationTimeStampFields`
 

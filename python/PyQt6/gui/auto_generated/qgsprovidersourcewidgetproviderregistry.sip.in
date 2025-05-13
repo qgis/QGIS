@@ -13,9 +13,10 @@
 class QgsProviderSourceWidgetProviderRegistry
 {
 %Docstring(signature="appended")
-This class keeps a list of provider source widget providers.
+A registry that keeps a list of provider source widget providers.
 
-:py:class:`QgsProviderSourceWidgetProviderRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsProviderSourceWidgetProviderRegistry` is not usually
+directly created, but rather accessed through
 :py:class:`QgsGui`.QgsProviderSourceWidgetProviderRegistry().
 
 .. versionadded:: 3.18
@@ -41,7 +42,8 @@ Add a ``provider`` implementation. Takes ownership of the object.
 
     bool removeProvider( QgsProviderSourceWidgetProvider *provider /Transfer/ );
 %Docstring
-Remove ``provider`` implementation from the list (``provider`` object is deleted)
+Remove ``provider`` implementation from the list (``provider`` object is
+deleted)
 
 :return: ``True`` if the provider was actually removed and deleted
 %End
@@ -49,7 +51,8 @@ Remove ``provider`` implementation from the list (``provider`` object is deleted
     void initializeFromProviderGuiRegistry( QgsProviderGuiRegistry *providerGuiRegistry );
 %Docstring
 Initializes the registry. The registry needs to be passed explicitly
-(instead of using singleton) because this gets called from :py:class:`QgsGui` constructor.
+(instead of using singleton) because this gets called from
+:py:class:`QgsGui` constructor.
 %End
 
     QgsProviderSourceWidgetProvider *providerByName( const QString &name );
@@ -65,8 +68,8 @@ Returns a (possibly empty) list of providers by data ``providerkey``
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent /TransferThis/ = 0 ) /TransferBack/;
 %Docstring
 Creates a new widget to configure the source of the specified ``layer``.
-It may return ``None`` if no provider was found.
-The returned object must be destroyed by the caller.
+It may return ``None`` if no provider was found. The returned object
+must be destroyed by the caller.
 %End
 
   private:

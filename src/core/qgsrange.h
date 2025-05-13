@@ -744,7 +744,8 @@ class QgsTemporalRange
  * QgsDateRange(QDate(2017,1,1),QDate()) is treated as a range containing all dates after 2017-1-1.
  * \see QgsDateTimeRange
  */
-typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
+typedef QgsTemporalRange< QDate > QgsDateRange;
+// NOTE -- Python docstrings for QgsDateRange are patched in python/core/__init__.py
 
 Q_DECLARE_METATYPE( QgsDateRange )
 
@@ -758,6 +759,7 @@ Q_DECLARE_METATYPE( QgsDateRange )
  * \see QgsDateRange
  */
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange SIP_DOC_TEMPLATE;
+// NOTE -- Python docstrings for QgsDateTimeRange are patched in python/core/__init__.py
 
 Q_DECLARE_METATYPE( QgsDateTimeRange )
 

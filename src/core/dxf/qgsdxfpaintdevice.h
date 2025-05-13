@@ -62,7 +62,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 
 
   private:
-    QgsDxfPaintEngine *mPaintEngine = nullptr;
+    std::unique_ptr<QgsDxfPaintEngine> mPaintEngine;
 
     QSizeF mDrawingSize; //size (in source coordinates)
     QRectF mRectangle; //size (in dxf coordinates)

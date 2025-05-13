@@ -40,7 +40,7 @@ class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
- * \brief The QgsLayerTreeModel class is model implementation for Qt item views framework.
+ * \brief A model representing the layer tree, including layers and groups of layers.
  *
  * The model can be used in any QTreeView, it is however recommended to use it
  * with QgsLayerTreeView which brings additional functionality specific to layer tree handling.

@@ -28,7 +28,7 @@ class QgsTextCharacterFormat;
 
 /**
  * \ingroup core
- * \brief Class that adds extra information to QgsLabelFeature for text labels
+ * \brief Adds extra information to QgsLabelFeature for text labels.
  *
  * \note not part of public API
  */
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \see setTextMetrics()
      * \since QGIS 3.20
      */
-    const QgsPrecalculatedTextMetrics *textMetrics() const { return mTextMetrics.has_value() ? &mTextMetrics.value() : nullptr; }
+    const QgsPrecalculatedTextMetrics *textMetrics() const { return mTextMetrics.has_value() ? &( *mTextMetrics ) : nullptr; }
 
     /**
      * Sets additional text \a metrics required for curved label placement.

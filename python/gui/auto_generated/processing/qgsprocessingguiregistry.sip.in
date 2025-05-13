@@ -13,11 +13,10 @@
 class QgsProcessingGuiRegistry
 {
 %Docstring(signature="appended")
-The :py:class:`QgsProcessingGuiRegistry` is a home for widgets for processing
-configuration widgets.
+A registry for widgets for use with the Processing framework.
 
-:py:class:`QgsProcessingGuiRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.processingGuiRegistry()`.
+:py:class:`QgsProcessingGuiRegistry` is not usually directly created,
+but rather accessed through :py:func:`QgsGui.processingGuiRegistry()`.
 
 .. versionadded:: 3.2
 %End
@@ -28,46 +27,51 @@ configuration widgets.
   public:
     QgsProcessingGuiRegistry();
 %Docstring
-Constructor. Should never be called manually, is already
-created by :py:class:`QgsGui`.
+Constructor. Should never be called manually, is already created by
+:py:class:`QgsGui`.
 %End
     ~QgsProcessingGuiRegistry();
 
     void addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory /Transfer/ );
 %Docstring
-Add a new configuration widget factory for customized algorithm configuration
-widgets. Ownership is taken.
+Add a new configuration widget factory for customized algorithm
+configuration widgets. Ownership is taken.
 
 .. versionadded:: 3.2
 %End
 
     void removeAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory );
 %Docstring
-Remove a configuration widget factory for customized algorithm configuration
-widgets.
+Remove a configuration widget factory for customized algorithm
+configuration widgets.
 
 .. versionadded:: 3.2
 %End
 
     QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( const QgsProcessingAlgorithm *algorithm ) const;
 %Docstring
-Gets the configuration widget for an ``algorithm``. This widget will be shown
-next to parameter widgets. Most algorithms do not have a configuration widget
-and in this case, ``None`` will be returned.
+Gets the configuration widget for an ``algorithm``. This widget will be
+shown next to parameter widgets. Most algorithms do not have a
+configuration widget and in this case, ``None`` will be returned.
 
 .. versionadded:: 3.2
 %End
 
     bool addParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory /Transfer/ );
 %Docstring
-Adds a parameter widget ``factory`` to the registry, allowing widget creation for parameters of the matching
-type via :py:func:`~QgsProcessingGuiRegistry.createParameterWidgetWrapper` and :py:func:`~QgsProcessingGuiRegistry.createModelerParameterWidget`.
+Adds a parameter widget ``factory`` to the registry, allowing widget
+creation for parameters of the matching type via
+:py:func:`~QgsProcessingGuiRegistry.createParameterWidgetWrapper` and
+:py:func:`~QgsProcessingGuiRegistry.createModelerParameterWidget`.
 
 Ownership of ``factory`` is transferred to the registry.
 
-Returns ``True`` if the factory was successfully added, or ``False`` if the factory could not be added. Each
-factory must return a unique value for :py:func:`QgsProcessingParameterWidgetFactoryInterface.parameterType()`,
-and attempting to add a new factory with a duplicate type will result in failure.
+Returns ``True`` if the factory was successfully added, or ``False`` if
+the factory could not be added. Each factory must return a unique value
+for
+:py:func:`QgsProcessingParameterWidgetFactoryInterface.parameterType()`,
+and attempting to add a new factory with a duplicate type will result in
+failure.
 
 .. seealso:: :py:func:`removeParameterWidgetFactory`
 
@@ -80,20 +84,22 @@ and attempting to add a new factory with a duplicate type will result in failure
 
     void removeParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory );
 %Docstring
-Removes a parameter widget ``factory`` from the registry. The factory will be deleted.
+Removes a parameter widget ``factory`` from the registry. The factory
+will be deleted.
 
 .. seealso:: :py:func:`addParameterWidgetFactory`
 
 .. versionadded:: 3.4
 %End
 
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) /Factory/;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) /Factory/;
 %Docstring
-Creates a new parameter widget wrapper for the given ``parameter``. The ``type`` argument
-dictates the type of dialog the wrapper should be created for. The caller takes ownership
-of the returned wrapper.
+Creates a new parameter widget wrapper for the given ``parameter``. The
+``type`` argument dictates the type of dialog the wrapper should be
+created for. The caller takes ownership of the returned wrapper.
 
-If no factory is registered which handles the given ``parameter``, ``None`` will be returned.
+If no factory is registered which handles the given ``parameter``,
+``None`` will be returned.
 
 .. seealso:: :py:func:`createModelerParameterWidget`
 
@@ -104,16 +110,19 @@ If no factory is registered which handles the given ``parameter``, ``None`` will
 
     QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) /Factory/;
 %Docstring
-Creates a new modeler parameter widget for the given ``parameter``. This widget allows
-configuration of the parameter's value when used inside a Processing ``model``.
+Creates a new modeler parameter widget for the given ``parameter``. This
+widget allows configuration of the parameter's value when used inside a
+Processing ``model``.
 
-The ID of the child algorithm within the model must be specified via the ``childId``
-argument. This value corresponds to the :py:func:`QgsProcessingModelChildAlgorithm.childId()`
-string, which uniquely identifies which child algorithm the parameter is associated
+The ID of the child algorithm within the model must be specified via the
+``childId`` argument. This value corresponds to the
+:py:func:`QgsProcessingModelChildAlgorithm.childId()` string, which
+uniquely identifies which child algorithm the parameter is associated
 with inside the given ``model``.
 
-The caller takes ownership of the returned widget. If no factory is registered which
-handles the given ``parameter``, ``None`` will be returned.
+The caller takes ownership of the returned widget. If no factory is
+registered which handles the given ``parameter``, ``None`` will be
+returned.
 
 .. seealso:: :py:func:`createParameterWidgetWrapper`
 
@@ -124,23 +133,24 @@ handles the given ``parameter``, ``None`` will be returned.
 
     QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0 ) /Factory/;
 %Docstring
-Creates a new parameter definition widget allowing for configuration of an instance of
-a specific parameter ``type``.
+Creates a new parameter definition widget allowing for configuration of
+an instance of a specific parameter ``type``.
 
-The ``context`` argument must specify a Processing context, which will be used
-by the widget to evaluate existing ``definition`` properties such as default values. Similarly,
-the ``widgetContext`` argument specifies the wider GUI context in which the widget
-will be used.
+The ``context`` argument must specify a Processing context, which will
+be used by the widget to evaluate existing ``definition`` properties
+such as default values. Similarly, the ``widgetContext`` argument
+specifies the wider GUI context in which the widget will be used.
 
-The optional ``definition`` argument may specify an existing parameter definition which
-will be reflected in the initial state of the returned widget. If ``definition`` is ``None``,
-then the returned widget will use default settings instead.
+The optional ``definition`` argument may specify an existing parameter
+definition which will be reflected in the initial state of the returned
+widget. If ``definition`` is ``None``, then the returned widget will use
+default settings instead.
 
-Additionally, the optional ``algorithm`` parameter may be used to specify the algorithm or model
-associated with the parameter.
+Additionally, the optional ``algorithm`` parameter may be used to
+specify the algorithm or model associated with the parameter.
 
-If ``None`` is returned for a particular parameter ``type``,
-it indicates that the parameter type cannot be configured via GUI.
+If ``None`` is returned for a particular parameter ``type``, it
+indicates that the parameter type cannot be configured via GUI.
 
 .. versionadded:: 3.10
 %End

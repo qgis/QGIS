@@ -42,7 +42,7 @@ namespace Qt3DRender
 class QgsFrameGraph;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for 3D engine implementation. A 3D engine is responsible for setting up
  * rendering with Qt3D. This means mainly:
  *

@@ -9,14 +9,17 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsPlot.__virtual_methods__ = ['writeXml', 'readXml']
     QgsPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
 try:
-    QgsPlotAxis.__group__ = ['plot']
+    Qgs2DPlot.__virtual_methods__ = ['renderContent']
+    Qgs2DPlot.__overridden_methods__ = ['writeXml', 'readXml']
+    Qgs2DPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
 try:
-    Qgs2DPlot.__group__ = ['plot']
+    QgsPlotAxis.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

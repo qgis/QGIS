@@ -15,6 +15,7 @@
 #include "qgsgeoreftransform.h"
 
 #include "qgsgcplist.h"
+#include "qgsgcppoint.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
@@ -125,14 +126,16 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
      * \param finalize
      */
     void addPoint( const QgsPointXY &sourceCoords, const QgsPointXY &destinationMapCoords, const QgsCoordinateReferenceSystem &destinationCrs, bool enable = true, bool finalize = true );
-
-    void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
     void showCoordDialog( const QgsPointXY &sourceCoordinates );
 
-    void selectPoint( QPoint );
-    void movePoint( QPoint canvasPixels );
-    void releasePoint( QPoint );
+    void deletePoint( const QgsPointXY &p );
+    void hoverPoint( const QgsPointXY &p );
+
+    void selectPoint( const QgsPointXY &p );
+    void movePoint( const QgsPointXY &p );
+    void releasePoint( const QgsPointXY &p );
+    void cancelPoint( const QgsPointXY &p );
 
     void loadGCPsDialog();
     void saveGCPsDialog();
@@ -187,6 +190,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // gcp points
     bool loadGCPs( QString &error );
     void saveGCPs();
+    QgsGeorefDataPoint *findPoint( const QgsPointXY &p, QgsGcpPoint::PointType pointType );
+
     QgsGeoreferencerMainWindow::SaveGCPs checkNeedGCPSave();
 
     // georeference
@@ -296,6 +301,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
     QgsGeorefDataPoint *mNewlyAddedPoint = nullptr;
+    QgsGeorefDataPoint *mHoveredPoint = nullptr;
+
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
     bool mUseZeroForTrans = false;

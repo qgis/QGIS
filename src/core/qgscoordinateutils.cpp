@@ -130,7 +130,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   QgsCoordinateReferenceSystem crs = project->displaySettings()->coordinateCrs();
   if ( !crs.isValid() && !destCrs.isValid() )
   {
-    return QString();
+    return QStringLiteral( "%1%2 %3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
   }
   else if ( !crs.isValid() )
   {
@@ -160,6 +160,8 @@ void QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject *project, c
   QgsCoordinateReferenceSystem crs = project->displaySettings()->coordinateCrs();
   if ( !crs.isValid() && !destCrs.isValid() )
   {
+    x = QgsCoordinateFormatter::formatAsPair( point.x(), precision );
+    y = QgsCoordinateFormatter::formatAsPair( point.y(), precision );
     return;
   }
   else if ( !crs.isValid() )

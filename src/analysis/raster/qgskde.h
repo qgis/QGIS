@@ -39,24 +39,24 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {
   public:
     //! Kernel shape type
-    enum KernelShape
+    enum class KernelShape SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsKernelDensityEstimation, KernelShape ) : int
     {
-      KernelQuartic = 0,  //!< Quartic kernel
-      KernelTriangular,   //!< Triangular kernel
-      KernelUniform,      //!< Uniform (flat) kernel
-      KernelTriweight,    //!< Triweight kernel
-      KernelEpanechnikov, //!< Epanechnikov kernel
+      Quartic SIP_MONKEYPATCH_COMPAT_NAME( KernelQuartic ) = 0,       //!< Quartic kernel
+      Triangular SIP_MONKEYPATCH_COMPAT_NAME( KernelTriangular ),     //!< Triangular kernel
+      Uniform SIP_MONKEYPATCH_COMPAT_NAME( KernelUniform ),           //!< Uniform (flat) kernel
+      Triweight SIP_MONKEYPATCH_COMPAT_NAME( KernelTriweight ),       //!< Triweight kernel
+      Epanechnikov SIP_MONKEYPATCH_COMPAT_NAME( KernelEpanechnikov ), //!< Epanechnikov kernel
     };
 
     //! Output values type
-    enum OutputValues
+    enum class OutputValues SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsKernelDensityEstimation, OutputValues ) : int
     {
-      OutputRaw = 0, //!< Output the raw KDE values
-      OutputScaled,  //!< Output mathematically correct scaled values
+      Raw SIP_MONKEYPATCH_COMPAT_NAME( OutputRaw ) = 0,   //!< Output the raw KDE values
+      Scaled SIP_MONKEYPATCH_COMPAT_NAME( OutputScaled ), //!< Output mathematically correct scaled values
     };
 
     //! Result of operation
-    enum Result
+    enum class Result : int
     {
       Success,           //!< Operation completed successfully
       DriverError,       //!< Could not open the driver for the specified format
@@ -174,6 +174,5 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
 #endif
 };
-
 
 #endif // QGSKDE_H

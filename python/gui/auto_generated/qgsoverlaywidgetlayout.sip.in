@@ -12,7 +12,8 @@
 class QgsOverlayWidgetLayout : QLayout
 {
 %Docstring(signature="appended")
-A custom layout which can be used to overlay child widgets over a parent widget.
+A custom layout which can be used to overlay child widgets over a parent
+widget.
 
 .. versionadded:: 3.38
 %End
@@ -23,7 +24,8 @@ A custom layout which can be used to overlay child widgets over a parent widget.
   public:
     QgsOverlayWidgetLayout( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsOverlayWidgetLayout, with the specified ``parent`` widget.
+Constructor for QgsOverlayWidgetLayout, with the specified ``parent``
+widget.
 %End
     ~QgsOverlayWidgetLayout();
 
@@ -37,7 +39,8 @@ Constructor for QgsOverlayWidgetLayout, with the specified ``parent`` widget.
 
     void addWidget( QWidget *widget /Transfer/, Qt::Edge edge );
 %Docstring
-Adds a ``widget`` to the layout, which will be bound to the specified ``edge``.
+Adds a ``widget`` to the layout, which will be bound to the specified
+``edge``.
 
 .. note::
 
@@ -68,7 +71,8 @@ Sets the spacing between widgets that are laid out on top of each other.
 
     int verticalSpacing() const;
 %Docstring
-Returns the spacing between widgets that are laid out on top of each other.
+Returns the spacing between widgets that are laid out on top of each
+other.
 
 .. seealso:: :py:func:`setVerticalSpacing`
 %End

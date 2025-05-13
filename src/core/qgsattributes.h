@@ -140,7 +140,10 @@ class QgsAttributes : public QVector<QVariant>
 //! Hash for QgsAttributes
 CORE_EXPORT uint qHash( const QgsAttributes &attributes );
 
-#else
+#endif
+
+#ifdef SIP_PYQT5_RUN
+#ifdef SIP_RUN
 typedef QVector<QVariant> QgsAttributes;
 
 % MappedType QgsAttributes
@@ -159,14 +162,69 @@ typedef QVector<QVariant> QgsAttributes;
   // Set the list elements.
   for ( int i = 0; i < sipCpp->size(); ++i )
   {
-    QVariant *v = new QVariant( sipCpp->at( i ) );
-    PyObject *tobj;
+    const QVariant v = sipCpp->at( i );
+    PyObject *tobj = NULL;
+    if ( !v.isValid() )
+    {
+      Py_INCREF( Py_None );
+      tobj = Py_None;
+    }
+    // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+    else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+    {
+      PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+      PyObject *args = PyTuple_Pack( 1, vartype );
+      PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+      tobj = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+      Py_DECREF( args );
+      Py_DECREF( vartype );
+    }
+    else
+    {
+      switch ( v.userType() )
+      {
+        case QMetaType::Type::Int:
+          tobj = PyLong_FromLong( v.toInt() );
+          break;
 
-    if ( ( tobj = sipConvertFromNewType( v, sipType_QVariant, Py_None ) ) == NULL )
+        case QMetaType::Type::UInt:
+          tobj = PyLong_FromUnsignedLong( v.toUInt() );
+          break;
+
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+          tobj = PyLong_FromLongLong( v.toLongLong() );
+          break;
+
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+          tobj = PyLong_FromUnsignedLongLong( v.toULongLong() );
+          break;
+
+        case QMetaType::Type::Bool:
+          tobj = PyBool_FromLong( v.toBool() ? 1 : 0 );
+          break;
+
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+          tobj = PyFloat_FromDouble( v.toDouble() );
+          break;
+
+        case QMetaType::Type::QString:
+          tobj = PyUnicode_FromString( v.toString().toUtf8().constData() );
+          break;
+
+        default:
+        {
+          QVariant *newV = new QVariant( v );
+          tobj = sipConvertFromNewType( newV, sipType_QVariant, sipTransferObj );
+          break;
+        }
+      }
+    }
+    if ( tobj == NULL )
     {
       Py_DECREF( l );
-      delete v;
-
       return NULL;
     }
 
@@ -246,6 +304,160 @@ typedef QVector<QVariant> QgsAttributes;
   % End
 };
 #endif
+#endif
 
+#ifdef SIP_PYQT6_RUN
+#ifdef SIP_RUN
+typedef QVector<QVariant> QgsAttributes;
 
+% MappedType QgsAttributes
+{
+  % TypeHeaderCode
+#include "qgsfeature.h"
+  % End
+
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
+    return NULL;
+
+  // Set the list elements.
+  for ( int i = 0; i < sipCpp->size(); ++i )
+  {
+    const QVariant v = sipCpp->at( i );
+    PyObject *tobj = NULL;
+    // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+    if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+    {
+      Py_INCREF( Py_None );
+      tobj = Py_None;
+    }
+    else
+    {
+      switch ( v.userType() )
+      {
+        case QMetaType::Type::Int:
+          tobj = PyLong_FromLong( v.toInt() );
+          break;
+
+        case QMetaType::Type::UInt:
+          tobj = PyLong_FromUnsignedLong( v.toUInt() );
+          break;
+
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+          tobj = PyLong_FromLongLong( v.toLongLong() );
+          break;
+
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+          tobj = PyLong_FromUnsignedLongLong( v.toULongLong() );
+          break;
+
+        case QMetaType::Type::Bool:
+          tobj = PyBool_FromLong( v.toBool() ? 1 : 0 );
+          break;
+
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+          tobj = PyFloat_FromDouble( v.toDouble() );
+          break;
+
+        case QMetaType::Type::QString:
+          tobj = PyUnicode_FromString( v.toString().toUtf8().constData() );
+          break;
+
+        default:
+        {
+          QVariant *newV = new QVariant( v );
+          tobj = sipConvertFromNewType( newV, sipType_QVariant, sipTransferObj );
+          break;
+        }
+      }
+    }
+    if ( tobj == NULL )
+    {
+      Py_DECREF( l );
+      return NULL;
+    }
+
+    PyList_SET_ITEM( l, i, tobj );
+  }
+
+  return l;
+  % End
+
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
+  {
+    if ( !PyList_Check( sipPy ) )
+      return 0;
+
+    for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+      if ( !sipCanConvertToType( PyList_GET_ITEM( sipPy, i ), sipType_QVariant, SIP_NOT_NONE ) )
+        return 0;
+
+    return 1;
+  }
+
+  SIP_SSIZE_T listSize = PyList_GET_SIZE( sipPy );
+  // Initialize attributes to null. This has two motivations:
+  // 1. It speeds up the QVector construction, as otherwise we are creating n default QVariant objects (default QVariant constructor is not free!)
+  // 2. It lets us shortcut in the loop below when a Py_None is encountered in the list
+  const QVariant nullVariant( QVariant::Int );
+  QgsAttributes *qv = new QgsAttributes( listSize, nullVariant );
+  QVariant *outData = qv->data();
+
+  for ( SIP_SSIZE_T i = 0; i < listSize; ++i )
+  {
+    PyObject *obj = PyList_GET_ITEM( sipPy, i );
+    if ( obj == Py_None )
+    {
+      // outData was already initialized to null values
+      *outData++;
+    }
+    else if ( PyBool_Check( obj ) )
+    {
+      *outData++ = QVariant( PyObject_IsTrue( obj ) == 1 );
+    }
+    else if ( PyLong_Check( obj ) )
+    {
+      *outData++ = QVariant( PyLong_AsLongLong( obj ) );
+    }
+    else if ( PyFloat_Check( obj ) )
+    {
+      *outData++ = QVariant( PyFloat_AsDouble( obj ) );
+    }
+    else if ( PyUnicode_Check( obj ) )
+    {
+      *outData++ = QVariant( QString::fromUtf8( PyUnicode_AsUTF8( obj ) ) );
+    }
+    else
+    {
+      int state;
+      QVariant *t = reinterpret_cast<QVariant *>( sipConvertToType( obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
+
+      if ( *sipIsErr )
+      {
+        sipReleaseType( t, sipType_QVariant, state );
+
+        delete qv;
+        return 0;
+      }
+
+      *outData++ = *t;
+      sipReleaseType( t, sipType_QVariant, state );
+    }
+  }
+
+  *sipCppPtr = qv;
+
+  return sipGetState( sipTransferObj );
+  % End
+};
+#endif
+#endif
 #endif // QGSATTRIBUTES_H

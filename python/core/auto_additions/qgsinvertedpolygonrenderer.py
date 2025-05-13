@@ -2,6 +2,7 @@
 try:
     QgsInvertedPolygonRenderer.create = staticmethod(QgsInvertedPolygonRenderer.create)
     QgsInvertedPolygonRenderer.convertFromRenderer = staticmethod(QgsInvertedPolygonRenderer.convertFromRenderer)
+    QgsInvertedPolygonRenderer.__overridden_methods__ = ['clone', 'dump', 'save']
     QgsInvertedPolygonRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

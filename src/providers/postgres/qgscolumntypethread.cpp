@@ -27,7 +27,6 @@ QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useE
   : mName( name )
   , mUseEstimatedMetadata( useEstimatedMetaData )
   , mAllowGeometrylessTables( allowGeometrylessTables )
-  , mStopped( false )
 {
   qRegisterMetaType<QgsPostgresLayerProperty>( "QgsPostgresLayerProperty" );
 }
@@ -44,20 +43,21 @@ void QgsGeomColumnTypeThread::stop()
 void QgsGeomColumnTypeThread::run()
 {
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
-  mConn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
+  mConn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( uri, false ) );
   if ( !mConn )
   {
-    QgsDebugError( "Connection failed - " + uri.connectionInfo( false ) );
+    QgsDebugError( "Connection failed - " + QgsPostgresConn::connectionInfo( uri, false ) );
     return;
   }
 
   mStopped = false;
 
-  bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
+  const bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
+  const QString schemaToRestrict = QgsPostgresConn::publicSchemaOnly( mName ) ? QStringLiteral( "public" ) : QgsPostgresConn::schemaToRestrict( mName );
 
   emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsPostgresLayerProperty> layerProperties;
-  if ( !mConn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mName ), QgsPostgresConn::publicSchemaOnly( mName ), mAllowGeometrylessTables ) || layerProperties.isEmpty() )
+  if ( !mConn->supportedLayers( layerProperties, QgsPostgresConn::geometryColumnsOnly( mName ), mAllowGeometrylessTables, false, schemaToRestrict ) || layerProperties.isEmpty() )
   {
     QgsPostgresConnPool::instance()->releaseConnection( mConn );
     mConn = nullptr;

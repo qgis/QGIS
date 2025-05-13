@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsvariantutils.h"
+#include "qgslogger.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -84,6 +85,13 @@ void QgsFileDownloader::startDownload()
       mReply = nam->post( request, mData );
       break;
     }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      QgsDebugError( QStringLiteral( "Unsupported HTTP method: %1" ).arg( qgsEnumValueToKey( mHttpMethod ) ) );
+      // not supported
+      break;
   }
 
   if ( !mAuthCfg.isEmpty() )

@@ -49,8 +49,8 @@ It can also be used to display a picture or a web page.
 
     explicit QgsExternalResourceWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsExternalResourceWidget creates a widget with a file widget and a document viewer
-Both part of the widget are optional.
+QgsExternalResourceWidget creates a widget with a file widget and a
+document viewer Both part of the widget are optional.
 
 .. seealso:: :py:class:`QgsFileWidget`
 %End
@@ -59,14 +59,16 @@ Both part of the widget are optional.
 %Docstring
 documentPath returns the path of the current document in the widget
 
-:param type: determines the type of the returned null variant if the document is not defined yet
+:param type: determines the type of the returned null variant if the
+             document is not defined yet
 %End
 
  QVariant documentPath( QVariant::Type type ) const /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 documentPath returns the path of the current document in the widget
 
-:param type: determines the type of the returned null variant if the document is not defined yet
+:param type: determines the type of the returned null variant if the
+             document is not defined yet
 
 .. deprecated:: 3.38
 
@@ -95,7 +97,8 @@ returns the type of content used in the document viewer
 %End
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 %Docstring
-setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
+setDocumentViewerContent defines the type of content to be shown. Widget
+will be adapted accordingly
 %End
 
     int documentViewerHeight() const;
@@ -141,20 +144,21 @@ which should be the base path.
 
     QString defaultRoot() const;
 %Docstring
-Configures the base path which should be used if the relativeStorage property
-is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
+Configures the base path which should be used if the relativeStorage
+property is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
 %End
 
     void setDefaultRoot( const QString &defaultRoot );
 %Docstring
-Configures the base path which should be used if the relativeStorage property
-is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
+Configures the base path which should be used if the relativeStorage
+property is set to :py:class:`QgsFileWidget`.RelativeDefaultPath.
 %End
 
     void setStorageType( const QString &storageType );
 %Docstring
-Set ``storageType`` storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry` or
-null QString if there is no storage defined, only file selection.
+Set ``storageType`` storage type unique identifier as defined in
+:py:class:`QgsExternalStorageRegistry` or an empty string if there is no
+storage defined, only file selection.
 
 .. seealso:: :py:func:`storageType`
 
@@ -163,8 +167,9 @@ null QString if there is no storage defined, only file selection.
 
     QString storageType() const;
 %Docstring
-Returns storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry`.
-Returns null QString if there is no storage defined, only file selection.
+Returns storage type unique identifier as defined in
+:py:class:`QgsExternalStorageRegistry`. Returns an empty string if there
+is no storage defined, only file selection.
 
 .. seealso:: :py:func:`setStorageType`
 
@@ -173,15 +178,16 @@ Returns null QString if there is no storage defined, only file selection.
 
     void setStorageAuthConfigId( const QString &authCfg );
 %Docstring
-Sets the authentication configuration ID to be used for the current external storage (if
-defined)
+Sets the authentication configuration ID to be used for the current
+external storage (if defined)
 
 .. versionadded:: 3.22
 %End
 
     QString storageAuthConfigId() const;
 %Docstring
-Returns the authentication configuration ID used for the current external storage (if defined)
+Returns the authentication configuration ID used for the current
+external storage (if defined)
 
 .. versionadded:: 3.22
 %End

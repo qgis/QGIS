@@ -268,10 +268,22 @@ void QgsCustomizationDialog::apply()
 
   QSettings settings;
   settings.setValue( QStringLiteral( "UI/Customization/enabled" ), mCustomizationEnabledCheckBox->isChecked() );
+
+  mSelectedWidgets.clear();
 }
 
 void QgsCustomizationDialog::cancel()
 {
+  if ( mSelectedWidgets.size() > 0 )
+  {
+    for ( int i = 0; i < mSelectedWidgets.size(); i++ )
+    {
+      if ( QWidget *widget = mSelectedWidgets.at( i ) )
+        widget->setStyleSheet( mSelectedWidgets.at( i )->property( "originalStylesheet" ).toString() );
+    }
+    mSelectedWidgets.clear();
+  }
+  reset();
   hide();
 }
 
@@ -513,9 +525,11 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     QString style;
     if ( !on )
     {
+      mSelectedWidgets.append( widget );
       style = QStringLiteral( "background-color: #FFCCCC;" );
+      widget->setProperty( "originalStylesheet", widget->styleSheet() );
     }
-    widget->setStyleSheet( style );
+    widget->setStyleSheet( !style.isEmpty() ? style : widget->property( "originalStylesheet" ).toString() );
   }
 
   return true;

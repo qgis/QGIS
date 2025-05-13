@@ -1,5 +1,6 @@
 # The following has been generated automatically from src/core/./3d/qgs3dsymbolregistry.h
 try:
+    Qgs3DSymbolAbstractMetadata.__abstract_methods__ = ['create']
     Qgs3DSymbolAbstractMetadata.__group__ = ['3d']
 except (NameError, AttributeError):
     pass

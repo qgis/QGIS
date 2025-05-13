@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgseventtracing.h"
 #include "qgspointcloudlayereditutils.h"
 #include "qgslazdecoder.h"
 #include "qgscopcpointcloudindex.h"
+#include <QMutex>
 
 #include <lazperf/readers.hpp>
 #include <lazperf/writers.hpp>
@@ -83,7 +85,7 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
   }
   else if ( attributeName == QLatin1String( "ScanAngleRank" ) )  // short
   {
-    qint16 newValueShort = static_cast<qint16>( newValue );
+    qint16 newValueShort = static_cast<qint16>( std::round( newValue / 0.006 ) );  // copc stores angle in 0.006deg increments
     memcpy( pointBuffer + 18, &newValueShort, sizeof( qint16 ) );
   }
   else if ( attributeName == QLatin1String( "PointSourceId" ) )  // unsigned short
@@ -126,24 +128,32 @@ static void updatePoint( char *pointBuffer, int pointFormat, const QString &attr
 
 QByteArray QgsPointCloudLayerEditUtils::updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, const QgsPointCloudNodeId &n, const QHash<int, double> &pointValues, std::optional<double> newValue )
 {
-  Q_ASSERT( copcIndex->mHierarchy.contains( n ) );
-  Q_ASSERT( copcIndex->mHierarchyNodePos.contains( n ) );
+  QgsEventTracing::ScopedEvent _trace( QStringLiteral( "PointCloud" ), QStringLiteral( "QgsPointCloudLayerEditUtils::updateChunkValues" ) );
 
-  int pointCount = copcIndex->mHierarchy[n];
+  int pointCount;
+
+  {
+    QMutexLocker locker( &copcIndex->mHierarchyMutex );
+
+    Q_ASSERT( copcIndex->mHierarchy.contains( n ) );
+    Q_ASSERT( copcIndex->mHierarchyNodePos.contains( n ) );
+
+    pointCount = copcIndex->mHierarchy[n];
+  }
 
   lazperf::header14 header = copcIndex->mLazInfo->header();
 
   lazperf::reader::chunk_decompressor decompressor( header.pointFormat(), header.ebCount(), chunkData.constData() );
   lazperf::writer::chunk_compressor compressor( header.pointFormat(), header.ebCount() );
 
-  std::unique_ptr<char []> decodedData( new char[ header.point_record_length ] );
+  std::unique_ptr<char[]> decodedData( new char[header.point_record_length] );
 
   // only PDRF 6/7/8 is allowed by COPC
   Q_ASSERT( header.pointFormat() == 6 || header.pointFormat() == 7 || header.pointFormat() == 8 );
 
   QString attributeName = attribute.name();
 
-  for ( int i = 0 ; i < pointCount; ++i )
+  for ( int i = 0; i < pointCount; ++i )
   {
     decompressor.decompress( decodedData.get() );
     char *buf = decodedData.get();
@@ -182,7 +192,7 @@ bool QgsPointCloudLayerEditUtils::isAttributeValueValid( const QgsPointCloudAttr
   if ( name == QLatin1String( "USERDATA" ) )
     return value >= 0 && value <= 255;
   if ( name == QLatin1String( "SCANANGLERANK" ) )
-    return value >= -30'000 && value <= 30'000;
+    return value >= -180 && value <= 180;
   if ( name == QLatin1String( "POINTSOURCEID" ) )
     return value >= 0 && value <= 65535;
   if ( name == QLatin1String( "GPSTIME" ) )

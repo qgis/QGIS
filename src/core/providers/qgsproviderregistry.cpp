@@ -695,11 +695,11 @@ Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &p
     const QgsCoordinateReferenceSystem &srs,
     bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> *options, QString &createdLayerName )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
   if ( meta )
-    return meta->createEmptyLayer( uri, fields, wkbType, srs, overwrite, oldToNewAttrIdxMap, errorMessage, options );
+    return meta->createEmptyLayer( uri, fields, wkbType, srs, overwrite, oldToNewAttrIdxMap, errorMessage, options, createdLayerName );
   else
   {
     errorMessage = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
@@ -710,11 +710,11 @@ Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &p
 QgsRasterDataProvider *QgsProviderRegistry::createRasterDataProvider( const QString &providerKey, const QString &uri, const QString &format,
     int nBands, Qgis::DataType type, int width, int height,
     double *geoTransform, const QgsCoordinateReferenceSystem &crs,
-    const QStringList &createOptions )
+    const QStringList &creationOptions )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
   if ( meta )
-    return meta->createRasterDataProvider( uri, format, nBands, type, width, height, geoTransform, crs, createOptions );
+    return meta->createRasterDataProvider( uri, format, nBands, type, width, height, geoTransform, crs, creationOptions );
   else
     return nullptr;
 }

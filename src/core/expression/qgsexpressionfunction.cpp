@@ -1548,6 +1548,14 @@ static QVariant fcnLength3D( const QVariantList &values, const QgsExpressionCont
   return totalLength;
 }
 
+
+static QVariant fcnRepeat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const qlonglong number = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  return string.repeated( std::max( static_cast< int >( number ), 0 ) );
+}
+
 static QVariant fcnReplace( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   if ( values.count() == 2 && values.at( 1 ).userType() == QMetaType::Type::QVariantMap )
@@ -2581,6 +2589,27 @@ static QVariant fcnSqliteFetchAndIncrement( const QVariantList &values, const Qg
   }
 
   return functionResult;
+}
+
+static QVariant fcnCrsToAuthid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsCoordinateReferenceSystem crs = QgsExpressionUtils::getCrsValue( values.at( 0 ), parent );
+  if ( !crs.isValid() )
+    return QVariant();
+  return crs.authid();
+}
+
+static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString definition = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QgsCoordinateReferenceSystem crs( definition );
+
+  if ( !crs.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to cordinate reference system" ).arg( definition ) );
+  }
+
+  return QVariant::fromValue( crs );
 }
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -3820,14 +3849,14 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
 
   auto polygon = std::make_unique< QgsPolygon >();
 
-  const QgsCurve *exteriorRing = qgsgeometry_cast< QgsCurve * >( outerRing.constGet() );
+  const QgsCurve *exteriorRing = qgsgeometry_cast< const QgsCurve * >( outerRing.constGet() );
   if ( !exteriorRing && outerRing.isMultipart() )
   {
     if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( outerRing.constGet() ) )
     {
       if ( collection->numGeometries() == 1 )
       {
-        exteriorRing = qgsgeometry_cast< QgsCurve * >( collection->geometryN( 0 ) );
+        exteriorRing = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
       }
     }
   }
@@ -3847,14 +3876,14 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
     if ( ringGeom.type() != Qgis::GeometryType::Line || ringGeom.isNull() )
       continue;
 
-    const QgsCurve *ring = qgsgeometry_cast< QgsCurve * >( ringGeom.constGet() );
+    const QgsCurve *ring = qgsgeometry_cast< const QgsCurve * >( ringGeom.constGet() );
     if ( !ring && ringGeom.isMultipart() )
     {
       if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( ringGeom.constGet() ) )
       {
         if ( collection->numGeometries() == 1 )
         {
-          ring = qgsgeometry_cast< QgsCurve * >( collection->geometryN( 0 ) );
+          ring = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
         }
       }
     }
@@ -4451,7 +4480,7 @@ static QVariant fcnGeomNumRings( const QVariantList &values, const QgsExpression
     //find CurvePolygons in collection
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
-      curvePolygon = qgsgeometry_cast< QgsCurvePolygon *>( collection->geometryN( i ) );
+      curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( collection->geometryN( i ) );
       if ( !curvePolygon )
         continue;
 
@@ -4723,6 +4752,8 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
   else
   {
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( geom.constGet() );
+    if ( !collection )
+      return QVariant();
 
     std::unique_ptr< QgsGeometryCollection > closed( collection->createEmptyWithSameType() );
 
@@ -5229,38 +5260,48 @@ static QVariant fcnDifference( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnReverse( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isNull() )
+  if ( QgsVariantUtils::isNull( values.at( 0 ) ) )
     return QVariant();
 
-  QVariant result;
-  if ( !fGeom.isMultipart() )
-  {
-    const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( fGeom.constGet() );
-    if ( !curve )
-      return QVariant();
+  // two variants, one for geometry, one for string
 
-    QgsCurve *reversed = curve->reversed();
-    result = reversed ? QVariant::fromValue( QgsGeometry( reversed ) ) : QVariant();
-  }
-  else
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent, true );
+  if ( !fGeom.isNull() )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( fGeom.constGet() );
-    std::unique_ptr< QgsGeometryCollection > reversed( collection->createEmptyWithSameType() );
-    for ( int i = 0; i < collection->numGeometries(); ++i )
+    QVariant result;
+    if ( !fGeom.isMultipart() )
     {
-      if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( collection->geometryN( i ) ) )
-      {
-        reversed->addGeometry( curve->reversed() );
-      }
-      else
-      {
-        reversed->addGeometry( collection->geometryN( i )->clone() );
-      }
+      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( fGeom.constGet() );
+      if ( !curve )
+        return QVariant();
+
+      QgsCurve *reversed = curve->reversed();
+      result = reversed ? QVariant::fromValue( QgsGeometry( reversed ) ) : QVariant();
     }
-    result = reversed ? QVariant::fromValue( QgsGeometry( std::move( reversed ) ) ) : QVariant();
+    else
+    {
+      const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( fGeom.constGet() );
+      std::unique_ptr< QgsGeometryCollection > reversed( collection->createEmptyWithSameType() );
+      for ( int i = 0; i < collection->numGeometries(); ++i )
+      {
+        if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve * >( collection->geometryN( i ) ) )
+        {
+          reversed->addGeometry( curve->reversed() );
+        }
+        else
+        {
+          reversed->addGeometry( collection->geometryN( i )->clone() );
+        }
+      }
+      result = reversed ? QVariant::fromValue( QgsGeometry( std::move( reversed ) ) ) : QVariant();
+    }
+    return result;
   }
-  return result;
+
+  //fall back to string variant
+  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  std::reverse( string.begin(), string.end() );
+  return string;
 }
 
 static QVariant fcnExteriorRing( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -5454,7 +5495,7 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
 {
   const QgsGeometry geom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const QgsGeometry geom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
-  QString sourceCrs = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  QgsCoordinateReferenceSystem sourceCrs = QgsExpressionUtils::getCrsValue( values.at( 2 ), parent );
   QString ellipsoid = QgsExpressionUtils::getStringValue( values.at( 3 ), parent );
 
   if ( geom1.isNull() || geom2.isNull() || geom1.type() != Qgis::GeometryType::Point || geom2.type() != Qgis::GeometryType::Point )
@@ -5476,9 +5517,9 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
   {
     tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
 
-    if ( sourceCrs.isEmpty() )
+    if ( !sourceCrs.isValid() )
     {
-      sourceCrs = context->variable( QStringLiteral( "layer_crs" ) ).toString();
+      sourceCrs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
     }
 
     if ( ellipsoid.isEmpty() )
@@ -5487,15 +5528,14 @@ static QVariant fcnBearing( const QVariantList &values, const QgsExpressionConte
     }
   }
 
-  const QgsCoordinateReferenceSystem sCrs = QgsCoordinateReferenceSystem( sourceCrs );
-  if ( !sCrs.isValid() )
+  if ( !sourceCrs.isValid() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `bearing` requires a valid source CRS." ) );
     return QVariant();
   }
 
   QgsDistanceArea da;
-  da.setSourceCrs( sCrs, tContext );
+  da.setSourceCrs( sourceCrs, tContext );
   if ( !da.setEllipsoid( ellipsoid ) )
   {
     parent->setEvalErrorString( QObject::tr( "Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID." ) );
@@ -6483,20 +6523,19 @@ static QVariant fcnGetFeatureId( const QVariantList &values, const QgsExpression
 static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  QString sAuthId = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  QString dAuthId = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  QgsCoordinateReferenceSystem sCrs = QgsExpressionUtils::getCrsValue( values.at( 1 ), parent );
+  QgsCoordinateReferenceSystem dCrs = QgsExpressionUtils::getCrsValue( values.at( 2 ), parent );
 
-  QgsCoordinateReferenceSystem s = QgsCoordinateReferenceSystem::fromOgcWmsCrs( sAuthId );
-  if ( ! s.isValid() )
+  if ( !sCrs.isValid() )
     return QVariant::fromValue( fGeom );
-  QgsCoordinateReferenceSystem d = QgsCoordinateReferenceSystem::fromOgcWmsCrs( dAuthId );
-  if ( ! d.isValid() )
+
+  if ( !dCrs.isValid() )
     return QVariant::fromValue( fGeom );
 
   QgsCoordinateTransformContext tContext;
   if ( context )
     tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
-  QgsCoordinateTransform t( s, d, tContext );
+  QgsCoordinateTransform t( sCrs, dCrs, tContext );
   try
   {
     if ( fGeom.transform( t ) == Qgis::GeometryOperationResult::Success )
@@ -8626,6 +8665,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "wordwrap" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "length" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "" ), fcnWordwrap, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "length" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "text" ), true, "" ), fcnLength, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "length3D" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnLength3D, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "repeat" ), { QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "number" ) )}, fcnRepeat, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "replace" ), -1, fcnReplace, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "regexp_replace" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "input_string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "regex" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "replacement" ) ), fcnRegexpReplace, QStringLiteral( "String" ) )
@@ -9035,7 +9075,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "point_on_surface" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnPointOnSurface, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "pole_of_inaccessibility" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnPoleOfInaccessibility, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "reverse" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnReverse, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "reverse" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnReverse, { QStringLiteral( "String" ), QStringLiteral( "GeometryGroup" ) } )
         << new QgsStaticExpressionFunction( QStringLiteral( "exterior_ring" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnExteriorRing, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "interior_ring_n" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "index" ) ),
@@ -9383,6 +9423,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           fcnSqliteFetchAndIncrement,
           QStringLiteral( "Record and Attributes" )
         );
+
+    // **CRS** functions
+    functions
+        << new QgsStaticExpressionFunction( QStringLiteral( "crs_to_authid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "crs" ) ), fcnCrsToAuthid, QStringLiteral( "CRS" ), QString(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "crs_from_text" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "definition" ) ), fcnCrsFromText, QStringLiteral( "CRS" ) );
+
 
     // **Fields and Values** functions
     QgsStaticExpressionFunction *representValueFunc = new QgsStaticExpressionFunction( QStringLiteral( "represent_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "attribute" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "field_name" ), true ), fcnRepresentValue, QStringLiteral( "Record and Attributes" ) );

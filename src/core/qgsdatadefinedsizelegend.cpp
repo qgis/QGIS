@@ -380,13 +380,13 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
   QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !elemSymbol.isNull() )
   {
-    ddsLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elemSymbol, context ) );
+    ddsLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elemSymbol, context ).release() );
   }
 
   const QDomElement lineSymbolElem = elem.firstChildElement( QStringLiteral( "lineSymbol" ) );
   if ( !lineSymbolElem.isNull() )
   {
-    ddsLegend->setLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineSymbolElem.firstChildElement(), context ) );
+    ddsLegend->setLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineSymbolElem.firstChildElement(), context ).release() );
   }
 
   QgsSizeScaleTransformer *transformer = nullptr;

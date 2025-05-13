@@ -187,7 +187,7 @@ bool QgsMeshMemoryDataProvider::splitDatasetSections( const QString &uri, QgsMes
     if ( success )
       success = checkDatasetValidity( dataset, datasetGroup.dataType() );
     if ( success )
-      datasetGroup.addDataset( dataset );
+      datasetGroup.addDataset( std::move( dataset ) );
   }
 
   return success;

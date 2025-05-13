@@ -59,7 +59,9 @@ Factory method to create a new renderer
     virtual int inputBand() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
  int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
@@ -143,7 +145,8 @@ Set the Z scaling factor of the result image.
 %Docstring
 Sets whether to render using a multi-directional hillshade algorithm.
 
-:param isMultiDirectional: set to ``True`` to use multi directional rendering
+:param isMultiDirectional: set to ``True`` to use multi directional
+                           rendering
 
 .. seealso:: :py:func:`multiDirectional`
 %End

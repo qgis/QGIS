@@ -20,12 +20,13 @@ A registry / canonical manager of data providers.
 This is a Singleton class that manages data provider access.
 
 Providers can be either loaded via libraries or native providers that
-are included in the core QGIS installation and accessed through function pointers.
+are included in the core QGIS installation and accessed through function
+pointers.
 
-Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
-QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
-For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
-ogr and postgres.
+Loaded providers may be restricted using QGIS_PROVIDER_FILE environment
+variable. QGIS_PROVIDER_FILE is regexp pattern applied to provider file
+name (not provider key). For example, if the variable is set to
+gdal|ogr|postgres it will load only providers gdal, ogr and postgres.
 %End
 
 %TypeHeaderCode
@@ -55,8 +56,8 @@ Means of accessing canonical single instance
 %Docstring
 Returns path for the library of the provider.
 
-If the provider uses direct provider function pointers instead of a library an empty string will
-be returned.
+If the provider uses direct provider function pointers instead of a
+library an empty string will be returned.
 
 .. deprecated:: 3.10
 
@@ -108,6 +109,7 @@ Returns the provider capabilities
 %End
 
 
+
     QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
@@ -135,12 +137,14 @@ Returns list of raster pyramid resampling methods
 
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );
 %Docstring
-Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+Breaks a provider data source URI into its component paths (e.g. file
+path, layer name).
 
 :param providerKey: identifier of the provider
 :param uri: uri string
 
-:return: map containing components. Standard components include "path", "layerName", "url".
+:return: map containing components. Standard components include "path",
+         "layerName", "url".
 
 .. note::
 
@@ -151,7 +155,8 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 
     QString encodeUri( const QString &providerKey, const QVariantMap &parts );
 %Docstring
-Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+Reassembles a provider data source URI from its component paths (e.g.
+file path, layer name).
 
 :param providerKey: identifier of the provider
 :param parts: parts as returned by decodeUri
@@ -169,10 +174,11 @@ Reassembles a provider data source URI from its component paths (e.g. file path,
 
     QString absoluteToRelativeUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
 %Docstring
-Converts absolute path(s) to relative path(s) in the given provider-specific URI. and
-returns modified URI according to the context object's configuration.
-This is commonly used when writing project files.
-If a provider does not work with paths, unmodified URI will be returned.
+Converts absolute path(s) to relative path(s) in the given
+provider-specific URI. and returns modified URI according to the context
+object's configuration. This is commonly used when writing project
+files. If a provider does not work with paths, unmodified URI will be
+returned.
 
 :return: modified URI with relative path(s)
 
@@ -188,10 +194,11 @@ If a provider does not work with paths, unmodified URI will be returned.
 
     QString relativeToAbsoluteUri( const QString &providerKey, const QString &uri, const QgsReadWriteContext &context ) const;
 %Docstring
-Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
-returns modified URI according to the context object's configuration.
-This is commonly used when reading project files.
-If a provider does not work with paths, unmodified URI will be returned.
+Converts relative path(s) to absolute path(s) in the given
+provider-specific URI. and returns modified URI according to the context
+object's configuration. This is commonly used when reading project
+files. If a provider does not work with paths, unmodified URI will be
+returned.
 
 :return: modified URI with absolute path(s)
 
@@ -207,9 +214,9 @@ If a provider does not work with paths, unmodified URI will be returned.
 
  QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
 %Docstring
-Returns a new widget for selecting layers from a provider.
-Either the ``parent`` widget must be set or the caller becomes
-responsible for deleting the returned widget.
+Returns a new widget for selecting layers from a provider. Either the
+``parent`` widget must be set or the caller becomes responsible for
+deleting the returned widget.
 
 .. deprecated:: 3.10
 
@@ -234,23 +241,27 @@ Returns list of data item providers of the provider
                     QStringList &descriptions,
                     QString &errCause );
 %Docstring
-Lists stored layer styles in the provider defined by ``providerKey`` and ``uri``
+Lists stored layer styles in the provider defined by ``providerKey`` and
+``uri``
 
-:return: -1 if not implemented by provider, otherwise number of styles stored
+:return: ``-1`` if not implemented by provider, otherwise number of
+         styles stored
 
 .. versionadded:: 3.10
 %End
 
     bool styleExists( const QString &providerKey, const QString &uri, const QString &styleId, QString &errorCause /Out/ );
 %Docstring
-Returns ``True`` if a layer style with the specified ``styleId`` exists in the provider defined by ``providerKey`` and ``uri``.
+Returns ``True`` if a layer style with the specified ``styleId`` exists
+in the provider defined by ``providerKey`` and ``uri``.
 
 :param providerKey: provider key
 :param uri: provider URI
 :param styleId: style ID to test for
 
 :return: - ``True`` if the layer style already exists
-         - errorCause: a descriptive error message, if an error occurs while checking if the style exists
+         - errorCause: a descriptive error message, if an error occurs
+           while checking if the style exists
 
 .. seealso:: :py:func:`getStyleById`
 
@@ -316,8 +327,9 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-:raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
-   specified ``uri``.
+:raises QgsNotSupportedException: if the provider does not support
+                                  saving layer metadata for the
+                                  specified ``uri``.
 
 .. versionadded:: 3.20
 %End
@@ -331,7 +343,8 @@ Creates database by the provider on the path
 
     QgsTransaction *createTransaction( const QString &providerKey, const QString &connString ) /Factory/;
 %Docstring
-Returns new instance of transaction. Ownership is transferred to the caller
+Returns new instance of transaction. Ownership is transferred to the
+caller
 
 .. versionadded:: 3.10
 %End
@@ -343,8 +356,9 @@ Gets pointer to provider function
 :param providerKey: identifier of the provider
 :param functionName: name of function
 
-:return: pointer to function or ``None`` on error. If the provider uses direct provider
-         function pointers instead of a library ``None`` will be returned.
+:return: pointer to function or ``None`` on error. If the provider uses
+         direct provider function pointers instead of a library ``None``
+         will be returned.
 
 .. deprecated:: 3.10
 
@@ -353,11 +367,12 @@ Gets pointer to provider function
 
  QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated="Since 3.10. Providers may not need to be loaded from a library."/;
 %Docstring
-Returns a new QLibrary for the specified ``providerKey``. Ownership of the returned
-object is transferred to the caller and the caller is responsible for deleting it.
+Returns a new QLibrary for the specified ``providerKey``. Ownership of
+the returned object is transferred to the caller and the caller is
+responsible for deleting it.
 
-If the provider uses direct provider function pointers instead of a library ``None`` will
-be returned.
+If the provider uses direct provider function pointers instead of a
+library ``None`` will be returned.
 
 .. deprecated:: 3.10
 
@@ -376,8 +391,8 @@ Returns metadata of the provider or ``None`` if not found
 
     QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
 %Docstring
-Returns a list of the provider keys for available providers which handle the specified
-layer ``type``.
+Returns a list of the provider keys for available providers which handle
+the specified layer ``type``.
 
 .. versionadded:: 3.26
 %End
@@ -385,7 +400,6 @@ layer ``type``.
     class ProviderCandidateDetails
 {
 %Docstring(signature="appended")
-
 Contains information pertaining to a candidate provider.
 
 .. versionadded:: 3.18
@@ -398,7 +412,8 @@ Contains information pertaining to a candidate provider.
 
         ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes );
 %Docstring
-Constructor for ProviderCandidateDetails, with the specified provider ``metadata`` and valid candidate ``layerTypes``.
+Constructor for ProviderCandidateDetails, with the specified provider
+``metadata`` and valid candidate ``layerTypes``.
 %End
 
         QgsProviderMetadata *metadata() const;
@@ -408,8 +423,8 @@ Returns the candidate provider metadata.
 
         QList<Qgis::LayerType> layerTypes() const;
 %Docstring
-Returns a list of map layer types which are valid options for opening the
-target using this candidate provider.
+Returns a list of map layer types which are valid options for opening
+the target using this candidate provider.
 %End
 
         SIP_PYOBJECT __repr__();
@@ -422,17 +437,19 @@ target using this candidate provider.
 
     QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
 %Docstring
-Returns the details for the preferred provider(s) for opening the specified ``uri``.
+Returns the details for the preferred provider(s) for opening the
+specified ``uri``.
 
-The preferred provider is determined by comparing the priority returned by
-:py:func:`QgsProviderMetadata.priorityForUri()` for all registered providers, and selecting
-the provider with the largest non-zero priority.
+The preferred provider is determined by comparing the priority returned
+by :py:func:`QgsProviderMetadata.priorityForUri()` for all registered
+providers, and selecting the provider with the largest non-zero
+priority.
 
-An empty list may be returned, which indicates that no providers are available which
-returned a non-zero priority for the specified URI.
+An empty list may be returned, which indicates that no providers are
+available which returned a non-zero priority for the specified URI.
 
-In the case that multiple providers returned the same priority for the URI then
-all of these providers will be returned.
+In the case that multiple providers returned the same priority for the
+URI then all of these providers will be returned.
 
 .. seealso:: :py:func:`shouldDeferUriForOtherProviders`
 
@@ -442,12 +459,13 @@ all of these providers will be returned.
     class UnusableUriDetails
 {
 %Docstring(signature="appended")
+Contains information about unusable URIs which aren't handled by any
+registered providers.
 
-Contains information about unusable URIs which aren't handled by any registered providers.
-
-For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
-This class can then be used to construct friendly warnings to users advising them why the las/laz
-files cannot be used on their QGIS build.
+For example, if a QGIS install is built without the PDAL library then
+las/laz files are unusable. This class can then be used to construct
+friendly warnings to users advising them why the las/laz files cannot be
+used on their QGIS build.
 
 .. versionadded:: 3.18.1
 %End
@@ -459,10 +477,11 @@ files cannot be used on their QGIS build.
 
         UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() );
 %Docstring
-Constructor for UnusableUriDetails for the given ``uri``, with the specified user-friendly, translated ``warning``.
+Constructor for UnusableUriDetails for the given ``uri``, with the
+specified user-friendly, translated ``warning``.
 
-The optional ``layerTypes`` argument can be used to specify layer types which are usually valid
-options for opening the URI.
+The optional ``layerTypes`` argument can be used to specify layer types
+which are usually valid options for opening the URI.
 %End
 
         QString uri;
@@ -484,13 +503,14 @@ options for opening the URI.
     class UnusableUriHandlerInterface
 {
 %Docstring(signature="appended")
+An interface used to handle unusable URIs which aren't handled by any
+registered providers, and construct user-friendly warnings as to why the
+URI is unusable.
 
-An interface used to handle unusable URIs which aren't handled by any registered providers, and construct
-user-friendly warnings as to why the URI is unusable.
-
-For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
-This class can then be used to construct friendly warnings to users advising them why the las/laz
-files cannot be used on their QGIS build.
+For example, if a QGIS install is built without the PDAL library then
+las/laz files are unusable. This class can then be used to construct
+friendly warnings to users advising them why the las/laz files cannot be
+used on their QGIS build.
 
 .. versionadded:: 3.18.1
 %End
@@ -504,7 +524,8 @@ files cannot be used on their QGIS build.
 
         virtual bool matchesUri( const QString &uri ) const = 0;
 %Docstring
-Returns ``True`` if the handle is an unusable URI handler for the specified ``uri``.
+Returns ``True`` if the handle is an unusable URI handler for the
+specified ``uri``.
 %End
 
         virtual UnusableUriDetails details( const QString &uri ) const = 0;
@@ -516,8 +537,9 @@ Returns the details for advising the user why the ``uri`` is not usable.
 
     bool registerUnusableUriHandler( UnusableUriHandlerInterface *handler /Transfer/ );
 %Docstring
-Registers an unusable URI ``handler``, used to handle unusable URIs which aren't
-handled by any registered providers, and construct user-friendly warnings as to why the URI is unusable.
+Registers an unusable URI ``handler``, used to handle unusable URIs
+which aren't handled by any registered providers, and construct
+user-friendly warnings as to why the URI is unusable.
 
 :return: ``True`` on success
 
@@ -530,14 +552,15 @@ handled by any registered providers, and construct user-friendly warnings as to 
 
     bool handleUnusableUri( const QString &uri, UnusableUriDetails &details /Out/ ) const;
 %Docstring
-Returns ``True`` if the specified ``uri`` can potentially be handled by QGIS, if additional
-dependencies or build-time requirements are present.
+Returns ``True`` if the specified ``uri`` can potentially be handled by
+QGIS, if additional dependencies or build-time requirements are present.
 
-This can be used to show user-friendly warning messages advising them why a particular
-``uri`` cannot be opened on their QGIS install. For example, if a QGIS install is built
-without the PDAL library then las/laz files are unusable, and this method can be used
-to retrieve a user-friendly warning as to why the las/laz files cannot be used on their
-QGIS build.
+This can be used to show user-friendly warning messages advising them
+why a particular ``uri`` cannot be opened on their QGIS install. For
+example, if a QGIS install is built without the PDAL library then
+las/laz files are unusable, and this method can be used to retrieve a
+user-friendly warning as to why the las/laz files cannot be used on
+their QGIS build.
 
 .. warning::
 
@@ -547,8 +570,10 @@ QGIS build.
 
 :param uri: URI to test
 
-:return: - ``True`` if the ``uri`` was matched to a registered QgsProviderRegistry.UnusableUriHandlerInterface.
-         - details: will be populated with details allowing construction of a user-friendly warning message
+:return: - ``True`` if the ``uri`` was matched to a registered
+           QgsProviderRegistry.UnusableUriHandlerInterface.
+         - details: will be populated with details allowing construction
+           of a user-friendly warning message
 
 .. seealso:: :py:func:`registerUnusableUriHandler`
 
@@ -557,17 +582,19 @@ QGIS build.
 
     bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
 %Docstring
-Returns ``True`` if the provider with matching ``providerKey`` should defer handling of
-the specified ``uri`` to another provider.
+Returns ``True`` if the provider with matching ``providerKey`` should
+defer handling of the specified ``uri`` to another provider.
 
-This method tests whether any providers are listed as the preferred provider for ``uri``
-(see :py:func:`~QgsProviderRegistry.preferredProvidersForUri`), and if so tests whether the specified provider is
-included in that preferred providers list. Returns ``True`` only if the specified provider
-is calculated as one of the preferred providers for the URI.
+This method tests whether any providers are listed as the preferred
+provider for ``uri`` (see
+:py:func:`~QgsProviderRegistry.preferredProvidersForUri`), and if so
+tests whether the specified provider is included in that preferred
+providers list. Returns ``True`` only if the specified provider is
+calculated as one of the preferred providers for the URI.
 
-In the case that there is no registered preferred provider for the URI then ``False`` will be
-returned, and the provider must use another metric to determine whether it should
-handle the URI.
+In the case that there is no registered preferred provider for the URI
+then ``False`` will be returned, and the provider must use another
+metric to determine whether it should handle the URI.
 
 .. seealso:: :py:func:`preferredProvidersForUri`
 
@@ -576,28 +603,38 @@ handle the URI.
 
     bool uriIsBlocklisted( const QString &uri ) const;
 %Docstring
-Returns ``True`` if the specified ``uri`` is known by any registered provider to be something which should
-be blocklisted from the QGIS interface, e.g. an internal detail only.
+Returns ``True`` if the specified ``uri`` is known by any registered
+provider to be something which should be blocklisted from the QGIS
+interface, e.g. an internal detail only.
 
-Specifically, this method can be utilized by the browser panel to hide noisy internal details
-for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
-or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
+Specifically, this method can be utilized by the browser panel to hide
+noisy internal details for URIs which are known to be sidecar files
+only, such as ".aux.xml" files or ".shp.xml" files, or the
+"ept-build.json" files which sit alongside Entwine "ept.json" point
+cloud sources.
 
-This method tests whether any of the registered providers return ``True`` for the their
-:py:func:`QgsProviderMetadata.uriIsBlocklisted()` implementation for the specified URI.
+This method tests whether any of the registered providers return
+``True`` for the their :py:func:`QgsProviderMetadata.uriIsBlocklisted()`
+implementation for the specified URI.
 
 .. versionadded:: 3.18
 %End
 
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = 0 ) const;
 %Docstring
-Queries the specified ``uri`` and returns a list of any valid sublayers found in the dataset which can be handled by any registered data provider.
+Queries the specified ``uri`` and returns a list of any valid sublayers
+found in the dataset which can be handled by any registered data
+provider.
 
-This method iteratively queries each registered data provider and returns the complete collated list of all valid sublayers found in the dataset which can be opened by the data providers.
+This method iteratively queries each registered data provider and
+returns the complete collated list of all valid sublayers found in the
+dataset which can be opened by the data providers.
 
-The optional ``flags`` argument can be used to control the behavior of the query.
+The optional ``flags`` argument can be used to control the behavior of
+the query.
 
-The optional ``feedback`` argument can be used to provide cancellation support for long-running queries.
+The optional ``feedback`` argument can be used to provide cancellation
+support for long-running queries.
 
 .. versionadded:: 3.22
 %End
@@ -668,8 +705,8 @@ supported by all data providers.
 %Docstring
 Returns a file filter string for supported mesh dataset files.
 
-Returns a string suitable for a QFileDialog of mesh datasets file formats
-supported by all data providers.
+Returns a string suitable for a QFileDialog of mesh datasets file
+formats supported by all data providers.
 
 .. seealso:: :py:func:`fileMeshFilters`
 
@@ -751,7 +788,6 @@ Returns a string containing the available protocol drivers
 
  void registerGuis( QWidget *widget ) /Deprecated="Since 3.10. Does nothing - use QgsGui.providerGuiRegistry()."/;
 %Docstring
-
 .. deprecated:: 3.10
 
    Does nothing - use :py:func:`QgsGui.providerGuiRegistry()`.
@@ -761,7 +797,8 @@ Returns a string containing the available protocol drivers
 %Docstring
 register a new vector data provider from its ``providerMetadata``
 
-:return: ``True`` on success, ``False`` if a provider with the same key was already registered
+:return: ``True`` on success, ``False`` if a provider with the same key
+         was already registered
 
 .. note::
 

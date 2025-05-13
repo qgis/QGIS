@@ -30,8 +30,7 @@ Constructor
 
     int responseCode() const;
 %Docstring
-
-:return: the return HTTP response code associated with this exception
+Returns the return HTTP response code associated with this exception.
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
@@ -39,8 +38,9 @@ Constructor
 Formats the exception for sending to client
 
 
+
 :return: - QByteArray The formatted response.
-         - responseFormat: QString to store the content type of the response format.
+         - responseFormat: the content type of the response format.
 
 The default implementation returns text/xml format.
 %End
@@ -52,8 +52,8 @@ class QgsOgcServiceException
 %Docstring(signature="appended")
 Exception base class for service exceptions.
 
-Note that this exception is associated with a default return code 200 which may be
-not appropriate in some situations.
+Note that this exception is associated with a default return code 200
+which may be not appropriate in some situations.
 %End
 
 %TypeHeaderCode

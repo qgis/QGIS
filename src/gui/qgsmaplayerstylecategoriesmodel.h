@@ -26,7 +26,7 @@
 
 /**
  * \ingroup gui
- * \brief Model for layer style categories
+ * \brief Model for layer style categories.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
 /**
 * \ingroup gui
 * \class QgsCategoryDisplayLabelDelegate
-* \brief A label delegate being able to display html encoded content
+* \brief A label delegate able to display HTML encoded content.
 * \since QGIS 3.40
 */
 class GUI_EXPORT QgsCategoryDisplayLabelDelegate : public QItemDelegate

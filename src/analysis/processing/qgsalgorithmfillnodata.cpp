@@ -51,10 +51,17 @@ void QgsFillNoDataAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band Number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FILL_VALUE" ), QObject::tr( "Fill value" ), Qgis::ProcessingNumberParameterType::Double, 1, false ) );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
 }
@@ -104,15 +111,20 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
     feedback->reportError( QObject::tr( "Input raster has no NoData values. There exist no NoData cells to fill." ), false );
 
   //prepare output dataset
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( mInterface->dataType( mBand ), mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
@@ -149,7 +161,10 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     if ( !filledRasterBlock->hasNoDataValue() )
     {
-      destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+      if ( !destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+      }
       continue;
     }
 
@@ -163,7 +178,10 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
           filledRasterBlock->setValue( row, column, mFillValue );
       }
     }
-    destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+    }
   }
   destinationRasterProvider->setEditable( false );
 

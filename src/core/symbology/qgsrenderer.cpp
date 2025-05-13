@@ -33,6 +33,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgssldexportcontext.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -66,13 +67,13 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) co
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   : mType( type )
 {
-  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
+  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   mPaintEffect->setEnabled( false );
 }
 
 QgsFeatureRenderer::~QgsFeatureRenderer()
 {
-  delete mPaintEffect;
+
 }
 
 const QgsPropertiesDefinition &QgsFeatureRenderer::propertyDefinitions()
@@ -232,7 +233,7 @@ void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rende
   mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
   rendererElem.appendChild( elemDataDefinedProperties );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
+  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
     mPaintEffect->saveProperties( doc, rendererElem );
 
   if ( !mOrderBy.isEmpty() )
@@ -356,6 +357,19 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
   return r;
 }
 
+void QgsFeatureRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsFeatureRenderer::toSld( QDomDocument &, QDomElement &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Vector %1 renderer cannot be converted to SLD" ).arg( type() ) );
+  return false;
+}
+
 QSet<QString> QgsFeatureRenderer::legendKeys() const
 {
   // build up a list of unique legend keys
@@ -378,7 +392,10 @@ QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styl
   userStyleElem.appendChild( nameElem );
 
   QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
-  toSld( doc, featureTypeStyleElem, props );
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+
+  toSld( doc, featureTypeStyleElem, context );
   userStyleElem.appendChild( featureTypeStyleElem );
 
   return userStyleElem;
@@ -555,13 +572,13 @@ QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &f
 
 QgsPaintEffect *QgsFeatureRenderer::paintEffect() const
 {
-  return mPaintEffect;
+  return mPaintEffect.get();
 }
 
 void QgsFeatureRenderer::setPaintEffect( QgsPaintEffect *effect )
 {
-  delete mPaintEffect;
-  mPaintEffect = effect;
+  mPaintEffect.reset( effect );
+
 }
 
 void QgsFeatureRenderer::setDataDefinedProperty( Property key, const QgsProperty &property )

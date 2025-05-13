@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsSldExportContext class holds SLD export options and other information related to SLD export of a QGIS layer style.
+ * \brief Holds SLD export options and other information related to SLD export of a QGIS layer style.
  *
  * \since QGIS 3.30
  */
@@ -77,11 +77,66 @@ class CORE_EXPORT QgsSldExportContext
      */
     void setExportFilePath( const QString &exportFilePath );
 
+    /**
+     * Returns a list of errors which occurred during the conversion.
+     *
+     * \see pushError()
+     * \see warnings()
+     * \since QGIS 3.44
+     */
+    QStringList errors() const { return mErrors; }
+
+    /**
+     * Pushes a \a error message generated during the conversion.
+     *
+     * \see errors()
+     * \see pushWarning()
+     * \since QGIS 3.44
+     */
+    void pushError( const QString &error ) { mErrors << error; }
+
+    /**
+     * Returns a list of warnings which occurred during the conversion.
+     *
+     * \see pushWarning()
+     * \see errors()
+     * \since QGIS 3.44
+     */
+    QStringList warnings() const { return mWarnings; }
+
+    /**
+     * Pushes a \a warning message generated during the conversion.
+     *
+     * \see warnings()
+     * \see pushError()
+     * \since QGIS 3.44
+     */
+    void pushWarning( const QString &warning ) { mWarnings << warning; }
+
+    /**
+     * Returns the open ended set of properties that can drive/inform the SLD encoding.
+     *
+     * \see setExtraProperties()
+     * \since QGIS 3.44
+     */
+    QVariantMap extraProperties() const;
+
+    /**
+     * Sets the open ended set of properties that can drive/inform the SLD encoding.
+     *
+     * \see extraProperties()
+     * \since QGIS 3.44
+     */
+    void setExtraProperties( const QVariantMap &properties );
+
   private:
 
     Qgis::SldExportOptions mExportOptions = Qgis::SldExportOption::NoOptions;
     Qgis::SldExportVendorExtension mVendorExtensions = Qgis::SldExportVendorExtension::NoVendorExtension;
     QString mExportFilePath;
+    QStringList mErrors;
+    QStringList mWarnings;
+    QVariantMap mExtraProperties;
 
 };
 

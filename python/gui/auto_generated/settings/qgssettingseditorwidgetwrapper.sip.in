@@ -14,7 +14,7 @@
 class QgsSettingsEditorWidgetWrapper : QObject
 {
 %Docstring(signature="appended")
-Base class for settings editor wrappers
+Base class for settings editor wrappers.
 
 .. versionadded:: 3.32
 %End
@@ -25,7 +25,8 @@ Base class for settings editor wrappers
   public:
     static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget );
 %Docstring
-Creates a wrapper from the definition stored in a ``widget`` created by :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
+Creates a wrapper from the definition stored in a ``widget`` created by
+:py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
 %End
 
     QgsSettingsEditorWidgetWrapper( QObject *parent = 0 );
@@ -46,7 +47,8 @@ This id of the type of settings it handles
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0 /Factory/;
 %Docstring
-Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
+Creates a new instance of the editor wrapper so it can be configured for
+a widget and a setting
 %End
 
     QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 ) /TransferBack/;
@@ -61,34 +63,35 @@ Configures the ``editor`` according the setting
 
     virtual bool setWidgetFromSetting() const = 0;
 %Docstring
-Sets the widget value from the setting value
-The wrapper must be configured before calling this medthod
+Sets the widget value from the setting value The wrapper must be
+configured before calling this medthod
 %End
 
     virtual bool setSettingFromWidget() const = 0;
 %Docstring
-Sets the setting value from the widget value
-The wrapper must be configured before calling this medthod
+Sets the setting value from the widget value The wrapper must be
+configured before calling this medthod
 %End
 
     virtual QVariant variantValueFromWidget() const = 0;
 %Docstring
-Returns the value from the widget as a variant
-The wrapper must be configured before calling this medthod
+Returns the value from the widget as a variant The wrapper must be
+configured before calling this medthod
 %End
 
     virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
 %Docstring
-Sets the ``value`` of the widget
-The wrapper must be configured before calling this medthod
+Sets the ``value`` of the widget The wrapper must be configured before
+calling this medthod
 %End
 
     void configureAutomaticUpdate( QDialog *dialog = 0 );
 %Docstring
 Configure the settings update behavior when a widget value is changed.
 
-If a ``dialog`` is provided, the setting will be updated when the dialog is accepted.
-If not, the setting will be updated directly at each widget value change.
+If a ``dialog`` is provided, the setting will be updated when the dialog
+is accepted. If not, the setting will be updated directly at each widget
+value change.
 
 .. note::
 
@@ -118,8 +121,8 @@ Configures an existing ``editor`` widget
 
     virtual void enableAutomaticUpdatePrivate() = 0;
 %Docstring
-Enables automatic update, which causes the setting to be updated immediately when the widget
-value is changed.
+Enables automatic update, which causes the setting to be updated
+immediately when the widget value is changed.
 
 .. versionadded:: 3.40
 %End

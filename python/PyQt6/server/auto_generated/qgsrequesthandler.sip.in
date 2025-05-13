@@ -14,8 +14,8 @@
 class QgsRequestHandler
 {
 %Docstring(signature="appended")
-This class is an interface hiding the details of reading input and writing
-output from/to a wms request mechanism.
+An interface hiding the details of reading input and writing output
+from/to a wms request mechanism.
 %End
 
 %TypeHeaderCode
@@ -26,7 +26,8 @@ output from/to a wms request mechanism.
 %Docstring
 Constructor
 
-Note that :py:class:`QgsServerRequest` and :py:class:`QgsServerResponse` MUST live in the same scope
+Note that :py:class:`QgsServerRequest` and :py:class:`QgsServerResponse`
+MUST live in the same scope
 %End
 
     void setServiceException( const QgsServerException &ex );
@@ -38,8 +39,7 @@ Allow plugins to return a :py:class:`QgsMapServiceException`
 %Docstring
 Send out HTTP headers and flush output buffer
 
-This method is intended only for streaming
-partial content.
+This method is intended only for streaming partial content.
 %End
 
     void setResponseHeader( const QString &name, const QString &value );
@@ -136,9 +136,11 @@ Returns the response http status code
 
     QMap<QString, QString> parameterMap() const;
 %Docstring
-Returns the parsed parameters as a key-value pair, to modify
-a parameter setParameter( const QString &key, const QString &value)
-and removeParameter(const QString &key) must be used
+Returns the parsed parameters as a key-value pair.
+
+.. seealso:: :py:func:`setParameter`
+
+.. seealso:: :py:func:`removeParameter`
 %End
 
     void setParameter( const QString &key, const QString &value );

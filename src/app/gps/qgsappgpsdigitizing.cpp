@@ -204,6 +204,15 @@ QgsAttributeMap QgsAppGpsDigitizing::derivedAttributes() const
   return attrMap;
 }
 
+void QgsAppGpsDigitizing::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
+{
+  QDomDocument doc;
+  const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-track-symbol" ), symbol, doc, QgsReadWriteContext() );
+  doc.appendChild( elem );
+  QgsAppGpsDigitizing::settingTrackLineSymbol->setValue( doc.toString( 0 ) );
+}
+
+
 void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )
 {
   if ( !mRubberBand )

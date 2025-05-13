@@ -113,6 +113,7 @@ bool QgsProjUtils::usesAngularUnit( const QString &projDef )
 bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
 {
   //ported from https://github.com/pramsey/postgis/blob/7ecf6839c57a838e2c8540001a3cd35b78a730db/liblwgeom/lwgeom_transform.c#L299
+  //and GDAL OGRSpatialReference::isNorthEastAxisOrder https://github.com/OSGeo/gdal/blob/release/3.10/ogr/ogrspatialreference.cpp#L419
   if ( !crs )
     return false;
 
@@ -129,19 +130,46 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
   const int axisCount = proj_cs_get_axis_count( context, pjCs.get() );
   if ( axisCount > 0 )
   {
-    const char *outDirection = nullptr;
-    // Read only first axis, see if it is degrees / north
+    const char *outDirection0 = nullptr;
+    const char *outDirection1 = nullptr;
+    const char *outName0 = nullptr;
+    const char *outName1 = nullptr;
 
     proj_cs_get_axis_info( context, pjCs.get(), 0,
+                           &outName0,
                            nullptr,
-                           nullptr,
-                           &outDirection,
+                           &outDirection0,
                            nullptr,
                            nullptr,
                            nullptr,
                            nullptr
                          );
-    return QString( outDirection ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0;
+
+    proj_cs_get_axis_info( context, pjCs.get(), 1,
+                           &outName1,
+                           nullptr,
+                           &outDirection1,
+                           nullptr,
+                           nullptr,
+                           nullptr,
+                           nullptr
+                         );
+
+    if ( QString( outDirection0 ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0 &&
+         QString( outDirection1 ).compare( QLatin1String( "east" ), Qt::CaseInsensitive ) == 0 )
+    {
+      return true;
+    }
+
+    // Handle polar projections with NE-order
+    if ( ( QString( outDirection0 ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0 &&
+           QString( outDirection1 ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0 ) ||
+         ( QString( outDirection0 ).compare( QLatin1String( "south" ), Qt::CaseInsensitive ) == 0 &&
+           QString( outDirection1 ).compare( QLatin1String( "south" ), Qt::CaseInsensitive ) == 0 ) )
+    {
+      return QString( outName0 ).startsWith( QLatin1String( "northing" ), Qt::CaseInsensitive ) &&
+             QString( outName1 ).startsWith( QLatin1String( "easting" ), Qt::CaseInsensitive ) ;
+    }
   }
   return false;
 }

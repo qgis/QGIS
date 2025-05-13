@@ -14,6 +14,7 @@ __date__ = "2018-03-18"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 from qgis.PyQt.QtCore import QVariant
+from qgis._core import QgsUnsetAttributeValue
 from qgis.core import (
     Qgis,
     QgsAbstractFeatureIterator,
@@ -34,6 +35,7 @@ from qgis.core import (
     QgsSpatialIndex,
     QgsVectorDataProvider,
     QgsVectorLayer,
+    QgsUnsetAttributeValue,
 )
 
 
@@ -421,6 +423,8 @@ class PyProvider(QgsVectorDataProvider):
             except KeyError:
                 continue
             for k, v in attrs.items():
+                if isinstance(v, QgsUnsetAttributeValue):
+                    continue
                 f.setAttribute(k, v)
         self.clearMinMaxCache()
         return True

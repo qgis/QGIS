@@ -4,6 +4,7 @@ try:
     QgsDataCollectionItem.iconDataCollection = staticmethod(QgsDataCollectionItem.iconDataCollection)
     QgsDataCollectionItem.openDirIcon = staticmethod(QgsDataCollectionItem.openDirIcon)
     QgsDataCollectionItem.homeDirIcon = staticmethod(QgsDataCollectionItem.homeDirIcon)
+    QgsDataCollectionItem.__overridden_methods__ = ['databaseConnection']
     QgsDataCollectionItem.__group__ = ['browser']
 except (NameError, AttributeError):
     pass

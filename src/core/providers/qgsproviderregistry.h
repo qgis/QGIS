@@ -158,7 +158,9 @@ class CORE_EXPORT QgsProviderRegistry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
+    SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName );
+
+    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates new instance of raster data provider
@@ -248,7 +250,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Lists stored layer styles in the provider defined by \a providerKey and \a uri
-     * \returns -1 if not implemented by provider, otherwise number of styles stored
+     * \returns ``-1`` if not implemented by provider, otherwise number of styles stored
      * \since QGIS 3.10
      */
     int listStyles( const QString &providerKey,

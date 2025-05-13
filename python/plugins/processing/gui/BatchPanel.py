@@ -88,6 +88,7 @@ from qgis.gui import (
     QgsFindFilesByPatternDialog,
     QgsExpressionBuilderDialog,
     QgsPanelWidget,
+    QgsAbstractProcessingParameterWidgetWrapper,
 )
 from qgis.utils import iface
 
@@ -221,16 +222,27 @@ class BatchPanelFillWidget(QToolButton):
         """
         context = dataobjects.createContext()
 
+        isBatchOutputSelection = False
+        temporaryOutput = False
+
         wrapper = self.panel.wrappers[0][self.column]
         if wrapper is None:
             # e.g. double clicking on a destination header
             widget = self.panel.tblParameters.cellWidget(1, self.column)
             value = widget.getValue()
+
+            if isinstance(widget, BatchOutputSelectionPanel):
+                temporaryOutput = widget.isTemporaryOutput()
+                isBatchOutputSelection = True
         else:
             value = wrapper.parameterValue()
 
         for row in range(1, self.panel.batchRowCount()):
             self.setRowValue(row, value, context)
+            if isBatchOutputSelection:
+                widget = self.panel.tblParameters.cellWidget(
+                    row + 1, self.column
+                ).setTemporaryOutput(temporaryOutput)
 
     def setRowValue(self, row, value, context):
         """
@@ -846,10 +858,21 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
             widget = wrapper.createWrappedWidget(context)
+            wrapper.widgetValueHasChanged.connect(self.parameterChanged)
         else:
             widget = wrapper.widget
 
         self.tblParameters.setCellWidget(row, column, widget)
+
+    def rowForWrapper(self, wrapper) -> Optional[int]:
+        """
+        Returns the row number corresponding to the specified wrapper
+        """
+        for row, row_wrappers in enumerate(self.wrappers):
+            for col, cell_wrapper in enumerate(row_wrappers):
+                if cell_wrapper == wrapper:
+                    return row
+        return None
 
     def addFillRow(self):
         self.tblParameters.setRowCount(1)
@@ -935,6 +958,44 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     self.parameter_to_column[param.name()], not checked
                 )
 
+    def parameterChanged(self):
+        """
+        Called when a parameter value is changed in the panel
+        """
+        wrapper: QgsAbstractProcessingParameterWidgetWrapper = self.sender()
+        row_number = self.rowForWrapper(wrapper)
+        if row_number is None:
+            return
+
+        context = dataobjects.createContext()
+
+        row_values, ok = self.parametersForRow(
+            row_number, context, QgsProject.instance(), False
+        )
+        if not ok:
+            return
+
+        default_values = self.alg.autogenerateParameterValues(
+            row_values, wrapper.parameterDefinition().name(), Qgis.ProcessingMode.Batch
+        )
+        for param in self.alg.parameterDefinitions():
+            if param.isDestination():
+                continue
+            if param.name() in default_values:
+                column = self.parameter_to_column[param.name()]
+                value = default_values[param.name()]
+                wrapper = self.wrappers[row_number][column]
+                wrapper.setParameterValue(value, context)
+
+        for out in self.alg.destinationParameterDefinitions():
+            if out.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
+                continue
+            if out.name() in default_values:
+                column = self.parameter_to_column[out.name()]
+                value = default_values[out.name()]
+                widget = self.tblParameters.cellWidget(row_number + 1, column)
+                widget.setValue(value)
+
     def valueForParameter(self, row, parameter_name):
         """
         Returns the current value for a parameter in a row
@@ -981,7 +1042,10 @@ class BatchPanel(QgsPanelWidget, WIDGET):
 
             count_visible_outputs += 1
             widget = self.tblParameters.cellWidget(row + 1, col)
-            text = widget.getValue()
+            if widget.isTemporaryOutput():
+                text = QgsProcessing.TEMPORARY_OUTPUT
+            else:
+                text = widget.getValue()
             if warnOnInvalid:
                 if not out.checkValueIsAcceptable(text):
                     msg = self.tr(
@@ -1007,10 +1071,18 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     QgsProcessingParameterFeatureSink,
                 ),
             ):
-                # load rasters and sinks on completion
-                parameters[out.name()] = QgsProcessingOutputLayerDefinition(
+                # create output layer definition
+                processing_output_layer_definition = QgsProcessingOutputLayerDefinition(
                     text, destinationProject
                 )
+                # if widget is temporary output set output layer definition name
+                if widget.isTemporaryOutput():
+                    processing_output_layer_definition.destinationName = (
+                        widget.getValue()
+                    )
+
+                # load rasters and sinks on completion
+                parameters[out.name()] = processing_output_layer_definition
             else:
                 parameters[out.name()] = text
 

@@ -17,5 +17,6 @@ QgsScrollBarHighlight.Priority.__doc__ = """Priority, which dictates how overlap
 # --
 try:
     QgsScrollBarHighlight.__attribute_docs__ = {'category': 'Category ID', 'position': 'Position in scroll bar', 'color': 'Highlight color', 'priority': 'Priority, which dictates how overlapping highlights are rendered'}
+    QgsScrollBarHighlight.__annotations__ = {'category': int, 'position': int, 'color': 'QColor', 'priority': 'QgsScrollBarHighlight.Priority'}
 except (NameError, AttributeError):
     pass

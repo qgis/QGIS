@@ -86,6 +86,7 @@
 #include "qgsprofilerequest.h"
 #include "qgssymbollayerutils.h"
 #include "qgsthreadingutils.h"
+#include "qgssldexportcontext.h"
 
 #include <QDir>
 #include <QFile>
@@ -2245,6 +2246,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     {
       mAttributeDuplicatePolicy[ field.name() ] = field.duplicatePolicy();
     }
+    if ( !mAttributeMergePolicy.contains( field.name() ) )
+    {
+      mAttributeMergePolicy[ field.name() ] = field.mergePolicy();
+    }
   }
 
   if ( profile )
@@ -2388,9 +2393,6 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     asElem.setAttribute( QStringLiteral( "key" ), pkField );
   }
   layer_node.appendChild( asElem );
-
-  // save QGIS Server properties (WMS Dimension, metadata URLS...)
-  mServerProperties->writeXml( layer_node, document );
 
   // renderer specific settings
   QString errorMsg;
@@ -2588,6 +2590,19 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
     }
 
+    const QDomNode mergePoliciesNode = layerNode.namedItem( QStringLiteral( "mergePolicies" ) );
+    if ( !mergePoliciesNode.isNull() )
+    {
+      const QDomNodeList mergePolicyNodeList = mergePoliciesNode.toElement().elementsByTagName( QStringLiteral( "policy" ) );
+      for ( int i = 0; i < mergePolicyNodeList.size(); ++i )
+      {
+        const QDomElement mergePolicyElem = mergePolicyNodeList.at( i ).toElement();
+        const QString field = mergePolicyElem.attribute( QStringLiteral( "field" ) );
+        const Qgis::FieldDomainMergePolicy policy = qgsEnumKeyToValue( mergePolicyElem.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainMergePolicy::UnsetField );
+        mAttributeMergePolicy.insert( field, policy );
+      }
+    }
+
     // default expressions
     mDefaultExpressionMap.clear();
     QDomNode defaultsNode = layerNode.namedItem( QStringLiteral( "defaults" ) );
@@ -2674,16 +2689,33 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       if ( categories.testFlag( Fields ) )
         mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), Qgis::FieldConfigurationFlag::NoFlag );
 
-      // Load editor widget configuration
+      // load editor widget configuration
       if ( categories.testFlag( Forms ) )
       {
         const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
         const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
         const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
         QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-        if ( widgetType == QLatin1String( "ValueRelation" ) )
+        // translate widget configuration strings
+        if ( widgetType == QStringLiteral( "ValueRelation" ) )
         {
           optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
+        }
+        if ( widgetType == QStringLiteral( "ValueMap" ) )
+        {
+          if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QList<QVariant>>() )
+          {
+            QList<QVariant> translatedValueList;
+            const QList<QVariant> valueList = optionsMap[ QStringLiteral( "map" )].toList();
+            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            {
+              QMap<QString, QVariant> translatedValueMap;
+              QString translatedKey = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), valueList[i].toMap().constBegin().key() );
+              translatedValueMap.insert( translatedKey, valueList[i].toMap().constBegin().value() );
+              translatedValueList.append( translatedValueMap );
+            }
+            optionsMap.insert( QStringLiteral( "map" ), translatedValueList );
+          }
         }
         QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
         mFieldWidgetSetups[fieldName] = setup;
@@ -3099,27 +3131,58 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     //split policies
     {
       QDomElement splitPoliciesElement = doc.createElement( QStringLiteral( "splitPolicies" ) );
+      bool hasNonDefaultSplitPolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
-        QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-        splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-        splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
-        splitPoliciesElement.appendChild( splitPolicyElem );
+        if ( field.splitPolicy() != Qgis::FieldDomainSplitPolicy::Duplicate )
+        {
+          QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+          splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+          splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+          splitPoliciesElement.appendChild( splitPolicyElem );
+          hasNonDefaultSplitPolicies = true;
+        }
       }
-      node.appendChild( splitPoliciesElement );
+      if ( hasNonDefaultSplitPolicies )
+        node.appendChild( splitPoliciesElement );
     }
 
     //duplicate policies
     {
       QDomElement duplicatePoliciesElement = doc.createElement( QStringLiteral( "duplicatePolicies" ) );
+      bool hasNonDefaultDuplicatePolicies = false;
       for ( const QgsField &field : std::as_const( mFields ) )
       {
-        QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-        duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-        duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
-        duplicatePoliciesElement.appendChild( duplicatePolicyElem );
+        if ( field.duplicatePolicy() != Qgis::FieldDuplicatePolicy::Duplicate )
+        {
+          QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+          duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+          duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+          duplicatePoliciesElement.appendChild( duplicatePolicyElem );
+          hasNonDefaultDuplicatePolicies = true;
+        }
       }
-      node.appendChild( duplicatePoliciesElement );
+      if ( hasNonDefaultDuplicatePolicies )
+        node.appendChild( duplicatePoliciesElement );
+    }
+
+    //merge policies
+    {
+      QDomElement mergePoliciesElement = doc.createElement( QStringLiteral( "mergePolicies" ) );
+      bool hasNonDefaultMergePolicies = false;
+      for ( const QgsField &field : std::as_const( mFields ) )
+      {
+        if ( field.mergePolicy() != Qgis::FieldDomainMergePolicy::UnsetField )
+        {
+          QDomElement mergePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
+          mergePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
+          mergePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.mergePolicy() ) );
+          mergePoliciesElement.appendChild( mergePolicyElem );
+          hasNonDefaultMergePolicies = true;
+        }
+      }
+      if ( hasNonDefaultMergePolicies )
+        node.appendChild( mergePoliciesElement );
     }
 
     //default expressions
@@ -3338,17 +3401,25 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
   return true;
 }
 
-bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props ) const
+bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &, const QVariantMap &props ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSld( node, doc, context );
+  return true;
+}
+
+bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  Q_UNUSED( errorMessage )
-
-  QVariantMap localProps = QVariantMap( props );
+  QVariantMap localProps = context.extraProperties();
   if ( hasScaleBasedVisibility() )
   {
     QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
   }
+  context.setExtraProperties( localProps );
 
   if ( isSpatial() )
   {
@@ -3368,15 +3439,14 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
     userStyleElem.appendChild( featureTypeStyleElem );
 
-    mRenderer->toSld( doc, featureTypeStyleElem, localProps );
+    mRenderer->toSld( doc, featureTypeStyleElem, context );
     if ( labelsEnabled() )
     {
-      mLabeling->toSld( featureTypeStyleElem, localProps );
+      mLabeling->toSld( featureTypeStyleElem, context );
     }
   }
   return true;
 }
-
 
 bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool skipDefaultValue )
 {
@@ -3641,6 +3711,20 @@ void QgsVectorLayer::setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePol
   emit layerModified(); // TODO[MD]: should have a different signal?
 }
 
+void QgsVectorLayer::setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return;
+
+  const QString name = fields().at( index ).name();
+
+  mAttributeMergePolicy.insert( name, policy );
+  mFields[ index ].setMergePolicy( policy );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified(); // TODO[MD]: should have a different signal?
+}
 
 QSet<QString> QgsVectorLayer::excludeAttributesWms() const
 {
@@ -4521,6 +4605,15 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[ index ].setDuplicatePolicy( duplicatePolicyIt.value() );
+  }
+
+  for ( auto mergePolicyIt = mAttributeMergePolicy.constBegin(); mergePolicyIt != mAttributeMergePolicy.constEnd(); ++mergePolicyIt )
+  {
+    int index = mFields.lookupField( mergePolicyIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[ index ].setMergePolicy( mergePolicyIt.value() );
   }
 
   // Update configuration flags

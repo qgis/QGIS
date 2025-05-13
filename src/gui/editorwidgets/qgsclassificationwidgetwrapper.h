@@ -26,9 +26,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsClassificationWidgetWrapper
+ * \brief A widget wrapper for classification widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT

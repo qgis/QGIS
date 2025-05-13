@@ -55,12 +55,12 @@ CopcSupport::CopcSupport(const BaseInfo& b) : m_b(b),
     m_header.point_format_id = m_b.pointFormatId;
     m_header.point_format_id |= (1 << 7);    // Bit for laszip
     m_header.point_record_length = lazperf::baseCount(m_b.pointFormatId) + extraByteSize();
-    m_header.scale.x = b.scale[0];
-    m_header.scale.y = b.scale[1];
-    m_header.scale.z = b.scale[2];
-    m_header.offset.x = b.offset[0];
-    m_header.offset.y = b.offset[1];
-    m_header.offset.z = b.offset[2];
+    m_header.scale.x = b.xform.scale.x;
+    m_header.scale.y = b.xform.scale.y;
+    m_header.scale.z = b.xform.scale.z;
+    m_header.offset.x = b.xform.offset.x;
+    m_header.offset.y = b.xform.offset.y;
+    m_header.offset.z = b.xform.offset.z;
     m_header.vlr_count = 3;
 
     //IMPORTANT: We have to calculate the point offset here so that we can start writing

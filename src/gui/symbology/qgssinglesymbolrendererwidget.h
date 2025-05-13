@@ -27,6 +27,7 @@ class QMenu;
 /**
  * \ingroup gui
  * \class QgsSingleSymbolRendererWidget
+ * \brief A widget for configuring QgsSingleSymbolRenderer.
  */
 class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 {

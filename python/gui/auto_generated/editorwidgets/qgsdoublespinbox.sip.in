@@ -21,8 +21,12 @@
 class QgsDoubleSpinBox : QDoubleSpinBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsSpinBox` is a spin box with a clear button that will set the value to the defined clear value.
-The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
+The :py:class:`QgsSpinBox` is a spin box with a clear button that will
+set the value to the defined clear value.
+
+The clear value can be either the minimum or the maiximum value of the
+spin box or a custom value.
+
 This value can then be handled by a special value text.
 %End
 
@@ -55,7 +59,8 @@ Constructor for QgsDoubleSpinBox.
 Sets whether the widget will show a clear button. The clear button
 allows users to reset the widget to a default or empty state.
 
-:param showClearButton: set to ``True`` to show the clear button, or ``False`` to hide it
+:param showClearButton: set to ``True`` to show the clear button, or
+                        ``False`` to hide it
 
 .. seealso:: :py:func:`showClearButton`
 %End
@@ -77,8 +82,8 @@ evaluated and then discarded.
 
     bool expressionsEnabled() const;
 %Docstring
-Returns whether the widget will allow entry of simple expressions, which are
-evaluated and then discarded.
+Returns whether the widget will allow entry of simple expressions, which
+are evaluated and then discarded.
 
 :return: ``True`` if spin box allows expression entry
 %End
@@ -91,33 +96,39 @@ Sets the current value to the value defined by the clear value.
 
     void setClearValue( double customValue, const QString &clearValueText = QString() );
 %Docstring
-Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
+Defines the clear value as a custom value and will automatically set the
+clear value mode to CustomValue.
 
 :param customValue: defines the numerical value used as the clear value
-:param clearValueText: is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
+:param clearValueText: is the text displayed when the spin box is at the
+                       clear value. If not specified, no special value
+                       text is used.
 
 .. seealso:: :py:func:`clearValue`
 %End
 
     void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 %Docstring
-Defines if the clear value should be the minimum or maximum values of the widget or a custom value.
+Defines if the clear value should be the minimum or maximum values of
+the widget or a custom value.
 
 :param mode: mode to user for clear value
-:param clearValueText: is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
+:param clearValueText: is the text displayed when the spin box is at the
+                       clear value. If not specified, no special value
+                       text is used.
 %End
 
     double clearValue() const;
 %Docstring
-Returns the value used when :py:func:`~QgsDoubleSpinBox.clear` is called.
+Returns the value used when :py:func:`~QgsDoubleSpinBox.clear` is
+called.
 
 .. seealso:: :py:func:`setClearValue`
 %End
 
     bool isCleared() const;
 %Docstring
-
-:return: ``True`` if the value is equal to the clear value.
+Returns ``True`` if the value is equal to the clear value.
 
 .. seealso:: :py:func:`clearValue`
 
@@ -128,14 +139,15 @@ Returns the value used when :py:func:`~QgsDoubleSpinBox.clear` is called.
 %Docstring
 Set alignment in the embedded line edit widget
 
-:param alignment:
+:param alignment: 
 %End
 
     void setSpecialValueText( const QString &txt );
 %Docstring
-Set the special-value text to be ``txt``
-If set, the spin box will display this text instead of a numeric value whenever the current value
-is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate that this choice has a special (default) meaning.
+Set the special-value text to be ``txt`` If set, the spin box will
+display this text instead of a numeric value whenever the current value
+is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to
+indicate that this choice has a special (default) meaning.
 %End
 
     virtual double valueFromText( const QString &text ) const;
@@ -149,8 +161,9 @@ is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate tha
 
     int editingTimeoutInterval() const;
 %Docstring
-Returns the timeout (in milliseconds) threshold for the :py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted
-after an edit.
+Returns the timeout (in milliseconds) threshold for the
+:py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted after
+an edit.
 
 .. seealso:: :py:func:`setEditingTimeoutInterval`
 
@@ -161,8 +174,9 @@ after an edit.
 
     void setEditingTimeoutInterval( int timeout );
 %Docstring
-Sets the ``timeout`` (in milliseconds) threshold for the :py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted
-after an edit.
+Sets the ``timeout`` (in milliseconds) threshold for the
+:py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted after
+an edit.
 
 .. seealso:: :py:func:`editingTimeoutInterval`
 
@@ -194,8 +208,9 @@ Emitted when either:
 1. 1 second has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
 2. or, immediately after the widget has lost focus after its value was changed.
 
-This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
-while the user in the middle of setting the value.
+This signal can be used to respond semi-instantly to changes in the spin
+box, without responding too quickly while the user in the middle of
+setting the value.
 
 .. seealso:: :py:func:`editingTimeoutInterval`
 

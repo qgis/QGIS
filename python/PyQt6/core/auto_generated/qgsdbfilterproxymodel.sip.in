@@ -13,8 +13,8 @@
 class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated="Since 3.24. "/
 {
 %Docstring(signature="appended")
-A class that implements a custom filter and can be used
-as a proxy for :py:class:`QgsDbTableModel`
+Implements a custom filter and can be used as a proxy for
+:py:class:`QgsDbTableModel`.
 
 .. deprecated:: 3.24
 %End

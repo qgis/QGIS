@@ -23,7 +23,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * \brief Internal feature iterator to be implemented within data providers
+ * \brief Internal feature iterator to be implemented within data providers.
  */
 class CORE_EXPORT QgsAbstractFeatureIterator
 {
@@ -284,7 +284,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 
 /**
  * \ingroup core
- * \brief Wrapper for iterator of features from vector data provider or vector layer
+ * \brief Wrapper for iterator of features from vector data provider or vector layer.
  */
 class CORE_EXPORT QgsFeatureIterator
 {

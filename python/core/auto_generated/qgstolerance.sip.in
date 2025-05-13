@@ -13,7 +13,7 @@
 class QgsTolerance
 {
 %Docstring(signature="appended")
-This is the class is providing tolerance value in map unit values.
+Provides calculations for tolerance values in map units.
 %End
 
 %TypeHeaderCode
@@ -26,24 +26,24 @@ This is the class is providing tolerance value in map unit values.
 
     static double vertexSearchRadius( const QgsMapSettings &mapSettings );
 %Docstring
-Static function to get vertex tolerance value.
-The value is read from settings and transformed if necessary.
+Static function to get vertex tolerance value. The value is read from
+settings and transformed if necessary.
 
 :return: value of vertex tolerance in map units (not layer units)
 %End
 
     static double vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
 %Docstring
-Static function to get vertex tolerance value for a layer.
-The value is read from settings and transformed if necessary.
+Static function to get vertex tolerance value for a layer. The value is
+read from settings and transformed if necessary.
 
 :return: value of vertex tolerance in layer units
 %End
 
     static double defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
 %Docstring
-Static function to get default tolerance value for a layer.
-The value is read from settings and transformed if necessary.
+Static function to get default tolerance value for a layer. The value is
+read from settings and transformed if necessary.
 
 :return: value of default tolerance in layer units
 %End

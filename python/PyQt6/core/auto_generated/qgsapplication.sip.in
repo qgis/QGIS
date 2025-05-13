@@ -15,14 +15,15 @@ class QgsApplication : QApplication
 Extends QApplication to provide access to QGIS specific resources such
 as theme paths, database paths etc.
 
-This is a subclass of QApplication and should be instantiated in place of
-QApplication. Most methods are static in keeping with the design of QApplication.
+This is a subclass of QApplication and should be instantiated in place
+of QApplication. Most methods are static in keeping with the design of
+QApplication.
 
-This class hides platform-specific path information and provides
-a portable way of referencing specific files and directories.
-Ideally, hard-coded paths should appear only here and not in other modules
-so that platform-conditional code is minimized and paths are easier
-to change due to centralization.
+This class hides platform-specific path information and provides a
+portable way of referencing specific files and directories. Ideally,
+hard-coded paths should appear only here and not in other modules so
+that platform-conditional code is minimized and paths are easier to
+change due to centralization.
 %End
 
 %TypeHeaderCode
@@ -90,9 +91,13 @@ to change due to centralization.
 Constructor for QgsApplication.
 
 :param argv: command line arguments
-:param GUIenabled: set to ``True`` if a GUI application is required, or ``False`` for a console only application
-:param profileFolder: optional string representing the profile to load at startup
-:param platformName: the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+:param GUIenabled: set to ``True`` if a GUI application is required, or
+                   ``False`` for a console only application
+:param profileFolder: optional string representing the profile to load
+                      at startup
+:param platformName: the QGIS platform name, e.g., "desktop", "server",
+                     "qgis_process" or "external" (for external CLI
+                     scripts)
 %End
 %MethodCode
     // The Python interface is a list of argument strings that is modified.
@@ -142,11 +147,11 @@ Sets the FileOpen event receiver
 
     static void setThemeName( const QString &themeName );
 %Docstring
-Set the active theme to the specified theme.
-The theme name should be a single word e.g. 'default','classic'.
-The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
-but plugin writers etc can use :py:func:`~QgsApplication.themeName` as a basis for searching
-for resources in their own datastores e.g. a Qt4 resource bundle.
+Set the active theme to the specified theme. The theme name should be a
+single word e.g. 'default','classic'. The theme search path usually will
+be pkgDataPath + "/themes/" + themName + "/" but plugin writers etc can
+use :py:func:`~QgsApplication.themeName` as a basis for searching for
+resources in their own datastores e.g. a Qt4 resource bundle.
 
 .. note::
 
@@ -164,18 +169,19 @@ Calculate the application pkg path
 
     static QString themeName();
 %Docstring
-Set the active theme to the specified theme.
-The theme name should be a single word e.g. 'default','classic'.
-The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
-but plugin writers etc can use this method as a basis for searching
-for resources in their own datastores e.g. a Qt4 resource bundle.
+Set the active theme to the specified theme. The theme name should be a
+single word e.g. 'default','classic'. The theme search path usually will
+be pkgDataPath + "/themes/" + themName + "/" but plugin writers etc can
+use this method as a basis for searching for resources in their own
+datastores e.g. a Qt4 resource bundle.
 %End
 
     static void setUITheme( const QString &themeName );
 %Docstring
-Set the current UI theme used to style the interface.  Use :py:func:`~QgsApplication.uiThemes` to
-find valid themes to use. Variables found in variables.qss will be added to the stylesheet
-on load.
+Set the current UI theme used to style the interface. Use
+:py:func:`~QgsApplication.uiThemes` to find valid themes to use.
+Variables found in variables.qss will be added to the stylesheet on
+load.
 
 :param themeName: The name of the theme.
 
@@ -186,10 +192,11 @@ on load.
 
     static QHash<QString, QString> uiThemes();
 %Docstring
-All themes found in ~/.qgis3/themes folder.
-The path is to the root folder for the theme
+All themes found in ~/.qgis3/themes folder. The path is to the root
+folder for the theme
 
-:return: A hash of theme name and theme path. Valid theme folders contain style.qss
+:return: A hash of theme name and theme path. Valid theme folders
+         contain style.qss
 
 .. note::
 
@@ -203,16 +210,14 @@ Returns the path to the authors file.
 
     static QString contributorsFilePath();
 %Docstring
-Returns the path to the contributors file.
-Contributors are people who have submitted patches
-but don't have commit access.
+Returns the path to the contributors file. Contributors are people who
+have submitted patches but don't have commit access.
 %End
 
     static QString developersMapFilePath();
 %Docstring
-Returns the path to the developers map file.
-The developers map was created by using leaflet framework,
-it shows the contributors.json file.
+Returns the path to the developers map file. The developers map was
+created by using leaflet framework, it shows the contributors.json file.
 %End
 
     static QString sponsorsFilePath();
@@ -276,10 +281,12 @@ Returns the path to the user authentication database file: qgis-auth.db.
 
     static QString qgisAuthDatabaseUri();
 %Docstring
-Returns the URI to the user authentication database.
-The URI is be in the format: \verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
-where DATABASE is just the path to the file for SQLite databases. If DRIVER is omitted, PSQLITE is assumed.
-Optional SCHEMA can be specified as a query parameter.
+Returns the URI to the user authentication database. The URI is be in
+the format:
+\verbatim<DRIVER>://<USER>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>[?OPTIONS]\endverbatim
+where DATABASE is just the path to the file for SQLite databases. If
+DRIVER is omitted, PSQLITE is assumed. Optional SCHEMA can be specified
+as a query parameter.
 
 .. versionadded:: 3.40
 %End
@@ -301,7 +308,8 @@ Returns the path to the srs.db file.
 
     static void setSvgPaths( const QStringList &svgPaths );
 %Docstring
-Sets the paths to svg directories and invalidates the svg path list cache.
+Sets the paths to svg directories and invalidates the svg path list
+cache.
 
 .. versionadded:: 3.18
 %End
@@ -348,17 +356,17 @@ Returns the path to the default theme directory.
 
     static QString iconPath( const QString &iconFile );
 %Docstring
-Returns path to the desired icon file.
-First it tries to use the active theme path, then default theme path
+Returns path to the desired icon file. First it tries to use the active
+theme path, then default theme path
 %End
 
     static QIcon getThemeIcon( const QString &name, const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
-Helper to get a theme icon. It will fall back to the
-default theme if the active theme does not have the required icon.
+Helper to get a theme icon. It will fall back to the default theme if
+the active theme does not have the required icon.
 
-Since QGIS 3.20, the optional ``fillColor`` and ``strokeColor`` arguments can be used to
-control the color of parameter based SVG icons.
+Since QGIS 3.20, the optional ``fillColor`` and ``strokeColor``
+arguments can be used to control the color of parameter based SVG icons.
 %End
 
     enum Cursor /BaseType=IntEnum/
@@ -374,16 +382,15 @@ control the color of parameter based SVG icons.
 
     static QCursor getThemeCursor( Cursor cursor );
 %Docstring
-Helper to get a theme cursor. It will fall back to the
-default theme if the active theme does not have the required icon.
-Cursors are automatically scaled to look like a 16px cursor on 96dpi
-screens.
+Helper to get a theme cursor. It will fall back to the default theme if
+the active theme does not have the required icon. Cursors are
+automatically scaled to look like a 16px cursor on 96dpi screens.
 %End
 
     static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
 %Docstring
-Helper to get a theme icon as a pixmap. It will fall back to the
-default theme if the active theme does not have the required icon.
+Helper to get a theme icon as a pixmap. It will fall back to the default
+theme if the active theme does not have the required icon.
 
 If ``foreColor`` or ``backColor`` are specified, then these colors will
 be used for parametrized colors in SVG files wherever available. If
@@ -431,14 +438,16 @@ Returns a string name of the operating system QGIS is running on.
 %Docstring
 Returns the size of the system memory (RAM) in megabytes.
 
-This is only supported on some platforms, and will return -1 if not supported.
+This is only supported on some platforms, and will return -1 if not
+supported.
 
 .. versionadded:: 3.26
 %End
 
     static QString platform();
 %Docstring
-Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
+Returns the QGIS platform name, e.g., "desktop", "server",
+"qgis_process" or "external" (for external CLI scripts).
 
 .. seealso:: :py:func:`osName`
 %End
@@ -448,10 +457,11 @@ Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "ex
 %Docstring
 Returns the QGIS application full name.
 
-It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME or the /qgis/application_full_name
-in the QGIS config file.
+It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME
+or the /qgis/application_full_name in the QGIS config file.
 
-By default it is equal to :py:func:`~QgsApplication.applicationName`+' '+:py:func:`~QgsApplication.platform`
+By default it is equal to :py:func:`~QgsApplication.applicationName`+'
+'+:py:func:`~QgsApplication.platform`
 
 .. seealso:: :py:func:`platform`
 
@@ -465,8 +475,8 @@ Returns the QGIS locale.
 
     static void setLocale( const QLocale &locale );
 %Docstring
-Sets the QGIS locale - used mainly by 3rd party apps and tests.
-In QGIS this is internally triggered by the application in startup.
+Sets the QGIS locale - used mainly by 3rd party apps and tests. In QGIS
+this is internally triggered by the application in startup.
 
 .. versionadded:: 3.22.2
 %End
@@ -483,12 +493,14 @@ Returns the path to default style (works as a starting point).
 
     static QString defaultThemesFolder();
 %Docstring
-Returns the path to default themes folder from install (works as a starting point).
+Returns the path to default themes folder from install (works as a
+starting point).
 %End
 
     static QString libraryPath();
 %Docstring
-Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
+Returns the path containing qgis_core, qgis_gui, qgispython (and other)
+libraries
 %End
 
     static QString libexecPath();
@@ -498,8 +510,8 @@ Returns the path with utility executables (help viewer, crssync, ...)
 
     static QString qmlImportPath();
 %Docstring
-Returns the path where QML components are installed for QGIS Quick library. Returns
-empty string when QGIS is built without Quick support
+Returns the path where QML components are installed for QGIS Quick
+library. Returns empty string when QGIS is built without Quick support
 
 .. versionadded:: 3.2
 %End
@@ -570,11 +582,15 @@ Returns whether this machine uses big or little endian
 Returns a css style sheet for reports, the ``styleSheetType`` argument
 determines what type of stylesheet is supported by the widget.
 
-Typically you will use this method by doing:
-QString myStyle = :py:func:`QgsApplication.reportStyleSheet()`;
-textBrowserReport->:py:func:`~QgsApplication.document`->setDefaultStyleSheet(myStyle);
-if you are using a :py:class:`QgsWebView` you will need to manually inject
-the CSS into a head -> script tag instead.
+Typically you will use this method by calling:
+
+.. code-block:: python
+
+     report_style = QgsApplication.reportStyleSheet()
+     text_browser_report.document().setDefaultStyleSheet(report_style)
+
+if you are using a :py:class:`QgsWebView` you will need to manually
+inject the CSS into a head -> script tag instead.
 
 :return: the stylesheet CSS rules.
 
@@ -592,11 +608,10 @@ application instance useful for debugging mainly.
 
     static void registerOgrDrivers();
 %Docstring
-Register OGR drivers ensuring this only happens once.
-This is a workaround for an issue with older gdal versions that
-caused duplicate driver name entries to appear in the list
-of registered drivers when QgsApplication.registerOgrDrivers was called multiple
-times.
+Register OGR drivers ensuring this only happens once. This is a
+workaround for an issue with older gdal versions that caused duplicate
+driver name entries to appear in the list of registered drivers when
+QgsApplication.registerOgrDrivers was called multiple times.
 %End
 
     static QString absolutePathToRelativePath( const QString &apath, const QString &targetPath );
@@ -614,25 +629,29 @@ Indicates whether running from build directory (not installed)
 %End
     static QString buildSourcePath();
 %Docstring
-Returns path to the source directory. Valid only when running from build directory
+Returns path to the source directory. Valid only when running from build
+directory
 %End
     static QString buildOutputPath();
 %Docstring
-Returns path to the build output directory. Valid only when running from build directory
+Returns path to the build output directory. Valid only when running from
+build directory
 %End
 
     static void skipGdalDriver( const QString &driver );
 %Docstring
 Sets the GDAL_SKIP environment variable to include the specified driver
 and then calls GDALDriverManager.AutoSkipDrivers() to unregister it. The
-driver name should be the short format of the Gdal driver name e.g. GTIFF.
+driver name should be the short format of the Gdal driver name e.g.
+GTIFF.
 %End
 
     static void restoreGdalDriver( const QString &driver );
 %Docstring
 Sets the GDAL_SKIP environment variable to exclude the specified driver
 and then calls GDALDriverManager.AutoSkipDrivers() to unregister it. The
-driver name should be the short format of the Gdal driver name e.g. GTIFF.
+driver name should be the short format of the Gdal driver name e.g.
+GTIFF.
 %End
 
     static QStringList skippedGdalDrivers();
@@ -654,16 +673,17 @@ Apply the skipped drivers list to gdal
 
     static void registerGdalDriversFromSettings();
 %Docstring
-Register gdal drivers, excluding the ones mentioned in "gdal/skipList" setting.
+Register gdal drivers, excluding the ones mentioned in "gdal/skipList"
+setting.
 
 .. versionadded:: 3.10
 %End
 
     static QStringList deferredSkippedGdalDrivers();
 %Docstring
-Returns the list of gdal drivers that have been disabled in the current session,
-and thus, for safety, should not be disabled right now, but at the
-next application restart.
+Returns the list of gdal drivers that have been disabled in the current
+session, and thus, for safety, should not be disabled right now, but at
+the next application restart.
 
 .. versionadded:: 3.10
 %End
@@ -671,9 +691,9 @@ next application restart.
     static void setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
                                        const QStringList &deferredSkippedGdalDrivers );
 %Docstring
-Sets the list of gdal drivers that should be disabled (``skippedGdalDrivers``),
-but excludes for now the ones defines in ``deferredSkippedGdalDrivers``.
-This writes the "gdal/skipList" setting.
+Sets the list of gdal drivers that should be disabled
+(``skippedGdalDrivers``), but excludes for now the ones defines in
+``deferredSkippedGdalDrivers``. This writes the "gdal/skipList" setting.
 
 .. versionadded:: 3.10
 %End
@@ -700,7 +720,8 @@ wide background task handling.
 
  static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated="Since 3.30. Use QgsSettings.treeRoot() instead."/;
 %Docstring
-Returns the application's settings registry, used for managing application settings.
+Returns the application's settings registry, used for managing
+application settings.
 
 .. versionadded:: 3.20
 
@@ -711,59 +732,65 @@ Returns the application's settings registry, used for managing application setti
 
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
-Returns the application's color scheme registry, used for managing color schemes.
+Returns the application's color scheme registry, used for managing color
+schemes.
 %End
 
     static QgsPaintEffectRegistry *paintEffectRegistry() /KeepReference/;
 %Docstring
-Returns the application's paint effect registry, used for managing paint effects.
+Returns the application's paint effect registry, used for managing paint
+effects.
 %End
 
     static QgsRendererRegistry *rendererRegistry() /KeepReference/;
 %Docstring
-Returns the application's renderer registry, used for managing vector layer renderers.
+Returns the application's renderer registry, used for managing vector
+layer renderers.
 %End
 
 
     static QgsPointCloudRendererRegistry *pointCloudRendererRegistry() /KeepReference/;
 %Docstring
-Returns the application's point cloud renderer registry, used for managing point cloud layer 2D renderers.
+Returns the application's point cloud renderer registry, used for
+managing point cloud layer 2D renderers.
 
 .. versionadded:: 3.18
 %End
 
     static QgsTiledSceneRendererRegistry *tiledSceneRendererRegistry() /KeepReference/;
 %Docstring
-Returns the application's tiled scene renderer registry, used for managing tiled scene layer 2D renderers.
+Returns the application's tiled scene renderer registry, used for
+managing tiled scene layer 2D renderers.
 
 .. versionadded:: 3.34
 %End
 
     static QgsDataItemProviderRegistry *dataItemProviderRegistry() /KeepReference/;
 %Docstring
-Returns the application's data item provider registry, which keeps a list of data item
-providers that may add items to the browser tree.
+Returns the application's data item provider registry, which keeps a
+list of data item providers that may add items to the browser tree.
 %End
 
     static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() /KeepReference/;
 %Docstring
-Returns the application's coordinate reference system (CRS) registry, which handles
-known CRS definitions (including user-defined CRSes).
+Returns the application's coordinate reference system (CRS) registry,
+which handles known CRS definitions (including user-defined CRSes).
 
 .. versionadded:: 3.18
 %End
 
     static QgsSvgCache *svgCache();
 %Docstring
-Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
-within SVG files.
+Returns the application's SVG cache, used for caching SVG images and
+handling parameter replacement within SVG files.
 
 .. seealso:: :py:func:`imageCache`
 %End
 
     static QgsImageCache *imageCache();
 %Docstring
-Returns the application's image cache, used for caching resampled versions of raster images.
+Returns the application's image cache, used for caching resampled
+versions of raster images.
 
 .. seealso:: :py:func:`svgCache`
 
@@ -772,76 +799,88 @@ Returns the application's image cache, used for caching resampled versions of ra
 
     static QgsSourceCache *sourceCache();
 %Docstring
-Returns the application's source cache, used for caching embedded and remote source strings as local files
+Returns the application's source cache, used for caching embedded and
+remote source strings as local files
 
 .. versionadded:: 3.16
 %End
 
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
-Returns the application's network content registry used for fetching temporary files during QGIS session
+Returns the application's network content registry used for fetching
+temporary files during QGIS session
 
 .. versionadded:: 3.2
 %End
 
     static QgsValidityCheckRegistry *validityCheckRegistry() /KeepReference/;
 %Docstring
-Returns the application's validity check registry, used for managing validity checks.
+Returns the application's validity check registry, used for managing
+validity checks.
 
 .. versionadded:: 3.6
 %End
 
     static QgsSymbolLayerRegistry *symbolLayerRegistry() /KeepReference/;
 %Docstring
-Returns the application's symbol layer registry, used for managing symbol layers.
+Returns the application's symbol layer registry, used for managing
+symbol layers.
 %End
 
     static QgsCalloutRegistry *calloutRegistry() /KeepReference/;
 %Docstring
-Returns the application's callout registry, used for managing callout types.
+Returns the application's callout registry, used for managing callout
+types.
 
 .. versionadded:: 3.10
 %End
 
     static QgsLayoutItemRegistry *layoutItemRegistry() /KeepReference/;
 %Docstring
-Returns the application's layout item registry, used for layout item types.
+Returns the application's layout item registry, used for layout item
+types.
 %End
 
     static QgsAnnotationItemRegistry *annotationItemRegistry() /KeepReference/;
 %Docstring
-Returns the application's annotation item registry, used for annotation item types.
+Returns the application's annotation item registry, used for annotation
+item types.
 
 .. versionadded:: 3.16
 %End
 
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
 %Docstring
-Returns the application's GPS connection registry, used for managing GPS connections.
+Returns the application's GPS connection registry, used for managing GPS
+connections.
 %End
 
     static QgsBabelFormatRegistry *gpsBabelFormatRegistry() /KeepReference/;
 %Docstring
-Returns the application's GPSBabel format registry, used for managing GPSBabel formats.
+Returns the application's GPSBabel format registry, used for managing
+GPSBabel formats.
 
 .. versionadded:: 3.22
 %End
 
     static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
 %Docstring
-Returns the application's plugin layer registry, used for managing plugin layer types.
+Returns the application's plugin layer registry, used for managing
+plugin layer types.
 %End
 
     static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
 %Docstring
-Returns the application's classification methods registry, used in graduated renderer
+Returns the application's classification methods registry, used in
+graduated renderer
 
 .. versionadded:: 3.10
 %End
 
     static QgsBookmarkManager *bookmarkManager();
 %Docstring
-Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+Returns the application's bookmark manager, used for storing
+installation-wide bookmarks.
 
 .. versionadded:: 3.10
 %End
@@ -863,16 +902,19 @@ Returns the database query log.
 
     static QgsStyleModel *defaultStyleModel();
 %Docstring
-Returns a shared :py:class:`QgsStyleModel` containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).
+Returns a shared :py:class:`QgsStyleModel` containing the default style
+library (see :py:func:`QgsStyle.defaultStyle()`).
 
-Using this shared model instead of creating a new :py:class:`QgsStyleModel` improves performance.
+Using this shared model instead of creating a new
+:py:class:`QgsStyleModel` improves performance.
 
 .. versionadded:: 3.10
 %End
 
     static QgsFontManager *fontManager() /KeepReference/;
 %Docstring
-Returns the application font manager, which manages available fonts and font installation for the QGIS instance.
+Returns the application font manager, which manages available fonts and
+font installation for the QGIS instance.
 
 .. versionadded:: 3.28
 %End
@@ -909,13 +951,14 @@ Returns the application's authentication configuration storage registry
 
     static QgsProcessingRegistry *processingRegistry();
 %Docstring
-Returns the application's processing registry, used for managing processing providers,
-algorithms, and various parameters and outputs.
+Returns the application's processing registry, used for managing
+processing providers, algorithms, and various parameters and outputs.
 %End
 
     static QgsPageSizeRegistry *pageSizeRegistry() /KeepReference/;
 %Docstring
-Returns the application's page size registry, used for managing layout page sizes.
+Returns the application's page size registry, used for managing layout
+page sizes.
 %End
 
 
@@ -926,7 +969,8 @@ Returns the action scope registry.
 
     static QgsConnectionRegistry *connectionRegistry();
 %Docstring
-Returns the application's connection registry, used for managing saved data provider connections.
+Returns the application's connection registry, used for managing saved
+data provider connections.
 
 .. versionadded:: 3.14
 %End
@@ -1004,9 +1048,9 @@ Returns registry of available profile source implementations.
 
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
 %Docstring
-Returns the registry of data repositories
-These are used as paths for basemaps, logos, etc. which can be referenced
-differently across work stations.
+Returns the registry of data repositories These are used as paths for
+basemaps, logos, etc. which can be referenced differently across work
+stations.
 
 .. seealso:: :py:class:`QgsLocalizedDataPathRegistry`
 
@@ -1045,16 +1089,16 @@ Sets the string used to represent the value `NULL` throughout QGIS.
 
     static QVariantMap customVariables();
 %Docstring
-Custom expression variables for this application.
-This does not include generated variables (like system name, user name etc.)
+Custom expression variables for this application. This does not include
+generated variables (like system name, user name etc.)
 
 .. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
 %End
 
     static void setCustomVariables( const QVariantMap &customVariables );
 %Docstring
-Custom expression variables for this application.
-Do not include generated variables (like system name, user name etc.)
+Custom expression variables for this application. Do not include
+generated variables (like system name, user name etc.)
 
 .. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
 %End
@@ -1066,11 +1110,12 @@ Set a single custom expression variable.
 
     static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
 %Docstring
-Scales an icon size to compensate for display pixel density, making the icon
-size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
-displays.
+Scales an icon size to compensate for display pixel density, making the
+icon size hi-dpi friendly, whilst still resulting in pixel-perfect sizes
+for low-dpi displays.
 
-``standardSize`` should be set to a standard icon size, e.g. 16, 24, 48, etc.
+``standardSize`` should be set to a standard icon size, e.g. 16, 24, 48,
+etc.
 
 .. versionadded:: 3.16
 %End
@@ -1105,7 +1150,8 @@ Returns the current application translation locale code
 
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 %Docstring
-Emits the signal to collect all the strings of .qgs to be included in ts file
+Emits the signal to collect all the strings of .qgs to be included in ts
+file
 
 .. versionadded:: 3.4
 %End
@@ -1135,8 +1181,10 @@ Emitted when the string representing the `NULL` value is changed.
 
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
 %Docstring
-Emitted when project strings which require translation are being collected for inclusion in a .ts file.
-In order to register translatable strings, connect to this signal and register the strings within the specified ``translationContext``.
+Emitted when project strings which require translation are being
+collected for inclusion in a .ts file. In order to register translatable
+strings, connect to this signal and register the strings within the
+specified ``translationContext``.
 
 .. versionadded:: 3.4
 %End

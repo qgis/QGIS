@@ -41,7 +41,7 @@ class GUI_EXPORT QgsDatabaseTableComboBoxSortModel : public QSortFilterProxyMode
 
 /**
  * \ingroup gui
- * \brief The QgsDatabaseTableComboBox class is a combo box which displays the list of tables for a specific database connection.
+ * \brief A combobox which displays the list of tables for a specific database connection.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
  * in order for the combobox to work correctly.

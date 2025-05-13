@@ -14,9 +14,8 @@
 class QgsLayerTreeProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-
-The :py:class:`QgsLayerTreeProxyModel` class is a proxy model for :py:class:`QgsLayerTreeModel`, supports
-private layers and text filtering.
+A proxy model for :py:class:`QgsLayerTreeModel`, supporting private
+layers and text filtering.
 
 .. versionadded:: 3.18
 %End
@@ -27,7 +26,8 @@ private layers and text filtering.
   public:
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 %Docstring
-Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent``
+Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a
+``parent``
 %End
 
     void setFilterText( const QString &filterText = QString() );
@@ -47,7 +47,8 @@ Determines if private layers are shown.
 
     bool hideValidLayers() const;
 %Docstring
-Returns if valid layers should be hidden (i.e. only invalid layers are shown).
+Returns if valid layers should be hidden (i.e. only invalid layers are
+shown).
 
 .. seealso:: :py:func:`setHideValidLayers`
 
@@ -56,7 +57,8 @@ Returns if valid layers should be hidden (i.e. only invalid layers are shown).
 
     void setHideValidLayers( bool hideValid );
 %Docstring
-Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
+Sets whether valid layers should be hidden (i.e. only invalid layers are
+shown).
 
 .. seealso:: :py:func:`setHideValidLayers`
 
@@ -73,16 +75,18 @@ Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
 class QgsLayerTreeView : QTreeView
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerTreeView` class extends QTreeView and provides some additional functionality
-when working with a layer tree.
+Extends QTreeView and provides additional functionality when working
+with a layer tree.
 
-The view updates expanded state of layer tree nodes and also listens to changes
-to expanded states in the layer tree.
+The view updates expanded state of layer tree nodes and also listens to
+changes to expanded states in the layer tree.
 
-The view keeps track of the current layer and emits a signal when the current layer has changed.
+The view keeps track of the current layer and emits a signal when the
+current layer has changed.
 
-Allows the client to specify a context menu provider with custom actions. Also it comes
-with a set of default actions that can be used when building context menu.
+Allows the client to specify a context menu provider with custom
+actions. Also it comes with a set of default actions that can be used
+when building context menu.
 
 .. seealso:: :py:class:`QgsLayerTreeModel`
 %End
@@ -106,7 +110,8 @@ Constructor for QgsLayerTreeView
     virtual void setModel( QAbstractItemModel *model );
 
 %Docstring
-Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only :py:class:`QgsLayerTreeModel` is an acceptable model.
+Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only
+:py:class:`QgsLayerTreeModel` is an acceptable model.
 %End
 
     QgsLayerTreeModel *layerTreeModel() const;
@@ -118,28 +123,33 @@ Gets access to the model casted to :py:class:`QgsLayerTreeModel`
 %Docstring
 Returns the proxy model used by the view.
 
-This can be used to set filters controlling which layers are shown in the view.
+This can be used to set filters controlling which layers are shown in
+the view.
 
 .. versionadded:: 3.18
 %End
 
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 %Docstring
-Returns layer tree node for given proxy model tree ``index``. Returns root node for invalid index.
-Returns ``None`` if index does not refer to a layer tree node (e.g. it is a legend node)
+Returns layer tree node for given proxy model tree ``index``. Returns
+root node for invalid index. Returns ``None`` if index does not refer to
+a layer tree node (e.g. it is a legend node)
 
-Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method correctly accounts
-for mapping the view indexes through the view's proxy model to the source model.
+Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method
+correctly accounts for mapping the view indexes through the view's proxy
+model to the source model.
 
 .. versionadded:: 3.18
 %End
 
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 %Docstring
-Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined
+Returns proxy model index for a given node. If the node does not belong
+to the layer tree, the result is undefined
 
-Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method correctly accounts
-for mapping the view indexes through the view's proxy model to the source model.
+Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method
+correctly accounts for mapping the view indexes through the view's proxy
+model to the source model.
 
 .. versionadded:: 3.18
 %End
@@ -147,7 +157,8 @@ for mapping the view indexes through the view's proxy model to the source model.
 
     QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
 %Docstring
-Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined
+Returns source model index for a given node. If the node does not belong
+to the layer tree, the result is undefined
 
 .. versionadded:: 3.18
 %End
@@ -155,29 +166,36 @@ Returns source model index for a given node. If the node does not belong to the 
 
     QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 %Docstring
-Returns legend node for given proxy model tree ``index``. Returns ``None`` for invalid index
+Returns legend node for given proxy model tree ``index``. Returns
+``None`` for invalid index
 
-Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this method correctly accounts
-for mapping the view indexes through the view's proxy model to the source model.
+Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this
+method correctly accounts for mapping the view indexes through the
+view's proxy model to the source model.
 
 .. versionadded:: 3.18
 %End
 
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
 %Docstring
-Returns proxy model index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
-If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+Returns proxy model index for a given legend node. If the legend node
+does not belong to the layer tree, the result is undefined. If the
+legend node is belongs to the tree but it is filtered out, invalid model
+index is returned.
 
-Unlike :py:func:`QgsLayerTreeModel.legendNode2index()`, calling this method correctly accounts
-for mapping the view indexes through the view's proxy model to the source model.
+Unlike :py:func:`QgsLayerTreeModel.legendNode2index()`, calling this
+method correctly accounts for mapping the view indexes through the
+view's proxy model to the source model.
 
 .. versionadded:: 3.18
 %End
 
     QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
 %Docstring
-Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
-If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+Returns index for a given legend node. If the legend node does not
+belong to the layer tree, the result is undefined. If the legend node is
+belongs to the tree but it is filtered out, invalid model index is
+returned.
 
 .. versionadded:: 3.18
 %End
@@ -198,14 +216,16 @@ Returns pointer to the context menu provider. May be ``None``
 
     QgsMapLayer *currentLayer() const;
 %Docstring
-Returns the currently selected layer, or ``None`` if no layers is selected.
+Returns the currently selected layer, or ``None`` if no layers is
+selected.
 
 .. seealso:: :py:func:`setCurrentLayer`
 %End
 
     void setLayerVisible( QgsMapLayer *layer, bool visible );
 %Docstring
-Convenience methods which sets the visible state of the specified map ``layer``.
+Convenience methods which sets the visible state of the specified map
+``layer``.
 
 .. seealso:: :py:func:`QgsLayerTreeNode.setItemVisibilityChecked`
 
@@ -238,19 +258,22 @@ Gets current node. May be ``None``
 %End
     QgsLayerTreeGroup *currentGroupNode() const;
 %Docstring
-Gets current group node. If a layer is current node, the function will return parent group. May be ``None``.
+Gets current group node. If a layer is current node, the function will
+return parent group. May be ``None``.
 %End
 
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 %Docstring
-Gets current legend node. May be ``None`` if current node is not a legend node.
+Gets current legend node. May be ``None`` if current node is not a
+legend node.
 %End
 
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 %Docstring
 Returns the list of selected layer tree nodes.
 
-:param skipInternal: If ``True``, will ignore nodes which have an ancestor in the selection
+:param skipInternal: If ``True``, will ignore nodes which have an
+                     ancestor in the selection
 
 .. seealso:: :py:func:`selectedLayerNodes`
 
@@ -261,7 +284,8 @@ Returns the list of selected layer tree nodes.
 
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring
-Returns the list of selected nodes filtered to just layer nodes (:py:class:`QgsLayerTreeLayer`).
+Returns the list of selected nodes filtered to just layer nodes
+(:py:class:`QgsLayerTreeLayer`).
 
 .. seealso:: :py:func:`selectedNodes`
 
@@ -294,20 +318,24 @@ Returns the list of selected legend nodes.
 
     QList<QgsMapLayer *> selectedLayersRecursive() const;
 %Docstring
-Gets list of selected layers, including those that are not directly selected, but their
-ancestor groups is selected. If we have a group with two layers L1, L2 and just the group
-node is selected, this method returns L1 and L2, while :py:func:`~QgsLayerTreeView.selectedLayers` returns an empty list.
+Gets list of selected layers, including those that are not directly
+selected, but their ancestor groups is selected. If we have a group with
+two layers L1, L2 and just the group node is selected, this method
+returns L1 and L2, while :py:func:`~QgsLayerTreeView.selectedLayers`
+returns an empty list.
 
 .. versionadded:: 3.4
 %End
 
     void addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
 %Docstring
-Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
-in the layer tree view. They can be used to show extra information with tree nodes and they allow
-user interaction.
+Adds an indicator to the given layer tree node. Indicators are icons
+shown next to layer/group names in the layer tree view. They can be used
+to show extra information with tree nodes and they allow user
+interaction.
 
-Does not take ownership of the indicator. One indicator object may be used for multiple layer tree nodes.
+Does not take ownership of the indicator. One indicator object may be
+used for multiple layer tree nodes.
 
 .. seealso:: :py:func:`removeIndicator`
 
@@ -318,7 +346,8 @@ Does not take ownership of the indicator. One indicator object may be used for m
 
     void removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
 %Docstring
-Removes a previously added indicator to a layer tree node. Does not delete the indicator.
+Removes a previously added indicator to a layer tree node. Does not
+delete the indicator.
 
 .. seealso:: :py:func:`addIndicator`
 
@@ -359,7 +388,8 @@ Returns the show private layers status
 
     bool hideValidLayers() const;
 %Docstring
-Returns if valid layers should be hidden (i.e. only invalid layers are shown).
+Returns if valid layers should be hidden (i.e. only invalid layers are
+shown).
 
 .. seealso:: :py:func:`setHideValidLayers`
 
@@ -369,17 +399,20 @@ Returns if valid layers should be hidden (i.e. only invalid layers are shown).
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
-Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
+Force refresh of layer symbology. Normally not needed as the changes of
+layer's renderer are monitored by the model
 %End
 
     void expandAllNodes();
 %Docstring
-Enhancement of QTreeView.expandAll() that also records expanded state in layer tree nodes
+Enhancement of QTreeView.expandAll() that also records expanded state in
+layer tree nodes
 %End
 
     void collapseAllNodes();
 %Docstring
-Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
+Enhancement of QTreeView.collapseAll() that also records expanded state
+in layer tree nodes
 %End
 
     void setLayerMarkWidth( int width );
@@ -407,7 +440,8 @@ Set the show private layers to ``showPrivate``
 
     void setHideValidLayers( bool hideValid );
 %Docstring
-Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
+Sets whether valid layers should be hidden (i.e. only invalid layers are
+shown).
 
 .. seealso:: :py:func:`setHideValidLayers`
 
@@ -479,8 +513,9 @@ Allows customization of the menu.
 class QgsLayerTreeViewMenuProvider
 {
 %Docstring(signature="appended")
-Implementation of this interface can be implemented to allow :py:class:`QgsLayerTreeView`
-instance to provide custom context menus (opened upon right-click).
+Implementation of this interface can be implemented to allow
+:py:class:`QgsLayerTreeView` instance to provide custom context menus
+(opened upon right-click).
 
 .. seealso:: :py:class:`QgsLayerTreeView`
 %End

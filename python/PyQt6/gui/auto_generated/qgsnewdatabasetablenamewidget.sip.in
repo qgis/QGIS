@@ -13,12 +13,11 @@
 class QgsNewDatabaseTableNameWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsNewDatabaseTableNameWidget` class embeds the browser view to
-select a DB schema and a new table name.
+A widget which embeds the browser view to select a DB schema and a new
+table name.
 
-The table name is validated for uniqueness and the selected
-data item provider, schema and table names can be retrieved with
-getters.
+The table name is validated for uniqueness and the selected data item
+provider, schema and table names can be retrieved with getters.
 
 .. warning::
 
@@ -36,9 +35,11 @@ getters.
 %Docstring
 Constructs a new QgsNewDatabaseTableNameWidget
 
-:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
-:param providersFilter: optional white list of data provider keys that should be
-                        shown in the widget, if not specified all providers data items with database
+:param browserModel: an existing browser model (typically from app), if
+                     ``None`` an instance will be created
+:param providersFilter: optional white list of data provider keys that
+                        should be shown in the widget, if not specified
+                        all providers data items with database
                         capabilities will be shown
 :param parent: optional parent for this widget
 %End
@@ -47,18 +48,21 @@ Constructs a new QgsNewDatabaseTableNameWidget
 %Docstring
 Sets whether the optional "Ok"/accept button should be visible.
 
-By default this is hidden, to better allow the widget to be embedded inside other widgets and dialogs.
+By default this is hidden, to better allow the widget to be embedded
+inside other widgets and dialogs.
 %End
 
     QString schema() const;
 %Docstring
-Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
+Returns the currently selected schema or file path (in case of
+filesystem-based DBs like spatialite or GPKG) for the new table
 %End
 
     QString uri() const;
 %Docstring
-Returns the (possibly blank) string representation of the new table data source URI.
-The URI might be invalid in case the widget is not in a valid state.
+Returns the (possibly blank) string representation of the new table data
+source URI. The URI might be invalid in case the widget is not in a
+valid state.
 %End
 
     QString table() const;
@@ -78,7 +82,8 @@ Returns ``True`` if the widget contains a valid new table name
 
     QString validationError() const;
 %Docstring
-Returns the validation error or an empty string is the widget status is valid
+Returns the validation error or an empty string is the widget status is
+valid
 %End
 
     virtual void showEvent( QShowEvent *e );
@@ -91,14 +96,16 @@ Scroll to last selected index and expand it's children
 
     void validationChanged( bool isValid );
 %Docstring
-This signal is emitted whenever the validation status of the widget changes.
+This signal is emitted whenever the validation status of the widget
+changes.
 
 :param isValid: ``True`` if the current status of the widget is valid
 %End
 
     void schemaNameChanged( const QString &schemaName );
 %Docstring
-This signal is emitted when the user selects a schema (or file path for filesystem-based DBs like spatialite or GPKG).
+This signal is emitted when the user selects a schema (or file path for
+filesystem-based DBs like spatialite or GPKG).
 
 :param schemaName: the name of the selected schema
 %End
@@ -120,7 +127,8 @@ that has a different data provider than the previously selected one.
 
     void uriChanged( const QString &uri );
 %Docstring
-This signal is emitted when the URI of the new table changes, whether or not it is a valid one.
+This signal is emitted when the URI of the new table changes, whether or
+not it is a valid one.
 
 :param uri: URI string representation
 %End
@@ -136,11 +144,10 @@ Emitted when the OK/accept button is clicked.
 class QgsNewDatabaseTableNameDialog : QDialog
 {
 %Docstring(signature="appended")
-:py:class:`QgsNewDatabaseTableNameDialog` is a dialog which allows selection of a DB schema and a new table name.
+A dialog which allows selection of a DB schema and a new table name.
 
-The table name is validated for uniqueness and the selected
-data item provider, schema and table names can be retrieved with
-getters.
+The table name is validated for uniqueness and the selected data item
+provider, schema and table names can be retrieved with getters.
 
 .. warning::
 
@@ -158,22 +165,26 @@ getters.
 %Docstring
 Constructs a new QgsNewDatabaseTableNameDialog
 
-:param browserModel: an existing browser model (typically from app), if ``None`` an instance will be created
-:param providersFilter: optional white list of data provider keys that should be
-                        shown in the widget, if not specified all providers data items with database
+:param browserModel: an existing browser model (typically from app), if
+                     ``None`` an instance will be created
+:param providersFilter: optional white list of data provider keys that
+                        should be shown in the widget, if not specified
+                        all providers data items with database
                         capabilities will be shown
 :param parent: optional parent for this widget
 %End
 
     QString schema() const;
 %Docstring
-Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
+Returns the currently selected schema or file path (in case of
+filesystem-based DBs like spatialite or GPKG) for the new table
 %End
 
     QString uri() const;
 %Docstring
-Returns the (possibly blank) string representation of the new table data source URI.
-The URI might be invalid in case the widget is not in a valid state.
+Returns the (possibly blank) string representation of the new table data
+source URI. The URI might be invalid in case the widget is not in a
+valid state.
 %End
 
     QString table() const;
@@ -193,7 +204,8 @@ Returns ``True`` if the widget contains a valid new table name
 
     QString validationError() const;
 %Docstring
-Returns the validation error or an empty string is the widget status is valid
+Returns the validation error or an empty string is the widget status is
+valid
 %End
 
 };

@@ -16,14 +16,14 @@ class QgsMapLayerRenderer
 Base class for utility classes that encapsulate information necessary
 for rendering of map layers.
 
-The rendering is typically done in a background
-thread, so it is necessary to keep all structures required for rendering away
-from the original map layer because it may change any time.
+The rendering is typically done in a background thread, so it is
+necessary to keep all structures required for rendering away from the
+original map layer because it may change any time.
 
-Because the data needs to be copied (to avoid the need for locking),
-it is highly desirable to use copy-on-write where possible. This way,
-the overhead of copying (both memory and CPU) will be kept low.
-Qt containers and various Qt classes use implicit sharing.
+Because the data needs to be copied (to avoid the need for locking), it
+is highly desirable to use copy-on-write where possible. This way, the
+overhead of copying (both memory and CPU) will be kept low. Qt
+containers and various Qt classes use implicit sharing.
 
 The scenario will be:
 
@@ -40,7 +40,8 @@ The scenario will be:
 
     QgsMapLayerRenderer( const QString &layerID, QgsRenderContext *context = 0 );
 %Docstring
-Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render ``context``.
+Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and
+render ``context``.
 %End
 
     virtual ~QgsMapLayerRenderer();
@@ -49,24 +50,28 @@ Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render 
 %Docstring
 Do the rendering (based on data stored in the class).
 
-Returns ``True`` if the layer was completely rendered successfully (i.e. the render
-was not canceled early).
+Returns ``True`` if the layer was completely rendered successfully (i.e.
+the render was not canceled early).
 %End
 
     virtual bool forceRasterRender() const;
 %Docstring
-Returns ``True`` if the renderer must be rendered to a raster paint device (e.g. QImage).
+Returns ``True`` if the renderer must be rendered to a raster paint
+device (e.g. QImage).
 
-Some layer settings require layers to be effectively "flattened" while rendering maps,
-which is achieved by first rendering the layer onto a raster paint device and then compositing
-the resultant image onto the final map render.
+Some layer settings require layers to be effectively "flattened" while
+rendering maps, which is achieved by first rendering the layer onto a
+raster paint device and then compositing the resultant image onto the
+final map render.
 
-E.g. if a layer contains features with transparency or alternative blending modes, and
-the effects of these opacity or blending modes should be restricted to only affect other
-features within the SAME layer, then a flattened raster based render is required.
+E.g. if a layer contains features with transparency or alternative
+blending modes, and the effects of these opacity or blending modes
+should be restricted to only affect other features within the SAME
+layer, then a flattened raster based render is required.
 
-Subclasses should return ``True`` whenever their corresponding layer settings require the
-layer to always be rendered using a raster paint device.
+Subclasses should return ``True`` whenever their corresponding layer
+settings require the layer to always be rendered using a raster paint
+device.
 
 .. versionadded:: 3.18
 %End
@@ -103,8 +108,8 @@ Returns the render context associated with the renderer.
 
     bool isReadyToCompose() const;
 %Docstring
-Returns whether the renderer has already drawn (at
-least partially) some data
+Returns whether the renderer has already drawn (at least partially) some
+data
 
 .. versionadded:: 3.18
 %End
@@ -130,7 +135,8 @@ Ownership of items is transferred to the caller.
 %Docstring
 Appends the ``details`` of a rendered item to the renderer.
 
-Rendered item details can be retrieved by calling :py:func:`~QgsMapLayerRenderer.takeRenderedItemDetails`.
+Rendered item details can be retrieved by calling
+:py:func:`~QgsMapLayerRenderer.takeRenderedItemDetails`.
 
 Ownership of ``details`` is transferred to the renderer.
 

@@ -256,7 +256,7 @@
                 <item row="2" column="0">
                  <widget class="QLabel" name="label_4">
                   <property name="text">
-                   <string>Re&amp;quest step size</string>
+                   <string>Request step size</string>
                   </property>
                   <property name="buddy">
                    <cstring>mTileWidth</cstring>
@@ -510,23 +510,6 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>QGIS layer name</string>
-             </property>
-             <property name="buddy">
-              <cstring>leLayerName</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="leLayerName"/>
-           </item>
-          </layout>
-         </item>
-         <item>
           <widget class="QCheckBox" name="mLoadLayersIndividuallyCheckBox">
            <property name="toolTip">
             <string>Load each selected layer as an individual layer</string>
@@ -606,7 +589,6 @@
   <tabstop>mFeatureCount</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mContextualLegendCheckbox</tabstop>
-  <tabstop>leLayerName</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerOrderTreeWidget</tabstop>

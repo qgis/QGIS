@@ -29,9 +29,7 @@
 
 /**
  * \ingroup server
- * \brief QgsServerRequest
- * Class defining request interface passed to services QgsService::executeRequest() method
- *
+ * \brief Defines requests passed to QgsService classes.
  */
 class SERVER_EXPORT QgsServerRequest
 {
@@ -110,15 +108,15 @@ class SERVER_EXPORT QgsServerRequest
 
 
     /**
-     * \returns the request url as seen by QGIS server
+     * Returns the request URL as seen by QGIS server.
      *
-     * \see originalUrl for the unrewritten url as seen by the web server, by default the two are equal
+     * \see originalUrl for the unrewritten URL as seen by the web server, by default the two are equal
      */
     QUrl url() const;
 
     /**
-     * \returns the request method
-      */
+     * Returns the request method.
+     */
     QgsServerRequest::Method method() const;
 
     /**

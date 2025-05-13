@@ -4,14 +4,14 @@
    Date                 : 20.05.2014
    Copyright            : (C) 2014 Denis Rouzaud
    Email                : denis.rouzaud@gmail.com
-***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+   ***************************************************************************
+   *                                                                         *
+   *   This program is free software; you can redistribute it and/or modify  *
+   *   it under the terms of the GNU General Public License as published by  *
+   *   the Free Software Foundation; either version 2 of the License, or     *
+   *   (at your option) any later version.                                   *
+   *                                                                         *
+   ***************************************************************************/
 
 #ifndef QGSGROUPWMSDATADIALOG_H
 #define QGSGROUPWMSDATADIALOG_H
@@ -24,40 +24,110 @@
 /**
  * \ingroup gui
  * \class QgsGroupWmsDataDialog
+ * \brief A dialog for configuring a WMS group.
  */
 class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMSDataDialogBase
 {
     Q_OBJECT
 
   public:
-    //! Constructor
+    /**
+     * Constructor
+     * \param parent parent widget
+     * \param fl dialog window flags
+     */
     QgsGroupWmsDataDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    //~QgsGroupWMSDataDialog();
 
-    //! Returns group WMS title
-    QString groupTitle();
+    /**
+     * Constructor
+     * \param serverProperties used to initialize the dialog
+     * \param parent parent widget
+     * \param fl dialog window flags
+     */
+    QgsGroupWmsDataDialog( const QgsMapLayerServerProperties &serverProperties, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    //! Returns group WMS short name
-    QString groupShortName();
+    ~QgsGroupWmsDataDialog() override = default;
 
-    //! Returns group WMS abstract
-    QString groupAbstract();
+    /**
+     * Returns group WMS title
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->title() instead.
+     */
+    Q_DECL_DEPRECATED QString groupTitle() const;
 
+    /**
+     * Returns group WMS short name
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->shortName() instead.
+     */
+    Q_DECL_DEPRECATED QString groupShortName() const;
 
-  public slots:
-    //! Sets group WMS title
-    void setGroupTitle( const QString &title );
+    /**
+     * Returns group WMS abstract
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->abstract() instead.
+     */
+    Q_DECL_DEPRECATED QString groupAbstract() const;
 
-    //! Sets group WMS short name
-    void setGroupShortName( const QString &shortName );
+    /**
+     * Sets group WMS title
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->setTitle() instead.
+     */
+    Q_DECL_DEPRECATED void setGroupTitle( const QString &title ) SIP_DEPRECATED;
 
-    //! Sets group WMS abstract
-    void setGroupAbstract( const QString &abstract );
+    /**
+     * Sets group WMS short name
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->setShortName() instead.
+     */
+    Q_DECL_DEPRECATED void setGroupShortName( const QString &shortName ) SIP_DEPRECATED;
 
+    /**
+     * Sets group WMS abstract
+     *
+     * \deprecated QGIS 3.44. Use serverProperties()->setAbstract() instead.
+     */
+    Q_DECL_DEPRECATED void setGroupAbstract( const QString &abstract ) SIP_DEPRECATED;
+
+    /**
+     * Sets whether the time dimension should be computed for this group or not
+     * \param hasTimeDimension if TRUE, when a GetCapabilities request is sent,
+     * QGIS server would return a TIME dimension computed as an union of all time
+     * dimensions of its children recursively. Else, no TIME dimension will be returned.
+     *
+     * \see hasTimeDimension()
+     * \since QGIS 3.44
+     */
+    void setHasTimeDimension( bool hasTimeDimension );
+
+    /**
+     * Returns whether the time dimension should be computed for this group or not.
+     * if TRUE, when a GetCapabilities request is sent, QGIS server would return a TIME
+     * dimension computed as an union of all time dimensions of its children recursively.
+     * Else, no TIME dimension will be returned.
+     *
+     * \see setHasTimeDimension()
+     * \since QGIS 3.44
+     */
+    bool hasTimeDimension() const;
+
+    /**
+     * Returns QGIS Server Properties for the layer tree group
+     * \since QGIS 3.44
+     */
+    QgsMapLayerServerProperties *serverProperties();
+
+    /**
+     * Returns QGIS Server Properties const for the layer tree group
+     * \since QGIS 3.44
+     */
+    const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
+
+    void accept() override;
 
   private:
-    QString mGroupTitle;
-    QString mGroupShortName;
+    std::unique_ptr<QgsMapLayerServerProperties> mServerProperties;
 };
 
 #endif // QGSGROUPWMSDATADIALOG_H

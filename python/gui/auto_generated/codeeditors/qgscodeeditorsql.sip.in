@@ -12,8 +12,9 @@
 class QgsCodeEditorSQL : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A SQL editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A SQL editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. note::
 
@@ -59,9 +60,8 @@ Returns field names from the lexer API.
 %Docstring
 Set extra keywords to ``extraKeywords``.
 
-Extra keywords are usually added
-from provider connections and represent function and other provider specific
-keywords.
+Extra keywords are usually added from provider connections and represent
+function and other provider specific keywords.
 
 .. versionadded:: 3.22
 %End
@@ -70,9 +70,8 @@ keywords.
 %Docstring
 Returns the extra keywords.
 
-Extra keywords are usually added
-from provider connections and represent function and other provider specific
-keywords.
+Extra keywords are usually added from provider connections and represent
+function and other provider specific keywords.
 
 .. versionadded:: 3.22
 %End

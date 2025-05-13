@@ -298,3 +298,13 @@ void QgsHttpHeaders::insert( const QString &key, const QVariant &val )
   }
   mHeaders.insert( k2, val );
 }
+
+bool QgsHttpHeaders::operator==( const QgsHttpHeaders &other ) const
+{
+  return mHeaders == other.mHeaders;
+}
+
+bool QgsHttpHeaders::operator!=( const QgsHttpHeaders &other ) const
+{
+  return !( *this == other );
+}

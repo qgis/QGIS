@@ -40,8 +40,9 @@ class QgsQsciLexerCSS : public QsciLexerCSS
 
 /**
  * \ingroup gui
- * \brief A CSS editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A CSS editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  */
 class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
 {

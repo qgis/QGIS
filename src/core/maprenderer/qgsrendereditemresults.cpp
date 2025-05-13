@@ -38,14 +38,18 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     void insert( const QgsRenderedItemDetails *details, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Insert(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      details );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Insert(
+        aMin,
+        aMax,
+        details );
     }
 
     /**
@@ -56,14 +60,18 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     bool intersects( const QgsRectangle &bounds, const std::function< bool( const QgsRenderedItemDetails *details )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Search(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      callback );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Search(
+        aMin,
+        aMax,
+        callback );
       return true;
     }
 

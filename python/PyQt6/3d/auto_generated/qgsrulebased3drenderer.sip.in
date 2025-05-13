@@ -14,7 +14,8 @@
 class QgsRuleBased3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring(signature="appended")
-Metadata for rule-based 3D renderer to allow creation of its instances from XML
+Metadata for rule-based 3D renderer to allow creation of its instances
+from XML.
 
 .. warning::
 
@@ -33,7 +34,8 @@ Metadata for rule-based 3D renderer to allow creation of its instances from XML
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 
 %Docstring
-Creates an instance of a 3D renderer based on a DOM element with renderer configuration
+Creates an instance of a 3D renderer based on a DOM element with
+renderer configuration
 %End
 };
 
@@ -43,7 +45,8 @@ class QgsRuleBased3DRenderer : QgsAbstractVectorLayer3DRenderer
 %Docstring(signature="appended")
 Rule-based 3D renderer.
 
-Similar to rule-based 2D renderer and rule-based labeling, it allows specification of rules for 3D symbols.
+Similar to rule-based 2D renderer and rule-based labeling, it allows
+specification of rules for 3D symbols.
 
 .. warning::
 
@@ -63,7 +66,7 @@ Similar to rule-based 2D renderer and rule-based labeling, it allows specificati
     class Rule
 {
 %Docstring(signature="appended")
-A child rule for a QgsRuleBased3DRenderer
+A child rule for a QgsRuleBased3DRenderer.
 
 .. versionadded:: 3.6
 %End
@@ -121,7 +124,8 @@ Check if this rule is an ELSE rule
 
         QString ruleKey() const;
 %Docstring
-Unique rule identifier (for identification of rule within labeling, used as provider ID)
+Unique rule identifier (for identification of rule within labeling, used
+as provider ID)
 %End
 
         void setSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
@@ -131,7 +135,8 @@ Sets new symbol (or ``None``). Deletes old symbol if any.
 
         void setFilterExpression( const QString &filterExp );
 %Docstring
-Set the expression used to check if a given feature shall be rendered with this rule
+Set the expression used to check if a given feature shall be rendered
+with this rule
 
 :param filterExp: An expression
 %End
@@ -159,7 +164,8 @@ Sets if this rule is an ELSE rule
 
         void setRuleKey( const QString &key );
 %Docstring
-Override the assigned rule key (should be used just internally by rule-based renderer)
+Override the assigned rule key (should be used just internally by
+rule-based renderer)
 %End
 
 
@@ -173,7 +179,8 @@ Returns all children rules of this rule
 
         QgsRuleBased3DRenderer::RuleList descendants() const;
 %Docstring
-Returns all children, grand-children, grand-grand-children, grand-gra... you get it
+Returns all children, grand-children, grand-grand-children, grand-gra...
+you get it
 
 :return: A list of descendant rules
 %End

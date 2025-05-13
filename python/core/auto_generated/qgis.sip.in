@@ -23,7 +23,8 @@ int QgisEvent = QEvent::User + 1;
 class Qgis
 {
 %Docstring(signature="appended")
-The :py:class:`Qgis` class provides global constants for use throughout the application.
+Provides global constants and enumerations for use throughout the
+application.
 %End
 
 %TypeHeaderCode
@@ -43,7 +44,8 @@ Version string.
 
     static int versionInt();
 %Docstring
-Version number used for comparing versions using the "Check QGIS Version" function
+Version number used for comparing versions using the "Check QGIS
+Version" function
 
 .. versionadded:: 3.12
 %End
@@ -483,6 +485,22 @@ The development version
       IgnoreMapRotation,
     };
 
+
+    enum class HorizontalAnchorPoint
+      {
+      Left,
+      Center,
+      Right,
+    };
+
+    enum class VerticalAnchorPoint
+      {
+      Top,
+      Center,
+      Bottom,
+      Baseline,
+    };
+
     enum class FeatureRendererFlag
     {
       AffectsLabeling,
@@ -599,7 +617,10 @@ The development version
     enum class HttpMethod
     {
       Get,
-      Post
+      Post,
+      Head,
+      Put,
+      Delete,
     };
 
     enum class VectorExportResult
@@ -1488,6 +1509,7 @@ The development version
       RedrawLayerOnly,
       FixedRangePerBand,
       RepresentsTemporalValues,
+      FixedDateTime,
     };
 
     enum class TemporalIntervalMatchMethod
@@ -1932,6 +1954,12 @@ The development version
     typedef QFlags<Qgis::HistoryProviderBackend> HistoryProviderBackends;
 
 
+    enum class QueryStorageBackend
+    {
+      LocalProfile,
+      CurrentProject,
+    };
+
     enum class ProcessingSourceType
       {
       MapLayer,
@@ -2002,6 +2030,13 @@ The development version
       DefaultLevel,
       Verbose,
       ModelDebug,
+    };
+
+    enum class ProcessingMode
+    {
+      Standard,
+      Batch,
+      Modeler,
     };
 
     enum class ProcessingFeatureSourceDefinitionFlag
@@ -2112,6 +2147,11 @@ The development version
       DefaultValue,
       Sum,
       GeometryWeighted,
+      UnsetField,
+      LargestGeometry,
+      MinimumValue,
+      MaximumValue,
+      SetToNull,
     };
 
     enum class FieldDuplicatePolicy
@@ -2238,7 +2278,14 @@ The development version
     enum class NavigationMode
     {
       TerrainBased,
-      Walk
+      Walk,
+      GlobeTerrainBased
+    };
+
+    enum class SceneMode
+    {
+      Local,
+      Globe
     };
 
     enum class VerticalAxisInversion
@@ -2432,6 +2479,16 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+    enum class LegendComponent
+      {
+      Undefined,
+      Hidden,
+      Title,
+      Group,
+      Subgroup,
+      Symbol,
+      SymbolLabel,
+    };
 
     enum class LegendJsonRenderFlag
     {
@@ -2461,6 +2518,7 @@ The development version
     enum class MapLayerActionFlag
     {
       EnabledOnlyWhenEditable,
+      EnableOnlyWhenHasGeometry,
     };
 
     typedef QFlags<Qgis::MapLayerActionFlag> MapLayerActionFlags;
@@ -2835,6 +2893,7 @@ The development version
       HorizontalMiddle,
       HorizontalBottom,
       HorizontalAverage,
+      AtEquator,
     };
 
     enum class ScaleBarAlignment
@@ -2887,8 +2946,17 @@ The development version
     {
       SetFieldComment,
       SetFieldAlias,
+      SetTableComment,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
+
+
+    enum class DatabaseProviderTableImportCapability
+    {
+      SetGeometryColumnName,
+      SetPrimaryKeyName,
+    };
+    typedef QFlags<Qgis::DatabaseProviderTableImportCapability> DatabaseProviderTableImportCapabilities;
 
 
     enum class ProviderStyleStorageCapability
@@ -3271,6 +3339,14 @@ The development version
       RenderOverviewAndExtents
     };
 
+    enum class SegmentCalculationMethod
+    {
+      Standard,
+      Adaptive,
+      AreaError,
+      ConstantDensity
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3292,6 +3368,16 @@ The development version
     static const double DEFAULT_SNAP_TOLERANCE;
 
     static const Qgis::MapToolUnit DEFAULT_SNAP_UNITS;
+
+    static const int USER_CRS_START_ID;
+
+    static const double DEFAULT_POINT_SIZE;
+
+    static const double DEFAULT_LINE_WIDTH;
+
+    static const double DEFAULT_SEGMENT_EPSILON;
+
+
 
     static QString defaultProjectScales();
 %Docstring
@@ -3334,6 +3420,40 @@ GEOS string version linked
 
 .. versionadded:: 3.20
 %End
+
+    static QString geoNone();
+%Docstring
+Constant that holds the string representation for "No ellipse/No CRS".
+
+.. versionadded:: 3.44
+%End
+
+    static QString geographicCrsAuthId();
+%Docstring
+Geographic coordinate system auth:id string for a default geographic CRS
+(EPSG:4326).
+
+.. versionadded:: 3.44
+%End
+
+ static QString geoWkt();
+%Docstring
+WKT string that represents a geographic coord system
+
+.. deprecated:: 3.44
+
+   Will be removed in QGIS 4.0.
+%End
+
+ static QString geoProj4();
+%Docstring
+PROJ4 string that represents a geographic coord system.
+
+.. deprecated:: 3.44
+
+   Will be removed in QGIS 4.0.
+%End
+
 };
 
 
@@ -3352,6 +3472,8 @@ QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QF
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
 QFlags<Qgis::DatabaseProviderConnectionCapability2> operator|(Qgis::DatabaseProviderConnectionCapability2 f1, QFlags<Qgis::DatabaseProviderConnectionCapability2> f2);
+
+QFlags<Qgis::DatabaseProviderTableImportCapability> operator|(Qgis::DatabaseProviderTableImportCapability f1, QFlags<Qgis::DatabaseProviderTableImportCapability> f2);
 
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
@@ -3553,7 +3675,8 @@ Compare two doubles using specified number of significant digits
 
 double qgsRound( double number, int places );
 %Docstring
-Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
+Returns a double ``number``, rounded (as close as possible) to the
+specified number of ``places``.
 %End
 
 
@@ -3566,8 +3689,8 @@ Returns a double ``number``, rounded (as close as possible) to the specified num
 
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring
-Converts a string to a double in a permissive way, e.g., allowing for incorrect
-numbers of digits between thousand separators
+Converts a string to a double in a permissive way, e.g., allowing for
+incorrect numbers of digits between thousand separators
 
 :param string: string to convert
 :param ok: will be set to ``True`` if conversion was successful
@@ -3579,8 +3702,8 @@ numbers of digits between thousand separators
 
 int qgsPermissiveToInt( QString string, bool &ok );
 %Docstring
-Converts a string to an integer in a permissive way, e.g., allowing for incorrect
-numbers of digits between thousand separators
+Converts a string to an integer in a permissive way, e.g., allowing for
+incorrect numbers of digits between thousand separators
 
 :param string: string to convert
 :param ok: will be set to ``True`` if conversion was successful
@@ -3592,8 +3715,8 @@ numbers of digits between thousand separators
 
 qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
 %Docstring
-Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
-numbers of digits between thousand separators
+Converts a string to an qlonglong in a permissive way, e.g., allowing
+for incorrect numbers of digits between thousand separators
 
 :param string: string to convert
 :param ok: will be set to ``True`` if conversion was successful
@@ -3607,9 +3730,10 @@ numbers of digits between thousand separators
 
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
-Compares two QVariant values and returns whether the first is less than the second.
-Useful for sorting lists of variants, correctly handling sorting of the various
-QVariant data types (such as strings, numeric values, dates and times)
+Compares two QVariant values and returns whether the first is less than
+the second. Useful for sorting lists of variants, correctly handling
+sorting of the various QVariant data types (such as strings, numeric
+values, dates and times)
 
 Invalid < NULL < Values
 
@@ -3618,8 +3742,9 @@ Invalid < NULL < Values
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 %Docstring
-Compares two QVariant values and returns whether they are equal, two NULL values are
-always treated as equal and 0 is not treated as equal with NULL
+Compares two QVariant values and returns whether they are equal, two
+NULL values are always treated as equal and 0 is not treated as equal
+with NULL
 
 :param lhs: first value
 :param rhs: second value
@@ -3629,9 +3754,10 @@ always treated as equal and 0 is not treated as equal with NULL
 
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
-Compares two QVariant values and returns whether the first is greater than the second.
-Useful for sorting lists of variants, correctly handling sorting of the various
-QVariant data types (such as strings, numeric values, dates and times)
+Compares two QVariant values and returns whether the first is greater
+than the second. Useful for sorting lists of variants, correctly
+handling sorting of the various QVariant data types (such as strings,
+numeric values, dates and times)
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 %End
@@ -3644,24 +3770,24 @@ bool operator< ( const QVariant &v1, const QVariant &v2 );
 
 
 
-QString qgsVsiPrefix( const QString &path );
+ QString qgsVsiPrefix( const QString &path ) /Deprecated="Since 3.44. Use QgsGdalUtils.vsiPrefixForPath() instead."/;
+%Docstring
+Returns a the vsi prefix which corresponds to a file ``path``, or an
+empty string if the path is not associated with a vsi prefix.
+
+.. deprecated:: 3.44
+
+   Use :py:func:`QgsGdalUtils.vsiPrefixForPath()` instead.
+%End
 
 
 
 
-const long GEOSRID;
+ const long GEOSRID;
 
-const long GEOCRS_ID;
+ const long GEOCRS_ID;
 
-const long GEO_EPSG_CRS_ID;
-
-const int USER_CRS_START_ID;
-
-
-const double DEFAULT_POINT_SIZE;
-const double DEFAULT_LINE_WIDTH;
-
-const double DEFAULT_SEGMENT_EPSILON;
+ const long GEO_EPSG_CRS_ID;
 
 
 typedef unsigned long long qgssize;
@@ -3670,23 +3796,6 @@ typedef unsigned long long qgssize;
 
 
 
-
-
-
-QString geoWkt();
-%Docstring
-Wkt string that represents a geographic coord sys
-\since QGIS GEOWkt
-%End
-
-//! PROJ4 string that represents a geographic coord sys
-QString geoProj4();
-
-//! Geographic coord sys from EPSG authority
-QString geoEpsgCrsAuthId();
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-QString geoNone();
 
 /************************************************************************
  * This file has been generated automatically from                      *

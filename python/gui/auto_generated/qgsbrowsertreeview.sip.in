@@ -17,7 +17,8 @@
 class QgsBrowserTreeView : QTreeView
 {
 %Docstring(signature="appended")
-The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tree state functionality.
+Extends QTreeView with save/restore tree state and other
+browser-specific functionality.
 
 .. seealso:: :py:class:`QgsBrowserModel`
 %End
@@ -69,9 +70,11 @@ Returns ``True`` if the item was found and could be selected.
 %Docstring
 Expands out a file ``path`` in the view.
 
-The ``path`` must correspond to a valid directory existing on the file system.
+The ``path`` must correspond to a valid directory existing on the file
+system.
 
-Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select the path too.
+Since QGIS 3.38 the ``selectPath`` argument can be used to automatically
+select the path too.
 
 .. versionadded:: 3.28
 %End

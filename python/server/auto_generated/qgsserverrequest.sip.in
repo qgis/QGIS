@@ -12,8 +12,7 @@
 class QgsServerRequest
 {
 %Docstring(signature="appended")
-:py:class:`QgsServerRequest`
-Class defining request interface passed to services :py:func:`QgsService.executeRequest()` method
+Defines requests passed to :py:class:`QgsService` classes.
 %End
 
 %TypeHeaderCode
@@ -62,7 +61,7 @@ Constructor
 
 :param url: the url string
 :param method: the request method
-:param headers:
+:param headers: 
 %End
 
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
@@ -71,7 +70,7 @@ Constructor
 
 :param url: QUrl
 :param method: the request method
-:param headers:
+:param headers: 
 %End
 
     QgsServerRequest( const QgsServerRequest &other );
@@ -88,22 +87,19 @@ Returns a string representation of an HTTP request ``method``.
 
     QUrl url() const;
 %Docstring
+Returns the request URL as seen by QGIS server.
 
-:return: the request url as seen by QGIS server
-
-.. seealso:: :py:func:`originalUrl` for the unrewritten url as seen by the web server, by default the two are equal
+.. seealso:: :py:func:`originalUrl` for the unrewritten URL as seen by the web server, by default the two are equal
 %End
 
     QgsServerRequest::Method method() const;
 %Docstring
-
-:return: the request method
+Returns the request method.
 %End
 
     QgsServerRequest::Parameters parameters() const;
 %Docstring
-Returns a map of query parameters with keys converted
-to uppercase
+Returns a map of query parameters with keys converted to uppercase
 %End
 
     QgsServerParameters serverParameters() const;
@@ -148,8 +144,8 @@ Returns the header value
 %Docstring
 Set an header
 
-:param name:
-:param value:
+:param name: 
+:param value: 
 %End
 
     QMap<QString, QString> headers() const;
@@ -163,16 +159,15 @@ Returns the header map
 %Docstring
 Remove an header
 
-:param name:
+:param name: 
 
 .. versionadded:: 3.20
 %End
 
     virtual QByteArray data() const;
 %Docstring
-Returns post/put data
-Check for QByteArray.isNull() to check if data
-is available.
+Returns post/put data Check for QByteArray.isNull() to check if data is
+available.
 %End
 
     virtual void setUrl( const QUrl &url );
@@ -182,8 +177,8 @@ Set the request url
 
     QUrl originalUrl() const;
 %Docstring
-Returns the request url as seen by the web server,
-by default this is equal to the url seen by QGIS server
+Returns the request url as seen by the web server, by default this is
+equal to the url seen by QGIS server
 
 .. seealso:: :py:func:`url` for the rewritten url
 
@@ -194,8 +189,9 @@ by default this is equal to the url seen by QGIS server
 %Docstring
 Returns the base URL of QGIS server
 
-E.g. if we call QGIS server with ``http://example.com/folder?REQUEST=WMS&...``
-the base URL will be ``http://example.com/folder``
+E.g. if we call QGIS server with
+``http://example.com/folder?REQUEST=WMS&...`` the base URL will be
+``http://example.com/folder``
 
 .. versionadded:: 3.20
 %End
@@ -207,7 +203,8 @@ Set the request method
 
     const QString queryParameter( const QString &name, const QString &defaultValue = QString() ) const;
 %Docstring
-Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
+Returns the query string parameter with the given ``name`` from the
+request URL, a ``defaultValue`` can be specified.
 
 .. versionadded:: 3.10
 %End
@@ -215,7 +212,8 @@ Returns the query string parameter with the given ``name`` from the request URL,
   protected:
     void setOriginalUrl( const QUrl &url );
 %Docstring
-Set the request original ``url`` (the request url as seen by the web server)
+Set the request original ``url`` (the request url as seen by the web
+server)
 
 .. seealso:: :py:func:`setUrl` for the rewritten url
 

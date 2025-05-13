@@ -26,9 +26,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsValueRelationConfigDlg
+ * \brief Configuration widget for value relation widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, private Ui::QgsValueRelationConfigDlgBase
 {
     Q_OBJECT

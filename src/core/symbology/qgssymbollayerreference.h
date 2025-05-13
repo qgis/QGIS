@@ -28,7 +28,7 @@ class QgsVectorLayer;
 // TODO QGIS 4 : Remove class QgsSymbolLayerId
 
 /**
- * We may need stable references to symbol layers, when pointers to symbol layers is not usable
+ * We may need stable references to symbol layers, when pointers to symbol layers are not usable
  * (when a symbol or a feature renderer is cloned for example).
  *
  * A symbol layer identifier consists of:
@@ -216,14 +216,14 @@ inline uint qHash( const QgsSymbolLayerReference &r )
 typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;
 
 /**
- * Utilitary function to turn a QgsSymbolLayerReferenceList into a string
+ * Utility function to turn a QgsSymbolLayerReferenceList into a string
  * \see stringToSymbolLayerReferenceList
  * \since QGIS 3.12
  */
 CORE_EXPORT QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList & );
 
 /**
- * Utilitary function to parse a string originated from symbolLayerReferenceListToString
+ * Utility function to parse a string originated from symbolLayerReferenceListToString
  * into a QgsSymbolLayerReferenceList
  * \see symbolLayerReferenceListToString
  * \since QGIS 3.12

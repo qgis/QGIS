@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:
     //! Result of the calculation
-    enum Result
+    enum class Result : int
     {
       Success = 0,           //!< Calculation successful
       CreateOutputError = 1, //!< Error creating output data file
@@ -149,7 +149,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      *
      * The optional \a feedback argument can be used for progress reporting and cancellation support.
      *
-     * \returns QgsRasterCalculator::Success in case of success. If an error is encountered then
+     * \returns QgsRasterCalculator::Result::Success in case of success. If an error is encountered then
      * a description of the error can be obtained by calling lastError().
     */
     Result processCalculation( QgsFeedback *feedback = nullptr );
@@ -159,6 +159,38 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \since QGIS 3.4
      */
     QString lastError() const;
+
+    /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44
+     */
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
+     * Set no data value for output file.
+     *
+     * \see noDataValue()
+     * \since QGIS 3.44
+     */
+    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setNoDataValue()
+     * \since QGIS 3.44
+     */
+    double noDataValue() const { return mNoDataValue; }
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
@@ -199,6 +231,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     int mNumOutputRows = 0;
 
     QString mLastError;
+    QStringList mCreationOptions;
+    double mNoDataValue = -FLT_MAX;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;

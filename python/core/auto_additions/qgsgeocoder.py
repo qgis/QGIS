@@ -10,6 +10,8 @@ QgsGeocoderInterface.Flag.__doc__ = """Capability flags for the geocoder.
 """
 # --
 try:
+    QgsGeocoderInterface.__virtual_methods__ = ['geocodeFeature', 'appendedFields', 'wkbType', 'geocodeString']
+    QgsGeocoderInterface.__abstract_methods__ = ['flags']
     QgsGeocoderInterface.__group__ = ['geocoding']
 except (NameError, AttributeError):
     pass

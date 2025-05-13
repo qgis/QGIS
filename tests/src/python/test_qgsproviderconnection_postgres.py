@@ -13,11 +13,14 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir, QMetaType
 from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsField,
+    QgsFields,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRasterLayer,
@@ -783,6 +786,160 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
+
+    def test_createVectorLayerExporterDestinationUri(self):
+        """
+        Test createVectorLayerExporterDestinationUri
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        export_options = (
+            QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions()
+        )
+        export_options.layerName = "new_layer"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertFalse(res_ds.schema())
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.schema = "dest_schema"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.wkbType = Qgis.WkbType.Point
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geom")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.geometryColumn = "geometry"
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.primaryKeyColumns = ["pk"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertEqual(res_ds.keyColumn(), "pk")
+
+        # multiple key columns
+        export_options.primaryKeyColumns = ["pk", "pk2"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertEqual(res_ds.keyColumn(), "pk,pk2")
+
+    def test_create_layer_w_roles(self):
+        """
+        Test layer creation with roles
+        """
+
+        uriUserWithrole = (
+            self.uri
+            + " user=qgis_test_user password=qgis_test_user_password session_role=qgis_test_group"
+        )
+        uriOtherUserWithrole = (
+            self.uri
+            + " user=qgis_test_another_user password=qgis_test_another_user_password session_role=qgis_test_group"
+        )
+        uriUnprivilegedUser = (
+            self.uri
+            + " user=qgis_test_unprivileged_user password=qgis_test_unprivileged_user_password"
+        )
+        schema = "qgis_test"
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        connUserWithrole = md.createConnection(uriUserWithrole, {})
+        self.assertTrue(connUserWithrole)
+
+        connOtherUserWithrole = md.createConnection(uriOtherUserWithrole, {})  # spellok
+        self.assertTrue(connOtherUserWithrole)  # spellok
+
+        connUnprivilegedUser = md.createConnection(uriUnprivilegedUser, {})
+        self.assertTrue(connUnprivilegedUser)
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.layer_w_role;
+        """
+
+        connUserWithrole.executeSql(sql)
+
+        fields = QgsFields()
+        fields.append(QgsField("test", QMetaType.Type.QString))
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        connUserWithrole.createVectorTable(
+            schema, "layer_w_role", fields, QgsWkbTypes.Type.Point, crs, False, {}
+        )
+        table_names = self._table_names(connUserWithrole.tables(schema))
+        self.assertIn("layer_w_role", table_names)
+
+        table_names = self._table_names(connOtherUserWithrole.tables(schema))  # spellok
+        self.assertIn("layer_w_role", table_names)
+
+        table_names = self._table_names(connUnprivilegedUser.tables(schema))
+        self.assertNotIn("layer_w_role", table_names)
 
 
 if __name__ == "__main__":

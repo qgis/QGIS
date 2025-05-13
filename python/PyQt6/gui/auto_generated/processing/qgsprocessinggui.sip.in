@@ -10,25 +10,15 @@
 
 
 
-class QgsProcessingGui
-{
-%Docstring(signature="appended")
-
-Contains general functions and values related to Processing GUI components.
+class QgsProcessingGui {
+%Docstring
+Contains general functions and values related to Processing GUI
+components.
 
 .. versionadded:: 3.4
 %End
-
-%TypeHeaderCode
-#include "qgsprocessinggui.h"
-%End
   public:
-    enum WidgetType /BaseType=IntEnum/
-    {
-      Standard,
-      Batch,
-      Modeler,
-    };
+
 };
 
 /************************************************************************

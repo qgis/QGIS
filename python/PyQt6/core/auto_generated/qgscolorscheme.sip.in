@@ -15,11 +15,11 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 class QgsColorScheme
 {
 %Docstring(signature="appended")
-Abstract base class for color schemes
+Abstract base class for color schemes.
 
-A color scheme for display in :py:class:`QgsColorButton`. Color schemes return lists
-of colors with an optional associated color name. The colors returned
-can be generated using an optional base color.
+A color scheme for display in :py:class:`QgsColorButton`. Color schemes
+return lists of colors with an optional associated color name. The
+colors returned can be generated using an optional base color.
 %End
 
 %TypeHeaderCode
@@ -71,15 +71,16 @@ Returns the current flags for the color scheme.
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) = 0;
 %Docstring
-Gets a list of colors from the scheme. The colors can optionally
-be generated using the supplied context and base color.
+Gets a list of colors from the scheme. The colors can optionally be
+generated using the supplied context and base color.
 
 :param context: string specifying an optional context for the returned
-                colors. For instance, a "recent colors" scheme may filter returned colors
-                by context so that colors used only in a "composer" context are returned.
+                colors. For instance, a "recent colors" scheme may
+                filter returned colors by context so that colors used
+                only in a "composer" context are returned.
 :param baseColor: base color for the scheme's colors. Some color schemes
-                  may take advantage of this to filter or modify their returned colors
-                  to colors related to the base color.
+                  may take advantage of this to filter or modify their
+                  returned colors to colors related to the base color.
 
 :return: a list of QPairs of color and color name
 %End
@@ -95,7 +96,8 @@ Returns whether the color scheme is editable
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
-Sets the colors for the scheme. This method is only valid for editable color schemes.
+Sets the colors for the scheme. This method is only valid for editable
+color schemes.
 
 :param colors: list of colors for the scheme
 :param context: to set colors for
@@ -150,8 +152,8 @@ Returns the file path for the associated gpl palette file
 class QgsUserColorScheme : QgsGplColorScheme
 {
 %Docstring(signature="appended")
-A color scheme which stores its colors in a gpl palette file within the "palettes"
-subfolder off the user's QGIS settings folder.
+A color scheme which stores its colors in a gpl palette file within the
+"palettes" subfolder off the user's QGIS settings folder.
 %End
 
 %TypeHeaderCode
@@ -163,7 +165,8 @@ subfolder off the user's QGIS settings folder.
 %Docstring
 Constructs a new user color scheme, using a specified gpl palette file
 
-:param filename: filename of gpl palette file stored in the users "palettes" folder
+:param filename: filename of gpl palette file stored in the users
+                 "palettes" folder
 %End
 
     virtual QString schemeName() const;
@@ -195,7 +198,8 @@ Erases the associated gpl palette file from the users "palettes" folder
 %Docstring
 Sets whether a this scheme should be shown in color button menus.
 
-:param show: set to ``True`` to show in color button menus, or ``False`` to hide from menus
+:param show: set to ``True`` to show in color button menus, or ``False``
+             to hide from menus
 %End
 
   protected:
@@ -251,7 +255,8 @@ Returns the most recently used color.
 class QgsCustomColorScheme : QgsColorScheme
 {
 %Docstring(signature="appended")
-A color scheme which contains custom colors set through QGIS app options dialog.
+A color scheme which contains custom colors set through QGIS app options
+dialog.
 %End
 
 %TypeHeaderCode
@@ -280,7 +285,8 @@ A color scheme which contains custom colors set through QGIS app options dialog.
 class QgsProjectColorScheme : QgsColorScheme
 {
 %Docstring(signature="appended")
-A color scheme which contains project specific colors set through project properties dialog.
+A color scheme which contains project specific colors set through
+project properties dialog.
 %End
 
 %TypeHeaderCode

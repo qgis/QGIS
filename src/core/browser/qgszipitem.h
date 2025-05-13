@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * \brief A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+ * \brief A browser item for zip (archive) files.
 */
 class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 {

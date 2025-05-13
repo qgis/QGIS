@@ -12,8 +12,8 @@
 class QgsAggregateToolButton : QToolButton
 {
 %Docstring(signature="appended")
-
 Offers a toolbutton to choose between different aggregate functions.
+
 Functions are filtered based on the type.
 %End
 
@@ -28,12 +28,14 @@ Constructor
 
     void setType( QMetaType::Type type );
 %Docstring
-Based on the ``type`` of underlying data, some aggregates will be available or not.
+Based on the ``type`` of underlying data, some aggregates will be
+available or not.
 %End
 
  void setType( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Based on the ``type`` of underlying data, some aggregates will be available or not.
+Based on the ``type`` of underlying data, some aggregates will be
+available or not.
 
 .. deprecated:: 3.38
 
@@ -42,27 +44,32 @@ Based on the ``type`` of underlying data, some aggregates will be available or n
 
     QMetaType::Type type() const;
 %Docstring
-Based on the ``type`` of underlying data, some aggregates will be available or not.
+Based on the ``type`` of underlying data, some aggregates will be
+available or not.
 %End
 
     void setActive( bool active );
 %Docstring
-When this flag is ``False``, the aggregate will be deactivated. I.e. no aggregate is chosen.
+When this flag is ``False``, the aggregate will be deactivated. I.e. no
+aggregate is chosen.
 %End
 
     bool active() const;
 %Docstring
-When this flag is ``False``, the aggregate will be deactivated. I.e. no aggregate is chosen.
+When this flag is ``False``, the aggregate will be deactivated. I.e. no
+aggregate is chosen.
 %End
 
     QString aggregate() const;
 %Docstring
-The function name of the selected aggregate or a Null String if none is chosen.
+The function name of the selected aggregate or a Null String if none is
+chosen.
 %End
 
     void setAggregate( const QString &aggregate );
 %Docstring
-The function name of the selected aggregate or a Null String if none is chosen.
+The function name of the selected aggregate or a Null String if none is
+chosen.
 %End
 
   signals:

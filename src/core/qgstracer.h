@@ -35,7 +35,7 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * \brief Utility class that construct a planar graph from the input vector
+ * \brief Utility class that constructs a planar graph from the input vector
  * layers and provides shortest path search for tracing of existing
  * features.
  *

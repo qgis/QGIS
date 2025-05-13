@@ -39,7 +39,7 @@ namespace Qt3DCore
 #include <QObject>
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief  Base class for chunk queue jobs.
  *
  * Job implementations start their work when they are created
@@ -85,7 +85,7 @@ class QgsChunkQueueJob : public QObject
 };
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for factories of chunk queue jobs.
  *
  * Derived classes need to implement createJob() method that will create a specific job for given chunk node.

@@ -200,7 +200,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
                     cleaned.push_back( ascii[i] );
                   }
                 }
-                ascii = cleaned;
+                ascii = std::move( cleaned );
               }
             }
           }

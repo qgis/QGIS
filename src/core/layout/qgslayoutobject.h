@@ -210,6 +210,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       //legend item
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
+      LegendAutoWrapWidth, //!< Legend text automatic wrapping width \since QGIS 3.44
       //scalebar item
       ScalebarLeftSegments, //!< Number of segments on the left of 0 \since QGIS 3.26
       ScalebarRightSegments, //!< Number of segments on the right of 0 \since QGIS 3.26

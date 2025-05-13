@@ -53,13 +53,14 @@ Sets the map ``extent`` defining the limits for labeling.
 
     QgsGeometry mapBoundaryGeometry() const;
 %Docstring
-Returns the map label boundary geometry, which defines the limits within which labels may be placed
-in the map.
+Returns the map label boundary geometry, which defines the limits within
+which labels may be placed in the map.
 
 The map boundary geometry specifies the actual geometry of the map
-boundary, which will be used to detect whether a label is visible (or partially visible) in
-the rendered map. This may differ from :py:func:`~QgsLabelingEngineContext.extent` in the case of rotated or non-rectangular
-maps.
+boundary, which will be used to detect whether a label is visible (or
+partially visible) in the rendered map. This may differ from
+:py:func:`~QgsLabelingEngineContext.extent` in the case of rotated or
+non-rectangular maps.
 
 .. seealso:: :py:func:`setMapBoundaryGeometry`
 
@@ -68,13 +69,14 @@ maps.
 
     void setMapBoundaryGeometry( const QgsGeometry &geometry );
 %Docstring
-Sets the map label boundary ``geometry``, which defines the limits within which labels may be placed
-in the map.
+Sets the map label boundary ``geometry``, which defines the limits
+within which labels may be placed in the map.
 
 The map boundary geometry specifies the actual geometry of the map
-boundary, which will be used to detect whether a label is visible (or partially visible) in
-the rendered map. This may differ from :py:func:`~QgsLabelingEngineContext.extent` in the case of rotated or non-rectangular
-maps.
+boundary, which will be used to detect whether a label is visible (or
+partially visible) in the rendered map. This may differ from
+:py:func:`~QgsLabelingEngineContext.extent` in the case of rotated or
+non-rectangular maps.
 
 .. seealso:: :py:func:`setExtent`
 
@@ -90,8 +92,9 @@ class QgsAbstractLabelingEngineRule
 %Docstring(signature="appended")
 Abstract base class for labeling engine rules.
 
-Labeling engine rules implement custom logic to modify the labeling solution for a map render,
-e.g. by preventing labels being placed which violate custom constraints.
+Labeling engine rules implement custom logic to modify the labeling
+solution for a map render, e.g. by preventing labels being placed which
+violate custom constraints.
 
 .. note::
 
@@ -149,20 +152,23 @@ Returns a user-friendly, translated string representing the rule type.
 
     virtual bool isAvailable() const;
 %Docstring
-Returns ``True`` if the rule is available for use within the current QGIS environment.
+Returns ``True`` if the rule is available for use within the current
+QGIS environment.
 
 The base class method returns ``True``.
 
-Rules can return ``False`` if required dependencies are not available, e.g. if a library version
-is too old for the rule.
+Rules can return ``False`` if required dependencies are not available,
+e.g. if a library version is too old for the rule.
 %End
 
     virtual QString description() const;
 %Docstring
 Returns a user-friendly description of the rule.
 
-This should include the rule :py:func:`~QgsAbstractLabelingEngineRule.name` if set, and other useful details for users
-to quickly identify the rule's purpose when shown in a tooltip.
+This should include the rule
+:py:func:`~QgsAbstractLabelingEngineRule.name` if set, and other useful
+details for users to quickly identify the rule's purpose when shown in a
+tooltip.
 
 The returned string may contain HTML formatting.
 %End
@@ -171,8 +177,8 @@ The returned string may contain HTML formatting.
 %Docstring
 Returns the name for this instance of the rule.
 
-The name is a user-configurable value which helps them identify and describe the
-rule within their projects.
+The name is a user-configurable value which helps them identify and
+describe the rule within their projects.
 
 .. seealso:: :py:func:`setName`
 %End
@@ -181,8 +187,8 @@ rule within their projects.
 %Docstring
 Sets the ``name`` for this instance of the rule.
 
-The name is a user-configurable value which helps them identify and describe the
-rule within their projects.
+The name is a user-configurable value which helps them identify and
+describe the rule within their projects.
 
 .. seealso:: :py:func:`name`
 %End
@@ -205,8 +211,9 @@ Sets whether the rule is ``active``.
 %Docstring
 Prepares the rule.
 
-This must be called on the main render thread, prior to commencing the render operation. Thread sensitive
-logic (such as creation of feature sources) can be performed in this method.
+This must be called on the main render thread, prior to commencing the
+render operation. Thread sensitive logic (such as creation of feature
+sources) can be performed in this method.
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context ) const = 0;
@@ -229,7 +236,8 @@ Reads the rule properties from an XML ``element``.
 %Docstring
 Resolves reference to layers from stored layer ID.
 
-Should be called following a call :py:func:`~QgsAbstractLabelingEngineRule.readXml`.
+Should be called following a call
+:py:func:`~QgsAbstractLabelingEngineRule.readXml`.
 %End
 
 

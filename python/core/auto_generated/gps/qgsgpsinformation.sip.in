@@ -70,6 +70,7 @@ Returns a map of GNSS constellation to fix status.
 Returns the best fix status and corresponding constellation.
 
 
+
 :return: - best current fix status
          - constellation: the constellation with best fix status
 

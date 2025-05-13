@@ -14,11 +14,13 @@
 class QgsPointDistanceRenderer: QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
+An abstract base class for distance based point renderers (e.g.,
+clusterer and displacement renderers).
 
-:py:class:`QgsPointDistanceRenderer` handles calculation of point clusters using a distance based threshold.
-Subclasses must implement :py:func:`~drawGroup` to handle the rendering of individual point clusters
-in the desired style.
+:py:class:`QgsPointDistanceRenderer` handles calculation of point
+clusters using a distance based threshold. Subclasses must implement
+:py:func:`~drawGroup` to handle the rendering of individual point
+clusters in the desired style.
 %End
 
 %TypeHeaderCode
@@ -34,8 +36,10 @@ in the desired style.
 Constructor for GroupedFeature.
 
 :param feature: feature
-:param symbol: base symbol for rendering feature (owned by GroupedFeature)
-:param isSelected: set to ``True`` if feature is selected and should be rendered in a selected state
+:param symbol: base symbol for rendering feature (owned by
+               GroupedFeature)
+:param isSelected: set to ``True`` if feature is selected and should be
+                   rendered in a selected state
 :param label: optional label text, or empty string for no label
 %End
         ~GroupedFeature();
@@ -63,7 +67,9 @@ Constructor for QgsPointDistanceRenderer.
 :param labelAttributeName: optional attribute for labeling points
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
@@ -116,7 +122,8 @@ Constructor for QgsPointDistanceRenderer.
 %Docstring
 Sets the attribute name for labeling points.
 
-:param name: attribute name, or empty string to avoid labeling features by the renderer
+:param name: attribute name, or empty string to avoid labeling features
+             by the renderer
 
 .. seealso:: :py:func:`labelAttributeName`
 
@@ -129,8 +136,8 @@ Sets the attribute name for labeling points.
 
     QString labelAttributeName() const;
 %Docstring
-Returns the attribute name used for labeling points, or an empty string if no labeling
-will be done by the renderer.
+Returns the attribute name used for labeling points, or an empty string
+if no labeling will be done by the renderer.
 
 .. seealso:: :py:func:`setLabelAttributeName`
 
@@ -167,8 +174,9 @@ Returns the font used for labeling points.
 
     void setMinimumLabelScale( double scale );
 %Docstring
-Sets the minimum map ``scale`` (i.e. most "zoomed out") at which points should be labeled by the renderer.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Sets the minimum map ``scale`` (i.e. most "zoomed out") at which points
+should be labeled by the renderer. The ``scale`` value indicates the
+scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`minimumLabelScale`
 
@@ -177,8 +185,9 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
     double minimumLabelScale() const;
 %Docstring
-Returns the minimum map scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the minimum map scale (i.e. most "zoomed out") at which points
+should be labeled by the renderer. The scale value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setMinimumLabelScale`
 
@@ -211,8 +220,8 @@ Returns the color used for for labeling points.
 
     void setTolerance( double distance );
 %Docstring
-Sets the tolerance distance for grouping points. Units are specified using
-:py:func:`~QgsPointDistanceRenderer.setToleranceUnit`.
+Sets the tolerance distance for grouping points. Units are specified
+using :py:func:`~QgsPointDistanceRenderer.setToleranceUnit`.
 
 :param distance: tolerance distance
 
@@ -223,8 +232,8 @@ Sets the tolerance distance for grouping points. Units are specified using
 
     double tolerance() const;
 %Docstring
-Returns the tolerance distance for grouping points. Units are retrieved using
-:py:func:`~QgsPointDistanceRenderer.toleranceUnit`.
+Returns the tolerance distance for grouping points. Units are retrieved
+using :py:func:`~QgsPointDistanceRenderer.toleranceUnit`.
 
 .. seealso:: :py:func:`setTolerance`
 
@@ -253,8 +262,9 @@ Returns the units for the tolerance distance.
 
     void setToleranceMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit scale object for the distance tolerance. This is only used if the
-:py:func:`~QgsPointDistanceRenderer.toleranceUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnits.
+Sets the map unit scale object for the distance tolerance. This is only
+used if the :py:func:`~QgsPointDistanceRenderer.toleranceUnit` is set to
+:py:class:`QgsUnitTypes`.RenderMapUnits.
 
 :param scale: scale for distance tolerance
 
@@ -265,8 +275,9 @@ Sets the map unit scale object for the distance tolerance. This is only used if 
 
     const QgsMapUnitScale &toleranceMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the distance tolerance. This is only used if the
-:py:func:`~QgsPointDistanceRenderer.toleranceUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnits.
+Returns the map unit scale object for the distance tolerance. This is
+only used if the :py:func:`~QgsPointDistanceRenderer.toleranceUnit` is
+set to :py:class:`QgsUnitTypes`.RenderMapUnits.
 
 .. seealso:: :py:func:`setToleranceMapUnitScale`
 
@@ -303,7 +314,8 @@ Renders the labels for a group.
 %Docstring
 Draws a group of clustered points.
 
-:param centerPoint: central point (geographic centroid) of all points contained within the cluster
+:param centerPoint: central point (geographic centroid) of all points
+                    contained within the cluster
 :param context: destination render context
 :param group: contents of group
 %End

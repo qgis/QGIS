@@ -14,13 +14,15 @@
 class QgsCameraPose
 {
 %Docstring(signature="appended")
-Class that encapsulates camera pose in a 3D scene.
+Encapsulates camera pose in a 3D scene.
 
 The pose is defined with the following parameters:
 
 - center point - towards which point the camera is looking
-- distance from the center point - how far is the camera from the point towards which it is looking
-- pitch angle - vertical rotation of the camera (0 degrees = camera looking down, 90 degrees = camera looking from the side)
+- distance from the center point - how far is the camera from the point
+  towards which it is looking
+- pitch angle - vertical rotation of the camera (0 degrees = camera
+  looking down, 90 degrees = camera looking from the side)
 - yaw angle - horizontal rotation of the camera
 
 .. versionadded:: 3.4
@@ -67,13 +69,15 @@ Sets heading (yaw) angle in degrees
 %End
 
 
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element and returns it
 %End
     void readXml( const QDomElement &elem );
 %Docstring
-Reads configuration from a DOM element previously written using :py:func:`~QgsCameraPose.writeXml`
+Reads configuration from a DOM element previously written using
+:py:func:`~QgsCameraPose.writeXml`
 %End
 
     bool operator==( const QgsCameraPose &other ) const;

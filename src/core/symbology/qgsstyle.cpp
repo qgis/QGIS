@@ -245,7 +245,7 @@ bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
   return true;
 }
 
-bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags )
+bool QgsStyle::saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags )
 {
   // TODO add support for groups
   QDomDocument doc( QStringLiteral( "dummy" ) );
@@ -451,7 +451,7 @@ bool QgsStyle::addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bo
   return true;
 }
 
-bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags )
+bool QgsStyle::saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags )
 {
   // insert it into the database
   QDomDocument doc( QStringLiteral( "dummy" ) );
@@ -740,9 +740,9 @@ bool QgsStyle::load( const QString &filename )
       }
 
       QDomElement symElement = doc.documentElement();
-      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
+      std::unique_ptr< QgsSymbol  >symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
       if ( symbol )
-        mSymbols.insert( symbolName, symbol );
+        mSymbols.insert( symbolName, symbol.release() );
     }
   }
 
@@ -762,9 +762,9 @@ bool QgsStyle::load( const QString &filename )
         continue;
       }
       QDomElement rampElement = doc.documentElement();
-      QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
+      std::unique_ptr< QgsColorRamp > ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
       if ( ramp )
-        mColorRamps.insert( rampName, ramp );
+        mColorRamps.insert( rampName, ramp.release() );
     }
   }
 
@@ -2803,13 +2803,14 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
           favorite = true;
         }
 
-        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
+        std::unique_ptr< QgsSymbol > symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
         if ( symbol )
         {
-          addSymbol( name, symbol );
+          QgsSymbol *symbolPtr = symbol.get();
+          addSymbol( name, symbol.release() );
           if ( mCurrentDB )
           {
-            saveSymbol( name, symbol, favorite, tags );
+            saveSymbol( name, symbolPtr, favorite, tags );
           }
         }
       }
@@ -2857,13 +2858,14 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
         favorite = true;
       }
 
-      QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( e );
+      std::unique_ptr< QgsColorRamp > ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
-        addColorRamp( name, ramp );
+        QgsColorRamp *rampPtr = ramp.get();
+        addColorRamp( name, ramp.release() );
         if ( mCurrentDB )
         {
-          saveColorRamp( name, ramp, favorite, tags );
+          saveColorRamp( name, rampPtr, favorite, tags );
         }
       }
     }

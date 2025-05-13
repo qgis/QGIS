@@ -13,7 +13,8 @@
 class QgsProcessingToolboxModelNode : QObject
 {
 %Docstring(signature="appended")
-Abstract base class for nodes contained within a :py:class:`QgsProcessingToolboxModel`.
+Abstract base class for nodes contained within a
+:py:class:`QgsProcessingToolboxModel`.
 
 .. warning::
 
@@ -36,10 +37,14 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
         sipType = sipType_QgsProcessingToolboxModelGroupNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm )
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Parameter )
+        sipType = sipType_QgsProcessingToolboxModelParameterNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent )
         sipType = sipType_QgsProcessingToolboxModelRecentNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite )
         sipType = sipType_QgsProcessingToolboxModelFavoriteNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::ParameterGroup )
+        sipType = sipType_QgsProcessingToolboxModelParameterGroupNode;
     }
     else
       sipType = 0;
@@ -52,6 +57,8 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
       Group,
       Algorithm,
       Recent,
+      Parameter,
+      ParameterGroup,
       Favorite,
     };
 
@@ -64,7 +71,8 @@ Returns the node's type.
 
     QgsProcessingToolboxModelNode *parent();
 %Docstring
-Returns the node's parent. If the node's parent is ``None``, then the node is a root node.
+Returns the node's parent. If the node's parent is ``None``, then the
+node is a root node.
 %End
 
     QList<QgsProcessingToolboxModelNode *> children();
@@ -82,8 +90,8 @@ ownership back to the caller.
     QgsProcessingToolboxModelGroupNode *getChildGroupNode( const QString &id );
 %Docstring
 Tries to find a child node belonging to this node, which corresponds to
-a group node with the given group ``id``. Returns ``None`` if no matching
-child group node was found.
+a group node with the given group ``id``. Returns ``None`` if no
+matching child group node was found.
 %End
 
     void addChildNode( QgsProcessingToolboxModelNode *node /Transfer/ );
@@ -102,7 +110,8 @@ Deletes all child nodes from this node.
 class QgsProcessingToolboxModelRecentNode : QgsProcessingToolboxModelNode
 {
 %Docstring(signature="appended")
-Processing toolbox model node corresponding to the recent algorithms group
+Processing toolbox model node corresponding to the recent algorithms
+group.
 
 .. warning::
 
@@ -123,7 +132,8 @@ Processing toolbox model node corresponding to the recent algorithms group
 class QgsProcessingToolboxModelFavoriteNode : QgsProcessingToolboxModelNode
 {
 %Docstring(signature="appended")
-Processing toolbox model node corresponding to the favorite algorithms group
+Processing toolbox model node corresponding to the favorite algorithms
+group.
 
 .. warning::
 
@@ -137,6 +147,27 @@ Processing toolbox model node corresponding to the favorite algorithms group
 %End
   public:
     QgsProcessingToolboxModelFavoriteNode();
+
+    virtual NodeType nodeType() const;
+};
+
+class QgsProcessingToolboxModelParameterGroupNode : QgsProcessingToolboxModelNode
+{
+%Docstring(signature="appended")
+Processing toolbox model node corresponding to the parameter group.
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtoolboxmodel.h"
+%End
+  public:
+    QgsProcessingToolboxModelParameterGroupNode();
 
     virtual NodeType nodeType() const;
 };
@@ -198,8 +229,8 @@ Processing toolbox model node corresponding to a group of algorithms.
 Constructor for QgsProcessingToolboxModelGroupNode.
 
 The ``id`` argument specifies the group ID (unique and untranslated),
-and the ``name`` argument gives the translated, user-visible name
-of the group.
+and the ``name`` argument gives the translated, user-visible name of the
+group.
 %End
 
     virtual NodeType nodeType() const;
@@ -234,8 +265,8 @@ Processing toolbox model node corresponding to an algorithm.
   public:
     QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 %Docstring
-Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
-with the specified ``algorithm``.
+Constructor for QgsProcessingToolboxModelAlgorithmNode, associated with
+the specified ``algorithm``.
 %End
 
     virtual NodeType nodeType() const;
@@ -248,13 +279,46 @@ Returns the algorithm associated with this node.
 };
 
 
+class QgsProcessingToolboxModelParameterNode : QgsProcessingToolboxModelNode
+{
+%Docstring(signature="appended")
+Processing toolbox model node corresponding to a parameter.
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtoolboxmodel.h"
+%End
+  public:
+    QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType );
+%Docstring
+Constructor for QgsProcessingToolboxModelParameterNode, associated with
+the specified ``paramType``.
+%End
+
+    virtual NodeType nodeType() const;
+
+    const QgsProcessingParameterType *parameterType() const;
+%Docstring
+Returns the parameter type associated with this node.
+%End
+
+};
+
+
 class QgsProcessingToolboxModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-A model for providers and algorithms shown within the Processing toolbox.
+A model for providers and algorithms shown within the Processing
+toolbox.
 
-See :py:class:`QgsProcessingToolboxProxyModel` for a sorted, filterable version
-of this model.
+See :py:class:`QgsProcessingToolboxProxyModel` for a sorted, filterable
+version of this model.
 
 .. versionadded:: 3.4
 %End
@@ -273,22 +337,26 @@ of this model.
       AlgorithmShortDescription,
       AlgorithmTags,
       ProviderFlags,
+      ParameterTypeId,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
-Constructor for QgsProcessingToolboxModel, with the given ``parent`` object.
+Constructor for QgsProcessingToolboxModel, with the given ``parent``
+object.
 
-If ``registry`` is specified then the model will show providers and algorithms
-from the given registry. If no registry is specified, then the processing
-registry attached to :py:func:`QgsApplication.processingRegistry()` will be used
-by the model.
+If ``registry`` is specified then the model will show providers and
+algorithms from the given registry. If no registry is specified, then
+the processing registry attached to
+:py:func:`QgsApplication.processingRegistry()` will be used by the
+model.
 
-If ``recentLog`` is specified then it will be used to create a "Recently used" top
-level group containing recently used algorithms.
+If ``recentLog`` is specified then it will be used to create a "Recently
+used" top level group containing recently used algorithms.
 
-If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. Since QGIS 3.40
+If ``favoriteManager`` is specified then it will be used to create a
+"Favorites" top level group containing favorite algorithms. Since QGIS
+3.40
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -322,8 +390,8 @@ Returns the model index corresponding to the given ``node``.
 
     QgsProcessingProvider *providerForIndex( const QModelIndex &index ) const;
 %Docstring
-Returns the provider which corresponds to a given ``index``, or
-``None`` if the index does not represent a provider.
+Returns the provider which corresponds to a given ``index``, or ``None``
+if the index does not represent a provider.
 
 .. seealso:: :py:func:`algorithmForIndex`
 
@@ -332,8 +400,8 @@ Returns the provider which corresponds to a given ``index``, or
 
     QString providerIdForIndex( const QModelIndex &index ) const;
 %Docstring
-Returns the provider ID which corresponds to a given ``index``, or
-an empty string if the index does not represent a provider.
+Returns the provider ID which corresponds to a given ``index``, or an
+empty string if the index does not represent a provider.
 
 .. seealso:: :py:func:`algorithmForIndex`
 
@@ -355,6 +423,27 @@ Returns the algorithm which corresponds to a given ``index``, or
 Returns ``True`` if ``index`` corresponds to an algorithm.
 
 .. seealso:: :py:func:`algorithmForIndex`
+%End
+
+    const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the algorithm which corresponds to a given ``index``, or
+``None`` if the index does not represent an algorithm.
+
+.. seealso:: :py:func:`isParameter`
+
+.. seealso:: :py:func:`providerForIndex`
+
+.. versionadded:: 3.44
+%End
+
+    bool isParameter( const QModelIndex &index ) const;
+%Docstring
+Returns ``True`` if ``index`` corresponds to a parameter.
+
+.. seealso:: :py:func:`parameterTypeForIndex`
+
+.. versionadded:: 3.44
 %End
 
     QModelIndex indexForProvider( const QString &providerId ) const;
@@ -387,9 +476,11 @@ Emitted whenever favorite algorithms are added to the model.
 class QgsProcessingToolboxProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
-A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
-which automatically sorts the toolbox in a logical fashion and supports filtering
-the results.
+A proxy model for providers and algorithms shown within the Processing
+toolbox.
+
+The model automatically sorts the toolbox in a logical fashion and
+supports filtering the results.
 
 .. versionadded:: 3.4
 %End
@@ -411,18 +502,21 @@ the results.
 
     explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
-Constructor for QgsProcessingToolboxProxyModel, with the given ``parent`` object.
+Constructor for QgsProcessingToolboxProxyModel, with the given
+``parent`` object.
 
-If ``registry`` is specified then the model will show providers and algorithms
-from the given registry. If no registry is specified, then the processing
-registry attached to :py:func:`QgsApplication.processingRegistry()` will be used
-by the model.
+If ``registry`` is specified then the model will show providers and
+algorithms from the given registry. If no registry is specified, then
+the processing registry attached to
+:py:func:`QgsApplication.processingRegistry()` will be used by the
+model.
 
-If ``recentLog`` is specified then it will be used to create a "Recently used" top
-level group containing recently used algorithms.
+If ``recentLog`` is specified then it will be used to create a "Recently
+used" top level group containing recently used algorithms.
 
-If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. SInce QGIS 3.40
+If ``favoriteManager`` is specified then it will be used to create a
+"Favorites" top level group containing favorite algorithms. SInce QGIS
+3.40
 %End
 
     QgsProcessingToolboxModel *toolboxModel();

@@ -50,7 +50,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool filterNeedsGeometry() const override;
     QString dump() const override;
     QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
@@ -80,10 +81,19 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool updateRangeLowerValue( int rangeIndex, double value );
     bool updateRangeRenderState( int rangeIndex, bool render );
 
+    /**
+     * Adds a class to the renderer, with the specified \a symbol.
+     */
     void addClass( QgsSymbol *symbol );
-    //! \note available in Python bindings as addClassRange
+
+    /**
+     * Adds a class to the renderer, with the specified \a range.
+     */
     void addClass( const QgsRendererRange &range ) SIP_PYNAME( addClassRange );
-    //! \note available in Python bindings as addClassLowerUpper
+
+    /**
+     * Adds a class to the renderer, with the specified \a lower and \a upper bounds.
+     */
     void addClass( double lower, double upper ) SIP_PYNAME( addClassLowerUpper );
 
     /**

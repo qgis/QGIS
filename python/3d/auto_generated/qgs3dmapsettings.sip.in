@@ -35,20 +35,26 @@ Definition of the world.
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-Reads configuration from a DOM element previously written by :py:func:`~Qgs3DMapSettings.writeXml`
+Reads configuration from a DOM element previously written by
+:py:func:`~Qgs3DMapSettings.writeXml`
 %End
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes configuration to a DOM element, to be used later with :py:func:`~Qgs3DMapSettings.readXml`
+Writes configuration to a DOM element, to be used later with
+:py:func:`~Qgs3DMapSettings.readXml`
 %End
     void resolveReferences( const QgsProject &project );
 %Docstring
-Resolves references to other objects (map layers) after the call to :py:func:`~Qgs3DMapSettings.readXml`
+Resolves references to other objects (map layers) after the call to
+:py:func:`~Qgs3DMapSettings.readXml`
 %End
 
     QgsRectangle extent() const;
 %Docstring
 Returns the 3D scene's 2D extent in the 3D scene's CRS
+
+The extent is ignored in globe scenes (which always show the whole
+globe).
 
 .. seealso:: :py:func:`crs`
 
@@ -57,9 +63,15 @@ Returns the 3D scene's 2D extent in the 3D scene's CRS
 
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Sets the 3D scene's 2D ``extent`` in the 3D scene's CRS, while also setting the scene's origin to the extent's center
-This needs to be called during initialization, as terrain will only be generated
-within this extent and layer 3D data will only be loaded within this extent too.
+Sets the 3D scene's 2D ``extent`` in the 3D scene's CRS, while also
+setting the scene's origin to the extent's center
+
+This needs to be called during initialization, as terrain will only be
+generated within this extent and layer 3D data will only be loaded
+within this extent too.
+
+The extent is ignored in globe scenes (which always show the whole
+globe).
 
 .. seealso:: :py:func:`setOrigin`
 
@@ -72,13 +84,14 @@ within this extent and layer 3D data will only be loaded within this extent too.
 %Docstring
 Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
 
-We move the 3D world origin to the center of the extent of our terrain: this is done
-to minimize the impact of numerical errors when operating with 32-bit floats.
-Unfortunately this is not enough when working with a large area (still results in jitter
-with scenes spanning hundreds of kilometers and zooming in a lot).
+We move the 3D world origin to the center of the extent of our terrain:
+this is done to minimize the impact of numerical errors when operating
+with 32-bit floats. Unfortunately this is not enough when working with a
+large area (still results in jitter with scenes spanning hundreds of
+kilometers and zooming in a lot).
 
-Need to look into more advanced techniques like "relative to center" or "relative to eye"
-to improve the precision.
+Need to look into more advanced techniques like "relative to center" or
+"relative to eye" to improve the precision.
 
 .. seealso:: :py:func:`origin`
 %End
@@ -92,11 +105,13 @@ Returns coordinates in map CRS at which 3D scene has origin (0,0,0).
 
     QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
 %Docstring
-Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+Converts map coordinates to 3D world coordinates (applies offset and
+turns (x,y,z) into (x,-z,y))
 %End
     QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords ) const;
 %Docstring
-Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+Converts 3D world coordinates to map coordinates (applies offset and
+turns (x,y,z) into (x,-z,y))
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -113,11 +128,24 @@ Returns coordinate reference system used in the 3D scene.
 .. seealso:: :py:func:`setCrs`
 %End
 
+    Qgis::SceneMode sceneMode() const;
+%Docstring
+Returns mode of the 3D scene - whether it is represented as a globe
+(when using Geocentric CRS such as EPSG:4978), or whether it is a local
+scene when using a projected CRS.
+
+In case of globe scene, we always show the whole globe and
+:py:func:`~Qgs3DMapSettings.extent` is ignored.
+
+.. versionadded:: 3.44
+%End
+
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
 Returns the coordinate transform context, which stores various
-information regarding which datum transforms should be used when transforming points
-from a source to destination coordinate reference system.
+information regarding which datum transforms should be used when
+transforming points from a source to destination coordinate reference
+system.
 
 .. seealso:: :py:func:`setTransformContext`
 %End
@@ -125,32 +153,36 @@ from a source to destination coordinate reference system.
     void setTransformContext( const QgsCoordinateTransformContext &context );
 %Docstring
 Sets the coordinate transform ``context``, which stores various
-information regarding which datum transforms should be used when transforming points
-from a source to destination coordinate reference system.
+information regarding which datum transforms should be used when
+transforming points from a source to destination coordinate reference
+system.
 
 .. seealso:: :py:func:`transformContext`
 %End
 
     const QgsPathResolver &pathResolver() const;
 %Docstring
-Returns the path resolver for conversion between relative and absolute paths
-during rendering operations, e.g. for resolving relative symbol paths.
+Returns the path resolver for conversion between relative and absolute
+paths during rendering operations, e.g. for resolving relative symbol
+paths.
 
 .. seealso:: :py:func:`setPathResolver`
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
 %Docstring
-Sets the path ``resolver`` for conversion between relative and absolute paths
-during rendering operations, e.g. for resolving relative symbol paths.
+Sets the path ``resolver`` for conversion between relative and absolute
+paths during rendering operations, e.g. for resolving relative symbol
+paths.
 
 .. seealso:: :py:func:`pathResolver`
 %End
 
     QgsMapThemeCollection *mapThemeCollection() const;
 %Docstring
-Returns pointer to the collection of map themes. Normally this would be :py:func:`QgsProject.mapThemeCollection()`
-of the currently used project. Without a valid map theme collection object it is not possible
+Returns pointer to the collection of map themes. Normally this would be
+:py:func:`QgsProject.mapThemeCollection()` of the currently used
+project. Without a valid map theme collection object it is not possible
 to resolve map themes from their names.
 
 .. versionadded:: 3.6
@@ -187,7 +219,8 @@ Returns color used for selected features
 %Docstring
 Sets the list of 3D map ``layers`` to be rendered in the scene.
 
-This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
+This setting dictates which layers are to be rendered using their 3D
+rendering configuration, if available.
 
 .. seealso:: :py:func:`layers`
 
@@ -198,7 +231,8 @@ This setting dictates which layers are to be rendered using their 3D rendering c
 %Docstring
 Returns the list of 3D map layers to be rendered in the scene.
 
-This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
+This setting dictates which layers are to be rendered using their 3D
+rendering configuration, if available.
 
 .. seealso:: :py:func:`setLayers`
 
@@ -232,8 +266,8 @@ Sets the terrain settings.
 
  void setTerrainVerticalScale( double zScale ) /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
-Sets vertical scale (exaggeration) of terrain
-(1 = true scale, > 1 = hills get more pronounced)
+Sets vertical scale (exaggeration) of terrain (1 = true scale, > 1 =
+hills get more pronounced)
 
 .. deprecated:: 3.42
 
@@ -262,8 +296,9 @@ Sets resolution (in pixels) of the texture of a terrain tile
 
  int mapTileResolution() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
-Returns resolution (in pixels) of the texture of a terrain tile. This parameter influences
-how many zoom levels for terrain tiles there will be (together with :py:func:`~Qgs3DMapSettings.maxTerrainGroundError`)
+Returns resolution (in pixels) of the texture of a terrain tile. This
+parameter influences how many zoom levels for terrain tiles there will
+be (together with :py:func:`~Qgs3DMapSettings.maxTerrainGroundError`)
 
 .. deprecated:: 3.42
 
@@ -283,11 +318,13 @@ Sets maximum allowed screen error of terrain tiles in pixels.
 
  double maxTerrainScreenError() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
-Returns maximum allowed screen error of terrain tiles in pixels. This parameter decides
-how aggressively less detailed terrain tiles are swapped to more detailed ones as camera gets closer.
-Each tile has its error defined in world units - this error gets projected to screen pixels
-according to camera view and if the tile's error is greater than the allowed error, it will
-be swapped by more detailed tiles with lower error.
+Returns maximum allowed screen error of terrain tiles in pixels. This
+parameter decides how aggressively less detailed terrain tiles are
+swapped to more detailed ones as camera gets closer. Each tile has its
+error defined in world units - this error gets projected to screen
+pixels according to camera view and if the tile's error is greater than
+the allowed error, it will be swapped by more detailed tiles with lower
+error.
 
 .. deprecated:: 3.42
 
@@ -307,10 +344,12 @@ Sets the maximum ground error of terrain tiles in world units.
 
  double maxTerrainGroundError() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
-Returns maximum ground error of terrain tiles in world units. This parameter influences
-how many zoom levels there will be (together with :py:func:`~Qgs3DMapSettings.mapTileResolution`).
-This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
-to further split terrain tiles into finer ones because they will not add extra details anymore.
+Returns maximum ground error of terrain tiles in world units. This
+parameter influences how many zoom levels there will be (together with
+:py:func:`~Qgs3DMapSettings.mapTileResolution`). This value tells that
+when the given ground error is reached (e.g. 10 meters), it makes no
+sense to further split terrain tiles into finer ones because they will
+not add extra details anymore.
 
 .. deprecated:: 3.42
 
@@ -330,7 +369,8 @@ Sets the terrain elevation offset (used to move the terrain up or down)
 
  double terrainElevationOffset() const /Deprecated="Since 3.42. Use terrainSettings() instead."/;
 %Docstring
-Returns the elevation offset of the terrain (used to move the terrain up or down)
+Returns the elevation offset of the terrain (used to move the terrain up
+or down)
 
 .. deprecated:: 3.42
 
@@ -350,9 +390,10 @@ Sets whether terrain shading is enabled.
 
     bool isTerrainShadingEnabled() const;
 %Docstring
-Returns whether terrain shading is enabled. When enabled, in addition to the terrain texture
-generated from the map, the terrain rendering will take into account position of the lights,
-terrain normals and terrain shading material (ambient and specular colors, shininess).
+Returns whether terrain shading is enabled. When enabled, in addition to
+the terrain texture generated from the map, the terrain rendering will
+take into account position of the lights, terrain normals and terrain
+shading material (ambient and specular colors, shininess).
 
 .. versionadded:: 3.6
 %End
@@ -368,8 +409,10 @@ Sets terrain shading material.
 
     QgsPhongMaterialSettings terrainShadingMaterial() const;
 %Docstring
-Returns terrain shading material. Diffuse color component is ignored since the diffuse component
-is provided by 2D rendered map texture. Only used when :py:func:`~Qgs3DMapSettings.isTerrainShadingEnabled` is ``True``.
+Returns terrain shading material. Diffuse color component is ignored
+since the diffuse component is provided by 2D rendered map texture. Only
+used when :py:func:`~Qgs3DMapSettings.isTerrainShadingEnabled` is
+``True``.
 
 .. versionadded:: 3.6
 %End
@@ -385,8 +428,9 @@ Sets name of the map theme.
 
     QString terrainMapTheme() const;
 %Docstring
-Returns name of the map theme (from the active project) that will be used for terrain's texture.
-Empty map theme name means that the map theme is not overridden and the current map theme will be used.
+Returns name of the map theme (from the active project) that will be
+used for terrain's texture. Empty map theme name means that the map
+theme is not overridden and the current map theme will be used.
 
 .. note::
 
@@ -402,15 +446,18 @@ Sets whether to display bounding boxes of terrain tiles (for debugging)
 %End
     bool showTerrainBoundingBoxes() const;
 %Docstring
-Returns whether to display bounding boxes of terrain tiles (for debugging)
+Returns whether to display bounding boxes of terrain tiles (for
+debugging)
 %End
     void setShowTerrainTilesInfo( bool enabled );
 %Docstring
-Sets whether to display extra tile info on top of terrain tiles (for debugging)
+Sets whether to display extra tile info on top of terrain tiles (for
+debugging)
 %End
     bool showTerrainTilesInfo() const;
 %Docstring
-Returns whether to display extra tile info on top of terrain tiles (for debugging)
+Returns whether to display extra tile info on top of terrain tiles (for
+debugging)
 %End
 
     void setShowCameraViewCenter( bool enabled );
@@ -429,14 +476,16 @@ Returns whether to show camera's view center as a sphere (for debugging)
 
     void setShowCameraRotationCenter( bool enabled );
 %Docstring
-Sets whether to show camera's rotation center as a sphere (for debugging)
+Sets whether to show camera's rotation center as a sphere (for
+debugging)
 
 .. versionadded:: 3.24
 %End
 
     bool showCameraRotationCenter() const;
 %Docstring
-Returns whether to show camera's rotation center as a sphere (for debugging)
+Returns whether to show camera's rotation center as a sphere (for
+debugging)
 
 .. versionadded:: 3.24
 %End
@@ -492,7 +541,8 @@ Returns the eye dome lighting strength value
 
     void setEyeDomeLightingDistance( int distance );
 %Docstring
-Sets the eye dome lighting distance value (contributes to the contrast of the image
+Sets the eye dome lighting distance value (contributes to the contrast
+of the image
 
 .. seealso:: :py:func:`eyeDomeLightingDistance`
 
@@ -500,7 +550,8 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
 %End
     int eyeDomeLightingDistance() const;
 %Docstring
-Returns the eye dome lighting distance value (contributes to the contrast of the image)
+Returns the eye dome lighting distance value (contributes to the
+contrast of the image)
 %End
 
     void setStopUpdates( bool enabled );
@@ -624,7 +675,8 @@ Sets the camera movement speed
 
     void setOutputDpi( const double dpi );
 %Docstring
-Sets DPI used for conversion between real world units (e.g. mm) and pixels
+Sets DPI used for conversion between real world units (e.g. mm) and
+pixels
 
 :param dpi: the number of dot per inch
 
@@ -633,8 +685,8 @@ Sets DPI used for conversion between real world units (e.g. mm) and pixels
 
     double outputDpi() const;
 %Docstring
-Returns DPI used for conversion between real world units (e.g. mm) and pixels
-Default value is 96
+Returns DPI used for conversion between real world units (e.g. mm) and
+pixels Default value is 96
 
 .. versionadded:: 3.10
 %End
@@ -719,28 +771,32 @@ Sets the renderer usage
 
     Qgis::ViewSyncModeFlags viewSyncMode() const;
 %Docstring
-Returns the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+Returns the view sync mode (used to synchronize the 2D main map canvas
+and the 3D camera navigation)
 
 .. versionadded:: 3.26
 %End
 
     void setViewSyncMode( Qgis::ViewSyncModeFlags mode );
 %Docstring
-Sets the view sync mode (used to synchronize the 2D main map canvas and the 3D camera navigation)
+Sets the view sync mode (used to synchronize the 2D main map canvas and
+the 3D camera navigation)
 
 .. versionadded:: 3.26
 %End
 
     bool viewFrustumVisualizationEnabled() const;
 %Docstring
-Returns whether the camera's view frustum is visualized on the 2D map canvas
+Returns whether the camera's view frustum is visualized on the 2D map
+canvas
 
 .. versionadded:: 3.26
 %End
 
     void setViewFrustumVisualizationEnabled( bool enabled );
 %Docstring
-Sets whether the camera's view frustum is visualized on the 2D map canvas
+Sets whether the camera's view frustum is visualized on the 2D map
+canvas
 
 .. versionadded:: 3.26
 %End
@@ -758,10 +814,10 @@ Returns whether debug overlay is enabled
 
     void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
 %Docstring
-Sets whether debug overlay is enabled
-The debug overlay displays some debugging and profiling information.
-It has been introduced in Qt version 5.15.
-This parameter is transient. It is not saved in the project parameters.
+Sets whether debug overlay is enabled The debug overlay displays some
+debugging and profiling information. It has been introduced in Qt
+version 5.15. This parameter is transient. It is not saved in the
+project parameters.
 
 .. seealso:: :py:func:`isDebugOverlayEnabled`
 
@@ -884,7 +940,8 @@ Emitted when the terrain elevation offset is changed
 
     void terrainShadingChanged();
 %Docstring
-Emitted when terrain shading enabled flag or terrain shading material has changed
+Emitted when terrain shading enabled flag or terrain shading material
+has changed
 
 .. versionadded:: 3.6
 %End
@@ -905,7 +962,8 @@ Emitted when the list of map's extra renderers have been modified
 
     void showTerrainBoundingBoxesChanged();
 %Docstring
-Emitted when the flag whether terrain's bounding boxes are shown has changed
+Emitted when the flag whether terrain's bounding boxes are shown has
+changed
 %End
     void showTerrainTilesInfoChanged();
 %Docstring
@@ -921,21 +979,24 @@ Emitted when the flag whether camera's view center is shown has changed
 
     void showCameraRotationCenterChanged();
 %Docstring
-Emitted when the flag whether camera's rotation center is shown has changed
+Emitted when the flag whether camera's rotation center is shown has
+changed
 
 .. versionadded:: 3.24
 %End
 
     void showLightSourceOriginsChanged();
 %Docstring
-Emitted when the flag whether light source origins are shown has changed.
+Emitted when the flag whether light source origins are shown has
+changed.
 
 .. versionadded:: 3.15
 %End
 
     void showLabelsChanged();
 %Docstring
-Emitted when the flag whether labels are displayed on terrain tiles has changed
+Emitted when the flag whether labels are displayed on terrain tiles has
+changed
 %End
 
     void stopUpdatesChanged();
@@ -1060,7 +1121,8 @@ Emitted when the FPS counter is enabled or disabled
 
     void viewFrustumVisualizationEnabledChanged();
 %Docstring
-Emitted when the camera's view frustum visualization on the main 2D map canvas is enabled or disabled
+Emitted when the camera's view frustum visualization on the main 2D map
+canvas is enabled or disabled
 
 .. versionadded:: 3.26
 %End
@@ -1090,7 +1152,8 @@ Emitted when the 3d view's 2d extent has changed
 
     void showExtentIn2DViewChanged();
 %Docstring
-Emitted when the parameter to display 3d view's extent in the 2D canvas has changed
+Emitted when the parameter to display 3d view's extent in the 2D canvas
+has changed
 
 .. seealso:: :py:func:`setShowExtentIn2DView`
 

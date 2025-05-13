@@ -265,6 +265,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
  * \ingroup gui
  * \class QgsSvgSelectorFilterModel
  * \brief A model for displaying SVG files with a preview icon which can be filtered by file name.
+ *
  * Population of the model is performed in a background thread to ensure that
  * initial creation of the model is responsive and does not block the GUI.
  * \since QGIS 3.20
@@ -289,7 +290,9 @@ class GUI_EXPORT QgsSvgSelectorFilterModel : public QSortFilterProxyModel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorListModel
- * \brief A model for displaying SVG files with a preview icon. Population of the model is performed in
+ * \brief A model for displaying SVG files with a preview icon.
+ *
+ * Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
  * not block the GUI.
  */
@@ -341,7 +344,9 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorGroupsModel
- * \brief A model for displaying SVG search paths. Population of the model is performed in
+ * \brief A model for displaying SVG search paths.
+ *
+ * Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
  * not block the GUI.
  */
@@ -470,6 +475,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
 /**
  * \ingroup gui
  * \class QgsSvgSelectorDialog
+ * \brief A dialog for selection of an SVG file.
  */
 class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {

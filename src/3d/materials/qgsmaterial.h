@@ -30,7 +30,7 @@ namespace Qt3DRender
 }
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for all materials used within QGIS 3D views.
  * It provides common functionality (such as clipping) that all materials should support (where applicable).
  * \since QGIS 3.40
@@ -71,6 +71,8 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
     static const QString CLIP_PLANE_DEFINE;
 
     bool mClippingEnabled = false;
+
+    friend class TestQgs3dMaterial;
 };
 
 #endif // QGSMATERIAL_H

@@ -28,7 +28,7 @@ class QgsMessageBar;
  * \ingroup gui
  * \class QgsFieldCalculator
  *
- * \brief A dialog class that provides calculation of new fields using existing fields, values and a set of operators
+ * \brief A dialog that provides calculation of new fields using existing fields, values and a set of operators.
  *
  * Sample usage of the QgsFieldCalculator class:
  *

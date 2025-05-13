@@ -16,6 +16,9 @@
 
 class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsGraduatedSymbolRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsgraduatedsymbolrendererwidget.h"
@@ -100,7 +103,8 @@ Returns a list of indexes for the classes under selection
     void changeSelectedSymbols();
     void applyChangeToSymbol();
 %Docstring
-Applies current symbol to selected ranges, or to all ranges if none is selected
+Applies current symbol to selected ranges, or to all ranges if none is
+selected
 %End
 
     virtual QList<QgsSymbol *> selectedSymbols();

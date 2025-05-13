@@ -14,9 +14,10 @@
 class QgsGeometryCheckRegistry
 {
 %Docstring(signature="appended")
-This class manages all known geometry check factories.
+A registry for all known geometry check factories.
 
-:py:class:`QgsGeometryCheckRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsGeometryCheckRegistry` is not usually directly created,
+but rather accessed through
 :py:func:`QgsAnalysis.geometryCheckRegistry()`.
 
 .. note::
@@ -32,7 +33,8 @@ This class manages all known geometry check factories.
   public:
     QgsGeometryCheckRegistry();
 %Docstring
-Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is
+not usually directly created, but rather accessed through
 :py:func:`QgsAnalysis.geometryCheckRegistry()`.
 %End
 
@@ -40,16 +42,17 @@ Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usuall
 
     QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) /Factory/;
 %Docstring
-Create a new geometryCheck of type ``checkId``
-Pass the ``context`` and ``geometryCheckConfiguration`` to the newly created check.
-Ownership is transferred to the caller.
+Create a new geometryCheck of type ``checkId`` Pass the ``context`` and
+``geometryCheckConfiguration`` to the newly created check. Ownership is
+transferred to the caller.
 
 .. versionadded:: 3.4
 %End
 
     QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = QgsGeometryCheck::Flags() ) const;
 %Docstring
-Returns all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
+Returns all geometry check factories that are compatible with ``layer``
+and have all of the ``flags`` set.
 
 .. versionadded:: 3.4
 %End

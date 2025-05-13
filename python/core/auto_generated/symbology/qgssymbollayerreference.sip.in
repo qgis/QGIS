@@ -13,27 +13,33 @@
 class QgsSymbolLayerId
 {
 %Docstring(signature="appended")
-We may need stable references to symbol layers, when pointers to symbol layers is not usable
-(when a symbol or a feature renderer is cloned for example).
+We may need stable references to symbol layers, when pointers to symbol
+layers are not usable (when a symbol or a feature renderer is cloned for
+example).
 
 A symbol layer identifier consists of:
 
 - an identifier to its symbol (given by the :py:class:`QgsFeatureRenderer`)
 - a path of indexes inside its symbol and subsymbols.
 
-For a symbol in a :py:class:`QgsSingleSymbolRenderer` that has two symbol layers, it will give:
+For a symbol in a :py:class:`QgsSingleSymbolRenderer` that has two
+symbol layers, it will give:
 
 - "" for the symbol key
 - [0] and [1] for the two symbol layer indexes
 
 For a :py:class:`QgsRuleBasedRenderer` each rule key is the symbol key.
 
-For a symbol with a symbol layer that has a sub symbol (say a :py:class:`QgsArrowSymbolLayer`),
-path to symbol layers of the sub symbol are given by a list of indexes:
+For a symbol with a symbol layer that has a sub symbol (say a
+:py:class:`QgsArrowSymbolLayer`), path to symbol layers of the sub
+symbol are given by a list of indexes:
 
-- [0, 0] : first symbol layer of the sub symbol of the first symbol layer
-- [0, 1] : second symbol layer of the sub symbol of the first symbol layer
-- [2, 0] : first symbol layer of the sub symbol of the third symbol layer, etc.
+- [0, 0] : first symbol layer of the sub symbol of the first symbol
+  layer
+- [0, 1] : second symbol layer of the sub symbol of the first symbol
+  layer
+- [2, 0] : first symbol layer of the sub symbol of the third symbol
+  layer, etc.
 
 .. versionadded:: 3.12
 
@@ -50,7 +56,8 @@ path to symbol layers of the sub symbol are given by a list of indexes:
 
     QgsSymbolLayerId( const QString &key, int index );
 %Docstring
-QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
+QgsSymbolLayerId constructor with a symbol key and a unique symbol layer
+index
 %End
 
     QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath );
@@ -92,7 +99,6 @@ Returns the symbol layer index path inside the symbol
 class QgsSymbolLayerReference
 {
 %Docstring(signature="appended")
-
 Type used to refer to a specific symbol layer in a symbol of a layer.
 
 .. versionadded:: 3.12
@@ -170,7 +176,8 @@ typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;
 
 QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList & );
 %Docstring
-Utilitary function to turn a :py:class:`QgsSymbolLayerReferenceList` into a string
+Utility function to turn a :py:class:`QgsSymbolLayerReferenceList` into
+a string
 
 .. seealso:: :py:func:`stringToSymbolLayerReferenceList`
 
@@ -179,8 +186,9 @@ Utilitary function to turn a :py:class:`QgsSymbolLayerReferenceList` into a stri
 
 QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString & );
 %Docstring
-Utilitary function to parse a string originated from symbolLayerReferenceListToString
-into a :py:class:`QgsSymbolLayerReferenceList`
+Utility function to parse a string originated from
+symbolLayerReferenceListToString into a
+:py:class:`QgsSymbolLayerReferenceList`
 
 .. seealso:: :py:func:`symbolLayerReferenceListToString`
 

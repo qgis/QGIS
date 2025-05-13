@@ -325,7 +325,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 /**
  * \ingroup core
  * \class QgsPropertyCollection
- * \brief A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
+ * \brief A grouped map of multiple QgsProperty objects, each referenced by an integer key value.
  *
  * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
  * string creation and comparisons which would be required by a string key. The intended use case is that

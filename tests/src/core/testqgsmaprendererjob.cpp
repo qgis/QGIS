@@ -125,7 +125,7 @@ void TestQgsMapRendererJob::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Value" ), QMetaType::Type::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
+  mCRS = QgsCoordinateReferenceSystem( R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )""" );
   //
   // Create the test dataset if it doesn't exist
   //

@@ -11,7 +11,8 @@
 class QgsLayoutComboBox : QComboBox
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayoutComboBox` class is a combo box which displays available layouts from a :py:class:`QgsLayoutManager`.
+A combobox which displays available layouts from a
+:py:class:`QgsLayoutManager`.
 
 .. versionadded:: 3.8
 %End
@@ -28,7 +29,8 @@ layout ``manager``. The layouts can optionally be filtered by type.
 
     void setLayoutManager( QgsLayoutManager *manager );
 %Docstring
-Sets the layout ``manager`` containing the layouts to list in the combo box.
+Sets the layout ``manager`` containing the layouts to list in the combo
+box.
 %End
 
     QgsLayoutManagerProxyModel::Filters filters() const;
@@ -47,14 +49,16 @@ Sets the current ``filters`` used for filtering available layouts.
 
     void setAllowEmptyLayout( bool allowEmpty );
 %Docstring
-Sets whether an optional empty layout ("not set") option is present in the combobox.
+Sets whether an optional empty layout ("not set") option is present in
+the combobox.
 
 .. seealso:: :py:func:`allowEmptyLayout`
 %End
 
     bool allowEmptyLayout() const;
 %Docstring
-Returns ``True`` if the combobox includes the empty layout ("not set") choice.
+Returns ``True`` if the combobox includes the empty layout ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyLayout`
 %End

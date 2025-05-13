@@ -227,7 +227,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
 
 /**
  * \ingroup core
- * \brief 3D renderer that renders all points from a point cloud layer
+ * \brief 3D renderer that renders all points from a point cloud layer.
  *
  * \since QGIS 3.18
  */

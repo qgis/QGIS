@@ -14,19 +14,17 @@
  ***************************************************************************/
 
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DCore/QEntity>
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
 #endif
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QLogicAspect>
-#include <Qt3DRender/QCamera>
 #include <Qt3DLogic/QFrameAction>
 
+#include "qgs3daxis.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgswindow3dengine.h"
@@ -81,7 +79,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
 {
   if ( mMapTool )
-    mMapTool->deactivate();
+    delete mMapTool;
   // make sure the scene is deleted while map settings object is still alive
   mScene->deleteLater();
   mScene = nullptr;
@@ -255,10 +253,6 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
     mScene->cameraController()->setEnabled( true );
     setCursor( Qt::OpenHandCursor );
   }
-  else if ( !mMapTool && tool )
-  {
-    mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
-  }
 
   if ( mMapTool )
     mMapTool->deactivate();
@@ -276,6 +270,12 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
 {
   if ( watched != this )
     return false;
+
+  if ( mScene && mScene->get3DAxis() && mScene->get3DAxis()->handleEvent( event ) )
+  {
+    event->accept();
+    return true;
+  }
 
   if ( event->type() == QEvent::ShortcutOverride )
   {
@@ -306,6 +306,12 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
       break;
     case QEvent::KeyPress:
       mMapTool->keyPressEvent( static_cast<QKeyEvent *>( event ) );
+      break;
+    case QEvent::KeyRelease:
+      mMapTool->keyReleaseEvent( static_cast<QKeyEvent *>( event ) );
+      break;
+    case QEvent::Wheel:
+      mMapTool->mouseWheelEvent( static_cast<QWheelEvent *>( event ) );
       break;
     default:
       break;

@@ -330,12 +330,12 @@ namespace pal
       /**
        * Removes the label position from the specified \a index.
        */
-      void removeFromIndex( PalRtree<LabelPosition> &index );
+      void removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal );
 
       /**
        * Inserts the label position into the specified \a index.
        */
-      void insertIntoIndex( PalRtree<LabelPosition> &index );
+      void insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal );
 
       /**
        * Returns a GEOS representation of all label parts as a multipolygon.
@@ -422,6 +422,8 @@ namespace pal
 
       geos::unique_ptr mOuterBoundsGeos;
       const GEOSPreparedGeometry *mPreparedOuterBoundsGeos = nullptr;
+
+      mutable QgsRectangle mBoundsForConflictIndex;
 
       double mCost;
       bool mHasObstacleConflict;

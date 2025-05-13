@@ -14,7 +14,7 @@
 class QgsServer
 {
 %Docstring(signature="appended")
-The :py:class:`QgsServer` class provides OGC web services.
+A server which provides OGC web services.
 %End
 
 %TypeHeaderCode
@@ -36,16 +36,17 @@ Set environment variable
 
     void handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project = 0 );
 %Docstring
-Handles the request.
-The query string is normally read from environment
-but can be also passed in args and in this case overrides the environment
-variable
+Handles the request. The query string is normally read from environment
+but can be also passed in args and in this case overrides the
+environment variable
 
-:param request: a :py:class:`QgsServerRequest` holding request parameters
-:param response: a :py:class:`QgsServerResponse` for handling response I/O)
-:param project: a :py:class:`QgsProject` or ``None``, if it is ``None`` the project
-                is created from the MAP param specified in request or from
-                the QGIS_PROJECT_FILE setting
+:param request: a :py:class:`QgsServerRequest` holding request
+                parameters
+:param response: a :py:class:`QgsServerResponse` for handling response
+                 I/O)
+:param project: a :py:class:`QgsProject` or ``None``, if it is ``None``
+                the project is created from the MAP param specified in
+                request or from the QGIS_PROJECT_FILE setting
 %End
 
 

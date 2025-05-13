@@ -13,10 +13,15 @@
 class QgsMapMouseEvent : QMouseEvent
 {
 %Docstring(signature="appended")
-A :py:class:`QgsMapMouseEvent` is the result of a user interaction with the mouse on a :py:class:`QgsMapCanvas`.
-It is sent whenever the user moves, clicks, releases or double clicks the mouse.
-In addition to the coordinates in pixel space it also knows the coordinates in the mapcanvas' CRS
-as well as it knows the concept of snapping.
+A mouse event which is the result of a user interaction with a
+:py:class:`QgsMapCanvas`.
+
+It is sent whenever the user moves, clicks, releases or double clicks
+the mouse.
+
+In addition to the coordinates in pixel space it also knows the
+coordinates in the mapcanvas' CRS as well as it knows the concept of
+snapping.
 %End
 
 %TypeHeaderCode
@@ -31,7 +36,8 @@ as well as it knows the concept of snapping.
   public:
     QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event );
 %Docstring
-Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
+Creates a new QgsMapMouseEvent. Should only be required to be called
+from the QgsMapCanvas.
 
 :param mapCanvas: The map canvas on which the event occurred
 :param event: The original mouse event
@@ -39,7 +45,8 @@ Creates a new QgsMapMouseEvent. Should only be required to be called from the Qg
 
     QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 %Docstring
-Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
+Creates a new QgsMapMouseEvent. Should only be required to be called
+from the QgsMapCanvas.
 
 :param mapCanvas: The map canvas on which the event occurred
 :param type: The type of the event
@@ -51,7 +58,8 @@ Creates a new QgsMapMouseEvent. Should only be required to be called from the Qg
 
     QgsPointXY snapPoint();
 %Docstring
-snapPoint will snap the points using the map canvas snapping utils configuration
+snapPoint will snap the points using the map canvas snapping utils
+configuration
 
 .. note::
 
@@ -60,8 +68,8 @@ snapPoint will snap the points using the map canvas snapping utils configuration
 
     bool isSnapped() const;
 %Docstring
-Returns ``True`` if there is a snapped point cached.
-Will only be useful after snapPoint has previously been called.
+Returns ``True`` if there is a snapped point cached. Will only be useful
+after snapPoint has previously been called.
 
 :return: ``True`` if there is a snapped point cached.
 %End
@@ -70,7 +78,8 @@ Will only be useful after snapPoint has previously been called.
 %Docstring
 mapPoint returns the point in coordinates
 
-:return: the point in map coordinates, after snapping if requested in the event.
+:return: the point in map coordinates, after snapping if requested in
+         the event.
 %End
 
     QgsPointLocator::Match mapPointMatch() const;
@@ -87,8 +96,8 @@ Returns the matching data from the most recently snapped point.
 
     void setMapPoint( const QgsPointXY &point );
 %Docstring
-Set the (snapped) point this event points to in map coordinates.
-The point in pixel coordinates will be calculated accordingly.
+Set the (snapped) point this event points to in map coordinates. The
+point in pixel coordinates will be calculated accordingly.
 
 :param point: The point in map coordinates
 %End
@@ -109,17 +118,17 @@ The snapped mouse cursor in pixel coordinates.
 
     QPoint originalPixelPoint() const;
 %Docstring
-The unsnapped, real mouse cursor position in pixel coordinates.
-Alias to :py:func:`~QgsMapMouseEvent.pos`
+The unsnapped, real mouse cursor position in pixel coordinates. Alias to
+:py:func:`~QgsMapMouseEvent.pos`
 
 :return: Mouse position in pixel coordinates
 %End
 
     void snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Snaps the mapPoint to a grid with the given ``precision``.
-The snapping will be done in the specified ``crs``. If this crs is
-different from the mapCanvas crs, it will be reprojected on the fly.
+Snaps the mapPoint to a grid with the given ``precision``. The snapping
+will be done in the specified ``crs``. If this crs is different from the
+mapCanvas crs, it will be reprojected on the fly.
 
 .. versionadded:: 3.4
 %End

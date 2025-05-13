@@ -24,6 +24,10 @@
 #include <QDomElement>
 #include <QPointer>
 
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgsgui.h"
+
 #define SIP_NO_FILE
 
 class QgsDockWidget;
@@ -50,16 +54,56 @@ class GUI_EXPORT QgsNonRejectableDialog : public QDialog
  */
 class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 {
+    static inline QgsSettingsTreeNode *sTtreeDockConfigs = QgsGui::sTtreeWidgetGeometry->createNamedListNode( QStringLiteral( "docks" ) ) SIP_SKIP;
+
+    static const QgsSettingsEntryBool *sSettingsIsDocked SIP_SKIP;
+    static const QgsSettingsEntryVariant *sSettingsDockGeometry SIP_SKIP;
+    static const QgsSettingsEntryVariant *sSettingsDialogGeometry SIP_SKIP;
+    static const QgsSettingsEntryEnumFlag<Qt::DockWidgetArea> *sSettingsDockArea SIP_SKIP;
+
     Q_OBJECT
   public:
+    enum class OpeningMode : int
+    {
+      RespectSetting, //! Respect the setting used
+      ForceDocked,    //! Force the widget to be docked, despite its settings
+      ForceDialog,    //! Force the widget to be shown in a dialog, despite its settings
+    };
+
+    enum class Option : int
+    {
+      RaiseTab = 1 << 1,        //!< Raise Tab
+      PermanentWidget = 1 << 2, //!< The widget (either as a dock or window) cannot be destroyed and must be hidden instead
+    };
+    Q_ENUM( Option )
+    Q_DECLARE_FLAGS( Options, Option )
+
     /**
      * Constructs an object that is responsible of making a docked widget or a window titled \a windowTitle that holds the \a widget
      * The ownership of \a widget is returned to \a ownerWindow once the object is destroyed.
      *
-     * If \a usePersistentWidget is TRUE then the \a widget (either as a dock or window) cannot be destroyed and must be hidden instead.
+     * With a unique \a dockId, the status (docked, area and geometry) are saved in the settings and re-used on creation.
+     * The default values of the settings can be overridden with \a defaultIsDocked and \a defaultDockArea.
+     *
+     * \since QGIS 3.42
      */
-    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow, Qt::DockWidgetArea defaultDockArea = Qt::NoDockWidgetArea, const QStringList &tabifyWith = QStringList(), bool raiseTab = false, const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
+    QgsDockableWidgetHelper(
+      const QString &windowTitle,
+      QWidget *widget,
+      QMainWindow *ownerWindow,
+      const QString &dockId,
+      const QStringList &tabifyWith = QStringList(),
+      OpeningMode openingMode = OpeningMode::RespectSetting,
+      bool defaultIsDocked = false,
+      Qt::DockWidgetArea defaultDockArea = Qt::DockWidgetArea::RightDockWidgetArea,
+      Options options = Options()
+    );
+
     ~QgsDockableWidgetHelper();
+
+    //! Returns if the widget is docked
+    //! \since 3.42
+    bool isDocked() const { return mIsDocked; }
 
     //! Reads the dimensions of both the dock widget and the top level window
     void writeXml( QDomElement &viewDom );
@@ -140,15 +184,17 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     QMainWindow *mOwnerWindow = nullptr;
 
     QStringList mTabifyWith;
-    bool mRaiseTab = false;
-
-    QString mWindowGeometrySettingsKey;
+    Options mOptions;
 
     // Unique identifier of dock
     QString mUuid;
 
-    bool mUsePersistentWidget = false;
+
+    const QString mSettingKeyDockId;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDockableWidgetHelper::Options )
+
 
 ///@endcond
 

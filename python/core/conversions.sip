@@ -2155,7 +2155,7 @@ template<TYPE>
         int state;
 
         QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-        int t2 = PyLong_AsLong(t1obj);
+        int t2 = PyLong_AsLong(t2obj);
 
         if (*sipIsErr)
         {
@@ -2175,7 +2175,83 @@ template<TYPE>
 %End
 };
 
+%MappedType QMap<int, int>
+{
+  %TypeHeaderCode
+#include <QMap>
+    %End
 
+    %ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+  if (!d)
+    return NULL;
+
+  // Set the dictionary elements.
+  QMap<int, int>::const_iterator i = sipCpp->constBegin();
+
+  while (i != sipCpp->constEnd())
+  {
+    PyObject *kobj = PyLong_FromLong(i.key());
+    PyObject *vobj = PyLong_FromLong(i.value());
+
+    if (kobj == NULL || vobj == NULL || PyDict_SetItem(d, kobj, vobj) < 0)
+    {
+      Py_DECREF(d);
+
+      if (kobj) {
+        Py_DECREF(kobj);
+      }
+      if (vobj) {
+        Py_DECREF(vobj);
+      }
+
+      return NULL;
+    }
+
+    Py_DECREF(kobj);
+    Py_DECREF(vobj);
+
+    ++i;
+  }
+
+  return d;
+  %End
+
+  %ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+  Py_ssize_t i = 0;
+
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+  {
+    if (!PyDict_Check(sipPy))
+      return 0;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+      if (!sipCanConvertToType(t1obj, sipType_QString, SIP_NOT_NONE))
+        return 0;
+    }
+
+    return 1;
+  }
+
+  QMap<int, int> *qm = new QMap<int, int>;
+
+  while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+  {
+    int t1 = PyLong_AsLong(t1obj);
+    int t2 = PyLong_AsLong(t2obj);
+    qm->insert(t1, t2);
+  }
+
+  *sipCppPtr = qm;
+
+  return sipGetState(sipTransferObj);
+  %End
+};
 
 template<TYPE1, TYPE2>
 %MappedType QMap<TYPE1, TYPE2*>

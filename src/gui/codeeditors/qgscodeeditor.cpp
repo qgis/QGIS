@@ -831,6 +831,99 @@ void QgsCodeEditor::toggleComment()
 {
 }
 
+void QgsCodeEditor::toggleLineComments( const QString &commentPrefix )
+{
+  if ( isReadOnly() )
+  {
+    return;
+  }
+
+  beginUndoAction();
+  int startLine, startPos, endLine, endPos;
+  if ( hasSelectedText() )
+  {
+    getSelection( &startLine, &startPos, &endLine, &endPos );
+  }
+  else
+  {
+    getCursorPosition( &startLine, &startPos );
+    endLine = startLine;
+    endPos = startPos;
+  }
+
+  // Check comment state and minimum indentation for each selected line
+  bool allEmpty = true;
+  bool allCommented = true;
+  int minIndentation = -1;
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+    if ( !stripped.isEmpty() )
+    {
+      allEmpty = false;
+      if ( !stripped.startsWith( commentPrefix ) )
+      {
+        allCommented = false;
+      }
+      if ( minIndentation == -1 || minIndentation > indentation( line ) )
+      {
+        minIndentation = indentation( line );
+      }
+    }
+  }
+
+  // Special case, only empty lines
+  if ( allEmpty )
+  {
+    return;
+  }
+
+  // Selection shift to keep the same selected text after the prefix is added/removed
+  int delta = 0;
+
+  const int prefixLength = static_cast<int>( commentPrefix.length() );
+
+  const bool startLineEmpty = ( text( startLine ).trimmed().isEmpty() );
+  const bool endLineEmpty = ( text( endLine ).trimmed().isEmpty() );
+
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+
+    // Empty line
+    if ( stripped.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( !allCommented )
+    {
+      insertAt( commentPrefix + ' ', line, minIndentation );
+      delta = -( prefixLength + 1 );
+    }
+    else
+    {
+      if ( !stripped.startsWith( commentPrefix ) )
+      {
+        continue;
+      }
+      if ( stripped.startsWith( commentPrefix + ' ' ) )
+      {
+        delta = prefixLength + 1;
+      }
+      else
+      {
+        delta = prefixLength;
+      }
+      setSelection( line, indentation( line ), line, indentation( line ) + delta );
+      removeSelectedText();
+    }
+  }
+
+  endUndoAction();
+  setSelection( startLine, startPos - ( startLineEmpty ? 0 : delta ), endLine, endPos - ( endLineEmpty ? 0 : delta ) );
+}
+
 void QgsCodeEditor::adjustScrollWidth()
 {
   // A zero width would make setScrollWidth crash

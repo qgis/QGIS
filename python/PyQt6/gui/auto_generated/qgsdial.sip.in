@@ -12,6 +12,9 @@
 
 class QgsDial : QDial
 {
+%Docstring(signature="appended")
+A QDial subclass with additional refinements.
+%End
 
 %TypeHeaderCode
 #include "qgsdial.h"

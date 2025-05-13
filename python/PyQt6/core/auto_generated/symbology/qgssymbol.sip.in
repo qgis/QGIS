@@ -14,7 +14,6 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 class QgsSymbolAnimationSettings
 {
 %Docstring(signature="appended")
-
 Contains settings relating to symbol animation.
 
 .. versionadded:: 3.26
@@ -29,9 +28,9 @@ Contains settings relating to symbol animation.
 %Docstring
 Sets whether the symbol is animated.
 
-This is a user-facing setting for symbols, which allows users to define whether a
-symbol is animated, and allows for creation of animated symbols via data
-defined properties.
+This is a user-facing setting for symbols, which allows users to define
+whether a symbol is animated, and allows for creation of animated
+symbols via data defined properties.
 
 .. seealso:: :py:func:`isAnimated`
 %End
@@ -40,9 +39,9 @@ defined properties.
 %Docstring
 Returns ``True`` if the symbol is animated.
 
-This is a user-facing setting for symbols, which allows users to define whether a
-symbol is animated, and allows for creation of animated symbols via data
-defined properties.
+This is a user-facing setting for symbols, which allows users to define
+whether a symbol is animated, and allows for creation of animated
+symbols via data defined properties.
 
 .. seealso:: :py:func:`setIsAnimated`
 %End
@@ -67,8 +66,8 @@ Returns the symbol animation frame rate (in frames per second).
 class QgsSymbolBufferSettings
 {
 %Docstring(signature="appended")
-
-Contains settings relating to symbol buffers, which draw a "halo" effect around the symbol.
+Contains settings relating to symbol buffers, which draw a "halo" effect
+around the symbol.
 
 .. versionadded:: 3.40
 %End
@@ -110,7 +109,8 @@ Returns the size of the buffer.
 %Docstring
 Sets the ``size`` of the buffer.
 
-The size units are specified using :py:func:`~QgsSymbolBufferSettings.setSizeUnit`.
+The size units are specified using
+:py:func:`~QgsSymbolBufferSettings.setSizeUnit`.
 
 .. seealso:: :py:func:`size`
 
@@ -137,8 +137,8 @@ Sets the ``unit`` used for the buffer size.
 
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the buffer size. This is only used if the
-buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+Returns the map unit scale object for the buffer size. This is only used
+if the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -149,7 +149,8 @@ buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
 %Docstring
 Sets the map unit ``scale`` object for the buffer size.
 
-This is only used if the buffer size is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+This is only used if the buffer size is set to
+:py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`sizeMapUnitScale`
 
@@ -181,8 +182,8 @@ Ownership is not transferred.
 
     void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the fill ``symbol`` used to render the buffer. Ownership of ``symbol`` is
-transferred to the buffer.
+Sets the fill ``symbol`` used to render the buffer. Ownership of
+``symbol`` is transferred to the buffer.
 
 .. seealso:: :py:func:`fillSymbol`
 %End
@@ -208,7 +209,6 @@ Reads the buffer settings from an XML ``element``.
 class QgsSymbol
 {
 %Docstring(signature="appended")
-
 Abstract base class for all rendered symbols.
 %End
 
@@ -235,7 +235,8 @@ Returns a translated string version of the specified symbol ``type``.
 
     static Qgis::SymbolType symbolTypeForGeometryType( Qgis::GeometryType type );
 %Docstring
-Returns the default symbol type required for the specified geometry ``type``.
+Returns the default symbol type required for the specified geometry
+``type``.
 
 .. versionadded:: 3.20
 %End
@@ -334,8 +335,9 @@ Returns the number of symbol layers contained in the symbol.
 %Docstring
 Returns the symbol layer at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
-corresponds to the last layer in the symbol.
+Indexes can be less than 0, in which case they correspond to layers from
+the end of the symbol. E.g. an index of -1 corresponds to the last layer
+in the symbol.
 
 :raises IndexError: if no layer with the specified ``index`` exists.
 
@@ -362,8 +364,9 @@ corresponds to the last layer in the symbol.
 %Docstring
 Deletes the layer at the specified ``index``.
 
-Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
-corresponds to the last layer in the symbol.
+Indexes can be less than 0, in which case they correspond to layers from
+the end of the symbol. E.g. an index of -1 corresponds to the last layer
+in the symbol.
 
 :raises IndexError: if no layer at the specified ``index`` exists
 
@@ -384,13 +387,14 @@ corresponds to the last layer in the symbol.
 
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 %Docstring
-Inserts a symbol ``layer`` to specified ``index``.
-Ownership of ``layer`` is transferred to the symbol.
+Inserts a symbol ``layer`` to specified ``index``. Ownership of
+``layer`` is transferred to the symbol.
 
 :param index: The index at which the layer should be added
 :param layer: The symbol layer to add
 
-:return: ``True`` if the layer is added, ``False`` if the index or the layer is bad
+:return: ``True`` if the layer is added, ``False`` if the index or the
+         layer is bad
 %End
 
     bool appendSymbolLayer( QgsSymbolLayer *layer /Transfer/ );
@@ -398,8 +402,9 @@ Ownership of ``layer`` is transferred to the symbol.
 Appends a symbol ``layer`` at the end of the current symbol layer list.
 Ownership of ``layer`` is transferred to the symbol.
 
-:return: ``True`` if the layer was successfully added, ``False`` if the layer is not compatible with the
-         symbol's :py:func:`~QgsSymbol.type`.
+:return: ``True`` if the layer was successfully added, ``False`` if the
+         layer is not compatible with the symbol's
+         :py:func:`~QgsSymbol.type`.
 %End
 
     bool deleteSymbolLayer( int index );
@@ -419,32 +424,35 @@ Ownership of the layer is handed to the caller.
 
     bool changeSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 %Docstring
-Deletes the current layer at the specified ``index`` and replaces it with ``layer``.
-Ownership of ``layer`` is transferred to the symbol.
+Deletes the current layer at the specified ``index`` and replaces it
+with ``layer``. Ownership of ``layer`` is transferred to the symbol.
 
-Returns ``False`` if ``layer`` is not compatible with the symbol's :py:func:`~QgsSymbol.type`, or
-``True`` if the layer was successfully replaced.
+Returns ``False`` if ``layer`` is not compatible with the symbol's
+:py:func:`~QgsSymbol.type`, or ``True`` if the layer was successfully
+replaced.
 %End
 
     void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
 %Docstring
-Begins the rendering process for the symbol. This must be called before :py:func:`~QgsSymbol.renderFeature`,
-and should be followed by a call to :py:func:`~QgsSymbol.stopRender`.
+Begins the rendering process for the symbol. This must be called before
+:py:func:`~QgsSymbol.renderFeature`, and should be followed by a call to
+:py:func:`~QgsSymbol.stopRender`.
 
 :param context: render context which symbol will be drawn using
-:param fields: fields for features to be rendered (usually the associated
-               vector layer's fields). Required for correct calculation of data defined
-               overrides.
+:param fields: fields for features to be rendered (usually the
+               associated vector layer's fields). Required for correct
+               calculation of data defined overrides.
 
 .. seealso:: :py:func:`stopRender`
 %End
 
     void stopRender( QgsRenderContext &context );
 %Docstring
-Ends the rendering process. This should be called after rendering all desired features.
+Ends the rendering process. This should be called after rendering all
+desired features.
 
-:param context: render context, must match the context specified when :py:func:`~QgsSymbol.startRender`
-                was called.
+:param context: render context, must match the context specified when
+                :py:func:`~QgsSymbol.startRender` was called.
 
 .. seealso:: :py:func:`startRender`
 %End
@@ -453,8 +461,8 @@ Ends the rendering process. This should be called after rendering all desired fe
 %Docstring
 Sets the ``color`` for the symbol.
 
-Calling this method sets the color for each individual symbol layer contained
-within the symbol to ``color``.
+Calling this method sets the color for each individual symbol layer
+contained within the symbol to ``color``.
 
 Locked symbol layers are skipped and are left unchanged.
 
@@ -465,8 +473,8 @@ Locked symbol layers are skipped and are left unchanged.
 %Docstring
 Returns the symbol's color.
 
-For multi-layer symbols, this method returns the color of the first unlocked symbol
-layer.
+For multi-layer symbols, this method returns the color of the first
+unlocked symbol layer.
 
 .. seealso:: :py:func:`setColor`
 %End
@@ -474,18 +482,24 @@ layer.
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
                           const QgsLegendPatchShape *patchShape = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
 %Docstring
-Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
+Draws an icon of the symbol that occupies an area given by ``size``
+using the specified ``painter``.
 
-Optionally a custom render context may be given in order to ensure that the preview icon exactly
-matches the settings from that context.
+Optionally a custom render context may be given in order to ensure that
+the preview icon exactly matches the settings from that context.
 
 :param painter: destination painter
 :param size: size of the icon
 :param customContext: the context in which the rendering happens
-:param selected: set to ``True`` to render the symbol in a selected state (since QGIS 3.10)
+:param selected: set to ``True`` to render the symbol in a selected
+                 state (since QGIS 3.10)
 :param expressionContext: optional custom expression context
-:param patchShape: optional patch shape to use for symbol preview. If not specified a default shape will be used instead.
-:param screen: can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+:param patchShape: optional patch shape to use for symbol preview. If
+                   not specified a default shape will be used instead.
+:param screen: can be used to specify the destination screen properties
+               for the icon. This allows the icon to be generated using
+               the correct DPI and device pixel ratio for the target
+               screen (since QGIS 3.32)
 
 .. seealso:: :py:func:`exportImage`
 
@@ -494,10 +508,11 @@ matches the settings from that context.
 
     void exportImage( const QString &path, const QString &format, QSize size );
 %Docstring
-Export the symbol as an image format, to the specified ``path`` and with the given ``size``.
+Export the symbol as an image format, to the specified ``path`` and with
+the given ``size``.
 
-If ``format`` is "SVG" then an SVG file will be created, otherwise a raster image of the
-specified format will be created.
+If ``format`` is "SVG" then an SVG file will be created, otherwise a
+raster image of the specified format will be created.
 
 .. seealso:: :py:func:`asImage`
 
@@ -508,8 +523,8 @@ specified format will be created.
 %Docstring
 Returns an image of the symbol at the specified ``size``.
 
-Optionally a custom render context may be given in order to ensure that the preview icon exactly
-matches the settings from that context.
+Optionally a custom render context may be given in order to ensure that
+the preview icon exactly matches the settings from that context.
 
 .. seealso:: :py:func:`exportImage`
 
@@ -523,7 +538,10 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 :param expressionContext: optional expression context, for evaluation of
                           data defined symbol properties
 :param flags: optional flags to control how preview image is generated
-:param screen: can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for a target screen (since QGIS 3.32)
+:param screen: can be used to specify the destination screen properties
+               for the icon. This allows the icon to be generated using
+               the correct DPI and device pixel ratio for a target
+               screen (since QGIS 3.32)
 
 .. seealso:: :py:func:`asImage`
 
@@ -532,7 +550,6 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
  QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated="Since 3.40. Use bigSymbolPreviewImageV2() instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Use :py:func:`~QgsSymbol.bigSymbolPreviewImageV2` instead.
@@ -550,26 +567,42 @@ Returns a deep copy of this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Converts the symbol to a SLD representation.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Converts the symbol to a SLD representation.
+
+Returns ``True`` if the symbol was successfully converted.
+
+.. versionadded:: 3.44
 %End
 
     Qgis::RenderUnit outputUnit() const;
 %Docstring
-Returns the units to use for sizes and widths within the symbol. Individual
-symbol layer definitions will interpret this in different ways, e.g., a marker symbol
-may use it to specify the units for the marker size, while a line symbol
-may use it to specify the units for the line width.
+Returns the units to use for sizes and widths within the symbol.
+Individual symbol layer definitions will interpret this in different
+ways, e.g., a marker symbol may use it to specify the units for the
+marker size, while a line symbol may use it to specify the units for the
+line width.
 
-:return: output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if the symbol contains mixed units
+:return: output unit, or :py:class:`QgsUnitTypes`.RenderUnknownUnit if
+         the symbol contains mixed units
 
 .. seealso:: :py:func:`setOutputUnit`
 %End
 
     bool usesMapUnits() const;
 %Docstring
-Returns ``True`` if the symbol has any components which use map unit based sizes.
+Returns ``True`` if the symbol has any components which use map unit
+based sizes.
 
 .. versionadded:: 3.18
 %End
@@ -577,9 +610,9 @@ Returns ``True`` if the symbol has any components which use map unit based sizes
     void setOutputUnit( Qgis::RenderUnit unit ) const;
 %Docstring
 Sets the units to use for sizes and widths within the symbol. Individual
-symbol definitions will interpret this in different ways, e.g., a marker symbol
-may use it to specify the units for the marker size, while a line symbol
-may use it to specify the units for the line width.
+symbol definitions will interpret this in different ways, e.g., a marker
+symbol may use it to specify the units for the marker size, while a line
+symbol may use it to specify the units for the line width.
 
 :param unit: output units
 
@@ -591,8 +624,8 @@ may use it to specify the units for the line width.
 Returns the map unit scale for the symbol.
 
 If the symbol consists of multiple layers, the map unit scale is only
-returned if all layers have the same scale settings. If the settings differ,
-a default constructed map unit scale is returned.
+returned if all layers have the same scale settings. If the settings
+differ, a default constructed map unit scale is returned.
 
 .. seealso:: :py:func:`setMapUnitScale`
 %End
@@ -601,8 +634,8 @@ a default constructed map unit scale is returned.
 %Docstring
 Sets the map unit ``scale`` for the symbol.
 
-Calling this method sets the scale for all symbol layers contained within the
-symbol.
+Calling this method sets the scale for all symbol layers contained
+within the symbol.
 
 .. seealso:: :py:func:`mapUnitScale`
 %End
@@ -611,7 +644,8 @@ symbol.
 %Docstring
 Returns the opacity for the symbol.
 
-:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:return: opacity value between 0 (fully transparent) and 1 (fully
+         opaque)
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -620,7 +654,8 @@ Returns the opacity for the symbol.
 %Docstring
 Sets the ``opacity`` for the symbol.
 
-:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -659,22 +694,25 @@ Returns flags for the symbol.
 
     void setClipFeaturesToExtent( bool clipFeaturesToExtent );
 %Docstring
-Sets whether features drawn by the symbol should be clipped to the render context's
-extent. If this option is enabled then features which are partially outside the extent
-will be clipped. This speeds up rendering of the feature, but may have undesirable
-side effects for certain symbol types.
+Sets whether features drawn by the symbol should be clipped to the
+render context's extent. If this option is enabled then features which
+are partially outside the extent will be clipped. This speeds up
+rendering of the feature, but may have undesirable side effects for
+certain symbol types.
 
-:param clipFeaturesToExtent: set to ``True`` to enable clipping (defaults to ``True``)
+:param clipFeaturesToExtent: set to ``True`` to enable clipping
+                             (defaults to ``True``)
 
 .. seealso:: :py:func:`clipFeaturesToExtent`
 %End
 
     bool clipFeaturesToExtent() const;
 %Docstring
-Returns whether features drawn by the symbol will be clipped to the render context's
-extent. If this option is enabled then features which are partially outside the extent
-will be clipped. This speeds up rendering of the feature, but may have undesirable
-side effects for certain symbol types.
+Returns whether features drawn by the symbol will be clipped to the
+render context's extent. If this option is enabled then features which
+are partially outside the extent will be clipped. This speeds up
+rendering of the feature, but may have undesirable side effects for
+certain symbol types.
 
 :return: ``True`` if features will be clipped
 
@@ -683,11 +721,11 @@ side effects for certain symbol types.
 
     void setForceRHR( bool force );
 %Docstring
-Sets whether polygon features drawn by the symbol should be reoriented to follow the
-standard right-hand-rule orientation, in which the area that is
-bounded by the polygon is to the right of the boundary. In particular, the exterior
-ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
-direction.
+Sets whether polygon features drawn by the symbol should be reoriented
+to follow the standard right-hand-rule orientation, in which the area
+that is bounded by the polygon is to the right of the boundary. In
+particular, the exterior ring is oriented in a clockwise direction and
+the interior rings in a counter-clockwise direction.
 
 .. seealso:: :py:func:`forceRHR`
 
@@ -696,11 +734,11 @@ direction.
 
     bool forceRHR() const;
 %Docstring
-Returns ``True`` if polygon features drawn by the symbol will be reoriented to follow the
-standard right-hand-rule orientation, in which the area that is
-bounded by the polygon is to the right of the boundary. In particular, the exterior
-ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
-direction.
+Returns ``True`` if polygon features drawn by the symbol will be
+reoriented to follow the standard right-hand-rule orientation, in which
+the area that is bounded by the polygon is to the right of the boundary.
+In particular, the exterior ring is oriented in a clockwise direction
+and the interior rings in a counter-clockwise direction.
 
 .. seealso:: :py:func:`setForceRHR`
 
@@ -709,9 +747,11 @@ direction.
 
     QgsSymbolBufferSettings *bufferSettings();
 %Docstring
-Returns the symbol buffer settings, which control an optional "halo" effect around the symbol.
+Returns the symbol buffer settings, which control an optional "halo"
+effect around the symbol.
 
-Will be ``None`` if no buffer settings have previously been set for the symbol.
+Will be ``None`` if no buffer settings have previously been set for the
+symbol.
 
 .. seealso:: :py:func:`setBufferSettings`
 
@@ -721,7 +761,8 @@ Will be ``None`` if no buffer settings have previously been set for the symbol.
 
     void setBufferSettings( QgsSymbolBufferSettings *settings /Transfer/ );
 %Docstring
-Sets a the symbol buffer ``settings``, which control an optional "halo" effect around the symbol.
+Sets a the symbol buffer ``settings``, which control an optional "halo"
+effect around the symbol.
 
 Ownership is transferred to the symbol.
 
@@ -751,15 +792,15 @@ Sets a the symbol animation ``settings``.
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
-Returns a list of attributes required to render this feature.
-This should include any attributes required by the symbology including
-the ones required by expressions.
+Returns a list of attributes required to render this feature. This
+should include any attributes required by the symbology including the
+ones required by expressions.
 %End
 
     void setDataDefinedProperty( Property key, const QgsProperty &property );
 %Docstring
-Sets a data defined property for the symbol. Any existing property with the same key
-will be overwritten.
+Sets a data defined property for the symbol. Any existing property with
+the same key will be overwritten.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
@@ -770,7 +811,8 @@ will be overwritten.
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
-Returns a reference to the symbol's property collection, used for data defined overrides.
+Returns a reference to the symbol's property collection, used for data
+defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
@@ -784,7 +826,8 @@ Returns a reference to the symbol's property collection, used for data defined o
 %Docstring
 Sets the symbol's property collection, used for data defined overrides.
 
-:param collection: property collection. Existing properties will be replaced.
+:param collection: property collection. Existing properties will be
+                   replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
@@ -798,17 +841,21 @@ Returns whether the symbol utilizes any data defined properties.
 
     bool canCauseArtifactsBetweenAdjacentTiles() const;
 %Docstring
-Returns ``True`` if the symbol rendering can cause visible artifacts across a single feature
-when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
+Returns ``True`` if the symbol rendering can cause visible artifacts
+across a single feature when the feature is rendered as a series of
+adjacent map tiles each containing a portion of the feature's geometry.
 
-Internally this calls :py:func:`QgsSymbolLayer.canCauseArtifactsBetweenAdjacentTiles()` for all symbol layers in the symbol
-and returns ``True`` if any of the layers returned ``True``.
+Internally this calls
+:py:func:`QgsSymbolLayer.canCauseArtifactsBetweenAdjacentTiles()` for
+all symbol layers in the symbol and returns ``True`` if any of the
+layers returned ``True``.
 
 .. versionadded:: 3.18
 %End
 
  void setLayer( const QgsVectorLayer *layer ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
+Sets the vector ``layer`` associated with the symbol.
 
 .. note::
 
@@ -821,7 +868,6 @@ and returns ``True`` if any of the layers returned ``True``.
 
  const QgsVectorLayer *layer() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Will be removed in QGIS 4.0.
@@ -829,39 +875,46 @@ and returns ``True`` if any of the layers returned ``True``.
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 );
 %Docstring
-Render a feature. Before calling this the :py:func:`~QgsSymbol.startRender` method should be called to initialize
-the rendering process. After rendering all features :py:func:`~QgsSymbol.stopRender` must be called.
+Render a feature. Before calling this the
+:py:func:`~QgsSymbol.startRender` method should be called to initialize
+the rendering process. After rendering all features
+:py:func:`~QgsSymbol.stopRender` must be called.
 %End
 
     QgsSymbolRenderContext *symbolRenderContext();
 %Docstring
-Returns the symbol render context. Only valid between startRender and stopRender calls.
+Returns the symbol render context. Only valid between startRender and
+stopRender calls.
 
 :return: The symbol render context
 %End
 
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 %Docstring
-Called before symbol layers will be rendered for a particular ``feature``.
+Called before symbol layers will be rendered for a particular
+``feature``.
 
-This is always followed by a call to :py:func:`~QgsSymbol.stopFeatureRender` after the feature
-has been completely rendered (i.e. all parts have been rendered).
+This is always followed by a call to
+:py:func:`~QgsSymbol.stopFeatureRender` after the feature has been
+completely rendered (i.e. all parts have been rendered).
 
-Internally, this notifies all symbol layers which will be used via a call to
-:py:func:`QgsSymbolLayer.startFeatureRender()`.
+Internally, this notifies all symbol layers which will be used via a
+call to :py:func:`QgsSymbolLayer.startFeatureRender()`.
 
 .. versionadded:: 3.20
 %End
 
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 %Docstring
-Called after symbol layers have been rendered for a particular ``feature``.
+Called after symbol layers have been rendered for a particular
+``feature``.
 
-This is always preceded by a call to :py:func:`~QgsSymbol.startFeatureRender` just before the feature
-will be rendered.
+This is always preceded by a call to
+:py:func:`~QgsSymbol.startFeatureRender` just before the feature will be
+rendered.
 
-Internally, this notifies all symbol layers which were used via a call to
-:py:func:`QgsSymbolLayer.stopFeatureRender()`.
+Internally, this notifies all symbol layers which were used via a call
+to :py:func:`QgsSymbolLayer.stopFeatureRender()`.
 
 .. versionadded:: 3.20
 %End
@@ -920,34 +973,40 @@ Sets the ``unit`` used for the extent buffer.
 
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 %Docstring
-Creates a point in screen coordinates from a :py:class:`QgsPoint` in map coordinates
+Creates a point in screen coordinates from a :py:class:`QgsPoint` in map
+coordinates
 %End
 
     static QPolygonF _getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent = true );
 %Docstring
-Creates a line string in screen coordinates from a :py:class:`QgsCurve` in map coordinates
+Creates a line string in screen coordinates from a :py:class:`QgsCurve`
+in map coordinates
 %End
 
     static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
 %Docstring
-Creates a polygon ring in screen coordinates from a :py:class:`QgsCurve` in map coordinates.
+Creates a polygon ring in screen coordinates from a :py:class:`QgsCurve`
+in map coordinates.
 
-If ``correctRingOrientation`` is ``True`` then the ring will be oriented to match standard ring orientation, e.g.
-clockwise for exterior rings and counter-clockwise for interior rings.
+If ``correctRingOrientation`` is ``True`` then the ring will be oriented
+to match standard ring orientation, e.g. clockwise for exterior rings
+and counter-clockwise for interior rings.
 %End
 
     static void _getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 %Docstring
-Creates a polygon in screen coordinates from a :py:class:`QgsPolygonXYin` map coordinates
+Creates a polygon in screen coordinates from a
+:py:class:`QgsPolygonXYin` map coordinates
 
-If ``correctRingOrientation`` is ``True`` then the ring will be oriented to match standard ring orientation, e.g.
-clockwise for exterior rings and counter-clockwise for interior rings.
+If ``correctRingOrientation`` is ``True`` then the ring will be oriented
+to match standard ring orientation, e.g. clockwise for exterior rings
+and counter-clockwise for interior rings.
 %End
 
     QgsSymbolLayerList cloneLayers() const /Factory/;
 %Docstring
-Retrieve a cloned list of all layers that make up this symbol.
-Ownership is transferred to the caller.
+Retrieve a cloned list of all layers that make up this symbol. Ownership
+is transferred to the caller.
 %End
 
     void copyCommonProperties( const QgsSymbol *other );
@@ -963,12 +1022,13 @@ Renders a context using a particular symbol layer without passing in a
 geometry. This is used as fallback, if the symbol being rendered is not
 compatible with the specified layer. In such a case, this method can be
 called and will call the layer's rendering method anyway but the
-geometry passed to the layer will be empty.
-This is required for layers that generate their own geometry from other
-information in the rendering context.
+geometry passed to the layer will be empty. This is required for layers
+that generate their own geometry from other information in the rendering
+context.
 
-Since QGIS 3.22, the optional ``geometryType``, ``points`` and ``rings`` arguments can specify the original
-geometry type, points and rings in which are being rendered by the parent symbol.
+Since QGIS 3.22, the optional ``geometryType``, ``points`` and ``rings``
+arguments can specify the original geometry type, points and rings in
+which are being rendered by the parent symbol.
 %End
 
     void renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize );

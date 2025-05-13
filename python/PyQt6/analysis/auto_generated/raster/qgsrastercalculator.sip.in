@@ -13,7 +13,8 @@
 class QgsRasterCalculatorEntry
 {
 %Docstring(signature="appended")
-Represents an individual raster layer/band number entry within a raster calculation.
+Represents an individual raster layer/band number entry within a raster
+calculation.
 %End
 
 %TypeHeaderCode
@@ -24,9 +25,9 @@ Represents an individual raster layer/band number entry within a raster calculat
 %Docstring
 Creates a list of raster entries from the current project.
 
-If there is more than one layer with the same data source
-only one of them is added to the list, duplicate names are
-also handled by appending an _n integer to the base name.
+If there is more than one layer with the same data source only one of
+them is added to the list, duplicate names are also handled by appending
+an _n integer to the base name.
 
 :return: the list of raster entries form the current project
 
@@ -50,7 +51,7 @@ Performs raster layer calculations.
 #include "qgsrastercalculator.h"
 %End
   public:
-    enum Result /BaseType=IntEnum/
+    enum class Result /BaseType=IntEnum/
     {
       Success,
       CreateOutputError,
@@ -70,7 +71,8 @@ QgsRasterCalculator constructor.
 :param formulaString: formula for raster calculation
 :param outputFile: output file path
 :param outputFormat: output file format
-:param outputExtent: output extent, CRS is specified by outputCrs parameter
+:param outputExtent: output extent, CRS is specified by outputCrs
+                     parameter
 :param outputCrs: destination CRS for output raster
 :param nOutputColumns: number of columns in output raster
 :param nOutputRows: number of rows in output raster
@@ -87,7 +89,8 @@ QgsRasterCalculator constructor.
 :param formulaString: formula for raster calculation
 :param outputFile: output file path
 :param outputFormat: output file format
-:param outputExtent: output extent. CRS for output is taken from first entry in rasterEntries.
+:param outputExtent: output extent. CRS for output is taken from first
+                     entry in rasterEntries.
 :param nOutputColumns: number of columns in output raster
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
@@ -103,7 +106,8 @@ QgsRasterCalculator constructor.
 :param formulaString: formula for raster calculation
 :param outputFile: output file path
 :param outputFormat: output file format
-:param outputExtent: output extent, CRS is specified by outputCrs parameter
+:param outputExtent: output extent, CRS is specified by outputCrs
+                     parameter
 :param outputCrs: destination CRS for output raster
 :param nOutputColumns: number of columns in output raster
 :param nOutputRows: number of rows in output raster
@@ -121,7 +125,8 @@ QgsRasterCalculator constructor.
 :param formulaString: formula for raster calculation
 :param outputFile: output file path
 :param outputFormat: output file format
-:param outputExtent: output extent. CRS for output is taken from first entry in rasterEntries.
+:param outputExtent: output extent. CRS for output is taken from first
+                     entry in rasterEntries.
 :param nOutputColumns: number of columns in output raster
 :param nOutputRows: number of rows in output raster
 :param rasterEntries: list of referenced raster layers
@@ -135,10 +140,12 @@ QgsRasterCalculator constructor.
 %Docstring
 Starts the calculation and writes a new raster.
 
-The optional ``feedback`` argument can be used for progress reporting and cancellation support.
+The optional ``feedback`` argument can be used for progress reporting
+and cancellation support.
 
-:return: QgsRasterCalculator.Success in case of success. If an error is encountered then
-         a description of the error can be obtained by calling :py:func:`~QgsRasterCalculator.lastError`.
+:return: QgsRasterCalculator.Result.Success in case of success. If an
+         error is encountered then a description of the error can be
+         obtained by calling :py:func:`~QgsRasterCalculator.lastError`.
 %End
 
     QString lastError() const;
@@ -146,6 +153,44 @@ The optional ``feedback`` argument can be used for progress reporting and cancel
 Returns a description of the last error encountered.
 
 .. versionadded:: 3.4
+%End
+
+    void setCreationOptions( const QStringList &options );
+%Docstring
+Sets a list of data source creation options to use when creating the
+output raster file.
+
+.. seealso:: :py:func:`creationOptions`
+
+.. versionadded:: 3.44
+%End
+
+    QStringList creationOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when
+creating the output raster file.
+
+.. seealso:: :py:func:`setCreationOptions`
+
+.. versionadded:: 3.44
+%End
+
+    void setNoDataValue( double noDataValue );
+%Docstring
+Set no data value for output file.
+
+.. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.44
+%End
+
+    double noDataValue() const;
+%Docstring
+Returns no data value used for output file.
+
+.. seealso:: :py:func:`setNoDataValue`
+
+.. versionadded:: 3.44
 %End
 
 };

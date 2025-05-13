@@ -12,7 +12,8 @@
 class QgsTotalCurvatureFilter : QgsNineCellFilter
 {
 %Docstring(signature="appended")
-Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis.
+Calculates total curvature as described by Wilson, Gallant (2000):
+terrain analysis.
 %End
 
 %TypeHeaderCode

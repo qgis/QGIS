@@ -3,6 +3,7 @@ QgsInterpolatedLineColor.SingleColor = QgsInterpolatedLineColor.ColoringMethod.S
 QgsInterpolatedLineColor.ColorRamp = QgsInterpolatedLineColor.ColoringMethod.ColorRamp
 try:
     QgsInterpolatedLineSymbolLayer.create = staticmethod(QgsInterpolatedLineSymbolLayer.create)
+    QgsInterpolatedLineSymbolLayer.__overridden_methods__ = ['flags', 'layerType', 'startRender', 'stopRender', 'clone', 'properties', 'drawPreviewIcon', 'color', 'startFeatureRender', 'stopFeatureRender', 'renderPolyline', 'canCauseArtifactsBetweenAdjacentTiles']
     QgsInterpolatedLineSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

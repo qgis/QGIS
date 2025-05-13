@@ -1674,6 +1674,302 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_labeling_margin_20(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle_top")
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer("point")
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'label'"
+        feature_label_labeling.isExpression = True
+        feature_label_labeling.placement = (
+            Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        )
+        point_settings = feature_label_labeling.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft]
+        )
+        point_settings.setMaximumDistance(40)
+        feature_label_labeling.setPointSettings(point_settings)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'labelx'"
+        self.lyr.isExpression = True
+        self.lyr.dist = 3
+
+        thinning = self.lyr.thinningSettings()
+        thinning.setLabelMarginDistance(20)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        # reverse margin check, should be same result
+        thinning = self.lyr.thinningSettings()
+        thinning.setLabelMarginDistance(0)
+        self.lyr.setThinningSettings(thinning)
+
+        thinning = feature_label_labeling.thinningSettings()
+        thinning.setLabelMarginDistance(20)
+        feature_label_labeling.setThinningSettings(thinning)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_labeling_margin_50(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle_top")
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer("point")
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'label'"
+        feature_label_labeling.isExpression = True
+        feature_label_labeling.placement = (
+            Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        )
+        point_settings = feature_label_labeling.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft]
+        )
+        point_settings.setMaximumDistance(70)
+        feature_label_labeling.setPointSettings(point_settings)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'labelx'"
+        self.lyr.isExpression = True
+        self.lyr.dist = 3
+
+        thinning = self.lyr.thinningSettings()
+        thinning.setLabelMarginDistance(50)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        # reverse margin check, should be same result
+        thinning = self.lyr.thinningSettings()
+        thinning.setLabelMarginDistance(0)
+        self.lyr.setThinningSettings(thinning)
+
+        thinning = feature_label_labeling.thinningSettings()
+        thinning.setLabelMarginDistance(50)
+        feature_label_labeling.setThinningSettings(thinning)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_labeling_duplicate_removal(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle2")
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'XX'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.TopRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        thinning = self.lyr.thinningSettings()
+        thinning.setAllowDuplicateRemoval(True)
+        thinning.setMinimumDistanceToDuplicate(50)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_labeling_duplicate_removal_within(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle2")
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'XX'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.TopRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        thinning = self.lyr.thinningSettings()
+        thinning.setAllowDuplicateRemoval(True)
+        thinning.setMinimumDistanceToDuplicate(5)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_labeling_duplicate_two_layers(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle2")
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer("point")
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'XX'"
+        feature_label_labeling.isExpression = True
+        feature_label_labeling.placement = (
+            Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        )
+        point_settings = feature_label_labeling.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft]
+        )
+        feature_label_labeling.setPointSettings(point_settings)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'XX'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.TopRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        thinning = self.lyr.thinningSettings()
+        thinning.setAllowDuplicateRemoval(True)
+        thinning.setMinimumDistanceToDuplicate(50)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_labeling_duplicate_two_layers_within(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle2")
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer("point")
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'XX'"
+        feature_label_labeling.isExpression = True
+        feature_label_labeling.placement = (
+            Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        )
+        point_settings = feature_label_labeling.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft]
+        )
+        feature_label_labeling.setPointSettings(point_settings)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'XX'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.TopRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        thinning = self.lyr.thinningSettings()
+        thinning.setAllowDuplicateRemoval(True)
+        thinning.setMinimumDistanceToDuplicate(3)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_labeling_duplicate_two_layers_different_text(self):
+        self.layer = TestQgsPalLabeling.loadFeatureLayer("point_ordered_obstacle2")
+        feature_layer = TestQgsPalLabeling.loadFeatureLayer("point")
+        feature_layer.setLabelsEnabled(True)
+        feature_label_labeling = QgsPalLayerSettings(self.lyr)
+        feature_label_labeling.fieldName = "'XX'"
+        feature_label_labeling.isExpression = True
+        feature_label_labeling.placement = (
+            Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        )
+        point_settings = feature_label_labeling.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomLeft]
+        )
+        feature_label_labeling.setPointSettings(point_settings)
+        feature_layer.setLabeling(QgsVectorLayerSimpleLabeling(feature_label_labeling))
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self._TestMapSettings.setLayers([self.layer, feature_layer])
+
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.BottomRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        self.lyr.fieldName = "'YY'"
+        self.lyr.isExpression = True
+        self.lyr.placement = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+        point_settings = self.lyr.pointSettings()
+        point_settings.setPredefinedPositionOrder(
+            [Qgis.LabelPredefinedPointPosition.TopRight]
+        )
+        self.lyr.setPointSettings(point_settings)
+        thinning = self.lyr.thinningSettings()
+        thinning.setAllowDuplicateRemoval(True)
+        thinning.setMinimumDistanceToDuplicate(50)
+        self.lyr.setThinningSettings(thinning)
+
+        self.checkTest()
+
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
 
 if __name__ == "__main__":
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

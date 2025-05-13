@@ -14,8 +14,9 @@
 class QgsSettingsRegistry
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsRegistry` is used for settings introspection and collects a
-list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`QgsSettingsRegistry`
+Used for settings introspection and collects a list of child
+:py:class:`QgsSettingsRegistry` and a list of child
+:py:class:`QgsSettingsRegistry`.
 
 .. versionadded:: 3.20
 
@@ -39,9 +40,11 @@ Returns the list of registered :py:class:`QgsSettingsEntryBase`.
 
     const QgsSettingsEntryBase *settingsEntry( const QString &key, bool searchChildRegistries = true ) const;
 %Docstring
-Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not found.
+Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None
+if not found.
 
-The ``searchChildRegistries`` parameter specifies if child registries should be included in the search
+The ``searchChildRegistries`` parameter specifies if child registries
+should be included in the search
 %End
 
     void addSubRegistry( const QgsSettingsRegistry *settingsRegistry );

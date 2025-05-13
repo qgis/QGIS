@@ -322,6 +322,21 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     {
       const QString header = o2->oauth2config()->customHeader().isEmpty() ? QString( O2_HTTP_AUTHORIZATION_HEADER ) : o2->oauth2config()->customHeader();
       request.setRawHeader( header.toLatin1(), QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
+
+      const QVariantMap extraTokens = o2->oauth2config()->extraTokens();
+      if ( !extraTokens.isEmpty() )
+      {
+        const QVariantMap receivedExtraTokens = o2->extraTokens();
+        const QStringList extraTokenNames = extraTokens.keys();
+        for ( const QString &extraTokenName : extraTokenNames )
+        {
+          if ( receivedExtraTokens.contains( extraTokenName ) )
+          {
+            request.setRawHeader( extraTokens[extraTokenName].toString().replace( '_', '-' ).toLatin1(), receivedExtraTokens[extraTokenName].toString().toLatin1() );
+          }
+        }
+      }
+
 #ifdef QGISDEBUG
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
       QgsDebugMsgLevel( msg, 2 );

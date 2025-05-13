@@ -12,10 +12,12 @@ QgsSettingsTreeModel.Column.__doc__ = """Columns
 """
 # --
 try:
+    QgsSettingsTreeModel.__overridden_methods__ = ['index', 'parent', 'rowCount', 'columnCount', 'data', 'headerData', 'flags', 'setData']
     QgsSettingsTreeModel.__group__ = ['settings']
 except (NameError, AttributeError):
     pass
 try:
+    QgsSettingsTreeProxyModel.__overridden_methods__ = ['filterAcceptsRow']
     QgsSettingsTreeProxyModel.__group__ = ['settings']
 except (NameError, AttributeError):
     pass

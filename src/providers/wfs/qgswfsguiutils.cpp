@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgswfsguiutils.h"
-
+#include "qgswfsgetcapabilities.h"
 #include <QMessageBox>
 
-void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsCapabilities *capabilities, QWidget *parent )
+void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsGetCapabilitiesRequest *request, QWidget *parent )
 {
   QString title;
-  switch ( capabilities->errorCode() )
+  switch ( request->errorCode() )
   {
     case QgsBaseNetworkRequest::NetworkError:
       title = QObject::tr( "Network Error" );
@@ -30,12 +30,12 @@ void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsCapabilities
       break;
     case QgsBaseNetworkRequest::ApplicationLevelError:
     {
-      switch ( capabilities->applicationLevelError() )
+      switch ( request->applicationLevelError() )
       {
-        case QgsWfsCapabilities::ApplicationLevelError::XmlError:
+        case QgsWfsGetCapabilitiesRequest::ApplicationLevelError::XmlError:
           title = QObject::tr( "Capabilities document is not valid" );
           break;
-        case QgsWfsCapabilities::ApplicationLevelError::VersionNotSupported:
+        case QgsWfsGetCapabilitiesRequest::ApplicationLevelError::VersionNotSupported:
           title = QObject::tr( "WFS version not supported" );
           break;
         default:
@@ -49,7 +49,7 @@ void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsCapabilities
       break;
   }
   // handle errors
-  QMessageBox *box = new QMessageBox( QMessageBox::Critical, title, capabilities->errorMessage(), QMessageBox::Ok, parent );
+  QMessageBox *box = new QMessageBox( QMessageBox::Critical, title, request->errorMessage(), QMessageBox::Ok, parent );
   box->setAttribute( Qt::WA_DeleteOnClose );
   box->setModal( true );
   box->setObjectName( QStringLiteral( "WFSCapabilitiesErrorBox" ) );

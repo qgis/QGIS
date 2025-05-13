@@ -13,7 +13,7 @@
 class QgsCurvePolygon: QgsSurface
 {
 %Docstring(signature="appended")
-Curve polygon geometry type
+Curve polygon geometry type.
 %End
 
 %TypeHeaderCode
@@ -62,8 +62,8 @@ Curve polygon geometry type
 
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 %Docstring
-Gets a polygon representation of this surface.
-Ownership is transferred to the caller.
+Gets a polygon representation of this surface. Ownership is transferred
+to the caller.
 %End
 
     virtual double area() const /HoldGIL/;
@@ -83,8 +83,8 @@ Ownership is transferred to the caller.
 
     double roundness() const;
 %Docstring
-Returns the roundness of the curve polygon.
-The returned value is between 0 and 1.
+Returns the roundness of the curve polygon. The returned value is
+between 0 and 1.
 
 .. versionadded:: 3.24
 %End
@@ -108,7 +108,8 @@ Returns the curve polygon's exterior ring.
 
     SIP_PYOBJECT interiorRing( int i ) /HoldGIL,TypeHint="QgsCurve"/;
 %Docstring
-Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+Retrieves an interior ring from the curve polygon. The first interior
+ring has index 0.
 
 :raises IndexError: if no interior ring with the specified index exists.
 
@@ -130,20 +131,23 @@ Retrieves an interior ring from the curve polygon. The first interior ring has i
 
     virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
-Returns a new polygon geometry corresponding to a segmentized approximation
-of the curve.
+Returns a new polygon geometry corresponding to a segmentized
+approximation of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
 %Docstring
-Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
-of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
-from the CurvePolygon and all interior rings.
+Sets the exterior ring of the polygon. The CurvePolygon type will be
+updated to match the dimensionality of the exterior ring. For instance,
+setting a 2D exterior ring on a 3D CurvePolygon will drop the z
+dimension from the CurvePolygon and all interior rings.
 
-:param ring: new exterior ring. Ownership is transferred to the CurvePolygon.
+:param ring: new exterior ring. Ownership is transferred to the
+             CurvePolygon.
 
 .. seealso:: :py:func:`setInteriorRings`
 
@@ -162,8 +166,8 @@ Adds an interior ring to the geometry (takes ownership)
 
     bool removeInteriorRing( int i );
 %Docstring
-Removes an interior ring from the polygon. The first interior ring has index 0.
-The corresponding ring is removed from the polygon and deleted.
+Removes an interior ring from the polygon. The first interior ring has
+index 0. The corresponding ring is removed from the polygon and deleted.
 It is not possible to remove the exterior ring using this method.
 
 :raises IndexError: if no interior ring with the specified index exists.
@@ -185,8 +189,8 @@ It is not possible to remove the exterior ring using this method.
     void removeInteriorRings( double minimumAllowedArea = -1 );
 %Docstring
 Removes the interior rings from the polygon. If the minimumAllowedArea
-parameter is specified then only rings smaller than this minimum
-area will be removed.
+parameter is specified then only rings smaller than this minimum area
+will be removed.
 
 .. seealso:: :py:func:`removeInteriorRing`
 %End
@@ -195,15 +199,16 @@ area will be removed.
 %Docstring
 Removes any interior rings which are not valid from the polygon.
 
-For example, this removes unclosed rings and rings with less than 4 vertices.
+For example, this removes unclosed rings and rings with less than 4
+vertices.
 %End
 
     void forceRHR();
 %Docstring
-Forces the geometry to respect the Right-Hand-Rule, in which the area that is
-bounded by the polygon is to the right of the boundary. In particular, the exterior
-ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
-direction.
+Forces the geometry to respect the Right-Hand-Rule, in which the area
+that is bounded by the polygon is to the right of the boundary. In
+particular, the exterior ring is oriented in a clockwise direction and
+the interior rings in a counter-clockwise direction.
 
 .. warning::
 
@@ -219,7 +224,8 @@ direction.
 
     void forceClockwise();
 %Docstring
-Forces the polygon to respect the exterior ring is clockwise, interior rings are counter-clockwise convention.
+Forces the polygon to respect the exterior ring is clockwise, interior
+rings are counter-clockwise convention.
 
 This convention is used primarily by ESRI software.
 
@@ -230,7 +236,8 @@ This convention is used primarily by ESRI software.
 
     void forceCounterClockwise();
 %Docstring
-Forces the polygon to respect the exterior ring is counter-clockwise, interior rings are clockwise convention.
+Forces the polygon to respect the exterior ring is counter-clockwise,
+interior rings are clockwise convention.
 
 This convention matches the OGC Simple Features specification.
 
@@ -279,13 +286,15 @@ This convention matches the OGC Simple Features specification.
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
 %Docstring
-Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+Returns approximate rotation angle for a vertex. Usually average angle
+between adjacent segments.
 
 :param vertex: the vertex id
 

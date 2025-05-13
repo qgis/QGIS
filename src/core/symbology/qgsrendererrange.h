@@ -32,6 +32,7 @@ class QgsClassificationRange;
 /**
  * \ingroup core
  * \class QgsRendererRange
+ * \brief Represents a value range for a QgsGraduatedSymbolRenderer.
  */
 class CORE_EXPORT QgsRendererRange
 {
@@ -160,8 +161,21 @@ class CORE_EXPORT QgsRendererRange
      * \param props graduated renderer properties
      * \param firstRange set to TRUE if the range is the first range, where the lower value uses a <= test
      * rather than a < test.
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const SIP_DEPRECATED;
+
+    /**
+     * Creates a DOM element representing the range in SLD format.
+     * \param doc DOM document
+     * \param element destination DOM element
+     * \param classAttribute classification attribute or expression
+     * \param context conversion context
+     * \param firstRange set to TRUE if the range is the first range, where the lower value uses a <= test
+     * rather than a < test.
+     * \since QGIS 3.44
+     */
+    bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context, bool firstRange = false ) const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -191,6 +205,8 @@ class CORE_EXPORT QgsRendererRange
 #endif
 
   protected:
+    friend class QgsGraduatedSymbolRendererWidget;
+
     double mLowerValue = 0, mUpperValue = 0;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
@@ -204,6 +220,8 @@ typedef QList<QgsRendererRange> QgsRangeList;
 /**
  * \ingroup core
  * \class QgsRendererRangeLabelFormat
+ * \brief Encapsulates the formatting for a QgsRendererRange label.
+ *
  * \deprecated QGIS 3.10. Use QgsClassificationMethod instead.
  */
 class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
@@ -224,7 +242,9 @@ class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
     bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
     void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
 
-    //! \note labelForLowerUpper in Python bindings
+    /**
+     * Returns the label to use for a range with the specified \a lower and \a upper bounds.
+     */
     QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;

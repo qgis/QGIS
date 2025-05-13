@@ -432,7 +432,7 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   {
     // calculator IS required, so initialize it now...
     d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-    d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? geoNone() : d->mDaEllipsoid );
+    d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? Qgis::geoNone() : d->mDaEllipsoid );
     d->mCalc->setSourceCrs( *d->mDaCrs.get(), *d->mDaTransformContext.get() );
   }
 
@@ -1046,6 +1046,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
+  }
+  else if ( value.userType() == qMetaTypeId< QgsCoordinateReferenceSystem>() )
+  {
+    const QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
+    return startToken + tr( "crs: %1" ).arg( crs.userFriendlyIdentifier() ) + endToken;
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {

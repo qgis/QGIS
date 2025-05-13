@@ -20,6 +20,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtracerenderer.h"
+#include "qgsmeshutils.h"
 
 #include <cstdlib>
 #include <ctime>

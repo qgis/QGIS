@@ -7,12 +7,13 @@
  ************************************************************************/
 
 
-
 class QgsVector
 {
 %Docstring(signature="appended")
-A class to represent a vector.
-Currently no Z axis / 2.5D support is implemented.
+Represent a 2-dimensional vector.
+
+No Z axis / 2.5D support is implemented. See :py:class:`QgsVector3D` for
+a 3D equivalent.
 %End
 
 %TypeHeaderCode
@@ -81,7 +82,8 @@ Returns the vector's y-component.
 
     QgsVector perpVector() const /HoldGIL/;
 %Docstring
-Returns the perpendicular vector to this vector (rotated 90 degrees counter-clockwise)
+Returns the perpendicular vector to this vector (rotated 90 degrees
+counter-clockwise)
 %End
 
     double angle() const /HoldGIL/;
@@ -96,8 +98,9 @@ Returns the angle between this vector and another vector in radians.
 
     double crossProduct( QgsVector v ) const /HoldGIL/;
 %Docstring
-Returns the 2D cross product of this vector and another vector ``v``. (This is sometimes
-referred to as a "perpendicular dot product", and equals x1 * y1 - y1 * x2).
+Returns the 2D cross product of this vector and another vector ``v``.
+(This is sometimes referred to as a "perpendicular dot product", and
+equals x1 * y1 - y1 * x2).
 
 .. versionadded:: 3.2
 %End
@@ -111,7 +114,8 @@ Rotates the vector by a specified angle.
 
     QgsVector normalized() const;
 %Docstring
-Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0).
+Returns the vector's normalized (or "unit") vector (ie same angle but
+length of 1.0).
 
 :raises QgsException: if called on a vector with length of 0.
 %End
@@ -122,8 +126,8 @@ Returns the vector's normalized (or "unit") vector (ie same angle but length of 
 
     QString toString( int precision = 17 ) const /HoldGIL/;
 %Docstring
-Returns a string representation of the vector.
-Members will be truncated to the specified ``precision``.
+Returns a string representation of the vector. Members will be truncated
+to the specified ``precision``.
 %End
 
     SIP_PYOBJECT __repr__();

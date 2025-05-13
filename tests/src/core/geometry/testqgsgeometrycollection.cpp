@@ -36,6 +36,7 @@ class TestQgsGeometryCollection : public QObject
     void geometryCollection();
     void testCopyConstructor();
     void testAssignment();
+    void cast();
 };
 
 void TestQgsGeometryCollection::geometryCollection()
@@ -437,7 +438,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QCOMPARE( *static_cast<const QgsLineString *>( rc.geometryN( 1 ) ), part2 );
 
   // cast
-  QVERIFY( !QgsGeometryCollection().cast( nullptr ) );
+  QVERIFY( !QgsGeometryCollection().cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
   QgsGeometryCollection pCast;
   QVERIFY( QgsGeometryCollection().cast( &pCast ) );
   QgsGeometryCollection pCast2;
@@ -1460,6 +1461,14 @@ void TestQgsGeometryCollection::testAssignment()
   QCOMPARE( *static_cast<const QgsLineString *>( c2.geometryN( 0 ) ), part );
   QCOMPARE( *static_cast<const QgsLineString *>( c2.geometryN( 1 ) ), part3 );
   QVERIFY( c1 == c2 );
+}
+
+void TestQgsGeometryCollection::cast()
+{
+  QVERIFY( !QgsGeometryCollection::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
+
+  QgsGeometryCollection mc1;
+  QVERIFY( QgsGeometryCollection::cast( &mc1 ) );
 }
 
 

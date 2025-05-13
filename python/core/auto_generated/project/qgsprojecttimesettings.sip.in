@@ -12,8 +12,8 @@
 class QgsProjectTimeSettings : QObject
 {
 %Docstring(signature="appended")
-Contains temporal settings and properties for the project,
-this may be used when animating maps or showing temporal layers.
+Contains temporal settings and properties for the project, this may be
+used when animating maps or showing temporal layers.
 
 .. versionadded:: 3.14
 %End
@@ -25,7 +25,8 @@ this may be used when animating maps or showing temporal layers.
 
     QgsProjectTimeSettings( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProjectTimeSettings with the specified ``parent`` object.
+Constructor for QgsProjectTimeSettings with the specified ``parent``
+object.
 %End
 
     void reset();
@@ -35,8 +36,8 @@ Resets the settings to a default state.
 
     QgsDateTimeRange temporalRange() const;
 %Docstring
-Returns the project's temporal range, which indicates the earliest
-and latest datetime ranges associated with the project.
+Returns the project's temporal range, which indicates the earliest and
+latest datetime ranges associated with the project.
 
 .. note::
 
@@ -51,8 +52,8 @@ and latest datetime ranges associated with the project.
 
     void setTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the project's temporal ``range``, which indicates the earliest
-and latest datetime ranges associated with the project.
+Sets the project's temporal ``range``, which indicates the earliest and
+latest datetime ranges associated with the project.
 
 .. note::
 
@@ -81,8 +82,8 @@ Returns a DOM element representing the settings.
 
     Qgis::TemporalUnit timeStepUnit() const;
 %Docstring
-Returns the project's time step (length of one animation frame) unit, which is used as the default value when
-animating the project.
+Returns the project's time step (length of one animation frame) unit,
+which is used as the default value when animating the project.
 
 .. seealso:: :py:func:`setTimeStepUnit`
 
@@ -91,8 +92,8 @@ animating the project.
 
     void setTimeStepUnit( Qgis::TemporalUnit unit );
 %Docstring
-Sets the project's time step (length of one animation frame) ``unit``, which is used as the default value when
-animating the project.
+Sets the project's time step (length of one animation frame) ``unit``,
+which is used as the default value when animating the project.
 
 .. seealso:: :py:func:`timeStepUnit`
 
@@ -101,8 +102,8 @@ animating the project.
 
     double timeStep() const;
 %Docstring
-Returns the project's time step (length of one animation frame), which is used as the default value when
-animating the project.
+Returns the project's time step (length of one animation frame), which
+is used as the default value when animating the project.
 
 Units are specified via :py:func:`~QgsProjectTimeSettings.timeStepUnit`
 
@@ -113,10 +114,11 @@ Units are specified via :py:func:`~QgsProjectTimeSettings.timeStepUnit`
 
     void setTimeStep( double step );
 %Docstring
-Sets the project's time ``step`` (length of one animation frame), which is used as the default value when
-animating the project.
+Sets the project's time ``step`` (length of one animation frame), which
+is used as the default value when animating the project.
 
-Units are specified via :py:func:`~QgsProjectTimeSettings.setTimeStepUnit`
+Units are specified via
+:py:func:`~QgsProjectTimeSettings.setTimeStepUnit`
 
 .. seealso:: :py:func:`timeStep`
 
@@ -125,14 +127,16 @@ Units are specified via :py:func:`~QgsProjectTimeSettings.setTimeStepUnit`
 
     void setFramesPerSecond( double rate );
 %Docstring
-Sets the project's default animation frame ``rate``, in frames per second.
+Sets the project's default animation frame ``rate``, in frames per
+second.
 
 .. seealso:: :py:func:`framesPerSecond`
 %End
 
     double framesPerSecond() const;
 %Docstring
-Returns the project's default animation frame rate, in frames per second.
+Returns the project's default animation frame rate, in frames per
+second.
 
 .. seealso:: :py:func:`setFramesPerSecond`
 %End

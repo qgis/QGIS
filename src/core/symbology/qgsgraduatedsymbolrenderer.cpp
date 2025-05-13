@@ -47,6 +47,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgspointdistancerenderer.h"
+#include "qgssldexportcontext.h"
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
@@ -337,17 +338,30 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
 
 void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QVariantMap newProps = props;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap newProps = oldProps;
   newProps[ QStringLiteral( "attribute" )] = mAttrName;
   newProps[ QStringLiteral( "method" )] = graduatedMethodStr( mGraduatedMethod );
+  context.setExtraProperties( newProps );
 
   // create a Rule for each range
   bool first = true;
+  bool result = true;
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
   {
-    it->toSld( doc, element, newProps, first );
+    if ( !it->toSld( doc, element, mAttrName, context, first ) )
+      result = false;
     first = false;
   }
+  context.setExtraProperties( oldProps );
+  return result;
 }
 
 QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) const
@@ -492,6 +506,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
 
   QDomElement rangeElem = rangesElem.firstChildElement();
   int i = 0;
+  QSet<QString> usedUuids;
   while ( !rangeElem.isNull() )
   {
     if ( rangeElem.tagName() == QLatin1String( "range" ) )
@@ -502,10 +517,15 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       QString label = rangeElem.attribute( QStringLiteral( "label" ) );
       bool render = rangeElem.attribute( QStringLiteral( "render" ), QStringLiteral( "true" ) ) != QLatin1String( "false" );
       QString uuid = rangeElem.attribute( QStringLiteral( "uuid" ), QString::number( i++ ) );
+      while ( usedUuids.contains( uuid ) )
+      {
+        uuid = QUuid::createUuid().toString();
+      }
       if ( symbolMap.contains( symbolName ) )
       {
         QgsSymbol *symbol = symbolMap.take( symbolName );
         ranges.append( QgsRendererRange( lowerValue, upperValue, symbol, label, render, uuid ) );
+        usedUuids << uuid;
       }
     }
     rangeElem = rangeElem.nextSiblingElement();
@@ -544,7 +564,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   QDomElement sourceColorRampElem = element.firstChildElement( QStringLiteral( "colorramp" ) );
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
   {
-    r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+    r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ).release() );
   }
 
   // try to load mode

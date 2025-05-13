@@ -1,8 +1,4 @@
-
-/**
- * \brief The qgsrasterlayerproperties class is used to set up how raster layers are displayed.
- */
-/* **************************************************************************
+/***************************************************************************
                           qgsrasterlayerproperties.h  -  description
                              -------------------
     begin                : Sun Aug 11 2002
@@ -51,10 +47,9 @@ class QgsRasterLabelingWidget;
 /**
  * \ingroup gui
  * \class QgsRasterLayerProperties
- * \brief Property sheet for a raster map layer
+ * \brief A dialog for raster layer properties.
  * \since QGIS 3.12 (in the GUI API)
  */
-
 class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsRasterLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
@@ -134,10 +129,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     //! \brief slot executed when user changes the layer's CRS
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-    // Server properties
-    void addMetadataUrl();
-    void removeSelectedMetadataUrl();
-
     /**
      * updates gamma spinbox on slider changes
      * \since QGIS 3.16
@@ -182,8 +173,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
   private:
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
-
-    QStandardItemModel *mMetadataUrlModel = nullptr;
 
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;

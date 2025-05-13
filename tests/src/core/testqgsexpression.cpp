@@ -470,7 +470,7 @@ class TestQgsExpression : public QObject
       QTest::addColumn<QString>( "dump" );
       QTest::addColumn<QVariant>( "result" );
 
-      QTest::newRow( "toint alias" ) << "toint(3.2)" << false << "to_int(3.2)" << QVariant( 3 );
+      QTest::newRow( "toint alias" ) << "toint(3.2)" << false << "to_int(3.20000000000000018)" << QVariant( 3 );
       QTest::newRow( "int to double" ) << "toreal(3)" << false << "to_real(3)" << QVariant( 3. );
       QTest::newRow( "int to text" ) << "tostring(6)" << false << "to_string(6)" << QVariant( "6" );
     }
@@ -1242,7 +1242,6 @@ class TestQgsExpression : public QObject
       QTest::newRow( "end_point multipoint" ) << "geom_to_wkt(end_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point line" ) << "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point polygon" ) << "geom_to_wkt(end_point(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "Point (-1 -1)" );
-      QTest::newRow( "reverse not geom" ) << "reverse('g')" << true << QVariant();
       QTest::newRow( "reverse null" ) << "reverse(NULL)" << false << QVariant();
       QTest::newRow( "reverse point" ) << "reverse(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "reverse polygon" ) << "reverse(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant();
@@ -1402,13 +1401,15 @@ class TestQgsExpression : public QObject
       QTest::newRow( "azimuth" ) << "toint(degrees(azimuth( point_a := make_point(25, 45), point_b := make_point(75, 100)))*1000000)" << false << QVariant( 42273689 );
       QTest::newRow( "azimuth" ) << "toint(degrees( azimuth( make_point(75, 100), make_point(25,45) ) )*1000000)" << false << QVariant( 222273689 );
       QTest::newRow( "bearing 1" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
+      QTest::newRow( "bearing 1 with CRS" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), crs_from_text('EPSG:3857'), 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
       QTest::newRow( "bearing 2" ) << "to_int(bearing( make_point(-2074453, 9559553), make_point(-55665, 6828252), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 2356910 );
       QTest::newRow( "bearing 3" ) << "to_int(degrees( bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030'))*1000000)" << false << QVariant( 49980071 );
       QTest::newRow( "bearing 4" ) << "to_int(degrees( bearing( make_point(18736872, -1877769), make_point(16198544, -4534850), 'EPSG:3857', 'WGS84'))*1000000)" << false << QVariant( 219282386 );
       QTest::newRow( "bearing multi point 1 part" ) << "to_int(bearing( geom_from_wkt('MULTIPOINT((16198544 -4534850))'), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')*1000000)" << false << QVariant( 872317 );
       QTest::newRow( "bearing multi point 2 parts" ) << "bearing( geom_from_wkt('MULTIPOINT((16198544 -4534850),(16198545 -4534851))'), make_point(18736872, -1877769), 'EPSG:3857', 'EPSG:7030')" << true << QVariant();
       QTest::newRow( "bearing nonfinite" ) << "bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:4326', 'EPSG:7030')" << false << QVariant();
-      QTest::newRow( "bearing transfor error exception" ) << "bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:32633', 'EPSG:7030')" << false << QVariant();
+      QTest::newRow( "bearing transform error exception" ) << "bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), 'EPSG:32633', 'EPSG:7030')" << false << QVariant();
+      QTest::newRow( "bearing invalid crs" ) << "to_int(bearing( make_point(16198544, -4534850), make_point(18736872, -1877769), crs_from_text('dummy_crs'), 'EPSG:7030')*1000000)" << true << QVariant();
       QTest::newRow( "project not geom" ) << "project( 'asd', 1, 2 )" << true << QVariant();
       QTest::newRow( "project not point" ) << "project( geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'), 1, 2 )" << true << QVariant();
       QTest::newRow( "project x" ) << "toint(x(project( make_point( 1, 2 ), 3, radians(270)))*1000000)" << false << QVariant( -2 * 1000000 );
@@ -1682,6 +1683,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
       QTest::newRow( "length" ) << "length('HeLLo')" << false << QVariant( 5 );
+      QTest::newRow( "repeat 0" ) << "repeat('HeLLo', 0)" << false << QVariant( "" );
+      QTest::newRow( "repeat 1" ) << "repeat('HeLLo', 1)" << false << QVariant( "HeLLo" );
+      QTest::newRow( "repeat 3" ) << "repeat('HeLLo', 3)" << false << QVariant( "HeLLoHeLLoHeLLo" );
+      QTest::newRow( "repeat -1" ) << "repeat('HeLLo', -1)" << false << QVariant( "" );
       QTest::newRow( "replace" ) << "replace('HeLLo', 'LL', 'xx')" << false << QVariant( "Hexxo" );
       QTest::newRow( "replace (array replaced by array)" ) << "replace('321', array('1','2','3'), array('7','8','9'))" << false << QVariant( "987" );
       QTest::newRow( "replace (array replaced by string)" ) << "replace('12345', array('2','4'), '')" << false << QVariant( "135" );
@@ -1694,6 +1699,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
       QTest::newRow( "regexp_replace cap group" ) << "regexp_replace('HeLLo','(eL)', 'x\\\\1x')" << false << QVariant( "HxeLxLo" );
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
+      QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
+      QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
@@ -2287,6 +2294,11 @@ class TestQgsExpression : public QObject
       // Test NULL -> FALSE
       QTest::newRow( "between nulls FALSE" ) << QStringLiteral( "'c' between NULL AND 'b'" ) << false << QVariant( false );
       QTest::newRow( "between nulls FALSE 2" ) << QStringLiteral( "'a' between 'b' AND NULL" ) << false << QVariant( false );
+
+      // CRS functions
+      QTest::newRow( "crs_from_text epsg id" ) << "crs_from_text('EPSG:4326')" << false << QVariant( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+      QTest::newRow( "crs_from_text invalid def" ) << "crs_from_text('dummy crs')" << true << QVariant();
+      QTest::newRow( "crs_to_authid" ) << "crs_to_authid(crs_from_text('EPSG:3857'))" << false << QVariant( "EPSG:3857" );
     }
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
@@ -2400,6 +2412,12 @@ class TestQgsExpression : public QObject
             QgsInterval inter = result.value<QgsInterval>();
             QgsInterval gotinter = expected.value<QgsInterval>();
             QCOMPARE( inter.seconds(), gotinter.seconds() );
+          }
+          else if ( result.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>() )
+          {
+            QgsCoordinateReferenceSystem crs = result.value<QgsCoordinateReferenceSystem>();
+            QgsCoordinateReferenceSystem expectedCrs = expected.value<QgsCoordinateReferenceSystem>();
+            QCOMPARE( crs.authid(), expectedCrs.authid() );
           }
           else if ( result.userType() >= QMetaType::Type::User )
           {
@@ -4049,6 +4067,7 @@ class TestQgsExpression : public QObject
       QgsGeometry oPolygon = QgsGeometry::fromPolygonXY( polygon );
       QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine.asWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << tLine << false << false;
       QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon.asWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << tPolygon << false << false;
+      QTest::newRow( "transform Polygon using CRS" ) << "transform( geomFromWKT('" + oPolygon.asWkt() + "'), crs_from_text('EPSG:4326'), crs_from_text('EPSG:3857') )" << tPolygon << false << false;
     }
 
     void eval_geometry_access_transform()
@@ -5278,6 +5297,9 @@ class TestQgsExpression : public QObject
 
       color = QColor::fromHsvF( 0.90, 0.5f, 0.25f, 0.1f );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( color ) ), "HSVA: 0.90,0.50,0.25,0.10" );
+
+      QgsCoordinateReferenceSystem crs( "EPSG:4326" );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()
@@ -5601,6 +5623,15 @@ class TestQgsExpression : public QObject
       // test with IN
       QTest::newRow( "simple IN" ) << QStringLiteral( "field IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
       QTest::newRow( "simple IN 2" ) << QStringLiteral( "field = 'value' OR field IN ('value2', 'value3')" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+      // not in, should fail
+      QTest::newRow( "not IN left" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field = 'value3'" );
+      QTest::newRow( "not IN right" ) << QStringLiteral( "field IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field  IN ('value', 'value2') OR field NOT IN ('value3')" );
+      QTest::newRow( "not IN left same" ) << QStringLiteral( "field NOT IN ('value') OR field IN ('value')" ) << QStringLiteral( "field NOT IN ('value') OR field  IN ('value')" );
+      QTest::newRow( "not IN right same" ) << QStringLiteral( "field IN ('value') OR field NOT IN ('value')" ) << QStringLiteral( "field  IN ('value') OR field NOT IN ('value')" );
+      QTest::newRow( "not IN three" ) << QStringLiteral( "\"TYPE\" in ('a') OR \"TYPE\" not in ('b') OR \"TYPE\" in ('c')" ) << QStringLiteral( "TYPE  IN ('a') OR TYPE NOT IN ('b') OR TYPE  IN ('c')" );
+
+      // could be handled, but isn't right now
+      QTest::newRow( "not IN both" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" ) << QStringLiteral( "field NOT IN ('value', 'value2') OR field NOT IN ('value3')" );
 
       // test cases that should not trigger reduction
       QTest::newRow( "no reduction 1" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" );
@@ -5995,6 +6026,32 @@ class TestQgsExpression : public QObject
           }
         }
       }
+    }
+
+    void testDumpLiteralNode_data()
+    {
+      QTest::addColumn<QVariant>( "value" );
+      QTest::addColumn<QString>( "expected" );
+      QTest::newRow( "int 1" ) << QVariant( 1 ) << QStringLiteral( "1" );
+      QTest::newRow( "int 11231234" ) << QVariant( 11231234 ) << QStringLiteral( "11231234" );
+      QTest::newRow( "int -11231234" ) << QVariant( -11231234 ) << QStringLiteral( "-11231234" );
+      QTest::newRow( "double 11.5" ) << QVariant( 11.5 ) << QStringLiteral( "11.5" );
+      QTest::newRow( "double -11.5" ) << QVariant( -11.5 ) << QStringLiteral( "-11.5" );
+      QTest::newRow( "double 3972047.39999999990686774" ) << QVariant( 3972047.39999999990686774 ) << QStringLiteral( "3972047.39999999990686774" );
+      QTest::newRow( "string abc" ) << QVariant( QStringLiteral( "abc" ) ) << QStringLiteral( "'abc'" );
+      QTest::newRow( "bool TRUE" ) << QVariant( true ) << QStringLiteral( "TRUE" );
+      QTest::newRow( "bool FALSE" ) << QVariant( false ) << QStringLiteral( "FALSE" );
+      QTest::newRow( "date" ) << QVariant( QDate( 2020, 5, 12 ) ) << QStringLiteral( "'2020-05-12'" );
+      QTest::newRow( "time" ) << QVariant( QTime( 9, 5, 12 ) ) << QStringLiteral( "'09:05:12'" );
+      QTest::newRow( "datetime" ) << QVariant( QDateTime( QDate( 2020, 5, 12 ), QTime( 9, 5, 12 ), Qt::UTC ) ) << QStringLiteral( "'2020-05-12T09:05:12Z'" );
+    }
+
+    void testDumpLiteralNode()
+    {
+      QFETCH( QVariant, value );
+      QFETCH( QString, expected );
+
+      QCOMPARE( QgsExpressionNodeLiteral( value ).dump(), expected );
     }
 };
 

@@ -12,8 +12,8 @@
 class QgsFieldCalculator : QDialog
 {
 %Docstring(signature="appended")
-
-A dialog class that provides calculation of new fields using existing fields, values and a set of operators
+A dialog that provides calculation of new fields using existing fields,
+values and a set of operators.
 
 Sample usage of the :py:class:`QgsFieldCalculator` class:
 
@@ -34,9 +34,11 @@ Sample usage of the :py:class:`QgsFieldCalculator` class:
 
     int changedAttributeId() const;
 %Docstring
-Returns the field index of the field for which new attribute values were calculated.
+Returns the field index of the field for which new attribute values were
+calculated.
 
-:return: The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
+:return: The field index if attribute values were calculated or -1, e.g.
+         in case of geometry changes.
 %End
 
   public slots:

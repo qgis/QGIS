@@ -79,7 +79,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
     menu->addAction( actions->actionAddGroup( menu ) );
     menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionExpandTree.svg" ) ), tr( "&Expand All" ), mView, &QgsLayerTreeView::expandAll );
     menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCollapseTree.svg" ) ), tr( "&Collapse All" ), mView, &QgsLayerTreeView::collapseAll );
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( QLatin1String( "GlobalSeparator" ) );
     if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
     {
       QAction *actionPasteLayerOrGroup = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ), tr( "Paste Layer/Group" ), menu );
@@ -106,16 +106,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "RenameGroupOrLayerSeparator" ) );
       menu->addAction( actions->actionAddGroup( menu ) );
       QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Group…" ), QgisApp::instance(), &QgisApp::removeLayer );
       removeAction->setEnabled( removeActionEnabled() );
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "RemoveSeparator" ) );
 
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ), tr( "Set Group &CRS…" ), QgisApp::instance(), &QgisApp::legendGroupSetCrs );
       menu->addAction( tr( "Set Group &WMS Data…" ), QgisApp::instance(), &QgisApp::legendGroupSetWmsData );
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "WmsSeparator" ) );
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
 
@@ -135,7 +135,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToBottom( menu ) );
       }
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "ExclusionSeparator" ) );
 
       if ( !mView->selectedNodes( true ).empty() )
         menu->addAction( actions->actionGroupSelected( menu ) );
@@ -145,7 +145,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
       }
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "GroupSeparator" ) );
 
       QMenu *menuExportGroup = new QMenu( tr( "E&xport" ), menu );
       menuExportGroup->setObjectName( QStringLiteral( "exportMenu" ) );
@@ -253,20 +253,32 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { QgsMapLayerUtils::databaseConnection( layer ) };
               if ( conn2 )
               {
-                QgsDialog dialog;
-                dialog.setObjectName( QStringLiteral( "SqlUpdateDialog" ) );
-                dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layer->name() ) );
-                QgsGui::enableAutoGeometryRestore( &dialog );
                 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layer->source() ) };
                 options.layerName = layer->name();
-                QgsQueryResultWidget *queryResultWidget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
-                queryResultWidget->setWidgetMode( QgsQueryResultWidget::QueryWidgetMode::QueryLayerUpdateMode );
-                queryResultWidget->setSqlVectorLayerOptions( options );
-                queryResultWidget->executeQuery();
-                queryResultWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-                dialog.layout()->addWidget( queryResultWidget );
 
-                connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer, this]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
+                QgsQueryResultDialog dialog( conn2.release() );
+                dialog.setObjectName( QStringLiteral( "SqlUpdateDialog" ) );
+                dialog.setStyleSheet( QgisApp::instance()->styleSheet() );
+
+                const QString layerName = layer->name();
+                dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layerName ) );
+                QgsGui::enableAutoGeometryRestore( &dialog );
+                dialog.resultWidget()->setWidgetMode( QgsQueryResultWidget::QueryWidgetMode::QueryLayerUpdateMode );
+                dialog.resultWidget()->setSqlVectorLayerOptions( options );
+                dialog.resultWidget()->executeQuery();
+
+                connect( dialog.resultWidget(), &QgsQueryResultWidget::requestDialogTitleUpdate, &dialog, [&dialog, layerName]( const QString &fileName ) {
+                  if ( fileName.isEmpty() )
+                  {
+                    dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layerName ) );
+                  }
+                  else
+                  {
+                    dialog.setWindowTitle( tr( "%1 — %2 — Update SQL" ).arg( fileName, layerName ) );
+                  }
+                } );
+
+                connect( dialog.resultWidget(), &QgsQueryResultWidget::createSqlVectorLayer, &dialog, [&dialog, layer, this]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
                   ( void ) this;
                   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3 { QgsMapLayerUtils::databaseConnection( layer ) };
                   if ( conn3 )
@@ -277,7 +289,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                       if ( sqlLayer->isValid() )
                       {
                         layer->setDataSource( sqlLayer->source(), sqlLayer->name(), sqlLayer->dataProvider()->name(), QgsDataProvider::ProviderOptions() );
-                        queryResultWidget->notify( QObject::tr( "Layer Update Success" ), QObject::tr( "The SQL layer was updated successfully" ), Qgis::MessageLevel::Success );
+                        dialog.resultWidget()->notify( QObject::tr( "Layer Update Success" ), QObject::tr( "The SQL layer was updated successfully" ), Qgis::MessageLevel::Success );
                       }
                       else
                       {
@@ -286,12 +298,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                         {
                           error = QObject::tr( "layer is not valid, check the log messages for more information" );
                         }
-                        queryResultWidget->notify( QObject::tr( "Layer Update Error" ), QObject::tr( "Error updating the SQL layer: %1" ).arg( error ), Qgis::MessageLevel::Critical );
+                        dialog.resultWidget()->notify( QObject::tr( "Layer Update Error" ), QObject::tr( "Error updating the SQL layer: %1" ).arg( error ), Qgis::MessageLevel::Critical );
                       }
                     }
                     catch ( QgsProviderConnectionException &ex )
                     {
-                      queryResultWidget->notify( QObject::tr( "Layer Update Error" ), QObject::tr( "Error updating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
+                      dialog.resultWidget()->notify( QObject::tr( "Layer Update Error" ), QObject::tr( "Error updating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
                     }
                   }
                 } );
@@ -302,41 +314,79 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
           // SQL dialog
           if ( conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
-            menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Execute SQL…" ), menu, [layer, this] {
-              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { QgsMapLayerUtils::databaseConnection( layer ) };
-              if ( conn2 )
+          {
+            QAction *executeSqlAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Execute SQL…" ), menu );
+            menu->addAction( executeSqlAction );
+
+            const QString providerType = layer->providerType();
+            const QString layerSource = layer->source();
+            const QString layerName = layer->name();
+
+            connect( executeSqlAction, &QAction::triggered, executeSqlAction, [providerType, layerSource, layerName] {
+              try
               {
-                QgsDialog dialog;
-                dialog.setObjectName( QStringLiteral( "SqlExecuteDialog" ) );
-                dialog.setWindowTitle( tr( "Execute SQL" ) );
-                QgsGui::enableAutoGeometryRestore( &dialog );
-                QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layer->source() ) };
-                QgsQueryResultWidget *queryResultWidget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
-                queryResultWidget->setSqlVectorLayerOptions( options );
-                queryResultWidget->executeQuery();
-                queryResultWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-                dialog.layout()->addWidget( queryResultWidget );
+                QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( providerType );
+                if ( !providerMetadata )
+                {
+                  return;
+                }
 
-                connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer, this]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
-                  ( void ) this;
-                  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3 { QgsMapLayerUtils::databaseConnection( layer ) };
-                  if ( conn3 )
-                  {
-                    try
-                    {
-                      QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
-                      QgsProject::instance()->addMapLayers( { sqlLayer } );
-                    }
-                    catch ( QgsProviderConnectionException &ex )
-                    {
-                      queryResultWidget->notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
-                    }
-                  }
-                } );
+                std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layerSource, {} ) ) };
+                if ( conn2 )
+                {
+                  QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layerSource ) };
 
-                dialog.exec();
+                  QgsQueryResultMainWindow *dialog = new QgsQueryResultMainWindow( conn2.release(), layerName );
+                  dialog->setAttribute( Qt::WA_DeleteOnClose );
+                  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
+                  dialog->resultWidget()->setSqlVectorLayerOptions( options );
+
+                  connect( dialog->resultWidget(), &QgsQueryResultWidget::requestDialogTitleUpdate, dialog, [dialog]( const QString &fileName ) {
+                    if ( fileName.isEmpty() )
+                    {
+                      dialog->setWindowTitle( tr( "Execute SQL" ) );
+                    }
+                    else
+                    {
+                      dialog->setWindowTitle( tr( "%1 — Execute SQL" ).arg( fileName ) );
+                    }
+                  } );
+
+                  connect( dialog->resultWidget(), &QgsQueryResultWidget::createSqlVectorLayer, dialog, [dialog, layerSource, providerType]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) {
+                    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( providerType );
+                    if ( !providerMetadata )
+                    {
+                      return;
+                    }
+
+                    std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn3 { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layerSource, {} ) ) };
+                    if ( conn3 )
+                    {
+                      try
+                      {
+                        QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
+                        QgsProject::instance()->addMapLayers( { sqlLayer } );
+                      }
+                      catch ( QgsProviderConnectionException &ex )
+                      {
+                        dialog->resultWidget()->notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
+                      }
+                    }
+                  } );
+
+                  dialog->show();
+                }
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                if ( !ex.what().contains( QLatin1String( "createConnection" ) ) )
+                {
+                  QgsDebugError( QStringLiteral( "Error retrieving database connection for layer %1: %2" ).arg( layerName, ex.what() ) );
+                }
+                return;
               }
             } );
+          }
         }
       }
 
@@ -346,14 +396,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ), tr( "Edit Virtual Layer…" ), QgisApp::instance(), &QgisApp::addVirtualLayer );
       }
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "LayerSeparator" ) );
 
       // duplicate layer
       QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate Layer" ), QgisApp::instance(), [] { QgisApp::instance()->duplicateLayers(); } );
       QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Layer…" ), QgisApp::instance(), &QgisApp::removeLayer );
       removeAction->setEnabled( removeActionEnabled() );
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "LayerActionSeparator" ) );
 
       if ( node->parent() != mView->layerTreeModel()->rootGroup() )
         menu->addAction( actions->actionMoveOutOfGroup( menu ) );
@@ -375,7 +425,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "ActionPositionSeparator" ) );
 
       if ( vlayer || meshLayer || pcLayer )
       {
@@ -481,7 +531,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
       }
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "ActionPositionSeparator" ) );
 
       if ( layer && layer->isSpatial() )
       {
@@ -536,7 +586,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         const QList<QgsCoordinateReferenceSystem> recentProjections = QgsApplication::coordinateReferenceSystemRegistry()->recentCrs();
         if ( !recentProjections.isEmpty() )
         {
-          menuSetCRS->addSeparator();
+          menuSetCRS->addSeparator()->setObjectName( QLatin1String( "CRSSeparator" ) );
           int i = 0;
           for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
           {
@@ -555,7 +605,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
 
         // set layer crs
-        menuSetCRS->addSeparator();
+        menuSetCRS->addSeparator()->setObjectName( QLatin1String( "SetLayerCrsSeparator" ) );
         QAction *actionSetLayerCrs = new QAction( tr( "Set &Layer CRS…" ), menuSetCRS );
         connect( actionSetLayerCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setLayerCrs );
         menuSetCRS->addAction( actionSetLayerCrs );
@@ -563,7 +613,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addMenu( menuSetCRS );
       }
 
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "LayerCrsSeparator" ) );
 
       // export menu
       if ( layer )
@@ -638,13 +688,13 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
             break;
         }
-        menu->addSeparator();
+        menu->addSeparator()->setObjectName( QLatin1String( "LayerSpecificSeparator" ) );
       }
 
       // style-related actions
       if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
-        menu->addSeparator();
+        menu->addSeparator()->setObjectName( QLatin1String( "StyleSeparator" ) );
         QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
         QgsMapLayerStyleManager *mgr = layer->styleManager();
         if ( mgr->styles().count() > 1 )
@@ -671,7 +721,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             connect( copyAction, &QAction::triggered, this, [=]() { app->copyStyle( layer, category ); } );
             copyStyleMenu->addAction( copyAction );
             if ( category == QgsMapLayer::AllStyleCategories )
-              copyStyleMenu->addSeparator();
+              copyStyleMenu->addSeparator()->setObjectName( QLatin1String( "CopyStyleSeparator" ) );
           }
         }
         else
@@ -710,7 +760,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                   connect( pasteAction, &QAction::triggered, this, [=]() { app->pasteStyle( layer, category ); } );
                   pasteStyleMenu->addAction( pasteAction );
                   if ( category == QgsMapLayer::AllStyleCategories )
-                    pasteStyleMenu->addSeparator();
+                    pasteStyleMenu->addSeparator()->setObjectName( QLatin1String( "PasteStyleSeparator" ) );
                   else
                     pasteAction->setEnabled( sourceCategories.testFlag( category ) );
                 }
@@ -723,7 +773,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           }
         }
 
-        menuStyleManager->addSeparator();
+        menuStyleManager->addSeparator()->setObjectName( QLatin1String( "MenuStyleSeparator" ) );
         QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( menuStyleManager, layer );
 
         if ( vlayer )
@@ -736,7 +786,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           if ( singleRenderer && singleRenderer->symbol() )
           {
             //single symbol renderer, so add set color/edit symbol actions
-            menuStyleManager->addSeparator();
+            menuStyleManager->addSeparator()->setObjectName( QLatin1String( "SymbolSeparator" ) );
             QgsColorWheel *colorWheel = new QgsColorWheel( menuStyleManager );
             colorWheel->setColor( singleRenderer->symbol()->color() );
             QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, menuStyleManager, menuStyleManager );
@@ -758,7 +808,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               connect( recentColorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor );
             }
 
-            menuStyleManager->addSeparator();
+            menuStyleManager->addSeparator()->setObjectName( QLatin1String( "SymbolColorSeparator" ) );
             const QString layerId = vlayer->id();
 
             QAction *editSymbolAction = new QAction( tr( "Edit Symbol…" ), menuStyleManager );
@@ -830,7 +880,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleAllLayers.svg" ) ), tr( "&Toggle Items" ), node, &QgsLayerTreeModelLegendNode::toggleAllItems );
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ), node, &QgsLayerTreeModelLegendNode::checkAllItems );
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ), node, &QgsLayerTreeModelLegendNode::uncheckAllItems );
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( QLatin1String( "UserCheckableSeparator" ) );
     }
 
     if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( node ) )
@@ -888,7 +938,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           }
         } );
 
-        menu->addSeparator();
+        menu->addSeparator()->setObjectName( QLatin1String( "MatchingAttributeSeparator" ) );
       }
 
       if ( layer && layer->type() == Qgis::LayerType::Vector && symbolNode->symbol() )
@@ -917,7 +967,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           connect( recentColorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor );
         }
 
-        menu->addSeparator();
+        menu->addSeparator()->setObjectName( QLatin1String( "VectorLayerSymbolSeparator" ) );
       }
 
       if ( layer && layer->type() == Qgis::LayerType::Vector )
@@ -1041,7 +1091,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu *menu, QgsMap
 
   if ( !lyrActions.isEmpty() )
   {
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( QLatin1String( "CustomLayerSeparator" ) );
     QList<QMenu *> menus;
     for ( int i = 0; i < lyrActions.count(); i++ )
     {
@@ -1096,7 +1146,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu *menu, QgsMap
         }
       }
     }
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( QLatin1String( "CustomLayerEndSeparator" ) );
   }
 }
 

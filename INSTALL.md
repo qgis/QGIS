@@ -119,6 +119,7 @@ Required build dependencies:
 * QCA
 * qtkeychain (>= 0.5)
 * libzip
+* protobuf
 
 Optional dependencies:
 
@@ -361,6 +362,7 @@ QGIS build is tunable according to your needs. Many flags are available to activ
 * `WITH_ORACLE`: Determines whether Oracle support should be built
 * `WITH_PDAL`: Determines whether PDAL support should be built
 * `WITH_POSTGRESQL`: Determines whether POSTGRESQL support should be built
+* `WITH_PYTHON`: Determines whether Python support should be built (disabling it will in particular disable processing)
 * `WITH_QGIS_PROCESS`: Determines whether the standalone \"qgis_process\" tool should be built
 * `WITH_QSPATIALITE`: Determines whether QSPATIALITE sql driver should be built
 * `WITH_SERVER`: Determines whether QGIS server should be built
@@ -639,7 +641,7 @@ Download and install following packages:
 * [CMake](https://github.com/Kitware/CMake/releases/download/v3.31.4/cmake-3.31.4-windows-x86_64.msi)
 * GNU flex, GNU bison and GIT with [cygwin 64bit](https://cygwin.com/setup-x86_64.exe)
 * [OSGeo4W](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
-* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip): Copy the `ninja.exe` to `C:\OSGeo4W\bin\`
+* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-win.zip) (Version >= 1.10): Copy the `ninja.exe` to `C:\OSGeo4W\bin\`
 
 For the QGIS build you need to install following packages from cygwin:
 
@@ -920,7 +922,7 @@ For example install Homebrew
 and these development/build tools
 
 ```bash
-brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc
+brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc draco
 ```
 
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to
@@ -1300,7 +1302,7 @@ If you are interested in seeing embedded debug output, change the following
 CMake option:
 
 ```bash
--D CMAKE_BUILD_TYPE=DEBUG  # (or RELWITHDEBINFO)
+-D CMAKE_BUILD_TYPE=Debug  # (or RelWithDebInfo)
 ```
 
 This will flood your terminal or system log with lots of useful output from

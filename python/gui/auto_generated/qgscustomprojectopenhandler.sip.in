@@ -11,15 +11,17 @@
 class QgsCustomProjectOpenHandler : QObject
 {
 %Docstring(signature="appended")
-Abstract base class that may be implemented to handle new project file types within
-the QGIS application.
+Abstract base class that may be implemented to handle new project file
+types within the QGIS application.
 
-This interface allows extending the QGIS interface by adding support for opening additional
-(non QGS/QGZ) project files, e.g. allowing plugins to add support for opening other
-vendor project formats (such as ArcGIS MXD documents or MapInfo WOR workspaces).
+This interface allows extending the QGIS interface by adding support for
+opening additional (non QGS/QGZ) project files, e.g. allowing plugins to
+add support for opening other vendor project formats (such as ArcGIS MXD
+documents or MapInfo WOR workspaces).
 
-Handler implementations should indicate the file types they support via their :py:func:`~filters`
-implementation, and then implement :py:func:`~handleProjectOpen` to open the associated files.
+Handler implementations should indicate the file types they support via
+their :py:func:`~filters` implementation, and then implement
+:py:func:`~handleProjectOpen` to open the associated files.
 
 .. versionadded:: 3.14
 %End
@@ -30,26 +32,30 @@ implementation, and then implement :py:func:`~handleProjectOpen` to open the ass
   public:
     virtual bool handleProjectOpen( const QString &file ) = 0;
 %Docstring
-Called when the specified project ``file`` has been opened within QGIS. If ``True``
-is returned, then the handler has accepted this file and it should not
-be further processed (e.g. by other QgsCustomProjectOpenHandler).
+Called when the specified project ``file`` has been opened within QGIS.
+If ``True`` is returned, then the handler has accepted this file and it
+should not be further processed (e.g. by other
+QgsCustomProjectOpenHandler).
 
-It it is the subclasses' responsibility to ignore file types it cannot handle
-by returning ``False`` for these.
+It it is the subclasses' responsibility to ignore file types it cannot
+handle by returning ``False`` for these.
 
 The base class implementation does nothing.
 %End
 
     virtual QStringList filters() const = 0;
 %Docstring
-Returns file filters associated with this handler, e.g. "MXD Documents (*.mxd)", "MapInfo Workspaces (*.wor)".
+Returns file filters associated with this handler, e.g. "MXD Documents
+(*.mxd)", "MapInfo Workspaces (*.wor)".
 
-Each individual filter should be reflected as one entry in the returned list.
+Each individual filter should be reflected as one entry in the returned
+list.
 %End
 
     virtual bool createDocumentThumbnailAfterOpen() const;
 %Docstring
-Returns ``True`` if a document thumbnail should automatically be created after opening the project.
+Returns ``True`` if a document thumbnail should automatically be created
+after opening the project.
 
 The default behavior is to return ``False``.
 %End

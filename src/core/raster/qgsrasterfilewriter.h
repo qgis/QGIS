@@ -247,21 +247,45 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     int maxTileHeight() const { return mMaxTileHeight; }
 
+    // TODO QGIS 4.0: rename list to options to have more semantic argument name
+
     /**
      * Sets a list of data source creation options to use when
      * creating the output raster file.
      *
      * \see createOptions()
+     * \deprecated QGIS 3.44. Use setCreationOptions() instead.
      */
-    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+    Q_DECL_DEPRECATED void setCreateOptions( const QStringList &list ) SIP_DEPRECATED { setCreationOptions( list ); }
 
     /**
      * Returns the list of data source creation options which will be used when
      * creating the output raster file.
      *
      * \see setCreateOptions()
+     * \deprecated QGIS 3.44. Use creationOptions() instead.
      */
-    QStringList createOptions() const { return mCreateOptions; }
+    Q_DECL_DEPRECATED QStringList createOptions() const SIP_DEPRECATED { return creationOptions(); }
+
+    /**
+     * Returns the list of data source creation options which will be used when
+     * creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
+     * Sets a list of data source creation options to use when
+     * creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44
+     */
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    // TODO QGIS 4.0: rename list to options to have more semantic argument name
 
     /**
      * Sets a \a list of configuration options to use when
@@ -409,7 +433,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString mOutputUrl;
     QString mOutputProviderKey = QStringLiteral( "gdal" );
     QString mOutputFormat = QStringLiteral( "GTiff" );
-    QStringList mCreateOptions;
+    QStringList mCreationOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
     //! False: Write one file, TRUE: create a directory and add the files numbered

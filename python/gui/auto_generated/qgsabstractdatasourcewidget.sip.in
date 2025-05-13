@@ -15,7 +15,9 @@
 class QgsAbstractDataSourceWidget : QDialog
 {
 %Docstring(signature="appended")
-Abstract base Data Source Widget to create connections and add layers
+Abstract base class for Data Source widgets to create connections and
+add layers.
+
 This class provides common functionality and the interface for all
 source select dialogs used by data providers to configure data sources
 and add layers.
@@ -55,33 +57,35 @@ Sets the dialog map canvas
 
     virtual void refresh();
 %Docstring
-Triggered when the provider's connections need to be refreshed
-The default implementation does nothing
+Triggered when the provider's connections need to be refreshed The
+default implementation does nothing
 %End
 
     virtual void addButtonClicked();
 %Docstring
-Triggered when the add button is clicked, the add layer signal is emitted
-Concrete classes should implement the right behavior depending on the layer
-being added.
+Triggered when the add button is clicked, the add layer signal is
+emitted Concrete classes should implement the right behavior depending
+on the layer being added.
 %End
 
     virtual void reset();
 %Docstring
-Called when this source select widget is being shown in a "new and clean" dialog.
+Called when this source select widget is being shown in a "new and
+clean" dialog.
 
-The data source manager recycles existing source select widgets but will call
-this method on every reopening.
-This should clear any selection that has previously been done.
+The data source manager recycles existing source select widgets but will
+call this method on every reopening. This should clear any selection
+that has previously been done.
 
 .. versionadded:: 3.10
 %End
 
     virtual bool configureFromUri( const QString &uri );
 %Docstring
-Configure the widget from a layer ``uri`` by selecting the layer path or connection options.
-The base implementation does nothing and returns ``False``: providers with ConfigureSourceSelectFromUri capability
-must override to implement this functionality.
+Configure the widget from a layer ``uri`` by selecting the layer path or
+connection options. The base implementation does nothing and returns
+``False``: providers with ConfigureSourceSelectFromUri capability must
+override to implement this functionality.
 
 :return: ``True`` on success.
 
@@ -96,8 +100,8 @@ must override to implement this functionality.
 
     void connectionsChanged();
 %Docstring
-Emitted when the provider's connections have changed
-This signal is normally forwarded the app and used to refresh browser items
+Emitted when the provider's connections have changed This signal is
+normally forwarded the app and used to refresh browser items
 %End
 
     void addDatabaseLayers( const QStringList &paths, const QString &providerKey );
@@ -127,8 +131,8 @@ Emitted when one or more GDAL supported layers are selected for addition
 %Docstring
 Emitted when a vector layer has been selected for addition.
 
-If ``providerKey`` is not specified, the default provider key associated with the source
-will be used.
+If ``providerKey`` is not specified, the default provider key associated
+with the source will be used.
 
 .. deprecated:: 3.40
 
@@ -166,7 +170,8 @@ Emitted when a point cloud layer has been selected for addition.
 %Docstring
 Emitted when a layer has been selected for addition.
 
-This is a generic method, intended for replacing the specific layer type signals implemented above.
+This is a generic method, intended for replacing the specific layer type
+signals implemented above.
 
 .. warning::
 
@@ -216,7 +221,8 @@ Emitted when the ok/add buttons should be enabled/disabled
 
     void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
-Emitted when a ``message`` with ``title`` and ``level`` must be shown to the user using the parent visible message bar
+Emitted when a ``message`` with ``title`` and ``level`` must be shown to
+the user using the parent visible message bar
 
 .. versionadded:: 3.14
 %End

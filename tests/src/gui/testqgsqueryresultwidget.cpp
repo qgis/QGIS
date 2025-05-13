@@ -124,7 +124,7 @@ void TestQgsQueryResultWidget::testWidget()
   connect( w, &QgsQueryResultWidget::firstResultBatchFetched, d.get(), [&] { exited = true; } );
   while ( !exited )
     QgsApplication::processEvents();
-  const auto rowCount { w->mModel->rowCount( w->mModel->index( -1, -1 ) ) };
+  const auto rowCount { w->mQueryWidget->mModel->rowCount( w->mQueryWidget->mModel->index( -1, -1 ) ) };
   QVERIFY( rowCount > 0 && rowCount < 100000 );
 }
 
@@ -138,19 +138,19 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
 {
   auto w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
   bool exited = false;
-  connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [&] { exited = true; } );
+  connect( w->mQueryWidget->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [&] { exited = true; } );
   while ( !exited )
     QgsApplication::processEvents();
-  QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "qgis_test" ) ) );
-  QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "random_big_data" ) ) );
-  QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "descr" ) ) );
+  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( QStringLiteral( "qgis_test" ) ) );
+  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( QStringLiteral( "random_big_data" ) ) );
+  QVERIFY( w->mQueryWidget->mSqlEditor->extraKeywords().contains( QStringLiteral( "descr" ) ) );
 
   // Test feedback interrupt
   w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
   QTimer::singleShot( 0, w.get(), [&] {
-    QTest::mousePress( w->mStopButton, Qt::MouseButton::LeftButton );
+    QTest::mousePress( w->mQueryWidget->mStopButton, Qt::MouseButton::LeftButton );
   } );
-  connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [&] { exited = true; } );
+  connect( w->mQueryWidget->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [&] { exited = true; } );
   while ( !exited )
     QgsApplication::processEvents();
 }

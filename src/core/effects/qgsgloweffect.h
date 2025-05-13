@@ -29,7 +29,7 @@
 /**
  * \ingroup core
  * \class QgsGlowEffect
- * \brief Base class for paint effect which draw a glow inside or outside a
+ * \brief Base class for paint effects which draw a glow inside or outside a
  * picture.
  *
  */

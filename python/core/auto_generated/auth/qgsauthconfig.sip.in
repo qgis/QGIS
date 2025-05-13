@@ -15,7 +15,7 @@
 class QgsAuthMethodConfig
 {
 %Docstring(signature="appended")
-Configuration storage class for authentication method configurations
+Configuration storage class for authentication method configurations.
 %End
 
 %TypeHeaderCode
@@ -28,7 +28,8 @@ Configuration storage class for authentication method configurations
 Construct a configuration for an authentication method
 
 :param method: Textual key of the authentication method
-:param version: Version of the configuration (for updating previously saved configs later on)
+:param version: Version of the configuration (for updating previously
+                saved configs later on)
 %End
 
 
@@ -87,7 +88,8 @@ Whether the configuration is valid
 
     const QString configString() const;
 %Docstring
-The extended configuration, as stored and retrieved from the authentication database
+The extended configuration, as stored and retrieved from the
+authentication database
 
 .. note::
 
@@ -158,14 +160,14 @@ Returns a config's value
 %Docstring
 Returns a config's list of values
 
-:param key:
+:param key: 
 %End
 
     bool hasConfig( const QString &key ) const;
 %Docstring
 Whether a config key exists in config map
 
-:param key:
+:param key: 
 %End
 
     void clearConfigMap();
@@ -176,7 +178,8 @@ Clear all configs
     static bool uriToResource( const QString &accessurl, QString *resource, bool withpath = false );
 %Docstring
 A utility function for generating a resource from a URL to be compared
-against the config's :py:func:`~QgsAuthMethodConfig.uri` for auto-selecting authentication configs to use
+against the config's :py:func:`~QgsAuthMethodConfig.uri` for
+auto-selecting authentication configs to use
 
 .. note::
 
@@ -203,7 +206,8 @@ Stores the configuration in a DOM
 %Docstring
 from a DOM element.
 
-:param element: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+:param element: is the DOM node corresponding to item (e.g. 'LayoutItem'
+                element)
 
 .. versionadded:: 3.20
 %End
@@ -217,7 +221,8 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 class QgsPkiBundle
 {
 %Docstring(signature="appended")
-Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
+Storage set for PKI bundle: SSL certificate, key, optional CA cert
+chain.
 
 .. note::
 
@@ -310,7 +315,8 @@ Sets chain of Certificate Authorities for client certificate
 class QgsPkiConfigBundle
 {
 %Docstring(signature="appended")
-Storage set for constructed SSL certificate, key, associated with an authentication config
+Storage set for constructed SSL certificate, key, associated with an
+authentication config.
 %End
 
 %TypeHeaderCode
@@ -323,7 +329,8 @@ Storage set for constructed SSL certificate, key, associated with an authenticat
                         const QSslKey &certkey,
                         const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
 %Docstring
-Construct a bundle from existing PKI components and authentication method configuration
+Construct a bundle from existing PKI components and authentication
+method configuration
 
 :param config: Authentication method configuration
 :param cert: Certificate to store in bundle
@@ -377,7 +384,7 @@ caChain return the CA chain
 %Docstring
 setCaChain set the CA chain
 
-:param caChain:
+:param caChain: 
 %End
 
 };
@@ -436,7 +443,8 @@ setCaChain set the CA chain
 class QgsAuthConfigSslServer
 {
 %Docstring(signature="appended")
-Configuration container for SSL server connection exceptions or overrides
+Configuration container for SSL server connection exceptions or
+overrides.
 %End
 
 %TypeHeaderCode
@@ -530,7 +538,8 @@ Qt version when the configuration was made (SSL protocols may differ)
 %End
     void setQtVersion( int version );
 %Docstring
-Sets Qt version when the configuration was made (SSL protocols may differ)
+Sets Qt version when the configuration was made (SSL protocols may
+differ)
 %End
 
     const QString configString() const;

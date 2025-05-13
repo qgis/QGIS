@@ -30,7 +30,7 @@ typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
 
 /**
  * \ingroup core
- * \brief This is the interface for those who want to add custom data items to the browser tree.
+ * \brief Interface for providers that add custom data items to the browser tree.
  *
  * The method createDataItem() is ever called only if capabilities() return non-zero value.
  * There are two occasions when createDataItem() is called:

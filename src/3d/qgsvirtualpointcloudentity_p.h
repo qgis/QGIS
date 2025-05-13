@@ -43,7 +43,7 @@ class Qgs3DMapSettings;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Implementation of entity that handles virtual point cloud sub indexes
  *
  * This entity is parent to a QgsChunkBoundsEntity that renders all sub indexes' bounding boxes, as well as all individual

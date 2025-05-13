@@ -28,7 +28,7 @@
 
 /**
  * \ingroup core
- * \brief This class is responsible for keeping cache of rendered images resulting from
+ * \brief Responsible for keeping a cache of rendered images resulting from
  * a map rendering job.
  *
  * Once a job has a rendered image stored in the cache (using setCacheImage(...)),

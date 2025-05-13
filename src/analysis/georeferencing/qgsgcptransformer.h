@@ -176,7 +176,7 @@ class ANALYSIS_EXPORT QgsLinearGeorefTransform : public QgsGcpTransformerInterfa
 };
 
 /**
- * \brief 2-dimensional helmert transform, parametrised by isotropic scale, rotation angle and translation.
+ * \brief 2-dimensional Helmert transform, parametrised by isotropic scale, rotation angle and translation.
  * \ingroup analysis
  * \note Not available in Python bindings
  * \since QGIS 3.20

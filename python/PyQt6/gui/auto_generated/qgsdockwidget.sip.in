@@ -12,7 +12,8 @@
 class QgsDockWidget : QDockWidget
 {
 %Docstring(signature="appended")
-:py:class:`QgsDockWidget` subclass with more fine-grained control over how the widget is closed or opened.
+A QDockWidget subclass with more fine-grained control over how the
+widget is closed or opened.
 %End
 
 %TypeHeaderCode
@@ -38,8 +39,8 @@ Constructor for QgsDockWidget.
 
     bool isUserVisible() const;
 %Docstring
-Returns ``True`` if the dock is both opened and raised to the front (ie not hidden by
-any other tabs.
+Returns ``True`` if the dock is both opened and raised to the front (ie
+not hidden by any other tabs.
 
 .. seealso:: :py:func:`setUserVisible`
 
@@ -48,8 +49,9 @@ any other tabs.
 
     void setToggleVisibilityAction( QAction *action );
 %Docstring
-Links an ``action`` to the dock, so that toggling the action will automatically set the dock's visibility
-to suit (and changing the dock visibility will update the action's state).
+Links an ``action`` to the dock, so that toggling the action will
+automatically set the dock's visibility to suit (and changing the dock
+visibility will update the action's state).
 
 .. seealso:: :py:func:`toggleVisibilityAction`
 
@@ -69,12 +71,14 @@ Returns the action linked to the dock.
 
     void setUserVisible( bool visible );
 %Docstring
-Sets the dock widget as visible to a user, ie both shown and raised to the front.
+Sets the dock widget as visible to a user, ie both shown and raised to
+the front.
 
-:param visible: set to ``True`` to show the dock to the user, or ``False`` to hide the dock.
-                When setting a dock as user visible, the dock will be opened (if it is not already
-                opened) and raised to the front.
-                When setting as hidden, the following logic is used:
+:param visible: set to ``True`` to show the dock to the user, or
+                ``False`` to hide the dock. When setting a dock as user
+                visible, the dock will be opened (if it is not already
+                opened) and raised to the front. When setting as hidden,
+                the following logic is used:
 
                 - hiding a dock which is open but not raised (ie hidden by another tab) will have no
                   effect, and the dock will still be opened and hidden by the other tab
@@ -89,9 +93,9 @@ Sets the dock widget as visible to a user, ie both shown and raised to the front
 
     void toggleUserVisible();
 %Docstring
-Toggles whether the dock is user visible. If the dock is not currently user
-visible (i.e. opened and activated as a tab) then the dock will be opened
-and raised. If it is currently user visible it will be closed.
+Toggles whether the dock is user visible. If the dock is not currently
+user visible (i.e. opened and activated as a tab) then the dock will be
+opened and raised. If it is currently user visible it will be closed.
 
 .. seealso:: :py:func:`setUserVisible`
 
@@ -121,7 +125,8 @@ Emitted when dock widget is closed.
 %Docstring
 Emitted when dock widget is closed (or opened).
 
-:param wasClosed: will be ``True`` if dock widget was closed, or ``False`` if dock widget was opened
+:param wasClosed: will be ``True`` if dock widget was closed, or
+                  ``False`` if dock widget was opened
 
 .. seealso:: :py:func:`closed`
 
@@ -141,7 +146,8 @@ Emitted when dock widget is opened.
 %Docstring
 Emitted when dock widget is opened (or closed).
 
-:param wasOpened: will be ``True`` if dock widget was opened, or ``False`` if dock widget was closed
+:param wasOpened: will be ``True`` if dock widget was opened, or
+                  ``False`` if dock widget was closed
 
 .. seealso:: :py:func:`closedStateChanged`
 

@@ -11,7 +11,7 @@
 class QgsDateTimeEdit : QDateTimeEdit
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDateTimeEdit` class is a QDateTimeEdit with the capability of setting/reading null date/times.
+A QDateTimeEdit with the capability of setting/reading null date/times.
 
 .. warning::
 
@@ -31,10 +31,10 @@ The :py:class:`QgsDateTimeEdit` class is a QDateTimeEdit with the capability of 
   public:
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDateTimeEdit.
-The current date and time is used by default.
-The widget is allowing null by default.
-If allow null is disabled, you should check allowNull before getting values from the widget.
+Constructor for QgsDateTimeEdit. The current date and time is used by
+default. The widget is allowing null by default. If allow null is
+disabled, you should check allowNull before getting values from the
+widget.
 %End
 
     void setAllowNull( bool allowNull );
@@ -104,8 +104,8 @@ Resets the widget to show no value (ie, an "unknown" state).
 
     QString nullRepresentation() const;
 %Docstring
-Returns the widget's NULL representation, which defaults
-to :py:func:`QgsApplication.nullRepresentation()`.
+Returns the widget's NULL representation, which defaults to
+:py:func:`QgsApplication.nullRepresentation()`.
 
 .. seealso:: :py:func:`setNullRepresentation`
 
@@ -114,8 +114,8 @@ to :py:func:`QgsApplication.nullRepresentation()`.
 
     void setNullRepresentation( const QString &null );
 %Docstring
-Sets the widget's ``null`` representation, which defaults
-to :py:func:`QgsApplication.nullRepresentation()`.
+Sets the widget's ``null`` representation, which defaults to
+:py:func:`QgsApplication.nullRepresentation()`.
 
 .. seealso:: :py:func:`nullRepresentation`
 
@@ -125,8 +125,8 @@ to :py:func:`QgsApplication.nullRepresentation()`.
     virtual bool event( QEvent *event );
 
 %Docstring
-Reimplemented to enable/disable the clear action
-depending on read-only status
+Reimplemented to enable/disable the clear action depending on read-only
+status
 
 .. versionadded:: 3.34
 %End
@@ -157,9 +157,11 @@ Signal emitted whenever the value changes.
 
     void displayNull( bool updateCalendar = false );
 %Docstring
-write the null value representation to the line edit without changing the value
+write the null value representation to the line edit without changing
+the value
 
-:param updateCalendar: Flag if calendar is open and minimum date needs to be set
+:param updateCalendar: Flag if calendar is open and minimum date needs
+                       to be set
 %End
 
     virtual void emitValueChanged( const QVariant &value );
@@ -181,7 +183,8 @@ Returns ``True`` if the widget is currently set to a null value
 class QgsTimeEdit : QgsDateTimeEdit
 {
 %Docstring(signature="appended")
-The :py:class:`QgsTimeEdit` class is a QTimeEdit widget with the capability of setting/reading null date/times.
+A QTimeEdit widget with the capability of setting/reading null
+date/times.
 
 .. warning::
 
@@ -203,10 +206,9 @@ The :py:class:`QgsTimeEdit` class is a QTimeEdit widget with the capability of s
   public:
     explicit QgsTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTimeEdit.
-The current time is used by default.
-The widget is allowing null by default.
-If allow null is disabled, you should check allowNull before getting values from the widget.
+Constructor for QgsTimeEdit. The current time is used by default. The
+widget is allowing null by default. If allow null is disabled, you
+should check allowNull before getting values from the widget.
 %End
 
     void setTime( const QTime &time );
@@ -233,7 +235,7 @@ Signal emitted whenever the time changes.
 class QgsDateEdit : QgsDateTimeEdit
 {
 %Docstring(signature="appended")
-The :py:class:`QgsDateEdit` class is a QDateEdit widget with the capability of setting/reading null dates.
+A QDateEdit widget with the capability of setting/reading null dates.
 
 .. warning::
 
@@ -255,10 +257,9 @@ The :py:class:`QgsDateEdit` class is a QDateEdit widget with the capability of s
   public:
     explicit QgsDateEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDateEdit.
-The current time is used by default.
-The widget is allowing null by default.
-If allow null is disabled, you should check allowNull before getting values from the widget.
+Constructor for QgsDateEdit. The current time is used by default. The
+widget is allowing null by default. If allow null is disabled, you
+should check allowNull before getting values from the widget.
 %End
 
     void setDate( const QDate &date );

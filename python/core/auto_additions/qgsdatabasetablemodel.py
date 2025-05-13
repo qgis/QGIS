@@ -77,3 +77,7 @@ QgsDatabaseTableModel.CustomRole.__doc__ = """Custom model roles.
 """
 # --
 QgsDatabaseTableModel.CustomRole.baseClass = QgsDatabaseTableModel
+try:
+    QgsDatabaseTableModel.__overridden_methods__ = ['parent', 'rowCount', 'columnCount', 'data', 'index']
+except (NameError, AttributeError):
+    pass

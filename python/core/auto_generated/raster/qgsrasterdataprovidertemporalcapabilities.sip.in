@@ -12,11 +12,14 @@
 class QgsRasterDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring(signature="appended")
-Implementation of data provider temporal properties for :py:class:`QgsRasterDataProviders`.
+Implementation of data provider temporal properties for
+:py:class:`QgsRasterDataProviders`.
 
-Data provider temporal capabilities reflect the temporal capabilities of a :py:class:`QgsDataProvider`.
-Unlike :py:class:`QgsMapLayerTemporalProperties`, these settings are not user-configurable,
-and should only be set by the :py:class:`QgsDataProvider` itself.
+Data provider temporal capabilities reflect the temporal capabilities of
+a :py:class:`QgsDataProvider`. Unlike
+:py:class:`QgsMapLayerTemporalProperties`, these settings are not
+user-configurable, and should only be set by the
+:py:class:`QgsDataProvider` itself.
 
 .. versionadded:: 3.14
 %End
@@ -30,7 +33,8 @@ and should only be set by the :py:class:`QgsDataProvider` itself.
 %Docstring
 Constructor for :py:class:`QgsRasterDataProviderTemporalProperties`.
 
-The ``enabled`` argument specifies whether the data provider has temporal capabilities.
+The ``enabled`` argument specifies whether the data provider has
+temporal capabilities.
 %End
 
     Qgis::RasterTemporalCapabilityFlags flags() const;
@@ -49,40 +53,45 @@ Sets the capability flags for the provider.
 
     Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
 %Docstring
-Returns the desired method to use when resolving a temporal interval to matching
-layers or bands in the data provider.
+Returns the desired method to use when resolving a temporal interval to
+matching layers or bands in the data provider.
 
 .. seealso:: :py:func:`setIntervalHandlingMethod`
 %End
 
     void setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod method );
 %Docstring
-Sets the desired ``method`` to use when resolving a temporal interval to matching
-layers or bands in the data provider.
+Sets the desired ``method`` to use when resolving a temporal interval to
+matching layers or bands in the data provider.
 
 .. seealso:: :py:func:`intervalHandlingMethod`
 %End
 
     void setAvailableTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the overall datetime ``range`` extent from which temporal data is available from the provider.
+Sets the overall datetime ``range`` extent from which temporal data is
+available from the provider.
 
 .. seealso:: :py:func:`availableTemporalRange`
 %End
 
     const QgsDateTimeRange &availableTemporalRange() const;
 %Docstring
-Returns the overall datetime range extent from which temporal data is available from the provider.
+Returns the overall datetime range extent from which temporal data is
+available from the provider.
 
 .. seealso:: :py:func:`setAvailableTemporalRange`
 %End
 
     void setAllAvailableTemporalRanges( const QList< QgsDateTimeRange > &ranges );
 %Docstring
-Sets a list of all valid datetime ``ranges`` for which temporal data is available from the provider.
+Sets a list of all valid datetime ``ranges`` for which temporal data is
+available from the provider.
 
-As opposed to :py:func:`~QgsRasterDataProviderTemporalCapabilities.setAvailableTemporalRange`, this method is useful when a provider
-contains a set of non-contiguous datetime ranges.
+As opposed to
+:py:func:`~QgsRasterDataProviderTemporalCapabilities.setAvailableTemporalRange`,
+this method is useful when a provider contains a set of non-contiguous
+datetime ranges.
 
 .. seealso:: :py:func:`allAvailableTemporalRanges`
 
@@ -93,10 +102,13 @@ contains a set of non-contiguous datetime ranges.
 
     QList< QgsDateTimeRange > allAvailableTemporalRanges() const;
 %Docstring
-Returns a list of all valid datetime ranges for which temporal data is available from the provider.
+Returns a list of all valid datetime ranges for which temporal data is
+available from the provider.
 
-As opposed to :py:func:`~QgsRasterDataProviderTemporalCapabilities.availableTemporalRange`, this method is useful when a provider
-contains a set of non-contiguous datetime ranges.
+As opposed to
+:py:func:`~QgsRasterDataProviderTemporalCapabilities.availableTemporalRange`,
+this method is useful when a provider contains a set of non-contiguous
+datetime ranges.
 
 .. seealso:: :py:func:`setAllAvailableTemporalRanges`
 
@@ -108,23 +120,25 @@ contains a set of non-contiguous datetime ranges.
     void setAvailableReferenceTemporalRange( const QgsDateTimeRange &range );
 %Docstring
 Sets the available reference datetime ``range``. This is to be used for
-bi-temporal based data. Where data can have both nominal and reference times.
+bi-temporal based data. Where data can have both nominal and reference
+times.
 
 .. seealso:: :py:func:`availableReferenceTemporalRange`
 %End
 
     const QgsDateTimeRange &availableReferenceTemporalRange() const;
 %Docstring
-Returns the available reference datetime range, which indicates the maximum
-extent of datetime values available for reference temporal ranges from the provider.
+Returns the available reference datetime range, which indicates the
+maximum extent of datetime values available for reference temporal
+ranges from the provider.
 
 .. seealso:: :py:func:`setAvailableReferenceTemporalRange`
 %End
 
     const QgsDateTimeRange &requestedTemporalRange() const;
 %Docstring
-Returns the requested temporal range.
-Intended to be used by the provider in fetching data.
+Returns the requested temporal range. Intended to be used by the
+provider in fetching data.
 %End
 
     QgsInterval defaultInterval() const;

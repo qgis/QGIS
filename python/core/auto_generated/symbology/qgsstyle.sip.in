@@ -24,6 +24,10 @@ typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 class QgsStyle : QObject
 {
+%Docstring(signature="appended")
+A database of saved style entities, including symbols, color ramps, text
+formats and others.
+%End
 
 %TypeHeaderCode
 #include "qgsstyle.h"
@@ -122,8 +126,9 @@ Sets the ``name`` of the style.
 Returns ``True`` if the style is initialized and ready for use.
 
 Most instances of QgsStyle will already be initialized. However, if the
-style is the :py:func:`QgsStyle.defaultStyle()` object it may have been created using
-lazy initialization and will return ``False`` until it is :py:func:`~QgsStyle.initialized`.
+style is the :py:func:`QgsStyle.defaultStyle()` object it may have been
+created using lazy initialization and will return ``False`` until it is
+:py:func:`~QgsStyle.initialized`.
 
 .. versionadded:: 3.36
 %End
@@ -158,9 +163,11 @@ Sets whether the style is considered a read-only library.
 
     bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
 %Docstring
-Adds an ``entity`` to the style, with the specified ``name``. Ownership is not transferred.
+Adds an ``entity`` to the style, with the specified ``name``. Ownership
+is not transferred.
 
-If ``update`` is ``True`` then the style database is updated automatically as a result.
+If ``update`` is ``True`` then the style database is updated
+automatically as a result.
 
 Returns ``True`` if the add operation was successful.
 
@@ -181,14 +188,16 @@ Adds a symbol to style and takes symbol's ownership
 
 :param name: is the name of the symbol being added or updated
 :param symbol: is the Vector symbol
-:param update: set to ``True`` when the style database has to be updated, by default it is ``False``
+:param update: set to ``True`` when the style database has to be
+               updated, by default it is ``False``
 
 :return: success status of the operation
 %End
 
     bool addColorRamp( const QString &name, QgsColorRamp *colorRamp /Transfer/, bool update = false );
 %Docstring
-Adds a color ramp to the style. Calling this method takes the ramp's ownership.
+Adds a color ramp to the style. Calling this method takes the ramp's
+ownership.
 
 .. note::
 
@@ -196,7 +205,8 @@ Adds a color ramp to the style. Calling this method takes the ramp's ownership.
 
 :param name: is the name of the color ramp being added or updated
 :param colorRamp: is the color ramp. Ownership is transferred.
-:param update: set to ``True`` when the style database has to be updated, by default it is ``False``
+:param update: set to ``True`` when the style database has to be
+               updated, by default it is ``False``
 
 :return: success status of the operation
 %End
@@ -205,7 +215,8 @@ Adds a color ramp to the style. Calling this method takes the ramp's ownership.
 %Docstring
 Adds a text ``format`` with the specified ``name`` to the style.
 
-If ``update`` is set to ``True``, the style database will be automatically updated with the new text format.
+If ``update`` is set to ``True``, the style database will be
+automatically updated with the new text format.
 
 Returns ``True`` if the operation was successful.
 
@@ -220,7 +231,8 @@ Returns ``True`` if the operation was successful.
 %Docstring
 Adds label ``settings`` with the specified ``name`` to the style.
 
-If ``update`` is set to ``True``, the style database will be automatically updated with the new text format.
+If ``update`` is set to ``True``, the style database will be
+automatically updated with the new text format.
 
 Returns ``True`` if the operation was successful.
 
@@ -235,7 +247,8 @@ Returns ``True`` if the operation was successful.
 %Docstring
 Adds a legend patch ``shape`` with the specified ``name`` to the style.
 
-If ``update`` is set to ``True``, the style database will be automatically updated with the new legend patch shape.
+If ``update`` is set to ``True``, the style database will be
+automatically updated with the new legend patch shape.
 
 Returns ``True`` if the operation was successful.
 
@@ -248,9 +261,11 @@ Returns ``True`` if the operation was successful.
 
     bool addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool update = false );
 %Docstring
-Adds a 3d ``symbol`` with the specified ``name`` to the style. Ownership of ``symbol`` is transferred.
+Adds a 3d ``symbol`` with the specified ``name`` to the style. Ownership
+of ``symbol`` is transferred.
 
-If ``update`` is set to ``True``, the style database will be automatically updated with the new legend patch shape.
+If ``update`` is set to ``True``, the style database will be
+automatically updated with the new legend patch shape.
 
 Returns ``True`` if the operation was successful.
 
@@ -267,7 +282,8 @@ Adds a new tag and returns the tag's id
 
 :param tagName: the name of the new tag to be created
 
-:return: returns an int, which is the database id of the new tag created, 0 if the tag couldn't be created
+:return: returns an int, which is the database id of the new tag
+         created, 0 if the tag couldn't be created
 %End
 
 
@@ -277,7 +293,7 @@ Adds a new tag and returns the tag's id
 Adds a new smartgroup to the database and returns the id.
 
 :param name: is the name of the new Smart Group to be added
-:param op: is the operator between the conditions; AND/OR as QString
+:param op: is the operator between the conditions; AND/OR as string
 :param matchTag: list of strings to match within tags
 :param noMatchTag: list of strings to exclude matches from tags
 :param matchName: list of string to match within names
@@ -300,8 +316,8 @@ Removes all contents of the style
 
     QgsColorRamp *colorRamp( const QString &name ) const /Factory/;
 %Docstring
-Returns a new copy of the specified color ramp. The caller
-takes responsibility for deleting the returned object.
+Returns a new copy of the specified color ramp. The caller takes
+responsibility for deleting the returned object.
 %End
 
     int colorRampCount();
@@ -348,8 +364,8 @@ Returns a list of names of text formats in the style.
 
     int textFormatId( const QString &name );
 %Docstring
-Returns the ID in the style database for the given text format by ``name``.
-Returns 0 if the text format was not found.
+Returns the ID in the style database for the given text format by
+``name``. Returns 0 if the text format was not found.
 
 .. versionadded:: 3.10
 %End
@@ -377,9 +393,9 @@ Returns count of legend patch shapes in the style.
 
     Qgis::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
 %Docstring
-Returns the symbol type corresponding to the legend patch shape
-with the specified ``name``, or :py:class:`QgsSymbol`.Hybrid
-if a matching legend patch shape is not present.
+Returns the symbol type corresponding to the legend patch shape with the
+specified ``name``, or :py:class:`QgsSymbol`.Hybrid if a matching legend
+patch shape is not present.
 
 .. versionadded:: 3.14
 %End
@@ -400,17 +416,18 @@ Returns count of 3D symbols in the style.
 
     QList< Qgis::GeometryType > symbol3DCompatibleGeometryTypes( const QString &name ) const;
 %Docstring
-Returns the list of the vector layer geometry types which are compatible with the 3D symbol
-with the specified ``name``, or an empty list if a matching 3d symbol is not present.
+Returns the list of the vector layer geometry types which are compatible
+with the 3D symbol with the specified ``name``, or an empty list if a
+matching 3d symbol is not present.
 
 .. versionadded:: 3.16
 %End
 
     Qgis::GeometryType labelSettingsLayerType( const QString &name ) const;
 %Docstring
-Returns the layer geometry type corresponding to the label settings
-with the specified ``name``, or :py:class:`Qgis`.GeometryType.Unknown
-if matching label settings are not present.
+Returns the layer geometry type corresponding to the label settings with
+the specified ``name``, or :py:class:`Qgis`.GeometryType.Unknown if
+matching label settings are not present.
 
 .. versionadded:: 3.10
 %End
@@ -431,8 +448,8 @@ Returns a list of names of label settings in the style.
 
     int labelSettingsId( const QString &name );
 %Docstring
-Returns the ID in the style database for the given label settings by ``name``.
-Returns 0 if the label settings were not found.
+Returns the ID in the style database for the given label settings by
+``name``. Returns 0 if the label settings were not found.
 
 .. versionadded:: 3.10
 %End
@@ -441,10 +458,11 @@ Returns 0 if the label settings were not found.
 %Docstring
 Returns the default application-wide style.
 
-Since QGIS 3.36, the ``initialize`` argument can be set to ``False`` to temporarily
-defer the actual loading of the style's objects until they are first requested.
-This lazy-initialization can substantially improve application startup times,
-especially for standalone applications which do not utilize styles.
+Since QGIS 3.36, the ``initialize`` argument can be set to ``False`` to
+temporarily defer the actual loading of the style's objects until they
+are first requested. This lazy-initialization can substantially improve
+application startup times, especially for standalone applications which
+do not utilize styles.
 %End
 
 
@@ -455,8 +473,9 @@ Tags the symbol with the tags in the list
 Applies the given tags to the given symbol or colorramp
 
 :param type: is either SymbolEntity or ColorrampEntity
-:param symbol: is the name of the symbol or colorramp as QString
-:param tags: is the list of the tags that are to be applied as QStringList
+:param symbol: is the name of the symbol or colorramp as string
+:param tags: is the list of the tags that are to be applied as
+             QStringList
 
 :return: returns the success state of the operation
 %End
@@ -493,7 +512,8 @@ Removes symbol from style (and delete it)
 
     bool renameEntity( StyleEntity type, const QString &oldName, const QString &newName );
 %Docstring
-Renames an entity of the specified ``type`` from ``oldName`` to ``newName``.
+Renames an entity of the specified ``type`` from ``oldName`` to
+``newName``.
 
 Returns ``True`` if the entity was successfully renamed.
 
@@ -529,14 +549,14 @@ Returns a list of names of symbols
 
     int symbolId( const QString &name );
 %Docstring
-Returns the id in the style database for the given symbol name
-returns 0 if not found
+Returns the id in the style database for the given symbol name returns 0
+if not found
 %End
 
     int entityId( StyleEntity type, const QString &name );
 %Docstring
-Returns the id in the style database for the given ``name`` of the specified entity ``type``.
-Returns 0 if not found.
+Returns the id in the style database for the given ``name`` of the
+specified entity ``type``. Returns 0 if not found.
 %End
 
     int tagId( const QString &tag );
@@ -550,7 +570,8 @@ Returns the database id for the given smartgroup name
 
     QStringList allNames( StyleEntity type ) const;
 %Docstring
-Returns a list of the names of all existing entities of the specified ``type``.
+Returns a list of the names of all existing entities of the specified
+``type``.
 
 .. versionadded:: 3.10
 %End
@@ -561,7 +582,8 @@ Returns the symbol names which are flagged as favorite
 
 :param type: is either SymbolEntity or ColorampEntity
 
-:return: A QStringList of the symbol or colorramp names flagged as favorite
+:return: A QStringList of the symbol or colorramp names flagged as
+         favorite
 %End
 
     QStringList symbolsWithTag( StyleEntity type, int tagid ) const;
@@ -569,9 +591,11 @@ Returns the symbol names which are flagged as favorite
 Returns the symbol names with which have the given tag
 
 :param type: is either SymbolEntity or ColorampEntity
-:param tagid: is id of the tag which has been applied over the symbol as int
+:param tagid: is id of the tag which has been applied over the symbol as
+              int
 
-:return: A QStringList of the symbol or colorramp names for the given tag id
+:return: A QStringList of the symbol or colorramp names for the given
+         tag id
 %End
 
     bool addFavorite( StyleEntity type, const QString &name );
@@ -579,7 +603,8 @@ Returns the symbol names with which have the given tag
 Adds the specified symbol to favorites
 
 :param type: is either SymbolEntity of ColorrampEntity
-:param name: is the name of the symbol or coloramp whose is to be added to favorites
+:param name: is the name of the symbol or coloramp whose is to be added
+             to favorites
 
 :return: returns the success state as bool
 %End
@@ -589,7 +614,8 @@ Adds the specified symbol to favorites
 Removes the specified symbol from favorites
 
 :param type: is either SymbolEntity of ColorrampEntity
-:param name: is the name of the symbol or coloramp whose is to be removed from favorites
+:param name: is the name of the symbol or coloramp whose is to be
+             removed from favorites
 
 :return: returns the success state as bool
 %End
@@ -615,33 +641,40 @@ Removes the specified entity from the database.
 
     bool removeEntityByName( StyleEntity type, const QString &name );
 %Docstring
-Removes the entry of the specified ``type`` with matching ``name`` from the database.
+Removes the entry of the specified ``type`` with matching ``name`` from
+the database.
 
 .. seealso:: :py:func:`remove`
 
 .. versionadded:: 3.14
 %End
 
-    bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
+    bool saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags );
 %Docstring
 Adds the symbol to the database with tags.
 
-:param name: is the name of the symbol as QString
-:param symbol: is the pointer to the new :py:class:`QgsSymbol` being saved
-:param favorite: is a boolean value to specify whether the symbol should be added to favorites
-:param tags: is a list of tags that are associated with the symbol as a QStringList.
+:param name: is the name of the symbol as string
+:param symbol: is the pointer to the new :py:class:`QgsSymbol` being
+               saved
+:param favorite: is a boolean value to specify whether the symbol should
+                 be added to favorites
+:param tags: is a list of tags that are associated with the symbol as a
+             QStringList.
 
 :return: returns the success state of the save operation
 %End
 
-    bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
+    bool saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 %Docstring
 Adds the colorramp to the database.
 
-:param name: is the name of the colorramp as QString
-:param ramp: is the pointer to the new :py:class:`QgsColorRamp` being saved
-:param favorite: is a boolean value to specify whether the colorramp should be added to favorites
-:param tags: is a list of tags that are associated with the color ramp as a QStringList.
+:param name: is the name of the colorramp as string
+:param ramp: is the pointer to the new :py:class:`QgsColorRamp` being
+             saved
+:param favorite: is a boolean value to specify whether the colorramp
+                 should be added to favorites
+:param tags: is a list of tags that are associated with the color ramp
+             as a QStringList.
 
 :return: returns the success state of the save operation
 %End
@@ -662,7 +695,8 @@ Adds a text ``format`` to the database.
 
 :param name: is the name of the text format
 :param format: text format to save
-:param favorite: is a boolean value to specify whether the text format should be added to favorites
+:param favorite: is a boolean value to specify whether the text format
+                 should be added to favorites
 :param tags: is a list of tags that are associated with the text format
 
 :return: returns the success state of the save operation
@@ -688,8 +722,10 @@ Adds label ``settings`` to the database.
 
 :param name: is the name of the label settings
 :param settings: label settings to save
-:param favorite: is a boolean value to specify whether the label settings should be added to favorites
-:param tags: is a list of tags that are associated with the label settings
+:param favorite: is a boolean value to specify whether the label
+                 settings should be added to favorites
+:param tags: is a list of tags that are associated with the label
+             settings
 
 :return: returns the success state of the save operation
 %End
@@ -714,8 +750,10 @@ Adds a legend patch ``shape`` to the database.
 
 :param name: is the name of the legend patch shape
 :param shape: legend patch shape to save
-:param favorite: is a boolean value to specify whether the legend patch shape should be added to favorites
-:param tags: is a list of tags that are associated with the legend patch shape
+:param favorite: is a boolean value to specify whether the legend patch
+                 shape should be added to favorites
+:param tags: is a list of tags that are associated with the legend patch
+             shape
 
 :return: returns the success state of the save operation
 
@@ -738,7 +776,8 @@ Returns a list of names of legend patch shapes in the style.
 
     const QgsSymbol *previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const;
 %Docstring
-Returns a symbol to use for rendering preview icons for a patch ``shape``.
+Returns a symbol to use for rendering preview icons for a patch
+``shape``.
 
 Ownership of the symbol is not transferred.
 
@@ -756,7 +795,8 @@ Returns the default legend patch shape for the given symbol ``type``.
 
     QList< QList< QPolygonF > > defaultPatchAsQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
 %Docstring
-Returns the default patch geometry for the given symbol ``type`` and ``size`` as a set of QPolygonF objects (parts and rings).
+Returns the default patch geometry for the given symbol ``type`` and
+``size`` as a set of QPolygonF objects (parts and rings).
 
 .. seealso:: :py:func:`defaultPatch`
 
@@ -770,14 +810,16 @@ Returns the default patch geometry for the given symbol ``type`` and ``size`` as
 
     QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
 %Docstring
-Returns the default text format to use for new text based objects in the specified ``context``.
+Returns the default text format to use for new text based objects in the
+specified ``context``.
 
 .. versionadded:: 3.20
 %End
 
     static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
 %Docstring
-Returns the default text format to use for new text based objects for the specified ``project``, in the specified ``context``.
+Returns the default text format to use for new text based objects for
+the specified ``project``, in the specified ``context``.
 
 .. versionadded:: 3.26
 %End
@@ -788,7 +830,8 @@ Adds a 3d ``symbol`` to the database.
 
 :param name: is the name of the 3d symbol
 :param symbol: 3d symbol to save. Ownership is transferred.
-:param favorite: is a boolean value to specify whether the 3d symbol should be added to favorites
+:param favorite: is a boolean value to specify whether the 3d symbol
+                 should be added to favorites
 :param tags: is a list of tags that are associated with the 3d symbol
 
 :return: returns the success state of the save operation
@@ -825,9 +868,11 @@ This function creates a new on-disk permanent style database.
 %Docstring
 Creates a temporary memory database
 
-This function is used to create a temporary style database in case a permanent on-disk database is not needed.
+This function is used to create a temporary style database in case a
+permanent on-disk database is not needed.
 
-:return: returns the success state of the temporary memory database creation
+:return: returns the success state of the temporary memory database
+         creation
 
 .. seealso:: :py:func:`createDatabase`
 %End
@@ -836,7 +881,8 @@ This function is used to create a temporary style database in case a permanent o
 %Docstring
 Creates tables structure for new database
 
-This function is used to create the tables structure in a newly-created database.
+This function is used to create the tables structure in a newly-created
+database.
 
 .. seealso:: :py:func:`createDatabase`
 
@@ -851,8 +897,9 @@ This function will load an on-disk database and populate styles.
 
 :param filename: location of the database to load styles from
 
-:return: ``True`` if the database was successfully loaded. If ``False`` is
-         returned then a detailed error message can be retrieved via :py:func:`~QgsStyle.errorString`.
+:return: ``True`` if the database was successfully loaded. If ``False``
+         is returned then a detailed error message can be retrieved via
+         :py:func:`~QgsStyle.errorString`.
 
 .. seealso:: :py:func:`errorString`
 %End
@@ -861,10 +908,12 @@ This function will load an on-disk database and populate styles.
 %Docstring
 Saves style into a file.
 
-The current :py:func:`~QgsStyle.fileName` will be used if no explicit ``filename`` is specified.
+The current :py:func:`~QgsStyle.fileName` will be used if no explicit
+``filename`` is specified.
 
 :return: ``True`` if the style was successfully saved. If ``False`` is
-         returned then a detailed error message can be retrieved via :py:func:`~QgsStyle.errorString`.
+         returned then a detailed error message can be retrieved via
+         :py:func:`~QgsStyle.errorString`.
 
 .. seealso:: :py:func:`fileName`
 
@@ -888,9 +937,9 @@ Returns the last error from a :py:func:`~QgsStyle.load` operation.
 %Docstring
 Returns the current file name of the style database.
 
-The filename will always represent the actual source of the style - e.g. the .db file
-for styles associated with a database, or the original source .xml file for styles
-directly loaded from a .xml export.
+The filename will always represent the actual source of the style - e.g.
+the .db file for styles associated with a database, or the original
+source .xml file for styles directly loaded from a .xml export.
 
 .. seealso:: :py:func:`setFileName`
 %End
@@ -899,18 +948,20 @@ directly loaded from a .xml export.
 %Docstring
 Sets the current file name of the style database.
 
-The filename should always represent the actual source of the style - e.g. the .db file
-for styles associated with a database, or the original source .xml file for styles
-directly loaded from a .xml export.
+The filename should always represent the actual source of the style -
+e.g. the .db file for styles associated with a database, or the original
+source .xml file for styles directly loaded from a .xml export.
 
-Calling :py:func:`~QgsStyle.load` automatically sets the filename to the .db file path.
+Calling :py:func:`~QgsStyle.load` automatically sets the filename to the
+.db file path.
 
 .. versionadded:: 3.26
 %End
 
     QStringList findSymbols( StyleEntity type, const QString &qword );
 %Docstring
-Returns the names of the symbols which have a matching 'substring' in its definition
+Returns the names of the symbols which have a matching 'substring' in
+its definition
 
 :param type: is either SymbolEntity or ColorrampEntity
 :param qword: is the query string to search the symbols or colorramps.
@@ -925,7 +976,8 @@ Returns the tags associated with the symbol
 :param type: is either SymbolEntity or ColorrampEntity
 :param symbol: is the name of the symbol or color ramp
 
-:return: A QStringList of the tags that have been applied to that symbol/colorramp
+:return: A QStringList of the tags that have been applied to that
+         symbol/colorramp
 %End
 
     bool isFavorite( StyleEntity type, const QString &name );
@@ -944,7 +996,8 @@ Returns whether a given tag is associated with the symbol
 :param symbol: is the name of the symbol or color ramp
 :param tag: the name of the tag to look for
 
-:return: A boolean value identicating whether a tag was found attached to the symbol
+:return: A boolean value identicating whether a tag was found attached
+         to the symbol
 %End
 
     QString tag( int id ) const;
@@ -984,15 +1037,16 @@ Exports the style as a XML file
 
     bool importXml( const QString &filename );
 %Docstring
-Imports the symbols and colorramps into the default style database from the given XML file
+Imports the symbols and colorramps into the default style database from
+the given XML file
 %End
 
     static bool isXmlStyleFile( const QString &path );
 %Docstring
 Tests if the file at ``path`` is a QGIS style XML file.
 
-This method samples only the first line in the file, so is safe to call on
-large xml files.
+This method samples only the first line in the file, so is safe to call
+on large xml files.
 
 .. versionadded:: 3.6
 %End
@@ -1005,8 +1059,9 @@ large xml files.
 %Docstring
 Emitted when the style database has been fully initialized.
 
-This signals is only emitted by the :py:func:`QgsStyle.defaultStyle()` instance,
-and only when the :py:func:`~QgsStyle.defaultStyle` has been lazily initialized.
+This signals is only emitted by the :py:func:`QgsStyle.defaultStyle()`
+instance, and only when the :py:func:`~QgsStyle.defaultStyle` has been
+lazily initialized.
 
 .. versionadded:: 3.36
 %End
@@ -1015,18 +1070,18 @@ and only when the :py:func:`~QgsStyle.defaultStyle` has been lazily initialized.
 %Docstring
 Emitted just before the style object is destroyed.
 
-Emitted in the destructor when the style is about to be deleted,
-but it is still in a perfectly valid state: the last chance for
-other pieces of code for some cleanup if they use the style.
+Emitted in the destructor when the style is about to be deleted, but it
+is still in a perfectly valid state: the last chance for other pieces of
+code for some cleanup if they use the style.
 
 .. versionadded:: 3.26
 %End
 
-    void symbolSaved( const QString &name, QgsSymbol *symbol );
+    void symbolSaved( const QString &name, const QgsSymbol *symbol );
 %Docstring
-Emitted every time a new symbol has been added to the database.
-Emitted whenever a symbol has been added to the style and the database
-has been updated as a result.
+Emitted every time a new symbol has been added to the database. Emitted
+whenever a symbol has been added to the style and the database has been
+updated as a result.
 
 .. seealso:: :py:func:`symbolRemoved`
 
@@ -1047,7 +1102,8 @@ name or tag changes.
 
     void groupsModified();
 %Docstring
-Emitted every time a tag or smartgroup has been added, removed, or renamed
+Emitted every time a tag or smartgroup has been added, removed, or
+renamed
 %End
 
     void entityTagsChanged( QgsStyle::StyleEntity entity, const QString &name, const QStringList &newTags );
@@ -1073,31 +1129,32 @@ Emitted every time a new entity has been added to the database.
 
     void entityRemoved( QgsStyle::StyleEntity entity, const QString &name );
 %Docstring
-Emitted whenever an entity of the specified type is removed from the style and the database
-has been updated as a result.
+Emitted whenever an entity of the specified type is removed from the
+style and the database has been updated as a result.
 
 .. versionadded:: 3.14
 %End
 
     void entityRenamed( QgsStyle::StyleEntity entity, const QString &oldName, const QString &newName );
 %Docstring
-Emitted whenever a entity of the specified type has been renamed from ``oldName`` to ``newName``
+Emitted whenever a entity of the specified type has been renamed from
+``oldName`` to ``newName``
 
 .. versionadded:: 3.14
 %End
 
     void entityChanged( QgsStyle::StyleEntity entity, const QString &name );
 %Docstring
-Emitted whenever an entity's definition is changed. This does not include
-name or tag changes.
+Emitted whenever an entity's definition is changed. This does not
+include name or tag changes.
 
 .. versionadded:: 3.14
 %End
 
     void symbolRemoved( const QString &name );
 %Docstring
-Emitted whenever a symbol has been removed from the style and the database
-has been updated as a result.
+Emitted whenever a symbol has been removed from the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`symbolSaved`
 
@@ -1108,7 +1165,8 @@ has been updated as a result.
 
     void symbolRenamed( const QString &oldName, const QString &newName );
 %Docstring
-Emitted whenever a symbol has been renamed from ``oldName`` to ``newName``
+Emitted whenever a symbol has been renamed from ``oldName`` to
+``newName``
 
 .. seealso:: :py:func:`rampRenamed`
 
@@ -1117,7 +1175,8 @@ Emitted whenever a symbol has been renamed from ``oldName`` to ``newName``
 
     void rampRenamed( const QString &oldName, const QString &newName );
 %Docstring
-Emitted whenever a color ramp has been renamed from ``oldName`` to ``newName``
+Emitted whenever a color ramp has been renamed from ``oldName`` to
+``newName``
 
 .. seealso:: :py:func:`symbolRenamed`
 
@@ -1126,8 +1185,8 @@ Emitted whenever a color ramp has been renamed from ``oldName`` to ``newName``
 
     void rampAdded( const QString &name );
 %Docstring
-Emitted whenever a color ramp has been added to the style and the database
-has been updated as a result.
+Emitted whenever a color ramp has been added to the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`rampRemoved`
 
@@ -1138,8 +1197,8 @@ has been updated as a result.
 
     void rampRemoved( const QString &name );
 %Docstring
-Emitted whenever a color ramp has been removed from the style and the database
-has been updated as a result.
+Emitted whenever a color ramp has been removed from the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`rampAdded`
 
@@ -1150,8 +1209,8 @@ has been updated as a result.
 
     void rampChanged( const QString &name );
 %Docstring
-Emitted whenever a color ramp's definition is changed. This does not include
-name or tag changes.
+Emitted whenever a color ramp's definition is changed. This does not
+include name or tag changes.
 
 .. seealso:: :py:func:`rampAdded`
 
@@ -1160,7 +1219,8 @@ name or tag changes.
 
     void textFormatRenamed( const QString &oldName, const QString &newName );
 %Docstring
-Emitted whenever a text format has been renamed from ``oldName`` to ``newName``
+Emitted whenever a text format has been renamed from ``oldName`` to
+``newName``
 
 .. seealso:: :py:func:`symbolRenamed`
 
@@ -1169,8 +1229,8 @@ Emitted whenever a text format has been renamed from ``oldName`` to ``newName``
 
     void textFormatAdded( const QString &name );
 %Docstring
-Emitted whenever a text format has been added to the style and the database
-has been updated as a result.
+Emitted whenever a text format has been added to the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`textFormatRemoved`
 
@@ -1181,8 +1241,8 @@ has been updated as a result.
 
     void textFormatRemoved( const QString &name );
 %Docstring
-Emitted whenever a text format has been removed from the style and the database
-has been updated as a result.
+Emitted whenever a text format has been removed from the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`textFormatAdded`
 
@@ -1193,8 +1253,8 @@ has been updated as a result.
 
     void textFormatChanged( const QString &name );
 %Docstring
-Emitted whenever a text format's definition is changed. This does not include
-name or tag changes.
+Emitted whenever a text format's definition is changed. This does not
+include name or tag changes.
 
 .. seealso:: :py:func:`textFormatAdded`
 
@@ -1203,7 +1263,8 @@ name or tag changes.
 
     void labelSettingsRenamed( const QString &oldName, const QString &newName );
 %Docstring
-Emitted whenever label settings have been renamed from ``oldName`` to ``newName``
+Emitted whenever label settings have been renamed from ``oldName`` to
+``newName``
 
 .. seealso:: :py:func:`symbolRenamed`
 
@@ -1212,8 +1273,8 @@ Emitted whenever label settings have been renamed from ``oldName`` to ``newName`
 
     void labelSettingsAdded( const QString &name );
 %Docstring
-Emitted whenever label settings have been added to the style and the database
-has been updated as a result.
+Emitted whenever label settings have been added to the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`labelSettingsRemoved`
 
@@ -1224,8 +1285,8 @@ has been updated as a result.
 
     void labelSettingsRemoved( const QString &name );
 %Docstring
-Emitted whenever label settings have been removed from the style and the database
-has been updated as a result.
+Emitted whenever label settings have been removed from the style and the
+database has been updated as a result.
 
 .. seealso:: :py:func:`labelSettingsAdded`
 
@@ -1236,8 +1297,8 @@ has been updated as a result.
 
     void labelSettingsChanged( const QString &name );
 %Docstring
-Emitted whenever a label setting's definition is changed. This does not include
-name or tag changes.
+Emitted whenever a label setting's definition is changed. This does not
+include name or tag changes.
 
 .. seealso:: :py:func:`labelSettingsAdded`
 
@@ -1246,7 +1307,8 @@ name or tag changes.
 
     void rebuildIconPreviews();
 %Docstring
-Emitted whenever icon previews for entities in the style must be rebuilt.
+Emitted whenever icon previews for entities in the style must be
+rebuilt.
 
 .. versionadded:: 3.26
 %End
@@ -1256,7 +1318,8 @@ Emitted whenever icon previews for entities in the style must be rebuilt.
 class QgsStyleEntityInterface
 {
 %Docstring(signature="appended")
-An interface for entities which can be placed in a :py:class:`QgsStyle` database.
+An interface for entities which can be placed in a :py:class:`QgsStyle`
+database.
 
 .. versionadded:: 3.10
 %End
@@ -1345,7 +1408,8 @@ A color ramp entity for :py:class:`QgsStyle` databases.
 
     QgsStyleColorRampEntity( QgsColorRamp *ramp );
 %Docstring
-Constructor for QgsStyleColorRampEntity, with the specified color ``ramp``.
+Constructor for QgsStyleColorRampEntity, with the specified color
+``ramp``.
 
 Ownership of ``ramp`` is NOT transferred.
 %End
@@ -1375,7 +1439,8 @@ A text format entity for :py:class:`QgsStyle` databases.
 
     QgsStyleTextFormatEntity( const QgsTextFormat &format );
 %Docstring
-Constructor for QgsStyleTextFormatEntity, with the specified text ``format``.
+Constructor for QgsStyleTextFormatEntity, with the specified text
+``format``.
 %End
 
     virtual QgsStyle::StyleEntity type() const;
@@ -1403,7 +1468,8 @@ A label settings entity for :py:class:`QgsStyle` databases.
 
     QgsStyleLabelSettingsEntity( const QgsPalLayerSettings &settings );
 %Docstring
-Constructor for QgsStyleLabelSettingsEntity, with the specified label ``settings``.
+Constructor for QgsStyleLabelSettingsEntity, with the specified label
+``settings``.
 %End
 
     virtual QgsStyle::StyleEntity type() const;
@@ -1432,7 +1498,8 @@ A legend patch shape entity for :py:class:`QgsStyle` databases.
 
     QgsStyleLegendPatchShapeEntity( const QgsLegendPatchShape &shape );
 %Docstring
-Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch ``shape``.
+Constructor for QgsStyleLegendPatchShapeEntity, with the specified
+legend patch ``shape``.
 %End
 
     virtual QgsStyle::StyleEntity type() const;

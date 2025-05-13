@@ -99,7 +99,7 @@ typedef QSet<int> QgsAttributeIds;
 
 /**
  * \ingroup core
- * \brief Represents a vector layer which manages a vector based data sets.
+ * \brief Represents a vector layer which manages a vector based dataset.
  *
  * The QgsVectorLayer is instantiated by specifying the name of a data provider,
  * such as postgres or wfs, and url defining the specific data set to connect to.
@@ -203,6 +203,7 @@ typedef QSet<int> QgsAttributeIds;
  * - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
  * - InvertAxisOrientation=1: to invert axis order
  * - hideDownloadProgressDialog=1: to hide the download progress dialog
+ * - featureMode=default/simpleFeatures/complexFeatures (QGIS >= 3.44)
  *
  * The ‘filter’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
@@ -1061,8 +1062,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param errorMessage reference to string that will be updated with any error messages
      * \param props a open ended set of properties that can drive/inform the SLD encoding
      * \returns TRUE in case of success
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
+    Q_DECL_DEPRECATED bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const SIP_DEPRECATED;
+
+    /**
+     * Writes the symbology of the layer into the document provided in SLD 1.1 format
+     * \param node the node that will have the style element added to it.
+     * \param doc the document that will have the QDomNode added.
+     * \param context export context. Errors and warnings may be retrieved from this context.
+     * \returns TRUE in case of success
+     * \since QGIS 3.44
+     */
+    bool writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const;
 
     bool readSld( const QDomNode &node, QString &errorMessage ) FINAL;
 
@@ -1120,7 +1132,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the string (typically sql) used to define a subset of the layer.
-     * \returns The subset string or null QString if not implemented by the provider
+     * \returns The subset string or an empty QString if not implemented by the provider
      */
     virtual QString subsetString() const;
 
@@ -1405,11 +1417,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
     /**
-     * \note available in Python as addCurvedPart
+     * Adds a new ring to a multipart feature.
+     *
      * \note Calls to addPart() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
+     *
+     * \note available in Python as addCurvedPart
      */
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
@@ -1851,6 +1866,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.38
      */
     void setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
+
+    /**
+     * Sets a merge \a policy for the field with the specified index.
+     *
+     * \since QGIS 3.44
+     */
+    void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
 #else
 
     /**
@@ -1890,6 +1912,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     else
     {
       sipCpp->setFieldDuplicatePolicy( a0, a1 );
+    }
+    % End
+
+    /**
+     * Sets a merge \a policy for the field with the specified index.
+     *
+     * \throws KeyError if no field with the specified index exists
+     * \since QGIS 3.44
+     */
+    void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
+
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setFieldMergePolicy( a0, a1 );
     }
     % End
 #endif
@@ -2908,6 +2950,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map that stores the duplicate policy for attributes
     QMap< QString, Qgis::FieldDuplicatePolicy > mAttributeDuplicatePolicy;
+
+    //! Map that stores the merge policy for attributes
+    QMap< QString, Qgis::FieldDomainMergePolicy > mAttributeMergePolicy;
 
     //! An internal structure to keep track of fields that have a defaultValueOnUpdate
     QSet<int> mDefaultValueOnUpdateFields;

@@ -152,7 +152,7 @@ QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
   bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
   const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
   const QgsRectangle wmsExtent = QgsServerProjectUtils::wmsExtent( *project );
-  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
   for ( QgsMapLayer *ml : project->mapLayers() )
   {
@@ -200,27 +200,14 @@ QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
     {
       pLayer.name = ml->serverProperties()->shortName();
     }
-    // layer title
-    pLayer.title = ml->serverProperties()->title();
-    if ( pLayer.title.isEmpty() )
-    {
-      pLayer.title = ml->name();
-    }
-    // layer abstract
-    pLayer.abstract = ml->serverProperties()->abstract();
     // layer is queryable
     pLayer.queryable = ml->flags().testFlag( QgsMapLayer::Identifiable );
-    // layer keywords
-    if ( !ml->serverProperties()->keywordList().isEmpty() )
-    {
-      pLayer.keywords = ml->serverProperties()->keywordList().split( ',' );
-    }
     // layer styles
     pLayer.styles = ml->styleManager()->styles();
     // layer legend URL
-    pLayer.legendUrl = ml->legendUrl();
+    pLayer.legendUrl = ml->serverProperties()->legendUrl();
     // layer legend URL format
-    pLayer.legendUrlFormat = ml->legendUrlFormat();
+    pLayer.legendUrlFormat = ml->serverProperties()->legendUrlFormat();
     // layer min/max scales
     if ( ml->hasScaleBasedVisibility() )
     {
@@ -228,13 +215,6 @@ QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
       pLayer.maxScale = ml->maximumScale();
       pLayer.minScale = ml->minimumScale();
     }
-    // layer data URL
-    pLayer.dataUrl = ml->serverProperties()->dataUrl();
-    // layer attribution
-    pLayer.attribution = ml->serverProperties()->attribution();
-    pLayer.attributionUrl = ml->serverProperties()->attributionUrl();
-    // layer metadata URLs
-    pLayer.metadataUrls = ml->serverProperties()->metadataUrls();
 
     wmsLayers[pLayer.id] = pLayer;
   }

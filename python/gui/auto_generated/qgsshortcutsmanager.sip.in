@@ -12,11 +12,11 @@
 class QgsShortcutsManager : QObject
 {
 %Docstring(signature="appended")
-Shortcuts manager is a class that contains a list of QActions and QShortcuts
-that have been registered and their shortcuts can be changed.
+Shortcuts manager is a class that contains a list of QActions and
+QShortcuts that have been registered and their shortcuts can be changed.
 
-:py:class:`QgsShortcutsManager` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.shortcutsManager()`.
+:py:class:`QgsShortcutsManager` is not usually directly created, but
+rather accessed through :py:func:`QgsGui.shortcutsManager()`.
 %End
 
 %TypeHeaderCode
@@ -28,19 +28,25 @@ that have been registered and their shortcuts can be changed.
 Constructor for QgsShortcutsManager.
 
 :param parent: parent object
-:param settingsRoot: root :py:class:`QgsSettings` path for storing settings, e.g., "/myplugin/shortcuts". Leave
-                     as the default value to store settings alongside built in QGIS shortcuts, but care must be
-                     taken to not register actions which conflict with the built in QGIS actions.
+:param settingsRoot: root :py:class:`QgsSettings` path for storing
+                     settings, e.g., "/myplugin/shortcuts". Leave as the
+                     default value to store settings alongside built in
+                     QGIS shortcuts, but care must be taken to not
+                     register actions which conflict with the built in
+                     QGIS actions.
 %End
 
     void registerAllChildren( QObject *object, bool recursive = false, const QString &section = QString() );
 %Docstring
-Automatically registers all QActions and QShortcuts which are children of the
-passed object.
+Automatically registers all QActions and QShortcuts which are children
+of the passed object.
 
-:param object: parent object containing actions and shortcuts to register
-:param recursive: set to ``True`` to recursively add child actions and shortcuts
-:param section: Allows disambiguating shortcuts with the same objectName (since QGIS 3.32)
+:param object: parent object containing actions and shortcuts to
+               register
+:param recursive: set to ``True`` to recursively add child actions and
+                  shortcuts
+:param section: Allows disambiguating shortcuts with the same objectName
+                (since QGIS 3.32)
 
 .. seealso:: :py:func:`registerAllChildActions`
 
@@ -49,11 +55,13 @@ passed object.
 
     void registerAllChildActions( QObject *object, bool recursive = false, const QString &section = QString() );
 %Docstring
-Automatically registers all QActions which are children of the passed object.
+Automatically registers all QActions which are children of the passed
+object.
 
 :param object: parent object containing actions to register
 :param recursive: set to ``True`` to recursively add child actions
-:param section: Allows disambiguating shortcuts with the same objectName (since QGIS 3.32)
+:param section: Allows disambiguating shortcuts with the same objectName
+                (since QGIS 3.32)
 
 .. seealso:: :py:func:`registerAction`
 
@@ -64,11 +72,13 @@ Automatically registers all QActions which are children of the passed object.
 
     void registerAllChildShortcuts( QObject *object, bool recursive = false, const QString &section = QString() );
 %Docstring
-Automatically registers all QShortcuts which are children of the passed object.
+Automatically registers all QShortcuts which are children of the passed
+object.
 
 :param object: parent object containing shortcuts to register
 :param recursive: set to ``True`` to recursively add child shortcuts
-:param section: Allows disambiguating shortcuts with the same objectName (since QGIS 3.32)
+:param section: Allows disambiguating shortcuts with the same objectName
+                (since QGIS 3.32)
 
 .. seealso:: :py:func:`registerShortcut`
 
@@ -79,12 +89,14 @@ Automatically registers all QShortcuts which are children of the passed object.
 
     bool registerAction( QAction *action, const QString &defaultShortcut = QString(), const QString &section = QString() );
 %Docstring
-Registers an action with the manager so the shortcut can be configured in GUI.
+Registers an action with the manager so the shortcut can be configured
+in GUI.
 
-:param action: action to register. The action must have a unique text string for
-               identification.
+:param action: action to register. The action must have a unique text
+               string for identification.
 :param defaultShortcut: default key sequence for action
-:param section: Allows disambiguating shortcuts with the same objectName (since QGIS 3.32)
+:param section: Allows disambiguating shortcuts with the same objectName
+                (since QGIS 3.32)
 
 :return: ``True`` if action was successfully registered
 
@@ -97,12 +109,14 @@ Registers an action with the manager so the shortcut can be configured in GUI.
 
     bool registerShortcut( QShortcut *shortcut, const QString &defaultSequence = QString(), const QString &section = QString() );
 %Docstring
-Registers a QShortcut with the manager so the shortcut can be configured in GUI.
+Registers a QShortcut with the manager so the shortcut can be configured
+in GUI.
 
-:param shortcut: QShortcut to register. The shortcut must have a unique QObject.objectName() for
-                 identification.
+:param shortcut: QShortcut to register. The shortcut must have a unique
+                 QObject.objectName() for identification.
 :param defaultSequence: default key sequence for shortcut
-:param section: Allows disambiguating shortcuts with the same objectName (since QGIS 3.32)
+:param section: Allows disambiguating shortcuts with the same objectName
+                (since QGIS 3.32)
 
 :return: ``True`` if shortcut was successfully registered
 
@@ -117,8 +131,9 @@ Removes an action from the manager.
 
 :param action: action to remove
 
-:return: ``True`` if action was previously registered in manager and has been removed, or
-         ``False`` if action was not previously registered in manager
+:return: ``True`` if action was previously registered in manager and has
+         been removed, or ``False`` if action was not previously
+         registered in manager
 
 .. seealso:: :py:func:`registerAction`
 
@@ -131,8 +146,9 @@ Removes a shortcut from the manager.
 
 :param shortcut: shortcut to remove
 
-:return: ``True`` if shortcut was previously registered in manager and has been removed, or
-         ``False`` if shortcut was not previously registered in manager
+:return: ``True`` if shortcut was previously registered in manager and
+         has been removed, or ``False`` if shortcut was not previously
+         registered in manager
 
 .. seealso:: :py:func:`registerShortcut`
 
@@ -168,8 +184,8 @@ Returns a list of both actions and shortcuts in the manager.
 
     QString objectDefaultKeySequence( QObject *object ) const;
 %Docstring
-Returns the default sequence for an object (either a QAction or QShortcut).
-An empty return string indicates no shortcut.
+Returns the default sequence for an object (either a QAction or
+QShortcut). An empty return string indicates no shortcut.
 
 :param object: QAction or QShortcut to return default key sequence for
 
@@ -178,8 +194,8 @@ An empty return string indicates no shortcut.
 
     QString defaultKeySequence( QAction *action ) const;
 %Docstring
-Returns the default sequence for an action. An empty return string indicates
-no default sequence.
+Returns the default sequence for an action. An empty return string
+indicates no default sequence.
 
 :param action: action to return default key sequence for
 
@@ -188,8 +204,8 @@ no default sequence.
 
     QString defaultKeySequence( QShortcut *shortcut ) const;
 %Docstring
-Returns the default sequence for a shortcut. An empty return string indicates
-no default sequence.
+Returns the default sequence for a shortcut. An empty return string
+indicates no default sequence.
 
 :param shortcut: shortcut to return default key sequence for
 
@@ -200,8 +216,9 @@ no default sequence.
 %Docstring
 Modifies an action or shortcut's key sequence.
 
-:param name: name of action or shortcut to modify. Must match the action's QAction.text() or the
-             shortcut's QObject.objectName()
+:param name: name of action or shortcut to modify. Must match the
+             action's QAction.text() or the shortcut's
+             QObject.objectName()
 :param sequence: new shortcut key sequence
 
 .. seealso:: :py:func:`setObjectKeySequence`
@@ -239,7 +256,8 @@ Modifies a shortcuts's key sequence.
 
     QObject *objectForSequence( const QKeySequence &sequence ) const;
 %Docstring
-Returns the object (QAction or QShortcut) matching the specified key sequence,
+Returns the object (QAction or QShortcut) matching the specified key
+sequence,
 
 :param sequence: key sequence to find
 
@@ -252,7 +270,8 @@ Returns the object (QAction or QShortcut) matching the specified key sequence,
 
     QAction *actionForSequence( const QKeySequence &sequence ) const;
 %Docstring
-Returns the action which is associated for a shortcut sequence, or ``None`` if no action is associated.
+Returns the action which is associated for a shortcut sequence, or
+``None`` if no action is associated.
 
 :param sequence: shortcut key sequence
 
@@ -263,7 +282,8 @@ Returns the action which is associated for a shortcut sequence, or ``None`` if n
 
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 %Docstring
-Returns the shortcut which is associated for a key sequence, or ``None`` if no shortcut is associated.
+Returns the shortcut which is associated for a key sequence, or ``None``
+if no shortcut is associated.
 
 :param sequence: shortcut key sequence
 
@@ -285,7 +305,8 @@ Returns an action by its name, or ``None`` if nothing found.
 %Docstring
 Returns a shortcut by its name, or ``None`` if nothing found
 
-:param name: shortcut name. Must match QShortcut's QObject.objectName() property.
+:param name: shortcut name. Must match QShortcut's QObject.objectName()
+             property.
 
 .. seealso:: :py:func:`actionByName`
 %End
@@ -297,8 +318,8 @@ Returns the root settings path used to store shortcut customization.
 
     QString objectSettingKey( QObject *object ) const;
 %Docstring
-Returns the full settings key matching the QShortcut or QAction
-Return an empty QString if the QObject is not registered
+Returns the full settings key matching the QShortcut or QAction Return
+an empty string if the QObject is not registered
 
 .. versionadded:: 3.30
 %End

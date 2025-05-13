@@ -13,7 +13,8 @@
 class QgsCrsSelectionWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A generic widget allowing users to pick a Coordinate Reference System (or define their own).
+A generic widget allowing users to pick a Coordinate Reference System
+(or define their own).
 
 .. versionadded:: 3.24
 %End
@@ -24,11 +25,14 @@ A generic widget allowing users to pick a Coordinate Reference System (or define
   public:
     QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
-Constructor for QgsCrsSelectionWidget, with the specified ``parent`` widget.
+Constructor for QgsCrsSelectionWidget, with the specified ``parent``
+widget.
 
-Since QGIS 3.36, the optional ``filter`` argument can be used to specify filters on the systems
-shown in the widget. The default is to show all horizontal and compound CRS in order to match
-the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
+Since QGIS 3.36, the optional ``filter`` argument can be used to specify
+filters on the systems shown in the widget. The default is to show all
+horizontal and compound CRS in order to match the behavior of older QGIS
+releases. The ``filter`` can be altered to also include vertical CRS if
+desired.
 %End
 
     ~QgsCrsSelectionWidget();
@@ -47,27 +51,30 @@ Sets a ``message`` to show in the dialog.
 
     void setShowNoCrs( bool show );
 %Docstring
-Sets whether a "no/invalid" CRS option should be shown. If this
-option is selected, calling :py:func:`~QgsCrsSelectionWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+Sets whether a "no/invalid" CRS option should be shown. If this option
+is selected, calling :py:func:`~QgsCrsSelectionWidget.crs` will return
+an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoCrs`
 %End
 
     bool showNoCrs() const;
 %Docstring
-Returns whether the "no/invalid" CRS option is shown. If this
-option is selected, calling :py:func:`~QgsCrsSelectionWidget.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+Returns whether the "no/invalid" CRS option is shown. If this option is
+selected, calling :py:func:`~QgsCrsSelectionWidget.crs` will return an
+invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`setShowNoCrs`
 %End
 
     void setNotSetText( const QString &text, const QString &description = QString() );
 %Docstring
-Sets the text to show for the not set option. Note that this option is not shown
-by default and must be set visible by calling :py:func:`~QgsCrsSelectionWidget.setShowNoCrs`.
+Sets the text to show for the not set option. Note that this option is
+not shown by default and must be set visible by calling
+:py:func:`~QgsCrsSelectionWidget.setShowNoCrs`.
 
-The ``description`` argument can be used to specify a detailed description which
-is shown when the option is selected.
+The ``description`` argument can be used to specify a detailed
+description which is shown when the option is selected.
 %End
 
     bool hasValidSelection() const;
@@ -106,12 +113,13 @@ Sets the ``crs`` to show within the widget.
 %Docstring
 filters this dialog by the given CRSs
 
-Sets this dialog to filter the available CRSs to those listed
-by the given Coordinate Reference Systems.
+Sets this dialog to filter the available CRSs to those listed by the
+given Coordinate Reference Systems.
 
-:param crsFilter: a list of OGC Coordinate Reference Systems to filter the
-                  list of CRS by. This is useful in (e.g.) WMS situations
-                  where you just want to offer what the WMS server can support.
+:param crsFilter: a list of OGC Coordinate Reference Systems to filter
+                  the list of CRS by. This is useful in (e.g.) WMS
+                  situations where you just want to offer what the WMS
+                  server can support.
 
 .. warning::
 
@@ -143,9 +151,9 @@ class QgsProjectionSelectionDialog : QDialog
 %Docstring(signature="appended")
 A generic dialog to prompt the user for a Coordinate Reference System.
 
-Typically you will use this when you want to prompt the user for
-a coordinate system identifier e.g. from a plugin you might do this
-to get an epsg code:
+Typically you will use this when you want to prompt the user for a
+coordinate system identifier e.g. from a plugin you might do this to get
+an epsg code:
 
 .. code-block:: python
 
@@ -155,8 +163,9 @@ to get an epsg code:
          if mySelector.exec():
            mCrs = mySelector.crs()
 
-If you wish to embed the projection selector into an existing dialog
-the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instead.
+If you wish to embed the projection selector into an existing dialog the
+you probably want to look at :py:class:`QgsProjectionSelectionWidget`
+instead.
 %End
 
 %TypeHeaderCode
@@ -167,9 +176,11 @@ the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instea
 %Docstring
 Constructor for QgsProjectionSelectionDialog.
 
-Since QGIS 3.36, the optional ``filter`` argument can be used to specify filters on the systems
-shown in the dialog. The default is to show all horizontal and compound CRS in order to match
-the behavior of older QGIS releases. The ``filter`` can be altered to also include vertical CRS if desired.
+Since QGIS 3.36, the optional ``filter`` argument can be used to specify
+filters on the systems shown in the dialog. The default is to show all
+horizontal and compound CRS in order to match the behavior of older QGIS
+releases. The ``filter`` can be altered to also include vertical CRS if
+desired.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -188,7 +199,8 @@ Sets a ``message`` to show in the dialog.
 
     void showNoCrsForLayerMessage();
 %Docstring
-When called, the dialog will show a default "layer has no CRS set" message above the projection selector.
+When called, the dialog will show a default "layer has no CRS set"
+message above the projection selector.
 
 .. seealso:: :py:func:`setMessage`
 
@@ -198,7 +210,8 @@ When called, the dialog will show a default "layer has no CRS set" message above
     void setShowNoProjection( bool show );
 %Docstring
 Sets whether a "no/invalid" projection option should be shown. If this
-option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs`
+will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoProjection`
 %End
@@ -206,26 +219,28 @@ option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will re
     bool showNoProjection() const;
 %Docstring
 Returns whether the "no/invalid" projection option is shown. If this
-option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
+option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs`
+will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`setShowNoProjection`
 %End
 
     void setNotSetText( const QString &text, const QString &description = QString() );
 %Docstring
-Sets the text to show for the not set option. Note that this option is not shown
-by default and must be set visible by calling :py:func:`~QgsProjectionSelectionDialog.setShowNoProjection`.
+Sets the text to show for the not set option. Note that this option is
+not shown by default and must be set visible by calling
+:py:func:`~QgsProjectionSelectionDialog.setShowNoProjection`.
 
-Since QGIS 3.24, the ``description`` argument can be used to specify a detailed description which
-is shown when the option is selected.
+Since QGIS 3.24, the ``description`` argument can be used to specify a
+detailed description which is shown when the option is selected.
 
 .. versionadded:: 3.16
 %End
 
     void setRequireValidSelection();
 %Docstring
-Sets the dialog to require a valid selection only, preventing users from accepting the
-dialog if no selection is present.
+Sets the dialog to require a valid selection only, preventing users from
+accepting the dialog if no selection is present.
 
 .. versionadded:: 3.18
 %End
@@ -268,12 +283,13 @@ Sets the initial ``crs`` to show within the dialog.
 %Docstring
 filters this dialog by the given CRSs
 
-Sets this dialog to filter the available projections to those listed
-by the given Coordinate Reference Systems.
+Sets this dialog to filter the available projections to those listed by
+the given Coordinate Reference Systems.
 
-:param crsFilter: a list of OGC Coordinate Reference Systems to filter the
-                  list of projections by. This is useful in (e.g.) WMS situations
-                  where you just want to offer what the WMS server can support.
+:param crsFilter: a list of OGC Coordinate Reference Systems to filter
+                  the list of projections by. This is useful in (e.g.)
+                  WMS situations where you just want to offer what the
+                  WMS server can support.
 
 .. warning::
 

@@ -14,11 +14,11 @@
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLegendRendererItem` class is abstract interface for legend items
-returned from :py:class:`QgsMapLayerLegend` implementation.
+An abstract interface for legend items returned from
+:py:class:`QgsMapLayerLegend` implementation.
 
-The objects are used in :py:class:`QgsLayerTreeModel`. Custom implementations may offer additional interactivity
-and customized look.
+The objects are used in :py:class:`QgsLayerTreeModel`. Custom
+implementations may offer additional interactivity and customized look.
 %End
 
 %TypeHeaderCode
@@ -78,17 +78,20 @@ Returns pointer to model owning this legend node
 
     virtual Qt::ItemFlags flags() const;
 %Docstring
-Returns item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
+Returns item flags associated with the item. Default implementation
+returns Qt.ItemIsEnabled.
 %End
 
     virtual QVariant data( int role ) const = 0;
 %Docstring
-Returns data associated with the item. Must be implemented in derived class.
+Returns data associated with the item. Must be implemented in derived
+class.
 %End
 
     virtual bool setData( const QVariant &value, int role );
 %Docstring
-Sets some data associated with the item. Default implementation does nothing and returns ``False``.
+Sets some data associated with the item. Default implementation does
+nothing and returns ``False``.
 %End
 
     virtual bool isEmbeddedInParent() const;
@@ -101,8 +104,9 @@ Sets some data associated with the item. Default implementation does nothing and
 %Docstring
 Returns the user (overridden) size for the legend node.
 
-If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
-symbol width or height from :py:class:`QgsLegendSettings`.
+If either the width or height are non-zero, they will be used when
+rendering the legend node instead of the default symbol width or height
+from :py:class:`QgsLegendSettings`.
 
 .. seealso:: :py:func:`setUserPatchSize`
 
@@ -113,8 +117,9 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 %Docstring
 Sets the user (overridden) ``size`` for the legend node.
 
-If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
-symbol width or height from :py:class:`QgsLegendSettings`.
+If either the width or height are non-zero, they will be used when
+rendering the legend node instead of the default symbol width or height
+from :py:class:`QgsLegendSettings`.
 
 .. seealso:: :py:func:`userPatchSize`
 
@@ -143,8 +148,8 @@ Returns whether a forced column break should occur before the node.
 
     virtual void invalidateMapBasedData();
 %Docstring
-Notification from model that information from associated map view has changed.
-Default implementation does nothing.
+Notification from model that information from associated map view has
+changed. Default implementation does nothing.
 %End
 
     struct ItemContext
@@ -186,16 +191,19 @@ Default implementation does nothing.
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 %Docstring
-Entry point called from :py:class:`QgsLegendRenderer` to do the rendering.
-Default implementation calls :py:func:`~QgsLayerTreeModelLegendNode.drawSymbol` and :py:func:`~QgsLayerTreeModelLegendNode.drawSymbolText` methods.
+Entry point called from :py:class:`QgsLegendRenderer` to do the
+rendering. Default implementation calls
+:py:func:`~QgsLayerTreeModelLegendNode.drawSymbol` and
+:py:func:`~QgsLayerTreeModelLegendNode.drawSymbolText` methods.
 
-If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
+If ctx is ``None``, this is just first stage when preparing layout -
+without actual rendering.
 %End
 
     QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
 %Docstring
-Entry point called from :py:class:`QgsLegendRenderer` to do the rendering in a
-JSON object.
+Entry point called from :py:class:`QgsLegendRenderer` to do the
+rendering in a JSON object.
 
 :param settings: Legend layout configuration
 :param context: Rendering context
@@ -208,10 +216,13 @@ JSON object.
 Draws symbol on the left side of the item
 
 :param settings: Legend layout configuration
-:param ctx: Context for rendering - may be ``None`` if only doing layout without actual rendering
-:param itemHeight: Minimal height of the legend item - used for correct positioning when rendering
+:param ctx: Context for rendering - may be ``None`` if only doing layout
+            without actual rendering
+:param itemHeight: Minimal height of the legend item - used for correct
+                   positioning when rendering
 
-:return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
+:return: Real size of the symbol (may be bigger than "normal" symbol
+         size from settings)
 %End
 
     virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
@@ -229,8 +240,10 @@ Adds a symbol in base64 string within a JSON object with the key "icon".
 Draws label on the right side of the item
 
 :param settings: Legend layout configuration
-:param ctx: Context for rendering - may be ``None`` if only doing layout without actual rendering
-:param symbolSize: Real size of the associated symbol - used for correct positioning when rendering
+:param ctx: Context for rendering - may be ``None`` if only doing layout
+            without actual rendering
+:param symbolSize: Real size of the associated symbol - used for correct
+                   positioning when rendering
 
 :return: Size of the label (may span multiple lines)
 %End
@@ -279,7 +292,8 @@ Toggle all checkable items belonging to the same layer as this node.
   signals:
     void dataChanged();
 %Docstring
-Emitted on internal data change so the layer tree model can forward the signal to views
+Emitted on internal data change so the layer tree model can forward the
+signal to views
 %End
 
     void sizeChanged();
@@ -297,7 +311,8 @@ Construct the node with pointer to its parent layer node
 
     QgsRenderContext *createTemporaryRenderContext() const /Factory/;
 %Docstring
-Returns a temporary context or ``None`` if legendMapViewData are not valid
+Returns a temporary context or ``None`` if legendMapViewData are not
+valid
 %End
 
   protected:
@@ -308,8 +323,9 @@ Returns a temporary context or ``None`` if legendMapViewData are not valid
 class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying preview of vector symbols and their labels
-and allowing interaction with the symbol / renderer.
+Implementation of legend node interface for displaying preview of vector
+symbols and their labels and allowing interaction with the symbol /
+renderer.
 %End
 
 %TypeHeaderCode
@@ -363,15 +379,16 @@ Set the icon size
 %Docstring
 Calculates the minimum icon size to prevent cropping. When evaluating
 the size for multiple icons it is more efficient to create a single
-render context in advance and use the variant which accepts a :py:class:`QgsRenderContext`
-argument.
+render context in advance and use the variant which accepts a
+:py:class:`QgsRenderContext` argument.
 %End
 
     QSize minimumIconSize( QgsRenderContext *context ) const;
 %Docstring
 Calculates the minimum icon size to prevent cropping. When evaluating
 the size for multiple icons it is more efficient to create a single
-render context in advance and call this method instead of :py:func:`~QgsSymbolLegendNode.minimumIconSize`.
+render context in advance and call this method instead of
+:py:func:`~QgsSymbolLegendNode.minimumIconSize`.
 %End
 
     const QgsSymbol *symbol() const;
@@ -383,8 +400,8 @@ Returns the symbol used by the legend node.
 
     void setSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
-Sets the ``symbol`` to be used by the legend node. The symbol change is also propagated
-to the associated vector layer's renderer.
+Sets the ``symbol`` to be used by the legend node. The symbol change is
+also propagated to the associated vector layer's renderer.
 
 :param symbol: new symbol for node. Ownership is transferred.
 
@@ -421,14 +438,16 @@ Sets format of text to be shown on top of the symbol.
 
     QString symbolLabel() const;
 %Docstring
-Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
+Label of the symbol, user defined label will be used, otherwise will
+default to the label made by QGIS.
 
 .. versionadded:: 3.10
 %End
 
     QgsLegendPatchShape patchShape() const;
 %Docstring
-Returns the symbol patch shape to use when rendering the legend node symbol.
+Returns the symbol patch shape to use when rendering the legend node
+symbol.
 
 .. seealso:: :py:func:`setPatchShape`
 
@@ -437,7 +456,8 @@ Returns the symbol patch shape to use when rendering the legend node symbol.
 
     void setPatchShape( const QgsLegendPatchShape &shape );
 %Docstring
-Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
+Sets the symbol patch ``shape`` to use when rendering the legend node
+symbol.
 
 .. seealso:: :py:func:`patchShape`
 
@@ -448,8 +468,9 @@ Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
 %Docstring
 Returns the node's custom symbol.
 
-If a non-``None`` value is returned, then this symbol will be used for rendering
-the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
+If a non-``None`` value is returned, then this symbol will be used for
+rendering the legend node instead of the default
+:py:func:`~QgsSymbolLegendNode.symbol`.
 
 .. seealso:: :py:func:`setCustomSymbol`
 
@@ -460,8 +481,9 @@ the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
 %Docstring
 Sets the node's custom ``symbol``.
 
-If a non-``None`` value is set, then this symbol will be used for rendering
-the legend node instead of the default :py:func:`~QgsSymbolLegendNode.symbol`.
+If a non-``None`` value is set, then this symbol will be used for
+rendering the legend node instead of the default
+:py:func:`~QgsSymbolLegendNode.symbol`.
 
 Ownership of ``symbol`` is transferred.
 
@@ -472,9 +494,10 @@ Ownership of ``symbol`` is transferred.
 
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 %Docstring
-Evaluates  and returns the text label of the current node
+Evaluates and returns the text label of the current node
 
-:param context: extra :py:class:`QgsExpressionContext` to use for evaluating the expression
+:param context: extra :py:class:`QgsExpressionContext` to use for
+                evaluating the expression
 :param label: text to evaluate instead of the layer layertree string
 
 .. versionadded:: 3.10
@@ -503,7 +526,8 @@ The caller takes ownership of the returned object.
 class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying arbitrary label with icon.
+Implementation of legend node interface for displaying arbitrary labels
+with icons.
 %End
 
 %TypeHeaderCode
@@ -537,7 +561,8 @@ Constructor for QgsSimpleLegendNode.
 class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying arbitrary raster image
+Implementation of legend node interface for displaying arbitrary raster
+images.
 %End
 
 %TypeHeaderCode
@@ -574,7 +599,8 @@ Constructor for QgsImageLegendNode.
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying raster legend entries
+Implementation of legend node interface for displaying raster legend
+entries.
 %End
 
 %TypeHeaderCode
@@ -591,8 +617,10 @@ Constructor for QgsRasterSymbolLegendNode.
 :param color: color
 :param label: label
 :param parent: attach a parent QObject to the legend node.
-:param isCheckable: set to ``True`` to enable the checkbox for the node (since QGIS 3.18)
-:param ruleKey: optional identifier to allow a unique ID to be assigned to the node by a renderer (since QGIS 3.18)
+:param isCheckable: set to ``True`` to enable the checkbox for the node
+                    (since QGIS 3.18)
+:param ruleKey: optional identifier to allow a unique ID to be assigned
+                to the node by a renderer (since QGIS 3.18)
 :param parentRuleKey: rule key of parent (since QGIS 3.40)
 %End
 
@@ -609,14 +637,16 @@ Constructor for QgsRasterSymbolLegendNode.
 
     QString ruleKey() const;
 %Docstring
-Returns the unique identifier of node for identification of the item within renderer.
+Returns the unique identifier of node for identification of the item
+within renderer.
 
 .. versionadded:: 3.18
 %End
 
     bool isCheckable() const;
 %Docstring
-Returns whether the item is user-checkable - whether renderer supports enabling/disabling it.
+Returns whether the item is user-checkable - whether renderer supports
+enabling/disabling it.
 
 .. versionadded:: 3.18
 %End
@@ -633,7 +663,8 @@ Returns whether the item is user-checkable - whether renderer supports enabling/
 class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Implementation of legend node interface for displaying WMS legend entries
+Implementation of legend node interface for displaying WMS legend
+entries.
 %End
 
 %TypeHeaderCode
@@ -683,7 +714,7 @@ Fetches the image from the server and returns it.
 class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Produces legend node with a marker symbol
+A legend node with a marker symbol.
 %End
 
 %TypeHeaderCode
@@ -692,7 +723,8 @@ Produces legend node with a marker symbol
   public:
     QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of the node's appearance
+Construct the node using :py:class:`QgsDataDefinedSizeLegend` as
+definition of the node's appearance
 %End
     ~QgsDataDefinedSizeLegendNode();
 
@@ -713,7 +745,7 @@ Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of t
 class QgsVectorLabelLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")
-Produces legend node for a labeling text symbol
+A legend node for a labeling text symbol.
 
 .. versionadded:: 3.20
 %End

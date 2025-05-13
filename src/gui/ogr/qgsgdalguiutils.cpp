@@ -222,16 +222,20 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
 
 QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &url, const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
 {
-  QString uri;
+  QString uri = url;
+  QString prefix;
   if ( type == QLatin1String( "vsicurl" ) )
   {
-    uri = url;
-    // If no protocol is provided in the URL, default to HTTP
-    if ( !uri.startsWith( "http://" ) && !uri.startsWith( "https://" ) && !uri.startsWith( "ftp://" ) )
+    prefix = QStringLiteral( "/vsicurl/" );
+    if ( !uri.startsWith( prefix ) )
     {
-      uri.prepend( QStringLiteral( "http://" ) );
+      // If no protocol is provided in the URL, default to HTTP
+      if ( !uri.startsWith( QLatin1String( "http://" ) ) && !uri.startsWith( QLatin1String( "https://" ) ) && !uri.startsWith( QLatin1String( "ftp://" ) ) )
+      {
+        uri.prepend( QStringLiteral( "http://" ) );
+      }
+      uri.prepend( prefix );
     }
-    uri.prepend( QStringLiteral( "/vsicurl/" ) );
   }
   else if ( type == QLatin1String( "vsis3" )
             || type == QLatin1String( "vsigs" )
@@ -241,25 +245,40 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
             || type == QLatin1String( "vsiswift" )
             || type == QLatin1String( "vsihdfs" ) )
   {
-    uri = url;
-    uri.prepend( QStringLiteral( "/%1/" ).arg( type ) );
+    prefix = QStringLiteral( "/%1/" ).arg( type );
+    if ( !uri.startsWith( prefix ) )
+    {
+      uri.prepend( prefix );
+    }
   }
   // catching both GeoJSON and GeoJSONSeq
   else if ( type.startsWith( QLatin1String( "GeoJSON" ) ) )
   {
-    uri = url;
+    // no change needed for now
   }
   else if ( type == QLatin1String( "CouchDB" ) )
   {
-    uri = QStringLiteral( "couchdb:%1" ).arg( url );
+    prefix = QStringLiteral( "couchdb:" );
+    if ( !uri.startsWith( prefix ) )
+    {
+      uri.prepend( prefix );
+    }
   }
   else if ( type == QLatin1String( "DODS/OPeNDAP" ) )
   {
-    uri = QStringLiteral( "DODS:%1" ).arg( url );
+    prefix = QStringLiteral( "DODS:" );
+    if ( !uri.startsWith( prefix ) )
+    {
+      uri.prepend( prefix );
+    }
   }
   else if ( type == QLatin1String( "WFS3" ) )
   {
-    uri = QStringLiteral( "WFS3:%1" ).arg( url );
+    prefix = QStringLiteral( "WFS3:" );
+    if ( !uri.startsWith( prefix ) )
+    {
+      uri.prepend( prefix );
+    }
   }
   QgsDebugMsgLevel( "Connection type is=" + type + " and uri=" + uri, 2 );
   // Update URI with authentication information

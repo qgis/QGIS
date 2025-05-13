@@ -458,7 +458,10 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
         c = w.widget()
 
         # first check with string field type
+        w.initWidget(c)
+        c.setChecked(False)
         c.setChecked(True)
+        self.assertEqual(w.expression(), """"fldtxt" = '5'""")
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
             '"fldtxt" IS NULL',
@@ -472,6 +475,7 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
             "\"fldtxt\"='5'",
         )
         c.setChecked(False)
+        self.assertEqual(w.expression(), """"fldtxt" = '9'""")
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
             '"fldtxt" IS NULL',
@@ -489,7 +493,10 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
         w = QgsCheckboxSearchWidgetWrapper(layer, 1)
         w.setConfig(config)
         c = w.widget()
+        w.initWidget(c)
+        c.setChecked(False)
         c.setChecked(True)
+        self.assertEqual(w.expression(), """"fldint" = 5""")
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
             '"fldint" IS NULL',
@@ -502,6 +509,7 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.EqualTo), '"fldint"=5'
         )
         c.setChecked(False)
+        self.assertEqual(w.expression(), """"fldint" = 9""")
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.IsNull),
             '"fldint" IS NULL',
@@ -517,9 +525,15 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
         # Check boolean expression
         parent = QWidget()
         w = QgsCheckboxSearchWidgetWrapper(layer, 2)
-        w.initWidget(parent)
+        # boolean fields should ignore CheckedState/UncheckedState config
+        config = {"CheckedState": 5, "UncheckedState": 9}
+        w.setConfig(config)
         c = w.widget()
+        w.initWidget(c)
+        # need to trigger a change signal first:
+        c.setChecked(False)
         c.setChecked(True)
+        self.assertEqual(w.expression(), '"fieldbool" = TRUE')
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.EqualTo),
             '"fieldbool"=true',
@@ -529,6 +543,7 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.EqualTo),
             '"fieldbool"=false',
         )
+        self.assertEqual(w.expression(), '"fieldbool" = FALSE')
 
 
 class PyQgsDateTimeSearchWidgetWrapper(QgisTestCase):

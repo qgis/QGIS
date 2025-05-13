@@ -86,7 +86,7 @@ class CORE_EXPORT QgsScaleBarRenderer
       double scale { 1.0 };
 
       //! Scalebar renderer flags
-      Flags flags;
+      QgsScaleBarRenderer::Flags flags;
 
       /**
        * Returns TRUE if the context has valid settings.

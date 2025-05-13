@@ -12,7 +12,7 @@
 class QgsServerOgcApiHandler
 {
 %Docstring(signature="appended")
-The :py:class:`QgsServerOgcApiHandler` abstract class represents a OGC API handler to be registered
+An abstract class which represents an OGC API handler to be registered
 in :py:class:`QgsServerOgcApi` class.
 
 Subclasses must override operational and informative methods and define
@@ -22,7 +22,7 @@ The following methods MUST be implemented:
 
 - path
 - operationId
-- summary  (shorter text)
+- summary (shorter text)
 - description (longer text)
 - linkTitle
 - linkType
@@ -90,7 +90,8 @@ named parameter.
 
     virtual std::string operationId() const = 0;
 %Docstring
-Returns the operation id for template file names and other internal references
+Returns the operation id for template file names and other internal
+references
 %End
 
     virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const;
@@ -130,10 +131,11 @@ Tags
 
     virtual QgsServerOgcApi::ContentType defaultContentType() const;
 %Docstring
-Returns the default response content type in case the client did not specifically
-ask for any particular content type.
-The default implementation returns the first content type returned by
-:py:func:`~QgsServerOgcApiHandler.contentTypes` or JSON if that list is empty.
+Returns the default response content type in case the client did not
+specifically ask for any particular content type. The default
+implementation returns the first content type returned by
+:py:func:`~QgsServerOgcApiHandler.contentTypes` or JSON if that list is
+empty.
 %End
 
 
@@ -141,8 +143,9 @@ The default implementation returns the first content type returned by
 %Docstring
 Handles the request within its ``context``
 
-Subclasses must implement this methods, and call :py:func:`~QgsServerOgcApiHandler.validate` to
-extract validated parameters from the request.
+Subclasses must implement this methods, and call
+:py:func:`~QgsServerOgcApiHandler.validate` to extract validated
+parameters from the request.
 
 :raises QgsServerApiBadRequestError: if the method encounters any error
 %End
@@ -150,18 +153,20 @@ extract validated parameters from the request.
     virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Analyzes the incoming request ``context`` and returns the validated
-parameter map, throws :py:class:`QgsServerApiBadRequestError` in case of errors.
+parameter map, throws :py:class:`QgsServerApiBadRequestError` in case of
+errors.
 
-Path fragments from the named groups in the :py:func:`~QgsServerOgcApiHandler.path` regular expression
-are also added to the map.
+Path fragments from the named groups in the
+:py:func:`~QgsServerOgcApiHandler.path` regular expression are also
+added to the map.
 
-Your handleRequest method should call this function to retrieve
-the parameters map.
+Your handleRequest method should call this function to retrieve the
+parameters map.
 
-:return: the validated parameters map by extracting captured
-         named parameters from the path (no validation is performed on
-         the type because the regular expression can do it),
-         and the query string parameters.
+:return: the validated parameters map by extracting captured named
+         parameters from the path (no validation is performed on the
+         type because the regular expression can do it), and the query
+         string parameters.
 
 .. seealso:: :py:func:`path`
 
@@ -172,80 +177,98 @@ the parameters map.
 
     QString contentTypeForAccept( const QString &accept ) const;
 %Docstring
-Looks for the first ContentType match in the accept header and returns its mime type,
-returns an empty string if there are not matches.
+Looks for the first ContentType match in the accept header and returns
+its mime type, returns an empty string if there are not matches.
 %End
 
 
 
     void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const throw( QgsServerApiBadRequestException );
 %Docstring
-Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
-optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to
+Writes ``data`` to the ``context`` response stream, content-type is
+calculated from the ``context`` request, optional ``htmlMetadata`` for
+the HTML templates can be specified and will be added as "metadata" to
 the HTML template variables.
 
 HTML output uses a template engine.
 
-Available template functions:
-See: https://github.com/pantor/inja#tutorial
+Available template functions: See:
+https://github.com/pantor/inja#tutorial
 
 Available custom template functions:
 
 - path_append( path ): appends a directory path to the current url
-- path_chomp( n ): removes the specified number "n" of directory components from the current url path
+- path_chomp( n ): removes the specified number "n" of directory
+  components from the current url path
 - json_dump( ): prints current JSON data passed to the template
-- static( path ): returns the full URL to the specified static path, for example:
-  static( "/style/black.css" ) will return something like "/wfs3/static/style/black.css"
-- links_filter( links, key, value ): returns filtered links from a link list
-- content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
-- nl2br( text ): returns the input text with all newlines replaced by "<br>" tags
-- starts_with( string, prefix ): returns true if a string begins with the provided string prefix, false otherwise
+- static( path ): returns the full URL to the specified static path, for
+  example: static( "/style/black.css" ) will return something like
+  "/wfs3/static/style/black.css"
+- links_filter( links, key, value ): returns filtered links from a link
+  list
+- content_type_name( content_type ): returns a short name from a content
+  type for example "text/html" will return "HTML"
+- nl2br( text ): returns the input text with all newlines replaced by
+  "<br>" tags
+- starts_with( string, prefix ): returns true if a string begins with
+  the provided string prefix, false otherwise
 %End
 
     std::string href( const QgsServerApiContext &context, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 %Docstring
-Returns an URL to self, to be used for links to the current resources and as a base for constructing links to sub-resources
+Returns an URL to self, to be used for links to the current resources
+and as a base for constructing links to sub-resources
 
 :param context: the current request context
-:param extraPath: an optional extra path that will be appended to the calculated URL
-:param extension: optional file extension to add (the dot will be added automatically).
+:param extraPath: an optional extra path that will be appended to the
+                  calculated URL
+:param extension: optional file extension to add (the dot will be added
+                  automatically).
 %End
 
     virtual const QString templatePath( const QgsServerApiContext &context ) const;
 %Docstring
 Returns the HTML template path for the handler in the given ``context``
 
-The template path is calculated from :py:class:`QgsServerSettings`'s :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` as follow:
-:py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` + "/ogc/templates/" + context.apiRootPath + operationId + ".html"
-e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
-will be :py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` + "/ogc/templates/wfs3/collectionItems.html"
+The template path is calculated from :py:class:`QgsServerSettings`'s
+:py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` as follow:
+:py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` +
+"/ogc/templates/" + context.apiRootPath + operationId + ".html" e.g. for
+an API with root path "/wfs3" and an handler with operationId
+"collectionItems", the path will be
+:py:func:`~QgsServerOgcApiHandler.apiResourcesDirectory` +
+"/ogc/templates/wfs3/collectionItems.html"
 %End
 
     virtual const QString staticPath( const QgsServerApiContext &context ) const;
 %Docstring
-Returns the absolute path to the base directory where static resources for
-this handler are stored in the given ``context``.
+Returns the absolute path to the base directory where static resources
+for this handler are stored in the given ``context``.
 %End
 
     QgsServerOgcApi::ContentType contentTypeFromRequest( const QgsServerRequest *request ) const;
 %Docstring
 Returns the content type from the ``request``.
 
-The path file extension is examined first and checked for known mime types,
-the "Accept" HTTP header is examined next.
-Fallback to the default content type of the handler if none of the above matches.
+The path file extension is examined first and checked for known mime
+types, the "Accept" HTTP header is examined next. Fallback to the
+default content type of the handler if none of the above matches.
 
-:raises QgsServerApiBadRequestError: if the content type of the request is not compatible with the handler (:py:func:`contentTypes` member)
+:raises QgsServerApiBadRequestError: if the content type of the request
+                                     is not compatible with the handler
+                                     (:py:func:`contentTypes` member)
 %End
 
     static QString parentLink( const QUrl &url, int levels = 1 );
 %Docstring
-Returns a link to the parent page up to ``levels`` in the HTML hierarchy from the given ``url``, MAP query argument is preserved
+Returns a link to the parent page up to ``levels`` in the HTML hierarchy
+from the given ``url``, MAP query argument is preserved
 %End
 
     static QgsVectorLayer *layerFromCollectionId( const QgsServerApiContext &context, const QString &collectionId );
 %Docstring
-Returns a vector layer from the ``collectionId`` in the given ``context``.
+Returns a vector layer from the ``collectionId`` in the given
+``context``.
 
 :raises QgsServerApiNotFoundError: if the layer could not be found.
 %End

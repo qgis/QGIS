@@ -100,6 +100,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth ), QgsPropertyDefinition( "dataDefinedSvgStrokeWidth", QObject::tr( "SVG stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::LegendTitle ), QgsPropertyDefinition( "dataDefinedLegendTitle", QObject::tr( "Legend title" ), QgsPropertyDefinition::String ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::LegendColumnCount ), QgsPropertyDefinition( "dataDefinedLegendColumns", QObject::tr( "Number of columns" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },
+    { static_cast< int >( QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth ), QgsPropertyDefinition( "dataDefinedLegendAutoWrapWidth", QObject::tr( "Text wrapping width in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor ), QgsPropertyDefinition( "dataDefinedScalebarFill", QObject::tr( "Fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2 ), QgsPropertyDefinition( "dataDefinedScalebarFill2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { static_cast< int >( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ), QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -195,6 +196,7 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::DataDefinedProperty::PictureSvgStrokeWidth:
     case QgsLayoutObject::DataDefinedProperty::LegendTitle:
     case QgsLayoutObject::DataDefinedProperty::LegendColumnCount:
+    case QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth:
     case QgsLayoutObject::DataDefinedProperty::ScalebarFillColor:
     case QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2:
     case QgsLayoutObject::DataDefinedProperty::ScalebarLineColor:

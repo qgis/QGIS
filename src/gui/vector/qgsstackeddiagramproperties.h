@@ -24,6 +24,7 @@
 #include "qgis_gui.h"
 #include "qgsdiagramrenderer.h"
 #include "ui_qgsstackeddiagrampropertiesbase.h"
+#include "qgsproxystyle.h"
 
 #include <QWidget>
 #include <QDialog>
@@ -88,15 +89,39 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
      */
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
+  signals:
+    //! Informs views that subdiagrams were moved in the model.
+    void subDiagramsMoved();
+
   protected:
     QList<QgsDiagramRenderer *> mRenderers;
     QgsDiagramLayerSettings mDiagramLayerSettings;
 };
 
+/**
+ * \ingroup gui
+ * \brief View style which shows a drop indicator line between items
+ *
+ * \since QGIS 3.40.6
+ */
+class QgsStackedDiagramsViewStyle : public QgsProxyStyle
+{
+    Q_OBJECT
+
+  public:
+    /**
+    * Constructor for QgsStackedDiagramsViewStyle
+    * \param parent parent object
+    */
+    explicit QgsStackedDiagramsViewStyle( QWidget *parent );
+
+    void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
+};
 
 /**
  * \ingroup gui
  * \class QgsStackedDiagramProperties
+ * \brief A widget for editing sub diagrams.
  *
  * \since QGIS 3.40
  */
@@ -117,6 +142,13 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
 
   public slots:
     void apply();
+
+    /**
+     * Clears current item from the view.
+     *
+     * \since QGIS 3.40.6
+     */
+    void clearCurrentIndex();
 
   private slots:
 

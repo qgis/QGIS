@@ -12,7 +12,8 @@
 class QgsAuthMethodEdit : QWidget
 {
 %Docstring(signature="appended")
-Abstract base class for the edit widget of authentication method plugins
+Abstract base class for the edit widget of authentication method
+plugins.
 %End
 
 %TypeHeaderCode
@@ -41,12 +42,13 @@ Emitted when the configuration validatity changes
 %Docstring
 Load an existing config map into subclassed widget
 
-:param configmap:
+:param configmap: 
 %End
 
     virtual void resetConfig() = 0;
 %Docstring
-Clear GUI controls in subclassed widget, optionally reloading any previously loaded config map
+Clear GUI controls in subclassed widget, optionally reloading any
+previously loaded config map
 %End
 
     virtual void clearConfig() = 0;

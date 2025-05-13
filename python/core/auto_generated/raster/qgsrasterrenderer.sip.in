@@ -34,9 +34,6 @@ Constructor for QgsRasterRenderer.
 
     virtual QgsRasterRenderer *clone() const = 0 /Factory/;
 
-%Docstring
-QgsRasterRenderer cannot be copied. Use :py:func:`~QgsRasterRenderer.clone` instead.
-%End
 
     virtual int bandCount() const;
 
@@ -58,8 +55,8 @@ Returns flags which dictate renderer behavior.
 
     virtual bool canCreateRasterAttributeTable( ) const;
 %Docstring
-Returns ``True`` if the renderer is suitable for attribute table creation.
-The default implementation returns ``False``.
+Returns ``True`` if the renderer is suitable for attribute table
+creation. The default implementation returns ``False``.
 
 .. versionadded:: 3.30
 %End
@@ -69,11 +66,12 @@ The default implementation returns ``False``.
 
     virtual int inputBand() const;
 %Docstring
-Returns the input band for the renderer, or -1 if no input band is available.
+Returns the input band for the renderer, or -1 if no input band is
+available.
 
-For renderers which utilize multiple input bands -1 will be returned. In these
-cases :py:func:`~QgsRasterRenderer.usesBands` will return a list of all utilized bands (including alpha
-bands).
+For renderers which utilize multiple input bands -1 will be returned. In
+these cases :py:func:`~QgsRasterRenderer.usesBands` will return a list
+of all utilized bands (including alpha bands).
 
 .. seealso:: :py:func:`setInputBand`
 
@@ -86,7 +84,8 @@ bands).
 %Docstring
 Attempts to set the input ``band`` for the renderer.
 
-Returns ``True`` if the band was successfully set, or ``False`` if the band could not be set.
+Returns ``True`` if the band was successfully set, or ``False`` if the
+band could not be set.
 
 .. note::
 
@@ -109,16 +108,16 @@ Returns ``True`` if the band was successfully set, or ``False`` if the band coul
 
     void setOpacity( double opacity );
 %Docstring
-Sets the ``opacity`` for the renderer, where ``opacity`` is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
+Sets the ``opacity`` for the renderer, where ``opacity`` is a value
+between 0 (totally transparent) and 1.0 (fully opaque).
 
 .. seealso:: :py:func:`opacity`
 %End
 
     double opacity() const;
 %Docstring
-Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
-and 1.0 (fully opaque).
+Returns the opacity for the renderer, where opacity is a value between 0
+(totally transparent) and 1.0 (fully opaque).
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -127,8 +126,8 @@ and 1.0 (fully opaque).
 %Docstring
 Returns the color to use for shading nodata pixels.
 
-If the returned value is an invalid color then the default transparent rendering of
-nodata values will be used.
+If the returned value is an invalid color then the default transparent
+rendering of nodata values will be used.
 
 .. seealso:: :py:func:`renderColorForNodataPixel`
 
@@ -141,8 +140,8 @@ nodata values will be used.
 %Docstring
 Sets the ``color`` to use for shading nodata pixels.
 
-If ``color`` is an invalid color then the default transparent rendering of
-nodata values will be used.
+If ``color`` is an invalid color then the default transparent rendering
+of nodata values will be used.
 
 .. seealso:: :py:func:`nodataColor`
 
@@ -166,10 +165,12 @@ Returns symbology items if provided by renderer.
 %Docstring
 Creates a set of legend nodes representing the renderer.
 
-The default implementation calls :py:func:`~QgsRasterRenderer.legendSymbologyItems` and creates corresponding legend nodes for each returned
-symbology item.
+The default implementation calls
+:py:func:`~QgsRasterRenderer.legendSymbologyItems` and creates
+corresponding legend nodes for each returned symbology item.
 
-Subclasses can override this to return more legend nodes which better represent the renderer.
+Subclasses can override this to return more legend nodes which better
+represent the renderer.
 
 .. versionadded:: 3.18
 %End
@@ -177,13 +178,14 @@ Subclasses can override this to return more legend nodes which better represent 
     virtual void readXml( const QDomElement &rendererElem );
 
 %Docstring
-Sets base class members from xml. Usually called from :py:func:`~QgsRasterRenderer.create` methods of subclasses
+Sets base class members from xml. Usually called from
+:py:func:`~QgsRasterRenderer.create` methods of subclasses
 %End
 
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
 %Docstring
-Copies common properties like opacity / transparency data from other renderer.
-Useful when cloning renderers.
+Copies common properties like opacity / transparency data from other
+renderer. Useful when cloning renderers.
 %End
 
     virtual QList<int> usesBands() const;
@@ -203,20 +205,31 @@ Returns const reference to origin of min/max values
 Sets origin of min/max values
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+Used from subclasses to create SLD Rule elements following SLD v1.0
+specs
 
-.. versionadded:: 3.6
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Used from subclasses to create SLD Rule elements following SLD v1.0
+specs
+
+.. versionadded:: 3.44
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
-with the renderer.
+Accepts the specified symbology ``visitor``, causing it to visit all
+symbols associated with the renderer.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -227,7 +240,8 @@ should be canceled.
 
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
 %Docstring
-Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
+Write upper class info into rasterrenderer element (called by writeXml
+method of subclasses)
 %End
 
 
@@ -238,8 +252,9 @@ Write upper class info into rasterrenderer element (called by writeXml method of
 %Docstring
 Returns the color for the renderer to use to represent nodata pixels.
 
-Subclasses should use this rather then :py:func:`~QgsRasterRenderer.nodataColor` to determine the color to use for nodata pixels
-during an actual rendering operation.
+Subclasses should use this rather then
+:py:func:`~QgsRasterRenderer.nodataColor` to determine the color to use
+for nodata pixels during an actual rendering operation.
 
 .. versionadded:: 3.10
 %End

@@ -1512,7 +1512,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
     return;
   }
 
-  mCurrentHoverLabel = newHoverLabel;
+  mCurrentHoverLabel = std::move( newHoverLabel );
 
   mHoverRubberBand->show();
   mHoverRubberBand->reset( Qgis::GeometryType::Line );

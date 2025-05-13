@@ -576,7 +576,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
         QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
         if ( !providerDefault.isEmpty() )
         {
-          v = providerDefault;
+          v = QgsUnsetAttributeValue( providerDefault );
           checkUnique = false;
         }
       }
@@ -709,7 +709,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-  auto getFeatureSource = [ layer, &featureSource, feedback ]
+  auto getFeatureSource = [ layer = std::move( layer ), &featureSource, feedback ]
   {
     Q_ASSERT( QThread::currentThread() == qApp->thread() || feedback );
     QgsVectorLayer *lyr = layer.data();
