@@ -32,12 +32,17 @@ QString QgsFixGeometryDuplicateNodesAlgorithm::name() const
 
 QString QgsFixGeometryDuplicateNodesAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (duplicated nodes)" );
+  return QObject::tr( "Delete duplicated vertices" );
+}
+
+QString QgsFixGeometryDuplicateNodesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Delete duplicated vertices detected with the \"Duplicated vertices\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryDuplicateNodesAlgorithm::tags() const
 {
-  return QObject::tr( "fix,multipart,singlepart" ).split( ',' );
+  return QObject::tr( "fix,duplicated,vertex,delete" ).split( ',' );
 }
 
 QString QgsFixGeometryDuplicateNodesAlgorithm::group() const
@@ -52,7 +57,7 @@ QString QgsFixGeometryDuplicateNodesAlgorithm::groupId() const
 
 QString QgsFixGeometryDuplicateNodesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm delete duplicate nodes based on an error layer from the check duplicated nodes algorithm." );
+  return QObject::tr( "This algorithm delete duplicate vertices based on an error layer from the \"Duplicated vertices\" algorithm in the \"Check geometry\" section." );
 }
 
 QgsFixGeometryDuplicateNodesAlgorithm *QgsFixGeometryDuplicateNodesAlgorithm::createInstance() const
@@ -93,16 +98,18 @@ void QgsFixGeometryDuplicateNodesAlgorithm::initAlgorithm( const QVariantMap &co
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Fixed duplicate vertices layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing duplicate vertices" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -179,6 +186,9 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
   multiStepFeedback.setProgressText( QObject::tr( "Fixing errors..." ) );
   while ( errorFeaturesIt.nextFeature( errorFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     reportFeature.setGeometry( errorFeature.geometry() );
@@ -234,6 +244,9 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
   QgsFeatureIterator fixedFeaturesIt = fixedLayer->getFeatures();
   while ( fixedFeaturesIt.nextFeature( fixedFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )

@@ -32,6 +32,7 @@ class QgsGeometryCheckContainedAlgorithm : public QgsProcessingAlgorithm
     QgsGeometryCheckContainedAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
+    QString shortDescription() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
