@@ -728,7 +728,7 @@ QgsLinearlyInterpolatedDiagramRenderer &QgsLinearlyInterpolatedDiagramRenderer::
   }
   mSettings = other.mSettings;
   mInterpolationSettings = other.mInterpolationSettings;
-  mDataDefinedSizeLegend.reset( new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegend ) );
+  mDataDefinedSizeLegend = std::make_unique<QgsDataDefinedSizeLegend>( *other.mDataDefinedSizeLegend );
 
   return *this;
 }
