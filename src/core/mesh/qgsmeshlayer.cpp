@@ -552,6 +552,99 @@ bool QgsMeshLayer::isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex
   return mDatasetGroupStore->isFaceActive( index, faceIndex );
 }
 
+QgsMeshDatasetValue QgsMeshLayer::datasetValueUncached( const QgsRenderContext &renderContext, const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::datasetValue: point.x: %1 point.y %2 radius: %3 index: %4" ).arg( point.x() ).arg( point.y() ).arg( searchRadius ).arg( index.dataset()), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+
+  QgsMeshDatasetValue value;
+  const QgsTriangularMesh *mesh = triangularMesh();
+
+  if ( mesh )
+    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::mesh valid" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  else
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::mesh datasetValueUncached" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    updateTriangularMesh( renderContext.coordinateTransform() );
+    mesh = triangularMesh();
+  }
+
+
+  if ( index.isValid() )
+    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::index valid" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+
+  if ( mesh && index.isValid() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::datasetValue valid" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+
+    if ( contains( QgsMesh::ElementType::Edge ) )
+    {
+      const QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+      return dataset1dValue( index, point, searchRadius );
+    }
+    const int faceIndex = mesh->faceIndexForPoint_v2( point ) ;
+    if ( faceIndex >= 0 )
+    {
+      const int nativeFaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
+      const QgsMeshDatasetGroupMetadata::DataType dataType = datasetGroupMetadata( index ).dataType();
+      if ( isFaceActive( index, nativeFaceIndex ) )
+      {
+        switch ( dataType )
+        {
+          case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          {
+            value = datasetValue( index, nativeFaceIndex );
+          }
+          break;
+
+          case QgsMeshDatasetGroupMetadata::DataOnVertices:
+          {
+            const QgsMeshFace &face = mesh->triangles()[faceIndex];
+            const int v1 = face[0], v2 = face[1], v3 = face[2];
+            const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2], p3 = mesh->vertices()[v3];
+            const QgsMeshDatasetValue val1 = datasetValue( index, v1 );
+            const QgsMeshDatasetValue val2 = datasetValue( index, v2 );
+            const QgsMeshDatasetValue val3 = datasetValue( index, v3 );
+            const double x = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+            double y = std::numeric_limits<double>::quiet_NaN();
+            const bool isVector = datasetGroupMetadata( index ).isVector();
+            if ( isVector )
+              y = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
+
+            value = QgsMeshDatasetValue( x, y );
+          }
+          break;
+
+          case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+          {
+            const QgsMesh3DAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
+            if ( avgMethod )
+            {
+              const QgsMesh3DDataBlock block3d = dataset3dValues( index, nativeFaceIndex, 1 );
+              const QgsMeshDataBlock block2d = avgMethod->calculate( block3d );
+              if ( block2d.isValid() )
+              {
+                value = block2d.value( 0 );
+              }
+            }
+          }
+          break;
+
+          default:
+            break;
+        }
+      }
+    }
+  }
+  else
+  {
+      QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::datasetValue INVALID" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  }
+
+  return value;
+}
+
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

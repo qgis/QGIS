@@ -525,6 +525,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
       * \since QGIS 3.4
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
+    QgsMeshDatasetValue datasetValueUncached( const QgsRenderContext &renderContext, const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 );
 
     /**
       * Returns the 3d values of stacked 3d mesh defined by the given point
