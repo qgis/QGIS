@@ -244,8 +244,6 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
     QgsModelSnapper mSnapper;
     QgsModelViewSnapMarker *mSnapMarker = nullptr;
-
-    QRectF mPreviousSceneRect;
 };
 
 

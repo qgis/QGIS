@@ -99,12 +99,12 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
     /**
-     * Calculates the bouding bounds of all components of the model. 
-     * \param margin optional marginal ( absolute value in scene coordinate) to add around items
+     * Calculates the bounding rectangle of all components of the model. 
+     * \param margin optional margin (absolute value in scene coordinates) to add around items.
      * \returns model bounds, in scene units.
-     *
+     * \since QGIS 3.44
      */
-    QRectF modelBounds( double margin ) const;
+    QRectF modelBounds( double margin = 0.0 ) const;
 
 
     /**

@@ -75,11 +75,8 @@ QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
   for ( QGraphicsItem *item : constItems )
   {
     QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item );
-    if ( !componentItem )
-    {
-      continue;
-    }
-    bounds = bounds.united( componentItem->sceneBoundingRect() );
+    if ( componentItem )
+      bounds = bounds.united( componentItem->sceneBoundingRect() );
   }
 
   if ( bounds.isValid() && margin > 0.0 )
