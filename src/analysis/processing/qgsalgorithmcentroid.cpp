@@ -64,6 +64,11 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
+QString QgsCentroidAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a new point layer, with points representing the centroid of the geometries in an input layer." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsCentroidAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios;

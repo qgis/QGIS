@@ -45,6 +45,7 @@ class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorit
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsDbscanClusteringAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

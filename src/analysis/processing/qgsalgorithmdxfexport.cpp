@@ -51,6 +51,11 @@ QString QgsDxfExportAlgorithm::shortHelpString() const
                       "If no field is chosen, you can still override the output layer name by directly entering a new output layer name in the Configure Layer panel or by preferring layer title (set in layer properties) to layer name." );
 }
 
+QString QgsDxfExportAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports layers to DXF file." );
+}
+
 QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
 {
   return new QgsDxfExportAlgorithm();

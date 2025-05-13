@@ -228,6 +228,11 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "input cell values are equal." );
 }
 
+QString QgsCellStatisticsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster whose cell values are computed from overlaid cell values of the input rasters." );
+}
+
 QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
 {
   return new QgsCellStatisticsAlgorithm();
@@ -428,6 +433,11 @@ QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
                       "The output raster data type will be set to the most complex data type present in the input datasets. " );
 }
 
+QString QgsCellStatisticsPercentileAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Returns the cell-wise percentile value of a stack of rasters and writes the results to an output raster." );
+}
+
 QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::createInstance() const
 {
   return new QgsCellStatisticsPercentileAlgorithm();
@@ -571,6 +581,12 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
                       "The output raster data type will always be Float32." );
 }
 
+QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the cell-wise percentrank value of a stack of rasters based on a single input value "
+                      "and writes them to an output raster." );
+}
+
 QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFromValueAlgorithm::createInstance() const
 {
   return new QgsCellStatisticsPercentRankFromValueAlgorithm();
@@ -707,6 +723,12 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will always be Float32." );
+}
+
+QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the cell-wise percentrank value of a stack of rasters based on an input value raster "
+                      "and writes them to an output raster." );
 }
 
 QgsCellStatisticsPercentRankFromRasterAlgorithm *QgsCellStatisticsPercentRankFromRasterAlgorithm::createInstance() const
