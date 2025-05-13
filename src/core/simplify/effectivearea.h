@@ -76,7 +76,7 @@ struct EFFECTIVE_AREAS
   {
     curve.points( inpts );
     initial_arealist = new areanode[ inpts.size()];
-    res_arealist = std::make_unique<double[]>( inpts.size() );
+    res_arealist.resize( inpts.size() );
   }
 
   ~EFFECTIVE_AREAS()
@@ -91,7 +91,7 @@ struct EFFECTIVE_AREAS
   bool is3d;
   QgsPointSequence inpts;
   areanode *initial_arealist = nullptr;
-  std::unique_ptr<double[]> res_arealist;
+  std::vector<double> res_arealist;
 
 
 };
