@@ -212,13 +212,6 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 
 QColor QgsModelDesignerSocketGraphicItem::getColor()
 {
-  // Possibly, the mComponentItem is an instance of QgsModelParameterGraphicItem. In this case,
-  // it needs to be explicitly casted so that the relevant getLinkedParamDataType method is being called
-  if ( QgsModelParameterGraphicItem *paramItem = dynamic_cast<QgsModelParameterGraphicItem *>( componentItem() ) )
-  {
-    return paramItem->getLinkColor( mEdge, mIndex );
-  }
-
   return componentItem()->getLinkColor( mEdge, mIndex );
 }
 

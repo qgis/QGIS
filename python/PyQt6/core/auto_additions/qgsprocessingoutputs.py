@@ -7,13 +7,13 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVectorLayer.typeName = staticmethod(QgsProcessingOutputVectorLayer.typeName)
-    QgsProcessingOutputVectorLayer.__overridden_methods__ = ['type']
+    QgsProcessingOutputVectorLayer.__overridden_methods__ = ['getColor', 'type']
     QgsProcessingOutputVectorLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputRasterLayer.typeName = staticmethod(QgsProcessingOutputRasterLayer.typeName)
-    QgsProcessingOutputRasterLayer.__overridden_methods__ = ['type']
+    QgsProcessingOutputRasterLayer.__overridden_methods__ = ['getColor', 'type']
     QgsProcessingOutputRasterLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -25,49 +25,49 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputMultipleLayers.typeName = staticmethod(QgsProcessingOutputMultipleLayers.typeName)
-    QgsProcessingOutputMultipleLayers.__overridden_methods__ = ['type', 'valueAsString']
+    QgsProcessingOutputMultipleLayers.__overridden_methods__ = ['type', 'getColor', 'valueAsString']
     QgsProcessingOutputMultipleLayers.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputHtml.typeName = staticmethod(QgsProcessingOutputHtml.typeName)
-    QgsProcessingOutputHtml.__overridden_methods__ = ['type', 'valueAsFormattedString']
+    QgsProcessingOutputHtml.__overridden_methods__ = ['type', 'getColor', 'valueAsFormattedString']
     QgsProcessingOutputHtml.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVariant.typeName = staticmethod(QgsProcessingOutputVariant.typeName)
-    QgsProcessingOutputVariant.__overridden_methods__ = ['type', 'valueAsString']
+    QgsProcessingOutputVariant.__overridden_methods__ = ['getColor', 'type', 'valueAsString']
     QgsProcessingOutputVariant.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputNumber.typeName = staticmethod(QgsProcessingOutputNumber.typeName)
-    QgsProcessingOutputNumber.__overridden_methods__ = ['type', 'valueAsString']
+    QgsProcessingOutputNumber.__overridden_methods__ = ['getColor', 'type', 'valueAsString']
     QgsProcessingOutputNumber.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputString.typeName = staticmethod(QgsProcessingOutputString.typeName)
-    QgsProcessingOutputString.__overridden_methods__ = ['type']
+    QgsProcessingOutputString.__overridden_methods__ = ['getColor', 'type']
     QgsProcessingOutputString.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputBoolean.typeName = staticmethod(QgsProcessingOutputBoolean.typeName)
-    QgsProcessingOutputBoolean.__overridden_methods__ = ['type', 'valueAsString']
+    QgsProcessingOutputBoolean.__overridden_methods__ = ['getColor', 'type', 'valueAsString']
     QgsProcessingOutputBoolean.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputFolder.typeName = staticmethod(QgsProcessingOutputFolder.typeName)
-    QgsProcessingOutputFolder.__overridden_methods__ = ['type', 'valueAsFormattedString']
+    QgsProcessingOutputFolder.__overridden_methods__ = ['type', 'getColor', 'valueAsFormattedString']
     QgsProcessingOutputFolder.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputFile.typeName = staticmethod(QgsProcessingOutputFile.typeName)
-    QgsProcessingOutputFile.__overridden_methods__ = ['type', 'valueAsFormattedString']
+    QgsProcessingOutputFile.__overridden_methods__ = ['type', 'getColor', 'valueAsFormattedString']
     QgsProcessingOutputFile.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -79,7 +79,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVectorTileLayer.typeName = staticmethod(QgsProcessingOutputVectorTileLayer.typeName)
-    QgsProcessingOutputVectorTileLayer.__overridden_methods__ = ['type']
+    QgsProcessingOutputVectorTileLayer.__overridden_methods__ = ['getColor', 'type']
     QgsProcessingOutputVectorTileLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
