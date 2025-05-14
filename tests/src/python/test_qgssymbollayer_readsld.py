@@ -628,12 +628,20 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         maplayer.loadSldStyle(file_path)
         marker = maplayer.renderer().symbol().symbolLayers()[0]
         self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
-        # import pdb; pdb.set_trace()
-        # raise Exception(marker)
         self.assertEqual(marker.path(), "https://example.com/image.png")
 
+    def test_read_QgsRasterMarkerSymbolLayer_local(self):
+        """Test reading raster markers"""
+        file_path = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-local.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(marker.path(), "QgsRasterMarkerSymbolLayer-local.gif")
+
     def test_read_QgsRasterMarkerSymbolLayer_embedded(self):
-        base64_data = "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
         file_path = os.path.join(
             TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-embedded.sld"
         )
@@ -641,7 +649,10 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         maplayer.loadSldStyle(file_path)
         marker = maplayer.renderer().symbol().symbolLayers()[0]
         self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
-        self.assertEqual(marker.path(), f"data:{base64_data}")
+        self.assertEqual(
+            marker.path(),
+            f"data:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+        )
 
 
 if __name__ == "__main__":

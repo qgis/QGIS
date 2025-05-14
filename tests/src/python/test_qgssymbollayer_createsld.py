@@ -18,13 +18,15 @@
 __author__ = "Andrea Aime"
 __date__ = "July 2016"
 __copyright__ = "(C) 2012, Andrea Aime"
-
+import pathlib
 import os
 
 from qgis.PyQt.QtCore import (
     QDir,
     QFile,
     QIODevice,
+    QFile,
+    QTextStream,
     QPointF,
     QSizeF,
     Qt,
@@ -268,7 +270,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
 
-    def testRasterMarkerRemoteUrl(self):
+    def testRasterMarker_remote(self):
         symbol = QgsRasterMarkerSymbolLayer(
             path="https://example.com/image.png",
         )
@@ -280,13 +282,35 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             .namedItem("xlink:href")
         )
         self.assertEqual("https://example.com/image.png", href_attr.nodeValue())
-        mime_elem = root.elementsByTagName("se:Format").item(0)
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
         self.assertEqual(
             mime_elem.text(),
-            "image/png",
+            "application/octet-stream",
         )
 
-    def testRasterMarkerDataUrl(self):
+    def testRasterMarker_local(self):
+        symbol = QgsRasterMarkerSymbolLayer(
+            path=f"{unitTestDataPath()}/symbol_layer/QgsRasterMarkerSymbolLayer-local.gif",
+        )
+        _, root = self.symbolToSld(symbol)
+
+        href_attr = (
+            root.elementsByTagName("se:OnlineResource")
+            .item(0)
+            .attributes()
+            .namedItem("xlink:href")
+        )
+        self.assertEqual(
+            f"{unitTestDataPath()}/symbol_layer/QgsRasterMarkerSymbolLayer-local.gif",
+            href_attr.nodeValue(),
+        )
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
+        self.assertEqual(
+            mime_elem.text(),
+            "image/gif",
+        )
+
+    def testRasterMarker_embedded(self):
 
         # a red 4x4 pixel GIF
         symbol = QgsRasterMarkerSymbolLayer(
@@ -302,12 +326,12 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # we expected a red 4x4 pixel PNG
         self.assertEqual(
             href_attr.nodeValue(),
-            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+            "data:image/gif;base64,R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
         )
-        mime_elem = root.elementsByTagName("se:Format").item(0)
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
         self.assertEqual(
             mime_elem.text(),
-            "image/png",
+            "image/gif",
         )
 
     def testSimpleLineHairline(self):
