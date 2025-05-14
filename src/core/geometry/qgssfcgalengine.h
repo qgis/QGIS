@@ -309,7 +309,6 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static bool isEmpty( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
-
     /**
      * Checks if \a geom is valid.
      *
@@ -484,6 +483,59 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param errorMsg Error message returned by SFGCAL
      */
     static bool covers( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate the convex hull of \a geom.
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom convexhull( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate the envelope (bounding box) of \a geom.
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom envelope( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate a buffer for the \a geom where all points are at \a distance from the original geometry.
+     * A negative distance shrinks the geometry rather than expanding it.
+     *
+     * \param geom geometry to perform the operation
+     * \param distance distance to move each point of the geometry
+     * \param segments the number of segments to use for approximating curved
+     * \param joinStyle the type of buffer to compute. Only round is supported.
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom offsetCurve( const sfcgal::geometry *geom, double distance, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate a 3D buffer for the \a geom where all points are at \a distance from the original geometry.
+     * A negative distance shrinks the geometry rather than expanding it.
+     * It is limited to Point and LineString.
+     *
+     * \param geom geometry to perform the operation
+     * \param radius the buffer radius
+     * \param segments the number of segments to use for approximating curved
+     * \param joinStyle3D the type of buffer to compute
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom buffer3D( const sfcgal::geometry *geom, double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate a 2D buffer for the \a geom where all points are at \a distance from the original geometry.
+     * A negative distance shrinks the geometry rather than expanding it.
+     *
+     * \param geom geometry to perform the operation
+     * \param radius the buffer radius
+     * \param segments the number of segments to use for approximating curved
+     * \param joinStyle the type of buffer to compute. Only round is supported.
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom buffer2D( const sfcgal::geometry *geom, double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg = nullptr );
 
 };
 
