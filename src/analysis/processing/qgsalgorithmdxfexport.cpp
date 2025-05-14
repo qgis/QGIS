@@ -53,7 +53,7 @@ QString QgsDxfExportAlgorithm::shortHelpString() const
 
 QString QgsDxfExportAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports layers to DXF file." );
+  return QObject::tr( "Exports layers to a DXF file." );
 }
 
 QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const

@@ -51,7 +51,7 @@ QString QgsApplyLayerStyleAlgorithm::shortHelpString() const
 
 QString QgsApplyLayerStyleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Applies to a layer a style defined as QML file." );
+  return QObject::tr( "Applies the style from a QML file to a layer." );
 }
 
 QgsApplyLayerStyleAlgorithm *QgsApplyLayerStyleAlgorithm::createInstance() const

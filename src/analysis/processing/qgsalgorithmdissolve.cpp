@@ -262,7 +262,7 @@ QString QgsDissolveAlgorithm::shortHelpString() const
 
 QString QgsDissolveAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Combines features of a vector layer into new features, based on common attributes or not." );
+  return QObject::tr( "Combines features of a vector layer into new features, optionally grouped by common attributes." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsDissolveAlgorithm::documentationFlags() const
@@ -365,7 +365,7 @@ QString QgsCollectAlgorithm::shortHelpString() const
 
 QString QgsCollectAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Collects geometries of a vector layer into new multipart geometries, based on common attributes or not" );
+  return QObject::tr( "Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes" );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsCollectAlgorithm::documentationFlags() const

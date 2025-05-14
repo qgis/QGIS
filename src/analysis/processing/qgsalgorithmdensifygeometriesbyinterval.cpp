@@ -56,7 +56,7 @@ QString QgsDensifyGeometriesByIntervalAlgorithm::shortHelpString() const
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a densified version of geometries by setting a maximum distance to segments." );
+  return QObject::tr( "Creates a densified version of geometries by setting a maximum distance for segments." );
 }
 
 QgsDensifyGeometriesByIntervalAlgorithm *QgsDensifyGeometriesByIntervalAlgorithm::createInstance() const

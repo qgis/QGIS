@@ -435,7 +435,7 @@ QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
 
 QString QgsCellStatisticsPercentileAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Returns the cell-wise percentile value of a stack of rasters and writes the results to an output raster." );
+  return QObject::tr( "Generates a raster containing the cell-wise percentile value of a stack of input rasters." );
 }
 
 QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::createInstance() const
@@ -583,8 +583,7 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the cell-wise percentrank value of a stack of rasters based on a single input value "
-                      "and writes them to an output raster." );
+  return QObject::tr( "Generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value." );
 }
 
 QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFromValueAlgorithm::createInstance() const
@@ -727,8 +726,7 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the cell-wise percentrank value of a stack of rasters based on an input value raster "
-                      "and writes them to an output raster." );
+  return QObject::tr( "Generates a raster containing the cell-wise percent rank value of a stack of input rasters based on an input value raster." );
 }
 
 QgsCellStatisticsPercentRankFromRasterAlgorithm *QgsCellStatisticsPercentRankFromRasterAlgorithm::createInstance() const
