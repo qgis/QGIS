@@ -107,14 +107,6 @@ QgsModelGraphicsView *QgsModelComponentGraphicItem::view()
   return qobject_cast<QgsModelGraphicsView *>( scene()->views().first() );
 }
 
-QgsModelGraphicsScene *QgsModelComponentGraphicItem::modelScene()
-{
-  if ( !scene() )
-    return nullptr;
-
-  return qobject_cast<QgsModelGraphicsScene *>( scene() );
-}
-
 QFont QgsModelComponentGraphicItem::font() const
 {
   return mFont;
