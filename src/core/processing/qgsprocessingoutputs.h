@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     /**
      * A fallback color to represent a processing output
      */
-    virtual QColor getColor() const { return QColor( 128, 128, 128 ); /* mid  gray */ };
+    virtual QColor getColor() const;
 
     /**
      * Unique output type name.
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     /**
      * A color to represent a vector layer output
      */
-    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 0, 255, 0 ); /* green */ };
 
     /**
      * Returns the type name for the output class.
