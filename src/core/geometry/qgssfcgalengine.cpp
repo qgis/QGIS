@@ -782,4 +782,44 @@ sfcgal::shared_geom QgsSfcgalEngine::buffer3D( const sfcgal::geometry *geom, dou
   return sfcgal::make_shared_geom( result );
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::extrude( const sfcgal::geometry *geom, const QgsPoint &extrusion, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
 
+  const double zFactor = extrusion.is3D() ? extrusion.z() : 0;
+  sfcgal_geometry_t *solid = sfcgal_geometry_extrude( geom, extrusion.x(), extrusion.y(), zFactor );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  // sfcgal_geometry_extrude returns a SOLID
+  // This is not handled by QGIS
+  // convert it to a PolyhedralSurface
+  sfcgal_geometry_t *polySurface = sfcgal_polyhedral_surface_create();
+  for ( unsigned int shellIdx = 0; shellIdx < sfcgal_solid_num_shells( solid ); ++shellIdx )
+  {
+    const sfcgal_geometry_t *shell = sfcgal_solid_shell_n( solid, shellIdx );
+    for ( unsigned int polyIdx = 0; polyIdx < sfcgal_polyhedral_surface_num_patches( shell ); ++polyIdx )
+    {
+      const sfcgal_geometry_t *patch = sfcgal_polyhedral_surface_patch_n( shell, polyIdx );
+      sfcgal_polyhedral_surface_add_patch( polySurface, sfcgal_geometry_clone( patch ) );
+    }
+  }
+
+  sfcgal_geometry_delete( solid );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_geom( polySurface );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, double tolerance, bool preserveTopology, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = sfcgal_geometry_simplify( geom, tolerance, preserveTopology );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_geom( result );
+}

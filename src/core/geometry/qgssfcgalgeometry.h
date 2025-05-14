@@ -252,6 +252,24 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      */
     QgsSfcgalGeometry *buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const;
 
+    /**
+     * Simplifies a geometry using the CGAL algorithm
+     *
+     * \param tolerance The distance (in geometry unit) threshold
+     * \param preserveTopology Whether to preserve topology during simplification
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *simplify( double tolerance, bool preserveTopology, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Calculate an extrusion of the original geometry.
+     * If the operation fails, a null pointer is returned.
+     *
+     * \param extrusion extrusion vector (2D or 3D)
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *extrude( const QgsPoint &extrusion, QString *errorMsg = nullptr ) const;
+
 #ifndef SIP_RUN
     /**
      * Cast the \a geom to the exact underlying QGIS geometry.
