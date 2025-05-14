@@ -64,11 +64,6 @@ void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void QgsModelGraphicsScene::updateBounds()
 {
-  setSceneRect( modelBounds( SCENE_COMPONENT_MARGIN ) );
-}
-
-QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
-{
   //start with an empty rectangle
   QRectF bounds;
 
@@ -81,12 +76,12 @@ QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
       bounds = bounds.united( componentItem->sceneBoundingRect() );
   }
 
-  if ( bounds.isValid() && margin > 0.0 )
+  if ( bounds.isValid() )
   {
-    bounds.adjust( -margin, -margin, margin, margin );
+    bounds.adjust( -SCENE_COMPONENT_MARGIN, -SCENE_COMPONENT_MARGIN, SCENE_COMPONENT_MARGIN, SCENE_COMPONENT_MARGIN );
   }
 
-  return bounds;
+  setSceneRect( bounds );
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
