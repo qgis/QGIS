@@ -464,7 +464,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * A color to represent the default parameter
      */
-    virtual QColor getColor() const { return QColor( 128, 128, 128 ); /* mid gray */ }
+    virtual QColor getColor() const;
 
     /**
      * Creates a clone of the parameter definition.
@@ -1791,7 +1791,7 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
     /**
      * A color to represent a boolean parameter
      */
-    virtual QColor getColor() const override { return QColor( 51, 201, 28 ); /* green */ };
+    QColor getColor() const override { return QColor( 51, 201, 28 ); /* green */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -1826,7 +1826,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     /**
      * A color to represent a crs parameter
      */
-    virtual QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
+    QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -1864,7 +1864,7 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
     /**
      * A color to represent an extent parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -1912,7 +1912,7 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
     /**
      * A color to represent a point parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
 
     /**
@@ -1953,7 +1953,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
     /**
      * A color to represent a geometry parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -2028,7 +2028,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
     /**
      * A color to represent a file parameter
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -2132,7 +2132,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
     /**
      * A color to represent a mtrix parameter
      */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
@@ -2217,7 +2217,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     /**
      * A color to represent a multiple layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
+    QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -2314,7 +2314,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
     /**
     * A color to represent a number parameter
     */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
@@ -2417,7 +2417,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
     /**
     * A color to represent a color parameter
     */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2659,7 +2659,7 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
     /**
     * A color to represent a duration parameter
     */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterDuration *clone() const override SIP_FACTORY;
 
@@ -2718,7 +2718,7 @@ class CORE_EXPORT QgsProcessingParameterScale : public QgsProcessingParameterNum
     /**
     * A color to represent a scale parameter
     */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterScale *clone() const override SIP_FACTORY;
 
@@ -2757,7 +2757,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
     /**
     * A color to represent a range parameter
     */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
@@ -2808,7 +2808,7 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
     /**
      * A color to represent a raster layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
+    QColor getColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -2862,7 +2862,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
     /**
      * A color to represent an enum parameter
      */
-    virtual QColor getColor() const override { return QColor( 128, 68, 201 ); /* purple */ };
+    QColor getColor() const override { return QColor( 128, 68, 201 ); /* purple */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -2971,7 +2971,7 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
     /**
      * A color to represent a string parameter
      */
-    virtual QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
+    QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3067,7 +3067,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
     /**
      * A color to represent an expression parameter
      */
-    virtual QColor getColor() const override { return QColor( 176, 76, 158 ); /* dark pink */ };
+    QColor getColor() const override { return QColor( 176, 76, 158 ); /* dark pink */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3177,7 +3177,7 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     /**
      * A color to represent a vector layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
 
     /**
@@ -3224,7 +3224,7 @@ class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParamete
     /**
      * A color to represent a mesh layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3263,7 +3263,7 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
     /**
      * A color to represent a map layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
+    QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3415,7 +3415,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
     /**
      * A color to represent a feature source parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3584,7 +3584,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     /**
      * A color to represent a feature sink parameter
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3686,7 +3686,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     /**
      * A color to represent a vector destination parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3765,7 +3765,7 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     /**
      * A color to represent a raster destination parameter
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3831,7 +3831,7 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
     /**
      * A color to represent a file destination parameter
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3893,7 +3893,7 @@ class CORE_EXPORT QgsProcessingParameterFolderDestination : public QgsProcessing
     /**
      * A color to represent a folder destination parameter
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -4125,7 +4125,7 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
     /**
      * A color to represent a color parameter
      */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
@@ -4344,7 +4344,7 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
     /**
      * A color to represent a datetime parameter
      */
-    virtual QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
+    QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -4668,7 +4668,7 @@ class CORE_EXPORT QgsProcessingParameterPointCloudLayer : public QgsProcessingPa
     /**
      * A color to represent a point cloud layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -4708,7 +4708,7 @@ class CORE_EXPORT QgsProcessingParameterAnnotationLayer : public QgsProcessingPa
     /**
      * A color to represent an annotation layer parameter
      */
-    virtual QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
+    QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -4752,7 +4752,7 @@ class CORE_EXPORT QgsProcessingParameterPointCloudDestination : public QgsProces
     /**
      * A color to represent a point cloud destination parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -4893,7 +4893,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileDestination : public QgsProces
     /**
      * A color to represent a vector tile destination parameter
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 
     /**
      * Returns the type name for the parameter class.

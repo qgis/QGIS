@@ -48,6 +48,11 @@ QString QgsProcessingOutputDefinition::valueAsFormattedString( const QVariant &v
   return valueAsString( value, context, ok );
 }
 
+QColor QgsProcessingOutputDefinition::getColor() const
+{
+  return QColor( 128, 128, 128 ); /* mid  gray */
+};
+
 QgsProcessingOutputVectorLayer::QgsProcessingOutputVectorLayer( const QString &name, const QString &description, Qgis::ProcessingSourceType type )
   : QgsProcessingOutputDefinition( name, description )
   , mDataType( type )
@@ -62,6 +67,7 @@ void QgsProcessingOutputVectorLayer::setDataType( Qgis::ProcessingSourceType typ
 {
   mDataType = type;
 }
+
 
 QgsProcessingOutputRasterLayer::QgsProcessingOutputRasterLayer( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )

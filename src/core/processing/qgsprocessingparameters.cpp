@@ -66,7 +66,6 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
   return true;
 }
 
-
 //
 // QgsProcessingOutputLayerDefinition
 //
@@ -3015,6 +3014,11 @@ QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &nam
 QgsProcessingParameterDefinition *QgsProcessingParameterBoolean::clone() const
 {
   return new QgsProcessingParameterBoolean( *this );
+}
+
+QColor QgsProcessingParameterDefinition::getColor() const
+{
+  return QColor( 128, 128, 128 ); /* mid gray */
 }
 
 QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val, QgsProcessingContext & ) const

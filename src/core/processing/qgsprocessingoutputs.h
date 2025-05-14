@@ -89,7 +89,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     /**
      * A fallback color to represent a processing output
      */
-    virtual QColor getColor() const { return QColor( 128, 128, 128 ); /* mid  gray */ };
+    virtual QColor getColor() const;
 
     /**
      * Unique output type name.
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     /**
      * A color to represent a vector layer ouput
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 0, 255, 0 ); /* green */ };
 
     /**
      * Returns the type name for the output class.
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
     /**
      * A color to represent a raster layer output
      */
-    virtual QColor getColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
+    QColor getColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
 };
 
 /**
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
     /**
      * A color to represent a multiple layer output
      */
-    virtual QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
+    QColor getColor() const override { return QColor( 237, 142, 0 ); /* orange */ };
 };
 
 /**
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
     /**
      * A color to represent an HTML output
      */
-    virtual QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
+    QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
 };
 
 
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
     /**
     * A color to represent a number output
     */
-    virtual QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
+    QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
     /**
      * Returns the type name for the output class.
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
     /**
      * A color to represent a string output
      */
-    virtual QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
+    QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
 };
 
 /**
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
     /**
      * A color to represent a boolean output
      */
-    virtual QColor getColor() const override { return QColor( 51, 201, 28 ); /* green */ };
+    QColor getColor() const override { return QColor( 51, 201, 28 ); /* green */ };
 
 
     /**
@@ -500,7 +500,7 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
     /**
      * A color to represent a folder output
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 /**
@@ -527,7 +527,7 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
     /**
      * A color to represent a file output
      */
-    virtual QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
+    QColor getColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 /**
@@ -577,7 +577,7 @@ class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutpu
     /**
      * A color to represent a vector tile layer output
      */
-    virtual QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
+    QColor getColor() const override { return QColor( 180, 180, 0 ); /* greenish yellow */ };
 };
 
 #endif // QGSPROCESSINGOUTPUTS_H

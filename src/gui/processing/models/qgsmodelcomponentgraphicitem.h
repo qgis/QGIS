@@ -139,9 +139,9 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
 
-    virtual QColor getLinkColor( Qt::Edge edge, int index );
-
 #ifndef SIP_RUN
+
+    virtual QColor getLinkColor( Qt::Edge edge, int index );
 
     /**
      * Shows a preview of setting a new \a rect for the item.

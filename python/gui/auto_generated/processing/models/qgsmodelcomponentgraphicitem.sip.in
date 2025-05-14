@@ -114,8 +114,6 @@ Sets a new scene ``rect`` for the item.
 
     virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
 
-    virtual QColor getLinkColor( Qt::Edge edge, int index );
-
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );

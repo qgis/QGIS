@@ -69,6 +69,7 @@ Constructor for QgsProcessingOutputDefinition.
 %Docstring
 A fallback color to represent a processing output
 %End
+
     virtual QString type() const = 0;
 %Docstring
 Unique output type name.
