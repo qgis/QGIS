@@ -241,13 +241,11 @@ class ModelerDialog(QgsModelDesignerDialog):
             )
             self.loadModel(filename)
 
-    def repaintModel(self, showControls=True, initialPaint=False):
-        old_viewport_rect = (
-            self.view().mapToScene(self.view().viewport().rect()).boundingRect()
+    def repaintModel(self, showControls=True):
+        old_viewport_center = self.view().mapToScene(
+            self.view().viewport().rect().center()
         )
-
         scene = ModelerScene(self)
-
         if not showControls:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
 
@@ -261,10 +259,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setModelScene(scene)
         # create items later that setModelScene to setup link to messageBar to the scene
         scene.createItems(self.model(), context)
+        scene.updateBounds()
 
-        if initialPaint == False:
-            # Restaure the previous viewport rect so the view don't jump around
-            self.view().fitInView(old_viewport_rect, Qt.AspectRatioMode.KeepAspectRatio)
+        self.view().centerOn(old_viewport_center)
 
     def create_widget_context(self):
         """

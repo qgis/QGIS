@@ -85,7 +85,7 @@ Raise, unminimize and activate this window.
 
   protected:
 
-    virtual void repaintModel( bool showControls = true, bool initialPaint = false ) = 0;
+    virtual void repaintModel( bool showControls = true ) = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
 
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
