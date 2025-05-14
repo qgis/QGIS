@@ -3081,7 +3081,11 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element 
 
   QString url = onlineResElem.attribute( "href", "" );
 
+  // transform regular data uris to QGIS's data uris
+  url.replace(QRegularExpression( QStringLiteral("^data:([^;]*;base64,)?(.*)$") ), QStringLiteral("data:\\2") );
+
   QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
+
   // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
   return m;
 }
