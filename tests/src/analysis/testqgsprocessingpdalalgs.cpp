@@ -772,6 +772,7 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   const QString pointCloudFileName = QString( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las";
   const QFileInfo pointCloudFileInfo( pointCloudFileName );
   const QString pointCloudLayerPath = pointCloudFileInfo.filePath();
+  const QString copcIndexFileName = pointCloudFileInfo.absolutePath() + "/" + pointCloudFileInfo.completeBaseName() + ".copc.laz";
 
   QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportvector" ) ) ) );
 
@@ -782,10 +783,13 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
 
   // generate index for use in algorithm
   QgsPointCloudLayer *lyr = new QgsPointCloudLayer( pointCloudLayerPath, "layer", "pdal" );
-  lyr->dataProvider()->generateIndex();
-  QThread::sleep( 3 );
 
-  QVERIFY( lyr->dataProvider()->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed );
+  //wait for index to be generated
+  while ( !QFileInfo::exists( copcIndexFileName ) )
+  {
+    QThread::sleep( 1 );
+  }
+  QVERIFY( QFileInfo::exists( copcIndexFileName ) );
 
   const QString outputFile = QDir::tempPath() + "/points.gpkg";
 
@@ -794,8 +798,9 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( pointCloudFileName ) << QStringLiteral( "--output=%1" ).arg( outputFile ) );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( copcIndexFileName ) << QStringLiteral( "--output=%1" ).arg( outputFile ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
+
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
 #include "testqgsprocessingpdalalgs.moc"
