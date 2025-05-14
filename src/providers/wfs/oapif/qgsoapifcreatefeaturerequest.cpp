@@ -61,7 +61,7 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
   QString location;
   for ( const auto &headerKeyValue : mResponseHeaders )
   {
-    if ( headerKeyValue.first == QByteArray( "Location" ) )
+    if ( headerKeyValue.first.compare( QByteArray( "Location" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
       location = QString::fromUtf8( headerKeyValue.second );
       break;
