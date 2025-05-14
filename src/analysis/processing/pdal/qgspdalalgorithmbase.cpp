@@ -293,18 +293,27 @@ QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVar
 {
   QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
 
-  if ( !layer )
+  // if layer or its data provider are empty return nullptr
+  if ( !layer || !layer->dataProvider() )
     return nullptr;
 
+  // if COPC provider, return as it is
   if ( layer->dataProvider()->name() == QStringLiteral( "copc" ) )
   {
     return layer;
   }
 
-  const QString copcFileName = QgsPdalAlgorithmBase::copcIndexFile( layer->source() );
-  const QFileInfo fiCopcFile( copcFileName );
+  // if source is remote file, use it as it is
+  const QUrl url = QUrl( layer->source() );
+  if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
+  {
+    return layer;
+  }
 
-  if ( fiCopcFile.exists() )
+  // for local files try to find COPC index file
+  const QString copcFileName = QgsPdalAlgorithmBase::copcIndexFile( layer->source() );
+
+  if ( QFileInfo::exists( copcFileName ) )
   {
     QgsPointCloudLayer *copcLayer = new QgsPointCloudLayer( copcFileName, layer->name(), "copc" );
     if ( copcLayer && copcLayer->isValid() )
