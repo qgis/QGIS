@@ -107,6 +107,7 @@ QgsFields QgsAddIncrementalFieldAlgorithm::outputFields( const QgsFields &inputF
 
 bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   mStartValue = parameterAsInt( parameters, QStringLiteral( "START" ), context );
   mValue = mStartValue;
   mModulusValue = parameterAsInt( parameters, QStringLiteral( "MODULUS" ), context );
@@ -116,6 +117,11 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
   mSortExpressionString = parameterAsExpression( parameters, QStringLiteral( "SORT_EXPRESSION" ), context );
   mSortAscending = parameterAsBoolean( parameters, QStringLiteral( "SORT_ASCENDING" ), context );
   mSortNullsFirst = parameterAsBoolean( parameters, QStringLiteral( "SORT_NULLS_FIRST" ), context );
+
+  if ( source->fields().lookupField( mFieldName ) >= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "A field with the same name (%1) already exists" ).arg( mFieldName ) );
+  }
 
   return true;
 }
