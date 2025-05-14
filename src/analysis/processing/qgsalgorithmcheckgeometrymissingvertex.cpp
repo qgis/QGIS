@@ -58,7 +58,7 @@ QString QgsGeometryCheckMissingVertexAlgorithm::groupId() const
 QString QgsGeometryCheckMissingVertexAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm checks for missing vertices along polygon borders.\n"
-                      "To be topologically correct, a vertex at the junction of two polygons must be present on both polygons."
+                      "To be topologically correct, a vertex at the junction of two polygons must be present on both polygons. "
                       "Missing vertices are errors." );
 }
 
