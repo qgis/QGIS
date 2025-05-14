@@ -92,6 +92,8 @@ class TestQgsSfcgal : public QgsTest
     void difference3d();
     void buffer3DCheck();
     void buffer2DCheck();
+    void extrude();
+    void simplify();
 
   private:
     //! Must be called before each render test
@@ -954,6 +956,35 @@ void TestQgsSfcgal::buffer2DCheck()
   bool isOK = QgsSfcgalEngine::covers( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer2D->sfcgalGeometry().get(), &errorMsg );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QVERIFY2( isOK, "buffer2D geom does not match expected from file" );
+}
+
+void TestQgsSfcgal::extrude()
+{
+  QString errorMsg;
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalPolygonA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
+  const QgsPoint extrusion( 0, 0, 30 );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalExtrusion( sfcgalPolygonA->extrude( extrusion, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  std::unique_ptr<QgsSfcgalGeometry> expectedExtrusion = openWktFile( "extrude_polygon_a.wkt", &errorMsg );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QVERIFY2( QgsSfcgalEngine::covers( expectedExtrusion->sfcgalGeometry().get(), sfcgalExtrusion->sfcgalGeometry().get() ), "extrusion geom does not match expected from file" );
+}
+
+void TestQgsSfcgal::simplify()
+{
+  QString errorMsg;
+  std::unique_ptr<QgsAbstractGeometry> emptyGeom( nullptr );
+
+  QString wkt( "LINESTRING(1 4, 4 9, 4 12, 4 16, 2 19, -4 20)" );
+
+  QgsSfcgalGeometry sfcgalLinestring2D( emptyGeom, QgsSfcgalEngine::fromWkt( wkt, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty() && sfcgalLinestring2D.sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( sfcgalLinestring2D.wkbType(), Qgis::WkbType::LineString );
+
+  std::unique_ptr<QgsSfcgalGeometry> simplifiedGeom( sfcgalLinestring2D.simplify( 5, false, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty() && simplifiedGeom->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( simplifiedGeom->asWkt( 0 ), "LINESTRING (1 4,2 19,-4 20)" );
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )
