@@ -298,6 +298,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
 
+    static constexpr int SCENE_COMPONENT_MARGIN = 50;
+
     QgsMessageBar *mMessageBar = nullptr;
 };
 

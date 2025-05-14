@@ -242,8 +242,9 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True, initialPaint=False):
-        _oldViewportPolygon = self.view().mapToScene(self.view().viewport().rect())
-        oldViewportRect = _oldViewportPolygon.boundingRect()
+        old_viewport_rect = (
+            self.view().mapToScene(self.view().viewport().rect()).boundingRect()
+        )
 
         scene = ModelerScene(self)
 
@@ -262,7 +263,8 @@ class ModelerDialog(QgsModelDesignerDialog):
         scene.createItems(self.model(), context)
 
         if initialPaint == False:
-            self.view().fitInView(oldViewportRect, Qt.AspectRatioMode.KeepAspectRatio)
+            # Restaure the previous viewport rect so the view don't jump around
+            self.view().fitInView(old_viewport_rect, Qt.AspectRatioMode.KeepAspectRatio)
 
     def create_widget_context(self):
         """
