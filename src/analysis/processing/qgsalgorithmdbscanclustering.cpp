@@ -79,11 +79,6 @@ QString QgsDbscanClusteringAlgorithm::shortHelpString() const
                       "The algorithm requires two parameters, a minimum cluster size (“minPts”), and the maximum distance allowed between clustered points (“eps”)." );
 }
 
-QString QgsDbscanClusteringAlgorithm::shortDescription() const
-{
-  return QObject::tr( "Clusters point features based on a 2D implementation of Density-based spatial clustering of applications with noise (DBSCAN) algorithm." );
-}
-
 QgsDbscanClusteringAlgorithm *QgsDbscanClusteringAlgorithm::createInstance() const
 {
   return new QgsDbscanClusteringAlgorithm();
