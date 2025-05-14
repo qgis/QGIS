@@ -537,6 +537,24 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static sfcgal::shared_geom buffer2D( const sfcgal::geometry *geom, double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg = nullptr );
 
+    /**
+     * Extrude the \a geom by vector \a extrusion.
+     *
+     * \param geom geometry to perform the operation
+     * \param extrusion translation vector (2D or 3D)
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom extrude( const sfcgal::geometry *geom, const QgsPoint &extrusion, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate the simplified version of \a geom.
+     *
+     * \param geom geometry to perform the operation
+     * \param tolerance The distance (in geometry unit) threshold
+     * \param preserveTopology Whether to preserve topology during simplification
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom simplify( const sfcgal::geometry *geom, double tolerance, bool preserveTopology, QString *errorMsg = nullptr );
 };
 
 /// @cond PRIVATE

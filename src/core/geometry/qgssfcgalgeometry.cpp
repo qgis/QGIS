@@ -324,7 +324,11 @@ QgsAbstractGeometry *QgsSfcgalGeometry::snappedToGrid( double hSpacing, double v
 
 QgsAbstractGeometry *QgsSfcgalGeometry::simplifyByDistance( double tolerance ) const
 {
-  return mQgsGeom->simplifyByDistance( tolerance );
+  QString errorMsg; // used to retrieve failure messages if any
+  QgsAbstractGeometry *result = simplify( tolerance, false, &errorMsg );
+  CHECK_SUCCESS_LOG( &errorMsg, nullptr );
+
+  return result;
 }
 
 bool QgsSfcgalGeometry::removeDuplicateNodes( double, bool )
@@ -618,6 +622,22 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::buffer2D( double radius, int segments, Qgi
   sfcgal::errorHandler()->clearText( errorMsg );
 
   sfcgal::shared_geom result = QgsSfcgalEngine::buffer2D( mSfcgalGeom.get(), radius, segments, joinStyle, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+}
+
+QgsSfcgalGeometry *QgsSfcgalGeometry::simplify( double tolerance, bool preserveTopology, QString *errorMsg ) const
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::simplify( mSfcgalGeom.get(), tolerance, preserveTopology, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+}
+
+QgsSfcgalGeometry *QgsSfcgalGeometry::extrude( const QgsPoint &extrusion, QString *errorMsg ) const
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::extrude( mSfcgalGeom.get(), extrusion, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
   return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
 }
