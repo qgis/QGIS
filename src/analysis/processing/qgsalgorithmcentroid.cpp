@@ -66,7 +66,7 @@ QString QgsCentroidAlgorithm::shortHelpString() const
 
 QString QgsCentroidAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a new point layer, with points representing the centroid of the geometries in an input layer." );
+  return QObject::tr( "Creates a new point layer with points representing the centroid of the geometries in an input layer." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsCentroidAlgorithm::documentationFlags() const

@@ -58,7 +58,7 @@ QString QgsConstantRasterAlgorithm::shortHelpString() const
 
 QString QgsConstantRasterAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Generates raster layer for given extent and cell size filled with the specified value." );
+  return QObject::tr( "Generates a raster layer for a given extent and cell size filled with a single constant value." );
 }
 
 QgsConstantRasterAlgorithm *QgsConstantRasterAlgorithm::createInstance() const

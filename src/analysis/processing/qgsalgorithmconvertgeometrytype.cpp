@@ -54,7 +54,7 @@ QString QgsConvertGeometryTypeAlgorithm::shortHelpString() const
 
 QString QgsConvertGeometryTypeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Generates a new layer based on an existing one, with a different type of geometry." );
+  return QObject::tr( "Converts the geometries from a vector layer to a different geometry type." );
 }
 
 QgsConvertGeometryTypeAlgorithm *QgsConvertGeometryTypeAlgorithm::createInstance() const

@@ -63,7 +63,7 @@ QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Geocodes features in a vector layer using the <a href=\"#\">Nominatim</a> service." );
+  return QObject::tr( "Geocodes features in a vector layer using the Nominatim service." );
 }
 
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

@@ -45,7 +45,7 @@ QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
 
 QString QgsAddIncrementalFieldAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Adds a new integer field to a vector layer, with a sequential value for each feature,\n\n"
+  return QObject::tr( "Adds a new integer field to a vector layer, with a sequential value for each feature, "
                       "usable as a unique ID for features in the layer." );
 }
 
