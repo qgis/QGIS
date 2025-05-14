@@ -188,14 +188,13 @@ void QgsFetchedContent::taskCompleted()
         }
       }
 
-      QTemporaryFile *tf = new QTemporaryFile( extension.isEmpty() ? QString( "XXXXXX" ) :
-          QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
-      mFile = tf;
-      tf->open();
+      mFile = std::make_unique<QTemporaryFile>( extension.isEmpty() ? QString( "XXXXXX" ) :
+              QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
+      mFile->open();
       mFile->write( reply->readAll() );
       // Qt docs notes that on some system if fileName is not called before close, file might get deleted
-      mFilePath = tf->fileName();
-      tf->close();
+      mFilePath = mFile->fileName();
+      mFile->close();
       mStatus = QgsFetchedContent::Finished;
     }
     else
