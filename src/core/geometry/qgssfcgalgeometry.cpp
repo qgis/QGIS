@@ -587,3 +587,37 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::triangulate( QString *errorMsg ) const
   CHECK_SUCCESS( errorMsg, nullptr );
   return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
 }
+
+QgsSfcgalGeometry *QgsSfcgalGeometry::convexhull( QString *errorMsg ) const
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::convexhull( mSfcgalGeom.get(), errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+}
+
+QgsSfcgalGeometry *QgsSfcgalGeometry::envelope( QString *errorMsg ) const
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::envelope( mSfcgalGeom.get(), errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+}
+
+QgsSfcgalGeometry *QgsSfcgalGeometry::buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg ) const
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+
+  sfcgal::shared_geom result = QgsSfcgalEngine::buffer3D( mSfcgalGeom.get(), radius, segments, joinStyle3D, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+}
+
+QgsSfcgalGeometry *QgsSfcgalGeometry::buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+
+  sfcgal::shared_geom result = QgsSfcgalEngine::buffer2D( mSfcgalGeom.get(), radius, segments, joinStyle, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+}
