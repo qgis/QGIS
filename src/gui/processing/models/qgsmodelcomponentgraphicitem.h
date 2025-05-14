@@ -18,7 +18,6 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgsmodelgraphicsscene.h"
 #include "qgsprocessingcontext.h"
 #include <QGraphicsObject>
 #include <QFont>

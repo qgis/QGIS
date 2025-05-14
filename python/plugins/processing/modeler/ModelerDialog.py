@@ -28,7 +28,6 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDir,
     QRectF,
-    Qt,
     QPoint,
     QPointF,
     pyqtSignal,
