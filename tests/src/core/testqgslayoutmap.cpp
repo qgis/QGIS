@@ -37,6 +37,8 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgslabelingresults.h"
 #include "qgslayoutexporter.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -81,6 +83,7 @@ class TestQgsLayoutMap : public QgsTest
     void testTemporal();
     void testLabelResults();
     void testZRange();
+    void testAnchoredRotatedMap();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -2075,6 +2078,36 @@ void TestQgsLayoutMap::testZRange()
   settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
   QCOMPARE( settings.zRange().lower(), 17.0 );
   QCOMPARE( settings.zRange().upper(), 47.0 );
+}
+
+void TestQgsLayoutMap::testAnchoredRotatedMap() // Test if https://github.com/qgis/QGIS/issues/61347 is fixed
+{
+  QgsPrintLayout l( QgsProject::instance() );
+
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+
+  QgsLayoutAtlas *atlas = l.atlas();
+  atlas->setCoverageLayer( mPolysLayer );
+  atlas->setEnabled( true );
+  map->setAtlasDriven( true );
+  map->setMapRotation( 60 );
+  QgsLayoutItem::ReferencePoint rPoint = QgsLayoutItem::ReferencePoint::LowerRight;
+  map->setReferencePoint( rPoint );
+  QPointF originPoint = map->positionAtReferencePoint( rPoint );
+
+  atlas->next();
+  atlas->next();
+  atlas->next();
+
+  QPointF lastPoint = map->positionAtReferencePoint( rPoint );
+
+  QCOMPARE( originPoint, lastPoint );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )
