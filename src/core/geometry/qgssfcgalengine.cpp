@@ -721,3 +721,65 @@ bool QgsSfcgalEngine::covers( const sfcgal::geometry *geomA, const sfcgal::geome
   CHECK_SUCCESS( errorMsg, false );
   return static_cast<bool>( res );
 }
+
+sfcgal::shared_geom QgsSfcgalEngine::envelope( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  sfcgal::shared_geom out = lambda_geom_to_geom( sfcgal_geometry_envelope, sfcgal_geometry_envelope_3d, geom, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return out;
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::convexhull( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  sfcgal::shared_geom out = lambda_geom_to_geom( sfcgal_geometry_convexhull, sfcgal_geometry_convexhull_3d, geom, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return out;
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::offsetCurve( const sfcgal::geometry *geom, double distance, int, Qgis::JoinStyle, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = nullptr;
+  result = sfcgal_geometry_offset_polygon( geom, distance );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_geom( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::buffer2D( const sfcgal::geometry *geom, double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg )
+{
+  if ( joinStyle != Qgis::JoinStyle::Round )
+    qWarning() << ( QStringLiteral( "Buffer not implemented for %1! Defaulting to round join." ) );
+
+  return offsetCurve( geom, radius, segments, joinStyle, errorMsg );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::buffer3D( const sfcgal::geometry *geom, double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal_buffer3d_type_t buffer_type;
+  switch ( joinStyle3D )
+  {
+    case Qgis::JoinStyle3D::Flat:
+      buffer_type = sfcgal_buffer3d_type_t::SFCGAL_BUFFER3D_FLAT;
+      break;
+    case Qgis::JoinStyle3D::Round:
+      buffer_type = sfcgal_buffer3d_type_t::SFCGAL_BUFFER3D_ROUND;
+      break;
+    case Qgis::JoinStyle3D::CylSphere:
+      buffer_type = sfcgal_buffer3d_type_t::SFCGAL_BUFFER3D_CYLSPHERE;
+      break;
+  }
+
+  sfcgal::geometry *result = sfcgal_geometry_buffer3d( geom, radius, segments, buffer_type );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_geom( result );
+}
+
+

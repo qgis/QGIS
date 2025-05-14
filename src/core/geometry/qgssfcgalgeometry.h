@@ -215,6 +215,43 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      */
     QgsSfcgalGeometry *triangulate( QString *errorMsg = nullptr ) const;
 
+    /**
+     * Calculate the convex hull (bounding box).
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *convexhull( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Calculate the envelope (bounding box).
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *envelope( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Calculate a 3D buffer where all points are at \a distance from the original geometry.
+     * A negative distance shrinks the geometry rather than expanding it.
+     * It is limited to Point and LineString.
+     * If the operation fails, a null pointer is returned.
+     *
+     * \param radius the buffer radius
+     * \param segments the number of segments to use for approximating curved
+     * \param joinStyle3D the type of buffer to compute
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Calculate a 2D buffer where all points are at \a distance from the original geometry.
+     * A negative distance shrinks the geometry rather than expanding it.
+     * If the operation fails, a null pointer is returned.
+     *
+     * \param radius the buffer radius
+     * \param segments the number of segments to use for approximating curved
+     * \param joinStyle the type of buffer to compute. Only round is supported.
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const;
+
 #ifndef SIP_RUN
     /**
      * Cast the \a geom to the exact underlying QGIS geometry.

@@ -90,6 +90,8 @@ class TestQgsSfcgal : public QgsTest
     void differenceCheck1();
     void differenceCheck2();
     void difference3d();
+    void buffer3DCheck();
+    void buffer2DCheck();
 
   private:
     //! Must be called before each render test
@@ -898,6 +900,60 @@ void TestQgsSfcgal::difference3d()
 
   // 4th: check coverage between actual and expected geometry
   QVERIFY2( QgsSfcgalEngine::covers( readGeom->sfcgalGeometry().get(), scDiffGeom->sfcgalGeometry().get() ), "diff geom does not match expected from file" );
+}
+
+void TestQgsSfcgal::buffer3DCheck()
+{
+  QString errorMsg;
+  std::unique_ptr<QgsAbstractGeometry> emptyGeom( nullptr );
+  QString sfcgalLine2DWkt = "LINESTRING(117.623198 35.198654, 117.581274 35.198654, 117.078178 35.324427, "
+                            "116.868555 35.534051, 116.617007 35.869448, 116.491233 35.953297, "
+                            "116.155836 36.288694, 116.071987 36.372544, 115.443117 36.749865, "
+                            "114.814247 37.043338, 114.311152 37.169112)";
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalLine2D = std::make_unique<QgsSfcgalGeometry>( emptyGeom, QgsSfcgalEngine::fromWkt( sfcgalLine2DWkt, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalBuffer3D( sfcgalLine2D->buffer3D( 20.0, 7, Qgis::JoinStyle3D::Round, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty() && sfcgalBuffer3D != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  { // read expected from WKT dump with CGAL formalism
+    std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( "buffer3d_linestring.wkt", &errorMsg );
+    QVERIFY2( errorMsg.isEmpty() && expectedBuffer->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+    bool isOK = QgsSfcgalEngine::covers( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( isOK, "buffer3D geom does not match expected from file" );
+  }
+
+  { // read expected from WKT dump with 2 decimals
+    std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( "buffer3d_linestring_2_deci.wkt", &errorMsg );
+    QVERIFY2( errorMsg.isEmpty() && expectedBuffer->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+    // cover fails with decimal dump
+    bool isOK = QgsSfcgalEngine::covers( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( !isOK, "buffer3D geom matches expected from file, but should not!" );
+
+    // isEquals passes with decimal dump
+    isOK = QgsSfcgalEngine::isEqual( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.001, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( isOK, "buffer3D geom does not match expected from file" );
+  }
+}
+
+void TestQgsSfcgal::buffer2DCheck()
+{
+  QString errorMsg;
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalLine2D = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalBuffer2D( sfcgalLine2D->buffer2D( 20.0, 7, Qgis::JoinStyle::Round, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty() && sfcgalBuffer2D != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  std::unique_ptr<QgsSfcgalGeometry> expectedBuffer = openWktFile( "buffer2d_linestring.wkt", &errorMsg );
+  QVERIFY2( errorMsg.isEmpty() && expectedBuffer->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  bool isOK = QgsSfcgalEngine::covers( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer2D->sfcgalGeometry().get(), &errorMsg );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QVERIFY2( isOK, "buffer2D geom does not match expected from file" );
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )

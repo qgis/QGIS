@@ -3854,6 +3854,40 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 """
 # --
 Qgis.JoinStyle.baseClass = Qgis
+QgsGeometry.JoinStyle3D = Qgis.JoinStyle3D
+# monkey patching scoped based enum
+QgsGeometry.JoinStyle3DRound = Qgis.JoinStyle3D.Round
+QgsGeometry.JoinStyle3D.JoinStyle3DRound = Qgis.JoinStyle3D.Round
+QgsGeometry.JoinStyle3DRound.is_monkey_patched = True
+QgsGeometry.JoinStyle3DRound.__doc__ = "Smooth, rounded buffer around the input geometry"
+QgsGeometry.JoinStyle3DFlat = Qgis.JoinStyle3D.Flat
+QgsGeometry.JoinStyle3D.JoinStyle3DFlat = Qgis.JoinStyle3D.Flat
+QgsGeometry.JoinStyle3DFlat.is_monkey_patched = True
+QgsGeometry.JoinStyle3DFlat.__doc__ = "Flat ends and constant width along the linestring"
+QgsGeometry.JoinStyle3DCylSphere = Qgis.JoinStyle3D.CylSphere
+QgsGeometry.JoinStyle3D.JoinStyle3DCylSphere = Qgis.JoinStyle3D.CylSphere
+QgsGeometry.JoinStyle3DCylSphere.is_monkey_patched = True
+QgsGeometry.JoinStyle3DCylSphere.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
+Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
+
+.. versionadded:: 3.44
+
+* ``Round``: Smooth, rounded buffer around the input geometry
+
+  Available as ``QgsGeometry.JoinStyle3DRound`` in older QGIS releases.
+
+* ``Flat``: Flat ends and constant width along the linestring
+
+  Available as ``QgsGeometry.JoinStyle3DFlat`` in older QGIS releases.
+
+* ``CylSphere``: Cylinders along the linestring segments with spheres at the vertices
+
+  Available as ``QgsGeometry.JoinStyle3DCylSphere`` in older QGIS releases.
+
+
+"""
+# --
+Qgis.JoinStyle3D.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"

@@ -1233,6 +1233,13 @@ The development version
       Bevel,
     };
 
+    enum class JoinStyle3D
+      {
+      Round,
+      Flat,
+      CylSphere,
+    };
+
     enum class GeosCreationFlag
     {
       RejectOnInvalidSubGeometry,
