@@ -3082,7 +3082,7 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element 
   QString url = onlineResElem.attribute( "href", "" );
 
   // transform regular data uris to QGIS's data uris
-  url.replace(QRegularExpression( QStringLiteral("^data:([^;]*;base64,)?(.*)$") ), QStringLiteral("data:\\2") );
+  url.replace( QRegularExpression( QStringLiteral( "^data:([^;]*;base64,)?(.*)$" ) ), QStringLiteral( "data:\\2" ) );
 
   QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
 
@@ -3507,21 +3507,24 @@ void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   QMimeDatabase mimeDB;
   QMimeType mimeType;
 
-  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) ) {
+  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
+  {
     // convert from QGIS's embeded file syntax to standard data uri
-    url.remove(0, 7);
-    QByteArray ba = QByteArray::fromBase64(url.toUtf8());
-    mimeType = mimeDB.mimeTypeForData(ba);
+    url.remove( 0, 7 );
+    QByteArray ba = QByteArray::fromBase64( url.toUtf8() );
+    mimeType = mimeDB.mimeTypeForData( ba );
     url.prepend( QStringLiteral( "data:%1;base64," ).arg( mimeType.name() ) );
   }
-  else if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) ) {
+  else if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) )
+  {
     // Qt can't guess mime type for remote URLs, and it seems geoserver can handle wrong image mime types
     // but not generic ones, so let's hardcode to png.
-    mimeType = mimeDB.mimeTypeForName("image/png");
+    mimeType = mimeDB.mimeTypeForName( "image/png" );
   }
-  else {
+  else
+  {
     // let QT guess the mime type from the extension for local
-    mimeType = mimeDB.mimeTypeForUrl(url);
+    mimeType = mimeDB.mimeTypeForUrl( url );
   }
 
   onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
