@@ -33,6 +33,8 @@ QgsModelGraphicsScene::QgsModelGraphicsScene( QObject *parent )
   : QGraphicsScene( parent )
 {
   setItemIndexMethod( QGraphicsScene::NoIndex );
+
+  connect( this, &QgsModelGraphicsScene::componentChanged, this, &QgsModelGraphicsScene::updateBounds );
 }
 
 QgsProcessingModelAlgorithm *QgsModelGraphicsScene::model()
