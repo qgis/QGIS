@@ -62,7 +62,7 @@ void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
 
 void QgsModelGraphicsScene::updateBounds()
 {
-  setSceneRect( modelBounds( 50 ) );
+  setSceneRect( modelBounds( SCENE_COMPONENT_MARGIN ) );
 }
 
 QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
@@ -71,7 +71,7 @@ QRectF QgsModelGraphicsScene::modelBounds( double margin ) const
   QRectF bounds;
 
   //add all  items
-  const auto constItems = items();
+  const QList<QGraphicsItem *> constItems = items();
   for ( QGraphicsItem *item : constItems )
   {
     QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item );
