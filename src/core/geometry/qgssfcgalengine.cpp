@@ -581,6 +581,72 @@ sfcgal::shared_geom QgsSfcgalEngine::translate( const sfcgal::geometry *geom, co
   return sfcgal::make_shared_geom( result );
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::scale( const sfcgal::geometry *geom, const QgsPoint &scaleFactor, const QgsPoint &center, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  const double scaleZFactor = scaleFactor.is3D() ? scaleFactor.z() : 0;
+  sfcgal::geometry *result;
+  if ( center.isEmpty() )
+  {
+    result = sfcgal_geometry_scale_3d( geom, scaleFactor.x(), scaleFactor.y(), scaleZFactor );
+  }
+  else
+  {
+    const double centerZ = center.is3D() ? center.z() : 0;
+    result = sfcgal_geometry_scale_3d_around_center( geom, scaleFactor.x(), scaleFactor.y(), scaleZFactor, center.x(), center.y(), centerZ );
+  }
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::rotate2D( const sfcgal::geometry *geom, double angle, const QgsPoint &center, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = sfcgal_geometry_rotate_2d( geom, angle, center.x(), center.y() );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::rotate3D( const sfcgal::geometry *geom, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result;
+  if ( center.isEmpty() )
+  {
+    result = sfcgal_geometry_rotate_3d( geom, angle, axisVector.x(), axisVector.y(), axisVector.z() );
+  }
+  else
+  {
+    result = sfcgal_geometry_rotate_3d_around_center( geom, angle, axisVector.x(), axisVector.y(), axisVector.z(), center.x(), center.y(), center.z() );
+  }
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
+double QgsSfcgalEngine::distance( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
+{
+  double out = lambda_geomgeom_to_prim<double>( sfcgal_geometry_distance, sfcgal_geometry_distance_3d, geomA, geomB, errorMsg );
+  CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+  return out;
+}
+
+bool QgsSfcgalEngine::distanceWithin( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double maxdistance, QString *errorMsg )
+{
+  double dist = QgsSfcgalEngine::distance( geomA, geomB, errorMsg );
+  CHECK_SUCCESS( errorMsg, false );
+
+  return dist <= maxdistance;
+}
+
 double QgsSfcgalEngine::area( const sfcgal::geometry *geom, QString *errorMsg )
 {
   double out = lambda_geom_to_prim<double>( sfcgal_geometry_area, sfcgal_geometry_area_3d, geom, errorMsg );
@@ -595,3 +661,63 @@ double QgsSfcgalEngine::length( const sfcgal::geometry *geom, QString *errorMsg 
   return out;
 }
 
+bool QgsSfcgalEngine::intersects( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
+{
+  int res = lambda_geomgeom_to_prim<int>( sfcgal_geometry_intersects, sfcgal_geometry_intersects_3d, geomA, geomB, errorMsg );
+  CHECK_SUCCESS( errorMsg, false );
+  return static_cast<bool>( res );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::intersection( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg, const QgsGeometryParameters & )
+{
+  sfcgal::shared_geom out = lambda_geomgeom_to_geom( sfcgal_geometry_intersection, sfcgal_geometry_intersection_3d, geomA, geomB, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return out;
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::difference( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg, const QgsGeometryParameters & )
+{
+  sfcgal::shared_geom out = lambda_geomgeom_to_geom( sfcgal_geometry_difference, sfcgal_geometry_difference_3d, geomA, geomB, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return out;
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::combine( const QVector<sfcgal::shared_geom> &geomList, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  sfcgal::geometry *combined = nullptr;
+  for ( sfcgal::shared_geom other : geomList )
+  {
+    if ( !combined )
+    {
+      combined = other.get();
+      continue;
+    }
+
+    if ( sfcgal_geometry_is_3d( other.get() ) || sfcgal_geometry_is_3d( combined ) )
+      combined = sfcgal_geometry_union_3d( combined, other.get() );
+    else
+      combined = sfcgal_geometry_union( combined, other.get() );
+
+    if ( !combined )
+      sfcgal::errorHandler()->addText( "SFCGAL produced null result." );
+
+    CHECK_SUCCESS( errorMsg, nullptr );
+  }
+
+  return sfcgal::make_shared_geom( combined );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::triangulate( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  sfcgal::shared_geom out = lambda_geom_to_geom( sfcgal_geometry_triangulate_2dz, nullptr, geom, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return out;
+}
+
+bool QgsSfcgalEngine::covers( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
+{
+  int res = lambda_geomgeom_to_prim<int>( sfcgal_geometry_covers, sfcgal_geometry_covers_3d, geomA, geomB, errorMsg );
+  CHECK_SUCCESS( errorMsg, false );
+  return static_cast<bool>( res );
+}

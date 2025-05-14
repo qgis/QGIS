@@ -146,6 +146,75 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      */
     QgsSfcgalGeometry *translate( const QgsPoint &translation, QString *errorMsg = nullptr ) const;
 
+    /**
+     * Scale this geometry by vector \a scaleFactor.
+     *
+     * \param scaleFactor scale factor vector (2D or 3D)
+     * \param center optional parameter. If specified, scaling will be performed relative to this center
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *scale( const QgsPoint &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
+
+    /**
+     * 2D Rotate this geometry around point \center by angle \angle
+     *
+     * \param angle rotation angle in radians
+     * \param center rotation center
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *rotate2D( double angle, const QgsPoint &center, QString *errorMsg = nullptr ) const;
+
+    /**
+     * 3D Rotate this geometry around axis \axisVector by angle \angle
+     *
+     * \param geom geometry to perform the operation
+     * \param angle rotation angle in radians
+     * \param axisVector rotation axis
+     * \param center optional parameter. If specified, rotation will be applied around axis and center point
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
+
+    /**
+     * Checks if \a geom intersects this.
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Calculate the intersection of this and \a geom.
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     * \param parameters can be used to specify parameters which control the intersection results
+     */
+    QgsSfcgalGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    /**
+     * Calculate the combination of this and \a geomList.
+     *
+     * \param geomList list of geometries to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+
+    /**
+     * Calculate the difference of this and \a geom.
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     * \param parameters can be used to specify parameters which control the difference results
+     */
+    QgsSfcgalGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    /**
+     * Triangulates this geometry using constraint 2D Delaunay Triangulation (keep Z if defined)
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    QgsSfcgalGeometry *triangulate( QString *errorMsg = nullptr ) const;
+
 #ifndef SIP_RUN
     /**
      * Cast the \a geom to the exact underlying QGIS geometry.

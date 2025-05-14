@@ -82,6 +82,14 @@ class TestQgsSfcgal : public QgsTest
     void addMValue();
     void swapXY();
     void isEmpty();
+    void scale();
+    void intersection();
+    void intersection3d();
+    void unionCheck1();
+    void unionCheck2();
+    void differenceCheck1();
+    void differenceCheck2();
+    void difference3d();
 
   private:
     //! Must be called before each render test
@@ -597,6 +605,299 @@ void TestQgsSfcgal::isEmpty()
   QgsSfcgalGeometry sfcgalGeomEmpty( emptyGeomM, QgsSfcgalEngine::fromWkt( "POLYGON EMPTY", &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QVERIFY( sfcgalGeomEmpty.isEmpty() );
+}
+
+void TestQgsSfcgal::scale()
+{
+  QString errorMsg;
+
+  // simple 2D Point
+  std::unique_ptr<QgsAbstractGeometry> emptyGeom( nullptr );
+  QgsSfcgalGeometry sfcgalPoint( emptyGeom, QgsSfcgalEngine::fromWkt( "POINT (4 3)", &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint( sfcgalPoint.scale( QgsPoint( 2, 3 ), QgsPoint(), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( sfcgalScalePoint->asWkt( 0 ), QStringLiteral( "POINT (8 9)" ) );
+
+  // simple 2D Point with center
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePointCenter( sfcgalPoint.scale( QgsPoint( 2, 3 ), QgsPoint( 1, 1 ), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( sfcgalScalePointCenter->asWkt( 0 ), QStringLiteral( "POINT (7 7)" ) );
+
+  // simple 3D Point
+  QgsSfcgalGeometry sfcgalPoint3D( emptyGeom, QgsSfcgalEngine::fromWkt( "POINT Z (4 3 2)", &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3D( sfcgalPoint3D.scale( QgsPoint( 2, 3, 4 ), QgsPoint(), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( sfcgalScalePoint3D->asWkt( 0 ), QStringLiteral( "POINT Z (8 9 8)" ) );
+
+  // simple 3D Point with center
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3DCenter( sfcgalPoint3D.scale( QgsPoint( 2, 3, 4 ), QgsPoint( 1, 1, 2 ), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( sfcgalScalePoint3DCenter->asWkt( 0 ), QStringLiteral( "POINT Z (7 7 2)" ) );
+
+  // 3D Polygon - no center
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalPolygonA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
+  const QgsPoint scaleFactorPolygon( 2, 2, 2 );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePolygonA( sfcgalPolygonA->scale( scaleFactorPolygon, QgsPoint(), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  const QString expectedWktPolygonA( "POLYGON Z ((-7737494771857359/549755813888 5293326602799677/549755813888 40/1,-7820028842538225/549755813888 6650412353375227/1099511627776 40/1,-2567248380280229/274877906944 6091720148781315/1099511627776 40/1,-1884754959713855/274877906944 7209104557969139/1099511627776 40/1,-7737494771857359/549755813888 5293326602799677/549755813888 40/1),(-7512873452346907/549755813888 4945897860901529/549755813888 40/1,-8628368460753561/1099511627776 3630734289669823/549755813888 40/1,-5186554018186815/549755813888 3240811512430225/549755813888 40/1,-1886479433750859/137438953472 1755887414062927/274877906944 40/1,-7512873452346907/549755813888 4945897860901529/549755813888 40/1))" );
+  QgsSfcgalGeometry expectedScalePolygonA( emptyGeom, QgsSfcgalEngine::fromWkt( expectedWktPolygonA, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QVERIFY2( QgsSfcgalEngine::covers( expectedScalePolygonA.sfcgalGeometry().get(), sfcgalScalePolygonA->sfcgalGeometry().get() ), "scale polygon A does not match expected WKT" );
+
+  // 3D Polygon - with center
+  const QgsPoint centerA( -5037.1, 4414.0, 20.0 );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePolygonACenter( sfcgalPolygonA->scale( scaleFactorPolygon, centerA, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  const QString expectedWktPolygonACenter( "POLYGON Z ((-2484159880861057/274877906944 2866704440298045/549755813888 20/1,-1262713458100745/137438953472 1797168028371963/1099511627776 20/1,-2365321750425213/549755813888 1238475823778051/1099511627776 20/1,-1000334909292465/549755813888 2355860232965875/1099511627776 20/1,-2484159880861057/274877906944 2866704440298045/549755813888 20/1),(-2371849221105831/274877906944 2519275698399897/549755813888 20/1,-3090018440483071/1099511627776 1204112127168191/549755813888 20/1,-1208689504025785/274877906944 814189349928593/549755813888 20/1,-4776742724868191/549755813888 542576332812111/274877906944 20/1,-2371849221105831/274877906944 2519275698399897/549755813888 20/1))" );
+
+  QgsSfcgalGeometry expectedScalePolygonACenter( emptyGeom, QgsSfcgalEngine::fromWkt( expectedWktPolygonACenter, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QVERIFY2( QgsSfcgalEngine::covers( expectedScalePolygonACenter.sfcgalGeometry().get(), sfcgalScalePolygonACenter->sfcgalGeometry().get() ), "scale polygon A with center does not match expected WKT" );
+
+  // 2D LineString - no center
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalLineD = std::make_unique<QgsSfcgalGeometry>( mpPolylineGeometryD );
+  const QgsPoint scaleFactorLine( 3, 2 );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScaleLineD( sfcgalLineD->scale( scaleFactorLine, QgsPoint(), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  std::unique_ptr<QgsSfcgalGeometry> expectedScaleLineD = openWktFile( "scale_line_d.wkt", &errorMsg );
+  QVERIFY2( errorMsg.isEmpty(), errorMsg.toStdString().c_str() );
+  QVERIFY2( QgsSfcgalEngine::covers( expectedScaleLineD->sfcgalGeometry().get(), sfcgalScaleLineD->sfcgalGeometry().get() ), "scale line D does not match expected WKT" );
+
+  // 2D LineString - center
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScaleLineDCenter( sfcgalLineD->scale( scaleFactorLine, QgsPoint( 90, 30 ), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  std::unique_ptr<QgsSfcgalGeometry> expectedScaleLineDCenter = openWktFile( "scale_line_d_center.wkt", &errorMsg );
+  QVERIFY2( errorMsg.isEmpty(), errorMsg.toStdString().c_str() );
+  QVERIFY2( QgsSfcgalEngine::covers( expectedScaleLineDCenter->sfcgalGeometry().get(), sfcgalScaleLineDCenter->sfcgalGeometry().get() ), "scale line D with centerdoes not match expected WKT" );
+}
+
+void TestQgsSfcgal::intersection()
+{
+  initPainterTest();
+
+  QgsSfcgalGeometry geomA( mpPolygonGeometryA );
+  QString errorMsg;
+  QVERIFY( geomA.intersects( mpPolygonGeometryB.constGet(), &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), errorMsg.toStdString().c_str() );
+
+  // should be a single polygon as A intersect B
+  QgsSfcgalGeometry *intersectionGeom = dynamic_cast<QgsSfcgalGeometry *>( geomA.intersection( mpPolygonGeometryB.constGet(), &errorMsg ) );
+  QVERIFY2( intersectionGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+  QCOMPARE( intersectionGeom->wkbType(), Qgis::WkbType::Polygon );
+
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( intersectionGeom );
+  QVERIFY( castGeom != nullptr );
+
+  const QgsPolygon *intersectionPoly = dynamic_cast<const QgsPolygon *>( intersectionGeom->delegatedGeometry() );
+  QVERIFY( intersectionPoly );                               // check that the union created a feature
+  QVERIFY( intersectionPoly->exteriorRing()->length() > 0 ); // check that the union created a feature
+  QCOMPARE( intersectionPoly->exteriorRing()->asWkt(), QStringLiteral( "LineString (40 80, 40 40, 80 40, 80 80, 40 80)" ) );
+
+  paintPolygon( intersectionPoly );
+  QGSVERIFYIMAGECHECK( "Checking if A intersects B (SFCGAL)", "geometry_intersectionCheck1", mImage, QString(), 0 );
+}
+
+void TestQgsSfcgal::intersection3d()
+{
+  initPainterTest();
+  QString errorMsg;
+
+  // first triangulate polygon as some are not coplanar
+  std::unique_ptr<QgsSfcgalGeometry> geomZA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
+  std::unique_ptr<QgsSfcgalGeometry> geomZB = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZB );
+  std::unique_ptr<QgsSfcgalGeometry> geomZC = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZC );
+
+  geomZA.reset( geomZA->triangulate() );
+  geomZB.reset( geomZB->triangulate() );
+  geomZC.reset( geomZC->triangulate() );
+
+  // second intersect triangulated polygons
+  QVERIFY( !geomZA->intersects( geomZB.get() ) );
+
+  {
+    QVERIFY( geomZA->intersects( geomZC.get() ) );
+    QgsSfcgalGeometry *scInterGeom = geomZA->intersection( geomZC.get(), &errorMsg );
+    QVERIFY2( scInterGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+    QCOMPARE( scInterGeom->wkbType(), Qgis::WkbType::MultiLineStringZ );
+    QCOMPARE( scInterGeom->asWkt(), QStringLiteral( "MULTILINESTRING Z ("
+                                                    "(-64473037375252357/10995116277760 73351514274852871/21990232555520 20/1,"
+                                                    "-129431703432785341454725506788272017716469477079/23313107857443583859443690159709871847505920 41489508487091336404601688874406905270455411499/11656553928721791929721845079854935923752960 20/1),"
+                                                    "(-30350932332194981/5497558138880 78760671458957353/21990232555520 20/1,"
+                                                    "-129431703432785341454725506788272017716469477079/23313107857443583859443690159709871847505920 41489508487091336404601688874406905270455411499/11656553928721791929721845079854935923752960 20/1)"
+                                                    ")" ) );
+
+    const QgsMultiCurve *castGeom = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom );
+    QVERIFY( castGeom != nullptr );
+
+    const QgsMultiCurve *interCurve = dynamic_cast<const QgsMultiCurve *>( scInterGeom->delegatedGeometry() );
+    QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
+    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5863.79 3335.64 20, -5551.89 3559.33 20)" ) );
+    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5520.8 3581.62 20, -5551.89 3559.33 20)" ) );
+  }
+
+  {
+    QVERIFY( geomZB->intersects( geomZC.get() ) );
+    QgsSfcgalGeometry *scInterGeom = geomZB->intersection( geomZC.get(), &errorMsg );
+    QVERIFY2( scInterGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+    QCOMPARE( scInterGeom->wkbType(), Qgis::WkbType::MultiLineStringZ );
+    QCOMPARE( scInterGeom->asWkt(), QStringLiteral( "MULTILINESTRING Z ("
+                                                    "(-83368668237302373871208994883224442596414327451/13187253007516584345419860333660204068503552 385244135769194833928359998705288105772518269397/105498024060132674763358882669281632548028416 0/1,"
+                                                    "-3694427387541401611431496726449054179068805833/593047719006612426355979511374504815230976 70556612052601521660517929315037655768347058877/18977527008211597643391344363984154087391232 0/1),"
+                                                    "(-6392704255083833/1099511627776 17661846043398399/4398046511104 0/1,"
+                                                    "-3694427387541401611431496726449054179068805833/593047719006612426355979511374504815230976 70556612052601521660517929315037655768347058877/18977527008211597643391344363984154087391232 0/1)"
+                                                    ")" ) );
+
+    const QgsMultiCurve *castGeom = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom );
+    QVERIFY( castGeom != nullptr );
+
+    const QgsMultiCurve *interCurve = dynamic_cast<const QgsMultiCurve *>( scInterGeom->delegatedGeometry() );
+    QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
+    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)" ) );
+    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)" ) );
+  }
+}
+
+void TestQgsSfcgal::unionCheck1()
+{
+  initPainterTest();
+  // should be a multipolygon with 2 parts as A does not intersect C
+  std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
+
+  QString errorMsg;
+  QVector<const QgsAbstractGeometry *> geomList;
+  geomList.append( mpPolygonGeometryC.constGet() );
+  QgsSfcgalGeometry *combinedGeom = dynamic_cast<QgsSfcgalGeometry *>( geomA->combine( geomList, &errorMsg ) );
+  QVERIFY2( combinedGeom, ( QString( "combinedGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+  QCOMPARE( combinedGeom->wkbType(), Qgis::WkbType::MultiPolygon );
+
+  QVERIFY( combinedGeom->partCount() > 0 ); // check that the union did not fail
+
+  const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( combinedGeom );
+  QVERIFY( castGeom != nullptr );
+
+  paintMultiPolygon( dynamic_cast<const QgsGeometryCollection *>( combinedGeom->delegatedGeometry() ) );
+  QGSVERIFYIMAGECHECK( "Checking A union C produces 2 polys (SFCGAL)", "geometry_unionCheck1", mImage, QString(), 0 );
+
+  // with Z
+  // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
+
+void TestQgsSfcgal::unionCheck2()
+{
+  initPainterTest();
+  // should be a single polygon as A intersect B
+  std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
+
+  QString errorMsg;
+  QVector<const QgsAbstractGeometry *> geomList;
+  geomList.append( mpPolygonGeometryB.constGet() );
+  QgsSfcgalGeometry *combinedGeom = dynamic_cast<QgsSfcgalGeometry *>( geomA->combine( geomList, &errorMsg ) );
+  QVERIFY2( combinedGeom, ( QString( "combinedGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+  QCOMPARE( combinedGeom->wkbType(), Qgis::WkbType::Polygon );
+
+  QVERIFY( combinedGeom->partCount() > 0 ); // check that the union did not fail
+
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( combinedGeom );
+  QVERIFY( castGeom != nullptr );
+
+  paintPolygon( dynamic_cast<const QgsPolygon *>( combinedGeom->delegatedGeometry() ) );
+  QGSVERIFYIMAGECHECK( "Checking A union B produces single union poly (SFCGAL)", "geometry_unionCheck2", mImage, QString(), 0 );
+
+  // with Z
+  // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
+
+void TestQgsSfcgal::differenceCheck1()
+{
+  initPainterTest();
+  // should be same as A since A does not intersect C so diff is 100% of A
+  std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
+
+  QString errorMsg;
+  QgsSfcgalGeometry *diffGeom = dynamic_cast<QgsSfcgalGeometry *>( geomA->difference( mpPolygonGeometryC.constGet(), &errorMsg ) );
+  QCOMPARE( diffGeom->wkbType(), Qgis::WkbType::Polygon );
+
+  QVERIFY( diffGeom->partCount() > 0 ); // check that the union did not fail
+
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( diffGeom );
+  QVERIFY( castGeom != nullptr );
+
+  paintPolygon( dynamic_cast<const QgsPolygon *>( diffGeom->delegatedGeometry() ) );
+  QGSVERIFYIMAGECHECK( "Checking (A - C) = A", "geometry_differenceCheck1", mImage, QString(), 0 );
+}
+
+void TestQgsSfcgal::differenceCheck2()
+{
+  initPainterTest();
+  // should be a single polygon as (A - B) = subset of A
+  std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
+
+  QString errorMsg;
+  QgsSfcgalGeometry *diffGeom = dynamic_cast<QgsSfcgalGeometry *>( geomA->difference( mpPolygonGeometryB.constGet(), &errorMsg ) );
+  QCOMPARE( diffGeom->wkbType(), Qgis::WkbType::Polygon );
+
+  QVERIFY( diffGeom->partCount() > 0 ); // check that the union did not fail
+
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( diffGeom );
+  QVERIFY( castGeom != nullptr );
+
+  paintPolygon( dynamic_cast<const QgsPolygon *>( diffGeom->delegatedGeometry() ) );
+  QGSVERIFYIMAGECHECK( "Checking (A - B) = subset of A", "geometry_differenceCheck2", mImage, QString(), 0 );
+}
+
+
+void TestQgsSfcgal::difference3d()
+{
+  initPainterTest();
+  QString errorMsg;
+
+  // 1st: prepare geometries
+  std::unique_ptr<QgsAbstractGeometry> emptyGeom( nullptr );
+  QString cylinderWkt( "POLYHEDRALSURFACE Z (((150 90 0,135.35533905932738 54.64466094067263 0,100 40 0,64.64466094067262 54.64466094067262 0,50 90 0,64.64466094067262 125.35533905932738 0,100 140 0,135.35533905932738 125.35533905932738 0,150 90 0)),"
+                       "((150 90 30,135.35533905932738 125.35533905932738 30,100 140 30,64.64466094067262 125.35533905932738 30,50 90 30,64.64466094067262 54.64466094067262 30,100 40 30,135.35533905932738 54.64466094067263 30,150 90 30)),"
+                       "((150 90 0,150 90 30,135.35533905932738 54.64466094067263 30,135.35533905932738 54.64466094067263 0,150 90 0)),"
+                       "((135.35533905932738 54.64466094067263 0,135.35533905932738 54.64466094067263 30,100 40 30,100 40 0,135.35533905932738 54.64466094067263 0)),"
+                       "((100 40 0,100 40 30,64.64466094067262 54.64466094067262 30,64.64466094067262 54.64466094067262 0,100 40 0)),"
+                       "((64.64466094067262 54.64466094067262 0,64.64466094067262 54.64466094067262 30,50 90 30,50 90 0,64.64466094067262 54.64466094067262 0)),"
+                       "((50 90 0,50 90 30,64.64466094067262 125.35533905932738 30,64.64466094067262 125.35533905932738 0,50 90 0)),"
+                       "((64.64466094067262 125.35533905932738 0,64.64466094067262 125.35533905932738 30,100 140 30,100 140 0,64.64466094067262 125.35533905932738 0)),"
+                       "((100 140 0,100 140 30,135.35533905932738 125.35533905932738 30,135.35533905932738 125.35533905932738 0,100 140 0)),"
+                       "((135.35533905932738 125.35533905932738 0,135.35533905932738 125.35533905932738 30,150 90 30,150 90 0,135.35533905932738 125.35533905932738 0)))" );
+  QgsSfcgalGeometry cylinderGeom( emptyGeom, QgsSfcgalEngine::fromWkt( cylinderWkt, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  QString cubeWkt( "POLYHEDRALSURFACE Z (((130 80 0,80 30 0,30 80 0,80 130 0,130 80 0)),"
+                   "((130 80 30,80 130 30,30 80 30,80 30 30,130 80 30)),"
+                   "((130 80 0,130 80 30,80 30 30,80 30 0,130 80 0)),"
+                   "((80 30 0,80 30 30,30 80 30,30 80 0,80 30 0)),"
+                   "((30 80 0,30 80 30,80 130 30,80 130 0,30 80 0)),"
+                   "((80 130 0,80 130 30,130 80 30,130 80 0,80 130 0)))" );
+  QgsSfcgalGeometry cubeGeom( emptyGeom, QgsSfcgalEngine::fromWkt( cubeWkt, &errorMsg ) );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+  // 2nd: diff cylinder - cube
+  QgsSfcgalGeometry *scDiffGeom = cylinderGeom.difference( &cubeGeom, &errorMsg );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::TINZ );
+  QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+
+  const QgsTriangulatedSurface *castGeom = qgsgeometry_cast<const QgsTriangulatedSurface *>( scDiffGeom );
+  QVERIFY( castGeom != nullptr );
+
+  // 3rd: prepare compare
+  // load expected wkt
+  std::unique_ptr<QgsSfcgalGeometry> readGeom = openWktFile( "difference3d_cyl_cube.wkt", &errorMsg );
+  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QVERIFY2( readGeom, "readGeom geometry is NULL." );
+
+  // 4th: check coverage between actual and expected geometry
+  QVERIFY2( QgsSfcgalEngine::covers( readGeom->sfcgalGeometry().get(), scDiffGeom->sfcgalGeometry().get() ), "diff geom does not match expected from file" );
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )
