@@ -285,7 +285,8 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
         self.assertEqual(
             mime_elem.text(),
-            "application/octet-stream",
+            # note: mime type is hardcoded to image/png for remote files
+            "image/png",
         )
 
     def testRasterMarker_local(self):
@@ -305,10 +306,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             href_attr.nodeValue(),
         )
         mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
-        self.assertEqual(
-            mime_elem.text(),
-            "image/gif",
-        )
+        self.assertEqual(mime_elem.text(), "image/gif")
 
     def testRasterMarker_embedded(self):
 
@@ -329,10 +327,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             "data:image/gif;base64,R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
         )
         mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
-        self.assertEqual(
-            mime_elem.text(),
-            "image/gif",
-        )
+        self.assertEqual(mime_elem.text(), "image/gif")
 
     def testSimpleLineHairline(self):
         symbol = QgsSimpleLineSymbolLayer(QColor("black"), 0)
