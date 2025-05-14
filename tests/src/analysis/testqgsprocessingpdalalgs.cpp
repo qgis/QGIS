@@ -791,6 +791,7 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( pointCloudFileName ) << QStringLiteral( "--output=%1" ).arg( outputFile ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
