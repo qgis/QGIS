@@ -365,6 +365,56 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_geom translate( const sfcgal::geometry *geom, const QgsPoint &translation, QString *errorMsg = nullptr );
 
     /**
+     * Scale the \a geom by vector \a scaleFactor.
+     *
+     * \param geom geometry to perform the operation
+     * \param scaleFactor scale factor vector (2D or 3D)
+     * \param center optional parameter. If specified, scaling will be performed relative to this center
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom scale( const sfcgal::geometry *geom, const QgsPoint &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+
+    /**
+     * 2D Rotation of geometry \geom around point \center by angle \angle
+     *
+     * \param geom geometry to perform the operation
+     * \param angle rotation angle in radians
+     * \param center rotation center
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom rotate2D( const sfcgal::geometry *geom, double angle, const QgsPoint &center, QString *errorMsg = nullptr );
+
+    /**
+     * 3D Rotation of geometry \geom around axis \axisVector by angle \angle
+     *
+     * \param geom geometry to perform the operation
+     * \param angle rotation angle in radians
+     * \param axisVector rotation axis
+     * \param center optional parameter. If specified, rotation will be applied around axis and center point
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom rotate3D( const sfcgal::geometry *geom, double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+
+    /**
+     * Computes shortest distance between \a geomA and \a geomB.
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static double distance( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr );
+
+    /**
+     * Checks if \a geomA is within \a maxdistance distance from \a geomB
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param maxdistance
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static bool distanceWithin( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double maxdistance, QString *errorMsg );
+
+    /**
      * Computes the area of \a geom.
      *
      * \param geom geometry to perform the operation
@@ -379,6 +429,61 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param errorMsg Error message returned by SFGCAL
      */
     static double length( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Checks if \a geomA and \a geomB intersect each other
+     * A 3D intersection test is performed if at least one geometry is 3D; otherwise, a 2D intersection test is performed.
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static bool intersects( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr );
+
+    /**
+     * Calculates the intersection of \a geomA and \a geomB
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom intersection( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+
+    /**
+     * Calculates the difference of \a geomA minus \a geomB
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom difference( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+
+    /**
+     * Calculate the combination of all geometry in \a geomList.
+     *
+     * \param geomList list of geometries to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom combine( const QVector< sfcgal::shared_geom > &geomList, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate a triangulation of \a geom using constraint 2D Delaunay Triangulation (keep Z if defined).
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom triangulate( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+    /**
+     * Cover test on 2D or 3D geometries
+     * Checks if \a geomA covers \a geomB.
+     * A 3D covers test is conducted when at least one geometry is 3D; otherwise, a 2D covers test is carried out.
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static bool covers( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr );
 
 };
 
