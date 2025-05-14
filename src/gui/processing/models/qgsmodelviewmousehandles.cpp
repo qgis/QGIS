@@ -41,6 +41,11 @@ QgsModelViewMouseHandles::QgsModelViewMouseHandles( QgsModelGraphicsView *view )
   setHandleSize( 5 );
 }
 
+QgsModelGraphicsScene *QgsModelViewMouseHandles::modelScene() const
+{
+  return qobject_cast<QgsModelGraphicsScene *>( mView->scene() );
+}
+
 void QgsModelViewMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
   paintInternal( painter, !( modelScene()->flags() & QgsModelGraphicsScene::FlagHideControls ), true, false, option, widget );
