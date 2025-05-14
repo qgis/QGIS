@@ -107,7 +107,7 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     mKNeighbors = mDestination->featureCount();
 
   QgsFields fields = QgsProcessingUtils::combineFields( mSource->fields(), mDestination->fields() );
-  
+
   QgsFields newFields;
   newFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
   fields = QgsProcessingUtils::combineFields( fields, newFields );
