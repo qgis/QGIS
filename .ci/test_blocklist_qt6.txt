@@ -33,23 +33,23 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-# PyQgsAnnotation
-# PyQgsAuthenticationSystem
-# PyQgsDelimitedTextProvider
-# PyQgsEditWidgets
-# PyQgsElevationProfileCanvas
-# PyQgsFloatingWidget
-# PyQgsLayoutHtml
-# PyQgsMapBoxGlStyleConverter
-# PyQgsNetworkAccessManager
-# PyQgsPalLabelingPlacement
-# PyQgsRasterAttributeTable
-# PyQgsRasterLayerRenderer
-# PyQgsSymbolLayerReadSld
-# PyQgsLayerDefinition
-# PyQgsSettings
-# PyQgsSettingsEntry
-# PyQgsServerAccessControlWFSTransactional
-# ProcessingQgisAlgorithmsTestPt2
-# ProcessingQgisAlgorithmsTestPt4
-# ProcessingGdalAlgorithmsVectorTest
+PyQgsAnnotation
+PyQgsAuthenticationSystem
+PyQgsDelimitedTextProvider
+PyQgsEditWidgets
+PyQgsElevationProfileCanvas
+PyQgsFloatingWidget
+PyQgsLayoutHtml
+PyQgsMapBoxGlStyleConverter
+PyQgsNetworkAccessManager
+PyQgsPalLabelingPlacement
+PyQgsRasterAttributeTable
+PyQgsRasterLayerRenderer
+PyQgsSymbolLayerReadSld
+PyQgsLayerDefinition
+PyQgsSettings
+PyQgsSettingsEntry
+PyQgsServerAccessControlWFSTransactional
+ProcessingQgisAlgorithmsTestPt2
+ProcessingQgisAlgorithmsTestPt4
+ProcessingGdalAlgorithmsVectorTest
