@@ -50,6 +50,4 @@ PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsServerAccessControlWFSTransactional
-ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt4
-ProcessingGdalAlgorithmsVectorTest
