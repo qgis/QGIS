@@ -783,6 +783,7 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
 
   // generate index for use in algorithm
   QgsPointCloudLayer *lyr = new QgsPointCloudLayer( pointCloudLayerPath, "layer", "pdal" );
+  Q_UNUSED( lyr );
 
   //wait for index to be generated
   while ( !QFileInfo::exists( copcIndexFileName ) )
