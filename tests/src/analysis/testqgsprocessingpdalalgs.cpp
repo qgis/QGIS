@@ -24,6 +24,8 @@
 #include "qgspdalalgorithmbase.h"
 #include "qgspointcloudlayer.h"
 
+#include <QThread>
+
 class TestQgsProcessingPdalAlgs : public QgsTest
 {
     Q_OBJECT
@@ -781,6 +783,9 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   // generate index for use in algorithm
   QgsPointCloudLayer *lyr = new QgsPointCloudLayer( pointCloudLayerPath, "layer", "pdal" );
   lyr->dataProvider()->generateIndex();
+  QThread::sleep( 3 );
+
+  QVERIFY( lyr->dataProvider()->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed );
 
   const QString outputFile = QDir::tempPath() + "/points.gpkg";
 
@@ -790,7 +795,7 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
   QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( pointCloudFileName ) << QStringLiteral( "--output=%1" ).arg( outputFile ) );
-  //QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
 #include "testqgsprocessingpdalalgs.moc"
