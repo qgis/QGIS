@@ -49,10 +49,10 @@ QString QgsFindProjectionAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Creates a list of possible candidate coordinate reference systems for a layer "
                       "with an unknown projection.\n\n"
-                      " The expected area which the layer should reside in must be specified via the "
+                      "The expected area which the layer should reside in must be specified via the "
                       "target area parameter.\n\n"
                       "The algorithm operates by testing the layer's extent in every known reference "
-                      "system and listing any in which the bounds would fall near the target area if "
+                      "system and listing any in which the bounds would fall within the target area if "
                       "the layer was in this projection." );
 }
 
@@ -94,7 +94,7 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
   QgsGeometry targetGeometry = QgsGeometry::fromRect( extent );
 
   QgsFields fields;
-  fields.append( QgsField( "auth_id", QMetaType::Type::QString, "", 20 ) );
+  fields.append( QgsField( "auth_id", QMetaType::Type::QString ) );
 
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::NoGeometry, QgsCoordinateReferenceSystem() ) );
