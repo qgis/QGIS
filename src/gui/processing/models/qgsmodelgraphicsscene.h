@@ -99,15 +99,6 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
     /**
-     * Calculates the bounding rectangle of all components of the model. 
-     * \param margin optional margin (absolute value in scene coordinates) to add around items.
-     * \returns model bounds, in scene units.
-     * \since QGIS 3.44
-     */
-    QRectF modelBounds( double margin = 0.0 ) const;
-
-
-    /**
      * Populates the scene by creating items representing the specified \a model.
      */
     void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
@@ -191,8 +182,10 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void requestRebuildRequired();
 
     /**
-     * Updates the scene bounds of the model.
-     * 
+     * Updates the scene rect based on the bounds of the model.
+
+     * The bounding rectangle of the model is calculated off all components of the model, with an additional margin arounds items.
+     *  
      * \since QGIS 3.44
      */
     void updateBounds();
