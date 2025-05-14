@@ -60,7 +60,7 @@ QgsFeatureSink::SinkFlags QgsCentroidAlgorithm::sinkFlags() const
 
 QString QgsCentroidAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.\n\n"
+  return QObject::tr( "This algorithm creates a new point layer with points representing the centroid of the geometries in an input layer.\n\n"
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
