@@ -110,11 +110,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelGraphicsView *view();
 
     /**
-     * Returns the associated model scene.
-     */
-    QgsModelGraphicsScene *modelScene();
-
-    /**
      * Returns the font used to render text in the item.
      * \see setFont()
      */
