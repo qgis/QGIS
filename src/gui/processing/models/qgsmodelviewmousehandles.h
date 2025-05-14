@@ -71,8 +71,6 @@ class GUI_EXPORT QgsModelViewMouseHandles : public QgsGraphicsViewMouseHandles
     void selectionChanged();
 
   private:
-    QgsModelGraphicsScene *modelScene() const;
-
     QPointer<QgsModelGraphicsView> mView;
 };
 
