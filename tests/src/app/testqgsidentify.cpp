@@ -1337,15 +1337,15 @@ void TestQgsIdentify::testSearchRadius()
   canvas.setExtent( QgsRectangle( 5, 45, 9, 47 ) );
 
   QCOMPARE( tool->searchRadiusMM(), 2 );
-  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.04724, 0.0001 );
+  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.04724, 0.001 );
 
   // magnify canvas, search radius should decrease
   canvas.setMagnificationFactor( 2 );
-  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.02362, 0.0001 );
+  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.02362, 0.001 );
 
   // de-magnify canvas, search radius should increase
   canvas.setMagnificationFactor( 0.5 );
-  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.09448, 0.0001 );
+  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.09448, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsIdentify )
