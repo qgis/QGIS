@@ -137,7 +137,7 @@ QString QgsExportToSpreadsheetAlgorithm::shortHelpString() const
 
 QString QgsExportToSpreadsheetAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Collects a number of existing layers and exports them into a spreadsheet document." );
+  return QObject::tr( "Collects a number of existing layers and exports them to a spreadsheet document." );
 }
 
 QgsExportToSpreadsheetAlgorithm *QgsExportToSpreadsheetAlgorithm::createInstance() const

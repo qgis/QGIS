@@ -36,7 +36,7 @@ QString QgsMeshSurfaceToPolygonAlgorithm::shortHelpString() const
 
 QString QgsMeshSurfaceToPolygonAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports a polygon layer containing mesh layer boundary." );
+  return QObject::tr( "Exports a polygon layer containing a mesh layer's boundary." );
 }
 
 QString QgsMeshSurfaceToPolygonAlgorithm::name() const

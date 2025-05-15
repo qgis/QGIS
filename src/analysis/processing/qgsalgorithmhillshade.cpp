@@ -55,7 +55,7 @@ QString QgsHillshadeAlgorithm::shortHelpString() const
 
 QString QgsHillshadeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the hillshade of the Digital Terrain Model in input." );
+  return QObject::tr( "Calculates the hillshade of a Digital Terrain Model." );
 }
 
 QgsHillshadeAlgorithm *QgsHillshadeAlgorithm::createInstance() const

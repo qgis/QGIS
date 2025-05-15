@@ -58,7 +58,7 @@ QString QgsPointsLayerFromTableAlgorithm::shortHelpString() const
 
 QString QgsPointsLayerFromTableAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Generates a points layer based on the values from an input table." );
+  return QObject::tr( "Generates a point layer based on the coordinates from an input table." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsPointsLayerFromTableAlgorithm::documentationFlags() const

@@ -54,7 +54,7 @@ QString QgsExtractVerticesAlgorithm::shortHelpString() const
 
 QString QgsExtractVerticesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Generates a point layer with points representing the vertices in the input geometries." );
+  return QObject::tr( "Generates a point layer with points representing the vertices of the input geometries." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractVerticesAlgorithm::documentationFlags() const
