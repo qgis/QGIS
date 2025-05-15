@@ -50,7 +50,12 @@ QString QgsBasicStatisticsAlgorithm::groupId() const
 
 QString QgsBasicStatisticsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates basic statistics from the analysis of a values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported. The statistics returned will depend on the field type." );
+  return QObject::tr( "This algorithm generates basic statistics from the analysis of values in a field in the attribute table of a vector layer. Numeric, date, time and string fields are supported. The statistics returned will depend on the field type." );
+}
+
+QString QgsBasicStatisticsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates basic statistics from the values in a field of a vector layer." );
 }
 
 QgsBasicStatisticsAlgorithm *QgsBasicStatisticsAlgorithm::createInstance() const

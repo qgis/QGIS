@@ -716,7 +716,7 @@ class CORE_EXPORT QgsFeatureRenderer
     //! The current size of editing marker
     double mCurrentVertexMarkerSize = 2;
 
-    QgsPaintEffect *mPaintEffect = nullptr;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 
     bool mForceRaster = false;
 

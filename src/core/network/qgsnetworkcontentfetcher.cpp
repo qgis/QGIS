@@ -34,7 +34,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
     //cancel running request
     mReply->abort();
   }
-  delete mReply;
+
 }
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
@@ -63,18 +63,18 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QSt
   {
     //cancel any in progress requests
     mReply->abort();
-    mReply->deleteLater();
+    mReply.release()->deleteLater();
     mReply = nullptr;
   }
 
-  mReply = QgsNetworkAccessManager::instance()->get( request );
+  mReply.reset( QgsNetworkAccessManager::instance()->get( request ) );
   if ( !mAuthCfg.isEmpty() )
   {
-    QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
+    QgsApplication::authManager()->updateNetworkReply( mReply.get(), mAuthCfg );
   }
   mReply->setParent( nullptr ); // we don't want thread locale QgsNetworkAccessManagers to delete the reply - we want ownership of it to belong to this object
-  connect( mReply, &QNetworkReply::finished, this, [this] { contentLoaded(); } );
-  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
+  connect( mReply.get(), &QNetworkReply::finished, this, [this] { contentLoaded(); } );
+  connect( mReply.get(), &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 
   auto onError = [this]( QNetworkReply::NetworkError code )
   {
@@ -83,7 +83,7 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QSt
       emit errorOccurred( code, mReply->errorString() );
   };
 
-  connect( mReply, &QNetworkReply::errorOccurred, this, onError );
+  connect( mReply.get(), &QNetworkReply::errorOccurred, this, onError );
 }
 
 QNetworkReply *QgsNetworkContentFetcher::reply()
@@ -93,12 +93,12 @@ QNetworkReply *QgsNetworkContentFetcher::reply()
     return nullptr;
   }
 
-  return mReply;
+  return mReply.get();
 }
 
 QString QgsNetworkContentFetcher::contentDispositionFilename() const
 {
-  return mReply ? QgsNetworkReplyContent::extractFilenameFromContentDispositionHeader( mReply ) : QString();
+  return mReply ? QgsNetworkReplyContent::extractFilenameFromContentDispositionHeader( mReply.get() ) : QString();
 }
 
 QString QgsNetworkContentFetcher::contentAsString() const
@@ -123,7 +123,7 @@ void QgsNetworkContentFetcher::cancel()
   {
     //cancel any in progress requests
     mReply->abort();
-    mReply->deleteLater();
+    mReply.release()->deleteLater();
     mReply = nullptr;
   }
 }
@@ -205,6 +205,6 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
   }
 
   //redirect, so fetch redirect target
-  mReply->deleteLater();
+  mReply.release()->deleteLater();
   fetchContent( redirect.toUrl(), mAuthCfg );
 }

@@ -50,7 +50,7 @@ QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm uses a method proposed by Wang & Liu to identify and fill surface depressions in digital elevation models.\n\n"
 
-                      "The method was enhanced to allow the creation of hydrologic sound elevation models, i.e. not only to fill the depression(s) "
+                      "The method was enhanced to allow the creation of hydrologically sound elevation models, i.e. not only to fill the depression(s) "
                       "but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope "
                       "gradient (and thus elevation difference) between cells.\n\n"
 
@@ -69,7 +69,7 @@ void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
   minSlopeParam->setHelp( QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." ) );
   addParameter( minSlopeParam.release() );
 
-  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
@@ -177,7 +177,7 @@ typedef std::priority_queue< CFillSinks_WL_Node, nodeVector, CompareGreater > Pr
 
 QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
 
   const QString filledDemOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_FILLED_DEM" ), context );
   const QString flowDirectionsOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_FLOW_DIRECTIONS" ), context );

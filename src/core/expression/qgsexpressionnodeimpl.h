@@ -45,7 +45,6 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
       : mOp( op )
       , mOperand( operand )
     {}
-    ~QgsExpressionNodeUnaryOperator() override { delete mOperand; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -63,7 +62,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     /**
      * Returns the node the operator will operate upon.
      */
-    QgsExpressionNode *operand() const { return mOperand; }
+    QgsExpressionNode *operand() const { return mOperand.get(); }
 
     QgsExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
@@ -86,8 +85,16 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     QString text() const;
 
   private:
+
+    QgsExpressionNodeUnaryOperator( const QgsExpressionNodeUnaryOperator &other ) = delete;
+    QgsExpressionNodeUnaryOperator &operator=( const QgsExpressionNodeUnaryOperator &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeUnaryOperator( const QgsExpressionNodeUnaryOperator &other );
+#endif
+
     UnaryOperator mOp;
-    QgsExpressionNode *mOperand = nullptr;
+    std::unique_ptr<QgsExpressionNode> mOperand;
 
     static const char *UNARY_OPERATOR_TEXT[];
 };
@@ -146,7 +153,6 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
       , mOpLeft( opLeft )
       , mOpRight( opRight )
     {}
-    ~QgsExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -165,13 +171,13 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
      * Returns the node to the left of the operator.
      * \see opRight()
      */
-    QgsExpressionNode *opLeft() const { return mOpLeft; }
+    QgsExpressionNode *opLeft() const { return mOpLeft.get(); }
 
     /**
      * Returns the node to the right of the operator.
      * \see opLeft()
      */
-    QgsExpressionNode *opRight() const { return mOpRight; }
+    QgsExpressionNode *opRight() const { return mOpRight.get(); }
 
     QgsExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
@@ -204,6 +210,14 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     QString text() const;
 
   private:
+
+    QgsExpressionNodeBinaryOperator( const QgsExpressionNodeBinaryOperator &other ) = delete;
+    QgsExpressionNodeBinaryOperator &operator=( const QgsExpressionNodeBinaryOperator &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeBinaryOperator( const QgsExpressionNodeBinaryOperator &other );
+#endif
+
     bool compare( double diff );
     qlonglong computeInt( qlonglong x, qlonglong y );
     double computeDouble( double x, double y );
@@ -216,8 +230,8 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     QDateTime computeDateTimeFromInterval( const QDateTime &d, QgsInterval *i );
 
     BinaryOperator mOp;
-    QgsExpressionNode *mOpLeft = nullptr;
-    QgsExpressionNode *mOpRight = nullptr;
+    std::unique_ptr<QgsExpressionNode> mOpLeft;
+    std::unique_ptr<QgsExpressionNode> mOpRight;
 
     static const char *BINARY_OPERATOR_TEXT[];
 };
@@ -238,19 +252,18 @@ class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
       : mContainer( container )
       , mIndex( index )
     {}
-    ~QgsExpressionNodeIndexOperator() override { delete mContainer; delete mIndex; }
 
     /**
      * Returns the container node, representing an array or map value.
      * \see index()
      */
-    QgsExpressionNode *container() const { return mContainer; }
+    QgsExpressionNode *container() const { return mContainer.get(); }
 
     /**
      * Returns the index node, representing an array element index or map key.
      * \see container()
      */
-    QgsExpressionNode *index() const { return mIndex; }
+    QgsExpressionNode *index() const { return mIndex.get(); }
 
     QgsExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
@@ -268,8 +281,15 @@ class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
 
   private:
 
-    QgsExpressionNode *mContainer = nullptr;
-    QgsExpressionNode *mIndex = nullptr;
+    QgsExpressionNodeIndexOperator( const QgsExpressionNodeIndexOperator &other ) = delete;
+    QgsExpressionNodeIndexOperator &operator=( const QgsExpressionNodeIndexOperator &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeIndexOperator( const QgsExpressionNodeIndexOperator &other );
+#endif
+
+    std::unique_ptr<QgsExpressionNode> mContainer;
+    std::unique_ptr<QgsExpressionNode> mIndex;
 
 };
 
@@ -297,7 +317,7 @@ class CORE_EXPORT QgsExpressionNodeBetweenOperator: public QgsExpressionNode
     /**
      * Returns the expression node.
      */
-    QgsExpressionNode *node() const { return mNode; }
+    QgsExpressionNode *node() const { return mNode.get(); }
 
 
     QgsExpressionNode::NodeType nodeType() const override;
@@ -329,9 +349,18 @@ class CORE_EXPORT QgsExpressionNodeBetweenOperator: public QgsExpressionNode
     bool negate() const;
 
   private:
-    QgsExpressionNode *mNode = nullptr;
-    QgsExpressionNode *mLowerBound = nullptr;
-    QgsExpressionNode *mHigherBound = nullptr;
+
+    QgsExpressionNodeBetweenOperator( const QgsExpressionNodeBetweenOperator &other ) = delete;
+    QgsExpressionNodeBetweenOperator &operator=( const QgsExpressionNodeBetweenOperator &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeBetweenOperator( const QgsExpressionNodeBetweenOperator &other );
+#endif
+
+
+    std::unique_ptr<QgsExpressionNode> mNode;
+    std::unique_ptr<QgsExpressionNode> mLowerBound;
+    std::unique_ptr<QgsExpressionNode> mHigherBound;
     bool mNegate = false;
 
 };
@@ -357,7 +386,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     /**
      * Returns the expression node.
      */
-    QgsExpressionNode *node() const { return mNode; }
+    QgsExpressionNode *node() const { return mNode.get(); }
 
     /**
      * Returns TRUE if this node is a "NOT IN" operator, or FALSE if the node is a normal "IN" operator.
@@ -367,7 +396,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     /**
      * Returns the list of nodes to search for matching values within.
      */
-    QgsExpressionNode::NodeList *list() const { return mList; }
+    QgsExpressionNode::NodeList *list() const { return mList.get(); }
 
     QgsExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
@@ -383,8 +412,16 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
   private:
-    QgsExpressionNode *mNode = nullptr;
-    QgsExpressionNodeInOperator::NodeList *mList = nullptr;
+
+    QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other ) = delete;
+    QgsExpressionNodeInOperator &operator=( const QgsExpressionNodeInOperator &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other );
+#endif
+
+    std::unique_ptr<QgsExpressionNode> mNode;
+    std::unique_ptr<QgsExpressionNodeInOperator::NodeList> mList;
     bool mNotIn;
 };
 
@@ -430,7 +467,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     /**
      * Returns a list of arguments specified for the function.
      */
-    QgsExpressionNode::NodeList *args() const { return mArgs; }
+    QgsExpressionNode::NodeList *args() const { return mArgs.get(); }
 
     QgsExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context ) override;
@@ -450,8 +487,18 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
 
   private:
+
+    QgsExpressionNodeFunction( const QgsExpressionNodeFunction &other ) = delete;
+    QgsExpressionNodeFunction &operator=( const QgsExpressionNodeFunction &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeFunction( const QgsExpressionNodeFunction &other );
+#endif
+
+
+
     int mFnIndex;
-    NodeList *mArgs = nullptr;
+    std::unique_ptr<NodeList> mArgs;
 };
 
 /**
@@ -587,21 +634,21 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
          * The expression that makes the WHEN part of the condition.
          * \return The expression node that makes the WHEN part of the condition check.
          */
-        QgsExpressionNode *whenExp() const { return mWhenExp; }
+        QgsExpressionNode *whenExp() const { return mWhenExp.get(); }
 
         /**
          * The expression node that makes the THEN result part of the condition.
          * \return The expression node that makes the THEN result part of the condition.
          */
 
-        QgsExpressionNode *thenExp() const { return mThenExp; }
+        QgsExpressionNode *thenExp() const { return mThenExp.get(); }
 
       private:
 #ifdef SIP_RUN
         WhenThen( const QgsExpressionNodeCondition::WhenThen &rh );
 #endif
-        QgsExpressionNode *mWhenExp = nullptr;
-        QgsExpressionNode *mThenExp = nullptr;
+        std::unique_ptr<QgsExpressionNode> mWhenExp;
+        std::unique_ptr<QgsExpressionNode> mThenExp;
 
         friend class QgsExpressionNodeCondition;
     };
@@ -637,7 +684,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
      * The ELSE expression used for the condition.
      * \return The ELSE expression used for the condition.
      */
-    QgsExpressionNode *elseExp() const { return mElseExp; }
+    QgsExpressionNode *elseExp() const { return mElseExp.get(); }
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
@@ -650,8 +697,17 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
   private:
+
+    QgsExpressionNodeCondition( const QgsExpressionNodeCondition &other ) = delete;
+    QgsExpressionNodeCondition &operator=( const QgsExpressionNodeCondition &other ) = delete;
+
+#ifdef SIP_RUN
+    QgsExpressionNodeCondition( const QgsExpressionNodeCondition &other );
+#endif
+
+
     WhenThenList mConditions;
-    QgsExpressionNode *mElseExp = nullptr;
+    std::unique_ptr<QgsExpressionNode> mElseExp;
 };
 
 

@@ -55,6 +55,11 @@ QString QgsB3DMToGltfAlgorithm::groupId() const
 
 QString QgsB3DMToGltfAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm converts files from the legacy B3DM format to GLTF." );
+}
+
+QString QgsB3DMToGltfAlgorithm::shortDescription() const
+{
   return QObject::tr( "Converts files from the legacy B3DM format to GLTF." );
 }
 

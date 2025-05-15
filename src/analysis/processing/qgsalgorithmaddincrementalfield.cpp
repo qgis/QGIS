@@ -43,6 +43,12 @@ QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
                       "this sort order." );
 }
 
+QString QgsAddIncrementalFieldAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Adds a new integer field to a vector layer, with a sequential value for each feature, "
+                      "usable as a unique ID for features in the layer." );
+}
+
 QStringList QgsAddIncrementalFieldAlgorithm::tags() const
 {
   return QObject::tr( "add,create,serial,primary,key,unique,fields" ).split( ',' );

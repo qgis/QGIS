@@ -3061,22 +3061,22 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         rl1.temporalProperties().setFixedTemporalRange(
             QgsDateTimeRange(
-                QDateTime.fromString("2025-01-12T12:34:56", Qt.ISODate),
-                QDateTime.fromString("2025-01-15T09:12:34", Qt.ISODate),
+                QDateTime.fromString("2025-01-12T12:34:56", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T09:12:34", Qt.DateFormat.ISODate),
             )
         )
 
         rl2.temporalProperties().setFixedTemporalRange(
             QgsDateTimeRange(
-                QDateTime.fromString("2025-01-12T00:00:00", Qt.ISODate),
-                QDateTime.fromString("2025-01-12T00:00:00", Qt.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00", Qt.DateFormat.ISODate),
             )
         )
 
         rl3.temporalProperties().setFixedTemporalRange(
             QgsDateTimeRange(
-                QDateTime.fromString("2025-01-13T00:00:00", Qt.ISODate),
-                QDateTime.fromString("2025-01-13T00:00:00", Qt.ISODate),
+                QDateTime.fromString("2025-01-13T00:00:00", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-13T00:00:00", Qt.DateFormat.ISODate),
             )
         )
 

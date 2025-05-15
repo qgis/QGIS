@@ -112,7 +112,7 @@
               <item>
                <widget class="QLabel" name="mStatusLabel">
                 <property name="text">
-                 <string>Status and errors goes here.</string>
+                 <string>Status and errors go here.</string>
                 </property>
                </widget>
               </item>

@@ -32,7 +32,12 @@ QString QgsGeometryCheckMultipartAlgorithm::name() const
 
 QString QgsGeometryCheckMultipartAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Strict Multipart)" );
+  return QObject::tr( "Strictly multipart" );
+}
+
+QString QgsGeometryCheckMultipartAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect multipart features containing only one part" );
 }
 
 QStringList QgsGeometryCheckMultipartAlgorithm::tags() const
@@ -74,23 +79,26 @@ void QgsGeometryCheckMultipartAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "INPUT" ),
     QObject::tr( "Input layer" ),
     QList<int>()
-      << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+      << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
       << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
+      << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "One-part geometry errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "One-part geometry features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -136,8 +144,6 @@ QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariant
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
     parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
   ) );
-  if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
     parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
@@ -194,7 +200,7 @@ QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariant
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );
-    if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
+    if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
@@ -205,8 +211,15 @@ QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariant
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
   }
 
+  // cleanup memory of the pointed data
+  for ( const QgsGeometryCheckError *error : checkErrors )
+  {
+    delete error;
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
+  if ( sink_output )
+    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
   outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
 
   // Place the point layer above the other layer

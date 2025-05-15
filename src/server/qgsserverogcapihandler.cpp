@@ -406,6 +406,37 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       return string_view::starts_with( args.at( 0 )->get<std::string_view>(), args.at( 1 )->get<std::string_view>() );
     } );
 
+    // Returns "null" string if object is null else string object representation
+    env.add_callback( "if_nullptr_null_str", 1, []( Arguments &args ) {
+      json jsonValue = args.at( 0 )->get<json>();
+      std::string out;
+      switch ( jsonValue.type() )
+      {
+        // avoid escaping string value
+        case json::value_t::string:
+          out = jsonValue.get<std::string>();
+          break;
+
+        case json::value_t::array:
+        case json::value_t::object:
+          if ( jsonValue.is_null() )
+          {
+            out = "null";
+          }
+          else
+          {
+            out = jsonValue.dump();
+          }
+
+          break;
+
+          // use dump() for all other value types
+        default:
+          out = jsonValue.dump();
+      }
+      return out;
+    } );
+
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
   }
   catch ( std::exception &e )
