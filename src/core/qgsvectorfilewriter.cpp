@@ -1179,7 +1179,8 @@ class QgsVectorFileWriterMetadataContainer
 
       layerOptions.insert( QStringLiteral( "CREATE_CSVT" ), new QgsVectorFileWriter::BoolOption(
                              QObject::tr( "Create the associated .csvt file to describe the type of each "
-                                          "column of the layer and its optional width and precision." ),
+                                          "column of the layer and its optional width and precision. "
+                                          "This option also creates a .prj file which stores coordinate system information." ),
                              false  // Default value
                            ) );
 
