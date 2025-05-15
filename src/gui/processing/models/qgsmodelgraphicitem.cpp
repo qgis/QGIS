@@ -190,7 +190,16 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 {
   QColor outlineColor = getColor();
   QColor fillColor = QColor( outlineColor );
-  fillColor.setAlpha( isDefaultParamValue() ? 30 : 255 );
+
+  if ( isInput() )
+  {
+    fillColor.setAlpha( isDefaultParamValue() ? 30 : 255 );
+  }
+  else
+  {
+    // outputs are always filled sockets
+    fillColor.setAlpha( 255 );
+  }
 
   // Outline style
   painter->setPen( QPen( outlineColor, mHoverState ? mSocketOutlineWidth * 2 : mSocketOutlineWidth ) );
@@ -204,6 +213,7 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
   float ellipseOffset = 0.4;
   QPointF ellipsePosition = QPointF( position().x() + ellipseOffset, position().y() + ellipseOffset );
   painter->drawEllipse( ellipsePosition, DISPLAY_SIZE, DISPLAY_SIZE );
+
   /* Uncomment to display bounding box */
 #if 0
   painter->save();
