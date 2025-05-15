@@ -556,10 +556,67 @@ class GenericAlgorithmsTest(QgisTestCase):
         alg.helpUrl()
 
         if alg.provider().id() in ("qgis", "native", "3d"):
+            if alg.id() not in (
+                "native:exportmeshedges",
+                "native:exportmeshfaces",
+                "native:exportmeshongrid",
+                "native:exportmeshvertices",
+                "native:intersection",
+                "native:meshcontours",
+                "native:meshexportcrosssection",
+                "native:meshexporttimeseries",
+                "native:meshrasterize",
+                "native:surfacetopolygon",
+                "native:tinmeshcreation",
+                "native:union",
+                "native:writevectortiles_mbtiles",
+                "native:writevectortiles_xyz",
+                "qgis:advancedpythonfieldcalculator",
+                "qgis:barplot",
+                "qgis:boxplot",
+                "qgis:distancematrix",
+                "qgis:distancetonearesthublinetohub",
+                "qgis:distancetonearesthubpoints",
+                "qgis:eliminateselectedpolygons",
+                "qgis:executesql",
+                "qgis:generatepointspixelcentroidsalongline",
+                "qgis:hypsometriccurves",
+                "qgis:idwinterpolation",
+                "qgis:knearestconcavehull",
+                "qgis:listuniquevalues",
+                "qgis:meanandstandarddeviationplot",
+                "qgis:pointsdisplacement",
+                "qgis:polarplot",
+                "qgis:randomextractwithinsubsets",
+                "qgis:randompointsalongline",
+                "qgis:randompointsinlayerbounds",
+                "qgis:randompointsinsidepolygons",
+                "qgis:randomselection",
+                "qgis:randomselectionwithinsubsets",
+                "qgis:rastercalculator",
+                "qgis:rasterlayerhistogram",
+                "qgis:rectanglesovalsdiamondsvariable",
+                "qgis:regularpoints",
+                "qgis:relief",
+                "qgis:scatter3dplot",
+                "qgis:selectbyexpression",
+                "qgis:setstyleforrasterlayer",
+                "qgis:setstyleforvectorlayer",
+                "qgis:texttofloat",
+                "qgis:tininterpolation",
+                "qgis:variabledistancebuffer",
+                "qgis:vectorlayerhistogram",
+                "qgis:vectorlayerscatterplot",
+            ):
+                self.assertTrue(
+                    alg.tags(),
+                    f"Algorithm {alg.id()} has no tags!",
+                )
+
             if alg.id() not in ("qgis:rectanglesovalsdiamondsvariable",):
                 self.assertTrue(
                     alg.shortHelpString(),
-                    f"Algorithm {alg.id()} has not shortHelpString!",
+                    f"Algorithm {alg.id()} has no shortHelpString!",
                 )
 
             if alg.id() not in (
