@@ -152,10 +152,15 @@ QStringList QgsFuzzifyRasterLinearMembershipAlgorithm::tags() const
   return QObject::tr( "fuzzy logic,fuzzify,fuzzy,logic,linear,membership" ).split( ',' );
 }
 
+QString QgsFuzzifyRasterLinearMembershipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transforms an input raster to a fuzzified raster where values range from 0 to 1 following a "
+                      "linear fuzzy membership function." );
+}
 
 QString QgsFuzzifyRasterLinearMembershipAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Fuzzify raster (linear membership) algorithm transforms an input raster "
+  return QObject::tr( "This algorithm transforms an input raster "
                       "to a fuzzified raster and thereby assigns values between 0 and 1 following a "
                       "linear fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
@@ -278,10 +283,15 @@ QStringList QgsFuzzifyRasterPowerMembershipAlgorithm::tags() const
   return QObject::tr( "fuzzy logic,fuzzify,fuzzy,logic,power,non-linear,membership,exponent" ).split( ',' );
 }
 
+QString QgsFuzzifyRasterPowerMembershipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transforms an input raster to a fuzzified raster where values range from 0 to 1 following a "
+                      "power function." );
+}
 
 QString QgsFuzzifyRasterPowerMembershipAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Fuzzify raster (power membership) algorithm transforms an input raster "
+  return QObject::tr( "This algorithm transforms an input raster "
                       "to a fuzzified raster and thereby assigns values between 0 and 1 following a "
                       "power function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
@@ -406,10 +416,15 @@ QStringList QgsFuzzifyRasterLargeMembershipAlgorithm::tags() const
   return QObject::tr( "fuzzy logic,fuzzify,fuzzy,logic,large,membership" ).split( ',' );
 }
 
+QString QgsFuzzifyRasterLargeMembershipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transforms an input raster to a fuzzified raster where values range from 0 to 1 following the "
+                      "'large' fuzzy membership function." );
+}
 
 QString QgsFuzzifyRasterLargeMembershipAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Fuzzify raster (large membership) algorithm transforms an input raster "
+  return QObject::tr( "This algorithm transforms an input raster "
                       "to a fuzzified raster and thereby assigns values between 0 and 1 following the "
                       "'large' fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
@@ -513,6 +528,11 @@ QStringList QgsFuzzifyRasterSmallMembershipAlgorithm::tags() const
   return QObject::tr( "fuzzy logic,fuzzify,fuzzy,logic,small,membership" ).split( ',' );
 }
 
+QString QgsFuzzifyRasterSmallMembershipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transforms an input raster to a fuzzified raster where values range from 0 to 1 following the "
+                      "'small' fuzzy membership function." );
+}
 
 QString QgsFuzzifyRasterSmallMembershipAlgorithm::shortHelpString() const
 {
@@ -620,10 +640,15 @@ QStringList QgsFuzzifyRasterGaussianMembershipAlgorithm::tags() const
   return QObject::tr( "fuzzy logic,fuzzify,fuzzy,logic,gaussian,membership" ).split( ',' );
 }
 
+QString QgsFuzzifyRasterGaussianMembershipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transforms an input raster to a fuzzified raster where values range from 0 to 1 following a "
+                      "gaussian fuzzy membership function." );
+}
 
 QString QgsFuzzifyRasterGaussianMembershipAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Fuzzify raster (gaussian membership) algorithm transforms an input raster "
+  return QObject::tr( "This algorithm transforms an input raster "
                       "to a fuzzified raster and thereby assigns values between 0 and 1 following a "
                       "gaussian fuzzy membership function. The value of 0 implies no membership with the "
                       "defined fuzzy set, a value of 1 depicts full membership. In between, the degree "
@@ -727,6 +752,11 @@ QStringList QgsFuzzifyRasterNearMembershipAlgorithm::tags() const
   return QObject::tr( "fuzzy logic,fuzzify,fuzzy,logic,near,membership" ).split( ',' );
 }
 
+QString QgsFuzzifyRasterNearMembershipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transforms an input raster to a fuzzified raster where values range from 0 to 1 following the "
+                      "'near' fuzzy membership function." );
+}
 
 QString QgsFuzzifyRasterNearMembershipAlgorithm::shortHelpString() const
 {

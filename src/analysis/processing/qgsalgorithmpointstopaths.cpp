@@ -45,6 +45,11 @@ QString QgsPointsToPathsAlgorithm::shortHelpString() const
                       "An attribute or expression can be selected to group points having the same value into the same resulting line." );
 }
 
+QString QgsPointsToPathsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Takes a point layer and connects its features creating a new line layer." );
+}
+
 QStringList QgsPointsToPathsAlgorithm::tags() const
 {
   return QObject::tr( "create,lines,points,connect,convert,join,path" ).split( ',' );

@@ -52,7 +52,12 @@ QString QgsMultiRingConstantBufferAlgorithm::outputName() const
 
 QString QgsMultiRingConstantBufferAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes multi-ring ('donuts') buffer for all the features in an input layer, using a fixed or dynamic distance and rings number." );
+  return QObject::tr( "This algorithm computes multi-ring ('donuts') buffer for the features in an input layer, using a fixed or dynamic distance and rings number." );
+}
+
+QString QgsMultiRingConstantBufferAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes multi-ring ('donuts') buffer using a fixed or dynamic distance and rings number." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiRingConstantBufferAlgorithm::documentationFlags() const
