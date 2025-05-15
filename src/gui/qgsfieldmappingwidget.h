@@ -147,17 +147,6 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      */
     void changed();
 
-    /**
-     * Emitted in order to provide a hook to add additional* menu entries to the context menu.
-     *
-     * \param menu     If additional QMenuItems are added, they will show up in the context menu.
-     * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
-     *                 In most cases, this will be a QgsAttributeTableFilterModel
-     * \since QGIS 3.44
-     */
-    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
-
-
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression
@@ -179,18 +168,6 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      */
     void invertSelection();
 
-  protected:
-    /**
-     * \brief
-     * Is called when the context menu will be shown. Emits a willShowContextMenu() signal,
-     * so the menu can be populated by other parts of the application.
-     *
-     * \param event The associated event object.
-     *
-     * \since QGIS 3.44
-     */
-    void contextMenuEvent( QContextMenuEvent *e );
-
   private:
     QTableView *mTableView = nullptr;
     QgsFieldMappingModel *mModel = nullptr;
@@ -201,8 +178,6 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     void updateColumns();
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows();
-
-    QMenu *mActionPopup = nullptr;
 
     friend class QgsAggregateMappingWidget;
 };

@@ -65,8 +65,6 @@ QgsFieldMappingWidget::QgsFieldMappingWidget(
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::modelReset, this, &QgsFieldMappingWidget::changed );
-
-  mTableView->setContextMenuPolicy( Qt::CustomContextMenu );
 }
 
 void QgsFieldMappingWidget::setDestinationEditable( bool editable )
@@ -236,29 +234,6 @@ std::list<int> QgsFieldMappingWidget::selectedRows()
     rows.unique();
   }
   return rows;
-}
-
-void QgsFieldMappingWidget::contextMenuEvent( QContextMenuEvent *e )
-{
-  delete mActionPopup;
-  mActionPopup = nullptr;
-
-  const QModelIndex idx = mTableView->indexAt( e->pos() );
-  ;
-  if ( !idx.isValid() )
-  {
-    return;
-  }
-
-  mActionPopup = new QMenu( this );
-
-  // let some other parts of the application add some actions
-  emit willShowContextMenu( mActionPopup, idx );
-
-  if ( !mActionPopup->actions().isEmpty() )
-  {
-    mActionPopup->popup( e->globalPos() );
-  }
 }
 
 /// @cond PRIVATE
