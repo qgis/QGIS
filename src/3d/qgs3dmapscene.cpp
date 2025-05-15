@@ -1015,16 +1015,12 @@ void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
   QgsAmbientOcclusionSettings ambientOcclusionSettings = mMap.ambientOcclusionSettings();
 
-  QgsAbstractRenderView *renderView = mEngine->frameGraph()->renderView( QgsFrameGraph::AO_RENDERVIEW );
-  QgsAmbientOcclusionRenderView *aoRenderView = dynamic_cast<QgsAmbientOcclusionRenderView *>( renderView );
+  QgsAmbientOcclusionRenderView &aoRenderView = mEngine->frameGraph()->ambientOcclusionRenderView();
 
-  if ( aoRenderView )
-  {
-    aoRenderView->setRadius( ambientOcclusionSettings.radius() );
-    aoRenderView->setIntensity( ambientOcclusionSettings.intensity() );
-    aoRenderView->setThreshold( ambientOcclusionSettings.threshold() );
-    aoRenderView->setEnabled( ambientOcclusionSettings.isEnabled() );
-  }
+  aoRenderView.setRadius( ambientOcclusionSettings.radius() );
+  aoRenderView.setIntensity( ambientOcclusionSettings.intensity() );
+  aoRenderView.setThreshold( ambientOcclusionSettings.threshold() );
+  aoRenderView.setEnabled( ambientOcclusionSettings.isEnabled() );
 
   mEngine->frameGraph()->postprocessingEntity()->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
 }

@@ -53,12 +53,12 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 {
   QgsShadowRenderView &shadowRenderView = frameGraph->shadowRenderView();
   QgsForwardRenderView &forwardRenderView = frameGraph->forwardRenderView();
-  QgsAmbientOcclusionRenderView *aoRenderView = dynamic_cast<QgsAmbientOcclusionRenderView *>( frameGraph->renderView( QgsFrameGraph::AO_RENDERVIEW ) );
+  QgsAmbientOcclusionRenderView &aoRenderView = frameGraph->ambientOcclusionRenderView();
 
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), forwardRenderView.colorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), forwardRenderView.depthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), shadowRenderView.mapTexture() );
-  mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), aoRenderView->blurredFactorMapTexture() );
+  mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), aoRenderView.blurredFactorMapTexture() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mShadowMapParameter );

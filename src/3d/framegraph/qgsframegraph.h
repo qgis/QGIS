@@ -38,7 +38,6 @@
 #include <Qt3DRender/QDebugOverlay>
 
 #include "qgspointlightsettings.h"
-#include "qgsambientocclusionrenderentity.h"
 
 class QgsDirectionalLightSettings;
 class QgsCameraController;
@@ -50,6 +49,7 @@ class QgsShadowRenderView;
 class QgsDepthRenderView;
 class QgsShadowSettings;
 class QgsDebugTextureEntity;
+class QgsAmbientOcclusionRenderView;
 
 #define SIP_NO_FILE
 
@@ -193,6 +193,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QgsDepthRenderView &depthRenderView();
 
     /**
+     * Returns ambient occlusion renderview
+     * \since QGIS 3.44
+     */
+    QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
+
+    /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
      * \since QGIS 3.44
      */
@@ -216,7 +222,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     static const QString DEPTH_RENDERVIEW;
     static const QString DEBUG_RENDERVIEW;
     //! Ambient occlusion render view name
-    static const QString AO_RENDERVIEW;
+    static const QString AMBIENT_OCCLUSION_RENDERVIEW;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;

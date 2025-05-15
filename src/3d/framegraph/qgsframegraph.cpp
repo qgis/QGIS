@@ -64,7 +64,7 @@ const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";
 const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 const QString QgsFrameGraph::DEPTH_RENDERVIEW = "depth";
 const QString QgsFrameGraph::DEBUG_RENDERVIEW = "debug_texture";
-const QString QgsFrameGraph::AO_RENDERVIEW = "ambient_occlusion";
+const QString QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW = "ambient_occlusion";
 
 void QgsFrameGraph::constructForwardRenderPass()
 {
@@ -166,8 +166,8 @@ void QgsFrameGraph::constructAmbientOcclusionRenderPass()
 {
   Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
 
-  QgsAmbientOcclusionRenderView *aorv = new QgsAmbientOcclusionRenderView( AO_RENDERVIEW, mMainCamera, mSize, forwardDepthTexture, mRootEntity );
-  registerRenderView( std::unique_ptr<QgsAmbientOcclusionRenderView>( aorv ), AO_RENDERVIEW );
+  QgsAmbientOcclusionRenderView *aorv = new QgsAmbientOcclusionRenderView( AMBIENT_OCCLUSION_RENDERVIEW, mMainCamera, mSize, forwardDepthTexture, mRootEntity );
+  registerRenderView( std::unique_ptr<QgsAmbientOcclusionRenderView>( aorv ), AMBIENT_OCCLUSION_RENDERVIEW );
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
@@ -509,4 +509,10 @@ QgsDepthRenderView &QgsFrameGraph::depthRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::DEPTH_RENDERVIEW].get();
   return *( dynamic_cast<QgsDepthRenderView *>( rv ) );
+}
+
+QgsAmbientOcclusionRenderView &QgsFrameGraph::ambientOcclusionRenderView()
+{
+  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW].get();
+  return *( dynamic_cast<QgsAmbientOcclusionRenderView *>( rv ) );
 }
