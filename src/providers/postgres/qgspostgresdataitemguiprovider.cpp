@@ -150,7 +150,10 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     }
     menu->addMenu( maintainMenu );
 
-    if ( layerInfo.relKind != Qgis::PostgresRelKind::View && layerInfo.relKind != Qgis::PostgresRelKind::MaterializedView )
+    QList<Qgis::PostgresRelKind> allowedTypes;
+    allowedTypes << Qgis::PostgresRelKind::OrdinaryTable << Qgis::PostgresRelKind::View << Qgis::PostgresRelKind::MaterializedView;
+
+    if ( allowedTypes.contains( layerInfo.relKind ) )
     {
       QAction *actionMoveLayerToSchema = new QAction( tr( "Move %1 To Schema…" ).arg( typeName ), menu );
       connect( actionMoveLayerToSchema, &QAction::triggered, this, [layerItem, context] { moveLayerToSchema( layerItem, context ); } );
@@ -1069,7 +1072,25 @@ void QgsPostgresDataItemGuiProvider::moveLayerToSchema( QgsPGLayerItem *layerIte
       return;
     }
 
-    const QString sql = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" )
+    QString typeOfAlter;
+    switch ( layerInfo.relKind )
+    {
+      case Qgis::PostgresRelKind::OrdinaryTable:
+        typeOfAlter = "TABLE";
+        break;
+      case Qgis::PostgresRelKind::View:
+        typeOfAlter = "VIEW";
+        break;
+      case Qgis::PostgresRelKind::MaterializedView:
+        typeOfAlter = "MATERIALIZED VIEW";
+        break;
+      default:
+        typeOfAlter = "TABLE";
+        break;
+    }
+
+    const QString sql = QStringLiteral( "ALTER %1 %2.%3 SET SCHEMA %4;" )
+                          .arg( typeOfAlter )
                           .arg( QgsPostgresConn::quotedIdentifier( layerInfo.schemaName ) )
                           .arg( QgsPostgresConn::quotedIdentifier( layerInfo.tableName ) )
                           .arg( QgsPostgresConn::quotedIdentifier( newSchemaName ) );
