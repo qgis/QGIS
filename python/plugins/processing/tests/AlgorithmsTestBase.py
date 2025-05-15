@@ -773,6 +773,10 @@ class GenericAlgorithmsTest(QgisTestCase):
                     ".",
                     f'Algorithm {alg.id()} shortDescription does not end with full stop "{alg.shortDescription()}"',
                 )
+                self.assertFalse(
+                    alg.shortDescription().lower().startswith("this algorithm"),
+                    f'Algorithm {alg.id()} shortDescription should NOT start with eg "This algorithm computes...", just use "Compute..." instead: "{alg.shortDescription()}"',
+                )
                 first_word = alg.shortDescription().split(" ")[0]
                 self.assertEqual(
                     first_word[-1],
