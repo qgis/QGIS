@@ -20,6 +20,8 @@
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
@@ -51,7 +53,7 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
 {
   public:
     //! Constructor for an empty sfcgalGeometry geometry.
-    QgsSfcgalGeometry() SIP_HOLDGIL;
+    QgsSfcgalGeometry();
 
     //! Constructor with QgsAbstractGeometry and optional matching SFCGAL geometry
     QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsGeom, sfcgal::shared_geom sfcgalGeom = nullptr );
@@ -60,7 +62,7 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     QgsSfcgalGeometry( const QgsGeometry &qgsGeom, sfcgal::shared_geom sfcgalGeom = nullptr );
 
     //! Copy constructor
-    QgsSfcgalGeometry( const QgsSfcgalGeometry &geom );
+    QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom );
 
     //! Returns the underlying SFCGAL geometry
     sfcgal::shared_geom sfcgalGeometry() const { return mSfcgalGeom; }
@@ -72,7 +74,7 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     QString geometryType() const override SIP_HOLDGIL;
     QgsAbstractGeometry *clone() const override;
     void clear() override;
-    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
     int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = -1 ) const override;
@@ -325,17 +327,16 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
 #endif
 
   protected:
+    int compareToSameClass( const QgsAbstractGeometry *other ) const override;
+    void clearCache() const override;
+
+  private:
     sfcgal::shared_geom mSfcgalGeom;
     std::unique_ptr<QgsAbstractGeometry> mQgsGeom;
 
     mutable bool mHasCachedValidity = false;
     mutable QString mValidityFailureReason;
 
-  protected:
-    int compareToSameClass( const QgsAbstractGeometry *other ) const override;
-    void clearCache() const override;
-
-  private:
     void resetQgsGeometry();
 };
 

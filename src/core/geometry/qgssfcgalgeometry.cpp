@@ -48,7 +48,7 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsGeometry &qgsGeom, sfcgal::shared
 QgsSfcgalGeometry::QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsGeom, sfcgal::shared_geom sfcgalGeom )
   : QgsAbstractGeometry()
 {
-  if ( qgsGeom && qgsGeom.get() )
+  if ( qgsGeom )
   {
     mQgsGeom = std::move( qgsGeom );
     mWkbType = mQgsGeom->wkbType();
@@ -67,10 +67,10 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsG
     mWkbType = QgsSfcgalEngine::wkbType( mSfcgalGeom.get() );
 }
 
-QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &geom )
-  : QgsAbstractGeometry( geom )
+QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom )
+  : QgsAbstractGeometry( otherGeom ), mHasCachedValidity( otherGeom.mHasCachedValidity ), mValidityFailureReason( otherGeom.mValidityFailureReason )
 {
-  mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( geom.mSfcgalGeom.get() );
+  mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( otherGeom.mSfcgalGeom.get() );
   resetQgsGeometry();
 }
 
@@ -141,11 +141,11 @@ QByteArray QgsSfcgalGeometry::asWkb( QgsAbstractGeometry::WkbFlags ) const
   return QByteArray( reinterpret_cast<const char *>( wkbUnsignedPtr ), ptr.remaining() );
 }
 
-QString QgsSfcgalGeometry::asWkt( int numDecim ) const
+QString QgsSfcgalGeometry::asWkt( int precision ) const
 {
   QString errorMsg; // used to retrieve failure messages if any
 
-  QString out = QgsSfcgalEngine::toWkt( mSfcgalGeom.get(), numDecim, &errorMsg );
+  QString out = QgsSfcgalEngine::toWkt( mSfcgalGeom.get(), precision, &errorMsg );
   CHECK_SUCCESS_LOG( &errorMsg, QString() );
 
   return out;

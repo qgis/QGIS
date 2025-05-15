@@ -289,15 +289,15 @@ lambda_geomgeom_to_geom = [](
 // ===================================
 
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::shared_geom &sfcgalGeom, QString *errorMsg )
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::shared_geom &geom, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  CHECK_NOT_NULL( sfcgalGeom.get(), nullptr );
+  CHECK_NOT_NULL( geom.get(), nullptr );
 
-  std::unique_ptr<QgsAbstractGeometry> qgsGeom = QgsSfcgalEngine::toAbstractGeometry( sfcgalGeom.get(), errorMsg );
+  std::unique_ptr<QgsAbstractGeometry> qgsGeom = QgsSfcgalEngine::toAbstractGeometry( geom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, std::unique_ptr<QgsSfcgalGeometry>( nullptr ) );
 
-  return std::make_unique<QgsSfcgalGeometry>( qgsGeom, sfcgalGeom );
+  return std::make_unique<QgsSfcgalGeometry>( qgsGeom, geom );
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsSfcgalEngine::toAbstractGeometry( const sfcgal::geometry *geom, QString *errorMsg )
@@ -550,7 +550,7 @@ QgsPoint QgsSfcgalEngine::centroid( const sfcgal::geometry *geom, QString *error
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, QgsPoint() );
 
-  sfcgal::geometry *result = nullptr;
+  const sfcgal::geometry *result = nullptr;
   if ( sfcgal_geometry_is_3d( geom ) )
     result = sfcgal_geometry_centroid_3d( geom );
   else
