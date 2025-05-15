@@ -779,6 +779,10 @@ class GenericAlgorithmsTest(QgisTestCase):
                     "s",
                     f'Algorithm {alg.id()} shortDescription should start with a verb ending in s, eg "Combines", "Creates",... "{alg.shortDescription()}"',
                 )
+                self.assertFalse(
+                    "</" in alg.shortDescription(),
+                    f'Algorithm {alg.id()} shortDescription should not contain any HTML formatting "{alg.shortDescription()}"',
+                )
 
 
 if __name__ == "__main__":
