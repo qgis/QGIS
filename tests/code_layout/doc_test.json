@@ -1,0 +1,3519 @@
+{
+  "acceptable_missing_doc": {
+    "CharacterWidget": [
+      "updateFontMerging(bool enable)"
+    ],
+    "CloughTocherInterpolator": [
+      "setTriangulation(NormVecDecorator *tin)"
+    ],
+    "EditBlockerDelegate": [
+      "EditBlockerDelegate(QObject *parent=nullptr)"
+    ],
+    "HalfEdge": [
+      "HalfEdge(int dual, int next, int point, bool mbreak, bool forced)"
+    ],
+    "ParametricLine": [
+      "add(ParametricLine *pl)=0",
+      "calcFirstDer(float t, Vector3D *v)=0",
+      "calcPoint(float t, QgsPoint *p)=0",
+      "calcSecDer(float t, Vector3D *v)=0",
+      "changeDirection()=0",
+      "getControlPoint(int number) const =0",
+      "getControlPoly() const =0",
+      "getDegree() const =0",
+      "getParent() const =0",
+      "remove(int i)=0",
+      "setControlPoly(QVector< QgsPoint * > *cp)=0",
+      "setParent(ParametricLine *paral)=0"
+    ],
+    "QgisInterface": [
+      "actionAbout()=0",
+      "actionAddAllToOverview()=0",
+      "actionAddOgrLayer()=0",
+      "actionAddPgLayer()=0",
+      "actionAddRasterLayer()=0",
+      "actionAddToOverview()=0",
+      "actionAddWmsLayer()=0",
+      "actionAllEdits()=0",
+      "actionCancelAllEdits()=0",
+      "actionCancelEdits()=0",
+      "actionCheckQgisVersion()=0",
+      "actionCopyLayerStyle()=0",
+      "actionCustomProjection()=0",
+      "actionDuplicateLayer()=0",
+      "actionHelpContents()=0",
+      "actionHideAllLayers()=0",
+      "actionHideSelectedLayers()=0",
+      "actionLayerProperties()=0",
+      "actionLayerSaveAs()=0",
+      "actionManagePlugins()=0",
+      "actionNewVectorLayer()=0",
+      "actionOpenFieldCalculator()=0",
+      "actionOpenTable()=0",
+      "actionOptions()=0",
+      "actionPasteLayerStyle()=0",
+      "actionPluginListSeparator()=0",
+      "actionQgisHomePage()=0",
+      "actionRemoveAllFromOverview()=0",
+      "actionRollbackAllEdits()=0",
+      "actionRollbackEdits()=0",
+      "actionSaveActiveLayerEdits()=0",
+      "actionSaveAllEdits()=0",
+      "actionSaveEdits()=0",
+      "actionShowAllLayers()=0",
+      "actionShowPythonDialog()=0",
+      "actionShowSelectedLayers()=0",
+      "actionToggleEditing()=0",
+      "actionToggleFullScreen()=0",
+      "layerTreeView()=0",
+      "pluginManagerInterface()=0"
+    ],
+    "QgisPlugin": [
+      "name()"
+    ],
+    "QgisVisitor": [
+      "QgisVisitor(QList< QgsFeatureId > &list)"
+    ],
+    "QgsAbstractFeatureIteratorFromSource": [
+      "QgsAbstractFeatureIteratorFromSource(T *source, bool ownSource, const QgsFeatureRequest &request)"
+    ],
+    "QgsAbstractFeatureSource": [
+      "iteratorClosed(QgsAbstractFeatureIterator *it)",
+      "iteratorOpened(QgsAbstractFeatureIterator *it)"
+    ],
+    "QgsAbstractLabelProvider": [
+      "Flag"
+    ],
+    "QgsAdvancedDigitizingCanvasItem": [
+      "QgsAdvancedDigitizingCanvasItem(QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget)"
+    ],
+    "QgsAlignRaster": [
+      "gridOffset() const",
+      "setGridOffset(QPointF offset)"
+    ],
+    "QgsAspectFilter": [
+      "QgsAspectFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat)"
+    ],
+    "QgsAttributeActionDialog": [
+      "QgsAttributeActionDialog(const QgsActionManager &actions, QWidget *parent=nullptr)",
+      "actions() const",
+      "attributeTableWidgetStyle() const",
+      "init(const QgsActionManager &action, const QgsAttributeTableConfig &attributeTableConfig)",
+      "showWidgetInAttributeTable() const"
+    ],
+    "QgsAttributeActionPropertiesDialog": [
+      "QgsAttributeActionPropertiesDialog(QgsVectorLayer *layer, QWidget *parent=nullptr)",
+      "actionScopes() const",
+      "actionText() const",
+      "capture() const",
+      "description() const",
+      "iconPath() const",
+      "isEnabledOnlyWhenEditable() const",
+      "notificationMessage() const",
+      "shortTitle() const",
+      "type() const"
+    ],
+    "QgsAttributeDialog": [
+      "attributeForm()",
+      "feature()"
+    ],
+    "QgsAttributeEditorContext": [
+      "FormMode",
+      "QgsAttributeEditorContext(const QgsAttributeEditorContext &parentContext, FormMode formMode)",
+      "QgsAttributeEditorContext(const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode)",
+      "parentContext() const"
+    ],
+    "QgsAttributeForm": [
+      "QgsAttributeForm(QgsVectorLayer *vl, const QgsFeature &feature=QgsFeature(), const QgsAttributeEditorContext &context=QgsAttributeEditorContext(), QWidget *parent=nullptr)",
+      "feature()"
+    ],
+    "QgsAttributeFormInterface": [
+      "QgsAttributeFormInterface(QgsAttributeForm *form)",
+      "acceptChanges(const QgsFeature &feature)",
+      "feature()",
+      "featureChanged()",
+      "form()",
+      "initForm()"
+    ],
+    "QgsAttributeFormLegacyInterface": [
+      "QgsAttributeFormLegacyInterface(const QString &function, const QString &pyFormName, QgsAttributeForm *form)"
+    ],
+    "QgsAttributeTableAction": [
+      "execute()",
+      "featureForm()"
+    ],
+    "QgsAttributeTableDelegate": [
+      "setFeatureSelectionModel(QgsFeatureSelectionModel *featureSelectionModel)"
+    ],
+    "QgsAttributeTableFilterModel": [
+      "fidToIndexList(QgsFeatureId fid)",
+      "mapFromMaster(const QModelIndex &sourceIndex) const",
+      "mapToMaster(const QModelIndex &proxyIndex) const"
+    ],
+    "QgsAttributeTableMapLayerAction": [
+      "QgsAttributeTableMapLayerAction(const QString &name, QgsDualView *dualView, QgsMapLayerAction *action, const QModelIndex &fieldIdx)",
+      "execute()"
+    ],
+    "QgsAttributeTableModel": [
+      "idToIndex(QgsFeatureId id) const",
+      "idToIndexList(QgsFeatureId id) const"
+    ],
+    "QgsAttributeTableView": [
+      "_q_selectRow(int row)",
+      "repaintRequested()",
+      "repaintRequested(const QModelIndexList &indexes)",
+      "selectRow(int row)",
+      "setModel(QgsAttributeTableFilterModel *filterModel)"
+    ],
+    "QgsAttributeTypeLoadDialog": [
+      "QgsAttributeTypeLoadDialog(QgsVectorLayer *vl)"
+    ],
+    "QgsAttributesFormProperties": [
+      "QgsAttributesFormProperties(QgsVectorLayer *layer, QWidget *parent=nullptr)",
+      "init()",
+      "initInitPython()",
+      "initLayoutConfig()",
+      "initSuppressCombo()",
+      "loadRelations()",
+      "updateButtons()"
+    ],
+    "QgsAuthCertInfo": [
+      "trustCacheRebuilt()"
+    ],
+    "QgsAuthMethodConfig": [
+      "setMethod(const QString &method)",
+      "setUri(const QString &uri)"
+    ],
+    "QgsBlurWidget": [
+      "QgsBlurWidget(QWidget *parent=nullptr)",
+      "create()"
+    ],
+    "QgsBrightnessContrastFilter": [
+      "QgsBrightnessContrastFilter(QgsRasterInterface *input=nullptr)"
+    ],
+    "QgsBrowserModel": [
+      "beginInsertItems(QgsDataItem *parent, int first, int last)",
+      "beginRemoveItems(QgsDataItem *parent, int first, int last)",
+      "endInsertItems()",
+      "endRemoveItems()",
+      "itemDataChanged(QgsDataItem *item)",
+      "removeRootItems()",
+      "updateProjectHome()"
+    ],
+    "QgsBrowserTreeView": [
+      "hasExpandedDescendant(const QModelIndex &index) const",
+      "setSettingsSection(const QString &section)"
+    ],
+    "QgsBrushStyleComboBox": [
+      "QgsBrushStyleComboBox(QWidget *parent=nullptr)",
+      "brushStyle() const",
+      "iconForBrush(Qt::BrushStyle style)",
+      "setBrushStyle(Qt::BrushStyle style)"
+    ],
+    "QgsBusyIndicatorDialog": [
+      "message() const",
+      "setMessage(const QString &message)"
+    ],
+    "QgsCacheIndexFeatureId": [
+      "QgsCacheIndexFeatureId(QgsVectorLayerCache *)"
+    ],
+    "QgsCapabilitiesCache": [
+      "QgsCapabilitiesCache(int size)"
+    ],
+    "QgsCategorizedSymbolRenderer": [
+      "rebuildHash()"
+    ],
+    "QgsCategorizedSymbolRendererWidget": [
+      "QgsCategorizedSymbolRendererWidget(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "addCategories()",
+      "addCategory()",
+      "categoriesDoubleClicked(const QModelIndex &idx)",
+      "categoryColumnChanged(const QString &field)",
+      "changeCategorizedSymbol()",
+      "changeCategorySymbol()",
+      "create(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "deleteAllCategories()",
+      "deleteCategories()",
+      "populateCategories()",
+      "rowsMoved()",
+      "selectedCategoryList()",
+      "showSymbolLevels()",
+      "updateUiFromRenderer()"
+    ],
+    "QgsCentroidFillSymbolLayer": [
+      "createFromSld(QDomElement &element)",
+      "pointOnSurface() const",
+      "setPointOnSurface(bool pointOnSurface)"
+    ],
+    "QgsCharacterSelectorDialog": [
+      "QgsCharacterSelectorDialog(QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags)"
+    ],
+    "QgsCheckBoxConfigDlg": [
+      "QgsCheckBoxConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
+    ],
+    "QgsClipToMinMaxEnhancement": [
+      "QgsClipToMinMaxEnhancement(Qgis::DataType, double, double)"
+    ],
+    "QgsCollapsibleGroupBox": [
+      "QgsCollapsibleGroupBox(QWidget *parent=nullptr, QgsSettings *settings=nullptr)",
+      "QgsCollapsibleGroupBox(const QString &title, QWidget *parent=nullptr, QgsSettings *settings=nullptr)",
+      "saveCheckedState()",
+      "saveCollapsedState()",
+      "saveKey() const",
+      "setSettings(QgsSettings *settings)"
+    ],
+    "QgsCollapsibleGroupBoxBasic": [
+      "QgsCollapsibleGroupBoxBasic(QWidget *parent=nullptr)",
+      "QgsCollapsibleGroupBoxBasic(const QString &title, QWidget *parent=nullptr)",
+      "checkClicked(bool ckd)",
+      "checkToggled(bool ckd)",
+      "clearModifiers()",
+      "titleRect() const",
+      "toggleCollapsed()",
+      "updateStyle()"
+    ],
+    "QgsColorBrewerPalette": [
+      "listSchemeColors(const QString &schemeName, int colors)",
+      "listSchemeVariants(const QString &schemeName)",
+      "listSchemes()"
+    ],
+    "QgsColorEffectWidget": [
+      "QgsColorEffectWidget(QWidget *parent=nullptr)",
+      "create()"
+    ],
+    "QgsColorSwatchDelegate": [
+      "QgsColorSwatchDelegate(QWidget *parent=nullptr)"
+    ],
+    "QgsConditionalStyle": [
+      "QgsConditionalStyle(const QString &rule)"
+    ],
+    "QgsConnectionPoolGroup": [
+      "initTimer(QObject *parent)",
+      "invalidateConnections()",
+      "onConnectionExpired()",
+      "release(T conn)"
+    ],
+    "QgsConstWkbPtr": [
+      "QgsConstWkbPtr(const unsigned char *p, int size)",
+      "operator const unsigned char *() const",
+      "operator+=(int n) const",
+      "operator-=(int n) const",
+      "operator>>(char &v) const",
+      "operator>>(double &v) const",
+      "operator>>(float &r) const",
+      "operator>>(int &v) const",
+      "operator>>(unsigned int &v) const"
+    ],
+    "QgsContrastEnhancement": [
+      "contrastEnhancementAlgorithm() const",
+      "readXml(const QDomElement &elem)",
+      "writeXml(QDomDocument &doc, QDomElement &parentElem) const"
+    ],
+    "QgsContrastEnhancementFunction": [
+      "QgsContrastEnhancementFunction(Qgis::DataType, double, double)"
+    ],
+    "QgsCptCityAllRampsItem": [
+      "QgsCptCityAllRampsItem(QgsCptCityDataItem *parent, const QString &name, const QVector< QgsCptCityDataItem * > &items)"
+    ],
+    "QgsCptCityArchive": [
+      "QgsCptCityArchive(const QString &archiveName=DEFAULT_CPTCITY_ARCHIVE, const QString &baseDir=QString())",
+      "archiveName() const",
+      "archiveRegistry()",
+      "baseDir() const",
+      "baseDir(QString archiveName)",
+      "clearArchives()",
+      "copyingFileName(const QString &dirName) const",
+      "copyingInfo(const QString &fileName)",
+      "defaultArchive()",
+      "defaultBaseDir()",
+      "descFileName(const QString &dirName) const",
+      "description(const QString &fileName)",
+      "findFileName(const QString &target, const QString &startDir, const QString &baseDir)",
+      "initArchive(const QString &archiveName, const QString &archiveBaseDir)",
+      "initArchives(bool loadAll=false)",
+      "initDefaultArchive()",
+      "rootItems() const",
+      "selectionItems() const",
+      "setBaseDir(const QString &dirName)"
+    ],
+    "QgsCptCityBrowserModel": [
+      "QgsCptCityBrowserModel(QObject *parent=nullptr, QgsCptCityArchive *archive=QgsCptCityArchive::defaultArchive(), ViewType Type=Authors)",
+      "ViewType",
+      "addRootItems()",
+      "beginInsertItems(QgsCptCityDataItem *parent, int first, int last)",
+      "beginRemoveItems(QgsCptCityDataItem *parent, int first, int last)",
+      "connectItem(QgsCptCityDataItem *item)",
+      "endInsertItems()",
+      "endRemoveItems()",
+      "findItem(QgsCptCityDataItem *item, QgsCptCityDataItem *parent=nullptr) const",
+      "removeRootItems()"
+    ],
+    "QgsCptCityCollectionItem": [
+      "QgsCptCityCollectionItem(QgsCptCityDataItem *parent, const QString &name, const QString &path)",
+      "addChild(QgsCptCityDataItem *item)",
+      "childrenRamps(bool recursive)",
+      "setPopulated()"
+    ],
+    "QgsCptCityColorRamp": [
+      "cloneGradientRamp() const",
+      "copy(const QgsCptCityColorRamp *other)",
+      "copyingFileName() const",
+      "copyingInfo() const",
+      "descFileName() const",
+      "fileLoaded() const",
+      "fileName() const",
+      "hasMultiStops() const",
+      "loadFile()",
+      "loadPalette()",
+      "schemeName() const",
+      "setName(const QString &schemeName, const QString &variantName=QString(), const QStringList &variantList=QStringList())",
+      "setSchemeName(const QString &schemeName)",
+      "setVariantList(const QStringList &variantList)",
+      "setVariantName(const QString &variantName)",
+      "variantList() const",
+      "variantName() const"
+    ],
+    "QgsCptCityColorRampItem": [
+      "QgsCptCityColorRampItem(QgsCptCityDataItem *parent, const QString &name, const QString &path, const QString &variantName=QString(), bool initialize=false)",
+      "QgsCptCityColorRampItem(QgsCptCityDataItem *parent, const QString &name, const QString &path, const QStringList &variantList, bool initialize=false)",
+      "init()",
+      "ramp() const"
+    ],
+    "QgsCptCityDataItem": [
+      "QgsCptCityDataItem(QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent, const QString &name, const QString &path)",
+      "Type",
+      "children() const",
+      "hasChildren()",
+      "icon()",
+      "icon(QSize size)",
+      "info() const",
+      "isValid()",
+      "name() const",
+      "parent() const",
+      "path() const",
+      "refresh()",
+      "rowCount()",
+      "setIcon(const QIcon &icon)",
+      "setParent(QgsCptCityDataItem *parent)",
+      "setToolTip(const QString &msg)",
+      "shortInfo() const",
+      "toolTip() const",
+      "type() const"
+    ],
+    "QgsCptCityDirectoryItem": [
+      "QgsCptCityDirectoryItem(QgsCptCityDataItem *parent, const QString &name, const QString &path)",
+      "dataItem(QgsCptCityDataItem *parent, const QString &name, const QString &path)",
+      "dirEntries() const",
+      "rampsMap()"
+    ],
+    "QgsCptCitySelectionItem": [
+      "QgsCptCitySelectionItem(QgsCptCityDataItem *parent, const QString &name, const QString &path)",
+      "parseXml()",
+      "selectionsList() const"
+    ],
+    "QgsCredentials": [
+      "getMasterPassword(QString &password, bool stored=false)"
+    ],
+    "QgsDartMeasurement": [
+      "QgsDartMeasurement(const QString &name, Type type, const QString &value)",
+      "Type",
+      "send() const",
+      "toString() const"
+    ],
+    "QgsDataCollectionItem": [
+      "addChild(QgsDataItem *item)"
+    ],
+    "QgsDataDefinedRotationDialog": [
+      "QgsDataDefinedRotationDialog(const QList< QgsSymbol * > &symbolList, QgsVectorLayer *layer)"
+    ],
+    "QgsDataDefinedSizeDialog": [
+      "QgsDataDefinedSizeDialog(const QList< QgsSymbol * > &symbolList, QgsVectorLayer *layer)"
+    ],
+    "QgsDataDefinedValueDialog": [
+      "dataDefinedChanged()"
+    ],
+    "QgsDataDefinedWidthDialog": [
+      "QgsDataDefinedWidthDialog(const QList< QgsSymbol * > &symbolList, QgsVectorLayer *layer)"
+    ],
+    "QgsDataItem": [
+      "children() const",
+      "childrenCreated()",
+      "deleteLater(QVector< QgsDataItem * > &items)",
+      "findItem(QVector< QgsDataItem * > items, QgsDataItem *item)",
+      "hasChildren()",
+      "icon()",
+      "path() const",
+      "populate(bool foreground=false)",
+      "populate(const QVector< QgsDataItem * > &children)",
+      "refresh()",
+      "rowCount()",
+      "setIcon(const QIcon &icon)",
+      "setIconName(const QString &iconName)",
+      "setPath(const QString &path)",
+      "setToolTip(const QString &msg)",
+      "state() const",
+      "toolTip() const",
+      "type() const"
+    ],
+    "QgsDateTimeEditConfig": [
+      "QgsDateTimeEditConfig(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
+    ],
+    "QgsDefaultRasterLayerLegend": [
+      "QgsDefaultRasterLayerLegend(QgsRasterLayer *rl)"
+    ],
+    "QgsDefaultVectorLayerLegend": [
+      "QgsDefaultVectorLayerLegend(QgsVectorLayer *vl)"
+    ],
+    "QgsDerivativeFilter": [
+      "QgsDerivativeFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat)"
+    ],
+    "QgsDetailedItemDelegate": [
+      "horizontalSpacing() const",
+      "setHorizontalSpacing(int value)",
+      "setVerticalSpacing(int value)",
+      "verticalSpacing() const"
+    ],
+    "QgsDetailedItemWidget": [
+      "setChecked(bool flag)",
+      "setData(const QgsDetailedItemData &data)"
+    ],
+    "QgsDiagram": [
+      "clearCache()"
+    ],
+    "QgsDiagramLayerSettings": [
+      "Placement"
+    ],
+    "QgsDiagramProperties": [
+      "QgsDiagramProperties(QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas)",
+      "apply()",
+      "auxiliaryFieldCreated()",
+      "mAddCategoryPushButton_clicked()",
+      "mAttributesTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)",
+      "mDiagramAttributesTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)",
+      "mDiagramStackedWidget_currentChanged(int index)",
+      "mDiagramTypeComboBox_currentIndexChanged(int index)",
+      "mFindMaximumValueButton_clicked()",
+      "mRemoveCategoryPushButton_clicked()",
+      "scalingTypeChanged()",
+      "showAddAttributeExpressionDialog()",
+      "showSizeLegendDialog()",
+      "updatePlacementWidgets()"
+    ],
+    "QgsDiagramRenderer": [
+      "diagram() const",
+      "rendererName() const =0",
+      "setDiagram(QgsDiagram *d)"
+    ],
+    "QgsDiagramSettings": [
+      "LabelPlacementMethod"
+    ],
+    "QgsDial": [
+      "setMaximum(const QVariant &max)",
+      "setMinimum(const QVariant &min)",
+      "setSingleStep(const QVariant &step)",
+      "setValue(const QVariant &value)",
+      "valueChanged(const QVariant &)",
+      "variantValue() const"
+    ],
+    "QgsDirectoryItem": [
+      "directoryChanged()"
+    ],
+    "QgsDirectoryParamWidget": [
+      "QgsDirectoryParamWidget(const QString &path, QWidget *parent=nullptr)",
+      "showHideColumn()"
+    ],
+    "QgsDrawSourceWidget": [
+      "QgsDrawSourceWidget(QWidget *parent=nullptr)",
+      "create()"
+    ],
+    "QgsDualView": [
+      "openConditionalStyles()"
+    ],
+    "QgsDummyConfigDlg": [
+      "QgsDummyConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent, const QString &description)"
+    ],
+    "QgsDxfPaintDevice": [
+      "QgsDxfPaintDevice(QgsDxfExport *dxf)",
+      "setDrawingSize(QSizeF size)",
+      "setLayer(const QString &layer)",
+      "setOutputSize(const QRectF &r)",
+      "setShift(QPointF shift)"
+    ],
+    "QgsDxfPaintEngine": [
+      "QgsDxfPaintEngine(const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf)",
+      "layer() const",
+      "setLayer(const QString &layer)",
+      "setShift(QPointF shift)"
+    ],
+    "QgsEditorWidgetRegistry": [
+      "createSearchWidget(const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent, const QgsAttributeEditorContext &context=QgsAttributeEditorContext())"
+    ],
+    "QgsEffectDrawModeComboBox": [
+      "QgsEffectDrawModeComboBox(QWidget *parent SIP_TRANSFERTHIS=nullptr)"
+    ],
+    "QgsEllipseSymbolLayer": [
+      "createFromSld(QDomElement &element)",
+      "setStrokeStyle(Qt::PenStyle strokeStyle)",
+      "setStrokeWidth(double w)",
+      "setStrokeWidthMapUnitScale(const QgsMapUnitScale &scale)",
+      "setSymbolHeight(double h)",
+      "setSymbolHeightMapUnitScale(const QgsMapUnitScale &scale)",
+      "setSymbolWidth(double w)",
+      "setSymbolWidthMapUnitScale(const QgsMapUnitScale &scale)",
+      "strokeStyle() const",
+      "strokeWidth() const",
+      "strokeWidthMapUnitScale() const",
+      "symbolHeight() const",
+      "symbolHeightMapUnitScale() const",
+      "symbolWidth() const",
+      "symbolWidthMapUnitScale() const"
+    ],
+    "QgsEncodingFileDialog": [
+      "pbnCancelAll_clicked()",
+      "saveUsedEncoding()"
+    ],
+    "QgsErrorItem": [
+      "QgsErrorItem(QgsDataItem *parent, const QString &error, const QString &path)"
+    ],
+    "QgsErrorMessage": [
+      "file() const",
+      "function() const",
+      "line() const",
+      "message() const",
+      "tag() const"
+    ],
+    "QgsExpression": [
+      "BuiltinFunctions()",
+      "Functions()",
+      "SpatialOperator"
+    ],
+    "QgsExpressionBuilderDialog": [
+      "QgsExpressionBuilderDialog(QgsVectorLayer *layer, const QString &startText=QString(), QWidget *parent SIP_TRANSFERTHIS=nullptr, const QString &key=\"generic\", const QgsExpressionContext &context=QgsExpressionContext())",
+      "expressionText()",
+      "setExpressionText(const QString &text)"
+    ],
+    "QgsExpressionFieldBuffer": [
+      "expressions() const"
+    ],
+    "QgsExpressionHighlighter": [
+      "QgsExpressionHighlighter(QTextDocument *parent=nullptr)",
+      "addFields(const QStringList &fieldList)"
+    ],
+    "QgsExpressionItem": [
+      "ItemType",
+      "QgsExpressionItem(const QString &label, const QString &expressionText, QgsExpressionItem::ItemType itemType=ExpressionNode)",
+      "QgsExpressionItem(const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType itemType=ExpressionNode)",
+      "getExpressionText() const"
+    ],
+    "QgsExternalResourceWidget": [
+      "DocumentViewerContent",
+      "setDocumentPath(const QVariant &documentPath)"
+    ],
+    "QgsFeatureListModel": [
+      "Role",
+      "displayExpression() const",
+      "featureByIndex(const QModelIndex &index, QgsFeature &feat)",
+      "fidToIndexList(QgsFeatureId fid)",
+      "mapFromMaster(const QModelIndex &sourceIndex) const",
+      "mapSelectionFromMaster(const QItemSelection &selection) const",
+      "mapSelectionToMaster(const QItemSelection &selection) const",
+      "mapToMaster(const QModelIndex &proxyIndex) const",
+      "masterModel()",
+      "setSourceModel(QgsAttributeTableFilterModel *sourceModel)"
+    ],
+    "QgsFeatureListView": [
+      "repaintRequested()",
+      "repaintRequested(const QModelIndexList &indexes)"
+    ],
+    "QgsFeatureListViewDelegate": [
+      "Element",
+      "QgsFeatureListViewDelegate(QgsFeatureListModel *listModel, QObject *parent=nullptr)",
+      "positionToElement(QPoint pos)",
+      "setCurrentFeatureEdited(bool state)",
+      "setEditSelectionModel(QItemSelectionModel *editSelectionModel)",
+      "setFeatureSelectionModel(QgsFeatureSelectionModel *featureSelectionModel)"
+    ],
+    "QgsFeatureModel": [
+      "fidToIndex(QgsFeatureId fid)=0"
+    ],
+    "QgsFeatureRenderer": [
+      "QgsFeatureRenderer(const QString &type)",
+      "setUsingSymbolLevels(bool usingSymbolLevels)",
+      "type() const",
+      "usingSymbolLevels() const"
+    ],
+    "QgsFeatureSelectionModel": [
+      "QgsFeatureSelectionModel(QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionHandler, QObject *parent)",
+      "setFeatureSelectionManager(QgsIFeatureSelectionManager *featureSelectionManager)"
+    ],
+    "QgsFieldCalculator": [
+      "QgsFieldCalculator(QgsVectorLayer *vl, QWidget *parent=nullptr)"
+    ],
+    "QgsFieldComboBox": [
+      "indexChanged(int i)"
+    ],
+    "QgsFieldExpressionWidget": [
+      "currentFieldChanged()",
+      "isExpressionValid(const QString &expressionStr)",
+      "setLeftHandButtonStyle(bool isLeft)"
+    ],
+    "QgsFieldValidator": [
+      "QgsFieldValidator(QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat=\"yyyy-MM-dd\")",
+      "dateFormat() const"
+    ],
+    "QgsFillSymbol": [
+      "setAngle(double angle) const"
+    ],
+    "QgsFillSymbolLayer": [
+      "QgsFillSymbolLayer(bool locked=false)"
+    ],
+    "QgsFontMarkerSymbolLayerWidget": [
+      "setAngle(double angle)",
+      "setColor(const QColor &color)",
+      "setFontFamily(const QFont &font)",
+      "setSize(double size)"
+    ],
+    "QgsGenericFeatureSelectionManager": [
+      "QgsGenericFeatureSelectionManager(QObject *parent=nullptr)",
+      "QgsGenericFeatureSelectionManager(const QgsFeatureIds &initialSelection, QObject *parent=nullptr)"
+    ],
+    "QgsGeometry::Error": [
+      "Error(const QString &m)",
+      "Error(const QString &m, const QgsPointXY &p)"
+    ],
+    "QgsGeometryAngleCheck": [
+      "QgsGeometryAngleCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryAreaCheck": [
+      "QgsGeometryAreaCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryChecker": [
+      "QgsGeometryChecker(const QList< QgsGeometryCheck * > &checks, QgsGeometryCheckContext *context, const QMap< QString, QgsFeaturePool * > &featurePools)",
+      "errorAdded(QgsGeometryCheckError *error)",
+      "errorUpdated(QgsGeometryCheckError *error, bool statusChanged)",
+      "execute(int *totalSteps=nullptr)",
+      "featurePools() const",
+      "fixError(QgsGeometryCheckError *error, int method, bool triggerRepaint=false)",
+      "getChecks() const",
+      "getContext() const",
+      "getMessages() const",
+      "progressValue(int value)",
+      "setMergeAttributeIndices(const QMap< QString, int > &mergeAttributeIndices)"
+    ],
+    "QgsGeometryCheckerUtils": [
+      "canDeleteVertex(const QgsAbstractGeometry *geom, int iPart, int iRing)",
+      "filter1DTypes(QgsAbstractGeometry *geom)",
+      "getGeomPart(QgsAbstractGeometry *geom, int partIdx)",
+      "getGeomPart(const QgsAbstractGeometry *geom, int partIdx)",
+      "lineIntersections(const QgsLineString *line1, const QgsLineString *line2, double tol)",
+      "pointOnLine(const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities=false)",
+      "polygonRings(const QgsPolygon *polygon)",
+      "sharedEdgeLength(const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol)"
+    ],
+    "QgsGeometryContainedCheck": [
+      "QgsGeometryContainedCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryContainedCheckError": [
+      "QgsGeometryContainedCheckError(const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QgsGeometryCheckerUtils::LayerFeature &containingFeature)",
+      "containingFeature() const"
+    ],
+    "QgsGeometryDangleCheck": [
+      "QgsGeometryDangleCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryDegeneratePolygonCheck": [
+      "QgsGeometryDegeneratePolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryDuplicateCheck": [
+      "QgsGeometryDuplicateCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryDuplicateNodesCheck": [
+      "QgsGeometryDuplicateNodesCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryEngine": [
+      "QgsGeometryEngine(const QgsAbstractGeometry *geometry)",
+      "area(QString *errorMsg=nullptr) const =0",
+      "buffer(double distance, int segments, QString *errorMsg=nullptr) const =0",
+      "envelope(QString *errorMsg=nullptr) const =0",
+      "interpolate(double distance, QString *errorMsg=nullptr) const =0",
+      "isEmpty(QString *errorMsg) const =0",
+      "length(QString *errorMsg=nullptr) const =0",
+      "simplify(double tolerance, QString *errorMsg=nullptr) const =0"
+    ],
+    "QgsGeometryFollowBoundariesCheck": [
+      "QgsGeometryFollowBoundariesCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration, QgsVectorLayer *checkLayer)",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryHoleCheck": [
+      "QgsGeometryHoleCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryLineIntersectionCheck": [
+      "QgsGeometryLineIntersectionCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryLineLayerIntersectionCheck": [
+      "QgsGeometryLineLayerIntersectionCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryMultipartCheck": [
+      "QgsGeometryMultipartCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryPointCoveredByLineCheck": [
+      "QgsGeometryPointCoveredByLineCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryPointInPolygonCheck": [
+      "QgsGeometryPointInPolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryRubberBand": [
+      "IconType"
+    ],
+    "QgsGeometrySegmentLengthCheck": [
+      "QgsGeometrySegmentLengthCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometrySelfContactCheck": [
+      "QgsGeometrySelfContactCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)",
+      "ResolutionMethod",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometrySelfIntersectionCheck": [
+      "QgsGeometrySelfIntersectionCheck(const QgsGeometryCheckContext *context, const QVariantMap &configuration=QVariantMap())",
+      "ResolutionMethod"
+    ],
+    "QgsGeometrySelfIntersectionCheckError": [
+      "QgsGeometrySelfIntersectionCheckError(const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, QgsVertexId vertexId, const QgsGeometryUtils::SelfIntersection &intersection)",
+      "intersection() const"
+    ],
+    "QgsGeometrySliverPolygonCheck": [
+      "QgsGeometrySliverPolygonCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration)"
+    ],
+    "QgsGeometryTypeCheck": [
+      "QgsGeometryTypeCheck(QgsGeometryCheckContext *context, const QVariantMap &configuration, int allowedTypes)",
+      "factoryCheckType()",
+      "factoryCompatibleGeometryTypes()",
+      "factoryDescription()",
+      "factoryId()",
+      "factoryIsCompatible(QgsVectorLayer *layer)"
+    ],
+    "QgsGeometryValidator": [
+      "addError(const QgsGeometry::Error &)",
+      "stop()"
+    ],
+    "QgsGlowWidget": [
+      "QgsGlowWidget(QWidget *parent=nullptr)",
+      "create()"
+    ],
+    "QgsGml": [
+      "QgsGml(const QString &typeName, const QString &geometryAttribute, const QgsFields &fields)"
+    ],
+    "QgsGmlFeatureClass": [
+      "QgsGmlFeatureClass(const QString &name, const QString &path)",
+      "fieldIndex(const QString &name)",
+      "fields()",
+      "geometryAttributes()",
+      "path() const"
+    ],
+    "QgsGpsConnection": [
+      "Status"
+    ],
+    "QgsGpsConnectionRegistry": [
+      "connectionList() const"
+    ],
+    "QgsGpsDetector": [
+      "advance()",
+      "availablePorts()",
+      "connDestroyed(QObject *)",
+      "detected(const QgsGpsInformation &)"
+    ],
+    "QgsGpsdConnection": [
+      "QgsGpsdConnection(const QString &host, qint16 port, const QString &device)"
+    ],
+    "QgsGradientFillSymbolLayerWidget": [
+      "setColor(const QColor &color)",
+      "setColor2(const QColor &color)",
+      "setCoordinateMode(int index)",
+      "setGradientSpread(int index)",
+      "setGradientType(int index)"
+    ],
+    "QgsGraduatedSymbolRenderer": [
+      "QgsGraduatedSymbolRenderer(const QString &attrName=QString(), const QgsRangeList &ranges=QgsRangeList())",
+      "deleteAllClasses()",
+      "deleteClass(int idx)",
+      "sortByLabel(Qt::SortOrder order=Qt::AscendingOrder)",
+      "sortByValue(Qt::SortOrder order=Qt::AscendingOrder)",
+      "updateRangeLabel(int rangeIndex, const QString &label)",
+      "updateRangeLowerValue(int rangeIndex, double value)",
+      "updateRangeRenderState(int rangeIndex, bool render)",
+      "updateRangeSymbol(int rangeIndex, QgsSymbol *symbol)",
+      "updateRangeUpperValue(int rangeIndex, double value)"
+    ],
+    "QgsGraduatedSymbolRendererWidget": [
+      "QgsGraduatedSymbolRendererWidget(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "changeCurrentValue(QStandardItem *item)",
+      "changeRange(int rangeIdx)",
+      "changeRangeSymbol(int rangeIdx)",
+      "changeSelectedSymbols()",
+      "classifyGraduated()",
+      "connectUpdateHandlers()",
+      "create(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "disconnectUpdateHandlers()",
+      "findSymbolForRange(double lowerBound, double upperBound, const QgsRangeList &ranges) const",
+      "graduatedColumnChanged(const QString &field)",
+      "labelFormatChanged()",
+      "modelDataChanged()",
+      "rangesClicked(const QModelIndex &idx)",
+      "rangesDoubleClicked(const QModelIndex &idx)",
+      "reapplyColorRamp()",
+      "reapplySizes()",
+      "rowsMoved()",
+      "rowsOrdered()",
+      "selectedRanges()",
+      "showSymbolLevels()",
+      "updateUiFromRenderer(bool updateCount=true)"
+    ],
+    "QgsGroupBoxCollapseButton": [
+      "QgsGroupBoxCollapseButton(QWidget *parent=nullptr)",
+      "altDown() const",
+      "setAltDown(bool updown)",
+      "setShiftDown(bool shiftdown)",
+      "shiftDown() const"
+    ],
+    "QgsHeatmapRenderer": [
+      "convertFromRenderer(const QgsFeatureRenderer *renderer)"
+    ],
+    "QgsHillshadeFilter": [
+      "QgsHillshadeFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth=300, double lightAngle=40)",
+      "lightAngle() const",
+      "lightAzimuth() const",
+      "setLightAngle(float angle)",
+      "setLightAzimuth(float azimuth)"
+    ],
+    "QgsHueSaturationFilter": [
+      "GrayscaleMode",
+      "QgsHueSaturationFilter(QgsRasterInterface *input=nullptr)",
+      "colorizeColor() const",
+      "colorizeOn() const",
+      "colorizeStrength() const",
+      "grayscaleMode() const",
+      "saturation() const",
+      "setColorizeColor(const QColor &colorizeColor)",
+      "setColorizeOn(bool colorizeOn)",
+      "setColorizeStrength(int colorizeStrength)",
+      "setGrayscaleMode(QgsHueSaturationFilter::GrayscaleMode grayscaleMode)",
+      "setSaturation(int saturation)"
+    ],
+    "QgsIFeatureSelectionManager": [
+      "QgsIFeatureSelectionManager(QObject *parent)"
+    ],
+    "QgsIdentifyMenu": [
+      "MenuLevel",
+      "allowMultipleReturn()",
+      "execWithSingleResult()",
+      "maxFeatureDisplay()",
+      "maxLayerDisplay()",
+      "resultsIfExternalAction()",
+      "showFeatureActions()"
+    ],
+    "QgsInterpolator": [
+      "QgsInterpolator(const QList< QgsInterpolator::LayerData > &layerData)"
+    ],
+    "QgsJoinDialog": [
+      "QgsJoinDialog(QgsVectorLayer *layer, QList< QgsMapLayer * > alreadyJoinedLayers, QWidget *parent=nullptr, Qt::WindowFlags f=Qt::WindowFlags())"
+    ],
+    "QgsLUDialog": [
+      "QgsLUDialog(QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags)",
+      "lowerValue() const",
+      "setLowerValue(const QString &val)",
+      "setUpperValue(const QString &val)",
+      "upperValue() const"
+    ],
+    "QgsLabelCandidate": [
+      "QgsLabelCandidate(const QRectF &r, double c)"
+    ],
+    "QgsLabelingEngine": [
+      "processProvider(QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p)"
+    ],
+    "QgsLayerItem": [
+      "iconDefault()",
+      "iconLine()",
+      "iconPoint()",
+      "iconPolygon()",
+      "iconRaster()",
+      "iconTable()"
+    ],
+    "QgsLayerPropertiesWidget": [
+      "emitSignalChanged()",
+      "layerTypeChanged()",
+      "populateLayerTypes()",
+      "updateSymbolLayerWidget(QgsSymbolLayer *layer)"
+    ],
+    "QgsLayerTreeGroup": [
+      "nodeVisibilityChanged(QgsLayerTreeNode *node)"
+    ],
+    "QgsLayerTreeLayer": [
+      "QgsLayerTreeLayer(QgsMapLayer *layer)",
+      "attachToLayer()"
+    ],
+    "QgsLayerTreeMapCanvasBridge": [
+      "autoSetupOnFirstLayer() const",
+      "mapCanvas() const",
+      "rootGroup() const"
+    ],
+    "QgsLayerTreeModel": [
+      "Flag",
+      "addLegendToLayer(QgsLayerTreeLayer *nodeL)",
+      "connectToLayer(QgsLayerTreeLayer *nodeLayer)",
+      "connectToLayers(QgsLayerTreeGroup *parentGroup)",
+      "connectToRootNode()",
+      "disconnectFromLayer(QgsLayerTreeLayer *nodeLayer)",
+      "disconnectFromLayers(QgsLayerTreeGroup *parentGroup)",
+      "disconnectFromRootNode()",
+      "iconGroup()",
+      "indexOfParentLayerTreeNode(QgsLayerTreeNode *parentNode) const",
+      "invalidateLegendMapBasedData()",
+      "layerLegendChanged()",
+      "layerNeedsUpdate()",
+      "legendCleanup()",
+      "legendEmbeddedInParent(QgsLayerTreeLayer *nodeLayer) const",
+      "legendIconEmbeddedInParent(QgsLayerTreeLayer *nodeLayer) const",
+      "legendInvalidateMapBasedData()",
+      "legendNodeData(QgsLayerTreeModelLegendNode *node, int role) const",
+      "legendNodeDataChanged()",
+      "legendNodeFlags(QgsLayerTreeModelLegendNode *node) const",
+      "legendNodeIndex(int row, int column, QgsLayerTreeModelLegendNode *node) const",
+      "legendNodeRowCount(QgsLayerTreeModelLegendNode *node) const",
+      "legendParent(QgsLayerTreeModelLegendNode *legendNode) const",
+      "legendRootIndex(int row, int column, QgsLayerTreeLayer *nL) const",
+      "legendRootRowCount(QgsLayerTreeLayer *nL) const",
+      "nodeAddedChildren(QgsLayerTreeNode *node, int indexFrom, int indexTo)",
+      "nodeCustomPropertyChanged(QgsLayerTreeNode *node, const QString &key)",
+      "nodeLayerLoaded()",
+      "nodeLayerWillBeUnloaded()",
+      "nodeRemovedChildren()",
+      "nodeVisibilityChanged(QgsLayerTreeNode *node)",
+      "nodeWillAddChildren(QgsLayerTreeNode *node, int indexFrom, int indexTo)",
+      "nodeWillRemoveChildren(QgsLayerTreeNode *node, int indexFrom, int indexTo)",
+      "removeLegendFromLayer(QgsLayerTreeLayer *nodeLayer)"
+    ],
+    "QgsLayerTreeModelLegendNode": [
+      "isEmbeddedInParent() const",
+      "isScaleOK(double scale) const",
+      "setEmbeddedInParent(bool embedded)",
+      "setUserLabel(const QString &userLabel)",
+      "userLabel() const"
+    ],
+    "QgsLayerTreeRegistryBridge": [
+      "groupRemovedChildren()",
+      "groupWillRemoveChildren(QgsLayerTreeNode *node, int indexFrom, int indexTo)",
+      "isEnabled() const",
+      "layersAdded(const QList< QgsMapLayer * > &layers)",
+      "layersWillBeRemoved(const QStringList &layerIds)",
+      "newLayersVisible() const",
+      "removeLayersFromRegistry(const QStringList &layerIds)",
+      "setEnabled(bool enabled)",
+      "setNewLayersVisible(bool enabled)"
+    ],
+    "QgsLayerTreeView": [
+      "layerForIndex(const QModelIndex &index) const",
+      "modelRowsInserted(const QModelIndex &index, int start, int end)",
+      "modelRowsRemoved()",
+      "onCurrentChanged()",
+      "onExpandedChanged(QgsLayerTreeNode *node, bool expanded)",
+      "onModelReset()",
+      "updateExpandedStateFromNode(QgsLayerTreeNode *node)",
+      "updateExpandedStateToNode(const QModelIndex &index)"
+    ],
+    "QgsLayerTreeViewDefaultActions": [
+      "QgsLayerTreeViewDefaultActions(QgsLayerTreeView *view)",
+      "actionAddGroup(QObject *parent=nullptr)",
+      "actionGroupSelected(QObject *parent=nullptr)",
+      "actionRemoveGroupOrLayer(QObject *parent=nullptr)",
+      "actionRenameGroupOrLayer(QObject *parent=nullptr)",
+      "actionShowFeatureCount(QObject *parent=nullptr)",
+      "actionShowInOverview(QObject *parent=nullptr)",
+      "actionZoomToGroup(QgsMapCanvas *canvas, QObject *parent=nullptr)",
+      "addGroup()",
+      "groupSelected()",
+      "removeGroupOrLayer()",
+      "renameGroupOrLayer()",
+      "showFeatureCount()",
+      "showInOverview()",
+      "uniqueGroupName(QgsLayerTreeGroup *parentGroup)",
+      "zoomToGroup()",
+      "zoomToGroup(QgsMapCanvas *canvas)",
+      "zoomToLayers(QgsMapCanvas *canvas, const QList< QgsMapLayer * > &layers)"
+    ],
+    "QgsLinePatternFillSymbolLayer": [
+      "ogrFeatureStyleWidth(double widthScaleFactor) const"
+    ],
+    "QgsLineSymbolLayer": [
+      "QgsLineSymbolLayer(bool locked=false)",
+      "setWidthMapUnitScale(const QgsMapUnitScale &scale)",
+      "widthMapUnitScale() const"
+    ],
+    "QgsLinearMinMaxEnhancement": [
+      "QgsLinearMinMaxEnhancement(Qgis::DataType, double, double)"
+    ],
+    "QgsLinearMinMaxEnhancementWithClip": [
+      "QgsLinearMinMaxEnhancementWithClip(Qgis::DataType, double, double)"
+    ],
+    "QgsLinearlyInterpolatedDiagramRenderer": [
+      "classificationAttributeExpression() const",
+      "classificationAttributeIsExpression() const",
+      "lowerSize() const",
+      "lowerValue() const",
+      "setClassificationAttributeExpression(const QString &expression)",
+      "setClassificationAttributeIsExpression(bool isExpression)",
+      "setDiagramSettings(const QgsDiagramSettings &s)",
+      "setLowerSize(QSizeF s)",
+      "setLowerValue(double val)",
+      "setUpperSize(QSizeF s)",
+      "setUpperValue(double val)",
+      "upperSize() const",
+      "upperValue() const"
+    ],
+    "QgsLongLongValidator": [
+      "QgsLongLongValidator(QObject *parent)",
+      "QgsLongLongValidator(qint64 bottom, qint64 top, QObject *parent)",
+      "bottom() const",
+      "setBottom(qint64 bottom)",
+      "setRange(qint64 bottom, qint64 top)",
+      "setTop(qint64 top)",
+      "top() const"
+    ],
+    "QgsManageConnectionsDialog": [
+      "Mode",
+      "Type",
+      "clearSelection()",
+      "doExportImport()",
+      "selectAll()",
+      "selectionChanged()"
+    ],
+    "QgsMapCanvas": [
+      "setCurrentLayer(QgsMapLayer *layer)"
+    ],
+    "QgsMapLayer": [
+      "readSld(const QDomNode &node, QString &errorMessage)"
+    ],
+    "QgsMapLayerComboBox": [
+      "indexChanged(int i)",
+      "rowsChanged()"
+    ],
+    "QgsMapLayerLegendUtils": [
+      "hasLegendNodeOrder(QgsLayerTreeLayer *nodeLayer)",
+      "hasLegendNodeUserLabel(QgsLayerTreeLayer *nodeLayer, int originalIndex)",
+      "legendNodeOrder(QgsLayerTreeLayer *nodeLayer)",
+      "legendNodeUserLabel(QgsLayerTreeLayer *nodeLayer, int originalIndex)",
+      "setLegendNodeOrder(QgsLayerTreeLayer *nodeLayer, const QList< int > &order)",
+      "setLegendNodeUserLabel(QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel)"
+    ],
+    "QgsMapLayerModel": [
+      "addLayers(const QList< QgsMapLayer * > &layers)",
+      "removeLayers(const QStringList &layerIds)"
+    ],
+    "QgsMapOverviewCanvas": [
+      "QgsMapOverviewCanvas(QWidget *parent=nullptr, QgsMapCanvas *mapCanvas=nullptr)",
+      "enableAntiAliasing(bool flag)",
+      "mapRenderingFinished()",
+      "updateFullExtent()"
+    ],
+    "QgsMapRendererCustomPainterJob": [
+      "QgsMapRendererCustomPainterJob(const QgsMapSettings &settings, QPainter *painter)"
+    ],
+    "QgsMapRendererJob": [
+      "QgsMapRendererJob(const QgsMapSettings &settings)"
+    ],
+    "QgsMapRendererParallelJob": [
+      "QgsMapRendererParallelJob(const QgsMapSettings &settings)"
+    ],
+    "QgsMapRendererQImageJob": [
+      "QgsMapRendererQImageJob(const QgsMapSettings &settings)"
+    ],
+    "QgsMapRendererSequentialJob": [
+      "QgsMapRendererSequentialJob(const QgsMapSettings &settings)",
+      "internalFinished()"
+    ],
+    "QgsMapSettings": [
+      "mapToPixel() const",
+      "updateDerived()"
+    ],
+    "QgsMapToolAdvancedDigitizing": [
+      "cadDockWidget() const"
+    ],
+    "QgsMapToolEdit": [
+      "QgsMapToolEdit(QgsMapCanvas *canvas)"
+    ],
+    "QgsMapToolIdentify": [
+      "IdentifyMode",
+      "Type",
+      "formatChanged(QgsRasterLayer *layer)"
+    ],
+    "QgsMarkerLineSymbolLayerWidget": [
+      "setInterval(double val)",
+      "setOffsetAlongLine(double val)"
+    ],
+    "QgsMasterPasswordResetDialog": [
+      "QgsMasterPasswordResetDialog(QWidget *parent=nullptr)",
+      "requestMasterPasswordReset(QString *newpass, QString *oldpass, bool *keepbackup)"
+    ],
+    "QgsMeshActiveDatasetGroupTreeView": [
+      "QgsMeshActiveDatasetGroupTreeView(QWidget *parent=nullptr)"
+    ],
+    "QgsMeshAvailableDatasetGroupTreeModel": [
+      "QgsMeshAvailableDatasetGroupTreeModel(QObject *parent=nullptr)"
+    ],
+    "QgsMeshDatasetGroupListModel": [
+      "QgsMeshDatasetGroupListModel(QObject *parent)",
+      "setDisplayProviderName(bool displayProviderName)",
+      "variableNames() const"
+    ],
+    "QgsMeshDatasetGroupProxyModel": [
+      "QgsMeshDatasetGroupProxyModel(QAbstractItemModel *sourceModel)"
+    ],
+    "QgsMeshDatasetGroupSaveMenu": [
+      "QgsMeshDatasetGroupSaveMenu(QObject *parent=nullptr)",
+      "createSaveMenu(int groupIndex, QMenu *parentMenu=nullptr)",
+      "datasetGroupSaved(const QString &uri)",
+      "setMeshLayer(QgsMeshLayer *meshLayer)"
+    ],
+    "QgsMeshDatasetGroupTreeItemDelegate": [
+      "QgsMeshDatasetGroupTreeItemDelegate(QObject *parent=nullptr)"
+    ],
+    "QgsMeshDatasetGroupTreeModel": [
+      "QgsMeshDatasetGroupTreeModel(QObject *parent=nullptr)",
+      "Roles"
+    ],
+    "QgsMeshDatasetGroupTreeView": [
+      "QgsMeshDatasetGroupTreeView(QWidget *parent=nullptr)",
+      "apply()",
+      "datasetGroupTreeRootItem()",
+      "deselectAllGroups()",
+      "resetDefault(QgsMeshLayer *meshLayer)",
+      "selectAllGroups()",
+      "syncToLayer(QgsMeshLayer *layer)"
+    ],
+    "QgsMeshRendererMeshSettingsWidget": [
+      "MeshType"
+    ],
+    "QgsMeshVariableStrokeWidthButton": [
+      "widgetChanged()"
+    ],
+    "QgsMessageViewer": [
+      "QgsMessageViewer(QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags, bool deleteOnClose=true)",
+      "checkBoxState()",
+      "setCheckBoxQgsSettingsLabel(const QString &label)",
+      "setCheckBoxState(Qt::CheckState state)",
+      "setCheckBoxText(const QString &text)",
+      "setCheckBoxVisible(bool visible)",
+      "setMessageAsHtml(const QString &msg)",
+      "setMessageAsPlainText(const QString &msg)"
+    ],
+    "QgsMimeDataUtils": [
+      "decodeUriList(const QMimeData *data)",
+      "isUriList(const QMimeData *data)"
+    ],
+    "QgsMultiBandColorRenderer": [
+      "create(const QDomElement &elem, QgsRasterInterface *input)"
+    ],
+    "QgsMultiBandColorRendererWidget": [
+      "create(QgsRasterLayer *layer, const QgsRectangle &extent)"
+    ],
+    "QgsNetworkAccessManager": [
+      "QgsNetworkAccessManager(QObject *parent=nullptr)"
+    ],
+    "QgsNewNameDialog": [
+      "fullNames(const QString &name, const QStringList &extensions)",
+      "highlightText(const QString &text)",
+      "matching(const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs=Qt::CaseSensitive)",
+      "nameChanged()"
+    ],
+    "QgsNineCellFilter": [
+      "cellSizeX() const",
+      "cellSizeY() const",
+      "inputNodataValue() const",
+      "outputNodataValue() const",
+      "setCellSizeX(double size)",
+      "setCellSizeY(double size)",
+      "setInputNodataValue(double value)",
+      "setOutputNodataValue(double value)",
+      "setZFactor(double factor)",
+      "zFactor() const"
+    ],
+    "QgsOWSSourceSelect": [
+      "enableLayersForCrs(QTreeWidgetItem *item)"
+    ],
+    "QgsOfflineEditing": [
+      "ProgressMode"
+    ],
+    "QgsOptionsDialogBase": [
+      "setSettings(QgsSettings *settings)",
+      "updateWindowTitle()",
+      "warnAboutMissingObjects()"
+    ],
+    "QgsPaintEffectWidget": [
+      "QgsPaintEffectWidget(QWidget *parent=nullptr)"
+    ],
+    "QgsPaintEngineHack": [
+      "fixEngineFlags(QPaintEngine *engine)",
+      "fixFlags()"
+    ],
+    "QgsPalettedRasterRenderer": [
+      "create(const QDomElement &elem, QgsRasterInterface *input)"
+    ],
+    "QgsPalettedRendererWidget": [
+      "create(QgsRasterLayer *layer, const QgsRectangle &extent)"
+    ],
+    "QgsPenCapStyleComboBox": [
+      "QgsPenCapStyleComboBox(QWidget *parent=nullptr)",
+      "penCapStyle() const",
+      "setPenCapStyle(Qt::PenCapStyle style)"
+    ],
+    "QgsPenJoinStyleComboBox": [
+      "QgsPenJoinStyleComboBox(QWidget *parent=nullptr)",
+      "penJoinStyle() const",
+      "setPenJoinStyle(Qt::PenJoinStyle style)"
+    ],
+    "QgsPenStyleComboBox": [
+      "QgsPenStyleComboBox(QWidget *parent=nullptr)",
+      "iconForPen(Qt::PenStyle style)",
+      "penStyle() const",
+      "setPenStyle(Qt::PenStyle style)"
+    ],
+    "QgsPixmapLabel": [
+      "setPixmap(const QPixmap &)"
+    ],
+    "QgsPluginLayer": [
+      "QgsPluginLayer(const QString &layerType, const QString &layerName=QString())"
+    ],
+    "QgsPluginLayerType": [
+      "QgsPluginLayerType(const QString &name)",
+      "name() const"
+    ],
+    "QgsPointDisplacementRendererWidget": [
+      "QgsPointDisplacementRendererWidget(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "create(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)"
+    ],
+    "QgsPointLocator": [
+      "destroyIndex()",
+      "rebuildIndex(int maxFeaturesToIndex=-1)"
+    ],
+    "QgsPointLocator_Stream": [
+      "QgsPointLocator_Stream(const QLinkedList< RTree::Data * > &dataList)"
+    ],
+    "QgsPointLocator_VisitorEdgesInRect": [
+      "QgsPointLocator_VisitorEdgesInRect(QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter=nullptr)"
+    ],
+    "QgsPointLocator_VisitorNearestEdge": [
+      "QgsPointLocator_VisitorNearestEdge(QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter=nullptr)"
+    ],
+    "QgsPointLocator_VisitorNearestVertex": [
+      "QgsPointLocator_VisitorNearestVertex(QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter=nullptr)"
+    ],
+    "QgsPointPatternFillSymbolLayer": [
+      "createFromSld(QDomElement &element)"
+    ],
+    "QgsPreviewEffect": [
+      "PreviewMode",
+      "QgsPreviewEffect(QObject *parent)"
+    ],
+    "QgsProject": [
+      "relationManager() const"
+    ],
+    "QgsProjectFileTransform": [
+      "convertRasterProperties(QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer)",
+      "updateRevision(const QgsProjectVersion &version)"
+    ],
+    "QgsQueryBuilder": [
+      "clear()",
+      "setDatasourceDescription(const QString &uri)"
+    ],
+    "QgsRangeConfigDlg": [
+      "QgsRangeConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent)",
+      "rangeWidgetChanged(int index)"
+    ],
+    "QgsRasterBlock": [
+      "applyNoDataValues(const QgsRasterRangeList &rangeList)",
+      "toString() const"
+    ],
+    "QgsRasterCalcNode": [
+      "QgsRasterCalcNode(Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right)",
+      "QgsRasterCalcNode(QgsRasterMatrix *matrix)",
+      "QgsRasterCalcNode(const QString &rasterName)",
+      "QgsRasterCalcNode(double number)",
+      "parseRasterCalcString(const QString &str, QString &parserErrorMsg)",
+      "setLeft(QgsRasterCalcNode *left)",
+      "setRight(QgsRasterCalcNode *right)",
+      "type() const"
+    ],
+    "QgsRasterChecker": [
+      "report() const"
+    ],
+    "QgsRasterDataProvider": [
+      "colorTable(int bandNo) const",
+      "setUserNoDataValue(int bandNo, const QgsRasterRangeList &noData)"
+    ],
+    "QgsRasterFileWriter": [
+      "pyramidsResampling() const",
+      "setPyramidsResampling(const QString &str)"
+    ],
+    "QgsRasterFormatSaveOptionsWidget": [
+      "QgsRasterFormatSaveOptionsWidget(QWidget *parent SIP_TRANSFERTHIS=nullptr, const QString &format=\"GTiff\", QgsRasterFormatSaveOptionsWidget::Type type=Default, const QString &provider=\"gdal\")",
+      "Type",
+      "apply()"
+    ],
+    "QgsRasterInterface": [
+      "QgsRasterInterface(QgsRasterInterface *input=nullptr)",
+      "yBlockSize() const",
+      "ySize() const"
+    ],
+    "QgsRasterLayer": [
+      "isValidRasterFileName(const QString &fileNameQString)",
+      "showStatusMessage(const QString &message)"
+    ],
+    "QgsRasterLayerRenderer": [
+      "QgsRasterLayerRenderer(QgsRasterLayer *layer, QgsRenderContext &rendererContext)"
+    ],
+    "QgsRasterLayerSaveAsDialog": [
+      "CrsState",
+      "Mode",
+      "ResolutionState",
+      "hideFormat()",
+      "hideOutput()",
+      "maximumTileSizeX() const",
+      "maximumTileSizeY() const",
+      "mode() const",
+      "nColumns() const",
+      "nRows() const",
+      "noData() const",
+      "outputCrs()",
+      "outputFileName() const",
+      "outputFormat() const",
+      "outputRectangle() const",
+      "pyramidsConfigOptions() const",
+      "pyramidsList() const",
+      "pyramidsResamplingMethod() const",
+      "tileMode() const",
+      "xResolution() const",
+      "yResolution() const"
+    ],
+    "QgsRasterMatrix": [
+      "OneArgOperator",
+      "TwoArgOperator",
+      "acosinus()",
+      "asinus()",
+      "atangens()",
+      "changeSign()",
+      "cosinus()",
+      "divide(const QgsRasterMatrix &other)",
+      "equal(const QgsRasterMatrix &other)",
+      "greaterEqual(const QgsRasterMatrix &other)",
+      "greaterThan(const QgsRasterMatrix &other)",
+      "lesserEqual(const QgsRasterMatrix &other)",
+      "lesserThan(const QgsRasterMatrix &other)",
+      "log()",
+      "log10()",
+      "logicalAnd(const QgsRasterMatrix &other)",
+      "logicalOr(const QgsRasterMatrix &other)",
+      "multiply(const QgsRasterMatrix &other)",
+      "nColumns() const",
+      "nRows() const",
+      "nodataValue() const",
+      "notEqual(const QgsRasterMatrix &other)",
+      "number() const",
+      "power(const QgsRasterMatrix &other)",
+      "setData(int cols, int rows, double *data, double nodataValue)",
+      "setNodataValue(double d)",
+      "sinus()",
+      "squareRoot()",
+      "tangens()"
+    ],
+    "QgsRasterMinMaxWidget": [
+      "setBands(const QList< int > &bands)"
+    ],
+    "QgsRasterNuller": [
+      "QgsRasterNuller(QgsRasterInterface *input=nullptr)",
+      "noData(int bandNo) const",
+      "setNoData(int bandNo, const QgsRasterRangeList &noData)"
+    ],
+    "QgsRasterProjector": [
+      "precision() const",
+      "precisionLabel(Precision precision)",
+      "setPrecision(Precision precision)"
+    ],
+    "QgsRasterPyramidsOptionsWidget": [
+      "apply()",
+      "checkAllLevels(bool checked)",
+      "configOptions() const",
+      "createOptionsWidget()",
+      "overviewList() const",
+      "resamplingMethod() const",
+      "setRasterFileName(const QString &file)",
+      "setRasterLayer(QgsRasterLayer *rasterLayer)"
+    ],
+    "QgsRasterRenderer": [
+      "alphaBand() const",
+      "rasterTransparency() const",
+      "setAlphaBand(int band)",
+      "setRasterTransparency(QgsRasterTransparency *t)",
+      "usesTransparency() const"
+    ],
+    "QgsRasterRendererWidget": [
+      "max(int index=0)",
+      "min(int index=0)",
+      "selectedBand(int index=0)",
+      "setMax(const QString &value, int index=0)",
+      "setMin(const QString &value, int index=0)",
+      "setStdDev(const QString &value)",
+      "stdDev()"
+    ],
+    "QgsRasterResampleFilter": [
+      "QgsRasterResampleFilter(QgsRasterInterface *input=nullptr)",
+      "maxOversampling() const",
+      "setMaxOversampling(double os)",
+      "zoomedInResampler() const",
+      "zoomedOutResampler() const"
+    ],
+    "QgsRasterShader": [
+      "QgsRasterShader(double minimumValue=0.0, double maximumValue=255.0)",
+      "rasterShaderFunction()",
+      "rasterShaderFunction() const"
+    ],
+    "QgsRasterShaderFunction": [
+      "QgsRasterShaderFunction(double minimumValue=0.0, double maximumValue=255.0)",
+      "minimumMaximumRange() const"
+    ],
+    "QgsRelationReferenceConfigDlg": [
+      "QgsRelationReferenceConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent)"
+    ],
+    "QgsRelationReferenceFactory": [
+      "QgsRelationReferenceFactory(const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar)"
+    ],
+    "QgsRelationReferenceWidget": [
+      "CanvasExtent",
+      "QgsRelationReferenceWidget(QWidget *parent)",
+      "init()",
+      "setAllowMapIdentification(bool allowMapIdentification)",
+      "setEmbedForm(bool display)",
+      "setOpenFormButtonVisible(bool openFormButtonVisible)",
+      "setReadOnlySelector(bool readOnly)",
+      "setRelation(const QgsRelation &relation, bool allowNullValue)",
+      "setRelationEditable(bool editable)"
+    ],
+    "QgsRelief": [
+      "QgsRelief(const QString &inputFile, const QString &outputFile, const QString &outputFormat)",
+      "addReliefColorClass(const QgsRelief::ReliefColor &color)",
+      "clearReliefColors()",
+      "reliefColors() const",
+      "setReliefColors(const QList< QgsRelief::ReliefColor > &c)",
+      "setZFactor(double factor)",
+      "zFactor() const"
+    ],
+    "QgsRenderChecker": [
+      "setControlPathSuffix(const QString &name)",
+      "setElapsedTimeTarget(int target)",
+      "setMapSettings(const QgsMapSettings &mapSettings)"
+    ],
+    "QgsRendererRangeLabelFormat": [
+      "QgsRendererRangeLabelFormat(const QString &format, int precision=4, bool trimTrailingZeroes=false)",
+      "format() const",
+      "formatNumber(double value) const",
+      "labelForRange(const QgsRendererRange &range) const",
+      "precision() const",
+      "saveToDomElement(QDomElement &element)",
+      "setFormat(const QString &format)",
+      "setFromDomElement(QDomElement &element)",
+      "setPrecision(int precision)",
+      "setTrimTrailingZeroes(bool trimTrailingZeroes)",
+      "trimTrailingZeroes() const"
+    ],
+    "QgsRendererRulePropsDialog": [
+      "buildExpression()",
+      "rule()",
+      "testFilter()"
+    ],
+    "QgsRendererWidget": [
+      "QgsRendererWidget(QgsVectorLayer *layer, QgsStyle *style)",
+      "contextMenuViewCategories(QPoint p)",
+      "copy()",
+      "paste()",
+      "refreshSymbolView()"
+    ],
+    "QgsRuggednessFilter": [
+      "QgsRuggednessFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat)"
+    ],
+    "QgsRuleBasedLabelProvider": [
+      "QgsRuleBasedLabelProvider(const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop=true)"
+    ],
+    "QgsRuleBasedLabeling": [
+      "rootRule()",
+      "rootRule() const"
+    ],
+    "QgsRuleBasedRenderer": [
+      "FeatureFlags",
+      "rootRule()"
+    ],
+    "QgsRuleBasedRenderer::Rule": [
+      "dependsOnScale() const",
+      "initFilter()",
+      "label() const",
+      "legendSymbolItems(int currentLevel=-1) const",
+      "save(QDomDocument &doc, QgsSymbolMap &symbolMap) const",
+      "setLabel(const QString &label)",
+      "symbol()"
+    ],
+    "QgsRuleBasedRendererModel": [
+      "clearFeatureCounts()",
+      "finishedAddingRules()",
+      "insertRule(const QModelIndex &parent, int before, QgsRuleBasedRenderer::Rule *newrule)",
+      "removeRule(const QModelIndex &index)",
+      "ruleForIndex(const QModelIndex &index) const",
+      "updateRule(const QModelIndex &index)",
+      "updateRule(const QModelIndex &parent, int row)",
+      "willAddRules(const QModelIndex &parent, int count)"
+    ],
+    "QgsRuleBasedRendererWidget": [
+      "QgsRuleBasedRendererWidget(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "addRule()",
+      "clearFeatureCounts()",
+      "countFeatures()",
+      "create(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "currentRule()",
+      "currentRuleChanged(const QModelIndex &current=QModelIndex(), const QModelIndex &previous=QModelIndex())",
+      "editRule()",
+      "editRule(const QModelIndex &index)",
+      "refineRule(int type)",
+      "refineRuleCategories()",
+      "refineRuleRanges()",
+      "refineRuleScales()",
+      "refineRuleScalesGui(const QModelIndexList &index)",
+      "removeRule()",
+      "restoreSectionWidths()",
+      "saveSectionWidth(int section, int oldSize, int newSize)",
+      "selectedRules()",
+      "selectedRulesChanged()",
+      "setRenderingOrder()"
+    ],
+    "QgsRunProcess": [
+      "create(const QString &action, bool capture)"
+    ],
+    "QgsScopeLogger": [
+      "QgsScopeLogger(const char *file, const char *func, int line)"
+    ],
+    "QgsSearchQueryBuilder": [
+      "loadQuery()",
+      "saveQuery()"
+    ],
+    "QgsShadowEffectWidget": [
+      "QgsShadowEffectWidget(QWidget *parent=nullptr)",
+      "create()"
+    ],
+    "QgsShapeburstFillSymbolLayer": [
+      "distanceMapUnitScale() const",
+      "offsetMapUnitScale() const",
+      "setDistanceMapUnitScale(const QgsMapUnitScale &scale)",
+      "setOffsetMapUnitScale(const QgsMapUnitScale &scale)"
+    ],
+    "QgsShapeburstFillSymbolLayerWidget": [
+      "setColor(const QColor &color)",
+      "setColor2(const QColor &color)"
+    ],
+    "QgsSimpleFillSymbolLayer": [
+      "QgsSimpleFillSymbolLayer(const QColor &color=DEFAULT_SIMPLEFILL_COLOR, Qt::BrushStyle style=DEFAULT_SIMPLEFILL_STYLE, const QColor &strokeColor=DEFAULT_SIMPLEFILL_BORDERCOLOR, Qt::PenStyle strokeStyle=DEFAULT_SIMPLEFILL_BORDERSTYLE, double strokeWidth=DEFAULT_SIMPLEFILL_BORDERWIDTH, Qt::PenJoinStyle penJoinStyle=DEFAULT_SIMPLEFILL_JOINSTYLE)",
+      "brushStyle() const",
+      "createFromSld(QDomElement &element)",
+      "penJoinStyle() const",
+      "setBrushStyle(Qt::BrushStyle style)",
+      "setPenJoinStyle(Qt::PenJoinStyle style)",
+      "setStrokeStyle(Qt::PenStyle strokeStyle)",
+      "setStrokeWidth(double strokeWidth)",
+      "setStrokeWidthMapUnitScale(const QgsMapUnitScale &scale)",
+      "strokeStyle() const",
+      "strokeWidth() const",
+      "strokeWidthMapUnitScale() const"
+    ],
+    "QgsSimpleFillSymbolLayerWidget": [
+      "setColor(const QColor &color)",
+      "setStrokeColor(const QColor &color)"
+    ],
+    "QgsSimpleLineSymbolLayerWidget": [
+      "updatePatternIcon()"
+    ],
+    "QgsSimpleMarkerSymbolLayerWidget": [
+      "setColorFill(const QColor &color)",
+      "setColorStroke(const QColor &color)"
+    ],
+    "QgsSimplifyMethod": [
+      "MethodType"
+    ],
+    "QgsSingleBandColorDataRenderer": [
+      "QgsSingleBandColorDataRenderer(QgsRasterInterface *input, int band)",
+      "create(const QDomElement &elem, QgsRasterInterface *input)"
+    ],
+    "QgsSingleBandGrayRenderer": [
+      "Gradient",
+      "QgsSingleBandGrayRenderer(QgsRasterInterface *input, int grayBand)",
+      "contrastEnhancement() const",
+      "create(const QDomElement &elem, QgsRasterInterface *input)",
+      "gradient() const",
+      "setGradient(Gradient gradient)"
+    ],
+    "QgsSingleBandGrayRendererWidget": [
+      "create(QgsRasterLayer *layer, const QgsRectangle &extent)"
+    ],
+    "QgsSingleBandPseudoColorRenderer": [
+      "classificationMax() const",
+      "classificationMin() const",
+      "create(const QDomElement &elem, QgsRasterInterface *input)",
+      "setClassificationMax(double max)",
+      "setClassificationMin(double min)"
+    ],
+    "QgsSingleCategoryDiagramRenderer": [
+      "setDiagramSettings(const QgsDiagramSettings &s)"
+    ],
+    "QgsSingleSymbolRendererWidget": [
+      "QgsSingleSymbolRendererWidget(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)",
+      "create(QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer)"
+    ],
+    "QgsSlider": [
+      "setMaximum(const QVariant &max)",
+      "setMinimum(const QVariant &min)",
+      "setSingleStep(const QVariant &step)",
+      "setValue(const QVariant &value)",
+      "valueChanged(const QVariant &)",
+      "variantValue() const"
+    ],
+    "QgsSlopeFilter": [
+      "QgsSlopeFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat)"
+    ],
+    "QgsSmartGroupCondition": [
+      "QgsSmartGroupCondition(int id, QWidget *parent=nullptr)",
+      "destruct()"
+    ],
+    "QgsSmartGroupEditorDialog": [
+      "QgsSmartGroupEditorDialog(QgsStyle *style, QWidget *parent=nullptr)"
+    ],
+    "QgsSnappingUtils": [
+      "IndexingStrategy",
+      "mapSettings() const"
+    ],
+    "QgsSourceFieldsProperties": [
+      "AttrColumns",
+      "QgsSourceFieldsProperties(QgsVectorLayer *layer, QWidget *parent=nullptr)",
+      "apply()",
+      "init()",
+      "loadRows()",
+      "setRow(int row, int idx, const QgsField &field)",
+      "toggleEditing()",
+      "updateButtons()"
+    ],
+    "QgsSpatialIndexCopyVisitor": [
+      "QgsSpatialIndexCopyVisitor(SpatialIndex::ISpatialIndex *newIndex)"
+    ],
+    "QgsStackedDiagramProperties": [
+      "QgsStackedDiagramProperties(QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas)",
+      "apply()",
+      "auxiliaryFieldCreated()"
+    ],
+    "QgsStackedDiagramRenderer": [
+      "setDiagramSettings(const QgsDiagramSettings &s)"
+    ],
+    "QgsStyleExportImportDialog": [
+      "doExportImport()",
+      "importTypeChanged(int)"
+    ],
+    "QgsStyleGroupSelectionDialog": [
+      "QgsStyleGroupSelectionDialog(QgsStyle *style, QWidget *parent=nullptr)"
+    ],
+    "QgsStyleManagerDialog": [
+      "currentItemName()",
+      "currentItemType()",
+      "editColorRamp()",
+      "editSymbol()"
+    ],
+    "QgsSublayersDialog": [
+      "ProviderType"
+    ],
+    "QgsSvgMarkerSymbolLayer": [
+      "createFromSld(QDomElement &element)",
+      "setStrokeWidth(double w)",
+      "setStrokeWidthMapUnitScale(const QgsMapUnitScale &scale)",
+      "strokeWidth() const",
+      "strokeWidthMapUnitScale() const"
+    ],
+    "QgsSvgSelectorGroupsModel": [
+      "QgsSvgSelectorGroupsModel(QObject *parent)"
+    ],
+    "QgsSvgSelectorWidget": [
+      "currentSvgPath() const",
+      "populateList()"
+    ],
+    "QgsSymbolLayer": [
+      "drawPreviewIcon(QgsSymbolRenderContext &context, QSize size)=0",
+      "mapUnitScale() const",
+      "ogrFeatureStyle(double mmScaleFactor, double mapUnitScaleFactor) const",
+      "setMapUnitScale(const QgsMapUnitScale &scale)",
+      "type() const"
+    ],
+    "QgsSymbolLayerAbstractMetadata": [
+      "name() const",
+      "type() const",
+      "visibleName() const"
+    ],
+    "QgsSymbolLayerUtils": [
+      "clearSymbolMap(QgsSymbolMap &symbols)",
+      "createDisplacementElement(QDomDocument &doc, QDomElement &element, QPointF offset)",
+      "createFunctionElement(QDomDocument &doc, QDomElement &element, const QString &function)",
+      "createGeometryElement(QDomDocument &doc, QDomElement &element, const QString &geomFunc)",
+      "createOnlineResourceElement(QDomDocument &doc, QDomElement &element, const QString &path, const QString &format)",
+      "createOpacityElement(QDomDocument &doc, QDomElement &element, const QString &alphaFunc)",
+      "createRotationElement(QDomDocument &doc, QDomElement &element, const QString &rotationFunc)",
+      "createSvgParameterElement(QDomDocument &doc, const QString &name, const QString &value)",
+      "createVendorOptionElement(QDomDocument &doc, const QString &name, const QString &value)",
+      "decodeBlendMode(const QString &s)",
+      "decodeBrushStyle(const QString &str)",
+      "decodeColor(const QString &str)",
+      "decodeMapUnitScale(const QString &str)",
+      "decodePenCapStyle(const QString &str)",
+      "decodePenJoinStyle(const QString &str)",
+      "decodePenStyle(const QString &str)",
+      "decodeRealVector(const QString &s)",
+      "decodeSldAlpha(const QString &str)",
+      "decodeSldBrushStyle(const QString &str)",
+      "decodeSldFontStyle(const QString &str)",
+      "decodeSldFontWeight(const QString &str)",
+      "decodeSldLineCapStyle(const QString &str)",
+      "decodeSldLineJoinStyle(const QString &str)",
+      "decodeSldRealVector(const QString &s)",
+      "displacementFromSldElement(QDomElement &element, QPointF &offset)",
+      "drawStippledBackground(QPainter *painter, QRect rect)",
+      "encodeBrushStyle(Qt::BrushStyle style)",
+      "encodeColor(const QColor &color)",
+      "encodeMapUnitScale(const QgsMapUnitScale &mapUnitScale)",
+      "encodePenCapStyle(Qt::PenCapStyle style)",
+      "encodePenJoinStyle(Qt::PenJoinStyle style)",
+      "encodePenStyle(Qt::PenStyle style)",
+      "encodeRealVector(const QVector< qreal > &v)",
+      "encodeSldAlpha(int alpha)",
+      "encodeSldBrushStyle(Qt::BrushStyle style)",
+      "encodeSldFontStyle(QFont::Style style)",
+      "encodeSldFontWeight(int weight)",
+      "encodeSldLineCapStyle(Qt::PenCapStyle style)",
+      "encodeSldLineJoinStyle(Qt::PenJoinStyle style)",
+      "encodeSldRealVector(const QVector< qreal > &v)",
+      "externalGraphicFromSld(QDomElement &element, QString &path, QString &mime, QColor &color, double &size)",
+      "externalGraphicToSld(QDomDocument &doc, QDomElement &element, const QString &path, const QString &mime, const QColor &color, double size=-1)",
+      "externalMarkerFromSld(QDomElement &element, QString &path, QString &format, int &markIndex, QColor &color, double &size)",
+      "externalMarkerToSld(QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, int *markIndex=nullptr, const QColor &color=QColor(), double size=-1)",
+      "fillFromSld(QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color)",
+      "fillToSld(QDomDocument &doc, QDomElement &element, Qt::BrushStyle brushStyle, const QColor &color=QColor())",
+      "functionFromSldElement(QDomElement &element, QString &function)",
+      "geometryFromSldElement(QDomElement &element, QString &geomFunc)",
+      "getSvgParameterList(QDomElement &element)",
+      "getVendorOptionList(QDomElement &element)",
+      "hasWellKnownMark(QDomElement &element)",
+      "labelTextToSld(QDomDocument &doc, QDomElement &element, const QString &label, const QFont &font, const QColor &color=QColor(), double size=-1)",
+      "lineFromSld(QDomElement &element, Qt::PenStyle &penStyle, QColor &color, double &width, Qt::PenJoinStyle *penJoinStyle=nullptr, Qt::PenCapStyle *penCapStyle=nullptr, QVector< qreal > *customDashPattern=nullptr, double *dashOffset=nullptr)",
+      "needEllipseMarker(QDomElement &element)",
+      "needFontMarker(QDomElement &element)",
+      "needLinePatternFill(QDomElement &element)",
+      "needMarkerLine(QDomElement &element)",
+      "needPointPatternFill(QDomElement &element)",
+      "needSvgFill(QDomElement &element)",
+      "needSvgMarker(QDomElement &element)",
+      "onlineResourceFromSldElement(QDomElement &element, QString &path, QString &format)",
+      "opacityFromSldElement(QDomElement &element, QString &alphaFunc)",
+      "rotationFromSldElement(QDomElement &element, QString &rotationFunc)",
+      "wellKnownMarkerToSld(QDomDocument &doc, QDomElement &element, const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth=-1, double size=-1)"
+    ],
+    "QgsSymbolLayerWidget": [
+      "setSymbolLayer(QgsSymbolLayer *layer)=0",
+      "symbolLayer()=0",
+      "updateDataDefinedProperty()"
+    ],
+    "QgsSymbolLegendNode": [
+      "iconSize() const"
+    ],
+    "QgsSymbolLevelItem": [
+      "QgsSymbolLevelItem(QgsSymbol *symbol, int layer)"
+    ],
+    "QgsSymbolLevelsDialog": [
+      "setForceOrderingEnabled(bool enabled)"
+    ],
+    "QgsSymbolRenderContext": [
+      "setFeature(const QgsFeature *f)"
+    ],
+    "QgsSymbolSelectorDialog": [
+      "addLayer()",
+      "layerChanged()",
+      "lockLayer()",
+      "moveLayerDown()",
+      "moveLayerUp()",
+      "removeLayer()",
+      "updateLayerPreview()",
+      "updatePreview()"
+    ],
+    "QgsSymbolsListWidget": [
+      "clipFeaturesToggled(bool checked)",
+      "setLineWidth(double width)",
+      "setMarkerAngle(double angle)",
+      "setMarkerSize(double size)",
+      "setSymbolColor(const QColor &color)",
+      "updateDataDefinedLineWidth()",
+      "updateDataDefinedMarkerAngle()",
+      "updateDataDefinedMarkerSize()"
+    ],
+    "QgsTextDiagram": [
+      "Orientation",
+      "Shape"
+    ],
+    "QgsTextEditConfigDlg": [
+      "QgsTextEditConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
+    ],
+    "QgsTotalCurvatureFilter": [
+      "QgsTotalCurvatureFilter(const QString &inputFile, const QString &outputFile, const QString &outputFormat)"
+    ],
+    "QgsTransaction": [
+      "QgsTransaction(const QString &connString)"
+    ],
+    "QgsTransformWidget": [
+      "QgsTransformWidget(QWidget *parent=nullptr)",
+      "create()"
+    ],
+    "QgsUniqueValuesConfigDlg": [
+      "QgsUniqueValuesConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
+    ],
+    "QgsValueMapConfigDlg": [
+      "QgsValueMapConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent)"
+    ],
+    "QgsValueRelationConfigDlg": [
+      "QgsValueRelationConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)",
+      "editExpression()"
+    ],
+    "QgsValueRelationSearchWidgetWrapper": [
+      "value() const"
+    ],
+    "QgsVectorFieldSymbolLayer": [
+      "AngleOrientation",
+      "AngleUnits",
+      "VectorFieldType",
+      "angleOrientation() const",
+      "angleUnits() const",
+      "createFromSld(QDomElement &element)",
+      "distanceMapUnitScale() const",
+      "scale() const",
+      "setAngleOrientation(AngleOrientation orientation)",
+      "setAngleUnits(AngleUnits units)",
+      "setDistanceMapUnitScale(const QgsMapUnitScale &scale)",
+      "setScale(double s)",
+      "setVectorFieldType(VectorFieldType type)",
+      "setXAttribute(const QString &attribute)",
+      "setYAttribute(const QString &attribute)",
+      "vectorFieldType() const",
+      "xAttribute() const",
+      "yAttribute() const"
+    ],
+    "QgsVectorFileWriter": [
+      "OptionType",
+      "WriterError",
+      "driverMetadata(const QString &driverName, MetaData &driverMetadata)"
+    ],
+    "QgsVectorFileWriter::BoolOption": [
+      "BoolOption(const QString &docString, bool defaultValue)"
+    ],
+    "QgsVectorFileWriter::HiddenOption": [
+      "HiddenOption(const QString &value)"
+    ],
+    "QgsVectorFileWriter::IntOption": [
+      "IntOption(const QString &docString, int defaultValue)"
+    ],
+    "QgsVectorFileWriter::Option": [
+      "Option(const QString &docString, QgsVectorFileWriter::OptionType type)"
+    ],
+    "QgsVectorFileWriter::SetOption": [
+      "SetOption(const QString &docString, const QStringList &values, const QString &defaultValue, bool allowNone=false)"
+    ],
+    "QgsVectorFileWriter::StringOption": [
+      "StringOption(const QString &docString, const QString &defaultValue=QString())"
+    ],
+    "QgsVectorLayer": [
+      "diagramLayerSettings() const",
+      "diagramRenderer() const",
+      "setDiagramLayerSettings(const QgsDiagramLayerSettings &s)",
+      "vectorJoins() const"
+    ],
+    "QgsVectorLayerCache": [
+      "QgsVectorLayerCache(QgsVectorLayer *layer, int cacheSize, QObject *parent=nullptr)"
+    ],
+    "QgsVectorLayerEditBuffer": [
+      "QgsVectorLayerEditBuffer(QgsVectorLayer *layer)",
+      "undoIndexChanged(int index)",
+      "updateLayerFields()"
+    ],
+    "QgsVectorLayerEditPassthrough": [
+      "QgsVectorLayerEditPassthrough(QgsVectorLayer *layer)"
+    ],
+    "QgsVectorLayerEditUtils": [
+      "QgsVectorLayerEditUtils(QgsVectorLayer *layer)"
+    ],
+    "QgsVectorLayerFeatureIterator": [
+      "QgsVectorLayerFeatureIterator(QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request)"
+    ],
+    "QgsVectorLayerJoinBuffer": [
+      "QgsVectorLayerJoinBuffer(QgsVectorLayer *layer=nullptr)",
+      "vectorJoins() const"
+    ],
+    "QgsVectorLayerLegendWidget": [
+      "QgsVectorLayerLegendWidget(QWidget *parent=nullptr)"
+    ],
+    "QgsVectorLayerProperties": [
+      "QgsVectorLayerProperties(QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr=nullptr, QWidget *parent=nullptr, Qt::WindowFlags fl=QgsGuiUtils::ModalDialogFlags)",
+      "exportAuxiliaryLayer(QgsAuxiliaryLayer *layer)",
+      "toggleEditing(QgsMapLayer *)"
+    ],
+    "QgsVectorLayerRenderer": [
+      "QgsVectorLayerRenderer(QgsVectorLayer *layer, QgsRenderContext &context)"
+    ],
+    "QgsVectorLayerSelectionManager": [
+      "QgsVectorLayerSelectionManager(QgsVectorLayer *layer, QObject *parent=nullptr)"
+    ],
+    "QgsVertexMarker": [
+      "QgsVertexMarker(QgsMapCanvas *mapCanvas)",
+      "setIconSize(int iconSize)",
+      "setIconType(int iconType)",
+      "setPenWidth(int width)"
+    ],
+    "QgsWkbException": [
+      "QgsWkbException(QString const &what)"
+    ],
+    "QgsWkbPtr": [
+      "QgsWkbPtr(unsigned char *p, int size)",
+      "operator unsigned char *() const",
+      "operator+=(int n) const",
+      "operator>>(double &v) const",
+      "operator>>(float &r) const"
+    ],
+    "QgsWms::QgsWmsParameters": [
+      "PdfFormatOption"
+    ],
+    "QgsWmsDimensionDialog": [
+      "QgsWmsDimensionDialog(QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent=nullptr, Qt::WindowFlags f=Qt::WindowFlags())",
+      "info() const",
+      "setInfo(const QgsMapLayerServerProperties::WmsDimensionInfo &info)"
+    ],
+    "QgsXmlUtils": [
+      "readRectangle(const QDomElement &element)"
+    ],
+    "QgsZipItem": [
+      "getZipFileList()",
+      "iconZip()"
+    ],
+    "pal::GeomFunction": [
+      "cross_product(double x1, double y1, double x2, double y2, double x3, double y3)",
+      "findLineCircleIntersection(double cx, double cy, double radius, double x1, double y1, double x2, double y2, double &xRes, double &yRes)"
+    ],
+    "pal::LabelPosition": [
+      "getHeight() const",
+      "getNumOverlaps() const",
+      "getPartId() const",
+      "getProblemFeatureId() const",
+      "getUpsideDown() const",
+      "getWidth() const",
+      "resetNumOverlaps()",
+      "setPartId(int id)"
+    ],
+    "pal::PointSet": [
+      "PointSet(double x, double y)",
+      "PointSet(int nbPoints, double *x, double *y)",
+      "createGeosGeom() const",
+      "deleteCoords()",
+      "getCentroid(double &px, double &py, bool forceInside=false) const",
+      "getGeosType() const",
+      "getNumPoints() const",
+      "invalidateGeos() const",
+      "preparedGeom() const"
+    ],
+    "pal::PriorityQueue": [
+      "decreaseKey(int key)",
+      "downheap(int id)",
+      "getBest()",
+      "getId(int key) const",
+      "getSize() const",
+      "getSizeByPos() const",
+      "insert(int key, double p)",
+      "isIn(int key) const",
+      "print()",
+      "remove(int key)",
+      "setPriority(int key, double new_p)",
+      "sort()",
+      "upheap(int key)"
+    ],
+    "pal::Problem": [
+      "init_sol_falp()"
+    ],
+    "pal::Util": [
+      "unmulti(const GEOSGeometry *the_geom)"
+    ]
+  },
+  "acceptable_missing_added_note": [
+    "Bezier3D",
+    "CharacterWidget",
+    "CloughTocherInterpolator",
+    "EditBlockerDelegate",
+    "HalfEdge",
+    "LinTriangleInterpolator",
+    "NormVecDecorator",
+    "ParametricLine",
+    "QWebFrame",
+    "QWebPage",
+    "QWebSettings",
+    "Qgis",
+    "QgisInterface",
+    "QgisPlugin",
+    "QgisVisitor",
+    "Qgs25DRenderer",
+    "Qgs25DRendererWidget",
+    "Qgs3DAlgorithms",
+    "Qgs3DMapScene",
+    "Qgs3DMapSettings",
+    "Qgs3DRendererAbstractMetadata",
+    "Qgs3DRendererRegistry",
+    "Qgs3DUtils",
+    "QgsAABB",
+    "QgsAbstract3DRenderer",
+    "QgsAbstract3DSymbol",
+    "QgsAbstractCacheIndex",
+    "QgsAbstractDataSourceWidget",
+    "QgsAbstractFeatureIterator",
+    "QgsAbstractFeatureIteratorFromSource",
+    "QgsAbstractFeatureSource",
+    "QgsAbstractGeometry",
+    "QgsAbstractGeometry::vertex_iterator",
+    "QgsAbstractGeometrySimplifier",
+    "QgsAbstractLabelProvider",
+    "QgsAbstractLayoutIterator",
+    "QgsAbstractLayoutUndoCommand",
+    "QgsAbstractMaterialSettings",
+    "QgsAbstractMetadataBaseValidator",
+    "QgsAbstractMetadataBaseValidator::ValidationResult",
+    "QgsAbstractPropertyCollection",
+    "QgsAbstractVectorLayerLabeling",
+    "QgsAccessControl",
+    "QgsAccessControlFilter",
+    "QgsAction",
+    "QgsActionManager",
+    "QgsActionMenu",
+    "QgsActionScope",
+    "QgsActionScopeRegistry",
+    "QgsAdvancedDigitizingCanvasItem",
+    "QgsAdvancedDigitizingDockWidget",
+    "QgsAdvancedDigitizingDockWidget::CadConstraint",
+    "QgsAggregateCalculator",
+    "QgsAggregateToolButton",
+    "QgsAlignRaster",
+    "QgsAnimatedIcon",
+    "QgsAnnotation",
+    "QgsAnnotationManager",
+    "QgsApplication",
+    "QgsArchive",
+    "QgsArrowSymbolLayer",
+    "QgsArrowSymbolLayerWidget",
+    "QgsAspectFilter",
+    "QgsAttributeActionDialog",
+    "QgsAttributeActionPropertiesDialog",
+    "QgsAttributeDialog",
+    "QgsAttributeEditorContainer",
+    "QgsAttributeEditorContext",
+    "QgsAttributeEditorElement",
+    "QgsAttributeEditorField",
+    "QgsAttributeEditorRelation",
+    "QgsAttributeForm",
+    "QgsAttributeFormEditorWidget",
+    "QgsAttributeFormInterface",
+    "QgsAttributeFormLegacyInterface",
+    "QgsAttributeFormRelationEditorWidget",
+    "QgsAttributeFormWidget",
+    "QgsAttributeTableAction",
+    "QgsAttributeTableConfig",
+    "QgsAttributeTableDelegate",
+    "QgsAttributeTableFilterModel",
+    "QgsAttributeTableMapLayerAction",
+    "QgsAttributeTableModel",
+    "QgsAttributeTableView",
+    "QgsAttributeTypeLoadDialog",
+    "QgsAttributes",
+    "QgsAttributesFormInitCode",
+    "QgsAuthAuthoritiesEditor",
+    "QgsAuthCertEditors",
+    "QgsAuthCertInfo",
+    "QgsAuthCertInfoDialog",
+    "QgsAuthCertManager",
+    "QgsAuthCertTrustPolicyComboBox",
+    "QgsAuthCertUtils",
+    "QgsAuthConfigEdit",
+    "QgsAuthConfigEditor",
+    "QgsAuthConfigIdEdit",
+    "QgsAuthConfigSelect",
+    "QgsAuthConfigSslServer",
+    "QgsAuthConfigUriEdit",
+    "QgsAuthCrypto",
+    "QgsAuthEditorWidgets",
+    "QgsAuthGuiUtils",
+    "QgsAuthIdentitiesEditor",
+    "QgsAuthImportCertDialog",
+    "QgsAuthImportIdentityDialog",
+    "QgsAuthManager",
+    "QgsAuthMethod",
+    "QgsAuthMethodConfig",
+    "QgsAuthMethodEdit",
+    "QgsAuthMethodMetadata",
+    "QgsAuthMethodPlugins",
+    "QgsAuthMethodRegistry",
+    "QgsAuthServersEditor",
+    "QgsAuthSettingsWidget",
+    "QgsAuthSslConfigDialog",
+    "QgsAuthSslConfigWidget",
+    "QgsAuthSslErrorsDialog",
+    "QgsAuthSslImportDialog",
+    "QgsAuthTrustedCAsDialog",
+    "QgsAuxiliaryLayer",
+    "QgsAuxiliaryStorage",
+    "QgsBearingUtils",
+    "QgsBilinearRasterResampler",
+    "QgsBlendModeComboBox",
+    "QgsBlurEffect",
+    "QgsBlurWidget",
+    "QgsBox3D",
+    "QgsBrightnessContrastFilter",
+    "QgsBrowserDockWidget",
+    "QgsBrowserModel",
+    "QgsBrowserTreeView",
+    "QgsBrushStyleComboBox",
+    "QgsBufferServerRequest",
+    "QgsBufferServerResponse",
+    "QgsBusyIndicatorDialog",
+    "QgsCacheIndexFeatureId",
+    "QgsCachedFeatureIterator",
+    "QgsCachedFeatureWriterIterator",
+    "QgsCadUtils",
+    "QgsCadUtils::AlignMapPointConstraint",
+    "QgsCadUtils::AlignMapPointContext",
+    "QgsCadUtils::AlignMapPointOutput",
+    "QgsCameraController",
+    "QgsCapabilitiesCache",
+    "QgsCategorizedSymbolRenderer",
+    "QgsCategorizedSymbolRendererWidget",
+    "QgsCentroidFillSymbolLayer",
+    "QgsCentroidFillSymbolLayerWidget",
+    "QgsCharacterSelectorDialog",
+    "QgsCheckBoxConfigDlg",
+    "QgsCheckBoxDelegate",
+    "QgsCheckableComboBox",
+    "QgsCheckableItemModel",
+    "QgsCheckboxSearchWidgetWrapper",
+    "QgsCheckboxWidgetFactory",
+    "QgsCheckboxWidgetWrapper",
+    "QgsCircle",
+    "QgsCircularString",
+    "QgsClassificationWidgetWrapper",
+    "QgsClassificationWidgetWrapperFactory",
+    "QgsClipToMinMaxEnhancement",
+    "QgsClipper",
+    "QgsCodeEditor",
+    "QgsCodeEditorCSS",
+    "QgsCodeEditorHTML",
+    "QgsCodeEditorPython",
+    "QgsCodeEditorSQL",
+    "QgsCollapsibleGroupBox",
+    "QgsCollapsibleGroupBoxBasic",
+    "QgsColorBox",
+    "QgsColorBrewerColorRamp",
+    "QgsColorBrewerColorRampDialog",
+    "QgsColorBrewerColorRampWidget",
+    "QgsColorBrewerPalette",
+    "QgsColorButton",
+    "QgsColorDialog",
+    "QgsColorEffect",
+    "QgsColorEffectWidget",
+    "QgsColorPreviewWidget",
+    "QgsColorRamp",
+    "QgsColorRampButton",
+    "QgsColorRampShader",
+    "QgsColorRampTransformer",
+    "QgsColorRampWidget",
+    "QgsColorScheme",
+    "QgsColorSchemeList",
+    "QgsColorSchemeModel",
+    "QgsColorSchemeRegistry",
+    "QgsColorSliderWidget",
+    "QgsColorSwatchDelegate",
+    "QgsColorSwatchGrid",
+    "QgsColorSwatchGridAction",
+    "QgsColorTextWidget",
+    "QgsColorWheel",
+    "QgsColorWidget",
+    "QgsColorWidgetAction",
+    "QgsColorWidgetFactory",
+    "QgsColorWidgetWrapper",
+    "QgsCompositionConverter",
+    "QgsCompoundColorWidget",
+    "QgsCompoundCurve",
+    "QgsConditionalLayerStyles",
+    "QgsConditionalStyle",
+    "QgsConfigCache",
+    "QgsConfigureShortcutsDialog",
+    "QgsConnectionPool",
+    "QgsConnectionPoolGroup",
+    "QgsConstWkbPtr",
+    "QgsContrastEnhancement",
+    "QgsContrastEnhancementFunction",
+    "QgsCoordinateFormatter",
+    "QgsCoordinateReferenceSystem",
+    "QgsCoordinateTransform",
+    "QgsCoordinateTransformContext",
+    "QgsCptCityAllRampsItem",
+    "QgsCptCityArchive",
+    "QgsCptCityBrowserModel",
+    "QgsCptCityCollectionItem",
+    "QgsCptCityColorRamp",
+    "QgsCptCityColorRampDialog",
+    "QgsCptCityColorRampItem",
+    "QgsCptCityDataItem",
+    "QgsCptCityDirectoryItem",
+    "QgsCptCitySelectionItem",
+    "QgsCredentialDialog",
+    "QgsCredentials",
+    "QgsCredentialsConsole",
+    "QgsCredentialsNone",
+    "QgsCsException",
+    "QgsCubicRasterResampler",
+    "QgsCurve",
+    "QgsCurveEditorWidget",
+    "QgsCurvePolygon",
+    "QgsCurveTransform",
+    "QgsCustomColorScheme",
+    "QgsCustomDropHandler",
+    "QgsCustomLayerOrderWidget",
+    "QgsDartMeasurement",
+    "QgsDashSpaceDialog",
+    "QgsDataCollectionItem",
+    "QgsDataDefinedRotationDialog",
+    "QgsDataDefinedSizeDialog",
+    "QgsDataDefinedSizeLegend",
+    "QgsDataDefinedSizeLegendNode",
+    "QgsDataDefinedSizeLegendWidget",
+    "QgsDataDefinedValueDialog",
+    "QgsDataDefinedWidthDialog",
+    "QgsDataItem",
+    "QgsDataItemProvider",
+    "QgsDataItemProviderRegistry",
+    "QgsDataProvider",
+    "QgsDataSourceManagerDialog",
+    "QgsDataSourceUri",
+    "QgsDateTimeEdit",
+    "QgsDateTimeEditConfig",
+    "QgsDateTimeEditFactory",
+    "QgsDateTimeEditWrapper",
+    "QgsDateTimeFieldFormatter",
+    "QgsDateTimeSearchWidgetWrapper",
+    "QgsDateTimeStatisticalSummary",
+    "QgsDatumTransform",
+    "QgsDatumTransformDialog",
+    "QgsDefaultRasterLayerLegend",
+    "QgsDefaultSearchWidgetWrapper",
+    "QgsDefaultValue",
+    "QgsDefaultVectorLayerLegend",
+    "QgsDemTerrainGenerator",
+    "QgsDerivativeFilter",
+    "QgsDetailedItemData",
+    "QgsDetailedItemDelegate",
+    "QgsDetailedItemWidget",
+    "QgsDiagram",
+    "QgsDiagramInterpolationSettings",
+    "QgsDiagramLabelFeature",
+    "QgsDiagramLayerSettings",
+    "QgsDiagramProperties",
+    "QgsDiagramRenderer",
+    "QgsDiagramSettings",
+    "QgsDial",
+    "QgsDialog",
+    "QgsDirectoryItem",
+    "QgsDirectoryParamWidget",
+    "QgsDistanceArea",
+    "QgsDockWidget",
+    "QgsDoubleBoxScaleBarRenderer",
+    "QgsDoubleRange",
+    "QgsDoubleSpinBox",
+    "QgsDrawSourceEffect",
+    "QgsDrawSourceWidget",
+    "QgsDropShadowEffect",
+    "QgsDualView",
+    "QgsDummyConfigDlg",
+    "QgsDxfExport",
+    "QgsDxfPaintDevice",
+    "QgsDxfPaintEngine",
+    "QgsEditFormConfig",
+    "QgsEditorConfigWidget",
+    "QgsEditorWidgetAutoConfPlugin",
+    "QgsEditorWidgetFactory",
+    "QgsEditorWidgetRegistry",
+    "QgsEditorWidgetSetup",
+    "QgsEditorWidgetWrapper",
+    "QgsEffectDrawModeComboBox",
+    "QgsEffectPainter",
+    "QgsEffectStack",
+    "QgsEffectStackCompactWidget",
+    "QgsEffectStackPropertiesDialog",
+    "QgsEffectStackPropertiesWidget",
+    "QgsEllipse",
+    "QgsEllipseSymbolLayer",
+    "QgsEllipseSymbolLayerWidget",
+    "QgsEllipsoidUtils",
+    "QgsEncodingFileDialog",
+    "QgsEncodingSelectionDialog",
+    "QgsEnumerationWidgetFactory",
+    "QgsEnumerationWidgetWrapper",
+    "QgsError",
+    "QgsErrorDialog",
+    "QgsErrorItem",
+    "QgsErrorMessage",
+    "QgsException",
+    "QgsExpression",
+    "QgsExpressionBuilderDialog",
+    "QgsExpressionBuilderWidget",
+    "QgsExpressionContext",
+    "QgsExpressionContextGenerator",
+    "QgsExpressionContextScope",
+    "QgsExpressionContextScopeGenerator",
+    "QgsExpressionContextUtils",
+    "QgsExpressionFieldBuffer",
+    "QgsExpressionFunction",
+    "QgsExpressionFunction::Parameter",
+    "QgsExpressionHighlighter",
+    "QgsExpressionItem",
+    "QgsExpressionItemSearchProxy",
+    "QgsExpressionLineEdit",
+    "QgsExpressionNode",
+    "QgsExpressionNode::NodeList",
+    "QgsExpressionNodeBinaryOperator",
+    "QgsExpressionNodeColumnRef",
+    "QgsExpressionNodeCondition",
+    "QgsExpressionNodeCondition::WhenThen",
+    "QgsExpressionNodeFunction",
+    "QgsExpressionNodeInOperator",
+    "QgsExpressionNodeLiteral",
+    "QgsExpressionNodeUnaryOperator",
+    "QgsExpressionSelectionDialog",
+    "QgsExtentGroupBox",
+    "QgsExternalResourceConfigDlg",
+    "QgsExternalResourceWidget",
+    "QgsExternalResourceWidgetFactory",
+    "QgsExternalResourceWidgetWrapper",
+    "QgsFallbackFieldFormatter",
+    "QgsFavoriteItem",
+    "QgsFavoritesItem",
+    "QgsFcgiServerRequest",
+    "QgsFcgiServerResponse",
+    "QgsFeature",
+    "QgsFeatureFilter",
+    "QgsFeatureFilterModel",
+    "QgsFeatureFilterProvider",
+    "QgsFeatureFilterProviderGroup",
+    "QgsFeatureIterator",
+    "QgsFeatureListComboBox",
+    "QgsFeatureListModel",
+    "QgsFeatureListView",
+    "QgsFeatureListViewDelegate",
+    "QgsFeatureModel",
+    "QgsFeaturePickerModel",
+    "QgsFeatureRenderer",
+    "QgsFeatureRequest",
+    "QgsFeatureRequest::OrderBy",
+    "QgsFeatureRequest::OrderByClause",
+    "QgsFeatureSelectionDlg",
+    "QgsFeatureSelectionModel",
+    "QgsFeatureSink",
+    "QgsFeatureSource",
+    "QgsFeatureStore",
+    "QgsFeedback",
+    "QgsField",
+    "QgsFieldCalculator",
+    "QgsFieldComboBox",
+    "QgsFieldConditionalFormatWidget",
+    "QgsFieldConstraints",
+    "QgsFieldExpressionWidget",
+    "QgsFieldFormatter",
+    "QgsFieldFormatterRegistry",
+    "QgsFieldModel",
+    "QgsFieldProxyModel",
+    "QgsFieldValidator",
+    "QgsFieldValuesLineEdit",
+    "QgsFields",
+    "QgsFileDownloader",
+    "QgsFileDownloaderDialog",
+    "QgsFileUtils",
+    "QgsFileWidget",
+    "QgsFillSymbol",
+    "QgsFillSymbolLayer",
+    "QgsFilledMarkerSymbolLayer",
+    "QgsFilledMarkerSymbolLayerWidget",
+    "QgsFilterLineEdit",
+    "QgsFilterResponseDecorator",
+    "QgsFlatTerrainGenerator",
+    "QgsFloatingWidget",
+    "QgsFocusWatcher",
+    "QgsFontButton",
+    "QgsFontMarkerSymbolLayer",
+    "QgsFontMarkerSymbolLayerWidget",
+    "QgsFontUtils",
+    "QgsFormAnnotation",
+    "QgsGenericFeatureSelectionManager",
+    "QgsGenericNumericTransformer",
+    "QgsGeometry",
+    "QgsGeometry::Error",
+    "QgsGeometryAngleCheck",
+    "QgsGeometryAreaCheck",
+    "QgsGeometryCheckFactoryT",
+    "QgsGeometryCollection",
+    "QgsGeometryContainedCheck",
+    "QgsGeometryContainedCheckError",
+    "QgsGeometryDangleCheck",
+    "QgsGeometryDegeneratePolygonCheck",
+    "QgsGeometryDuplicateCheck",
+    "QgsGeometryDuplicateCheckError",
+    "QgsGeometryDuplicateNodesCheck",
+    "QgsGeometryEditUtils",
+    "QgsGeometryEngine",
+    "QgsGeometryFactory",
+    "QgsGeometryFollowBoundariesCheck",
+    "QgsGeometryGeneratorSymbolLayer",
+    "QgsGeometryGeneratorSymbolLayerWidget",
+    "QgsGeometryHoleCheck",
+    "QgsGeometryLineIntersectionCheck",
+    "QgsGeometryLineLayerIntersectionCheck",
+    "QgsGeometryMultipartCheck",
+    "QgsGeometryPointCoveredByLineCheck",
+    "QgsGeometryPointInPolygonCheck",
+    "QgsGeometryRubberBand",
+    "QgsGeometrySegmentLengthCheck",
+    "QgsGeometrySelfContactCheck",
+    "QgsGeometrySelfIntersectionCheck",
+    "QgsGeometrySelfIntersectionCheckError",
+    "QgsGeometrySliverPolygonCheck",
+    "QgsGeometrySnapper",
+    "QgsGeometryTypeCheck",
+    "QgsGeometryTypeCheckError",
+    "QgsGeometryUtils",
+    "QgsGeometryValidator",
+    "QgsGeos",
+    "QgsGlowEffect",
+    "QgsGlowWidget",
+    "QgsGml",
+    "QgsGmlFeatureClass",
+    "QgsGmlSchema",
+    "QgsGmlStreamingParser",
+    "QgsGmlStreamingParser::LayerProperties",
+    "QgsGplColorScheme",
+    "QgsGpsConnection",
+    "QgsGpsConnectionRegistry",
+    "QgsGpsDetector",
+    "QgsGpsInformation",
+    "QgsGpsdConnection",
+    "QgsGradientColorRamp",
+    "QgsGradientColorRampDialog",
+    "QgsGradientFillSymbolLayer",
+    "QgsGradientFillSymbolLayerWidget",
+    "QgsGradientStop",
+    "QgsGradientStopEditor",
+    "QgsGraduatedHistogramWidget",
+    "QgsGraduatedSymbolRenderer",
+    "QgsGraduatedSymbolRendererWidget",
+    "QgsGraph",
+    "QgsGraphAnalyzer",
+    "QgsGraphBuilder",
+    "QgsGraphBuilderInterface",
+    "QgsGraphDirector",
+    "QgsGraphEdge",
+    "QgsGraphVertex",
+    "QgsGridFileWriter",
+    "QgsGroupBoxCollapseButton",
+    "QgsGroupWmsDataDialog",
+    "QgsGui",
+    "QgsHeatmapRenderer",
+    "QgsHeatmapRendererWidget",
+    "QgsHelp",
+    "QgsHiddenWidgetFactory",
+    "QgsHiddenWidgetWrapper",
+    "QgsHighlight",
+    "QgsHillshadeFilter",
+    "QgsHillshadeRenderer",
+    "QgsHillshadeRendererWidget",
+    "QgsHistogram",
+    "QgsHistogramDiagram",
+    "QgsHistogramWidget",
+    "QgsHtmlAnnotation",
+    "QgsHtmlUtils",
+    "QgsHueSaturationFilter",
+    "QgsIDWInterpolator",
+    "QgsIFeatureSelectionManager",
+    "QgsIdentifyMenu",
+    "QgsImageFetcher",
+    "QgsImageFillSymbolLayer",
+    "QgsImageLegendNode",
+    "QgsImageOperation",
+    "QgsIndexedFeature",
+    "QgsInnerGlowEffect",
+    "QgsInnerShadowEffect",
+    "QgsIntRange",
+    "QgsInternalGeometryEngine",
+    "QgsInternalGeometrySnapper",
+    "QgsInterpolator",
+    "QgsInterval",
+    "QgsInvertedPolygonRenderer",
+    "QgsInvertedPolygonRendererWidget",
+    "QgsJoinDialog",
+    "QgsJsonExporter",
+    "QgsJsonUtils",
+    "QgsKernelDensityEstimation",
+    "QgsKeyValueFieldFormatter",
+    "QgsKeyValueWidget",
+    "QgsKeyValueWidgetFactory",
+    "QgsKeyValueWidgetWrapper",
+    "QgsLUDialog",
+    "QgsLabelCandidate",
+    "QgsLabelFeature",
+    "QgsLabelPosition",
+    "QgsLabelSearchTree",
+    "QgsLabelingEngine",
+    "QgsLabelingEngineSettings",
+    "QgsLabelingResults",
+    "QgsLabelingUtils",
+    "QgsLayerDefinition",
+    "QgsLayerDefinition::DependencySorter",
+    "QgsLayerItem",
+    "QgsLayerMetadata",
+    "QgsLayerMetadataFormatter",
+    "QgsLayerPropertiesWidget",
+    "QgsLayerRestorer",
+    "QgsLayerTree",
+    "QgsLayerTreeEmbeddedConfigWidget",
+    "QgsLayerTreeEmbeddedWidgetProvider",
+    "QgsLayerTreeEmbeddedWidgetRegistry",
+    "QgsLayerTreeGroup",
+    "QgsLayerTreeLayer",
+    "QgsLayerTreeMapCanvasBridge",
+    "QgsLayerTreeModel",
+    "QgsLayerTreeModelLegendNode",
+    "QgsLayerTreeNode",
+    "QgsLayerTreeRegistryBridge",
+    "QgsLayerTreeUtils",
+    "QgsLayerTreeView",
+    "QgsLayerTreeViewDefaultActions",
+    "QgsLayerTreeViewMenuProvider",
+    "QgsLayout",
+    "QgsLayoutAligner",
+    "QgsLayoutAtlas",
+    "QgsLayoutConfigObject",
+    "QgsLayoutCustomDropHandler",
+    "QgsLayoutDesignerInterface",
+    "QgsLayoutExporter",
+    "QgsLayoutFrame",
+    "QgsLayoutGridSettings",
+    "QgsLayoutGuide",
+    "QgsLayoutGuideCollection",
+    "QgsLayoutGuideProxyModel",
+    "QgsLayoutImageExportOptionsDialog",
+    "QgsLayoutItem",
+    "QgsLayoutItemAbstractGuiMetadata",
+    "QgsLayoutItemAbstractMetadata",
+    "QgsLayoutItemAttributeTable",
+    "QgsLayoutItemBaseWidget",
+    "QgsLayoutItemComboBox",
+    "QgsLayoutItemGroup",
+    "QgsLayoutItemGuiGroup",
+    "QgsLayoutItemGuiMetadata",
+    "QgsLayoutItemGuiRegistry",
+    "QgsLayoutItemHtml",
+    "QgsLayoutItemLabel",
+    "QgsLayoutItemLegend",
+    "QgsLayoutItemMap",
+    "QgsLayoutItemMapGrid",
+    "QgsLayoutItemMapGridStack",
+    "QgsLayoutItemMapItem",
+    "QgsLayoutItemMapItemStack",
+    "QgsLayoutItemMapOverview",
+    "QgsLayoutItemMapOverviewStack",
+    "QgsLayoutItemMetadata",
+    "QgsLayoutItemPage",
+    "QgsLayoutItemPicture",
+    "QgsLayoutItemPolygon",
+    "QgsLayoutItemPolyline",
+    "QgsLayoutItemPropertiesDialog",
+    "QgsLayoutItemPropertiesWidget",
+    "QgsLayoutItemRegistry",
+    "QgsLayoutItemRenderContext",
+    "QgsLayoutItemScaleBar",
+    "QgsLayoutItemShape",
+    "QgsLayoutItemTextTable",
+    "QgsLayoutManager",
+    "QgsLayoutMeasurement",
+    "QgsLayoutMeasurementConverter",
+    "QgsLayoutModel",
+    "QgsLayoutMultiFrame",
+    "QgsLayoutMultiFrameAbstractMetadata",
+    "QgsLayoutMultiFrameMetadata",
+    "QgsLayoutNodesItem",
+    "QgsLayoutObject",
+    "QgsLayoutPageCollection",
+    "QgsLayoutPoint",
+    "QgsLayoutProxyModel",
+    "QgsLayoutRenderContext",
+    "QgsLayoutReportContext",
+    "QgsLayoutRuler",
+    "QgsLayoutSerializableObject",
+    "QgsLayoutSize",
+    "QgsLayoutSnapper",
+    "QgsLayoutTable",
+    "QgsLayoutTableBackgroundColorsDialog",
+    "QgsLayoutTableColumn",
+    "QgsLayoutTableStyle",
+    "QgsLayoutUndoObjectInterface",
+    "QgsLayoutUndoStack",
+    "QgsLayoutUnitsComboBox",
+    "QgsLayoutUtils",
+    "QgsLayoutView",
+    "QgsLayoutViewEllipticalRubberBand",
+    "QgsLayoutViewMenuProvider",
+    "QgsLayoutViewMouseEvent",
+    "QgsLayoutViewRectangularRubberBand",
+    "QgsLayoutViewRubberBand",
+    "QgsLayoutViewTool",
+    "QgsLayoutViewToolAddItem",
+    "QgsLayoutViewToolAddNodeItem",
+    "QgsLayoutViewToolEditNodes",
+    "QgsLayoutViewToolMoveItemContent",
+    "QgsLayoutViewToolPan",
+    "QgsLayoutViewToolSelect",
+    "QgsLayoutViewToolTemporaryKeyPan",
+    "QgsLayoutViewToolTemporaryKeyZoom",
+    "QgsLayoutViewToolTemporaryMousePan",
+    "QgsLayoutViewToolZoom",
+    "QgsLayoutViewTriangleRubberBand",
+    "QgsLegendFilterButton",
+    "QgsLegendModel",
+    "QgsLegendRenderer",
+    "QgsLegendSettings",
+    "QgsLegendStyle",
+    "QgsLegendSymbolItem",
+    "QgsLimitedRandomColorRamp",
+    "QgsLimitedRandomColorRampDialog",
+    "QgsLimitedRandomColorRampWidget",
+    "QgsLine3DSymbol",
+    "QgsLinePatternFillSymbolLayer",
+    "QgsLinePatternFillSymbolLayerWidget",
+    "QgsLineString",
+    "QgsLineSymbol",
+    "QgsLineSymbolLayer",
+    "QgsLinearMinMaxEnhancement",
+    "QgsLinearMinMaxEnhancementWithClip",
+    "QgsLinearlyInterpolatedDiagramRenderer",
+    "QgsListFieldFormatter",
+    "QgsListWidget",
+    "QgsListWidgetFactory",
+    "QgsListWidgetWrapper",
+    "QgsLocaleNumC",
+    "QgsLocator",
+    "QgsLocatorAutomaticModel",
+    "QgsLocatorContext",
+    "QgsLocatorFilter",
+    "QgsLocatorModel",
+    "QgsLocatorProxyModel",
+    "QgsLocatorResult",
+    "QgsLocatorWidget",
+    "QgsLogger",
+    "QgsLongLongValidator",
+    "QgsManageConnectionsDialog",
+    "QgsMapCanvas",
+    "QgsMapCanvas::CanvasProperties",
+    "QgsMapCanvasAnnotationItem",
+    "QgsMapCanvasItem",
+    "QgsMapCanvasSnappingUtils",
+    "QgsMapCanvasTracer",
+    "QgsMapDecoration",
+    "QgsMapHitTest",
+    "QgsMapLayer",
+    "QgsMapLayerAction",
+    "QgsMapLayerActionRegistry",
+    "QgsMapLayerComboBox",
+    "QgsMapLayerConfigWidget",
+    "QgsMapLayerConfigWidgetFactory",
+    "QgsMapLayerDependency",
+    "QgsMapLayerLegend",
+    "QgsMapLayerLegendUtils",
+    "QgsMapLayerModel",
+    "QgsMapLayerProxyModel",
+    "QgsMapLayerRenderer",
+    "QgsMapLayerStore",
+    "QgsMapLayerStyle",
+    "QgsMapLayerStyleManager",
+    "QgsMapLayerStyleManagerWidget",
+    "QgsMapMouseEvent",
+    "QgsMapOverviewCanvas",
+    "QgsMapRendererCache",
+    "QgsMapRendererCustomPainterJob",
+    "QgsMapRendererJob",
+    "QgsMapRendererParallelJob",
+    "QgsMapRendererQImageJob",
+    "QgsMapRendererSequentialJob",
+    "QgsMapRendererTask",
+    "QgsMapSettings",
+    "QgsMapSettingsUtils",
+    "QgsMapThemeCollection",
+    "QgsMapThemeCollection::MapThemeLayerRecord",
+    "QgsMapThemeCollection::MapThemeRecord",
+    "QgsMapTip",
+    "QgsMapToPixel",
+    "QgsMapToPixelSimplifier",
+    "QgsMapTool",
+    "QgsMapToolAdvancedDigitizing",
+    "QgsMapToolCapture",
+    "QgsMapToolEdit",
+    "QgsMapToolEmitPoint",
+    "QgsMapToolExtent",
+    "QgsMapToolIdentify",
+    "QgsMapToolIdentifyFeature",
+    "QgsMapToolPan",
+    "QgsMapToolZoom",
+    "QgsMapUnitScale",
+    "QgsMapUnitScaleDialog",
+    "QgsMapUnitScaleWidget",
+    "QgsMargins",
+    "QgsMarkerLineSymbolLayer",
+    "QgsMarkerLineSymbolLayerWidget",
+    "QgsMarkerSymbol",
+    "QgsMarkerSymbolLayer",
+    "QgsMasterLayoutInterface",
+    "QgsMasterPasswordResetDialog",
+    "QgsMemoryProviderUtils",
+    "QgsMenuHeader",
+    "QgsMenuHeaderWidgetAction",
+    "QgsMeshActiveDatasetGroupTreeView",
+    "QgsMeshAvailableDatasetGroupTreeModel",
+    "QgsMeshDatasetGroupListModel",
+    "QgsMeshDatasetGroupProxyModel",
+    "QgsMeshDatasetGroupSaveMenu",
+    "QgsMeshDatasetGroupTreeItemDelegate",
+    "QgsMeshDatasetGroupTreeModel",
+    "QgsMeshDatasetGroupTreeView",
+    "QgsMeshDatasetGroupTreeWidget",
+    "QgsMeshDatasetListModel",
+    "QgsMeshRenderer3DAveragingWidget",
+    "QgsMeshRendererActiveDatasetWidget",
+    "QgsMeshRendererMeshSettingsWidget",
+    "QgsMeshRendererScalarSettingsWidget",
+    "QgsMeshRendererVectorSettingsWidget",
+    "QgsMeshStaticDatasetWidget",
+    "QgsMeshVariableStrokeWidthButton",
+    "QgsMeshVariableStrokeWidthWidget",
+    "QgsMessageBar",
+    "QgsMessageBarItem",
+    "QgsMessageLog",
+    "QgsMessageLogConsole",
+    "QgsMessageLogViewer",
+    "QgsMessageOutput",
+    "QgsMessageOutputConsole",
+    "QgsMessageViewer",
+    "QgsMetadataWidget",
+    "QgsMimeDataUtils",
+    "QgsMultiBandColorRenderer",
+    "QgsMultiBandColorRendererWidget",
+    "QgsMultiCurve",
+    "QgsMultiEditToolButton",
+    "QgsMultiLineString",
+    "QgsMultiPoint",
+    "QgsMultiPolygon",
+    "QgsMultiRenderChecker",
+    "QgsMultiSurface",
+    "QgsNativeAlgorithms",
+    "QgsNativeMetadataValidator",
+    "QgsNetworkAccessManager",
+    "QgsNetworkContentFetcher",
+    "QgsNetworkDiskCache",
+    "QgsNetworkDistanceStrategy",
+    "QgsNetworkReplyParser",
+    "QgsNetworkSpeedStrategy",
+    "QgsNetworkStrategy",
+    "QgsNewAuxiliaryFieldDialog",
+    "QgsNewAuxiliaryLayerDialog",
+    "QgsNewGeoPackageLayerDialog",
+    "QgsNewHttpConnection",
+    "QgsNewMemoryLayerDialog",
+    "QgsNewNameDialog",
+    "QgsNewOgrConnection",
+    "QgsNewVectorLayerDialog",
+    "QgsNineCellFilter",
+    "QgsNmeaConnection",
+    "QgsNullSymbolRenderer",
+    "QgsNullSymbolRendererWidget",
+    "QgsNumericScaleBarRenderer",
+    "QgsOWSServerFilterRestorer",
+    "QgsOWSSourceSelect",
+    "QgsObjectCustomProperties",
+    "QgsOfflineEditing",
+    "QgsOgcServiceException",
+    "QgsOgcUtils",
+    "QgsOgcUtils::LayerProperties",
+    "QgsOgcUtilsExprToFilter",
+    "QgsOgcUtilsSQLStatementToFilter",
+    "QgsOgrUtils",
+    "QgsOpacityWidget",
+    "QgsOptional",
+    "QgsOptionalExpression",
+    "QgsOptionsDialogBase",
+    "QgsOptionsDialogHighlightButton",
+    "QgsOptionsDialogHighlightCheckBox",
+    "QgsOptionsDialogHighlightGroupBox",
+    "QgsOptionsDialogHighlightLabel",
+    "QgsOptionsDialogHighlightTree",
+    "QgsOptionsDialogHighlightWidget",
+    "QgsOptionsPageWidget",
+    "QgsOptionsWidgetFactory",
+    "QgsOrderByDialog",
+    "QgsOrganizeTableColumnsDialog",
+    "QgsOuterGlowEffect",
+    "QgsOwsConnection",
+    "QgsPageSize",
+    "QgsPageSizeRegistry",
+    "QgsPaintEffect",
+    "QgsPaintEffectAbstractMetadata",
+    "QgsPaintEffectMetadata",
+    "QgsPaintEffectPropertiesWidget",
+    "QgsPaintEffectRegistry",
+    "QgsPaintEffectWidget",
+    "QgsPaintEngineHack",
+    "QgsPainting",
+    "QgsPalLabeling",
+    "QgsPalLayerSettings",
+    "QgsPalettedRasterRenderer",
+    "QgsPalettedRendererWidget",
+    "QgsPanelWidget",
+    "QgsPanelWidgetStack",
+    "QgsPanelWidgetWrapper",
+    "QgsPasswordLineEdit",
+    "QgsPathResolver",
+    "QgsPenCapStyleComboBox",
+    "QgsPenJoinStyleComboBox",
+    "QgsPenStyleComboBox",
+    "QgsPhongMaterialSettings",
+    "QgsPieDiagram",
+    "QgsPixmapLabel",
+    "QgsPkiBundle",
+    "QgsPkiConfigBundle",
+    "QgsPluginLayer",
+    "QgsPluginLayerRegistry",
+    "QgsPluginLayerType",
+    "QgsPluginManagerInterface",
+    "QgsPoint",
+    "QgsPoint3DSymbol",
+    "QgsPointClusterRenderer",
+    "QgsPointClusterRendererWidget",
+    "QgsPointDisplacementRenderer",
+    "QgsPointDisplacementRendererWidget",
+    "QgsPointDistanceRenderer",
+    "QgsPointLocator",
+    "QgsPointLocator_DumpTree",
+    "QgsPointLocator_Stream",
+    "QgsPointLocator_VisitorArea",
+    "QgsPointLocator_VisitorEdgesInRect",
+    "QgsPointLocator_VisitorNearestEdge",
+    "QgsPointLocator_VisitorNearestVertex",
+    "QgsPointPatternFillSymbolLayer",
+    "QgsPointPatternFillSymbolLayerWidget",
+    "QgsPointXY",
+    "QgsPolygon",
+    "QgsPolygon3DSymbol",
+    "QgsPresetColorRampDialog",
+    "QgsPresetColorRampWidget",
+    "QgsPresetSchemeColorRamp",
+    "QgsPreviewEffect",
+    "QgsPrintLayout",
+    "QgsProcessing",
+    "QgsProcessingAlgRunnerTask",
+    "QgsProcessingAlgorithm",
+    "QgsProcessingContext",
+    "QgsProcessingContext::LayerDetails",
+    "QgsProcessingDestinationParameter",
+    "QgsProcessingException",
+    "QgsProcessingFeatureBasedAlgorithm",
+    "QgsProcessingFeatureSink",
+    "QgsProcessingFeatureSource",
+    "QgsProcessingFeatureSourceDefinition",
+    "QgsProcessingFeedback",
+    "QgsProcessingMultiStepFeedback",
+    "QgsProcessingOutputDefinition",
+    "QgsProcessingOutputFile",
+    "QgsProcessingOutputFolder",
+    "QgsProcessingOutputHtml",
+    "QgsProcessingOutputLayerDefinition",
+    "QgsProcessingOutputMapLayer",
+    "QgsProcessingOutputMultipleLayers",
+    "QgsProcessingOutputNumber",
+    "QgsProcessingOutputRasterLayer",
+    "QgsProcessingOutputString",
+    "QgsProcessingOutputVectorLayer",
+    "QgsProcessingParameterBand",
+    "QgsProcessingParameterBoolean",
+    "QgsProcessingParameterCrs",
+    "QgsProcessingParameterDefinition",
+    "QgsProcessingParameterEnum",
+    "QgsProcessingParameterExpression",
+    "QgsProcessingParameterExtent",
+    "QgsProcessingParameterFeatureSink",
+    "QgsProcessingParameterFeatureSource",
+    "QgsProcessingParameterField",
+    "QgsProcessingParameterFile",
+    "QgsProcessingParameterFileDestination",
+    "QgsProcessingParameterFolderDestination",
+    "QgsProcessingParameterLimitedDataTypes",
+    "QgsProcessingParameterMapLayer",
+    "QgsProcessingParameterMatrix",
+    "QgsProcessingParameterMultipleLayers",
+    "QgsProcessingParameterNumber",
+    "QgsProcessingParameterPoint",
+    "QgsProcessingParameterRange",
+    "QgsProcessingParameterRasterDestination",
+    "QgsProcessingParameterRasterLayer",
+    "QgsProcessingParameterString",
+    "QgsProcessingParameterVectorDestination",
+    "QgsProcessingParameterVectorLayer",
+    "QgsProcessingParameters",
+    "QgsProcessingProvider",
+    "QgsProcessingRegistry",
+    "QgsProcessingUtils",
+    "QgsProject",
+    "QgsProjectArchive",
+    "QgsProjectBadLayerHandler",
+    "QgsProjectColorScheme",
+    "QgsProjectFileTransform",
+    "QgsProjectHomeItem",
+    "QgsProjectItem",
+    "QgsProjectProperty",
+    "QgsProjectPropertyKey",
+    "QgsProjectPropertyValue",
+    "QgsProjectVersion",
+    "QgsProjectionSelectionDialog",
+    "QgsProjectionSelectionTreeWidget",
+    "QgsProjectionSelectionWidget",
+    "QgsProperty",
+    "QgsPropertyAssistantWidget",
+    "QgsPropertyCollection",
+    "QgsPropertyCollectionStack",
+    "QgsPropertyDefinition",
+    "QgsPropertyOverrideButton",
+    "QgsPropertyTransformer",
+    "QgsProviderMetadata",
+    "QgsProviderRegistry",
+    "QgsProxyFeatureSink",
+    "QgsPythonRunner",
+    "QgsQtLocationConnection",
+    "QgsQueryBuilder",
+    "QgsRandomColorRamp",
+    "QgsRange",
+    "QgsRangeConfigDlg",
+    "QgsRangeFieldFormatter",
+    "QgsRangeWidgetFactory",
+    "QgsRangeWidgetWrapper",
+    "QgsRaster",
+    "QgsRasterBandComboBox",
+    "QgsRasterBandStats",
+    "QgsRasterBlock",
+    "QgsRasterBlockFeedback",
+    "QgsRasterCalcNode",
+    "QgsRasterCalculator",
+    "QgsRasterCalculatorEntry",
+    "QgsRasterChecker",
+    "QgsRasterDataProvider",
+    "QgsRasterDrawer",
+    "QgsRasterFileWriter",
+    "QgsRasterFileWriterTask",
+    "QgsRasterFillSymbolLayer",
+    "QgsRasterFillSymbolLayerWidget",
+    "QgsRasterFormatSaveOptionsWidget",
+    "QgsRasterHistogram",
+    "QgsRasterHistogramWidget",
+    "QgsRasterIdentifyResult",
+    "QgsRasterInterface",
+    "QgsRasterIterator",
+    "QgsRasterLayer",
+    "QgsRasterLayerRenderer",
+    "QgsRasterLayerSaveAsDialog",
+    "QgsRasterMatrix",
+    "QgsRasterMinMaxOrigin",
+    "QgsRasterMinMaxWidget",
+    "QgsRasterNuller",
+    "QgsRasterPipe",
+    "QgsRasterProjector",
+    "QgsRasterPyramid",
+    "QgsRasterPyramidsOptionsWidget",
+    "QgsRasterRange",
+    "QgsRasterRenderer",
+    "QgsRasterRendererRegistry",
+    "QgsRasterRendererWidget",
+    "QgsRasterResampleFilter",
+    "QgsRasterResampler",
+    "QgsRasterShader",
+    "QgsRasterShaderFunction",
+    "QgsRasterSymbolLegendNode",
+    "QgsRasterTransparency",
+    "QgsRasterTransparencyWidget",
+    "QgsRatioLockButton",
+    "QgsReadWriteContext",
+    "QgsRecentColorScheme",
+    "QgsRectangle",
+    "QgsReferencedGeometryBase",
+    "QgsReferencedPointXY",
+    "QgsReferencedRectangle",
+    "QgsRegularPolygon",
+    "QgsRelation",
+    "QgsRelation::FieldPair",
+    "QgsRelationAggregateSearchWidgetWrapper",
+    "QgsRelationManager",
+    "QgsRelationReferenceConfigDlg",
+    "QgsRelationReferenceFactory",
+    "QgsRelationReferenceFieldFormatter",
+    "QgsRelationReferenceSearchWidgetWrapper",
+    "QgsRelationReferenceWidget",
+    "QgsRelationReferenceWidgetWrapper",
+    "QgsRelationWidgetWrapper",
+    "QgsRelief",
+    "QgsRenderChecker",
+    "QgsRenderContext",
+    "QgsRendererAbstractMetadata",
+    "QgsRendererCategory",
+    "QgsRendererMeshPropertiesWidget",
+    "QgsRendererMetadata",
+    "QgsRendererPropertiesDialog",
+    "QgsRendererRange",
+    "QgsRendererRasterPropertiesWidget",
+    "QgsRendererRegistry",
+    "QgsRendererRulePropsDialog",
+    "QgsRendererRulePropsWidget",
+    "QgsRendererWidget",
+    "QgsRequestHandler",
+    "QgsRubberBand",
+    "QgsRuggednessFilter",
+    "QgsRuleBasedLabelProvider",
+    "QgsRuleBasedLabeling",
+    "QgsRuleBasedLabeling::Rule",
+    "QgsRuleBasedRenderer",
+    "QgsRuleBasedRenderer::Rule",
+    "QgsRuleBasedRendererModel",
+    "QgsRuleBasedRendererWidget",
+    "QgsRunProcess",
+    "QgsRuntimeProfiler",
+    "QgsSQLComposerDialog",
+    "QgsSQLComposerDialog::SQLValidatorCallback",
+    "QgsSQLComposerDialog::TableSelectedCallback",
+    "QgsSQLStatement",
+    "QgsSQLStatement::Node",
+    "QgsSQLStatement::NodeBetweenOperator",
+    "QgsSQLStatement::NodeBinaryOperator",
+    "QgsSQLStatement::NodeCast",
+    "QgsSQLStatement::NodeColumnRef",
+    "QgsSQLStatement::NodeColumnSorted",
+    "QgsSQLStatement::NodeFunction",
+    "QgsSQLStatement::NodeInOperator",
+    "QgsSQLStatement::NodeJoin",
+    "QgsSQLStatement::NodeList",
+    "QgsSQLStatement::NodeLiteral",
+    "QgsSQLStatement::NodeSelect",
+    "QgsSQLStatement::NodeSelectedColumn",
+    "QgsSQLStatement::NodeTableDef",
+    "QgsSQLStatement::NodeUnaryOperator",
+    "QgsSQLStatement::RecursiveVisitor",
+    "QgsSQLStatement::Visitor",
+    "QgsSQLStatementCollectTableNames",
+    "QgsSVGFillSymbolLayer",
+    "QgsSVGFillSymbolLayerWidget",
+    "QgsSatelliteInfo",
+    "QgsScaleBarRenderer",
+    "QgsScaleBarSettings",
+    "QgsScaleCalculator",
+    "QgsScaleComboBox",
+    "QgsScaleRangeWidget",
+    "QgsScaleUtils",
+    "QgsScaleVisibilityDialog",
+    "QgsScaleWidget",
+    "QgsScopeLogger",
+    "QgsScopedExpressionFunction",
+    "QgsScrollArea",
+    "QgsSearchWidgetToolButton",
+    "QgsSearchWidgetWrapper",
+    "QgsSensorGuiMetadata",
+    "QgsSensorMetadata",
+    "QgsServer",
+    "QgsServerException",
+    "QgsServerFilter",
+    "QgsServerInterface",
+    "QgsServerInterfaceImpl",
+    "QgsServerLogger",
+    "QgsServerPlugins",
+    "QgsServerRequest",
+    "QgsServerResponse",
+    "QgsServerSettings",
+    "QgsServerSettingsEnv",
+    "QgsService",
+    "QgsServiceModule",
+    "QgsServiceNativeLoader",
+    "QgsServiceRegistry",
+    "QgsSettings",
+    "QgsShadowEffect",
+    "QgsShadowEffectWidget",
+    "QgsShapeburstFillSymbolLayer",
+    "QgsShapeburstFillSymbolLayerWidget",
+    "QgsShortcutsManager",
+    "QgsSignalBlocker",
+    "QgsSimpleFillSymbolLayer",
+    "QgsSimpleFillSymbolLayerWidget",
+    "QgsSimpleLegendNode",
+    "QgsSimpleLineSymbolLayer",
+    "QgsSimpleLineSymbolLayerWidget",
+    "QgsSimpleMarkerSymbolLayer",
+    "QgsSimpleMarkerSymbolLayerBase",
+    "QgsSimpleMarkerSymbolLayerWidget",
+    "QgsSimplifyMethod",
+    "QgsSingleBandColorDataRenderer",
+    "QgsSingleBandGrayRenderer",
+    "QgsSingleBandGrayRendererWidget",
+    "QgsSingleBandPseudoColorRenderer",
+    "QgsSingleBandPseudoColorRendererWidget",
+    "QgsSingleBoxScaleBarRenderer",
+    "QgsSingleCategoryDiagramRenderer",
+    "QgsSingleSymbolRenderer",
+    "QgsSingleSymbolRendererWidget",
+    "QgsSizeScaleTransformer",
+    "QgsSlider",
+    "QgsSlopeFilter",
+    "QgsSmartGroupCondition",
+    "QgsSmartGroupEditorDialog",
+    "QgsSnapIndicator",
+    "QgsSnappingConfig",
+    "QgsSnappingConfig::IndividualLayerSettings",
+    "QgsSnappingUtils",
+    "QgsSourceFieldsProperties",
+    "QgsSourceSelectProvider",
+    "QgsSourceSelectProviderRegistry",
+    "QgsSpatialIndex",
+    "QgsSpatialIndexCopyVisitor",
+    "QgsSpinBox",
+    "QgsSqlExpressionCompiler",
+    "QgsStaticExpressionFunction",
+    "QgsStatisticalSummary",
+    "QgsStatusBar",
+    "QgsStringReplacement",
+    "QgsStringReplacementCollection",
+    "QgsStringStatisticalSummary",
+    "QgsStringUtils",
+    "QgsStyle",
+    "QgsStyleExportImportDialog",
+    "QgsStyleGroupSelectionDialog",
+    "QgsStyleManagerDialog",
+    "QgsStyleSaveDialog",
+    "QgsSubstitutionListDialog",
+    "QgsSubstitutionListWidget",
+    "QgsSurface",
+    "QgsSvgAnnotation",
+    "QgsSvgCache",
+    "QgsSvgMarkerSymbolLayer",
+    "QgsSvgMarkerSymbolLayerWidget",
+    "QgsSvgSelectorDialog",
+    "QgsSvgSelectorGroupsModel",
+    "QgsSvgSelectorListModel",
+    "QgsSvgSelectorWidget",
+    "QgsSymbol",
+    "QgsSymbolButton",
+    "QgsSymbolLayer",
+    "QgsSymbolLayerAbstractMetadata",
+    "QgsSymbolLayerMetadata",
+    "QgsSymbolLayerRegistry",
+    "QgsSymbolLayerUtils",
+    "QgsSymbolLayerWidget",
+    "QgsSymbolLegendNode",
+    "QgsSymbolLevelItem",
+    "QgsSymbolLevelsDialog",
+    "QgsSymbolLevelsWidget",
+    "QgsSymbolRenderContext",
+    "QgsSymbolSelectorDialog",
+    "QgsSymbolSelectorWidget",
+    "QgsSymbolWidgetContext",
+    "QgsSymbolsListWidget",
+    "QgsTabWidget",
+    "QgsTableWidgetBase",
+    "QgsTableWidgetItem",
+    "QgsTask",
+    "QgsTaskManager",
+    "QgsTaskManagerWidget",
+    "QgsTemporalRange",
+    "QgsTerrainGenerator",
+    "QgsTessellatedPolygonGeometry",
+    "QgsTessellator",
+    "QgsTextAnnotation",
+    "QgsTextBackgroundSettings",
+    "QgsTextBufferSettings",
+    "QgsTextDiagram",
+    "QgsTextEditConfigDlg",
+    "QgsTextEditSearchWidgetWrapper",
+    "QgsTextEditWidgetFactory",
+    "QgsTextEditWrapper",
+    "QgsTextFormat",
+    "QgsTextFormatDialog",
+    "QgsTextFormatPanelWidget",
+    "QgsTextFormatWidget",
+    "QgsTextLabelFeature",
+    "QgsTextPreview",
+    "QgsTextRenderer",
+    "QgsTextShadowSettings",
+    "QgsTicksScaleBarRenderer",
+    "QgsTilingScheme",
+    "QgsTinInterpolator",
+    "QgsTolerance",
+    "QgsTopologyPreservingSimplifier",
+    "QgsTotalCurvatureFilter",
+    "QgsTracer",
+    "QgsTrackedVectorLayerTools",
+    "QgsTransaction",
+    "QgsTransactionGroup",
+    "QgsTransformEffect",
+    "QgsTransformWidget",
+    "QgsTreeWidgetItem",
+    "QgsTreeWidgetItemObject",
+    "QgsTriangle",
+    "QgsUniqueValueWidgetFactory",
+    "QgsUniqueValuesConfigDlg",
+    "QgsUniqueValuesWidgetWrapper",
+    "QgsUnitSelectionWidget",
+    "QgsUnitTypes",
+    "QgsUserColorScheme",
+    "QgsUserInputWidget",
+    "QgsUserProfile",
+    "QgsUserProfileManager",
+    "QgsUuidWidgetFactory",
+    "QgsUuidWidgetWrapper",
+    "QgsVScrollArea",
+    "QgsValueMapConfigDlg",
+    "QgsValueMapFieldFormatter",
+    "QgsValueMapSearchWidgetWrapper",
+    "QgsValueMapWidgetFactory",
+    "QgsValueMapWidgetWrapper",
+    "QgsValueRelationConfigDlg",
+    "QgsValueRelationFieldFormatter",
+    "QgsValueRelationSearchWidgetWrapper",
+    "QgsValueRelationWidgetFactory",
+    "QgsValueRelationWidgetWrapper",
+    "QgsVariableEditorWidget",
+    "QgsVector",
+    "QgsVector3D",
+    "QgsVectorDataProvider",
+    "QgsVectorFieldSymbolLayer",
+    "QgsVectorFieldSymbolLayerWidget",
+    "QgsVectorFileWriter",
+    "QgsVectorFileWriter::BoolOption",
+    "QgsVectorFileWriter::FieldValueConverter",
+    "QgsVectorFileWriter::HiddenOption",
+    "QgsVectorFileWriter::IntOption",
+    "QgsVectorFileWriter::Option",
+    "QgsVectorFileWriter::SaveVectorOptions",
+    "QgsVectorFileWriter::SetOption",
+    "QgsVectorFileWriter::StringOption",
+    "QgsVectorFileWriterTask",
+    "QgsVectorLayer",
+    "QgsVectorLayer3DRenderer",
+    "QgsVectorLayer3DRendererMetadata",
+    "QgsVectorLayerCache",
+    "QgsVectorLayerDiagramProvider",
+    "QgsVectorLayerDirector",
+    "QgsVectorLayerEditBuffer",
+    "QgsVectorLayerEditPassthrough",
+    "QgsVectorLayerEditUtils",
+    "QgsVectorLayerExporter",
+    "QgsVectorLayerExporterTask",
+    "QgsVectorLayerFeatureCounter",
+    "QgsVectorLayerFeatureIterator",
+    "QgsVectorLayerFeatureSource",
+    "QgsVectorLayerJoinBuffer",
+    "QgsVectorLayerJoinInfo",
+    "QgsVectorLayerLabelProvider",
+    "QgsVectorLayerLegendWidget",
+    "QgsVectorLayerProperties",
+    "QgsVectorLayerRenderer",
+    "QgsVectorLayerSaveAsDialog",
+    "QgsVectorLayerSelectedFeatureSource",
+    "QgsVectorLayerSelectionManager",
+    "QgsVectorLayerSimpleLabeling",
+    "QgsVectorLayerTools",
+    "QgsVectorLayerUndoCommand",
+    "QgsVectorLayerUndoCommandAddAttribute",
+    "QgsVectorLayerUndoCommandAddFeature",
+    "QgsVectorLayerUndoCommandChangeAttribute",
+    "QgsVectorLayerUndoCommandChangeGeometry",
+    "QgsVectorLayerUndoCommandDeleteAttribute",
+    "QgsVectorLayerUndoCommandDeleteFeature",
+    "QgsVectorLayerUndoCommandRenameAttribute",
+    "QgsVectorLayerUndoPassthroughCommand",
+    "QgsVectorLayerUndoPassthroughCommandAddAttribute",
+    "QgsVectorLayerUndoPassthroughCommandAddFeatures",
+    "QgsVectorLayerUndoPassthroughCommandChangeAttribute",
+    "QgsVectorLayerUndoPassthroughCommandChangeAttributes",
+    "QgsVectorLayerUndoPassthroughCommandChangeGeometry",
+    "QgsVectorLayerUndoPassthroughCommandDeleteAttribute",
+    "QgsVectorLayerUndoPassthroughCommandDeleteFeatures",
+    "QgsVectorLayerUndoPassthroughCommandRenameAttribute",
+    "QgsVectorLayerUndoPassthroughCommandUpdate",
+    "QgsVectorLayerUtils",
+    "QgsVectorLayerUtils::QgsDuplicateFeatureContext",
+    "QgsVectorSimplifyMethod",
+    "QgsVertexId",
+    "QgsVertexIterator",
+    "QgsVertexMarker",
+    "QgsVirtualLayerDefinition",
+    "QgsVirtualLayerDefinition::SourceLayer",
+    "QgsVirtualLayerDefinitionUtils",
+    "QgsWcs::QgsRequestNotWellFormedException",
+    "QgsWcs::QgsSecurityAccessException",
+    "QgsWcs::QgsServiceException",
+    "QgsWebPage",
+    "QgsWebView",
+    "QgsWfs::QgsBadRequestException",
+    "QgsWfs::QgsRequestNotWellFormedException",
+    "QgsWfs::QgsSecurityAccessException",
+    "QgsWfs::QgsServiceException",
+    "QgsWfs::QgsWfsParameters",
+    "QgsWidgetStateHelper",
+    "QgsWidgetWrapper",
+    "QgsWithVariableExpressionFunction",
+    "QgsWkbException",
+    "QgsWkbPtr",
+    "QgsWkbTypes",
+    "QgsWms::QgsBadRequestException",
+    "QgsWms::QgsMapRendererJobProxy",
+    "QgsWms::QgsRenderer",
+    "QgsWms::QgsSecurityException",
+    "QgsWms::QgsServiceException",
+    "QgsWms::QgsWmsParameters",
+    "QgsWmsDimensionDialog",
+    "QgsWmsLegendNode",
+    "QgsXmlUtils",
+    "QgsZipItem",
+    "QgsZonalStatistics",
+    "TriDecorator",
+    "TriangleInterpolator",
+    "Vector3D",
+    "pal::CostCalculator",
+    "pal::Feats",
+    "pal::FeaturePart",
+    "pal::GeomFunction",
+    "pal::InternalException",
+    "pal::InternalException::Empty",
+    "pal::InternalException::Full",
+    "pal::InternalException::NoLabelPosition",
+    "pal::InternalException::UnknownGeometry",
+    "pal::InternalException::WrongGeometry",
+    "pal::LabelPosition",
+    "pal::Layer",
+    "pal::Pal",
+    "pal::PointSet",
+    "pal::PriorityQueue",
+    "pal::Problem",
+    "pal::Sol",
+    "pal::Util",
+    "spatialite_database_unique_ptr",
+    "sqlite3_database_unique_ptr",
+    "sqlite3_statement_unique_ptr"
+  ],
+  "acceptable_missing_brief": []
+}

@@ -41,7 +41,7 @@ QString QgsHttpRequestAlgorithm::displayName() const
 
 QString QgsHttpRequestAlgorithm::shortDescription() const
 {
-  return tr( "Performs a HTTP(S) POST/GET request and returns the result code, error message and the data" );
+  return tr( "Performs a HTTP(S) POST/GET request and returns the result code, error message and the data." );
 }
 
 QStringList QgsHttpRequestAlgorithm::tags() const

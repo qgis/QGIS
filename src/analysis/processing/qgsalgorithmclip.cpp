@@ -72,6 +72,11 @@ QString QgsClipAlgorithm::shortHelpString() const
                         "be manually updated." );
 }
 
+QString QgsClipAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Clips a vector layer using the features of an additional polygon layer." );
+}
+
 QgsClipAlgorithm *QgsClipAlgorithm::createInstance() const
 {
   return new QgsClipAlgorithm();

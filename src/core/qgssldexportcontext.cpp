@@ -52,3 +52,13 @@ void QgsSldExportContext::setExportFilePath( const QString &exportFilePath )
 {
   mExportFilePath = exportFilePath;
 }
+
+QVariantMap QgsSldExportContext::extraProperties() const
+{
+  return mExtraProperties;
+}
+
+void QgsSldExportContext::setExtraProperties( const QVariantMap &properties )
+{
+  mExtraProperties = properties;
+}

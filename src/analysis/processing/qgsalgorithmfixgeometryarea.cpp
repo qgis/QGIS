@@ -23,38 +23,43 @@
 
 ///@cond PRIVATE
 
-auto QgsFixGeometryAreaAlgorithm::name() const -> QString
+QString QgsFixGeometryAreaAlgorithm::name() const
 {
   return QStringLiteral( "fixgeometryarea" );
 }
 
-auto QgsFixGeometryAreaAlgorithm::displayName() const -> QString
+QString QgsFixGeometryAreaAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (Area)" );
+  return QObject::tr( "Fix small polygons" );
 }
 
-auto QgsFixGeometryAreaAlgorithm::tags() const -> QStringList
+QString QgsFixGeometryAreaAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Merges small polygons detected with the \"Small polygons\" algorithm from the \"Check geometry\" section." );
+}
+
+QStringList QgsFixGeometryAreaAlgorithm::tags() const
 {
   return QObject::tr( "merge,polygons,neighbor,fix,area" ).split( ',' );
 }
 
-auto QgsFixGeometryAreaAlgorithm::group() const -> QString
+QString QgsFixGeometryAreaAlgorithm::group() const
 {
   return QObject::tr( "Fix geometry" );
 }
 
-auto QgsFixGeometryAreaAlgorithm::groupId() const -> QString
+QString QgsFixGeometryAreaAlgorithm::groupId() const
 {
   return QStringLiteral( "fixgeometry" );
 }
 
-auto QgsFixGeometryAreaAlgorithm::shortHelpString() const -> QString
+QString QgsFixGeometryAreaAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm merges neighboring polygons according to the chosen method, "
-                      "based on an error layer from the check area algorithm." );
+                      "based on an error layer from the \"Small polygons\" algorithm in the \"Check geometry\" section." );
 }
 
-auto QgsFixGeometryAreaAlgorithm::createInstance() const -> QgsFixGeometryAreaAlgorithm *
+QgsFixGeometryAreaAlgorithm *QgsFixGeometryAreaAlgorithm::createInstance() const
 {
   return new QgsFixGeometryAreaAlgorithm();
 }
@@ -64,61 +69,67 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
   Q_UNUSED( configuration )
 
   // Inputs
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) )
-  );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
-  );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSource(
+    QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
+  ) );
 
   // Specific inputs for this check
   QStringList methods;
   {
-    // const QVariantMap config;
-    // QgsGeometryCheckContext *context;  //!\ uninitialized context to retrieve resolution methods ontly (which should perhaps be a static method?)
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometryAreaCheck( nullptr, QVariantMap() ).availableResolutionMethods();
-    std::transform( checkMethods.cbegin(), checkMethods.cend() - 2, std::inserter( methods, methods.begin() ), []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); } );
+    std::transform(
+      checkMethods.cbegin(), checkMethods.cend() - 2, std::inserter( methods, methods.begin() ),
+      []( const QgsGeometryCheckResolutionMethod &checkMethod ) { return checkMethod.name(); }
+    );
   }
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), methods ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "MERGE_ATTRIBUTE" ), QObject::tr( "Field to consider when merging polygons with the identical attribute method" ),
     QString(), QStringLiteral( "INPUT" ),
     Qgis::ProcessingFieldParameterDataType::Any, false, true
-  )
-  );
+  ) );
 
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
     QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
     QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
     QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
     QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
     Qgis::ProcessingFieldParameterDataType::Numeric
-  )
-  );
+  ) );
 
   // Outputs
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Small polygons merged layer" ), Qgis::ProcessingSourceType::VectorPolygon
+  ) );
+  addParameter( new QgsProcessingParameterFeatureSink(
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from merging small polygons" ), Qgis::ProcessingSourceType::VectorPoint
+  ) );
 
-  auto tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
-auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
+QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -170,18 +181,18 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
   const QgsProject *project = QgsProject::instance();
-  auto checkContext = std::make_unique<QgsGeometryCheckContext>( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
   QStringList messages;
   QVariantMap configurationCheck;
 
   // maximum limit, we know that every feature to process is an error (otherwise it is not treated and marked as obsolete)
   configurationCheck.insert( "areaThreshold", std::numeric_limits<double>::max() );
-  const QgsGeometryAreaCheck check( checkContext.get(), configurationCheck );
+  const QgsGeometryAreaCheck check( &checkContext, configurationCheck );
 
-  QgsVectorLayer *fixedLayer = input->materialize( QgsFeatureRequest() );
-  std::unique_ptr<QgsFeaturePool> featurePool = std::make_unique<QgsVectorDataProviderFeaturePool>( fixedLayer, false );
+  std::unique_ptr<QgsVectorLayer> fixedLayer( input->materialize( QgsFeatureRequest() ) );
+  QgsVectorDataProviderFeaturePool featurePool = QgsVectorDataProviderFeaturePool( fixedLayer.get(), false );
   QMap<QString, QgsFeaturePool *> featurePools;
-  featurePools.insert( fixedLayer->id(), featurePool.get() );
+  featurePools.insert( fixedLayer->id(), &featurePool );
 
   QMap<QString, int> attributeIndex;
   if ( method == QgsGeometryAreaCheck::ResolutionMethod::MergeIdenticalAttribute )
@@ -204,6 +215,9 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
   multiStepFeedback.setProgressText( QObject::tr( "Fixing errors..." ) );
   while ( errorFeaturesIt.nextFeature( errorFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     reportFeature.setGeometry( errorFeature.geometry() );
@@ -233,7 +247,7 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
     {
       QgsGeometryCheckError checkError = QgsGeometryCheckError(
         &check,
-        QgsGeometryCheckerUtils::LayerFeature( featurePool.get(), inputFeature, checkContext.get(), false ),
+        QgsGeometryCheckerUtils::LayerFeature( &featurePool, inputFeature, &checkContext, false ),
         errorFeature.geometry().asPoint(),
         QgsVertexId(
           errorFeature.attribute( partIdxFieldName ).toInt(),
@@ -241,13 +255,18 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
           errorFeature.attribute( vertexIdxFieldName ).toInt()
         )
       );
-      for ( auto changes : changesList )
+      for ( QgsGeometryCheck::Changes changes : changesList )
         checkError.handleChanges( changes );
 
       QgsGeometryCheck::Changes changes;
       check.fixError( featurePools, &checkError, method, attributeIndex, changes );
       changesList << changes;
-      reportFeature.setAttributes( errorFeature.attributes() << checkError.resolutionMessage() << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
+
+      QString resolutionMessage = checkError.resolutionMessage();
+      if ( checkError.status() == QgsGeometryCheckError::StatusObsolete )
+        resolutionMessage = QObject::tr( "Error is obsolete" );
+
+      reportFeature.setAttributes( errorFeature.attributes() << resolutionMessage << ( checkError.status() == QgsGeometryCheckError::StatusFixed ) );
     }
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
@@ -263,6 +282,9 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
   QgsFeatureIterator fixedFeaturesIt = fixedLayer->getFeatures();
   while ( fixedFeaturesIt.nextFeature( fixedFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )
@@ -277,14 +299,14 @@ auto QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &parameter
   return outputs;
 }
 
-auto QgsFixGeometryAreaAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) -> bool
+bool QgsFixGeometryAreaAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
 
   return true;
 }
 
-auto QgsFixGeometryAreaAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
+Qgis::ProcessingAlgorithmFlags QgsFixGeometryAreaAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }

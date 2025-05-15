@@ -91,6 +91,34 @@ Sets group WMS abstract
    Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.setAbstract` instead.
 %End
 
+    void setHasTimeDimension( bool hasTimeDimension );
+%Docstring
+Sets whether the time dimension should be computed for this group or not
+
+:param hasTimeDimension: if ``True``, when a GetCapabilities request is
+                         sent, QGIS server would return a TIME dimension
+                         computed as an union of all time dimensions of
+                         its children recursively. Else, no TIME
+                         dimension will be returned.
+
+.. seealso:: :py:func:`hasTimeDimension`
+
+.. versionadded:: 3.44
+%End
+
+    bool hasTimeDimension() const;
+%Docstring
+Returns whether the time dimension should be computed for this group or
+not. if ``True``, when a GetCapabilities request is sent, QGIS server
+would return a TIME dimension computed as an union of all time
+dimensions of its children recursively. Else, no TIME dimension will be
+returned.
+
+.. seealso:: :py:func:`setHasTimeDimension`
+
+.. versionadded:: 3.44
+%End
+
     QgsMapLayerServerProperties *serverProperties();
 %Docstring
 Returns QGIS Server Properties for the layer tree group

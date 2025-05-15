@@ -321,7 +321,9 @@ Set pal settings for a specific provider (takes ownership).
 %End
     virtual bool requiresAdvancedEffects() const;
 
-    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
+ virtual void toSld( QDomNode &parent, const QVariantMap &properties ) const /Deprecated/;
+
+    virtual bool toSld( QDomNode &parent, QgsSldExportContext &context ) const;
 
     virtual void multiplyOpacity( double opacityFactor );
 

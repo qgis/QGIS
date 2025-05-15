@@ -43,6 +43,7 @@ class QgsCustomDropHandler;
 class QgsCustomProjectOpenHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
+class QgsGpsToolsInterface;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayerTreeGroup;
@@ -103,6 +104,11 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
+
+    /**
+     * Returns an interface to allow plugins to use QGIS GPS tools.
+     */
+    virtual QgsGpsToolsInterface *gpsTools() = 0;
 
     /**
      * Add action to context menu for layers in the layer tree.
@@ -1503,9 +1509,10 @@ class GUI_EXPORT QgisInterface : public QObject
      * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
      * is automatically registered within the QgsApplication::gpsConnectionRegistry().
      *
+     * \deprecated QGIS 3.44. Use the method from gpsTools() instead.
      * \since QGIS 3.16
      */
-    virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0;
+    Q_DECL_DEPRECATED virtual void setGpsPanelConnection( QgsGpsConnection *connection SIP_TRANSFER ) = 0 SIP_DEPRECATED;
 
     /**
      * Sets whether changes to the active layer should be temporarily

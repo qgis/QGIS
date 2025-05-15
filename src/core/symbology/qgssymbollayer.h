@@ -42,6 +42,7 @@ class QgsExpression;
 class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
+class QgsSldExportContext;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -423,9 +424,21 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
-    //! Saves the symbol layer as SLD
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
-    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    /**
+     * Saves the symbol layer as SLD.
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+     */
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const SIP_DEPRECATED;
+
+    /**
+     * Saves the symbol layer as SLD.
+     *
+     * Returns TRUE if the symbol layer was successfully exported to SLD.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ) Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
@@ -957,16 +970,25 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     Qgis::VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Writes the symbol layer definition as a SLD XML element.
      * \param doc XML document
      * \param element parent XML element
      * \param props symbol layer definition (see properties())
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
-    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
+    Q_DECL_DEPRECATED virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const SIP_DEPRECATED;
+
+    /**
+     * Writes the symbol layer definition as a SLD XML element.
+     * \param doc XML document
+     * \param element parent XML element
+     * \param context export context
+     * \since QGIS 3.44
+     */
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;

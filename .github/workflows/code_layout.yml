@@ -162,7 +162,7 @@ jobs:
               silversearcher-ag
 
       - name: Retrieve changed files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c #v46
         id: changed_files
         with:
           separator: " "

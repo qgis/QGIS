@@ -339,10 +339,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     mUndoStack->endMacro();
     mIgnoreUndoStackChanges--;
   } );
-  connect( mView, &QgsModelGraphicsView::beginCommand, this, [=]( const QString &text ) {
+  connect( mView, &QgsModelGraphicsView::commandBegun, this, [=]( const QString &text ) {
     beginUndoCommand( text );
   } );
-  connect( mView, &QgsModelGraphicsView::endCommand, this, [=] {
+  connect( mView, &QgsModelGraphicsView::commandEnded, this, [=] {
     endUndoCommand();
   } );
   connect( mView, &QgsModelGraphicsView::deleteSelectedItems, this, [=] {

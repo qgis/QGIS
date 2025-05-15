@@ -16,6 +16,7 @@
 #include "qgsrendererrange.h"
 #include "qgsclassificationmethod.h"
 #include "qgssymbol.h"
+#include "qgssldexportcontext.h"
 
 #include <QLocale>
 #include <QUuid>
@@ -132,10 +133,17 @@ QString QgsRendererRange::dump() const
 
 void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange ) const
 {
-  if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QString() ).toString().isEmpty() )
-    return;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, props.value( QStringLiteral( "attribute" ), QString() ).toString(), context, firstRange );
+}
 
-  QString attrName = props[ QStringLiteral( "attribute" )].toString();
+bool QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context, bool firstRange ) const
+{
+  if ( !mSymbol || classAttribute.isEmpty() )
+    return false;
+
+  QString attrName = classAttribute;
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
 
@@ -156,17 +164,18 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantM
                              firstRange ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                              qgsDoubleToString( mLowerValue ),
                              qgsDoubleToString( mUpperValue ) );
-  QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
+  QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc, context );
 
-  mSymbol->toSld( doc, ruleElem, props );
+  mSymbol->toSld( doc, ruleElem, context );
   if ( !QgsSymbolLayerUtils::hasSldSymbolizer( ruleElem ) )
   {
     // symbol could not be converted to SLD, or is an "empty" symbol. In this case we do not generate a rule, as
     // SLD spec requires a Symbolizer element to be present
-    return;
+    return false;
   }
 
   element.appendChild( ruleElem );
+  return true;
 }
 
 //////////

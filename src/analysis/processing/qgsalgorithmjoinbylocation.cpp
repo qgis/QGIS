@@ -89,7 +89,7 @@ QString QgsJoinByLocationAlgorithm::shortHelpString() const
 
 QString QgsJoinByLocationAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Join attributes from one vector layer to another by location." );
+  return QObject::tr( "Joins attributes from one vector layer to another by location." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsJoinByLocationAlgorithm::documentationFlags() const

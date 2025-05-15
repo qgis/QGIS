@@ -58,6 +58,11 @@ QString QgsExplodeAlgorithm::shortHelpString() const
                       "same type and contain only single curve segments." );
 }
 
+QString QgsExplodeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a line layer in which each feature represents a segment from an input line layer." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsExplodeAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;

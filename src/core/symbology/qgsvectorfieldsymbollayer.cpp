@@ -19,6 +19,7 @@
 #include "qgsunittypes.h"
 #include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
+#include "qgssldexportcontext.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
 {
@@ -287,8 +288,16 @@ bool QgsVectorFieldSymbolLayer::usesMapUnits() const
 
 void QgsVectorFieldSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  element.appendChild( doc.createComment( QStringLiteral( "VectorField not implemented yet..." ) ) );
-  mLineSymbol->toSld( doc, element, props );
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsVectorFieldSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Vector field symbol layers cannot be converted to SLD" ) );
+  mLineSymbol->toSld( doc, element, context );
+  return false;
 }
 
 QgsSymbolLayer *QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )

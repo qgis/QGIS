@@ -72,8 +72,8 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     QgsVectorFieldSymbolLayer *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
     bool usesMapUnits() const override;
-
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 

@@ -86,6 +86,7 @@
 #include "qgsprofilerequest.h"
 #include "qgssymbollayerutils.h"
 #include "qgsthreadingutils.h"
+#include "qgssldexportcontext.h"
 
 #include <QDir>
 #include <QFile>
@@ -3400,17 +3401,25 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
   return true;
 }
 
-bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props ) const
+bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &, const QVariantMap &props ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSld( node, doc, context );
+  return true;
+}
+
+bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  Q_UNUSED( errorMessage )
-
-  QVariantMap localProps = QVariantMap( props );
+  QVariantMap localProps = context.extraProperties();
   if ( hasScaleBasedVisibility() )
   {
     QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
   }
+  context.setExtraProperties( localProps );
 
   if ( isSpatial() )
   {
@@ -3430,15 +3439,14 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
     userStyleElem.appendChild( featureTypeStyleElem );
 
-    mRenderer->toSld( doc, featureTypeStyleElem, localProps );
+    mRenderer->toSld( doc, featureTypeStyleElem, context );
     if ( labelsEnabled() )
     {
-      mLabeling->toSld( featureTypeStyleElem, localProps );
+      mLabeling->toSld( featureTypeStyleElem, context );
     }
   }
   return true;
 }
-
 
 bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool skipDefaultValue )
 {

@@ -16,6 +16,7 @@
 #include "qgsscaleutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgssldexportcontext.h"
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
   : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop, nullptr )
@@ -581,11 +582,18 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
   }
 }
 
-void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
+void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &properties ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( properties );
+  toSld( parent, context );
+}
+
+bool QgsRuleBasedLabeling::toSld( QDomNode &parent, QgsSldExportContext &context ) const
 {
   if ( !mRootRule )
   {
-    return;
+    return false;
   }
 
   const QgsRuleBasedLabeling::RuleList rules = mRootRule->children();
@@ -602,24 +610,25 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) c
 
       if ( !rule->filterExpression().isEmpty() )
       {
-        QgsSymbolLayerUtils::createFunctionElement( doc, ruleElement, rule->filterExpression() );
+        QgsSymbolLayerUtils::createFunctionElement( doc, ruleElement, rule->filterExpression(), context );
       }
 
       // scale dependencies, the actual behavior is that the PAL settings min/max and
       // the rule min/max get intersected
-      QVariantMap localProps = QVariantMap( props );
+      const QVariantMap oldProps = context.extraProperties();
+      QVariantMap localProps = oldProps;
       QgsSymbolLayerUtils::mergeScaleDependencies( rule->maximumScale(), rule->minimumScale(), localProps );
       if ( settings->scaleVisibility )
       {
         QgsSymbolLayerUtils::mergeScaleDependencies( settings->maximumScale, settings->minimumScale, localProps );
       }
       QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElement, localProps );
-
-      QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, props );
+      context.setExtraProperties( localProps );
+      QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, context );
+      context.setExtraProperties( oldProps );
     }
-
   }
-
+  return true;
 }
 
 void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )

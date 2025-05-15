@@ -32,7 +32,12 @@ QString QgsFixGeometryMultipartAlgorithm::name() const
 
 QString QgsFixGeometryMultipartAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (strict multipart)" );
+  return QObject::tr( "Convert to strictly multipart" );
+}
+
+QString QgsFixGeometryMultipartAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Converts features detected with the \"Strictly multipart\" algorithm from the \"Check geometry\" section to singlepart." );
 }
 
 QStringList QgsFixGeometryMultipartAlgorithm::tags() const
@@ -53,7 +58,8 @@ QString QgsFixGeometryMultipartAlgorithm::groupId() const
 QString QgsFixGeometryMultipartAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm converts multipart geometries that consists of only one geometry "
-                      "into singlepart geometries, based on an error layer from the check strict multipart algorithm." );
+                      "into singlepart geometries, based on an error layer from the \"Strict multipart\" algorithm in the \"Check geometry\" section.\n\n"
+                      "This algorithm does not change the layer geometry type, which will remain multipart." );
 }
 
 QgsFixGeometryMultipartAlgorithm *QgsFixGeometryMultipartAlgorithm::createInstance() const
@@ -79,16 +85,18 @@ void QgsFixGeometryMultipartAlgorithm::initAlgorithm( const QVariantMap &configu
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Strictly-multipart layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing multiparts" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -156,6 +164,9 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
   multiStepFeedback.setProgressText( QObject::tr( "Fixing errors..." ) );
   while ( errorFeaturesIt.nextFeature( errorFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     reportFeature.setGeometry( errorFeature.geometry() );
@@ -207,6 +218,9 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
   QgsFeatureIterator fixedFeaturesIt = fixedLayer->getFeatures();
   while ( fixedFeaturesIt.nextFeature( fixedFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )

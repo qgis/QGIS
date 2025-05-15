@@ -936,6 +936,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setGpsPanelConnection( QgsGpsConnection *connection );
 
     /**
+     * Access the GPS digitizing object. This will be an instance of {\see QgsAppGpsDigitizing}
+     * \returns The GPS digitizing instance.
+     *
+     * \since QGIS 3.44
+     */
+    QgsAppGpsDigitizing *gpsDigitizing();
+
+    /**
      * Returns the GPS settings menu;
      */
     QgsAppGpsSettingsMenu *gpsSettingsMenu();

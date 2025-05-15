@@ -42,6 +42,7 @@ class QgsDelaunayTriangulationAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsDelaunayTriangulationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

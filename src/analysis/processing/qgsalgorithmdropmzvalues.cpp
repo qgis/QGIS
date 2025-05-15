@@ -54,6 +54,11 @@ QString QgsDropMZValuesAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm can remove any measure (M) or Z values from input geometries." );
 }
 
+QString QgsDropMZValuesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Removes any measure (M) or Z values from input geometries." );
+}
+
 QgsDropMZValuesAlgorithm *QgsDropMZValuesAlgorithm::createInstance() const
 {
   return new QgsDropMZValuesAlgorithm();

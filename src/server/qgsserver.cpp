@@ -482,14 +482,25 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 
         // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
         // TODO: QGIS 4 fix the OWS services and treat them as APIs
-        QgsServerApi *api = nullptr;
-
         if ( !response.feedback() || !response.feedback()->isCanceled() )
         {
-          if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
+          if ( params.service().isEmpty() )
           {
-            const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
-            api->executeRequest( context );
+            QgsServerApi *api = sServiceRegistry->apiForRequest( request );
+            if ( api )
+            {
+              const QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+              api->executeRequest( context );
+            }
+            else
+            {
+              throw QgsOgcServiceException(
+                QStringLiteral( "Service configuration error" ),
+                QStringLiteral( "Service unknown or unsupported. Current supported services "
+                                "(case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 "
+                                "(OGC API Features) endpoint" )
+              );
+            }
           }
           else
           {

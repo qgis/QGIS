@@ -75,10 +75,6 @@ Constructor for QgsPalettedRasterRenderer.
 
     virtual QgsPalettedRasterRenderer *clone() const /Factory/;
 
-%Docstring
-QgsPalettedRasterRenderer cannot be copied. Use
-:py:func:`~QgsPalettedRasterRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 
@@ -146,7 +142,9 @@ Returns the raster band used for rendering the raster.
 
     virtual QList<int> usesBands() const;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

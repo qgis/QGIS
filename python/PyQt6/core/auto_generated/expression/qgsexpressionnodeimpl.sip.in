@@ -32,7 +32,6 @@ A unary node is either negative as in boolean (not) or as in numbers
 A node unary operator is modifying the value of ``operand`` by negating
 it with ``op``.
 %End
-    ~QgsExpressionNodeUnaryOperator();
 
     SIP_PYOBJECT __repr__();
 %MethodCode
@@ -77,6 +76,8 @@ Returns a the name of this operator without the operands. I.e. "NOT" or
 "-"
 %End
 
+  private:
+    QgsExpressionNodeUnaryOperator( const QgsExpressionNodeUnaryOperator &other );
 };
 
 class QgsExpressionNodeBinaryOperator : QgsExpressionNode
@@ -128,7 +129,6 @@ A binary expression operator, which operates on two values.
 %Docstring
 Binary combination of the left and the right with op.
 %End
-    ~QgsExpressionNodeBinaryOperator();
 
     SIP_PYOBJECT __repr__();
 %MethodCode
@@ -194,6 +194,8 @@ Returns a the name of this operator without the operands. I.e. "AND",
 "OR", ...
 %End
 
+  private:
+    QgsExpressionNodeBinaryOperator( const QgsExpressionNodeBinaryOperator &other );
 };
 
 class QgsExpressionNodeIndexOperator : QgsExpressionNode
@@ -214,7 +216,6 @@ to reference map and array items.
 %Docstring
 Constructor for QgsExpressionNodeIndexOperator.
 %End
-    ~QgsExpressionNodeIndexOperator();
 
     QgsExpressionNode *container() const;
 %Docstring
@@ -252,6 +253,8 @@ Returns the index node, representing an array element index or map key.
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 
+  private:
+    QgsExpressionNodeIndexOperator( const QgsExpressionNodeIndexOperator &other );
 };
 
 class QgsExpressionNodeBetweenOperator: QgsExpressionNode
@@ -317,6 +320,8 @@ Returns the higher bound expression node of the range.
 Returns ``True`` if the predicate is an exclusion test (NOT BETWEEN).
 %End
 
+  private:
+    QgsExpressionNodeBetweenOperator( const QgsExpressionNodeBetweenOperator &other );
 };
 
 class QgsExpressionNodeInOperator : QgsExpressionNode
@@ -374,6 +379,8 @@ Returns the list of nodes to search for matching values within.
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 
+  private:
+    QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other );
 };
 
 class QgsExpressionNodeFunction : QgsExpressionNode
@@ -448,6 +455,8 @@ Tests whether the provided argument list is valid for the matching
 function
 %End
 
+  private:
+    QgsExpressionNodeFunction( const QgsExpressionNodeFunction &other );
 };
 
 class QgsExpressionNodeLiteral : QgsExpressionNode
@@ -664,6 +673,8 @@ The ELSE expression used for the condition.
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 
+  private:
+    QgsExpressionNodeCondition( const QgsExpressionNodeCondition &other );
 };
 
 

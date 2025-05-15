@@ -392,7 +392,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
      */
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
     bool requiresAdvancedEffects() const override;
-    void toSld( QDomNode &parent, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomNode &parent, const QVariantMap &properties ) const override SIP_DEPRECATED;
+    bool toSld( QDomNode &parent, QgsSldExportContext &context ) const override;
     void multiplyOpacity( double opacityFactor ) override;
 
 

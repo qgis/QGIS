@@ -78,9 +78,9 @@ Qgis::ProcessingSourceType QgsRoundnessAlgorithm::outputLayerType() const
 
 QgsFields QgsRoundnessAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "roundness" ), QMetaType::Type::Double ) );
-  return outputFields;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "roundness" ), QMetaType::Type::Double ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 QgsFeatureList QgsRoundnessAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )

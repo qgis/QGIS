@@ -55,6 +55,11 @@ QString QgsDropGeometryAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes." );
 }
 
+QString QgsDropGeometryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Removes any geometries from an input layer and returns a layer containing only the feature attributes." );
+}
+
 QgsDropGeometryAlgorithm *QgsDropGeometryAlgorithm::createInstance() const
 {
   return new QgsDropGeometryAlgorithm();

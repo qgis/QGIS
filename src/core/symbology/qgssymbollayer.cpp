@@ -28,6 +28,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
 #include "qgsgeos.h"
+#include "qgssldexportcontext.h"
 
 #include <QSize>
 #include <QPainter>
@@ -942,17 +943,31 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
   }
 }
 
-void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+bool QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
+  const QVariantMap props = context.extraProperties();
   if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
     symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
-  writeSldMarker( doc, symbolizerElem, props );
+  return writeSldMarker( doc, symbolizerElem, context );
+}
+
+void QgsMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsMarkerSymbolLayer::writeSldMarker( QDomDocument &, QDomElement &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Marker symbol layer %1 cannot be converted to SLD" ).arg( layerType() ) );
+  return false;
 }
 
 QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
@@ -1106,4 +1121,17 @@ void QgsSymbolLayer::setId( const QString &id )
 QString QgsSymbolLayer::id() const
 {
   return mId;
+}
+
+void QgsSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSymbolLayer::toSld( QDomDocument &, QDomElement &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Symbol layer %1 cannot be converted to SLD" ).arg( layerType() ) );
+  return false;
 }

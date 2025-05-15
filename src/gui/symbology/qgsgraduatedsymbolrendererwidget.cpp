@@ -833,6 +833,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )

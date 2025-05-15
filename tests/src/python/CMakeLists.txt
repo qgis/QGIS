@@ -318,6 +318,7 @@ ADD_PYTHON_TEST(PyQgsSingleBandPseudoColorRenderer test_qgssinglebandpseudocolor
 ADD_PYTHON_TEST(PyQgsSingleSymbolRenderer test_qgssinglesymbolrenderer.py)
 ADD_PYTHON_TEST(PyQgsRasterSingleColorRenderer test_qgsrastersinglecolorrenderer.py)
 ADD_PYTHON_TEST(PyQgsShapefileProvider test_provider_shapefile.py)
+ADD_PYTHON_TEST(PyQgsSipUtils test_qgssiputils.py)
 ADD_PYTHON_TEST(PyQgsSphere test_qgssphere.py)
 ADD_PYTHON_TEST(PyQgsSvgCache test_qgssvgcache.py)
 ADD_PYTHON_TEST(PyQgsSymbolLayerRegistry test_qgssymbollayerregistry.py)

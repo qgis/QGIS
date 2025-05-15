@@ -114,6 +114,7 @@ struct ParallelJobInfo
 
 
 #include <ogr_spatialref.h>
+#include <ogr_srs_api.h>
 
 // few CRS-related functions that cover in addition to what pdal::SpatialReference doess not provide
 struct CRS
@@ -122,7 +123,7 @@ public:
   // construct CRS using a well-known text definition (WKT)
   CRS(std::string s = "")
   {
-    ptr.reset( static_cast<OGRSpatialReference*>(OSRNewSpatialReference(s.size() ? s.c_str() : nullptr)) );
+    ptr.reset( OGRSpatialReference::FromHandle(OSRNewSpatialReference(s.size() ? s.c_str() : nullptr)) );
   }
 
   std::string name() { return ptr ? ptr->GetName() : ""; }
@@ -167,7 +168,7 @@ private:
   {
       void operator()(OGRSpatialReference* o)
       {
-          OSRDestroySpatialReference(o);
+          OSRDestroySpatialReference(OGRSpatialReference::ToHandle(o));
       };
   };
 

@@ -417,9 +417,22 @@ Shall be reimplemented by subclasses to create a deep copy of the
 instance.
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-Saves the symbol layer as SLD
+Saves the symbol layer as SLD.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Saves the symbol layer as SLD.
+
+Returns ``True`` if the symbol layer was successfully exported to SLD.
+
+.. versionadded:: 3.44
 %End
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
@@ -1062,10 +1075,10 @@ marker's desired location.
 .. seealso:: :py:func:`horizontalAnchorPoint`
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Writes the symbol layer definition as a SLD XML element.
 
@@ -1073,6 +1086,21 @@ Writes the symbol layer definition as a SLD XML element.
 :param element: parent XML element
 :param props: symbol layer definition (see
               :py:func:`~QgsMarkerSymbolLayer.properties`)
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Writes the symbol layer definition as a SLD XML element.
+
+:param doc: XML document
+:param element: parent XML element
+:param context: export context
+
+.. versionadded:: 3.44
 %End
 
     virtual void setOutputUnit( Qgis::RenderUnit unit );

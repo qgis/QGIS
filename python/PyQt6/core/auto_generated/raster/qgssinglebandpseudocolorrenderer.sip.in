@@ -29,10 +29,6 @@ Note: takes ownership of :py:class:`QgsRasterShader`
 
     virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
-%Docstring
-QgsSingleBandPseudoColorRenderer cannot be copied. Use
-:py:func:`~QgsSingleBandPseudoColorRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
@@ -85,7 +81,9 @@ Creates a color ramp shader
 
     virtual QList<int> usesBands() const;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

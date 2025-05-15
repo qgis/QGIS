@@ -287,6 +287,27 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
 
+    /**
+     * Sets whether the WMS time dimension should be computed for this group or not
+     * \param hasWmsTimeDimension if TRUE, when a GetCapabilities request is sent,
+     * QGIS server would return a TIME dimension computed as an union of all time
+     * dimensions of its children recursively. Else, no TIME dimension will be returned.
+     *
+     * \see hasWmsTimeDimension()
+     * \since QGIS 3.44
+     */
+    void setHasWmsTimeDimension( const bool hasWmsTimeDimension );
+
+    /**
+     * Returns whether the WMS time dimension should be computed for this group or not.
+     * if TRUE, when a GetCapabilities request is sent, QGIS server would return a TIME
+     * dimension computed as an union of all time dimensions of its children recursively.
+     * Else, no TIME dimension will be returned.
+     *
+     * \see setHasWmsTimeDimension()
+     * \since QGIS 3.44
+     */
+    bool hasWmsTimeDimension() const;
 
   protected slots:
 
@@ -311,6 +332,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * (so if the whole group is unchecked and checked again, we know which child to check)
      */
     int mMutuallyExclusiveChildIndex = -1;
+
+    bool mWmsHasTimeDimension = false;
 
     //! Sets parent to NULLPTR and disconnects all external and forwarded signals
     virtual void makeOrphan() override SIP_SKIP;

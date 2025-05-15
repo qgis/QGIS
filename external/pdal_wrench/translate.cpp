@@ -152,12 +152,6 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 {
     if (ends_with(inputFile, ".vpc"))
     {
-        if (!ends_with(outputFile, ".vpc"))
-        {
-            std::cerr << "If input file is a VPC, output should be VPC too." << std::endl;
-            return;
-        }
-
         // for /tmp/hello.vpc we will use /tmp/hello dir for all results
         fs::path outputParentDir = fs::path(outputFile).parent_path();
         fs::path outputSubdir = outputParentDir / fs::path(outputFile).stem();
@@ -176,7 +170,11 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
             // individual output file will be called /tmp/hello/z.las
             fs::path inputBasename = fs::path(f.filename).stem();
-            tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
+
+            if (!ends_with(outputFile, ".vpc"))
+                tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
+            else
+                tile.outputFilename = (outputSubdir / inputBasename).string() + outputFormat;
 
             tileOutputFiles.push_back(tile.outputFilename);
 
@@ -185,6 +183,10 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
     }
     else
     {
+        if (ends_with(outputFile, ".copc.laz"))
+        {
+            isStreaming = false;
+        }
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
@@ -197,10 +199,28 @@ void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
     if (tileOutputFiles.empty())
         return;
 
-    // now build a new output VPC
     std::vector<std::string> args;
     args.push_back("--output=" + outputFile);
     for (std::string f : tileOutputFiles)
         args.push_back(f);
-    buildVpc(args);
+
+    if (ends_with(outputFile, ".vpc"))
+    {
+        // now build a new output VPC
+        buildVpc(args);
+    }
+    else
+    {
+        // merge all the output files into a single file        
+        Merge merge;
+        // for copc set isStreaming to false
+        if (ends_with(outputFile, ".copc.laz"))
+        {
+            merge.isStreaming = false;
+        }
+        runAlg(args, merge);
+
+        // remove files as they are not needed anymore - they are merged
+        removeFiles(tileOutputFiles, true);
+    }
 }

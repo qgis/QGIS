@@ -32,7 +32,12 @@ QString QgsGeometryCheckDuplicateNodesAlgorithm::name() const
 
 QString QgsGeometryCheckDuplicateNodesAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (Duplicated Nodes)" );
+  return QObject::tr( "Duplicated vertices" );
+}
+
+QString QgsGeometryCheckDuplicateNodesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detects duplicated vertices in line and polygon geometries." );
 }
 
 QStringList QgsGeometryCheckDuplicateNodesAlgorithm::tags() const
@@ -52,8 +57,8 @@ QString QgsGeometryCheckDuplicateNodesAlgorithm::groupId() const
 
 QString QgsGeometryCheckDuplicateNodesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm checks the nodes (vertices) of line and polygon geometries.\n"
-                      "Duplicated nodes are errors." );
+  return QObject::tr( "This algorithm checks the vertices of line and polygon geometries.\n"
+                      "Duplicated vertices are errors." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckDuplicateNodesAlgorithm::flags() const
@@ -78,16 +83,18 @@ void QgsGeometryCheckDuplicateNodesAlgorithm::initAlgorithm( const QVariantMap &
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Duplicated vertices errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Duplicated vertices features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -134,8 +141,6 @@ QVariantMap QgsGeometryCheckDuplicateNodesAlgorithm::processAlgorithm( const QVa
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
     parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
   ) );
-  if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
     parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
@@ -196,7 +201,7 @@ QVariantMap QgsGeometryCheckDuplicateNodesAlgorithm::processAlgorithm( const QVa
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );
-    if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
+    if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
@@ -214,8 +219,15 @@ QVariantMap QgsGeometryCheckDuplicateNodesAlgorithm::processAlgorithm( const QVa
     context.layerToLoadOnCompletionDetails( dest_output ).layerSortKey = 1;
   }
 
+  // cleanup memory of the pointed data
+  for ( const QgsGeometryCheckError *error : checkErrors )
+  {
+    delete error;
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
+  if ( sink_output )
+    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
   outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
 
   return outputs;

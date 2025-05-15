@@ -49,7 +49,6 @@ PyQgsSymbolLayerReadSld
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
 ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt4

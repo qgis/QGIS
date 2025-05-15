@@ -10,30 +10,21 @@ __author__ = "Nyall Dawson"
 __date__ = "01/02/2015"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import json
 import os
 import sys
+
+from pathlib import Path
 
 try:
     from qgis.static_testing import unittest
 except ImportError:
     import unittest
 
-from acceptable_missing_doc import (
-    ACCEPTABLE_MISSING_ADDED_NOTE,
-    ACCEPTABLE_MISSING_BRIEF,
-    ACCEPTABLE_MISSING_DOCS,
-)
 from doxygen_parser import DoxygenParser
 from termcolor import colored
 
-# TO regenerate the list:
-# uncomment the lines under the `# GEN LIST` in tests/code_layout/doxygen_parser.py
-# $ export PYTHONPATH=build/output/python
-# $ export QGIS_PREFIX_PATH=build/output
-# $ python tests/code_layout/test_qgsdoccoverage.py
-# copy the output to the file:
-# tests/code_layout/acceptable_missing_doc.py
-# in `ACCEPTABLE_MISSING_DOCS = { <past> }`.
+REGENERATE_LISTS = False
 
 
 class TestQgsDocCoverage(unittest.TestCase):
@@ -42,15 +33,38 @@ class TestQgsDocCoverage(unittest.TestCase):
         print("CTEST_FULL_OUTPUT")
         prefixPath = os.environ["QGIS_PREFIX_PATH"]
         docPath = os.path.join(prefixPath, "..", "doc", "api", "xml")
+
+        doc_test_config_file = Path(__file__).parent / "doc_test.json"
+        with open(doc_test_config_file) as f:
+            doc_test_config = json.loads(f.read())
+
         parser = DoxygenParser(
             docPath,
-            ACCEPTABLE_MISSING_DOCS,
-            ACCEPTABLE_MISSING_ADDED_NOTE,
-            ACCEPTABLE_MISSING_BRIEF,
+            doc_test_config["acceptable_missing_doc"],
+            doc_test_config["acceptable_missing_added_note"],
+            doc_test_config["acceptable_missing_brief"],
         )
 
         coverage = 100.0 * parser.documented_members / parser.documentable_members
         missing = parser.documentable_members - parser.documented_members
+
+        if REGENERATE_LISTS:
+            with open(doc_test_config_file, "w") as f:
+                all_undocumented = {}
+                for c in sorted(list(parser.all_undocumented_members.keys())):
+                    all_undocumented[c] = sorted(parser.all_undocumented_members[c])
+                f.write(
+                    json.dumps(
+                        {
+                            "acceptable_missing_doc": all_undocumented,
+                            "acceptable_missing_added_note": sorted(
+                                parser.all_classes_missing_version_added
+                            ),
+                            "acceptable_missing_brief": [],
+                        },
+                        indent=2,
+                    )
+                )
 
         print("---------------------------------")
         print(f"{parser.documentable_members} total documentable members")

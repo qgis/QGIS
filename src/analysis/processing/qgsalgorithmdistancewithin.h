@@ -59,6 +59,7 @@ class QgsSelectWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSelectWithinDistanceAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -79,6 +80,7 @@ class QgsExtractWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExtractWithinDistanceAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

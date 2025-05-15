@@ -61,6 +61,11 @@ QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
                       "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location." );
 }
 
+QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Geocodes features in a vector layer using the Nominatim service." );
+}
+
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   feedback->pushInfo( QObject::tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "

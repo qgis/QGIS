@@ -34,6 +34,7 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QStandardItemModel>
+#include <QMenu>
 
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
@@ -54,6 +55,8 @@ QgsFilteredTableWidget::QgsFilteredTableWidget( QWidget *parent, bool showSearch
   mTableWidget->setShowGrid( false );
   mTableWidget->setEditTriggers( QAbstractItemView::NoEditTriggers );
   mTableWidget->setSelectionMode( QAbstractItemView::NoSelection );
+  mTableWidget->setContextMenuPolicy( Qt::CustomContextMenu );
+
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget( mSearchWidget );
   layout->addWidget( mTableWidget );
@@ -71,6 +74,7 @@ QgsFilteredTableWidget::QgsFilteredTableWidget( QWidget *parent, bool showSearch
   }
   setLayout( layout );
   connect( mTableWidget, &QTableWidget::itemChanged, this, &QgsFilteredTableWidget::itemChanged_p );
+  connect( mTableWidget, &QTableWidget::customContextMenuRequested, this, &QgsFilteredTableWidget::onTableWidgetCustomContextMenuRequested );
 }
 
 bool QgsFilteredTableWidget::eventFilter( QObject *watched, QEvent *event )
@@ -227,6 +231,62 @@ void QgsFilteredTableWidget::itemChanged_p( QTableWidgetItem *item )
       pair.second = item->checkState();
   }
   emit itemChanged( item );
+}
+
+void QgsFilteredTableWidget::onTableWidgetCustomContextMenuRequested( const QPoint &pos )
+{
+  Q_UNUSED( pos );
+
+  // create actions
+  QAction *actionTableWidgetSelectAll = new QAction( tr( "Select All" ), this );
+  QAction *actionTableWidgetDeselectAll = new QAction( tr( "Deselect All" ), this );
+  connect( actionTableWidgetSelectAll, &QAction::triggered, this, &QgsFilteredTableWidget::onTableWidgetMenuActionSelectAllTriggered );
+  connect( actionTableWidgetDeselectAll, &QAction::triggered, this, &QgsFilteredTableWidget::onTableWidgetMenuActionDeselectAllTriggered );
+
+  QMenu *tableWidgetMenu = new QMenu( mTableWidget );
+  tableWidgetMenu->addAction( actionTableWidgetSelectAll );
+  tableWidgetMenu->addAction( actionTableWidgetDeselectAll );
+
+  tableWidgetMenu->exec( QCursor::pos() );
+
+  // destory actions
+  disconnect( actionTableWidgetSelectAll, &QAction::triggered, nullptr, nullptr );
+  disconnect( actionTableWidgetDeselectAll, &QAction::triggered, nullptr, nullptr );
+  actionTableWidgetSelectAll->deleteLater();
+  actionTableWidgetDeselectAll->deleteLater();
+
+  // destory menu
+  tableWidgetMenu->deleteLater();
+}
+
+void QgsFilteredTableWidget::onTableWidgetMenuActionSelectAllTriggered()
+{
+  for ( int rowIndex = 0; rowIndex < mTableWidget->rowCount(); ++rowIndex )
+  {
+    for ( int columnIndex = 0; columnIndex < mTableWidget->columnCount(); ++columnIndex )
+    {
+      QTableWidgetItem *item = whileBlocking( mTableWidget )->item( rowIndex, columnIndex );
+      if ( item && ( item->flags() & Qt::ItemIsEnabled ) )
+      {
+        item->setCheckState( Qt::Checked );
+      }
+    }
+  }
+}
+
+void QgsFilteredTableWidget::onTableWidgetMenuActionDeselectAllTriggered()
+{
+  for ( int rowIndex = 0; rowIndex < mTableWidget->rowCount(); ++rowIndex )
+  {
+    for ( int columnIndex = 0; columnIndex < mTableWidget->columnCount(); ++columnIndex )
+    {
+      QTableWidgetItem *item = whileBlocking( mTableWidget )->item( rowIndex, columnIndex );
+      if ( item && ( item->flags() & Qt::ItemIsEnabled ) )
+      {
+        item->setCheckState( Qt::Unchecked );
+      }
+    }
+  }
 }
 ///@endcond
 

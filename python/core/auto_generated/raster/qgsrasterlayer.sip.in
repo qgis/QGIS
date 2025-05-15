@@ -476,7 +476,7 @@ Sets labeling configuration. Takes ownership of the object.
 .. versionadded:: 3.42
 %End
 
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
+ bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Writes the symbology of the layer into the document provided in SLD
 1.0.0 format
@@ -490,7 +490,24 @@ Writes the symbology of the layer into the document provided in SLD
 
 :return: ``True`` in case of success
 
-.. versionadded:: 3.6
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const;
+%Docstring
+Writes the symbology of the layer into the document provided in SLD 1.1
+format
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param context: export context. Errors and warnings may be retrieved
+                from this context.
+
+:return: ``True`` in case of success
+
+.. versionadded:: 3.44
 %End
 
     bool ignoreExtents() const;

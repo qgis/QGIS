@@ -19,6 +19,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgssldexportcontext.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -490,8 +491,15 @@ QList<QgsLayerTreeModelLegendNode *> QgsMultiBandColorRenderer::createLegendNode
 
 void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
   // create base structure
-  QgsRasterRenderer::toSld( doc, element, props );
+  QgsRasterRenderer::toSld( doc, element, context );
 
 
 #if 0
@@ -544,7 +552,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // look for RasterSymbolizer tag
   QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
   if ( elements.size() == 0 )
-    return;
+    return false;
 
   // there SHOULD be only one
   QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
@@ -604,6 +612,7 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       channelElem.appendChild( contrastEnhancementElem );
     }
   }
+  return true;
 }
 
 bool QgsMultiBandColorRenderer::refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh )

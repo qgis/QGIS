@@ -21,17 +21,17 @@
 
 QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 {
-  mPaintEngine = new QgsDxfPaintEngine( this, dxf );
+  mPaintEngine = std::make_unique<QgsDxfPaintEngine>( this, dxf );
 }
 
 QgsDxfPaintDevice::~QgsDxfPaintDevice()
 {
-  delete mPaintEngine;
+
 }
 
 QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 {
-  return mPaintEngine;
+  return mPaintEngine.get();
 }
 
 int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const

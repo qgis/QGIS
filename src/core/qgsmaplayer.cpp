@@ -91,7 +91,7 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type,
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
-  , mStyleManager( new QgsMapLayerStyleManager( this ) )
+  , mStyleManager( std::make_unique<QgsMapLayerStyleManager>( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
   mID = generateId( lyrname );
@@ -123,7 +123,7 @@ QgsMapLayer::~QgsMapLayer()
 
   delete m3DRenderer;
   delete mLegend;
-  delete mStyleManager;
+
 }
 
 void QgsMapLayer::clone( QgsMapLayer *layer ) const
@@ -755,8 +755,15 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   if ( !mExtent3D.isNull() && dataProvider() && dataProvider()->elevationProperties() && dataProvider()->elevationProperties()->containsElevationData() )
     layerElement.appendChild( QgsXmlUtils::writeBox3D( mExtent3D, document ) );
-  else if ( !mExtent2D.isNull() )
-    layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent2D, document ) );
+  else
+  {
+    // Extent might be null because lazily set
+    const QgsRectangle extent2D { mExtent2D.isNull() ? extent() : mExtent2D };
+    if ( !extent2D.isNull() )
+    {
+      layerElement.appendChild( QgsXmlUtils::writeRectangle( extent2D, document ) );
+    }
+  }
 
   if ( const QgsRectangle lWgs84Extent = wgs84Extent( true ); !lWgs84Extent.isNull() )
   {
@@ -2097,11 +2104,21 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, Style
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 {
-
-  return exportSldStyleV2( doc, errorMsg, QgsSldExportContext() );
+  QgsSldExportContext exportContext;
+  doc = exportSldStyleV3( exportContext );
+  if ( !exportContext.errors().empty() )
+    errorMsg = exportContext.errors().join( "\n" );
 }
 
-void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const
+void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, QgsSldExportContext &exportContext ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  doc = exportSldStyleV3( exportContext );
+  if ( !exportContext.errors().empty() )
+    errorMsg = exportContext.errors().join( "\n" );
+}
+
+QDomDocument QgsMapLayer::exportSldStyleV3( QgsSldExportContext &exportContext ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2114,9 +2131,9 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
   const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
   if ( !vlayer && !rlayer )
   {
-    errorMsg = tr( "Could not save symbology because:\n%1" )
-               .arg( tr( "Only vector and raster layers are supported" ) );
-    return;
+    exportContext.pushError( tr( "Could not save symbology because:\n%1" )
+                             .arg( tr( "Only vector and raster layers are supported" ) ) );
+    return myDocument;
   }
 
   // Create the root element
@@ -2152,11 +2169,12 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
     root.appendChild( layerNode );
   }
 
-  QVariantMap props;
+  QVariantMap props = exportContext.extraProperties();
 
   QVariant context;
   context.setValue( exportContext );
 
+  // TODO -- move this to proper members of QgsSldExportContext
   props[ QStringLiteral( "SldExportContext" ) ] = context;
 
   if ( hasScaleBasedVisibility() )
@@ -2164,26 +2182,24 @@ void QgsMapLayer::exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const 
     props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
     props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( mMaxScale );
   }
+  exportContext.setExtraProperties( props );
 
   if ( vlayer )
   {
-    if ( !vlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    if ( !vlayer->writeSld( layerNode, myDocument, exportContext ) )
     {
-      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-      return;
+      return myDocument;
     }
   }
-
-  if ( rlayer )
+  else if ( rlayer )
   {
-    if ( !rlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    if ( !rlayer->writeSld( layerNode, myDocument, exportContext ) )
     {
-      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-      return;
+      return myDocument;
     }
   }
 
-  doc = myDocument;
+  return myDocument;
 }
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
@@ -2193,7 +2209,7 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
   return saveSldStyleV2( resultFlag, context );
 }
 
-QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext &exportContext ) const
+QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, QgsSldExportContext &exportContext ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -2239,18 +2255,15 @@ QString QgsMapLayer::saveSldStyleV2( bool &resultFlag, const QgsSldExportContext
     // now construct the file name for our .sld style file
     const QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".sld";
 
-    QString errorMsg;
-    QDomDocument myDocument;
-
     QgsSldExportContext context { exportContext };
     context.setExportFilePath( myFileName );
 
-    mlayer->exportSldStyleV2( myDocument, errorMsg, context );
+    QDomDocument myDocument = mlayer->exportSldStyleV3( context );
 
-    if ( !errorMsg.isNull() )
+    if ( !context.errors().empty() )
     {
       resultFlag = false;
-      return errorMsg;
+      return context.errors().join( '\n' );
     }
 
     QFile myFile( myFileName );
@@ -2629,7 +2642,7 @@ void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &descr
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QString sldStyle, qmlStyle;
-  QDomDocument qmlDocument, sldDocument;
+  QDomDocument qmlDocument;
   QgsReadWriteContext context;
   exportNamedStyle( qmlDocument, msgError, context, categories );
   if ( !msgError.isNull() )
@@ -2638,8 +2651,9 @@ void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &descr
   }
   qmlStyle = qmlDocument.toString();
 
-  this->exportSldStyle( sldDocument, msgError );
-  if ( !msgError.isNull() )
+  QgsSldExportContext sldContext;
+  QDomDocument sldDocument = this->exportSldStyleV3( sldContext );
+  if ( !sldContext.errors().empty() )
   {
     return;
   }
@@ -2791,7 +2805,7 @@ QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mStyleManager;
+  return mStyleManager.get();
 }
 
 void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
@@ -3213,6 +3227,9 @@ QString QgsMapLayer::generalHtmlMetadata() const
   // provider
   if ( dataProvider() )
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
+
+  // Layer ID
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Layer ID" ) + QStringLiteral( "</td><td>%1" ).arg( id() ) + QStringLiteral( "</td></tr>\n" );
 
   metadata += QLatin1String( "</table>\n<br><br>" );
 

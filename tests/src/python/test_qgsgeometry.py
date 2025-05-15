@@ -12002,15 +12002,22 @@ class TestQgsGeometry(QgisTestCase):
     def testCoerce(self):
         """Test coerce function"""
 
-        def coerce_to_wkt(wkt, type, defaultZ=None, defaultM=None):
+        def coerce_to_wkt(
+            wkt, type, defaultZ=None, defaultM=None, avoidDuplicates=True
+        ):
             geom = QgsGeometry.fromWkt(wkt)
             if defaultZ is not None or defaultM is not None:
                 return [
                     g.asWkt(2)
-                    for g in geom.coerceToType(type, defaultZ or 0, defaultM or 0)
+                    for g in geom.coerceToType(
+                        type, defaultZ or 0, defaultM or 0, avoidDuplicates
+                    )
                 ]
             else:
-                return [g.asWkt(2) for g in geom.coerceToType(type)]
+                return [
+                    g.asWkt(2)
+                    for g in geom.coerceToType(type, avoidDuplicates=avoidDuplicates)
+                ]
 
         self.assertEqual(
             coerce_to_wkt("Point (1 1)", QgsWkbTypes.Type.Point), ["Point (1 1)"]
@@ -12035,6 +12042,15 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             coerce_to_wkt("Polygon((1 1, 2 2, 1 2, 1 1))", QgsWkbTypes.Type.Point),
             ["Point (1 1)", "Point (2 2)", "Point (1 2)"],
+        )
+        # keep duplicated nodes
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon((1 1, 2 2, 1 2, 1 1))",
+                QgsWkbTypes.Type.Point,
+                avoidDuplicates=False,
+            ),
+            ["Point (1 1)", "Point (2 2)", "Point (1 2)", "Point (1 1)"],
         )
         self.assertEqual(
             coerce_to_wkt("Polygon((1 1, 2 2, 1 2, 1 1))", QgsWkbTypes.Type.LineString),
@@ -12290,12 +12306,28 @@ class TestQgsGeometry(QgisTestCase):
             coerce_to_wkt("Polygon ((1 1, 1 2, 2 2, 1 1))", QgsWkbTypes.Type.Point),
             ["Point (1 1)", "Point (1 2)", "Point (2 2)"],
         )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.Point,
+                avoidDuplicates=False,
+            ),
+            ["Point (1 1)", "Point (1 2)", "Point (2 2)", "Point (1 1)"],
+        )
 
         self.assertEqual(
             coerce_to_wkt(
                 "Polygon ((1 1, 1 2, 2 2, 1 1))", QgsWkbTypes.Type.MultiPoint
             ),
             ["MultiPoint ((1 1),(1 2),(2 2))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.MultiPoint,
+                avoidDuplicates=False,
+            ),
+            ["MultiPoint ((1 1),(1 2),(2 2),(1 1))"],
         )
 
         self.assertEqual(
@@ -12312,6 +12344,23 @@ class TestQgsGeometry(QgisTestCase):
                 "Point (4 4)",
             ],
         )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.Point,
+                avoidDuplicates=False,
+            ),
+            [
+                "Point (1 1)",
+                "Point (1 2)",
+                "Point (2 2)",
+                "Point (1 1)",
+                "Point (3 3)",
+                "Point (4 3)",
+                "Point (4 4)",
+                "Point (3 3)",
+            ],
+        )
 
         self.assertEqual(
             coerce_to_wkt(
@@ -12319,6 +12368,14 @@ class TestQgsGeometry(QgisTestCase):
                 QgsWkbTypes.Type.MultiPoint,
             ),
             ["MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.MultiPoint,
+                avoidDuplicates=False,
+            ),
+            ["MultiPoint ((1 1),(1 2),(2 2),(1 1),(3 3),(4 3),(4 4),(3 3))"],
         )
 
         # polygon -> lines

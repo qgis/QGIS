@@ -30,6 +30,7 @@
 #include "qgsfontmanager.h"
 #include "qgscolorutils.h"
 #include "qgspainting.h"
+#include "qgssldexportcontext.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -1404,15 +1405,35 @@ QgsSimpleMarkerSymbolLayer *QgsSimpleMarkerSymbolLayer::clone() const
   return m;
 }
 
+void QgsSimpleMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSimpleMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return QgsSimpleMarkerSymbolLayerBase::toSld( doc, element, context );
+}
+
 void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
 
+  const QVariantMap props = context.extraProperties();
   const double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
   const double size = QgsSymbolLayerUtils::rescaleUom( mSize, mSizeUnit, props );
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mStrokeColor, mStrokeStyle, strokeWidth, size );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mStrokeColor, mStrokeStyle, context, strokeWidth, size );
 
   // <Rotation>
   QString angleFunc;
@@ -1435,11 +1456,12 @@ void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
     }
   }
 
-  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
+  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc, context );
 
   // <Displacement>
   const QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, offset );
+  return true;
 }
 
 QString QgsSimpleMarkerSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
@@ -2647,6 +2669,18 @@ QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
   return new QgsSvgMarkerSymbolLayer( *this );
 }
 
+void QgsSvgMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSvgMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return QgsMarkerSymbolLayer::toSld( doc, element, context );
+}
+
 void QgsSvgMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
   QgsMarkerSymbolLayer::setOutputUnit( unit );
@@ -2680,14 +2714,22 @@ QgsMapUnitScale QgsSvgMarkerSymbolLayer::mapUnitScale() const
 
 void QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
 
+  const QVariantMap props = context.extraProperties();
   // encode a parametric SVG reference
   const double size = QgsSymbolLayerUtils::rescaleUom( mSize, mSizeUnit, props );
   const double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
-  QgsSymbolLayerUtils::parametricSvgToSld( doc, graphicElem, mPath, mColor, size, mStrokeColor, strokeWidth );
+  QgsSymbolLayerUtils::parametricSvgToSld( doc, graphicElem, mPath, mColor, size, mStrokeColor, strokeWidth, context );
 
   // <Rotation>
   QString angleFunc;
@@ -2702,11 +2744,12 @@ void QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &el
     angleFunc = QString::number( angle + mAngle );
   }
 
-  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
+  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc, context );
 
   // <Displacement>
   const QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, offset );
+  return true;
 }
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
@@ -3914,16 +3957,36 @@ QgsFontMarkerSymbolLayer *QgsFontMarkerSymbolLayer::clone() const
   return m;
 }
 
+void QgsFontMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsFontMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return QgsMarkerSymbolLayer::toSld( doc, element, context );
+}
+
 void QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   // <Graphic>
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
 
+  const QVariantMap props = context.extraProperties();
   const QString fontPath = QStringLiteral( "ttf://%1" ).arg( mFontFamily );
   int markIndex = !mString.isEmpty() ? mString.at( 0 ).unicode() : 0;
   const double size = QgsSymbolLayerUtils::rescaleUom( mSize, mSizeUnit, props );
-  QgsSymbolLayerUtils::externalMarkerToSld( doc, graphicElem, fontPath, QStringLiteral( "ttf" ), &markIndex, mColor, size );
+  QgsSymbolLayerUtils::externalMarkerToSld( doc, graphicElem, fontPath, QStringLiteral( "ttf" ), context, &markIndex, mColor, size );
 
   // <Rotation>
   QString angleFunc;
@@ -3937,11 +4000,12 @@ void QgsFontMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &e
   {
     angleFunc = QString::number( angle + mAngle );
   }
-  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
+  QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc, context );
 
   // <Displacement>
   const QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, offset );
+  return true;
 }
 
 bool QgsFontMarkerSymbolLayer::usesMapUnits() const

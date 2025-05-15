@@ -38,6 +38,7 @@ class QgsExplodeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QList<int> inputLayerTypes() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;

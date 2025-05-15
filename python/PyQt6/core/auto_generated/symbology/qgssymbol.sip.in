@@ -567,9 +567,22 @@ Returns a deep copy of this symbol.
 Ownership is transferred to the caller.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Converts the symbol to a SLD representation.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Converts the symbol to a SLD representation.
+
+Returns ``True`` if the symbol was successfully converted.
+
+.. versionadded:: 3.44
 %End
 
     Qgis::RenderUnit outputUnit() const;

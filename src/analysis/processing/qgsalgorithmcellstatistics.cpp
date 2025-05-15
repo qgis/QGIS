@@ -228,6 +228,11 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "input cell values are equal." );
 }
 
+QString QgsCellStatisticsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster whose cell values are computed from overlaid cell values of the input rasters." );
+}
+
 QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
 {
   return new QgsCellStatisticsAlgorithm();
@@ -409,8 +414,8 @@ QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentile algorithm returns the cell-wise percentile value of a stack of rasters "
-                      "and writes the results to an output raster. The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
+  return QObject::tr( "This algorithm generates a raster containing the cell-wise percentile value of a stack of input rasters. "
+                      "The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
                       "At each cell location, the specified percentile is obtained using the respective value from "
                       "the stack of all overlaid and sorted cell values of the input rasters.\n\n"
                       "There are three methods for percentile calculation:"
@@ -426,6 +431,11 @@ QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will be set to the most complex data type present in the input datasets. " );
+}
+
+QString QgsCellStatisticsPercentileAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster containing the cell-wise percentile value of a stack of input rasters." );
 }
 
 QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::createInstance() const
@@ -554,8 +564,7 @@ QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentrank from value algorithm calculates the cell-wise percentrank value of a stack of rasters based on a single input value "
-                      "and writes them to an output raster.\n\n"
+  return QObject::tr( "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value.\n\n"
                       "At each cell location, the specified value is ranked among the respective values in the stack of all overlaid and sorted cell values from the input rasters. "
                       "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
@@ -569,6 +578,11 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will always be Float32." );
+}
+
+QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value." );
 }
 
 QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFromValueAlgorithm::createInstance() const
@@ -692,8 +706,8 @@ QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentrank from raster layer algorithm calculates the cell-wise percentrank value of a stack of rasters based on an input value raster "
-                      "and writes them to an output raster.\n\n"
+  return QObject::tr( "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters "
+                      "based on an input value raster.\n\n"
                       "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
                       "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
@@ -707,6 +721,11 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will always be Float32." );
+}
+
+QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster containing the cell-wise percent rank value of a stack of input rasters based on an input value raster." );
 }
 
 QgsCellStatisticsPercentRankFromRasterAlgorithm *QgsCellStatisticsPercentRankFromRasterAlgorithm::createInstance() const

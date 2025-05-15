@@ -25,6 +25,7 @@
 #include "qgsattributes.h"
 
 class QgsAppGpsConnection;
+class QgsLineSymbol;
 class QgsMapCanvas;
 class QgsRubberBand;
 class QgsPoint;
@@ -66,15 +67,20 @@ class APP_EXPORT QgsAppGpsDigitizing : public QgsGpsLogger
      */
     QgsAttributeMap derivedAttributes() const;
 
+    /**
+     * Sets the QgsAppGpsDigitizing::settingTrackLineSymbol setting with the given line \a symbol.
+     */
+    static void setGpsTrackLineSymbol( QgsLineSymbol *symbol );
+
   public slots:
     void createFeature();
     void createVertexAtCurrentLocation();
+    void updateTrackAppearance();
 
   private slots:
     void addVertex( const QgsPoint &wgs84Point );
     void onTrackReset();
     void gpsSettingsChanged();
-    void updateTrackAppearance();
 
     void gpsConnected();
     void gpsDisconnected();

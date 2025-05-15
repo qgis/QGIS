@@ -84,10 +84,10 @@ bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsMapLayer *
 
 QgsFields QgsMinimumEnclosingCircleAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "radius" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  return fields;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "radius" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

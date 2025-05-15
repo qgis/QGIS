@@ -299,6 +299,34 @@ Returns QGIS Server Properties for the layer tree group
 %End
 
 
+    void setHasWmsTimeDimension( const bool hasWmsTimeDimension );
+%Docstring
+Sets whether the WMS time dimension should be computed for this group or
+not
+
+:param hasWmsTimeDimension: if ``True``, when a GetCapabilities request
+                            is sent, QGIS server would return a TIME
+                            dimension computed as an union of all time
+                            dimensions of its children recursively.
+                            Else, no TIME dimension will be returned.
+
+.. seealso:: :py:func:`hasWmsTimeDimension`
+
+.. versionadded:: 3.44
+%End
+
+    bool hasWmsTimeDimension() const;
+%Docstring
+Returns whether the WMS time dimension should be computed for this group
+or not. if ``True``, when a GetCapabilities request is sent, QGIS server
+would return a TIME dimension computed as an union of all time
+dimensions of its children recursively. Else, no TIME dimension will be
+returned.
+
+.. seealso:: :py:func:`setHasWmsTimeDimension`
+
+.. versionadded:: 3.44
+%End
 
   protected slots:
 
@@ -310,6 +338,7 @@ Returns QGIS Server Properties for the layer tree group
 %Docstring
 Set check state of children - if mutually exclusive
 %End
+
 
 
 

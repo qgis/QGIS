@@ -57,6 +57,11 @@ QString QgsAssignProjectionAlgorithm::shortHelpString() const
                       "Attributes are not modified by this algorithm." );
 }
 
+QString QgsAssignProjectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Assigns a new projection to a copy of a vector layer, with the exact same features and geometries." );
+}
+
 QgsAssignProjectionAlgorithm *QgsAssignProjectionAlgorithm::createInstance() const
 {
   return new QgsAssignProjectionAlgorithm();

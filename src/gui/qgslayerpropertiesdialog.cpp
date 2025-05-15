@@ -421,7 +421,7 @@ void QgsLayerPropertiesDialog::saveStyleAs()
           errorMessage = mLayer->saveNamedStyle( filePath, defaultLoadedFlag, dlg.styleCategories() );
         else
         {
-          const QgsSldExportContext sldContext { dlg.sldExportOptions(), Qgis::SldExportVendorExtension::NoVendorExtension, filePath };
+          QgsSldExportContext sldContext { dlg.sldExportOptions(), Qgis::SldExportVendorExtension::NoVendorExtension, filePath };
           errorMessage = mLayer->saveSldStyleV2( defaultLoadedFlag, sldContext );
         }
 

@@ -509,9 +509,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * \param errorMessage reference to string that will be updated with any error messages
      * \param props a open ended set of properties that can drive/inform the SLD encoding
      * \returns TRUE in case of success
-     * \since QGIS 3.6
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
+    Q_DECL_DEPRECATED bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const SIP_DEPRECATED;
+
+    /**
+     * Writes the symbology of the layer into the document provided in SLD 1.1 format
+     * \param node the node that will have the style element added to it.
+     * \param doc the document that will have the QDomNode added.
+     * \param context export context. Errors and warnings may be retrieved from this context.
+     * \returns TRUE in case of success
+     * \since QGIS 3.44
+     */
+    bool writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const;
 
     /**
      * If the ignoreExtent flag is set, the layer will also render outside the

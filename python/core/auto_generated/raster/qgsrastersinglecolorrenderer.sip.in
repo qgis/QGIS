@@ -32,10 +32,6 @@ Creates a single ``color`` renderer
 
     virtual QgsRasterSingleColorRenderer *clone() const /Factory/;
 
-%Docstring
-QgsRasterSingleColorRenderer cannot be copied. Use
-:py:func:`~QgsRasterSingleColorRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 

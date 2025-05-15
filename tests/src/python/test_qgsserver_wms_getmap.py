@@ -27,13 +27,16 @@ import osgeo.gdal  # NOQA
 
 from lxml import etree as et
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsGeometry,
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerTemporalProperties,
+    QgsDateTimeRange,
     QgsTextFormat,
     QgsPalLayerSettings,
+    QgsRasterLayer,
     QgsVectorLayerSimpleLabeling,
     QgsFontUtils,
 )
@@ -43,7 +46,7 @@ from qgis.server import (
     QgsBufferServerResponse,
 )
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, Qt
 from qgis.PyQt.QtGui import QColor, QImage
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
@@ -2891,6 +2894,10 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         )
 
         project = QgsProject()
+
+        # Set a filename to avoid capabilities cache breaking test
+        project.setFileName("test_temporal_properties")
+
         project.addMapLayers([layer_date, layer_range])
 
         qs = "?" + "&".join(
@@ -3017,6 +3024,156 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         )[0]
         self.assertEqual(range_extent.attrib, {"name": "TIME"})
         self.assertEqual(range_extent.text, "2003-03-03/2004-04-04")
+
+    def test_get_capabilities_time_dimension(self):
+        """Test if get capabilities return correct time dimension"""
+
+        # Test get capabilities
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetCapabilities",
+                    }.items()
+                )
+            ]
+        )
+
+        rl1 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_1"
+        )
+        rl2 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_2"
+        )
+        rl3 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_3"
+        )
+        rl4 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_4"
+        )
+        for rl in [rl1, rl2, rl3, rl4]:
+            timeProps = rl.temporalProperties()
+            timeProps.setIsActive(True)
+            timeProps.setMode(Qgis.RasterTemporalMode.FixedTemporalRange)
+
+        rl1.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-12T12:34:56", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T09:12:34", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl2.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-12T00:00:00", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl3.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-13T00:00:00", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-13T00:00:00", Qt.DateFormat.ISODate),
+            )
+        )
+
+        project = QgsProject()
+
+        # Set a filename to avoid capabilities cache breaking test
+        project.setFileName("test_get_capabilities_time_dimension")
+
+        project.addMapLayers([rl1, rl2, rl3, rl4], False)
+
+        groupWithTimeDim = project.layerTreeRoot().addGroup("GroupWithTimeDimension")
+        groupWithTimeDim.setHasWmsTimeDimension(True)
+        groupWithoutTimeDim = project.layerTreeRoot().addGroup(
+            "GroupWithoutTimeDimension"
+        )
+
+        groupWithTimeDim.addLayer(rl1)
+        group = groupWithTimeDim.addGroup("SubGroupWithTimeDimension")
+        group.setHasWmsTimeDimension(True)
+        group.addLayer(rl2)
+        group.addLayer(rl4)
+        groupWithTimeDim.addGroup("SubGroupWithoutTimeDimension").addLayer(rl3)
+
+        groupWithoutTimeDim.addLayer(rl1)
+        group = groupWithoutTimeDim.addGroup("OtherSubGroupWithTimeDimension")
+        group.setHasWmsTimeDimension(True)
+        group.addLayer(rl2)
+        group.addLayer(rl4)
+        groupWithoutTimeDim.addGroup("OtherSubGroupWithoutTimeDimension").addLayer(rl3)
+
+        def get_time_dim(layer_name):
+            r, h = self._result(self._execute_request_project(qs, project))
+            t = et.fromstring(r)
+            ns = t.nsmap
+            del ns[None]
+            ns["wms"] = "http://www.opengis.net/wms"
+
+            dims = t.xpath(
+                f"//wms:Layer/wms:Name[text()='{layer_name}']/../wms:Dimension",
+                namespaces=ns,
+            )
+
+            return dims[0] if dims else None
+
+        # range date time
+        date_dimension = get_time_dim("test_date_1")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(date_dimension.text, "2025-01-12T12:34:56/2025-01-15T09:12:34")
+
+        # instant date
+        date_dimension = get_time_dim("test_date_2")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(date_dimension.text, "2025-01-12")
+
+        # instant date
+        date_dimension = get_time_dim("test_date_3")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(date_dimension.text, "2025-01-13")
+
+        # date time not set (expect a time Dimension but no value)
+        date_dimension = get_time_dim("test_date_4")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(date_dimension.text, None)
+
+        # group without time dimension option
+        date_dimension = get_time_dim("GroupWithoutTimeDimension")
+        self.assertEqual(date_dimension, None)
+
+        # group with time dimension option
+        date_dimension = get_time_dim("GroupWithTimeDimension")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(
+            date_dimension.text,
+            "2025-01-12T12:34:56/2025-01-15T09:12:34,2025-01-12T00:00:00",
+        )
+
+        # Test different cases for group recursivity
+
+        date_dimension = get_time_dim("SubGroupWithTimeDimension")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(
+            date_dimension.text,
+            "2025-01-12T00:00:00",
+        )
+
+        date_dimension = get_time_dim("SubGroupWithoutTimeDimension")
+        self.assertEqual(date_dimension, None)
+
+        date_dimension = get_time_dim("OtherSubGroupWithTimeDimension")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(
+            date_dimension.text,
+            "2025-01-12T00:00:00",
+        )
+
+        date_dimension = get_time_dim("OtherSubGroupWithoutTimeDimension")
+        self.assertEqual(date_dimension, None)
 
     def test_get_map_labeling_opacities(self):
         """Test if OPACITIES is also applied to labels"""

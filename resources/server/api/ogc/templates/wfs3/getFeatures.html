@@ -54,7 +54,7 @@
                 <dl class="row">
                 {% for name, value in feature.properties %}
                     <dt class="col-sm-12">{{ name }}</dt>
-                    <dd class="col-sm-12">{{ value }}</dd>
+                    <dd class="col-sm-12">{{ if_nullptr_null_str(value) }}</dd>
                 {% endfor %}
                 </dl>
             {% endfor %}

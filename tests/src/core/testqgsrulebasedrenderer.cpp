@@ -16,13 +16,12 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QTemporaryFile>
-//header for class being tested
-#include <qgsrulebasedrenderer.h>
 
-#include <qgsapplication.h>
-#include <qgsreadwritecontext.h>
-#include <qgssymbol.h>
-#include <qgsvectorlayer.h>
+#include "qgsrulebasedrenderer.h"
+#include "qgsapplication.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmultirenderchecker.h"
@@ -33,6 +32,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsgeometry.h"
 #include "qgsembeddedsymbolrenderer.h"
+#include "qgssldexportcontext.h"
 
 typedef QgsRuleBasedRenderer::Rule RRule;
 
@@ -1385,9 +1385,9 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsFields fields;
       auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=field_name:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
       vl->setRenderer( renderer.release() );
-      QString error;
-      QDomDocument dom;
-      vl->exportSldStyle( dom, error );
+
+      QgsSldExportContext context;
+      QDomDocument dom = vl->exportSldStyleV3( context );
 
       const QString sld = dom.toString();
 

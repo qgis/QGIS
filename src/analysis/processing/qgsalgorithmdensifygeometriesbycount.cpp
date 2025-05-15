@@ -59,7 +59,7 @@ QString QgsDensifyGeometriesByCountAlgorithm::shortHelpString() const
 
 QString QgsDensifyGeometriesByCountAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a densified version of geometries." );
+  return QObject::tr( "Creates a densified version of geometries by adding a fixed number of vertices to segments." );
 }
 
 QgsDensifyGeometriesByCountAlgorithm *QgsDensifyGeometriesByCountAlgorithm::createInstance() const

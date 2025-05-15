@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include <pdal/PipelineManager.hpp>
 #include <pdal/util/ProgramArgs.hpp>
 
@@ -21,6 +23,7 @@ using namespace pdal;
 
 struct ParallelJobInfo;
 
+namespace fs = std::filesystem;
 
 /**
  * Base class for algorithms. The general pattern is that:
@@ -88,6 +91,7 @@ struct Alg
 
 bool runAlg(std::vector<std::string> args, Alg &alg);
 
+void removeFiles(const std::vector<std::string> &tileOutputFiles, bool removeParentDirIfEmpty = true);
 
 //////////////
 

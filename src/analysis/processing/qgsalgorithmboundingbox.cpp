@@ -54,6 +54,11 @@ QString QgsBoundingBoxAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
+QString QgsBoundingBoxAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the bounding box (envelope) for each feature in an input layer." );
+}
+
 QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
 {
   return new QgsBoundingBoxAlgorithm();
@@ -61,12 +66,12 @@ QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
 
 QgsFields QgsBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "width" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "height" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  return fields;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "width" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "height" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 QgsFeatureList QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )

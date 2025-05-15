@@ -17,7 +17,6 @@
 #include "moc_qgsmodelviewtoollink.cpp"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
-#include "qgsgui.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsmodelgraphicsscene.h"
@@ -58,12 +57,13 @@ void QgsModelViewToolLink::modelMoveEvent( QgsModelViewMouseEvent *event )
     }
   }
 
-  if ( !socket && mLastHoveredSocket && socket != mLastHoveredSocket )
+  if ( mLastHoveredSocket && socket != mLastHoveredSocket )
   {
     mLastHoveredSocket->modelHoverLeaveEvent( event );
     mLastHoveredSocket = nullptr;
   }
-  else
+
+  if ( socket && socket != mLastHoveredSocket )
   {
     mLastHoveredSocket = socket;
   }
@@ -75,8 +75,14 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   {
     return;
   }
-  view()->setTool( mPreviousViewTool );
   mBezierRubberBand->finish( event->modelPoint() );
+  if ( mLastHoveredSocket )
+  {
+    mLastHoveredSocket->modelHoverLeaveEvent( nullptr );
+    mLastHoveredSocket = nullptr;
+  }
+
+  view()->setTool( mPreviousViewTool );
 
   // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
   QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
@@ -201,8 +207,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
 
     auto currentSources = childFrom->parameterSources().value( param->name() );
 
-    // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate
-    QList<QGraphicsItem *> items = scene()->items();
     QgsProcessingModelChildParameterSource oldSource;
     for ( const QgsProcessingModelChildParameterSource &source : std::as_const( currentSources ) )
     {
@@ -212,36 +216,7 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
         case Qgis::ProcessingModelChildParameterSource::ChildOutput:
         {
           oldSource = source;
-          QgsProcessingModelChildAlgorithm *algSource;
-          // This is not so nice to have the UI tangled gotta think of a better abstraction later
-          // Loop through all items to get the output socket
-          for ( QGraphicsItem *item : items )
-          {
-            if ( QgsModelDesignerSocketGraphicItem *outputSocket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
-            {
-              if ( ( algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputSocket->component() ) ) )
-              {
-                if ( source.outputChildId() != algSource->childId() || outputSocket->isInput() )
-                {
-                  continue;
-                }
-                int outputIndexForSourceName = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
-                if ( outputSocket->index() == outputIndexForSourceName )
-                {
-                  mFromSocket = outputSocket;
-                  view()->beginCommand( tr( "Edit link" ) );
-                }
-              }
-              else if ( auto modelParamSource = dynamic_cast<QgsProcessingModelParameter *>( outputSocket->component() ) )
-              {
-                if ( source.parameterName() == modelParamSource->parameterName() )
-                {
-                  mFromSocket = outputSocket;
-                  view()->beginCommand( tr( "Edit link" ) );
-                }
-              }
-            }
-          }
+          view()->beginCommand( tr( "Edit link" ) );
 
           //reset to default value
           QList<QgsProcessingModelChildParameterSource> newSources;
@@ -254,12 +229,18 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           // Redraw
           scene()->requestRebuildRequired();
 
-          //Get Socket from Source alg / source parameter
+          //Get socket from initial source alg / source parameter
           QgsModelComponentGraphicItem *item = nullptr;
           int socketIndex = -1;
           if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput )
           {
             item = scene()->childAlgorithmItem( oldSource.outputChildId() );
+            auto algSource = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() );
+            if ( !algSource )
+            {
+              QgsDebugError( QStringLiteral( "algSource not set, aborting!" ) );
+              return;
+            }
             socketIndex = QgsProcessingUtils::outputDefinitionIndex( algSource->algorithm(), source.outputName() );
           }
           else if ( oldSource.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter )
@@ -268,12 +249,20 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             socketIndex = 0;
           }
 
+          if ( !item )
+          {
+            QgsDebugError( QStringLiteral( "item not set, aborting!" ) );
+            return;
+          }
+
           mFromSocket = item->outSocketAt( socketIndex );
         }
-
-
         break;
-        default:
+
+        case Qgis::ProcessingModelChildParameterSource::StaticValue:
+        case Qgis::ProcessingModelChildParameterSource::Expression:
+        case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+        case Qgis::ProcessingModelChildParameterSource::ModelOutput:
           continue;
       }
 

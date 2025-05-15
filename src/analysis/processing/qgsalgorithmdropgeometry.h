@@ -38,6 +38,7 @@ class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsDropGeometryAlgorithm *createInstance() const override SIP_FACTORY;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;

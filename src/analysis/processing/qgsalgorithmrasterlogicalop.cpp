@@ -228,7 +228,7 @@ QString QgsRasterLogicalOrAlgorithm::displayName() const
 
 QString QgsRasterLogicalOrAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the boolean OR for a set of input raster layers" );
+  return QObject::tr( "Calculates the boolean OR for a set of input raster layers." );
 }
 
 QString QgsRasterLogicalOrAlgorithm::shortHelpString() const
@@ -304,7 +304,7 @@ QString QgsRasterLogicalAndAlgorithm::displayName() const
 
 QString QgsRasterLogicalAndAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the boolean AND for a set of input raster layers" );
+  return QObject::tr( "Calculates the boolean AND for a set of input raster layers." );
 }
 
 QString QgsRasterLogicalAndAlgorithm::shortHelpString() const

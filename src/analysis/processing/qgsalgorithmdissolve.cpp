@@ -260,6 +260,11 @@ QString QgsDissolveAlgorithm::shortHelpString() const
                       "as separate features (instead of parts of a single multipart feature)." );
 }
 
+QString QgsDissolveAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Combines features of a vector layer into new features, optionally grouped by common attributes." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsDissolveAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
@@ -356,6 +361,11 @@ QString QgsCollectAlgorithm::shortHelpString() const
          + QStringLiteral( "\n\n" ) + QObject::tr( "All output geometries will be converted to multi geometries, even those with just a single part. "
                                                    "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part." )
          + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
+}
+
+QString QgsCollectAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsCollectAlgorithm::documentationFlags() const

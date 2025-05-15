@@ -1202,7 +1202,7 @@ Export the properties of this layer as named style in a QDomDocument
 %End
 
 
-    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
+ virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const /Deprecated="Since 3.44. Use exportSldStyleV3() instead."/;
 %Docstring
 Export the properties of this layer as SLD style in a QDomDocument
 
@@ -1210,10 +1210,12 @@ Export the properties of this layer as SLD style in a QDomDocument
 :param errorMsg: will be set to a descriptive message if an error occurs
                  during the execution of writeSymbology
 
-.. seealso:: :py:func:`exportSldStyleV2`
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsMapLayer.exportSldStyleV3` instead.
 %End
 
-    virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, const QgsSldExportContext &exportContext ) const;
+ virtual void exportSldStyleV2( QDomDocument &doc, QString &errorMsg, QgsSldExportContext &exportContext ) const /Deprecated="Since 3.44. Use exportSldStyleV3() instead."/;
 %Docstring
 Export the properties of this layer as SLD style in a QDomDocument
 
@@ -1223,7 +1225,21 @@ Export the properties of this layer as SLD style in a QDomDocument
                  :py:func:`~QgsMapLayer.writeSymbology`
 :param exportContext: SLD export context
 
-.. versionadded:: 3.30
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsMapLayer.exportSldStyleV3` instead.
+%End
+
+    virtual QDomDocument exportSldStyleV3( QgsSldExportContext &exportContext ) const;
+%Docstring
+Export the properties of this layer as SLD style in a QDomDocument.
+
+Errors and warnings raised during the conversion should be retrieved
+from ``exportContext``.
+
+:param exportContext: SLD export context
+
+.. versionadded:: 3.44
 %End
 
     virtual QString saveDefaultStyle( bool &resultFlag /Out/, StyleCategories categories );
@@ -1295,7 +1311,7 @@ Saves the properties of this layer to an SLD format file.
 .. seealso:: :py:func:`saveSldStyleV2`
 %End
 
-    virtual QString saveSldStyleV2( bool &resultFlag /Out/, const QgsSldExportContext &exportContext ) const;
+    virtual QString saveSldStyleV2( bool &resultFlag /Out/, QgsSldExportContext &exportContext ) const;
 %Docstring
 Saves the properties of this layer to an SLD format file.
 

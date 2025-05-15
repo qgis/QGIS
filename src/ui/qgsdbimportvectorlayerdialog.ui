@@ -41,6 +41,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="mSourceLayerOnlySelected">
+        <property name="text">
+         <string>Selected features only</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

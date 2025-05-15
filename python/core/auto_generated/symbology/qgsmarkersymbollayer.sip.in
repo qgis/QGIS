@@ -238,7 +238,14 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual QgsSimpleMarkerSymbolLayer *clone() const /Factory/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -605,7 +612,13 @@ versa when writing. Used internally when reading/writing symbols.
 
     virtual QgsSvgMarkerSymbolLayer *clone() const /Factory/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     QString path() const;
@@ -1024,8 +1037,13 @@ system.
 
     virtual QgsFontMarkerSymbolLayer *clone() const /Factory/;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool usesMapUnits() const;
 

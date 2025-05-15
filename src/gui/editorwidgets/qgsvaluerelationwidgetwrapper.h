@@ -94,6 +94,11 @@ class QgsFilteredTableWidget : public QWidget
      */
     void itemChanged( QTableWidgetItem *item );
 
+  private slots:
+    void onTableWidgetCustomContextMenuRequested( const QPoint &pos );
+    void onTableWidgetMenuActionSelectAllTriggered();
+    void onTableWidgetMenuActionDeselectAllTriggered();
+
   private:
     void filterStringChanged( const QString &filterString );
     void itemChanged_p( QTableWidgetItem *item );
