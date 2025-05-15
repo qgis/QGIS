@@ -72,7 +72,7 @@ QString QgsTessellateAlgorithm::shortHelpString() const
 
 QString QgsTessellateAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Tessellates a polygon geometry layer, dividing the geometries into triangular components." )
+  return QObject::tr( "Tessellates a polygon geometry layer, dividing the geometries into triangular components." );
 }
 
 QList<int> QgsTessellateAlgorithm::inputLayerTypes() const
