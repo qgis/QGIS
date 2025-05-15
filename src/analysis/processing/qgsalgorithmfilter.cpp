@@ -57,7 +57,7 @@ QString QgsFilterAlgorithm::shortHelpString() const
 
 QString QgsFilterAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filters features from the input layer and redirects them to one or several outputs." );
+  return QObject::tr( "Filters features from the input layer and redirects them to one or more outputs." );
 }
 
 QgsFilterAlgorithm *QgsFilterAlgorithm::createInstance() const

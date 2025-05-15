@@ -47,7 +47,7 @@ QString QgsPointsToPathsAlgorithm::shortHelpString() const
 
 QString QgsPointsToPathsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Takes a point layer and connects its features creating a new line layer." );
+  return QObject::tr( "Takes a point layer and connects its features to create a new line layer." );
 }
 
 QStringList QgsPointsToPathsAlgorithm::tags() const

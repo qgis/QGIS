@@ -77,7 +77,7 @@ QString QgsFillNoDataAlgorithm::shortHelpString() const
 
 QString QgsFillNoDataAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Generates a raster dataset with the NoData values in the input raster reset to a given value." );
+  return QObject::tr( "Generates a raster dataset with the NoData values in the input raster filled with a given value." );
 }
 
 QgsFillNoDataAlgorithm *QgsFillNoDataAlgorithm::createInstance() const
