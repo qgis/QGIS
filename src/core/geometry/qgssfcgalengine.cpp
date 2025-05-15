@@ -70,7 +70,7 @@ int sfcgal::errorCallback( const char *fmt, ... )
 
   sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL error occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
 
-  return strlen( buffer );
+  return static_cast<int>( strlen( buffer ) );
 }
 
 int sfcgal::warningCallback( const char *fmt, ... )
@@ -84,7 +84,7 @@ int sfcgal::warningCallback( const char *fmt, ... )
 
   sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL warning occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
 
-  return strlen( buffer );
+  return static_cast<int>( strlen( buffer ) );
 }
 
 
@@ -393,7 +393,7 @@ QgsConstWkbPtr QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *er
   sfcgal_geometry_as_wkb( geom, &wkbHex, &len );
   CHECK_SUCCESS( errorMsg, QgsConstWkbPtr( nullptr, 0 ) );
 
-  return QgsConstWkbPtr( reinterpret_cast<unsigned char *>( wkbHex ), len );
+  return QgsConstWkbPtr( reinterpret_cast<unsigned char *>( wkbHex ), static_cast<int>( len ) );
 }
 
 QString QgsSfcgalEngine::toWkt( const sfcgal::geometry *geom, int numDecimals, QString *errorMsg )
