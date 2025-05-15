@@ -188,14 +188,12 @@ void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context
 
 double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double width, Qgis::RenderUnit unit )
 {
-  // if necessary scale mm to map units
-  double scale = 1.;
-  if ( unit == Qgis::RenderUnit::MapUnits )
-  {
-    scale = context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::MapUnits );
-  }
-  width = std::max( width + 2 * mBuffer * scale, mMinWidth * scale );
-  return width;
+  const double widthInPainterUnits = context.convertToPainterUnits( width, unit );
+  const double bufferInPainterUnits = context.convertToPainterUnits( mBuffer, Qgis::RenderUnit::Millimeters );
+  const double minWidthInPainterUnits = context.convertToPainterUnits( mMinWidth, Qgis::RenderUnit::Millimeters );
+
+  const double adjustedWidthInPainterUnits = std::max( widthInPainterUnits + 2 * bufferInPainterUnits, minWidthInPainterUnits );
+  return context.convertFromPainterUnits( adjustedWidthInPainterUnits, unit ) / mMapCanvas->magnificationFactor();
 }
 
 void QgsHighlight::setWidth( int width )
