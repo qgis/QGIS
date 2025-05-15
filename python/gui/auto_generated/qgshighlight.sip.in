@@ -113,19 +113,23 @@ Set stroke width.
 
     double buffer() const;
 %Docstring
-Returns the buffer
+Returns the line/stroke buffer size (in millimeters)
+
+.. seealso:: :py:func:`setBuffer`
 
 .. versionadded:: 3.4
 %End
 
     void setBuffer( double buffer );
 %Docstring
-Set line / stroke buffer in millimeters.
+Sets the line/stroke buffer size (in millimeters).
+
+.. seealso:: :py:func:`buffer`
 %End
 
     void setMinWidth( double width );
 %Docstring
-Set minimum line / stroke width in millimeters.
+Sets the minimum line/stroke width (in millimeters).
 %End
 
     QgsMapLayer *layer() const;
