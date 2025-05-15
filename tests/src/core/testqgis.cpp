@@ -543,7 +543,7 @@ void TestQgis::testQgsFlagKeysToValue()
   QCOMPARE( qgsFlagKeysToValue( QString::number( newValue ), defaultValue, true, &ok ), newValue );
   QCOMPARE( ok, true );
   // also try with an invalid int value
-  QCOMPARE( qgsFlagKeysToValue( QString::number( -1 ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( qgsFlagKeysToValue( QString::number( std::numeric_limits<int>::quiet_NaN() ), defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
 }
 
