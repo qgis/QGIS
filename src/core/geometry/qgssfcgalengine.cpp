@@ -132,10 +132,10 @@ void sfcgal::ErrorHandler::addText( const QString &msg, const char *fromFile, co
 /**
  * Lambda for functions taking 1 geometry in parameter returning a primitive type
  *
- * @param func_2d mandatory pointer to SFCGAL function
- * @param func_3d optional pointer to SFCGAL function when geom is 3D
- * @param geom geometry to apply func_2d ou func_3d
- * @param errorMsg if defined, will receive errors
+ * \param func_2d mandatory pointer to SFCGAL function
+ * \param func_3d optional pointer to SFCGAL function when geom is 3D
+ * \param geom geometry to apply func_2d ou func_3d
+ * \param errorMsg if defined, will receive errors
  */
 template<typename T>
 std::function<T(
@@ -168,11 +168,11 @@ lambda_geom_to_prim = [](
 /**
  * Lambda for functions taking 2 geometries in parameter returning a primitive type
  *
- * @param func_2d mandatory pointer to SFCGAL function
- * @param func_3d optional pointer to SFCGAL function when geom is 3D
- * @param geomA first geometry to apply func_2d ou func_3d
- * @param geomB second geometry to apply func_2d ou func_3d
- * @param errorMsg if defined, will receive errors
+ * \param func_2d mandatory pointer to SFCGAL function
+ * \param func_3d optional pointer to SFCGAL function when geom is 3D
+ * \param geomA first geometry to apply func_2d ou func_3d
+ * \param geomB second geometry to apply func_2d ou func_3d
+ * \param errorMsg if defined, will receive errors
  */
 template<typename T>
 std::function<T(
@@ -209,10 +209,10 @@ lambda_geomgeom_to_prim = [](
 /**
  * Lambda for functions taking 1 geometry in parameter returning a shared ptr to geometry
  *
- * @param func_2d mandatory pointer to SFCGAL function
- * @param func_3d optional pointer to SFCGAL function when geom is 3D
- * @param geom geometry to apply func_2d ou func_3d
- * @param errorMsg if defined, will receive errors
+ * \param func_2d mandatory pointer to SFCGAL function
+ * \param func_3d optional pointer to SFCGAL function when geom is 3D
+ * \param geom geometry to apply func_2d ou func_3d
+ * \param errorMsg if defined, will receive errors
  */
 std::function<sfcgal::shared_geom(
   sfcgal::func_geom_to_geom, sfcgal::func_geom_to_geom,
@@ -246,11 +246,11 @@ lambda_geom_to_geom = [](
 /**
  * Lambda for functions taking 2 geometries in parameter returning a shared ptr to geometry
  *
- * @param func_2d mandatory pointer to SFCGAL function
- * @param func_3d optional pointer to SFCGAL function when geom is 3D
- * @param geomA first geometry to apply func_2d ou func_3d
- * @param geomB second geometry to apply func_2d ou func_3d
- * @param errorMsg if defined, will receive errors
+ * \param func_2d mandatory pointer to SFCGAL function
+ * \param func_3d optional pointer to SFCGAL function when geom is 3D
+ * \param geomA first geometry to apply func_2d ou func_3d
+ * \param geomB second geometry to apply func_2d ou func_3d
+ * \param errorMsg if defined, will receive errors
  */
 std::function<sfcgal::shared_geom(
   sfcgal::func_geomgeom_to_geom, sfcgal::func_geomgeom_to_geom,
