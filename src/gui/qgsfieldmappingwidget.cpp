@@ -25,7 +25,6 @@
 
 #include <QTableView>
 #include <QVBoxLayout>
-#include <QMenu>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
