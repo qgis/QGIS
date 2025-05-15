@@ -37,7 +37,7 @@ QString QgsGeometryCheckDuplicateNodesAlgorithm::displayName() const
 
 QString QgsGeometryCheckDuplicateNodesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect duplicated vertices in line and polygon geometries" );
+  return QObject::tr( "Detects duplicated vertices in line and polygon geometries." );
 }
 
 QStringList QgsGeometryCheckDuplicateNodesAlgorithm::tags() const

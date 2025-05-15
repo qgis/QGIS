@@ -37,7 +37,7 @@ QString QgsGeometryCheckSliverPolygonAlgorithm::displayName() const
 
 QString QgsGeometryCheckSliverPolygonAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect sliver polygons that are too thin" );
+  return QObject::tr( "Detects sliver polygons that are too thin." );
 }
 
 QStringList QgsGeometryCheckSliverPolygonAlgorithm::tags() const

@@ -37,7 +37,7 @@ QString QgsFixGeometryAngleAlgorithm::displayName() const
 
 QString QgsFixGeometryAngleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Delete vertices detected with the \"Small angles\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Deletes vertices detected with the \"Small angles\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryAngleAlgorithm::tags() const

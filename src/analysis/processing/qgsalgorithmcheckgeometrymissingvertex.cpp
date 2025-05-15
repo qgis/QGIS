@@ -37,7 +37,7 @@ QString QgsGeometryCheckMissingVertexAlgorithm::displayName() const
 
 QString QgsGeometryCheckMissingVertexAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect missing vertices along polygon borders for topology compliance" );
+  return QObject::tr( "Detects missing vertices along polygon borders for topology compliance." );
 }
 
 QStringList QgsGeometryCheckMissingVertexAlgorithm::tags() const

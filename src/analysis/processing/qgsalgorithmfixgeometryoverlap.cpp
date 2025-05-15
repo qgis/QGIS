@@ -37,7 +37,7 @@ QString QgsFixGeometryOverlapAlgorithm::displayName() const
 
 QString QgsFixGeometryOverlapAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Delete overlaps detected with the \"Overlaps\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Deletes overlaps detected with the \"Overlaps\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryOverlapAlgorithm::tags() const

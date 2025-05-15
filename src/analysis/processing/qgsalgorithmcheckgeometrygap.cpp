@@ -37,7 +37,7 @@ QString QgsGeometryCheckGapAlgorithm::displayName() const
 
 QString QgsGeometryCheckGapAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect gaps between polygons smaller than a given area" );
+  return QObject::tr( "Detects gaps between polygons smaller than a given area." );
 }
 
 QStringList QgsGeometryCheckGapAlgorithm::tags() const

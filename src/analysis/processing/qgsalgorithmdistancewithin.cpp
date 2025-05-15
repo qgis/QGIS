@@ -240,7 +240,7 @@ QString QgsSelectWithinDistanceAlgorithm::shortHelpString() const
 
 QString QgsSelectWithinDistanceAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Select features that are within a specified distance from features in another layer." );
+  return QObject::tr( "Selects features that are within a specified distance from features in another layer." );
 }
 
 QgsSelectWithinDistanceAlgorithm *QgsSelectWithinDistanceAlgorithm::createInstance() const

@@ -37,7 +37,7 @@ QString QgsFixGeometryMultipartAlgorithm::displayName() const
 
 QString QgsFixGeometryMultipartAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Convert features detected with the \"Strictly multipart\" algorithm from the \"Check geometry\" section to singlepart" );
+  return QObject::tr( "Converts features detected with the \"Strictly multipart\" algorithm from the \"Check geometry\" section to singlepart." );
 }
 
 QStringList QgsFixGeometryMultipartAlgorithm::tags() const

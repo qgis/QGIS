@@ -365,7 +365,7 @@ QString QgsCollectAlgorithm::shortHelpString() const
 
 QString QgsCollectAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes" );
+  return QObject::tr( "Collects geometries of a vector layer into new multipart geometries, optionally grouped by common attributes." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsCollectAlgorithm::documentationFlags() const
