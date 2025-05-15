@@ -535,19 +535,19 @@ double QgsSfcgalGeometry::length() const
   return result;
 }
 
-bool QgsSfcgalGeometry::intersects( const QgsAbstractGeometry *other, QString *errorMsg ) const
+bool QgsSfcgalGeometry::intersects( const QgsAbstractGeometry *otherGeom, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( other, errorMsg );
+  sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, errorMsg );
   CHECK_SUCCESS( errorMsg, false );
 
   return QgsSfcgalEngine::intersects( mSfcgalGeom.get(), otherShared.get(), errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *other, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsSfcgalGeometry *QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( other, errorMsg );
+  sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
 
   sfcgal::shared_geom result = QgsSfcgalEngine::intersection( mSfcgalGeom.get(), otherShared.get(), errorMsg, parameters );
@@ -560,7 +560,7 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::combine( const QVector<const QgsAbstractGe
   sfcgal::errorHandler()->clearText( errorMsg );
   QVector<sfcgal::shared_geom> sfcgalGeomList;
   sfcgalGeomList.append( mSfcgalGeom );
-  for ( QVector<const QgsAbstractGeometry *>::const_iterator ite = geomList.constBegin(); ite != geomList.constEnd(); ite++ )
+  for ( QVector<const QgsAbstractGeometry *>::const_iterator ite = geomList.constBegin(); ite != geomList.constEnd(); ++ite )
   {
     sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( *ite, errorMsg );
     CHECK_SUCCESS( errorMsg, nullptr );
@@ -573,10 +573,10 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::combine( const QVector<const QgsAbstractGe
   ;
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::difference( const QgsAbstractGeometry *other, QString *errorMsg, const QgsGeometryParameters &parameters ) const
+QgsSfcgalGeometry *QgsSfcgalGeometry::difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  sfcgal::shared_geom otherSharedr = QgsSfcgalEngine::fromAbstractGeometry( other, errorMsg );
+  sfcgal::shared_geom otherSharedr = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
 
   sfcgal::shared_geom result = QgsSfcgalEngine::difference( mSfcgalGeom.get(), otherSharedr.get(), errorMsg, parameters );

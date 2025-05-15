@@ -179,21 +179,21 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     QgsSfcgalGeometry *rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
 
     /**
-     * Checks if \a geom intersects this.
+     * Checks if \a otherGeom intersects this.
      *
-     * \param geom geometry to perform the operation
+     * \param otherGeom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const;
+    bool intersects( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr ) const;
 
     /**
-     * Calculate the intersection of this and \a geom.
+     * Calculate the intersection of this and \a otherGeom.
      *
-     * \param geom geometry to perform the operation
+     * \param otherGeom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      * \param parameters can be used to specify parameters which control the intersection results
      */
-    QgsSfcgalGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsSfcgalGeometry *intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Calculate the combination of this and \a geomList.
@@ -204,13 +204,13 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     QgsSfcgalGeometry *combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
 
     /**
-     * Calculate the difference of this and \a geom.
+     * Calculate the difference of this and \a otherGeom.
      *
-     * \param geom geometry to perform the operation
+     * \param otherGeom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      * \param parameters can be used to specify parameters which control the difference results
      */
-    QgsSfcgalGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    QgsSfcgalGeometry *difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Triangulates this geometry using constraint 2D Delaunay Triangulation (keep Z if defined)
