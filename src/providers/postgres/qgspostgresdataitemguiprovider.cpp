@@ -824,7 +824,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
 
 void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ) );
+  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name() );
   dlg.setWindowTitle( tr( "Rename Project" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
     return;
@@ -893,7 +893,7 @@ void QgsPostgresDataItemGuiProvider::deleteProject( QgsPGProjectItem *projectIte
 
 void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "Project “%1”" ).arg( projectItem->name() ) );
+  QgsNewNameDialog dlg( tr( "Project “%1”" ).arg( projectItem->name() ), projectItem->name() );
   dlg.setWindowTitle( tr( "Duplicate Project" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
     return;
