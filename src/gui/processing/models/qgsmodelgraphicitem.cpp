@@ -274,9 +274,6 @@ bool QgsModelDesignerSocketGraphicItem::isDefaultParamValue()
 
       // Outputs
       case Qt::BottomEdge:
-      {
-        break;
-      }
       case Qt::LeftEdge:
       case Qt::RightEdge:
         break;
