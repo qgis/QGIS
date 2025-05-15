@@ -324,7 +324,10 @@ def handleAlgorithmResults(
         if project and insertion_point:
             project.layerTreeRegistryBridge().setLayerInsertionPoint(insertion_point)
 
-        project.addMapLayer(layer_node.layer())
+        added_layer = project.addMapLayer(layer_node.layer())
+        if project and layer_node.customProperty("showFeatureCount"):
+            added_layer_tree_layer = project.layerTreeRoot().findLayer(added_layer.id())
+            added_layer_tree_layer.setCustomProperty("showFeatureCount", True)
 
         if not have_set_active_layer and iface is not None:
             iface.setActiveLayer(layer_node.layer())
