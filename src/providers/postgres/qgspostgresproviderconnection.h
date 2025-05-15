@@ -76,6 +76,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
     QString defaultPrimaryKeyColumnName() const override;
+    void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
 
     static const QStringList CONFIGURATION_PARAMETERS;
     static const QString SETTINGS_BASE_KEY;
