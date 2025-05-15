@@ -376,7 +376,7 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_geom scale( const sfcgal::geometry *geom, const QgsPoint &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 
     /**
-     * 2D Rotation of geometry \geom around point \center by angle \angle
+     * 2D Rotation of geometry \a geom around point \a center by angle \a angle
      *
      * \param geom geometry to perform the operation
      * \param angle rotation angle in radians
