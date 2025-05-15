@@ -37,7 +37,7 @@ QString QgsGeometryCheckOverlapAlgorithm::displayName() const
 
 QString QgsGeometryCheckOverlapAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect overlaps between polygons, smaller than a given area" );
+  return QObject::tr( "Detects overlaps between polygons smaller than a given area." );
 }
 
 QStringList QgsGeometryCheckOverlapAlgorithm::tags() const

@@ -35,7 +35,7 @@ QString QgsFixGeometryAreaAlgorithm::displayName() const
 
 QString QgsFixGeometryAreaAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Merge small polygons detected with the \"Small polygons\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Merges small polygons detected with the \"Small polygons\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryAreaAlgorithm::tags() const

@@ -36,7 +36,7 @@ QString QgsFixGeometrySelfIntersectionAlgorithm::displayName() const
 
 QString QgsFixGeometrySelfIntersectionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Split features detected with the \"Self-intersections\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Splits features detected with the \"Self-intersections\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometrySelfIntersectionAlgorithm::tags() const

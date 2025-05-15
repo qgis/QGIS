@@ -37,7 +37,7 @@ QString QgsFixGeometryHoleAlgorithm::displayName() const
 
 QString QgsFixGeometryHoleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Fill holes detected with the \"Holes\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Fills holes detected with the \"Holes\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryHoleAlgorithm::tags() const

@@ -37,9 +37,8 @@ QString QgsGeometryCheckAreaAlgorithm::displayName() const
 
 QString QgsGeometryCheckAreaAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect polygons smaller than a given area" );
+  return QObject::tr( "Detects polygons smaller than a given area." );
 }
-
 
 QStringList QgsGeometryCheckAreaAlgorithm::tags() const
 {

@@ -38,7 +38,7 @@ QString QgsTinMeshCreationAlgorithm::groupId() const
 
 QString QgsTinMeshCreationAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a TIN mesh layer from vector layers" );
+  return QObject::tr( "Creates a TIN mesh layer from vector layers." );
 }
 
 QString QgsTinMeshCreationAlgorithm::shortHelpString() const

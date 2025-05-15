@@ -37,7 +37,7 @@ QString QgsGeometryCheckAngleAlgorithm::displayName() const
 
 QString QgsGeometryCheckAngleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect angles smaller than a given angle" );
+  return QObject::tr( "Detects angles smaller than a given angle." );
 }
 
 QStringList QgsGeometryCheckAngleAlgorithm::tags() const
