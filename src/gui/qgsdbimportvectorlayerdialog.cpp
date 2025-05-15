@@ -71,8 +71,8 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     QgsFieldMappingModel *model = mFieldsView->model();
     for ( int i = 0; i < model->rowCount(); i++ )
     {
-      QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
-      QString name = model->data( index, Qt::EditRole ).toString();
+      const QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      const QString name = model->data( index, Qt::EditRole ).toString();
       model->setData( index, name.toLower(), Qt::EditRole );
     }
   } );
@@ -81,8 +81,8 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     QgsFieldMappingModel *model = mFieldsView->model();
     for ( int i = 0; i < model->rowCount(); i++ )
     {
-      QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
-      QString name = model->data( index, Qt::EditRole ).toString();
+      const QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      const QString name = model->data( index, Qt::EditRole ).toString();
       model->setData( index, name.toUpper(), Qt::EditRole );
     }
   } );
