@@ -61,22 +61,33 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   connect( mUpButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsUp );
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
 
-  connect( mFieldsView, &QgsFieldMappingWidget::willShowContextMenu, this, [this]( QMenu *menu, QModelIndex index ) {
-    if ( index.isValid() && static_cast<QgsFieldMappingModel::ColumnDataIndex>( index.column() ) == QgsFieldMappingModel::ColumnDataIndex::DestinationName )
-    {
-      QAction *actionConvertAllFieldNamesToLowercase = menu->addAction( "Convert All Field Names to Lowercase" );
+  mEditButton->setPopupMode( QToolButton::InstantPopup ); // Show menu on button click
 
-      connect( actionConvertAllFieldNamesToLowercase, &QAction::triggered, this, [=]() {
-        QgsFieldMappingModel *model = mFieldsView->model();
-        for ( int i = 0; i < model->rowCount(); i++ )
-        {
-          QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
-          QString name = model->data( index, Qt::EditRole ).toString();
-          model->setData( index, name.toLower(), Qt::EditRole );
-        }
-      } );
+  // Create a menu for the dropdown
+  QMenu *menu = new QMenu( mEditButton );
+
+  // Add menu items
+  menu->addAction( "Convert All Field Names to Lowercase", [=]() {
+    QgsFieldMappingModel *model = mFieldsView->model();
+    for ( int i = 0; i < model->rowCount(); i++ )
+    {
+      QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      QString name = model->data( index, Qt::EditRole ).toString();
+      model->setData( index, name.toLower(), Qt::EditRole );
     }
   } );
+
+  menu->addAction( "Convert All Field Names to Uppercase", [=]() {
+    QgsFieldMappingModel *model = mFieldsView->model();
+    for ( int i = 0; i < model->rowCount(); i++ )
+    {
+      QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      QString name = model->data( index, Qt::EditRole ).toString();
+      model->setData( index, name.toUpper(), Qt::EditRole );
+    }
+  } );
+
+  mEditButton->setMenu( menu );
 
   const bool supportsSchemas = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Schemas );
   if ( supportsSchemas )
