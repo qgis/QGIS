@@ -37,6 +37,11 @@ QString QgsExtentToLayerAlgorithm::shortHelpString() const
                       "a layer based input." );
 }
 
+QString QgsExtentToLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that contains a single feature with geometry matching an extent parameter." );
+}
+
 QgsExtentToLayerAlgorithm *QgsExtentToLayerAlgorithm::createInstance() const
 {
   return new QgsExtentToLayerAlgorithm();

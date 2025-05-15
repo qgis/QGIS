@@ -60,6 +60,11 @@ QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
+QString QgsOrientedMinimumBoundingBoxAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the minimum area rotated rectangle which covers each feature in an input layer." )" );
+}
+
 QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
 {
   return new QgsOrientedMinimumBoundingBoxAlgorithm();

@@ -39,6 +39,7 @@ class QgsExtentToLayerAlgorithm : public QgsProcessingAlgorithm
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString groupId() const override { return QStringLiteral( "vectorgeometry" ); }
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExtentToLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

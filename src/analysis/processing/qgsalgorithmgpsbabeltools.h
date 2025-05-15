@@ -48,6 +48,7 @@ class ANALYSIS_EXPORT QgsConvertGpxFeatureTypeAlgorithm : public QgsProcessingAl
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsConvertGpxFeatureTypeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -93,6 +94,7 @@ class ANALYSIS_EXPORT QgsConvertGpsDataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsConvertGpsDataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -119,6 +121,7 @@ class ANALYSIS_EXPORT QgsDownloadGpsDataAlgorithm : public QgsProcessingAlgorith
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsDownloadGpsDataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -145,6 +148,7 @@ class ANALYSIS_EXPORT QgsUploadGpsDataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsUploadGpsDataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

@@ -64,6 +64,11 @@ QString QgsExtractByAttributeAlgorithm::shortHelpString() const
                       "of an attribute from the input layer." );
 }
 
+QString QgsExtractByAttributeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that only contains feature matching an attribute value from an input layer." );
+}
+
 QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::createInstance() const
 {
   return new QgsExtractByAttributeAlgorithm();

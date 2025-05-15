@@ -55,6 +55,11 @@ QString QgsMultiIntersectionAlgorithm::shortHelpString() const
                       "from both the Input and Overlay layers." );
 }
 
+QString QgsMultiIntersectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Extracts portions of input features that overlap features from all other layers." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiIntersectionAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;

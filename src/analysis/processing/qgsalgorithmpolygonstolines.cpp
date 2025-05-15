@@ -77,7 +77,7 @@ Qgis::WkbType QgsPolygonsToLinesAlgorithm::outputWkbType( Qgis::WkbType inputWkb
 
 QString QgsPolygonsToLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Converts polygons to lines" );
+  return QObject::tr( "This algorithm converts polygons to lines." );
 }
 
 QString QgsPolygonsToLinesAlgorithm::shortDescription() const

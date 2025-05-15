@@ -61,6 +61,11 @@ QString QgsMeanCoordinatesAlgorithm::shortHelpString() const
                       "the output layer will contain a center of mass for the features in each category." );
 }
 
+QString QgsMeanCoordinatesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes a point layer with the center of mass of geometries in an input layer." );
+}
+
 QgsMeanCoordinatesAlgorithm *QgsMeanCoordinatesAlgorithm::createInstance() const
 {
   return new QgsMeanCoordinatesAlgorithm();

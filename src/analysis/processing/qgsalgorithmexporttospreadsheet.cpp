@@ -135,6 +135,11 @@ QString QgsExportToSpreadsheetAlgorithm::shortHelpString() const
                       "Optionally the layers can be appended to an existing spreadsheet as additional sheets.\n\n" );
 }
 
+QString QgsExportToSpreadsheetAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Collects a number of existing layers and exports them into a spreadsheet document." );
+}
+
 QgsExportToSpreadsheetAlgorithm *QgsExportToSpreadsheetAlgorithm::createInstance() const
 {
   return new QgsExportToSpreadsheetAlgorithm();
