@@ -56,6 +56,11 @@ QString QgsFindProjectionAlgorithm::shortHelpString() const
                       "the layer was in this projection." );
 }
 
+QString QgsFindProjectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a list of possible candidate coordinate reference systems for a layer with an unknown projection." );
+}
+
 QgsFindProjectionAlgorithm *QgsFindProjectionAlgorithm::createInstance() const
 {
   return new QgsFindProjectionAlgorithm();
