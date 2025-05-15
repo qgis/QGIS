@@ -82,21 +82,23 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   else
     color.setAlpha( 80 );
 
+  //
   QPen p = pen();
   p.setColor( color );
-  p.setWidth( 2 );
+  p.setWidth( 0 );
   painter->setPen( p );
+
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
 
   switch ( mStartMarker )
   {
-    case Marker::Circle:
-      painter->drawEllipse( mStartPoint, 3.0, 3.0 );
-      break;
     case Marker::ArrowHead:
       drawArrowHead( painter, mStartPoint, path().pointAtPercent( 0.0 ) - path().pointAtPercent( 0.05 ) );
       break;
+
+    // start marker are no longer drawn
+    case Marker::Circle:
     case Marker::NoMarker:
       break;
   }
@@ -104,7 +106,7 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   switch ( mEndMarker )
   {
     case Marker::Circle:
-      painter->drawEllipse( mEndPoint, 3.0, 3.0 );
+      painter->drawEllipse( mEndPoint, 3, 3 );
       break;
     case Marker::ArrowHead:
       drawArrowHead( painter, mEndPoint, path().pointAtPercent( 1.0 ) - path().pointAtPercent( 0.95 ) );
@@ -113,7 +115,16 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
       break;
   }
 
+  painter->setBrush( color );
+  painter->setRenderHint( QPainter::Antialiasing );
   painter->setBrush( Qt::NoBrush );
+
+  // Set the painter back to regular stroke thickness
+  p = pen();
+  p.setColor( color );
+  p.setWidth( 2 );
+  painter->setPen( p );
+
   painter->drawPath( path() );
 }
 
