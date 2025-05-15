@@ -2,8 +2,10 @@
                          qgssfcgalGeometry.h
                          -------------------
     begin                : May 2025
-    copyright            : (C) 2024 by Benoit De Mezzo
+    copyright            : (C) 2025 by Oslandia
     email                : benoit dot de dot mezzo at oslandia dot com
+    email                : jean dot felder at oslandia dot com
+    email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -123,7 +125,7 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     // End of QgsAbstractGeometry overrides
 
     /**
-     * Checks if \a geom is simple.
+     * Checks this geometry is simple.
      *
      * \see QgsSfcgalEngine::isSimple
      *
@@ -165,9 +167,8 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     QgsSfcgalGeometry *rotate2D( double angle, const QgsPoint &center, QString *errorMsg = nullptr ) const;
 
     /**
-     * 3D Rotate this geometry around axis \axisVector by angle \angle
+     * 3D Rotate this geometry around axis \a axisVector by angle \a angle
      *
-     * \param geom geometry to perform the operation
      * \param angle rotation angle in radians
      * \param axisVector rotation axis
      * \param center optional parameter. If specified, rotation will be applied around axis and center point

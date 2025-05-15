@@ -2,8 +2,10 @@
                         qgssfcgalengine.h
   -------------------------------------------------------------------
     begin                : May 2025
-    copyright            : (C) 2024 by Benoit De Mezzo
+    copyright            : (C) 2025 by Oslandia
     email                : benoit dot de dot mezzo at oslandia dot com
+    email                : jean dot felder at oslandia dot com
+    email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -176,10 +178,10 @@ class CORE_EXPORT QgsSfcgalEngine
     /**
      * Creates internal SFCGAL geometry (from SFCGAL library) from a QGIS geometry (inherit QgsAbstractGeometry).
      *
-     * \param geometry geometry to convert to SFCGAL representation
+     * \param geom geometry to convert to SFCGAL representation
      * \param errorMsg pointer to QString to receive the error message if any
      */
-    static sfcgal::shared_geom fromAbstractGeometry( const QgsAbstractGeometry *geometry, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom fromAbstractGeometry( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr );
 
     /**
      * Clones \a geom.
