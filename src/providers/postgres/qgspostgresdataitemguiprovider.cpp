@@ -1064,32 +1064,20 @@ void QgsPostgresDataItemGuiProvider::moveLayerToSchema( QgsPGLayerItem *layerIte
     const QString newSchemaName = dlg->selectedSchema();
     if ( newSchemaName == layerInfo.schemaName )
     {
-      notify( tr( "Move Layer to Another Schema" ), tr( "Cannot copy to the schema where the project already is." ), context, Qgis::MessageLevel::Warning );
+      notify( tr( "Move Layer to Another Schema" ), tr( "Cannot copy to the schema where the layer already is." ), context, Qgis::MessageLevel::Warning );
       conn->unref();
       return;
     }
 
-    const QString sql = QStringLiteral( "CREATE TABLE %1.%3 (LIKE %2.%3 INCLUDING ALL);INSERT INTO %1.%3 SELECT * FROM %2.%3;" )
-                          .arg( QgsPostgresConn::quotedIdentifier( newSchemaName ) )
+    const QString sql = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" )
                           .arg( QgsPostgresConn::quotedIdentifier( layerInfo.schemaName ) )
-                          .arg( QgsPostgresConn::quotedIdentifier( layerInfo.tableName ) );
+                          .arg( QgsPostgresConn::quotedIdentifier( layerInfo.tableName ) )
+                          .arg( QgsPostgresConn::quotedIdentifier( newSchemaName ) );
 
     QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
-      notify( tr( "Move Layer to Another Schema" ), tr( "Unable to move layer “%1” to scheme “%2” " ).arg( layerInfo.tableName, newSchemaName ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-
-    const QString sqlDelete = QStringLiteral( "DROP TABLE %1.%2 CASCADE;" )
-                                .arg( QgsPostgresConn::quotedIdentifier( layerInfo.schemaName ) )
-                                .arg( QgsPostgresConn::quotedIdentifier( layerInfo.tableName ) );
-
-    QgsPostgresResult resultDelete( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sqlDelete ) );
-    if ( resultDelete.PQresultStatus() != PGRES_COMMAND_OK )
-    {
-      notify( tr( "Move Layer to Another Schema" ), tr( "Unable to move layer “%1” to scheme “%2” " ).arg( layerInfo.tableName, newSchemaName ), context, Qgis::MessageLevel::Warning );
+      notify( tr( "Move Layer to Another Schema" ), tr( "Unable to move layer “%1” to schema “%2” " ).arg( layerInfo.tableName, newSchemaName ), context, Qgis::MessageLevel::Warning );
       conn->unref();
       return;
     }
