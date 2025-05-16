@@ -149,34 +149,6 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       maintainMenu->addAction( actionRefreshMaterializedView );
     }
     menu->addMenu( maintainMenu );
-
-    QList<Qgis::PostgresRelKind> allowedTypes;
-    allowedTypes << Qgis::PostgresRelKind::OrdinaryTable << Qgis::PostgresRelKind::View << Qgis::PostgresRelKind::MaterializedView;
-
-    if ( allowedTypes.contains( layerInfo.relKind ) )
-    {
-      QAction *actionMoveLayerToSchema = new QAction( tr( "Move %1 To Schema…" ).arg( typeName ), menu );
-      connect( actionMoveLayerToSchema, &QAction::triggered, this, [layerItem, context] { moveLayerToSchema( layerItem, context ); } );
-
-      // this action should sit in the Manage menu. If one does not exist, create it now
-      bool foundExistingManageMenu = false;
-      QList<QAction *> actions = menu->actions();
-      for ( QAction *action : std::as_const( actions ) )
-      {
-        if ( action->text() == tr( "Manage" ) )
-        {
-          action->menu()->addAction( actionMoveLayerToSchema );
-          foundExistingManageMenu = true;
-          break;
-        }
-      }
-      if ( !foundExistingManageMenu )
-      {
-        QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
-        manageLayerMenu->addAction( actionMoveLayerToSchema );
-        menu->addMenu( manageLayerMenu );
-      }
-    }
   }
 
   if ( QgsPGProjectItem *projectItem = qobject_cast<QgsPGProjectItem *>( item ) )
@@ -1023,90 +995,6 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
     projectItem->parent()->refresh();
 
     for ( QgsDataItem *item : projectItem->parent()->parent()->children() )
-    {
-      if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
-      {
-        if ( schemaItem->name() == newSchemaName )
-        {
-          schemaItem->refresh();
-        }
-      }
-    }
-
-    conn->unref();
-  }
-}
-
-void QgsPostgresDataItemGuiProvider::moveLayerToSchema( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context )
-{
-  QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( layerItem->parent() );
-  if ( !schemaItem )
-  {
-    return;
-  }
-
-  std::unique_ptr<QgsAbstractDatabaseProviderConnection> dbConnection( schemaItem->databaseConnection() );
-  if ( !dbConnection )
-  {
-    return;
-  }
-
-  QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( dbConnection.release() );
-
-  if ( dlg->exec() == QDialog::Accepted )
-  {
-    const QgsDataSourceUri dsUri( layerItem->uri() );
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
-    if ( !conn )
-    {
-      notify( tr( "Move Layer to Another Schema" ), tr( "Unable to move layer to another schema." ), context, Qgis::MessageLevel::Warning );
-      return;
-    }
-
-    const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
-    const QString newSchemaName = dlg->selectedSchema();
-    if ( newSchemaName == layerInfo.schemaName )
-    {
-      notify( tr( "Move Layer to Another Schema" ), tr( "Cannot copy to the schema where the layer already is." ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-
-    QString typeOfAlter;
-    switch ( layerInfo.relKind )
-    {
-      case Qgis::PostgresRelKind::OrdinaryTable:
-        typeOfAlter = "TABLE";
-        break;
-      case Qgis::PostgresRelKind::View:
-        typeOfAlter = "VIEW";
-        break;
-      case Qgis::PostgresRelKind::MaterializedView:
-        typeOfAlter = "MATERIALIZED VIEW";
-        break;
-      default:
-        typeOfAlter = "TABLE";
-        break;
-    }
-
-    const QString sql = QStringLiteral( "ALTER %1 %2.%3 SET SCHEMA %4;" )
-                          .arg( typeOfAlter )
-                          .arg( QgsPostgresConn::quotedIdentifier( layerInfo.schemaName ) )
-                          .arg( QgsPostgresConn::quotedIdentifier( layerInfo.tableName ) )
-                          .arg( QgsPostgresConn::quotedIdentifier( newSchemaName ) );
-
-    QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-    {
-      notify( tr( "Move Layer to Another Schema" ), tr( "Unable to move layer “%1” to schema “%2” " ).arg( layerInfo.tableName, newSchemaName ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-
-    // refresh
-    layerItem->parent()->refresh();
-
-    for ( QgsDataItem *item : layerItem->parent()->parent()->children() )
     {
       if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
       {
