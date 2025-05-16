@@ -1446,6 +1446,14 @@ QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() cons
   return n;
 }
 
+void QgsAbstractDatabaseProviderConnection::moveTableToAnotherSchema( const QString &schema, const QString &tableName, const QString &newSchema ) const
+{
+  Q_UNUSED( schema );
+  Q_UNUSED( tableName );
+  Q_UNUSED( newSchema );
+  checkCapability( Capability::MoveTableToSchema );
+}
+
 QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::TableProperty::at( int index ) const
 {
   TableProperty property;
@@ -1577,7 +1585,6 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setSchema( const QStr
 {
   mSchema = schema;
 }
-
 
 ///@cond PRIVATE
 
