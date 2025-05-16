@@ -1929,27 +1929,27 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), Qgis::MessageLevel::Success );
           }
 
-            // refresh parent item (schema) and also the schema that table was moved to if it was populated
-            if ( !item->parent() )
-              return;
-              
-            item->parent()->refresh();
+          // refresh parent item (schema) and also the schema that table was moved to if it was populated
+          if ( !item->parent() )
+            return;
 
-            if ( !item->parent()->parent() )
-              return;
+          item->parent()->refresh();
 
-            const QVector<QgsDataItem *> constChildren { item->parent()->parent()->children() };
-            for ( QgsDataItem *c : constChildren )
+          if ( !item->parent()->parent() )
+            return;
+
+          const QVector<QgsDataItem *> constChildren { item->parent()->parent()->children() };
+          for ( QgsDataItem *c : constChildren )
+          {
+            if ( c->name() == dlg->selectedSchema() )
             {
-              if ( c->name() == dlg->selectedSchema() )
+              if ( c->state() != Qgis::BrowserItemState::NotPopulated )
               {
-                if ( c->state() != Qgis::BrowserItemState::NotPopulated )
-                {
-                  c->refresh();
-                }
-                break;
+                c->refresh();
               }
+              break;
             }
+          }
         }
       } );
     }
