@@ -73,6 +73,7 @@ QgsAbstractDatabaseProviderConnection.RetrieveRelationships = QgsAbstractDatabas
 QgsAbstractDatabaseProviderConnection.AddRelationship = QgsAbstractDatabaseProviderConnection.Capability.AddRelationship
 QgsAbstractDatabaseProviderConnection.UpdateRelationship = QgsAbstractDatabaseProviderConnection.Capability.UpdateRelationship
 QgsAbstractDatabaseProviderConnection.DeleteRelationship = QgsAbstractDatabaseProviderConnection.Capability.DeleteRelationship
+QgsAbstractDatabaseProviderConnection.MoveTableToSchema = QgsAbstractDatabaseProviderConnection.Capability.MoveTableToSchema
 QgsAbstractDatabaseProviderConnection.Capability.baseClass = QgsAbstractDatabaseProviderConnection
 QgsAbstractDatabaseProviderConnection.Capabilities = lambda flags=0: QgsAbstractDatabaseProviderConnection.Capability(flags)
 QgsAbstractDatabaseProviderConnection.Capabilities.baseClass = QgsAbstractDatabaseProviderConnection
@@ -131,7 +132,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAbstractDatabaseProviderConnection.__virtual_methods__ = ['geometryColumnCapabilities', 'sqlLayerDefinitionCapabilities', 'tableUri', 'createVectorTable', 'createVectorLayerExporterDestinationUri', 'tableExists', 'dropVectorTable', 'dropRasterTable', 'renameVectorTable', 'renameRasterTable', 'createSchema', 'dropSchema', 'deleteField', 'addField', 'renameField', 'renameSchema', 'executeSql', 'createSqlVectorLayer', 'validateSqlVectorLayer', 'sqlOptions', 'execSql', 'vacuum', 'createSpatialIndex', 'spatialIndexExists', 'deleteSpatialIndex', 'table', 'SIP_THROW', 'fields', 'sqlDictionary', 'illegalFieldNames', 'defaultPrimaryKeyColumnName', 'defaultGeometryColumnName', 'supportedFieldDomainTypes', 'fieldDomain', 'setFieldDomainName', 'addFieldDomain', 'setFieldAlias', 'setTableComment', 'setFieldComment', 'supportedRelationshipCapabilities', 'relatedTableTypes', 'relationships', 'addRelationship', 'updateRelationship', 'deleteRelationship', 'queryBuilder', 'searchLayerMetadata']
+    QgsAbstractDatabaseProviderConnection.__virtual_methods__ = ['geometryColumnCapabilities', 'sqlLayerDefinitionCapabilities', 'tableUri', 'createVectorTable', 'createVectorLayerExporterDestinationUri', 'tableExists', 'dropVectorTable', 'dropRasterTable', 'renameVectorTable', 'renameRasterTable', 'createSchema', 'dropSchema', 'deleteField', 'addField', 'renameField', 'renameSchema', 'executeSql', 'createSqlVectorLayer', 'validateSqlVectorLayer', 'sqlOptions', 'execSql', 'vacuum', 'createSpatialIndex', 'spatialIndexExists', 'deleteSpatialIndex', 'table', 'SIP_THROW', 'fields', 'sqlDictionary', 'illegalFieldNames', 'defaultPrimaryKeyColumnName', 'defaultGeometryColumnName', 'supportedFieldDomainTypes', 'fieldDomain', 'setFieldDomainName', 'addFieldDomain', 'setFieldAlias', 'setTableComment', 'setFieldComment', 'moveTableToAnotherSchema', 'supportedRelationshipCapabilities', 'relatedTableTypes', 'relationships', 'addRelationship', 'updateRelationship', 'deleteRelationship', 'queryBuilder', 'searchLayerMetadata']
     QgsAbstractDatabaseProviderConnection.__abstract_methods__ = ['tableImportCapabilities', 'nativeTypes']
     QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
 except (NameError, AttributeError):

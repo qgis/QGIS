@@ -115,7 +115,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::DeleteSpatialIndex,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
-    Capability::AddField
+    Capability::AddField,
+    Capability::MoveTableToSchema
   };
   mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
@@ -1934,4 +1935,13 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
     }
     throw ex;
   }
+}
+
+void QgsPostgresProviderConnection::moveTableToAnotherSchema( const QString &schema, const QString &tableName, const QString &newSchema ) const
+{
+  const QString sql = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" )
+                        .arg( QgsPostgresConn::quotedIdentifier( schema ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( tableName ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( newSchema ) );
+  executeSqlPrivate( sql );
 }
