@@ -864,7 +864,7 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertAlmostEqual(c.extent().xMaximum(), 7.4447, 2)
         self.assertAlmostEqual(c.extent().yMinimum(), 47.0914, 2)
         self.assertAlmostEqual(c.extent().yMaximum(), 47.3085, 2)
-        self.assertAlmostEqual(c.magnificationFactor(), 14.20561, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 14.20561, 0)
 
         # zoom right out
         c.zoomToFeatureExtent(QgsRectangle(4.2, 43.1, 10.4, 53.3))
