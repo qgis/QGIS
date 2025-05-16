@@ -6601,9 +6601,9 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
       const int intValue = keys.toInt( &canConvert );
       if ( canConvert )
       {
-        const QByteArray keys = metaEnum.valueToKeys( intValue );
-        const int intValueCheck = metaEnum.keysToValue( keys );
-        if ( intValue == intValueCheck )
+        const QByteArray keyArray = metaEnum.valueToKeys( intValue );
+        const int intValueCheck = metaEnum.keysToValue( keyArray );
+        if ( !keyArray.isEmpty() && intValue == intValueCheck )
         {
           if ( returnOk )
           {
