@@ -67,6 +67,7 @@
 #include "qgsdbqueryhistoryprovider.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsdatabaseschemaselectiondialog.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1855,6 +1856,99 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         else if ( context.messageBar() )
         {
           context.messageBar()->pushMessage( tr( "Database compacted" ), Qgis::MessageLevel::Success );
+        }
+      } );
+    }
+
+    if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
+    {
+      QAction *moveToSchemaAction = new QAction( tr( "Move to another Schema…" ), menu );
+      menu->addAction( moveToSchemaAction );
+
+      // this action should sit in the Manage menu. If one does not exist, create it now
+      bool foundExistingManageMenu = false;
+      QList<QAction *> actions = menu->actions();
+      for ( QAction *action : std::as_const( actions ) )
+      {
+        if ( action->text() == tr( "Manage" ) )
+        {
+          action->menu()->addAction( moveToSchemaAction );
+          foundExistingManageMenu = true;
+          break;
+        }
+      }
+      if ( !foundExistingManageMenu )
+      {
+        QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
+        manageLayerMenu->addAction( moveToSchemaAction );
+        menu->addMenu( manageLayerMenu );
+      }
+
+      const QString connectionUri = conn->uri();
+      const QString providerKey = conn->providerKey();
+
+      connect( moveToSchemaAction, &QAction::triggered, moveToSchemaAction, [item, context, connectionUri, providerKey] {
+        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+        if ( !md )
+          return;
+
+        std::shared_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
+
+        if ( dlg->exec() == QDialog::Accepted )
+        {
+          const QString originalSchemaName = item->parent()->name();
+          const QString tableName = item->name();
+
+          QString errCause;
+          if ( conn2 )
+          {
+            try
+            {
+              QgsTemporaryCursorOverride override( Qt::WaitCursor );
+              conn2->moveTableToAnotherSchema( originalSchemaName, tableName, dlg->selectedSchema() );
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              errCause = ex.what();
+            }
+          }
+          else
+          {
+            errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
+          }
+
+          if ( !errCause.isEmpty() )
+          {
+            notify( tr( "Cannot move %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), errCause, context, Qgis::MessageLevel::Critical );
+          }
+          else if ( context.messageBar() )
+          {
+            context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), Qgis::MessageLevel::Success );
+
+            // refresh parent item (schema) and also the schema that table was moved to if it was populated
+            if ( item->parent() )
+            {
+              item->parent()->refresh();
+
+              if ( item->parent()->parent() )
+              {
+                const auto constChildren { item->parent()->parent()->children() };
+                for ( const auto &c : constChildren )
+                {
+                  if ( c->name() == dlg->selectedSchema() )
+                  {
+                    if ( c->state() != Qgis::BrowserItemState::NotPopulated )
+                    {
+                      c->refresh();
+                    }
+                    break;
+                  }
+                }
+              }
+            }
+          }
         }
       } );
     }
