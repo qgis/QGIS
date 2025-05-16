@@ -54,7 +54,7 @@ QString QgsStringConcatenationAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm concatenates two strings together." );
 }
 
-QString QgsStringConcatenationAlgorithm::shortHelpString() const
+QString QgsStringConcatenationAlgorithm::shortDescription() const
 {
   return QObject::tr( "Concatenates two strings together." );
 }

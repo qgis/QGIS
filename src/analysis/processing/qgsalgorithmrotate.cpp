@@ -56,7 +56,7 @@ QString QgsRotateFeaturesAlgorithm::shortHelpString() const
          + QObject::tr( "Optionally, the rotation can occur around a preset point. If not set the rotation occurs around each feature's centroid." );
 }
 
-QString QgsRotateFeaturesAlgorithm::shortHelpString() const
+QString QgsRotateFeaturesAlgorithm::shortDescription() const
 {
   return QObject::tr( "Rotates feature geometries by a specified angle clockwise." );
 }
