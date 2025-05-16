@@ -152,6 +152,9 @@ class OneSideBuffer(GdalAlgorithm):
             self.INPUT, parameters, context, feedback, executing
         )
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
+        if input_details.geometry_column_name:
+            geometry = input_details.geometry_column_name
+
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         side = self.parameterAsEnum(parameters, self.BUFFER_SIDE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
