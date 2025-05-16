@@ -38,6 +38,10 @@
 #include "qgshelp.h"
 #include "qgsxmlutils.h"
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( QStringLiteral( "show-aliases" ), sTreeAttributesForm, false, QStringLiteral( "Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels." ) );
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
@@ -65,7 +69,12 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsModel = new QgsAttributesAvailableWidgetsModel( mLayer, QgsProject().instance(), this );
   mAvailableWidgetsProxyModel = new QgsAttributesFormProxyModel( this );
   mAvailableWidgetsProxyModel->setAttributesFormSourceModel( mAvailableWidgetsModel );
+  mAvailableWidgetsProxyModel->setRecursiveFilteringEnabled( true );
   mAvailableWidgetsView->setModel( mAvailableWidgetsProxyModel );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mAvailableWidgetsProxyModel, this );
+#endif
 
   // form layout tree
   QGridLayout *formLayoutWidgetLayout = new QGridLayout;
@@ -77,7 +86,12 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject().instance(), this );
   mFormLayoutProxyModel = new QgsAttributesFormProxyModel( this );
   mFormLayoutProxyModel->setAttributesFormSourceModel( mFormLayoutModel );
+  mFormLayoutProxyModel->setRecursiveFilteringEnabled( true );
   mFormLayoutView->setModel( mFormLayoutProxyModel );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mFormLayoutProxyModel, this );
+#endif
 
   connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );

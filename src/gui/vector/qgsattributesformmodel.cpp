@@ -1687,7 +1687,7 @@ const QString QgsAttributesFormProxyModel::filterText() const
 void QgsAttributesFormProxyModel::setFilterText( const QString &filterText )
 {
   // Since we want to allow refreshing the filter when, e.g.,
-  // users swtich to aliases, then we allow this method to be
+  // users switch to aliases, then we allow this method to be
   // executed even if previous and new filters are equal
 
   mFilterText = filterText.trimmed();
@@ -1707,27 +1707,14 @@ bool QgsAttributesFormProxyModel::filterAcceptsRow( int sourceRow, const QModelI
   if ( sourceIndex.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
     return true;
 
-  const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( sourceIndex.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
-  if ( itemType == QgsAttributesFormData::Container || itemType == QgsAttributesFormData::WidgetType )
+  // Child is accepted if any of its parents is accepted
+  QModelIndex parent = sourceIndex.parent();
+  while ( parent.isValid() )
   {
-    // Container is accepted if any of their children is accepted
-    for ( int i = 0; i < sourceModel()->rowCount( sourceIndex ); i++ )
-    {
-      if ( filterAcceptsRow( i, sourceIndex ) )
-        return true;
-    }
-  }
-  else
-  {
-    // Child is accepted if any of its parents is accepted
-    QModelIndex parent = sourceIndex.parent();
-    while ( parent.isValid() )
-    {
-      if ( parent.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
-        return true;
+    if ( parent.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+      return true;
 
-      parent = parent.parent();
-    }
+    parent = parent.parent();
   }
 
   return false;
