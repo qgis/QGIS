@@ -605,7 +605,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * cleared.
      *
      * To set a theme and simultaneously update the layer tree, use
-     * QgsMapThemeCollection.applyTheme().
+     * QgsMapThemeCollection::applyTheme().
      * \see theme()
      */
     void setTheme( const QString &theme );
