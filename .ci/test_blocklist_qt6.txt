@@ -43,7 +43,6 @@ PyQgsLayoutHtml
 PyQgsMapBoxGlStyleConverter
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
-PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsSymbolLayerReadSld
 PyQgsLayerDefinition
