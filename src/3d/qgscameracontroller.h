@@ -217,7 +217,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
 
     /**
-     * If the event is relevant, handles the event and returns true, otherwise false.
+     * If the event is relevant, handles the event and returns TRUE, otherwise FALSE.
      * \since QGIS 3.44
      */
     bool keyboardEventFilter( QKeyEvent *event );
