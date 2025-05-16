@@ -857,9 +857,9 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
     {
       QVariant paramValue = paramDef->defaultValue();
 
-      if ( paramValue.isValid() && !paramValue.toString().isEmpty() )
+      if ( paramValue.isValid() )
       {
-        text += ": " + paramValue.toString();
+        text += ": " + paramDef->getUserFriendlyValue( paramValue );
       }
     }
 
@@ -1315,14 +1315,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
             default:
               QVariant paramValue = paramSources[0].staticValue();
-              paramValueAsStr = QStringLiteral( ": %1" ).arg( paramValue.toString() );
-
-              // In case of an enum, we want to display the label of the enum value (and not just its index as an int)
-              if ( param->type() == QgsProcessingParameterEnum::typeName() )
-              {
-                const QgsProcessingParameterEnum *paramAsEnumParam = dynamic_cast<const QgsProcessingParameterEnum *>( param );
-                paramValueAsStr = QStringLiteral( ": %1" ).arg( paramAsEnumParam->options().at( paramValue.toInt() ) );
-              }
+              paramValueAsStr = QStringLiteral( ": %1" ).arg( param->getUserFriendlyValue( paramValue ) );
           }
           title += paramValueAsStr;
         }

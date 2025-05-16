@@ -467,6 +467,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QColor getColor() const;
 
     /**
+     * Get a user friendly string representation of the provided parameter value.
+     * (Meant to be override by child classes to adapt to specific param types)
+     */
+    virtual QString getUserFriendlyValue( QVariant paramValue ) const;
+
+    /**
      * Creates a clone of the parameter definition.
      */
     virtual QgsProcessingParameterDefinition *clone() const = 0 SIP_FACTORY;
@@ -1829,6 +1835,11 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     QColor getColor() const override { return QColor( 100, 100, 255 ); /* slate blueish */ };
 
     /**
+     * Get a user friendly string representation of the provided parameter value.
+     */
+    QString getUserFriendlyValue( QVariant paramValue ) const override;
+
+    /**
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "crs" ); }
@@ -2419,6 +2430,8 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
     */
     QColor getColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 
+    QString getUserFriendlyValue( QVariant paramValue ) const override;
+
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
     QString type() const override;
@@ -2863,6 +2876,11 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
      * A color to represent an enum parameter
      */
     QColor getColor() const override { return QColor( 128, 68, 201 ); /* purple */ };
+
+    /**
+     * Get a user friendly string representation of the provided parameter value.
+     */
+    QString getUserFriendlyValue( QVariant paramValue ) const override;
 
     /**
      * Returns the type name for the parameter class.
