@@ -5897,6 +5897,10 @@ class CORE_EXPORT Qgis
       ResizeRightUp, //!< Resize right up (Top right handle)
       ResizeLeftDown, //!< Resize left down (Bottom left handle)
       ResizeRightDown, //!< Resize right down (Bottom right handle)
+      RotateLeftUp, //!< Rotate left up (Top left handle)
+      RotateRightUp, //!< Rotate right up (Top right handle)
+      RotateLeftDown, //!< Rotate left up (Bottom left handle)
+      RotateRightDown, //!< Rotate right up (Bottom right handle)
       SelectItem, //!< Select item
       NoAction //!< No action
     };
