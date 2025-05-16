@@ -48,7 +48,7 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::groupId() const
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm can be used to filter a digital elevation model in order to classify its cells into ground and object (non-ground) cells.\n\n"
+  return QObject::tr( "This algorithm can be used to filter a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells.\n\n"
                       "The tool uses concepts as described by Vosselman (2000) and is based on the assumption that a large height difference between two nearby "
                       "cells is unlikely to be caused by a steep slope in the terrain. The probability that the higher cell might be non-ground increases when "
                       "the distance between the two cells decreases. Therefore the filter defines a maximum height difference (<i>dz_max</i>) between two cells as a "
@@ -65,7 +65,7 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filters a digital elevation model in order to classify its cells into ground and object (non-ground) cells." );
+  return QObject::tr( "Filters a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells." );
 }
 
 void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )

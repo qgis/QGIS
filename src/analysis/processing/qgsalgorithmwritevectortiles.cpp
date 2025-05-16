@@ -38,6 +38,11 @@ QString QgsWriteVectorTilesBaseAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports one or more vector layers to vector tiles - a data format optimized for fast map rendering and small data size." );
 }
 
+QString QgsWriteVectorTilesBaseAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports one or more vector layers to vector tiles - a data format optimized for fast map rendering and small data size." );
+}
+
 void QgsWriteVectorTilesBaseAlgorithm::addBaseParameters()
 {
   addParameter( new QgsProcessingParameterVectorTileWriterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );

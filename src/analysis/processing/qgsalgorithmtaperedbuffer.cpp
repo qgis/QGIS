@@ -85,6 +85,11 @@ QString QgsTaperedBufferAlgorithm::shortHelpString() const
                       "end buffer diameter corresponding to the buffer diameter at the start and end of the linestrings." );
 }
 
+QString QgsTaperedBufferAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates tapered buffers along line geometries." );
+}
+
 QList<int> QgsTaperedBufferAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );

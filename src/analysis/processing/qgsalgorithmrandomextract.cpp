@@ -46,6 +46,11 @@ QString QgsRandomExtractAlgorithm::groupId() const
   return QStringLiteral( "vectorselection" );
 }
 
+QString QgsRandomExtractAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a vector layer that contains only a random subset of the features in an input layer." );
+}
+
 QString QgsRandomExtractAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer and generates a new one that contains only a subset "
