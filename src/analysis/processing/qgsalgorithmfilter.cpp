@@ -52,7 +52,7 @@ Qgis::ProcessingAlgorithmFlags QgsFilterAlgorithm::flags() const
 
 QString QgsFilterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm filters features from the input layer and redirects them to one or several outputs." );
+  return QObject::tr( "This algorithm filters features from the input layer and redirects them to one or more outputs." );
 }
 
 QString QgsFilterAlgorithm::shortDescription() const
