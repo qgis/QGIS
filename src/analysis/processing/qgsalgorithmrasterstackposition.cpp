@@ -243,9 +243,15 @@ QStringList QgsRasterStackLowestPositionAlgorithm::tags() const
   return QObject::tr( "cell,lowest,position,pixel,stack" ).split( ',' );
 }
 
+QString QgsRasterStackLowestPositionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the position "
+                      "of the raster with the lowest value in a stack of rasters." );
+}
+
 QString QgsRasterStackLowestPositionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The lowest position algorithm evaluates on a cell-by-cell basis the position "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the lowest value in a stack of rasters. Position counts start "
                       "with 1 and range to the total number of input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the lowest value, "
@@ -346,9 +352,15 @@ QStringList QgsRasterStackHighestPositionAlgorithm::tags() const
   return QObject::tr( "cell,highest,position,pixel,stack" ).split( ',' );
 }
 
+QString QgsRasterStackHighestPositionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the position "
+                      "of the raster with the highest value in a stack of rasters." );
+}
+
 QString QgsRasterStackHighestPositionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The highest position algorithm evaluates on a cell-by-cell basis the position "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the highest value in a stack of rasters. Position counts start "
                       "with 1 and range to the total number of input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the highest value, "

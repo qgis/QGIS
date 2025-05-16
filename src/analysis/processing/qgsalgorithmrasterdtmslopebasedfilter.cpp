@@ -63,6 +63,11 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
                       "This algorithm is a port of the SAGA 'DTM Filter (slope-based)' tool." );
 }
 
+QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Filters a digital elevation model in order to classify its cells into ground and object (non-ground) cells." );
+}
+
 void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
