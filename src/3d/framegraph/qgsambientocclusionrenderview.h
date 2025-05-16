@@ -33,6 +33,11 @@ namespace Qt3DRender
   class QRenderTarget;
 } //namespace Qt3DRender
 
+namespace Qt3DCore
+{
+  class QEntity;
+} //namespace Qt3DCore
+
 class QgsAmbientOcclusionRenderEntity;
 class QgsAmbientOcclusionBlurEntity;
 
@@ -70,8 +75,6 @@ class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
     virtual void setEnabled( bool enable ) override;
 
   private:
-    Qt3DRender::QCamera *mMainCamera = nullptr;
-
     Qt3DRender::QLayer *mAOPassLayer = nullptr;
     Qt3DRender::QTexture2D *mAOPassTexture = nullptr;
     Qt3DRender::QTexture2D *mBlurPassTexture = nullptr;
@@ -80,7 +83,7 @@ class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
     QgsAmbientOcclusionRenderEntity *mAmbientOcclusionRenderEntity = nullptr;
     QgsAmbientOcclusionBlurEntity *mAmbientOcclusionBlurEntity = nullptr;
 
-    void buildRenderPasses( QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity );
+    void buildRenderPasses( QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity, Qt3DRender::QCamera *mainCamera );
 
     /**
      * Build AO texture and add it to a new rendertarget

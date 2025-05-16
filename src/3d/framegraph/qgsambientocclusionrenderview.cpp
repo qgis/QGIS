@@ -32,7 +32,6 @@
 
 QgsAmbientOcclusionRenderView::QgsAmbientOcclusionRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera, QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity )
   : QgsAbstractRenderView( viewName )
-  , mMainCamera( mainCamera )
 {
   mAOPassLayer = new Qt3DRender::QLayer;
   mAOPassLayer->setRecursive( true );
@@ -43,7 +42,7 @@ QgsAmbientOcclusionRenderView::QgsAmbientOcclusionRenderView( const QString &vie
   mBlurPassLayer->setObjectName( mViewName + "::Layer(Blur)" );
 
   // ambient occlusion rendering pass
-  buildRenderPasses( mSize, forwardDepthTexture, rootSceneEntity );
+  buildRenderPasses( mSize, forwardDepthTexture, rootSceneEntity, mainCamera );
 }
 
 void QgsAmbientOcclusionRenderView::updateWindowResize( int width, int height )
@@ -99,7 +98,7 @@ Qt3DRender::QRenderTarget *QgsAmbientOcclusionRenderView::buildBlurTexture( QSiz
   return renderTarget;
 }
 
-void QgsAmbientOcclusionRenderView::buildRenderPasses( QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity )
+void QgsAmbientOcclusionRenderView::buildRenderPasses( QSize mSize, Qt3DRender::QTexture2D *forwardDepthTexture, Qt3DCore::QEntity *rootSceneEntity, Qt3DRender::QCamera *mainCamera )
 {
   // AO pass
   {
@@ -122,7 +121,7 @@ void QgsAmbientOcclusionRenderView::buildRenderPasses( QSize mSize, Qt3DRender::
     renderTargetSelector->setObjectName( mViewName + "::RenderTargetSelector(AO)" );
     renderTargetSelector->setTarget( renderTarget );
 
-    mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( forwardDepthTexture, mAOPassLayer, mMainCamera, rootSceneEntity );
+    mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( forwardDepthTexture, mAOPassLayer, mainCamera, rootSceneEntity );
   }
 
   // blur pass
