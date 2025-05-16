@@ -15,6 +15,7 @@
 
 #include "qgsabstractdbtablemodel.h"
 #include "qgsabstractdbsourceselect.h"
+#include "qgssettings.h"
 #include "moc_qgsabstractdbsourceselect.cpp"
 
 #include <QMenu>
@@ -75,36 +76,39 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
   mSearchColumnAllAction->setCheckable( true );
   mSearchSettingsMenu->addAction( mSearchColumnAllAction );
   columnActionGroup->addAction( mSearchColumnAllAction );
-  bool hasDefaultSearchColumn = false;
+  bool hasPresetColumn = false;
   const QStringList columns = model->columns();
+  int storedSearchColumn = QgsSettings().value( QStringLiteral( "%1searchColumn" ).arg( settingPath() ), model->defaultSearchColumn() ).toInt();
   for ( int i = 0; i < columns.count(); i++ )
   {
     if ( !model->searchableColumn( i ) )
       continue;
     QAction *action = new QAction( columns.at( i ), mSearchSettingsMenu );
     action->setCheckable( true );
-    if ( model->defaultSearchColumn() == i )
+    if ( storedSearchColumn == i )
     {
       action->setChecked( true );
-      hasDefaultSearchColumn = true;
+      hasPresetColumn = true;
     }
     mSearchSettingsMenu->addAction( action );
     columnActionGroup->addAction( action );
     mSearchColumnActions << action;
   }
-  mSearchColumnAllAction->setChecked( !hasDefaultSearchColumn );
+  mSearchColumnAllAction->setChecked( !hasPresetColumn );
   mSearchSettingsMenu->addSeparator();
   QActionGroup *modeActionGroup = new QActionGroup( this );
   // mode: wildcard
   QAction *wildcardAction = new QAction( tr( "Wildcard" ), mSearchSettingsMenu );
   wildcardAction->setCheckable( true );
-  wildcardAction->setChecked( true );
+  //wildcard is active when regex is disabled
+  bool regexActionSetting = QgsSettings().value( QStringLiteral( "%1searchRegex" ).arg( settingPath() ), false ).toBool();
+  wildcardAction->setChecked( !regexActionSetting );
   mSearchSettingsMenu->addAction( wildcardAction );
   modeActionGroup->addAction( wildcardAction );
   // mode: regexp
   mSearchModeRegexAction = new QAction( tr( "Regular Expression" ), mSearchSettingsMenu );
   mSearchModeRegexAction->setCheckable( true );
-  mSearchModeRegexAction->setChecked( false );
+  mSearchModeRegexAction->setChecked( regexActionSetting );
   mSearchSettingsMenu->addAction( mSearchModeRegexAction );
   modeActionGroup->addAction( mSearchModeRegexAction );
 
@@ -112,6 +116,20 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
 
   connect( mSearchSettingsMenu, &QMenu::triggered, this, [=]() { filterResults(); } );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, [=]() { filterResults(); } );
+}
+
+void QgsAbstractDbSourceSelect::storeSettings()
+{
+  for ( int i = 0; i < mSearchColumnActions.count(); i++ )
+  {
+    if ( mSearchColumnActions.at( i )->isChecked() )
+    {
+      QgsSettings().setValue( QStringLiteral( "%1searchColumn" ).arg( settingPath() ), i );
+      break;
+    }
+  }
+
+  QgsSettings().setValue( QStringLiteral( "%1searchRegex" ).arg( settingPath() ), mSearchModeRegexAction->isChecked() );
 }
 
 void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )
