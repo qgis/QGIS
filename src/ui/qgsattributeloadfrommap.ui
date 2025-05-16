@@ -16,24 +16,17 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="layerLabel">
+     <item row="2" column="1">
+      <widget class="QgsFieldComboBox" name="valueComboBox"/>
+     </item>
+     <item row="2" column="2" rowspan="2">
+      <widget class="QPushButton" name="previewButton">
        <property name="text">
-        <string>Layer</string>
+        <string>View All</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="keyLabel">
-       <property name="text">
-        <string>Description</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QgsMapLayerComboBox" name="layerComboBox"/>
-     </item>
-     <item row="5" column="0" colspan="3">
+     <item row="4" column="0" colspan="3">
       <widget class="QTableWidget" name="previewTableWidget">
        <column>
         <property name="text">
@@ -47,10 +40,13 @@
        </column>
       </widget>
      </item>
-     <item row="0" column="0" colspan="3">
-      <widget class="QLabel" name="valueTableLabel">
+     <item row="3" column="1">
+      <widget class="QgsFieldComboBox" name="keyComboBox"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="layerLabel">
        <property name="text">
-        <string>Select data from attributes in selected layer.</string>
+        <string>Layer</string>
        </property>
       </widget>
      </item>
@@ -61,35 +57,32 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QgsFieldComboBox" name="valueComboBox"/>
-     </item>
-     <item row="2" column="2" rowspan="2">
-      <widget class="QPushButton" name="previewButton">
+     <item row="3" column="0">
+      <widget class="QLabel" name="keyLabel">
        <property name="text">
-        <string>View All</string>
+        <string>Description</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QgsFieldComboBox" name="keyComboBox"/>
-     </item>
-     <item row="4" column="0" colspan="2">
-      <widget class="QCheckBox" name="nullCheckBox">
+     <item row="0" column="0" colspan="3">
+      <widget class="QLabel" name="valueTableLabel">
        <property name="text">
-        <string>Insert NULL value on top</string>
+        <string>Select data from attributes in selected layer.</string>
        </property>
       </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QgsMapLayerComboBox" name="layerComboBox"/>
      </item>
     </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
@@ -112,7 +105,6 @@
   <tabstop>valueComboBox</tabstop>
   <tabstop>keyComboBox</tabstop>
   <tabstop>previewButton</tabstop>
-  <tabstop>nullCheckBox</tabstop>
   <tabstop>previewTableWidget</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
