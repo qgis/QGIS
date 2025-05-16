@@ -46,7 +46,6 @@ PyQgsPalLabelingPlacement
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsSymbolLayerReadSld
-PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsServerAccessControlWFSTransactional
