@@ -38,10 +38,8 @@ PyQgsAuthenticationSystem
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsLayoutHtml
-PyQgsMapBoxGlStyleConverter
 PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
-PyQgsSymbolLayerReadSld
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsServerAccessControlWFSTransactional

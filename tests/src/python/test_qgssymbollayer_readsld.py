@@ -138,7 +138,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
             # stroke-opacity=0.1
             self.assertEqual(
                 props["line_color"],
-                "0,62,186,25,rgb:0,0.24313725490196078,0.72941176470588232,0.09803921568627451",
+                "0,62,186,25,rgb:0,0.2431373,0.7294118,0.0980392",
             )
 
         testLineColor()
@@ -467,7 +467,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
             # stroke-opacity=0.1
             self.assertEqual(
                 props["line_color"],
-                "0,62,186,24,rgb:0,0.24313725490196078,0.72941176470588232,0.09411764705882353",
+                "0,62,186,24,rgb:0,0.2431373,0.7294118,0.0941176",
             )
 
         testLineColor()
