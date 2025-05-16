@@ -77,11 +77,16 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     //! Returns TRUE is user is currently resizing with the handles
     bool isResizing() const { return mIsResizing; }
 
+    //! Returns TRUE is user is currently rotating with the handles
+    bool isRotating() const { return mIsRotating; }
+    
     bool shouldBlockEvent( QInputEvent *event ) const;
 
     //! Initializes a drag operation \since QGIS 3.34
     void startMove( QPointF sceneCoordPos );
 
+    QRectF boundingRect() const override;
+    
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -111,6 +116,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
     virtual QRectF storedItemRect( QGraphicsItem *item ) const;
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
+    virtual void rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY );
     virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
     virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
 
@@ -158,6 +164,9 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     //! Handles resizing of items during mouse move
     void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
+    //! Handles rotating of tiems during mouse move
+    void rotateMouseMove( QPointF currentPosition );
+
     void setHandleSize( double size );
 
     //! Finds out which mouse move action to choose depending on the cursor position inside the widget
@@ -194,6 +203,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     QGraphicsView *mView = nullptr;
 
     double mHandleSize = 10;
+    double mRotationHandleSize = 20;
+    QPainterPath mRotationHandlePath;
 
     QSizeF mCursorOffset;
     double mResizeMoveX = 0;
@@ -205,6 +216,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     QRectF mResizeRect;
 
+    //! Center point around which rotation occurs
+    QPointF mRotationCenter;
+    double mRotationBegin = 0.0;
+    double mRotationCurrent = 0.0;
+
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
 
@@ -215,6 +231,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     bool mIsDragging = false;
     //! True is user is currently resizing items
     bool mIsResizing = false;
+    //! True is user is currently rotating items
+    bool mIsRotating = false;
 
     //! Position of the mouse at beginning of move/resize (in scene coordinates)
     QPointF mBeginMouseEventPos;
@@ -232,7 +250,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
      * item border for resizing.
     */
-    double rectHandlerBorderTolerance();
+    double rectHandlerBorderTolerance() const;
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
