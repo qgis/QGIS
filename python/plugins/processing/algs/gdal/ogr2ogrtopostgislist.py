@@ -364,6 +364,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
@@ -373,7 +374,11 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         pk = self.parameterAsString(parameters, self.PK, context)
         pkstring = "-lco FID=" + pk
         primary_key = self.parameterAsString(parameters, self.PRIMARY_KEY, context)
+
         geocolumn = self.parameterAsString(parameters, self.GEOCOLUMN, context)
+        if input_details.geometry_column_name:
+            geocolumn = input_details.geometry_column_name
+
         geocolumnstring = "-lco GEOMETRY_NAME=" + geocolumn
         dim = self.DIMLIST[self.parameterAsEnum(parameters, self.DIM, context)]
         dimstring = "-lco DIM=" + dim
