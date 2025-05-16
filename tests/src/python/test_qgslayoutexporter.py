@@ -21,6 +21,7 @@ from typing import Optional
 
 from osgeo import gdal
 from qgis.PyQt.QtCore import (
+    QT_VERSION_STR,
     QDate,
     QDateTime,
     QDir,
@@ -787,8 +788,16 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertAlmostEqual(geoTransform[5], -13.183886222186642, 4)
 
         # check that the metadata has _not_ been added to the exported PDF
+        # starting with Qt 6.9 QPdfWriter generates a pdf with an empty
+        # author by default
         metadata = d.GetMetadata()
-        self.assertNotIn("AUTHOR", metadata)
+        if int(QT_VERSION_STR.split(".")[0]) > 6 or (
+            int(QT_VERSION_STR.split(".")[0]) == 6
+            and int(QT_VERSION_STR.split(".")[1]) >= 9
+        ):
+            self.assertEqual(metadata["AUTHOR"], "")
+        else:
+            self.assertNotIn("AUTHOR", metadata)
 
         exporter = QgsLayoutExporter(l)
         # setup settings
