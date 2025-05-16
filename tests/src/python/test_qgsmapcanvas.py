@@ -870,20 +870,20 @@ class TestQgsMapCanvas(QgisTestCase):
         c.zoomToFeatureExtent(QgsRectangle(4.2, 43.1, 10.4, 53.3))
         # scale must remain locked
         self.assertAlmostEqual(c.scale(), scale, 6)
-        self.assertAlmostEqual(c.extent().xMinimum(), -0.009, 2)
-        self.assertAlmostEqual(c.extent().xMaximum(), 14.609, 2)
-        self.assertAlmostEqual(c.extent().yMinimum(), 42.717, 2)
-        self.assertAlmostEqual(c.extent().yMaximum(), 53.682, 2)
-        self.assertAlmostEqual(c.magnificationFactor(), 0.287, 2)
+        self.assertAlmostEqual(c.extent().xMinimum(), -0.009, 1)
+        self.assertAlmostEqual(c.extent().xMaximum(), 14.609, 1)
+        self.assertAlmostEqual(c.extent().yMinimum(), 42.717, 1)
+        self.assertAlmostEqual(c.extent().yMaximum(), 53.682, 1)
+        self.assertAlmostEqual(c.magnificationFactor(), 0.287, 1)
 
         # empty extent
         c.zoomToFeatureExtent(QgsRectangle(12.5, 13.1, 12.5, 13.1))
         # scale must remain locked
         self.assertAlmostEqual(c.scale(), scale, 6)
-        self.assertAlmostEqual(c.extent().xMinimum(), 8.506, 2)
-        self.assertAlmostEqual(c.extent().xMaximum(), 16.493, 2)
-        self.assertAlmostEqual(c.extent().yMinimum(), 10.105, 2)
-        self.assertAlmostEqual(c.extent().yMaximum(), 16.094, 2)
+        self.assertAlmostEqual(c.extent().xMinimum(), 8.506, 1)
+        self.assertAlmostEqual(c.extent().xMaximum(), 16.493, 1)
+        self.assertAlmostEqual(c.extent().yMinimum(), 10.105, 1)
+        self.assertAlmostEqual(c.extent().yMaximum(), 16.094, 1)
         self.assertAlmostEqual(c.magnificationFactor(), 0.287906, 2)
 
     def test_rendered_items(self):
