@@ -216,8 +216,8 @@ coordinates after the zoom.
 
     bool keyboardEventFilter( QKeyEvent *event );
 %Docstring
-If the event is relevant, handles the event and returns true, otherwise
-false.
+If the event is relevant, handles the event and returns ``True``,
+otherwise ``False``.
 
 .. versionadded:: 3.44
 %End
