@@ -90,7 +90,7 @@ void QgsRandomPointsInPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY, QObject::tr( "Number of features with empty or no geometry" ) ) );
 }
 
-QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
+QString QgsRandomPointsInPolygonsAlgorithm::shortDescription() const
 {
   return QObject::tr( "Creates a layer with a number of points placed randomly in each polygon of a given layer." );
 }

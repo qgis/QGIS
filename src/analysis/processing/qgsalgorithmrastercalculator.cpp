@@ -56,7 +56,7 @@ QString QgsRasterCalculatorAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm performs algebraic operations using raster layers." );
 }
 
-QString QgsRasterCalculatorAlgorithm::src/analysis/processing/qgsalgorithmrasterstackposition.cpp() const
+QString QgsRasterCalculatorAlgorithm::shortDescription() const
 {
   return QObject::tr( "Performs algebraic operations using raster layers." );
 }
