@@ -78,6 +78,7 @@ class QgsVariableWidthBufferByMAlgorithm : public QgsProcessingFeatureBasedAlgor
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     QgsVariableWidthBufferByMAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;

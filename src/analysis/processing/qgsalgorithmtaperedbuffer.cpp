@@ -201,6 +201,12 @@ QString QgsVariableWidthBufferByMAlgorithm::shortHelpString() const
                       "as the diameter of the buffer at each vertex." );
 }
 
+QString QgsVariableWidthBufferByMAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates variable width buffers along lines, using the M value of the line geometries "
+                      "as the diameter of the buffer at each vertex." );
+}
+
 QList<int> QgsVariableWidthBufferByMAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
