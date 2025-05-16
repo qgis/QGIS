@@ -742,7 +742,8 @@ try:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
-   def _geometry_from_shapely(shapely_geom) -> QgsGeometry:
+   @staticmethod
+   def _geometry_from_shapely(shapely_geom: _sg.base.BaseGeometry) -> QgsGeometry:
       geom = QgsGeometry()
       geom.fromWkb(shapely_geom.wkb)
 
@@ -756,7 +757,8 @@ except ModuleNotFoundError:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
-   def _geometry_from_shapely(self):
+   @staticmethod
+   def _geometry_from_shapely(shapely_geom):
        raise QgsNotSupportedException('QgsGeometry.from_shapely is not available, shapely is not installed on the system')
 
    QgsGeometry.from_shapely = _geometry_from_shapely
@@ -805,5 +807,5 @@ Creates a new geometry from a shapely object.
 
 :raises QgsNotSupportedException: if shapely is not available on the system
 
-.. versionadded:: 3.42
+.. versionadded:: 3.44
 """
