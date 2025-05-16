@@ -62,7 +62,8 @@ QString QgsMultiUnionAlgorithm::shortHelpString() const
 
 QString QgsMultiUnionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Checks overlaps between features and creates separate features for overlapping and non-overlapping parts." );
+  return QObject::tr( "Checks overlaps between features on the same layer or on more layers "
+                      "and creates separate features for overlapping and non-overlapping parts." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiUnionAlgorithm::documentationFlags() const

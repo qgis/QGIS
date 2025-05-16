@@ -92,6 +92,11 @@ void QgsRandomPointsInPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "Creates a layer with a number of points placed randomly in each polygon of a given layer." );
+}
+
+QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
+{
   return QObject::tr( "<p>This algorithm creates a point layer, with points placed randomly "
                       "in the polygons of the <i><b>Input polygon layer</b></i>.</p> "
                       "<ul><li>For each feature in the <i><b>Input polygon layer</b></i>, the algorithm attempts to add "
@@ -131,7 +136,6 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "</ul>"
   );
 }
-
 
 QgsRandomPointsInPolygonsAlgorithm *QgsRandomPointsInPolygonsAlgorithm::createInstance() const
 {
