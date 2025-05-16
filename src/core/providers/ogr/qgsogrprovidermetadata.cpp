@@ -789,7 +789,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   // Try to open using VSIFileHandler
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uriParts.value( QStringLiteral( "path" ) ).toString() );
-  if ( !vsiPrefix.isEmpty() && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+  if ( !vsiPrefix.isEmpty() && ( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
+                                 || ( QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() != vsiPrefix ) ) )
   {
     if ( !uri.startsWith( vsiPrefix ) )
     {
