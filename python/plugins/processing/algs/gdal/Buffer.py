@@ -136,6 +136,8 @@ class Buffer(GdalAlgorithm):
         )
 
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
+        if source_details.geometry_column_name:
+            geometry = source_details.geometry_column_name
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         dissolve = self.parameterAsBoolean(parameters, self.DISSOLVE, context)
