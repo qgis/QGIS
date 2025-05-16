@@ -3223,10 +3223,10 @@ QgsGeometryWidget: src/gui/qgsgeometrywidget.h#L42
 QgsGlowWidget.create: src/gui/effects/qgspainteffectwidget.h#L180
 QgsGlowWidget.setPaintEffect: src/gui/effects/qgspainteffectwidget.h#L182
 QgsGlowWidget: src/gui/effects/qgspainteffectwidget.h#L173
-QgsGpsToolsInterface.createFeatureFromGpsTrack: src/gui/qgsgpstoolsinterface.h#L51
-QgsGpsToolsInterface.setGpsPanelConnection: src/gui/qgsgpstoolsinterface.h#L40
-QgsGpsToolsInterface.setGpsTrackLineSymbol: src/gui/qgsgpstoolsinterface.h#L58
-QgsGpsToolsInterface: src/gui/qgsgpstoolsinterface.h#L29
+QgsGpsToolsInterface.createFeatureFromGpsTrack: src/gui/qgsgpstoolsinterface.h#L52
+QgsGpsToolsInterface.setGpsPanelConnection: src/gui/qgsgpstoolsinterface.h#L41
+QgsGpsToolsInterface.setGpsTrackLineSymbol: src/gui/qgsgpstoolsinterface.h#L59
+QgsGpsToolsInterface: src/gui/qgsgpstoolsinterface.h#L30
 QgsGradientColorRampDialog.buttonBox: src/gui/qgsgradientcolorrampdialog.h#L68
 QgsGradientColorRampDialog.changed: src/gui/qgsgradientcolorrampdialog.h#L73
 QgsGradientColorRampDialog.ramp: src/gui/qgsgradientcolorrampdialog.h#L55
