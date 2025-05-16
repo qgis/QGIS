@@ -1448,6 +1448,9 @@ QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() cons
 
 void QgsAbstractDatabaseProviderConnection::moveTableToAnotherSchema( const QString &schema, const QString &tableName, const QString &newSchema ) const
 {
+  Q_UNUSED( schema );
+  Q_UNUSED( tableName );
+  Q_UNUSED( newSchema );
   checkCapability( Capability::MoveTableToSchema );
 }
 
