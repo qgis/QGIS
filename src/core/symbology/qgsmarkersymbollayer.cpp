@@ -3087,7 +3087,7 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element 
   }
   else if ( ! inlineContEleme.isNull() )
   {
-    url = inlineContEleme.text();
+    url = QStringLiteral( "data:" ) + inlineContEleme.text();
   }
   else
   {
