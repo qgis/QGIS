@@ -40,6 +40,11 @@ QString QgsUnionAlgorithm::groupId() const
   return QStringLiteral( "vectoroverlay" );
 }
 
+QStringList QgsUnionAlgorithm::tags() const
+{
+  return QObject::tr( "overlap,clip,union,not overlap" ).split( ',' );
+}
+
 QString QgsUnionAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm checks overlaps between features within the Input layer and creates separate features for overlapping "

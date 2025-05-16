@@ -48,6 +48,7 @@ class QgsWriteVectorTilesXyzAlgorithm : public QgsWriteVectorTilesBaseAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
@@ -62,6 +63,7 @@ class QgsWriteVectorTilesMbtilesAlgorithm : public QgsWriteVectorTilesBaseAlgori
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;

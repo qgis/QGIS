@@ -105,6 +105,11 @@ QString QgsWriteVectorTilesXyzAlgorithm::displayName() const
   return QObject::tr( "Write Vector Tiles (XYZ)" );
 }
 
+QStringList QgsWriteVectorTilesXyzAlgorithm::tags() const
+{
+  return QObject::tr( "xyz,vector,tiles" ).split( ',' );
+}
+
 QgsProcessingAlgorithm *QgsWriteVectorTilesXyzAlgorithm::createInstance() const
 {
   return new QgsWriteVectorTilesXyzAlgorithm();
@@ -144,6 +149,11 @@ QString QgsWriteVectorTilesMbtilesAlgorithm::name() const
 QString QgsWriteVectorTilesMbtilesAlgorithm::displayName() const
 {
   return QObject::tr( "Write Vector Tiles (MBTiles)" );
+}
+
+QStringList QgsWriteVectorTilesMbtilesAlgorithm::tags() const
+{
+  return QObject::tr( "mbtiles,vector" ).split( ',' );
 }
 
 QgsProcessingAlgorithm *QgsWriteVectorTilesMbtilesAlgorithm::createInstance() const
