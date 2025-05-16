@@ -958,7 +958,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         fields = conn.fields("qgis_test", "rename_field")
         self.assertEqual(fields.names(), ["id", "geom", "column_1"])
 
-        conn = conn.renameField("qgis_test", "rename_field", "column_1", "new_column")
+        conn.renameField("qgis_test", "rename_field", "column_1", "new_column")
 
         fields = conn.fields("qgis_test", "rename_field")
         self.assertEqual(fields.names(), ["id", "geom", "new_column"])
