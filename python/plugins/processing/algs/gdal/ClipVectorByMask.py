@@ -94,6 +94,7 @@ class ClipVectorByMask(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+
         mask_details = self.getOgrCompatibleSource(
             self.MASK, parameters, context, feedback, executing
         )
