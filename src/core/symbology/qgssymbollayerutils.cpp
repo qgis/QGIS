@@ -1829,12 +1829,10 @@ bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QStr
   {
     return true;
   }
-#if 0
   else if ( !inlineContentElem.isNull() )
   {
-    return false; // not implemented yet
+    return true;
   }
-#endif
   else
   {
     return false;

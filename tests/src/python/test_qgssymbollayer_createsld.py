@@ -315,16 +315,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             path="base64:R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw=="
         )
         _, root = self.symbolToSld(symbol)
-        href_attr = (
-            root.elementsByTagName("se:OnlineResource")
-            .item(0)
-            .attributes()
-            .namedItem("xlink:href")
-        )
-        # we expected a red 4x4 pixel PNG
+        b64_textnode = root.elementsByTagName("se:InlineContent").item(0).toElement()
         self.assertEqual(
-            href_attr.nodeValue(),
-            "data:image/gif;base64,R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
+            b64_textnode.text(),
+            "R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
         )
         mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
         self.assertEqual(mime_elem.text(), "image/gif")

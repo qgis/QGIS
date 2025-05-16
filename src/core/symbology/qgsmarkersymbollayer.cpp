@@ -3076,16 +3076,22 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element 
     return nullptr;
 
   QDomElement onlineResElem = extGraphElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
-  if ( onlineResElem.isNull() )
-    return nullptr;
+  QDomElement inlineContEleme = extGraphElem.firstChildElement( QStringLiteral( "InlineContent" ) );
 
   QString url = onlineResElem.attribute( "href", "" );
-
-  // transform regular data uris to QGIS's data uris
-  url.replace( QRegularExpression( QStringLiteral( "^data:([^;]*;base64,)?(.*)$" ) ), QStringLiteral( "data:\\2" ) );
+  if ( ! onlineResElem.isNull() ) {
+    url = onlineResElem.attribute( "href", "" );
+     // transform regular data uris to QGIS's data uris (note that embedded images are usually provided as InlineContent)
+    url.replace( QRegularExpression( QStringLiteral( "^data:([^;]*;base64,)?(.*)$" ) ), QStringLiteral( "data:\\2" ) );
+  }
+  else if ( ! inlineContEleme.isNull() ) {
+    url = inlineContEleme.text();
+  }
+  else {
+    return nullptr;
+  }
 
   QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
-
   // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
   return m;
 }
@@ -3500,36 +3506,47 @@ void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   // <ExternalGraphic>
   QDomElement extGraphElem = doc.createElement( QStringLiteral( "se:ExternalGraphic" ) );
   graphicElem.appendChild( extGraphElem );
-
-  QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
-  QString url = mPath;
-
+  
   QMimeDatabase mimeDB;
   QMimeType mimeType;
 
   if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
   {
-    // convert from QGIS's embeded file syntax to standard data uri
-    url.remove( 0, 7 );
-    QByteArray ba = QByteArray::fromBase64( url.toUtf8() );
+    // <InlineContent>
+    QDomElement inlineContEleme = doc.createElement( QStringLiteral( "se:InlineContent" ) );
+    QString base64data = mPath;
+    base64data.remove( 0, 7 );
+
+    inlineContEleme.setAttribute( QStringLiteral( "encoding" ), QStringLiteral( "base64" ) );
+    inlineContEleme.appendChild( doc.createTextNode( base64data ) );
+    extGraphElem.appendChild( inlineContEleme );
+
+    // determine mime type
+    QByteArray ba = QByteArray::fromBase64( base64data.toUtf8() );
     mimeType = mimeDB.mimeTypeForData( ba );
-    url.prepend( QStringLiteral( "data:%1;base64," ).arg( mimeType.name() ) );
-  }
-  else if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) )
-  {
-    // Qt can't guess mime type for remote URLs, and it seems geoserver can handle wrong image mime types
-    // but not generic ones, so let's hardcode to png.
-    mimeType = mimeDB.mimeTypeForName( "image/png" );
+    
   }
   else
   {
-    // let QT guess the mime type from the extension for local
-    mimeType = mimeDB.mimeTypeForUrl( url );
+    // <ExternalGraphic>
+    QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
+    QString url = mPath;
+    
+    onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
+    onlineResElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+    extGraphElem.appendChild( onlineResElem );
+    
+    // determine mime type
+    if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) ) {
+      // Qt can't guess mime type for remote URLs, and it seems geoserver can handle wrong image mime types
+      // but not generic ones, so let's hardcode to png.
+      mimeType = mimeDB.mimeTypeForName( "image/png" );
+    }
+    else
+    {
+      mimeType = mimeDB.mimeTypeForUrl( url );
+    }
   }
-
-  onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
-  onlineResElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-  extGraphElem.appendChild( onlineResElem );
 
   QDomElement formatElem = doc.createElement( QStringLiteral( "se:Format" ) );
   formatElem.appendChild( doc.createTextNode( mimeType.name() ) );

@@ -641,9 +641,23 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
         self.assertEqual(marker.path(), "QgsRasterMarkerSymbolLayer-local.gif")
 
-    def test_read_QgsRasterMarkerSymbolLayer_embedded(self):
+    def test_read_QgsRasterMarkerSymbolLayer_embedded_inlineelement(self):
         file_path = os.path.join(
-            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-embedded.sld"
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-embedded_inline.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(
+            marker.path(),
+            f"data:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+        )
+
+    def test_read_QgsRasterMarkerSymbolLayer_embedded_datauri(self):
+        file_path = os.path.join(
+            TEST_DATA_DIR,
+            "symbol_layer/QgsRasterMarkerSymbolLayer-embedded_datauri.sld",
         )
         maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
         maplayer.loadSldStyle(file_path)
