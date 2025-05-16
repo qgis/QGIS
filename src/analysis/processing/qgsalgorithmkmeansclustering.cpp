@@ -264,7 +264,7 @@ void QgsKMeansClusteringAlgorithm::initClustersFarthestPoints( std::vector<Featu
 
   if ( feedback && duplicateCount > 1 )
   {
-    feedback->pushInfo( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, duplicateCount ) );
+    feedback->pushWarning( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, duplicateCount ) );
   }
 
   // By now two points should be found and be not the same
@@ -359,7 +359,7 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
   }
   if ( feedback && duplicateCount > 1 )
   {
-    feedback->pushInfo( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, duplicateCount ) );
+    feedback->pushWarning( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, duplicateCount ) );
   }
 
   // greedy kmeans++
