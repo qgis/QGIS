@@ -34,10 +34,10 @@ class QgsPointToLayerAlgorithm : public QgsProcessingAlgorithm
     QgsPointToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
-    QString displayName() const override { return QObject::tr( "Create layer from point" ); }
+    QString displayName() const override { return QObject::tr( "Create single point layer" ); }
     QStringList tags() const override { return QObject::tr( "point,layer,polygon,create,new" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector geometry" ); }
-    QString groupId() const override { return QStringLiteral( "vectorgeometry" ); }
+    QString group() const override { return QObject::tr( "Vector creation" ); }
+    QString groupId() const override { return QStringLiteral( "vectorcreation" ); }
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsPointToLayerAlgorithm *createInstance() const override SIP_FACTORY;
