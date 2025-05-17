@@ -55,23 +55,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="mShowAliasesButton">
-        <property name="toolTip">
-         <string>Show field aliases instead of names</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mIconFonts.svg</normaloff>:/images/themes/default/mIconFonts.svg</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QToolButton" name="mTbInitCode">
         <property name="toolTip">
          <string>QGIS forms can have a Python function that is called when the form is opened.
@@ -83,6 +66,12 @@ Use this function to add extra logic to your forms.</string>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/processingScript.svg</normaloff>:/images/themes/default/processingScript.svg</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -129,6 +118,12 @@ Use this function to add extra logic to your forms.</string>
         <property name="text">
          <string>…</string>
         </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
        </widget>
       </item>
      </layout>
@@ -153,89 +148,195 @@ Use this function to add extra logic to your forms.</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="1" rowspan="7">
-        <widget class="QWidget" name="mFormLayoutWidget" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="searchBarLayout">
+         <item>
+          <widget class="QgsFilterLineEdit" name="mSearchLineEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="placeholderText">
+            <string>Search...</string>
+           </property>
+           <property name="showSearchIcon">
+            <bool>true</bool>
+           </property>
+           <property name="qgisRelation" stdset="0">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="4" column="2">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="0" column="1" rowspan="2">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+         <item>
+          <widget class="QToolButton" name="mShowAliasesButton">
+           <property name="toolTip">
+            <string>Show field aliases instead of names</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/mToggleAliases.svg</normaloff>:/images/themes/default/mToggleAliases.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mAddContainerButton">
+           <property name="toolTip">
+            <string>Add a new tab or group to the form layout</string>
+           </property>
+           <property name="text">
+            <string>…</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mRemoveLayoutItemButton">
+           <property name="toolTip">
+            <string>Remove selected item(s) from the form layout</string>
+           </property>
+           <property name="text">
+            <string>…</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mInvertSelectionButton">
+           <property name="toolTip">
+            <string>Invert selection</string>
+           </property>
+           <property name="text">
+            <string>Invert selection</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
-       <item row="0" column="0" rowspan="7">
-        <widget class="QWidget" name="mAvailableWidgetsWidget" native="true">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>0</height>
-          </size>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>0</number>
          </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QToolButton" name="mRemoveLayoutItemButton">
-         <property name="toolTip">
-          <string>Remove selected item(s) from the form layout</string>
-         </property>
-         <property name="text">
-          <string>…</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QToolButton" name="mAddContainerButton">
-         <property name="toolTip">
-          <string>Add a new tab or group to the form layout</string>
-         </property>
-         <property name="text">
-          <string>…</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QToolButton" name="mInvertSelectionButton">
-         <property name="toolTip">
-          <string>Invert selection</string>
-         </property>
-         <property name="text">
-          <string>Invert selection</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
-         </property>
-        </widget>
+         <item>
+          <widget class="QWidget" name="mAvailableWidgetsWidget" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="mTreeViewHorizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>6</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QWidget" name="mFormLayoutWidget" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
      <widget class="QgsScrollArea" name="scrollArea_2">
-      <property name="minimumSize">
-       <size>
-        <width>600</width>
-        <height>0</height>
-       </size>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="widgetResizable">
        <bool>true</bool>
@@ -245,13 +346,19 @@ Use this function to add extra logic to your forms.</string>
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>598</width>
-         <height>492</height>
+         <width>86</width>
+         <height>488</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <widget class="QWidget" name="mAttributeTypeFrame" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <layout class="QGridLayout" name="gridLayout_2"/>
          </widget>
         </item>
@@ -264,6 +371,11 @@ Use this function to add extra logic to your forms.</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -272,11 +384,12 @@ Use this function to add extra logic to your forms.</string>
  </customwidgets>
  <tabstops>
   <tabstop>mEditorLayoutComboBox</tabstop>
-  <tabstop>mShowAliasesButton</tabstop>
   <tabstop>mTbInitCode</tabstop>
   <tabstop>mFormSuppressCmbBx</tabstop>
   <tabstop>mEditFormLineEdit</tabstop>
   <tabstop>pbnSelectEditForm</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
+  <tabstop>mShowAliasesButton</tabstop>
   <tabstop>mAddContainerButton</tabstop>
   <tabstop>mRemoveLayoutItemButton</tabstop>
   <tabstop>mInvertSelectionButton</tabstop>
