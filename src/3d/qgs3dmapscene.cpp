@@ -15,6 +15,8 @@
 
 #include "qgs3dmapscene.h"
 
+#include <limits>
+
 #include "qgs3daxis.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmapsettings.h"
@@ -31,6 +33,7 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
+#include "qgsdebugtexturerenderview.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgseventtracing.h"
 #include "qgsforwardrenderview.h"
@@ -157,6 +160,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
   connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
+  connect( &map, &Qgs3DMapSettings::show2DMapOverlayChanged, this, &Qgs3DMapScene::onShowMapOverlayChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
@@ -213,6 +217,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   onDebugDepthMapSettingsChanged();
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
+
+  // force initial update of map overlay entity
+  onShowMapOverlayChanged();
 
   onCameraMovementSpeedChanged();
 
@@ -330,8 +337,9 @@ void Qgs3DMapScene::onCameraChanged()
 
   onShadowSettingsChanged();
 
-  QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   emit viewed2DExtentFrom3DChanged( extent2D );
+  update2DMapOverlay( extent2D );
 
   // The magic to make things work better in large scenes (e.g. more than 50km across)
   // is here: we will simply move the origin of the scene, and update transforms
@@ -524,6 +532,62 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
     accumulatedTime = 0.0f;
     emit fpsCountChanged( fps );
   }
+}
+
+void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
+{
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  QgsDebugTextureRenderView &debugRenderView = frameGraph->debugTextureRenderView();
+
+  if ( !mMap.is2DMapOverlayEnabled() )
+  {
+    if ( mMapOverlayEntity )
+    {
+      mMapOverlayEntity.reset();
+    }
+    debugRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
+    return;
+  }
+
+  if ( !mMapOverlayEntity )
+  {
+    QgsWindow3DEngine *engine = qobject_cast<QgsWindow3DEngine *>( mEngine );
+    mMapOverlayEntity.reset( new QgsMapOverlayEntity( engine, &debugRenderView, &mMap, this ) );
+    mMapOverlayEntity->setEnabled( true );
+    debugRenderView.setEnabled( true );
+  }
+
+
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  const QgsVector3D extentCenter3D = mMap.worldToMapCoordinates( camera->position() );
+  const QgsPointXY extentCenter2D( extentCenter3D.x(), extentCenter3D.y() );
+
+  // Compute an extent that provides an overview around the camera position.
+  // When the view is from above (pitch near 0°), the scene's extent is reduced.
+  // As the pitch increases (up to 90°), a larger portion of the scene becomes visible.
+  // The smoothing factor allows reproducing the behavior of the maximum extent
+  // as the pitch changes. The calculated extent is bounded to prevent covering too large a scene.
+  double minHalfExtent = std::numeric_limits<double>::max();
+  double maxHalfExtent = 0.0;
+  for ( const QgsPointXY &extentPoint : extent2DAsPoints )
+  {
+    const double distance = extentCenter2D.distance( extentPoint );
+    minHalfExtent = std::min( minHalfExtent, distance );
+    maxHalfExtent = std::max( maxHalfExtent, distance );
+  }
+
+  const QgsRectangle fullExtent = sceneExtent();
+  const double sceneHalfExtent = 0.6 * std::max( fullExtent.width(), fullExtent.height() );
+
+  minHalfExtent = std::min( 50., minHalfExtent );
+  maxHalfExtent = std::min( 100., maxHalfExtent );
+  const double smoothFactor = std::sin( mCameraController->pitch() / 90.0 * M_PI_2 );
+
+  // Using the scene extent to prevent the image from becoming too wide when zooming out
+  const double adjustedHalfExtent = std::min( 3.0 * ( minHalfExtent + smoothFactor * maxHalfExtent ), sceneHalfExtent );
+
+  const QgsRectangle overviewExtent = QgsRectangle::fromCenterAndSize( extentCenter2D, adjustedHalfExtent, adjustedHalfExtent );
+  mMapOverlayEntity->update( overviewExtent, mCameraController->yaw() );
 }
 
 void Qgs3DMapScene::createTerrain()
@@ -1134,6 +1198,12 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   mEngine->frameGraph()->updateEyeDomeSettings( mMap );
+}
+
+void Qgs3DMapScene::onShowMapOverlayChanged()
+{
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  update2DMapOverlay( extent2D );
 }
 
 void Qgs3DMapScene::onCameraMovementSpeedChanged()

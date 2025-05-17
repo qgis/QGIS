@@ -18,7 +18,9 @@
 
 #include "qgis_3d.h"
 #include "qgscameracontroller.h"
+#include "qgsmapoverlayentity.h"
 #include "qgsrectangle.h"
+#include "qobjectuniqueptr.h"
 
 #include <QVector4D>
 #include <Qt3DCore/QEntity>
@@ -364,6 +366,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+    void onShowMapOverlayChanged();
 
     void onOriginChanged();
 
@@ -389,6 +392,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
 
+    void update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
+
   private:
     Qgs3DMapSettings &mMap;
     QgsAbstract3DEngine *mEngine = nullptr;
@@ -397,6 +402,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
     QgsGlobeEntity *mGlobe = nullptr;
+    QObjectUniquePtr<QgsMapOverlayEntity> mMapOverlayEntity = nullptr;
     QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
