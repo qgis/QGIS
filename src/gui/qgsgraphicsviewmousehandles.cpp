@@ -197,13 +197,6 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
   }
 }
 
-QRectF QgsGraphicsViewMouseHandles::boundingRect() const
-{
-  const double rectHandlerSize = rectHandlerBorderTolerance();
-  const double rectRotationHandleSize = mRotationHandleSize * rectHandlerSize / mHandleSize;
-  return QRectF( -rectRotationHandleSize, -rectRotationHandleSize, rect().width() + rectRotationHandleSize * 2, rect().height() + rectRotationHandleSize * 2 );
-}
-
 void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
 {
   //draw dotted border around selected items to give visual feedback which items are selected
@@ -931,6 +924,9 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition )
   rotateTransform.translate( -deltaX, -deltaY );
   setTransform( rotateTransform );
   
+  //show current selection rotation in status bar
+  showStatusMessage( tr( "rotation: %1°" ).arg( QString::number( mRotationCurrent - mRotationBegin, 'f', 2 ) ) );
+
   return;
 }
 
