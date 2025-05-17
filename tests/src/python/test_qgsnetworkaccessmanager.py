@@ -92,10 +92,7 @@ class TestQgsNetworkAccessManager(QgisTestCase):
 
     def _on_reply_ready_read(self, reply):
         _bytes = reply.peek(reply.bytesAvailable())
-        if isinstance(_bytes, bytes):
-            self.assertEqual(_bytes.decode()[:14], "<!DOCTYPE html")
-        else:
-            self.assertEqual(_bytes.data().decode()[:14], "<!DOCTYPE html")
+        self.assertEqual(bytes(_bytes).decode()[:14], "<!DOCTYPE html")
         TestQgsNetworkAccessManager.peeked = True
 
     def test_response_preprocessor(self):
