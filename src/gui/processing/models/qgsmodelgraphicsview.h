@@ -158,7 +158,6 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void pasteItems( PasteMode mode );
 
   public slots:
-
     /**
      * Snaps the selected items to the grid.
      */

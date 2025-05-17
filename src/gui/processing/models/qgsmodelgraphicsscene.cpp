@@ -33,6 +33,8 @@ QgsModelGraphicsScene::QgsModelGraphicsScene( QObject *parent )
   : QGraphicsScene( parent )
 {
   setItemIndexMethod( QGraphicsScene::NoIndex );
+
+  connect( this, &QgsModelGraphicsScene::componentChanged, this, &QgsModelGraphicsScene::updateBounds );
 }
 
 QgsProcessingModelAlgorithm *QgsModelGraphicsScene::model()
@@ -58,6 +60,28 @@ void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
   if ( event->button() != Qt::LeftButton )
     return;
   QGraphicsScene::mousePressEvent( event );
+}
+
+void QgsModelGraphicsScene::updateBounds()
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all  items
+  const QList<QGraphicsItem *> constItems = items();
+  for ( QGraphicsItem *item : constItems )
+  {
+    QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item );
+    if ( componentItem )
+      bounds = bounds.united( componentItem->sceneBoundingRect() );
+  }
+
+  if ( bounds.isValid() )
+  {
+    bounds.adjust( -SCENE_COMPONENT_MARGIN, -SCENE_COMPONENT_MARGIN, SCENE_COMPONENT_MARGIN, SCENE_COMPONENT_MARGIN );
+  }
+
+  setSceneRect( bounds );
 }
 
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
