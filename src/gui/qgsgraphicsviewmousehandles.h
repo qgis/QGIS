@@ -79,15 +79,15 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     //! Returns TRUE is user is currently rotating with the handles
     bool isRotating() const { return mIsRotating; }
-    
+
     bool shouldBlockEvent( QInputEvent *event ) const;
 
     //! Initializes a drag operation \since QGIS 3.34
     void startMove( QPointF sceneCoordPos );
-    
+
     //! Returns TRUE if rotation functionality is enabled
     bool isRotationEnabled() const { return mRotationEnabled; }
-    
+
     //! Sets whether rotation functionality is enabled
     void setRotationEnabled( bool enable );
 
