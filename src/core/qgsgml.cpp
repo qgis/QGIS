@@ -633,8 +633,18 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::PosList );
+    if ( mCoorMode == QgsGmlStreamingParser::PosList )
+    {
+      if ( !mStringCash.isEmpty() )
+      {
+        mStringCash.append( QLatin1Char( ' ' ) );
+      }
+    }
+    else
+    {
+      mStringCash.clear();
+    }
     mCoorMode = QgsGmlStreamingParser::PosList;
-    mStringCash.clear();
     if ( elDimension == 0 )
     {
       const QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
@@ -654,6 +664,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mParseModeStack.push( QgsGmlStreamingParser::Geometry );
     mFoundUnhandledGeometryElement = false;
     mGeometryString.clear();
+    mStringCash.clear();
   }
   //else if ( mParseModeStack.size() == 0 && elementName == mGMLNameSpaceURI + NS_SEPARATOR + "boundedBy" )
   else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
@@ -1273,6 +1284,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     {
       //error
     }
+    mStringCash.clear();
 
     if ( pointList.isEmpty() )
       return;  // error
@@ -1317,6 +1329,8 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     {
       //error
     }
+    mStringCash.clear();
+
     if ( parseMode == QgsGmlStreamingParser::Geometry )
     {
       if ( getLineWKB( mCurrentWKB, pointList ) != 0 )
@@ -1354,6 +1368,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     {
       //error
     }
+    mStringCash.clear();
 
     QByteArray wkbPtr;
     if ( getRingWKB( wkbPtr, pointList ) != 0 )
