@@ -63,6 +63,11 @@ QString QgsZonalHistogramAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm appends fields representing counts of each unique value from a raster layer contained within zones defined as polygons." );
 }
 
+QString QgsZonalHistogramAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Appends fields representing counts of each unique value from a raster layer contained within zones defined as polygons." );
+}
+
 QgsZonalHistogramAlgorithm *QgsZonalHistogramAlgorithm::createInstance() const
 {
   return new QgsZonalHistogramAlgorithm();

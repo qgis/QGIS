@@ -86,6 +86,7 @@ class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsReclassifyByLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -114,6 +115,7 @@ class QgsReclassifyByTableAlgorithm : public QgsReclassifyAlgorithmBase
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsReclassifyByTableAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

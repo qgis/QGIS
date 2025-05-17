@@ -49,6 +49,11 @@ QString QgsVoronoiPolygonsAlgorithm::groupId() const
 
 QString QgsVoronoiPolygonsAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm generates a polygon layer containing the Voronoi diagram corresponding to input points." );
+}
+
+QString QgsVoronoiPolygonsAlgorithm::shortDescription() const
+{
   return QObject::tr( "Generates a polygon layer containing the Voronoi diagram corresponding to input points." );
 }
 

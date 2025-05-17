@@ -54,6 +54,12 @@ QString QgsZonalStatisticsFeatureBasedAlgorithm::shortHelpString() const
                       "of an overlapping polygon vector layer." );
 }
 
+QString QgsZonalStatisticsFeatureBasedAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates statistics of a raster layer for each feature "
+                      "of an overlapping polygon vector layer." );
+}
+
 QList<int> QgsZonalStatisticsFeatureBasedAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );

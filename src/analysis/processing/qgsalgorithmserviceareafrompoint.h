@@ -37,6 +37,7 @@ class QgsServiceAreaFromPointAlgorithm : public QgsNetworkAnalysisAlgorithmBase
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsServiceAreaFromPointAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

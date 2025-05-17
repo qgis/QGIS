@@ -44,6 +44,7 @@ class QgsRandomPointsExtentAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsRandomPointsExtentAlgorithm *createInstance() const override SIP_FACTORY;
 

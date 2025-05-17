@@ -131,7 +131,7 @@ void QgsExportToSpreadsheetAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsExportToSpreadsheetAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm collects a number of existing layers and exports them into a spreadsheet document.\n\n"
+  return QObject::tr( "This algorithm collects a number of existing layers and exports them to a spreadsheet document.\n\n"
                       "Optionally the layers can be appended to an existing spreadsheet as additional sheets.\n\n" );
 }
 

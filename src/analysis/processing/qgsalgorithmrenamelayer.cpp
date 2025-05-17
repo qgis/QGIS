@@ -54,6 +54,11 @@ QString QgsRenameLayerAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm renames a layer." );
 }
 
+QString QgsRenameLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renames a layer." );
+}
+
 QgsRenameLayerAlgorithm *QgsRenameLayerAlgorithm::createInstance() const
 {
   return new QgsRenameLayerAlgorithm();

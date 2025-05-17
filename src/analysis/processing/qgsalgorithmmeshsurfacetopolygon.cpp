@@ -31,7 +31,7 @@
 
 QString QgsMeshSurfaceToPolygonAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports a polygon layer containing mesh layer boundary. It may contain holes and it may be a multi-part polygon." );
+  return QObject::tr( "This algorithm exports a polygon layer containing a mesh layer's boundary. It may contain holes and it may be a multi-part polygon." );
 }
 
 QString QgsMeshSurfaceToPolygonAlgorithm::shortDescription() const

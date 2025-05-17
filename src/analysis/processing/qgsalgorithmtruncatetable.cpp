@@ -52,6 +52,11 @@ QString QgsTruncateTableAlgorithm::shortHelpString() const
          + QObject::tr( "Warning — this algorithm modifies the layer in place, and deleted features cannot be restored!" );
 }
 
+QString QgsTruncateTableAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Truncates a layer, by deleting all features from within the layer." );
+}
+
 Qgis::ProcessingAlgorithmFlags QgsTruncateTableAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;

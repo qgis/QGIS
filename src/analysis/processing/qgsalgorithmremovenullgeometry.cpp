@@ -65,6 +65,11 @@ QString QgsRemoveNullGeometryAlgorithm::shortHelpString() const
                       "output will reflect this option, containing both null and empty geometries." );
 }
 
+QString QgsRemoveNullGeometryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Removes any features which do not have a geometry from a vector layer." );
+}
+
 QgsRemoveNullGeometryAlgorithm *QgsRemoveNullGeometryAlgorithm::createInstance() const
 {
   return new QgsRemoveNullGeometryAlgorithm();

@@ -57,6 +57,11 @@ QString QgsTranslateAlgorithm::shortHelpString() const
          + QObject::tr( "Z and M values present in the geometry can also be translated." );
 }
 
+QString QgsTranslateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Moves the geometries within a layer, by offsetting them with a specified x, y, z or m displacement." );
+}
+
 QgsTranslateAlgorithm *QgsTranslateAlgorithm::createInstance() const
 {
   return new QgsTranslateAlgorithm();

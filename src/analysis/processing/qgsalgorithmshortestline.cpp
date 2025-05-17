@@ -48,6 +48,11 @@ QString QgsShortestLineAlgorithm::groupId() const
   return QStringLiteral( "vectoranalysis" );
 }
 
+QString QgsShortestLineAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a line layer as the shortest line between features in source and destination layers." );
+}
+
 QString QgsShortestLineAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a line layer as the "

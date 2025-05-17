@@ -53,7 +53,12 @@ QString QgsRasterCalculatorAlgorithm::groupId() const
 
 QString QgsRasterCalculatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Performing algebraic operations using raster layers." );
+  return QObject::tr( "This algorithm performs algebraic operations using raster layers." );
+}
+
+QString QgsRasterCalculatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Performs algebraic operations using raster layers." );
 }
 
 QgsRasterCalculatorAlgorithm *QgsRasterCalculatorAlgorithm::createInstance() const

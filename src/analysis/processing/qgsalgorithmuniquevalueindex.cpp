@@ -67,6 +67,11 @@ QString QgsAddUniqueValueIndexAlgorithm::shortHelpString() const
                       "Optionally, a separate table can be output which contains a summary of the class field values mapped to the new unique numeric value." );
 }
 
+QString QgsAddUniqueValueIndexAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Adds a numeric field and assigns the same index to features of the same attribute value." );
+}
+
 QgsAddUniqueValueIndexAlgorithm *QgsAddUniqueValueIndexAlgorithm::createInstance() const
 {
   return new QgsAddUniqueValueIndexAlgorithm();

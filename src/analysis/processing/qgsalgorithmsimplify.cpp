@@ -60,6 +60,11 @@ QString QgsSimplifyAlgorithm::shortHelpString() const
                       "(the \"Douglas-Peucker\" algorithm), area based (\"Visvalingam\" algorithm) and snapping geometries to a grid." );
 }
 
+QString QgsSimplifyAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Simplifies the geometries in a line or polygon layer by removing a number of vertices." );
+}
+
 QgsSimplifyAlgorithm *QgsSimplifyAlgorithm::createInstance() const
 {
   return new QgsSimplifyAlgorithm();

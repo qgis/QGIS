@@ -39,11 +39,18 @@ QStringList QgsServiceAreaFromPointAlgorithm::tags() const
 
 QString QgsServiceAreaFromPointAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of edges "
+  return QObject::tr( "This algorithm creates a new vector layer with all the edges or parts of edges "
                       "of a network line layer that can be reached within a distance or a time, "
                       "starting from a point feature. The distance and the time (both referred to "
                       "as \"travel cost\") must be specified respectively in the network layer "
                       "units or in hours." );
+}
+
+QString QgsServiceAreaFromPointAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer with all the edges or parts of edges "
+                      "of a network line layer that can be reached within a distance or a time, "
+                      "starting from a point feature." );
 }
 
 QgsServiceAreaFromPointAlgorithm *QgsServiceAreaFromPointAlgorithm::createInstance() const

@@ -46,6 +46,11 @@ QString QgsTinMeshCreationAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a TIN mesh layer from vector layers." );
 }
 
+QStringList QgsTinMeshCreationAlgorithm::tags() const
+{
+  return QObject::tr( "tin,mesh,vector,triangulation,irregular,network" ).split( ',' );
+}
+
 QString QgsTinMeshCreationAlgorithm::name() const
 {
   return QStringLiteral( "tinmeshcreation" );

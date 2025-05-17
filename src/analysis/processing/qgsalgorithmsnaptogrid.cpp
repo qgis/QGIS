@@ -60,6 +60,12 @@ QString QgsSnapToGridAlgorithm::shortHelpString() const
                       "disable snapping for that axis." );
 }
 
+QString QgsSnapToGridAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Modifies the coordinates of geometries in a vector layer, so that all points "
+                      "or vertices are snapped to the closest point of a grid." );
+}
+
 QgsSnapToGridAlgorithm *QgsSnapToGridAlgorithm::createInstance() const
 {
   return new QgsSnapToGridAlgorithm();

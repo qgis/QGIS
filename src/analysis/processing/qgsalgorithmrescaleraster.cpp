@@ -49,12 +49,18 @@ QString QgsRescaleRasterAlgorithm::groupId() const
 
 QString QgsRescaleRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Rescales raster layer to a new value range, while preserving the shape "
+  return QObject::tr( "This algorithm rescales a raster layer to a new value range, while preserving the shape "
                       "(distribution) of the raster's histogram (pixel values). Input values "
                       "are mapped using a linear interpolation from the source raster's minimum "
                       "and maximum pixel values to the destination minimum and maximum pixel range.\n\n"
                       "By default the algorithm preserves the original NoData value, but there is "
                       "an option to override it." );
+}
+
+QString QgsRescaleRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Rescales a raster layer to a new value range, while preserving the shape "
+                      "(distribution) of the raster's histogram (pixel values)." );
 }
 
 QgsRescaleRasterAlgorithm *QgsRescaleRasterAlgorithm::createInstance() const

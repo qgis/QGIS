@@ -56,6 +56,11 @@ QString QgsSwapXYAlgorithm::shortHelpString() const
                       "which have accidentally had their latitude and longitude values reversed." );
 }
 
+QString QgsSwapXYAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Swaps the X and Y coordinate values in input geometries." );
+}
+
 QgsSwapXYAlgorithm *QgsSwapXYAlgorithm::createInstance() const
 {
   return new QgsSwapXYAlgorithm();

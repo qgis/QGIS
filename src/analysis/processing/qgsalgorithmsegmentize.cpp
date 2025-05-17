@@ -57,6 +57,12 @@ QString QgsSegmentizeByMaximumDistanceAlgorithm::shortHelpString() const
                       "Non-curved geometries will be retained without change." );
 }
 
+QString QgsSegmentizeByMaximumDistanceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Segmentizes a geometry by converting curved sections to linear sections, "
+                      "given the maximum allowed offset distance between the original curve and the segmentized representation." );
+}
+
 QgsSegmentizeByMaximumDistanceAlgorithm *QgsSegmentizeByMaximumDistanceAlgorithm::createInstance() const
 {
   return new QgsSegmentizeByMaximumDistanceAlgorithm();
@@ -145,6 +151,12 @@ QString QgsSegmentizeByMaximumAngleAlgorithm::shortHelpString() const
                       "on the straightened geometry (e.g the angle of the arc created from the original arc center to consecutive "
                       "output vertices on the linearized geometry).\n\n"
                       "Non-curved geometries will be retained without change." );
+}
+
+QString QgsSegmentizeByMaximumAngleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Segmentizes a geometry by converting curved sections to linear sections, "
+                      "given the maximum allowed radius angle between vertices on the straightened geometry." );
 }
 
 QgsSegmentizeByMaximumAngleAlgorithm *QgsSegmentizeByMaximumAngleAlgorithm::createInstance() const

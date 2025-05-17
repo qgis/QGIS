@@ -60,7 +60,7 @@ void QgsRemoveDuplicatesByAttributeAlgorithm::initAlgorithm( const QVariantMap &
 
 QString QgsRemoveDuplicatesByAttributeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Removes duplicate rows by a field value (or multiple field values). The first matching row will be retained, and duplicates will be discarded.\n\n"
+  return QObject::tr( "This algorithm removes duplicate rows by a field value (or multiple field values). The first matching row will be retained, and duplicates will be discarded.\n\n"
                       "Optionally, these duplicate records can be saved to a separate output for analysis." );
 }
 

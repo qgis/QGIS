@@ -54,6 +54,11 @@ QString QgsSaveFeaturesAlgorithm::shortHelpString() const
                       "read the online GDAL documentation." );
 }
 
+QString QgsSaveFeaturesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Saves vector features to a specified file dataset." );
+}
+
 QgsSaveFeaturesAlgorithm *QgsSaveFeaturesAlgorithm::createInstance() const
 {
   return new QgsSaveFeaturesAlgorithm();

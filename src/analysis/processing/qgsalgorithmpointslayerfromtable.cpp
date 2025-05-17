@@ -47,7 +47,7 @@ QString QgsPointsLayerFromTableAlgorithm::groupId() const
 
 QString QgsPointsLayerFromTableAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm generates a points layer based on the values from an input table." )
+  return QObject::tr( "This algorithm generates a point layer based on the coordinates from an input table." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The table must contain a field with the X coordinate of each point and another "
                         "one with the Y coordinate, as well as optional fields with Z and M values. A CRS "
