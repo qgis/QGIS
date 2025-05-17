@@ -95,6 +95,11 @@ class ClipVectorByMask(GdalAlgorithm):
             self.INPUT, parameters, context, feedback, executing
         )
 
+        if input_details.layer_name is None:
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
+
         mask_details = self.getOgrCompatibleSource(
             self.MASK, parameters, context, feedback, executing
         )
