@@ -85,6 +85,12 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     //! Initializes a drag operation \since QGIS 3.34
     void startMove( QPointF sceneCoordPos );
     
+    //! Returns TRUE if rotation functionality is enabled
+    bool isRotationEnabled() const { return mRotationEnabled; }
+    
+    //! Sets whether rotation functionality is enabled
+    void setRotationEnabled( bool enable );
+
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -214,10 +220,14 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     QRectF mResizeRect;
 
+    bool mRotationEnabled = false;
     //! Center point around which rotation occurs
     QPointF mRotationCenter;
+    //! The starting rotation angle from center point
     double mRotationBegin = 0.0;
+    //! The current rotation angle from center point
     double mRotationCurrent = 0.0;
+    //! The rotation angle delta to be applied (can be snapped to common angle)
     double mRotationDelta = 0.0;
 
     //! Start point of the last mouse move action (in scene coordinates)

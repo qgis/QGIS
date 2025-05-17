@@ -47,6 +47,17 @@ QgsGraphicsViewMouseHandles::QgsGraphicsViewMouseHandles( QGraphicsView *view )
   mRotationHandlePath.lineTo( 0, 14 );
 }
 
+void QgsGraphicsViewMouseHandles::setRotationEnabled( bool enable )
+{
+  if ( mRotationEnabled == enable )
+  {
+    return;
+  }
+  
+  mRotationEnabled = enable;
+  update();
+}
+
 void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
 {
   if ( !showHandles )
@@ -142,58 +153,61 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
   //bottom right
   painter->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
   
-  //draw rotate handles
-  const double scale = rectHandlerSize / mHandleSize;
-  const bool drawBottomRotationHandles = ( rectHandlerSize * 2 ) + ( mRotationHandleSize * scale * 2 ) < rect().height();
-  const bool drawRightRotationHandles = ( rectHandlerSize * 2 ) + ( mRotationHandleSize * scale * 2 ) < rect().width();
-  QTransform transform;
-  
-  //top left
-  transform.reset();
-  transform.translate( rectHandlerSize, rectHandlerSize );
-  transform.scale( scale, scale );
-  painter->save();
-  painter->setTransform( transform, true );
-  painter->drawPath( mRotationHandlePath );
-  painter->restore();
-  
-  //top right
-  if ( drawRightRotationHandles )
+  if ( isRotationEnabled() )
   {
+    //draw rotate handles
+    const double scale = rectHandlerSize / mHandleSize;
+    const bool drawBottomRotationHandles = ( rectHandlerSize * 2 ) + ( mRotationHandleSize * scale * 2 ) < rect().height();
+    const bool drawRightRotationHandles = ( rectHandlerSize * 2 ) + ( mRotationHandleSize * scale * 2 ) < rect().width();
+    QTransform transform;
+    
+    //top left
     transform.reset();
-    transform.translate( rect().width() - rectHandlerSize, rectHandlerSize );
-    transform.rotate( 90 );
+    transform.translate( rectHandlerSize, rectHandlerSize );
     transform.scale( scale, scale );
     painter->save();
     painter->setTransform( transform, true );
     painter->drawPath( mRotationHandlePath );
     painter->restore();
-  }
-  
-  if ( drawBottomRotationHandles )
-  {
-    //bottom left
-    transform.reset();
-    transform.translate( rectHandlerSize, rect().height() - rectHandlerSize );
-    transform.rotate( 270 );
-    transform.scale( scale, scale );
-    painter->save();
-    painter->setTransform( transform, true );
-    painter->drawPath( mRotationHandlePath );
-    painter->restore();
-  }
-  
-  if ( drawBottomRotationHandles && drawRightRotationHandles )
-  {
-    //bottom right
-    transform.reset();
-    transform.translate( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize );
-    transform.rotate( 180 );
-    transform.scale( scale, scale );
-    painter->save();
-    painter->setTransform( transform, true );
-    painter->drawPath( mRotationHandlePath );
-    painter->restore();
+    
+    //top right
+    if ( drawRightRotationHandles )
+    {
+      transform.reset();
+      transform.translate( rect().width() - rectHandlerSize, rectHandlerSize );
+      transform.rotate( 90 );
+      transform.scale( scale, scale );
+      painter->save();
+      painter->setTransform( transform, true );
+      painter->drawPath( mRotationHandlePath );
+      painter->restore();
+    }
+    
+    if ( drawBottomRotationHandles )
+    {
+      //bottom left
+      transform.reset();
+      transform.translate( rectHandlerSize, rect().height() - rectHandlerSize );
+      transform.rotate( 270 );
+      transform.scale( scale, scale );
+      painter->save();
+      painter->setTransform( transform, true );
+      painter->drawPath( mRotationHandlePath );
+      painter->restore();
+    }
+    
+    if ( drawBottomRotationHandles && drawRightRotationHandles )
+    {
+      //bottom right
+      transform.reset();
+      transform.translate( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize );
+      transform.rotate( 180 );
+      transform.scale( scale, scale );
+      painter->save();
+      painter->setTransform( transform, true );
+      painter->drawPath( mRotationHandlePath );
+      painter->restore();
+    }
   }
 }
 
@@ -434,7 +448,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearLeftBorder = true;
   }
-  else if ( itemCoordPos.x() >= borderTolerance && itemCoordPos.x() < ( borderTolerance + innerTolerance ) )
+  else if ( isRotationEnabled() && itemCoordPos.x() >= borderTolerance && itemCoordPos.x() < ( borderTolerance + innerTolerance ) )
   {
     nearLeftInner = true;
   }
@@ -442,7 +456,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearUpperBorder = true;
   }
-  else if ( itemCoordPos.y() >= borderTolerance && itemCoordPos.y() < ( borderTolerance + innerTolerance ) )
+  else if ( isRotationEnabled() && itemCoordPos.y() >= borderTolerance && itemCoordPos.y() < ( borderTolerance + innerTolerance ) )
   {
     nearUpperInner = true;
   }
@@ -450,7 +464,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearRightBorder = true;
   }
-  else if ( itemCoordPos.x() <= ( rect().width() - borderTolerance ) && itemCoordPos.x() > ( rect().width() - borderTolerance - innerTolerance ) )
+  else if ( isRotationEnabled() && itemCoordPos.x() <= ( rect().width() - borderTolerance ) && itemCoordPos.x() > ( rect().width() - borderTolerance - innerTolerance ) )
   {
     nearRightInner = true;
   }
@@ -458,7 +472,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   {
     nearLowerBorder = true;
   }
-  else if ( itemCoordPos.y() <= ( rect().height() - borderTolerance ) && itemCoordPos.y() > ( rect().height() - borderTolerance - innerTolerance ) )
+  else if ( isRotationEnabled() && itemCoordPos.y() <= ( rect().height() - borderTolerance ) && itemCoordPos.y() > ( rect().height() - borderTolerance - innerTolerance ) )
   {
     nearLowerInner = true;
   }
