@@ -40,7 +40,6 @@ PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsLayoutHtml
 PyQgsMapBoxGlStyleConverter
-PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
 PyQgsSymbolLayerReadSld
