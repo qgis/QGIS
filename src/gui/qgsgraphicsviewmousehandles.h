@@ -84,8 +84,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     //! Initializes a drag operation \since QGIS 3.34
     void startMove( QPointF sceneCoordPos );
-
-    QRectF boundingRect() const override;
     
   public slots:
 
