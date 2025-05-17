@@ -48,11 +48,6 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::released, this, &QgsCameraController::onMouseReleased );
   addComponent( mMouseHandler );
 
-  mKeyboardHandler->setSourceDevice( new Qt3DInput::QKeyboardDevice() );
-  connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::pressed, this, &QgsCameraController::onKeyPressed );
-  connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::released, this, &QgsCameraController::onKeyReleased );
-  addComponent( mKeyboardHandler );
-
   // Disable the handlers when the entity is disabled
   connect( this, &Qt3DCore::QEntity::enabledChanged, mMouseHandler, &Qt3DInput::QMouseHandler::setEnabled );
   connect( this, &Qt3DCore::QEntity::enabledChanged, mKeyboardHandler, &Qt3DInput::QKeyboardHandler::setEnabled );
@@ -897,50 +892,7 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
   setMouseParameters( MouseOperation::None );
 }
 
-void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
-{
-  if ( !mInputHandlersEnabled )
-    return;
-
-  if ( event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_QuoteLeft )
-  {
-    // switch navigation mode
-    switch ( mCameraNavigationMode )
-    {
-      case Qgis::NavigationMode::Walk:
-        setCameraNavigationMode( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased );
-        break;
-      case Qgis::NavigationMode::TerrainBased:
-      case Qgis::NavigationMode::GlobeTerrainBased:
-        setCameraNavigationMode( Qgis::NavigationMode::Walk );
-        break;
-    }
-    return;
-  }
-
-  switch ( mCameraNavigationMode )
-  {
-    case Qgis::NavigationMode::Walk:
-    {
-      onKeyPressedFlyNavigation( event );
-      break;
-    }
-
-    case Qgis::NavigationMode::TerrainBased:
-    {
-      onKeyPressedTerrainNavigation( event );
-      break;
-    }
-
-    case Qgis::NavigationMode::GlobeTerrainBased:
-    {
-      onKeyPressedGlobeTerrainNavigation( event );
-      break;
-    }
-  }
-}
-
-void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *event )
+bool QgsCameraController::onKeyPressedTerrainNavigation( QKeyEvent *event )
 {
   const bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
   const bool hasCtrl = ( event->modifiers() & Qt::ControlModifier );
@@ -989,6 +941,7 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
       const float diffYaw = -tx;  // right key = rotating camera to the right
       rotateCamera( diffPitch, diffYaw );
     }
+    return true;
   }
 
   if ( tElev )
@@ -996,11 +949,14 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
     QgsVector3D center = mCameraPose.centerPoint();
     center.set( center.x(), center.y(), center.z() + tElev * 10 );
     mCameraPose.setCenterPoint( center );
+    return true;
     updateCameraFromPose();
   }
+
+  return false;
 }
 
-void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEvent *event )
+bool QgsCameraController::onKeyPressedGlobeTerrainNavigation( QKeyEvent *event )
 {
   // both move factor and zoom factor are just empirically picked numbers
   // that seem to work well (providing steps that are not too big / not too small)
@@ -1016,37 +972,51 @@ void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEve
         globeUpdateHeadingAngle( -5 );
       else
         globeMoveCenterPoint( 0, -MOVE_FACTOR * mCameraPose.distanceFromCenterPoint() );
-      break;
+      return true;
     case Qt::Key_Right:
       if ( hasShift )
         globeUpdateHeadingAngle( 5 );
       else
         globeMoveCenterPoint( 0, MOVE_FACTOR * mCameraPose.distanceFromCenterPoint() );
-      break;
+      return true;
     case Qt::Key_Up:
       if ( hasShift )
         globeUpdatePitchAngle( -5 );
       else
         globeMoveCenterPoint( MOVE_FACTOR * mCameraPose.distanceFromCenterPoint(), 0 );
-      break;
+      return true;
     case Qt::Key_Down:
       if ( hasShift )
         globeUpdatePitchAngle( 5 );
       else
         globeMoveCenterPoint( -MOVE_FACTOR * mCameraPose.distanceFromCenterPoint(), 0 );
-      break;
+      return true;
     case Qt::Key_PageDown:
       globeZoom( ZOOM_FACTOR );
-      break;
+      return true;
     case Qt::Key_PageUp:
       globeZoom( 1 / ZOOM_FACTOR );
-      break;
-    default:
-      break;
+      return true;
   }
+  return false;
 }
 
-void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event )
+static const QSet<int> walkNavigationSavedKeys = {
+  Qt::Key_Left,
+  Qt::Key_A,
+  Qt::Key_Right,
+  Qt::Key_D,
+  Qt::Key_Up,
+  Qt::Key_W,
+  Qt::Key_Down,
+  Qt::Key_S,
+  Qt::Key_PageUp,
+  Qt::Key_E,
+  Qt::Key_PageDown,
+  Qt::Key_Q,
+};
+
+bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
 {
   switch ( event->key() )
   {
@@ -1063,7 +1033,7 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
       {
         qApp->restoreOverrideCursor();
       }
-      return;
+      return true;
     }
 
     case Qt::Key_Escape:
@@ -1074,19 +1044,15 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
         mCaptureFpsMouseMovements = false;
         mIgnoreNextMouseMove = true;
         qApp->restoreOverrideCursor();
-        return;
+        return true;
       }
       break;
     }
-
-    default:
-      break;
   }
 
-  if ( event->isAutoRepeat() )
-    return;
-
-  mDepressedKeys.insert( event->key() );
+  if ( !event->isAutoRepeat() && walkNavigationSavedKeys.contains( event->key() ) )
+    mDepressedKeys.insert( event->key() );
+  return false;
 }
 
 void QgsCameraController::walkView( double tx, double ty, double tz )
@@ -1115,6 +1081,9 @@ void QgsCameraController::walkView( double tx, double ty, double tz )
 
 void QgsCameraController::applyFlyModeKeyMovements()
 {
+  if ( mCameraNavigationMode != Qgis::NavigationMode::Walk )
+    return;
+
   // shift = "run", ctrl = "slow walk"
   const bool shiftPressed = mDepressedKeys.contains( Qt::Key_Shift );
   const bool ctrlPressed = mDepressedKeys.contains( Qt::Key_Control );
@@ -1245,17 +1214,6 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
   }
 }
 
-void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
-{
-  if ( !mInputHandlersEnabled )
-    return;
-
-  if ( event->isAutoRepeat() )
-    return;
-
-  mDepressedKeys.remove( event->key() );
-}
-
 void QgsCameraController::tiltUpAroundViewCenter( float deltaPitch )
 {
   // Tilt up the view by deltaPitch around the view center (camera moves)
@@ -1299,76 +1257,51 @@ void QgsCameraController::moveView( float tx, float ty )
   updateCameraFromPose();
 }
 
-bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
+bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
 {
-  if ( event->key() == Qt::Key_QuoteLeft )
-    return true;
+  if ( !mInputHandlersEnabled )
+    return false;
 
-  switch ( mCameraNavigationMode )
+  if ( event->type() == QKeyEvent::Type::KeyRelease )
   {
-    case Qgis::NavigationMode::Walk:
+    if ( !event->isAutoRepeat() && mDepressedKeys.contains( event->key() ) )
     {
-      switch ( event->key() )
+      mDepressedKeys.remove( event->key() );
+      return true;
+    }
+  }
+  else if ( event->type() == QKeyEvent::Type::KeyPress || event->type() == QEvent::ShortcutOverride )
+  {
+    if ( event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_QuoteLeft )
+    {
+      // switch navigation mode
+      switch ( mCameraNavigationMode )
       {
-        case Qt::Key_Left:
-        case Qt::Key_A:
-        case Qt::Key_Right:
-        case Qt::Key_D:
-        case Qt::Key_Up:
-        case Qt::Key_W:
-        case Qt::Key_Down:
-        case Qt::Key_S:
-        case Qt::Key_PageUp:
-        case Qt::Key_E:
-        case Qt::Key_PageDown:
-        case Qt::Key_Q:
-          return true;
-
-        case Qt::Key_Escape:
-          if ( mCaptureFpsMouseMovements )
-            return true;
+        case Qgis::NavigationMode::Walk:
+          setCameraNavigationMode(
+            mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe
+              ? Qgis::NavigationMode::GlobeTerrainBased
+              : Qgis::NavigationMode::TerrainBased
+          );
           break;
-
-        default:
+        case Qgis::NavigationMode::TerrainBased:
+        case Qgis::NavigationMode::GlobeTerrainBased:
+          setCameraNavigationMode( Qgis::NavigationMode::Walk );
           break;
       }
-      break;
+      return true;
     }
 
-    case Qgis::NavigationMode::TerrainBased:
+    switch ( mCameraNavigationMode )
     {
-      switch ( event->key() )
-      {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
-          return true;
+      case Qgis::NavigationMode::Walk:
+        return onKeyPressedFlyNavigation( event );
 
-        default:
-          break;
-      }
-      break;
-    }
+      case Qgis::NavigationMode::TerrainBased:
+        return onKeyPressedTerrainNavigation( event );
 
-    case Qgis::NavigationMode::GlobeTerrainBased:
-    {
-      switch ( event->key() )
-      {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
-          return true;
-
-        default:
-          break;
-      }
-      break;
+      case Qgis::NavigationMode::GlobeTerrainBased:
+        return onKeyPressedGlobeTerrainNavigation( event );
     }
   }
   return false;
