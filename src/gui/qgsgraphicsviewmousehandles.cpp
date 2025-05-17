@@ -257,7 +257,7 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
       
       QTransform transform;
       transform.translate( rotationCenter.x(), rotationCenter.y() );
-      transform.rotate( mRotationCurrent - mRotationBegin );
+      transform.rotate( mRotationDelta );
       transform.translate( -rotationCenter.x(), -rotationCenter.y() );
       itemBounds = mapFromScene( transform.map( itemSceneBounds ) );
     }
@@ -642,7 +642,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     case Qgis::MouseHandlesAction::RotateLeftDown:
     case Qgis::MouseHandlesAction::RotateRightDown:
       mIsRotating = true;
-      mRotationCenter = QPointF( mBeginHandlePos.x() + ( sceneBoundingRect().width() / 2 ), mBeginHandlePos.y() + ( sceneBoundingRect().height() / 2 ) );
+      mRotationCenter = sceneTransform().map( rect().center() );
       mRotationBegin = std::atan2( mMouseMoveStartPos.y() - mRotationCenter.y(), mMouseMoveStartPos.x() - mRotationCenter.x() ) * 180 / M_PI;
       mRotationCurrent = 0.0;
       break;
@@ -688,7 +688,8 @@ void QgsGraphicsViewMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent *even
   else if ( isRotating() )
   {
     //currently rotating a selection
-    rotateMouseMove( event->lastScenePos() );
+    //snap to common angles if ctrl is pressed
+    rotateMouseMove( event->lastScenePos(), event->modifiers() & Qt::ControlModifier );
   }
 }
 
@@ -796,7 +797,6 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
   }
   else if ( mIsRotating )
   {
-    mRotationCurrent = std::atan2( mouseMoveStopPoint.y() - mRotationCenter.y(), mouseMoveStopPoint.x() - mRotationCenter.x() ) * 180 / M_PI;
     const QPointF itemRotationCenter = sceneTransform().map( rect().center() );
   
     //move selected items
@@ -816,12 +816,12 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
       
       QTransform transform;
       transform.translate( itemRotationCenter.x(), itemRotationCenter.y() );
-      transform.rotate( mRotationCurrent - mRotationBegin );
+      transform.rotate( mRotationDelta );
       transform.translate( -itemRotationCenter.x(), -itemRotationCenter.y() );
       const QPointF rotatedItemCenter = transform.map( itemCenter );
       
       createItemCommand( item );
-      rotateItem( item, mRotationCurrent - mRotationBegin, rotatedItemCenter.x() - itemCenter.x(), rotatedItemCenter.y() - itemCenter.y() );
+      rotateItem( item, mRotationDelta, rotatedItemCenter.x() - itemCenter.x(), rotatedItemCenter.y() - itemCenter.y() );
       endItemCommand( item );
     }
     endMacroCommand();
@@ -905,7 +905,7 @@ void QgsGraphicsViewMouseHandles::updateHandles()
   update();
 }
 
-void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition )
+void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition, bool snapToCommonAngles )
 {
   if ( !scene() )
   {
@@ -913,6 +913,17 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition )
   }
   
   mRotationCurrent = std::atan2( currentPosition.y() - mRotationCenter.y(), currentPosition.x() - mRotationCenter.x() ) * 180 / M_PI;
+  mRotationDelta = mRotationCurrent - mRotationBegin;
+  if ( snapToCommonAngles )
+  {
+    const double commonAngles = 15;
+    double snappedRotationDelta = std::floor( std::abs( mRotationDelta ) / commonAngles ) * commonAngles;
+    if ( std::abs( std::fmod( mRotationDelta, commonAngles ) ) >= 10 )
+    {
+      snappedRotationDelta += commonAngles;
+    }
+    mRotationDelta = mRotationDelta >= 0 ? snappedRotationDelta : -snappedRotationDelta;
+  }
   
   const double itemRotationRadian = rotation() * M_PI / 180;
   const double deltaX = ( rect().width() / 2 ) * cos( itemRotationRadian ) - ( rect().height() / 2 ) * sin( itemRotationRadian );
@@ -920,12 +931,12 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition )
   
   QTransform rotateTransform;
   rotateTransform.translate( deltaX, deltaY );
-  rotateTransform.rotate( mRotationCurrent - mRotationBegin );
+  rotateTransform.rotate( mRotationDelta );
   rotateTransform.translate( -deltaX, -deltaY );
   setTransform( rotateTransform );
   
   //show current selection rotation in status bar
-  showStatusMessage( tr( "rotation: %1°" ).arg( QString::number( mRotationCurrent - mRotationBegin, 'f', 2 ) ) );
+  showStatusMessage( tr( "rotation: %1°" ).arg( QString::number( mRotationDelta, 'f', 2 ) ) );
 
   return;
 }
