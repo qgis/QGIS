@@ -13411,6 +13411,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
   }
 #else
   Q_UNUSED( name );
+  Q_UNUSED( sceneMode );
 #endif
   return nullptr;
 }
