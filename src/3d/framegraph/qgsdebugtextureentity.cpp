@@ -29,10 +29,11 @@ QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Q
   mTextureParameter = new Qt3DRender::QParameter( "previewTexture", texture );
   mCenterTextureCoords = new Qt3DRender::QParameter( "centerTexCoords", QVector2D( 0, 0 ) );
   mSizeTextureCoords = new Qt3DRender::QParameter( "sizeTexCoords", QVector2D( 1, 1 ) );
+  mIsDepth = new Qt3DRender::QParameter( "isDepth", true );
   mMaterial->addParameter( mTextureParameter );
   mMaterial->addParameter( mCenterTextureCoords );
   mMaterial->addParameter( mSizeTextureCoords );
-  mMaterial->addParameter( new Qt3DRender::QParameter( "isDepth", true ) );
+  mMaterial->addParameter( mIsDepth );
 
   mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/preview.vert" ) ) );
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/preview.frag" ) ) );
