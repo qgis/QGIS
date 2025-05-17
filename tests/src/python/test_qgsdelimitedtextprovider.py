@@ -264,7 +264,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
                 for field in f.fields():
                     fields.append(str(field.name()))
                     fieldTypes.append(str(field.typeName()))
-            fielddata = {name: str(f[name]) for name in fields}
+            fielddata = {
+                name: str(f[name]) if f[name] != NULL else "NULL" for name in fields
+            }
             g = f.geometry()
             if not g.isNull():
                 fielddata[geomkey] = str(g.asWkt())
