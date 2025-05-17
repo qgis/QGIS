@@ -49,7 +49,6 @@ PyQgsSymbolLayerReadSld
 PyQgsSettings
 PyQgsSettingsEntry
 PyQgsServerAccessControlWFSTransactional
-ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt4
 ProcessingGdalAlgorithmsVectorTest
 # PyQgsProviderRegistry runs fine locally on Fedora:rawhide but not on CI
