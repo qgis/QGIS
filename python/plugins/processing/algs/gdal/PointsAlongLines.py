@@ -114,6 +114,12 @@ class PointsAlongLines(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+
+        if not input_details.layer_name:
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
+
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         if input_details.geometry_column_name:
             geometry = input_details.geometry_column_name
