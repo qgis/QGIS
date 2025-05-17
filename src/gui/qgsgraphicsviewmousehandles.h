@@ -163,7 +163,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
     //! Handles rotating of tiems during mouse move
-    void rotateMouseMove( QPointF currentPosition );
+    void rotateMouseMove( QPointF currentPosition, bool snapToCommonAngles );
 
     void setHandleSize( double size );
 
@@ -218,6 +218,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     QPointF mRotationCenter;
     double mRotationBegin = 0.0;
     double mRotationCurrent = 0.0;
+    double mRotationDelta = 0.0;
 
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
