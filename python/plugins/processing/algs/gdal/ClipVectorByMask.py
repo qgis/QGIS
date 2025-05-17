@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
     QgsProcessing,
+    QgsProcessingException,
     QgsProcessingAlgorithm,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterString,
