@@ -480,6 +480,14 @@ void QgsLayoutMapWidget::aboutToShowLayersMenu()
     mMapLayerModel->setFilters( Qgis::LayerFilter::SpatialLayer );
   }
 
+  if ( mMapLayerModel->rowCount() == 0 )
+  {
+    QAction *action = new QAction( tr( "No spatial layers available" ) );
+    action->setEnabled( false );
+    mLayersMenu->addAction( action );
+    return;
+  }
+
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
     const QModelIndex index = mMapLayerModel->index( i, 0 );
@@ -508,7 +516,17 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
   // query the bookmarks now? or once during widget creation... Hmm. Either way, there's potentially a
   // delay if there's LOTS of bookmarks. Let's avoid the cost until bookmarks are actually required.
   if ( !mBookmarkModel )
+  {
     mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
+  }
+
+  if ( mBookmarkModel->rowCount() == 0 )
+  {
+    QAction *action = new QAction( tr( "No bookmarks available" ) );
+    action->setEnabled( false );
+    mBookmarkMenu->addAction( action );
+    return;
+  }
 
   QMap<QString, QMenu *> groupMenus;
   for ( int i = 0; i < mBookmarkModel->rowCount(); ++i )
