@@ -41,7 +41,6 @@ PyQgsElevationProfileCanvas
 PyQgsFloatingWidget
 PyQgsLayoutHtml
 PyQgsMapBoxGlStyleConverter
-PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
