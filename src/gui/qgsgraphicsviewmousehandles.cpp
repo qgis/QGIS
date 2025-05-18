@@ -34,7 +34,7 @@ QgsGraphicsViewMouseHandles::QgsGraphicsViewMouseHandles( QGraphicsView *view )
 {
   //accept hover events, required for changing cursor to resize cursors
   setAcceptHoverEvents( true );
-  
+
   //prepare rotation handle path
   mRotationHandlePath.moveTo( 0, 14 );
   mRotationHandlePath.lineTo( 6, 20 );
@@ -53,7 +53,7 @@ void QgsGraphicsViewMouseHandles::setRotationEnabled( bool enable )
   {
     return;
   }
-  
+
   mRotationEnabled = enable;
   update();
 }
@@ -152,7 +152,7 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
   painter->drawRect( QRectF( ( rect().width() - rectHandlerSize ) / 2, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
   //bottom right
   painter->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
-  
+
   if ( isRotationEnabled() )
   {
     //draw rotate handles
@@ -160,7 +160,7 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
     const bool drawBottomRotationHandles = ( rectHandlerSize * 2 ) + ( mRotationHandleSize * scale * 2 ) < rect().height();
     const bool drawRightRotationHandles = ( rectHandlerSize * 2 ) + ( mRotationHandleSize * scale * 2 ) < rect().width();
     QTransform transform;
-    
+
     //top left
     transform.reset();
     transform.translate( rectHandlerSize, rectHandlerSize );
@@ -169,7 +169,7 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
     painter->setTransform( transform, true );
     painter->drawPath( mRotationHandlePath );
     painter->restore();
-    
+
     //top right
     if ( drawRightRotationHandles )
     {
@@ -182,7 +182,7 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       painter->drawPath( mRotationHandlePath );
       painter->restore();
     }
-    
+
     if ( drawBottomRotationHandles )
     {
       //bottom left
@@ -195,7 +195,7 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       painter->drawPath( mRotationHandlePath );
       painter->restore();
     }
-    
+
     if ( drawBottomRotationHandles && drawRightRotationHandles )
     {
       //bottom right
@@ -268,7 +268,7 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     {
       const QPolygonF itemSceneBounds = item->mapToScene( itemRect( item ) );
       const QPointF rotationCenter = sceneTransform().map( rect().center() );
-      
+
       QTransform transform;
       transform.translate( rotationCenter.x(), rotationCenter.y() );
       transform.rotate( mRotationDelta );
@@ -406,7 +406,7 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
       }
     case Qgis::MouseHandlesAction::SelectItem:
       return Qt::ArrowCursor;
-    
+
     case Qgis::MouseHandlesAction::RotateLeftUp:
     case Qgis::MouseHandlesAction::RotateRightUp:
     case Qgis::MouseHandlesAction::RotateLeftDown:
@@ -428,10 +428,10 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   bool nearRightInner = false;
   bool nearLowerInner = false;
   bool nearUpperInner = false;
-  
+
   bool withinWidth = false;
   bool withinHeight = false;
-  
+
   if ( itemCoordPos.x() >= 0 && itemCoordPos.x() <= rect().width() )
   {
     withinWidth = true;
@@ -650,7 +650,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
       mResizeMoveY = 0;
       mCursorOffset = calcCursorEdgeOffset( mMouseMoveStartPos );
       break;
-    
+
     case Qgis::MouseHandlesAction::RotateLeftUp:
     case Qgis::MouseHandlesAction::RotateRightUp:
     case Qgis::MouseHandlesAction::RotateLeftDown:
@@ -660,7 +660,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
       mRotationBegin = std::atan2( mMouseMoveStartPos.y() - mRotationCenter.y(), mMouseMoveStartPos.x() - mRotationCenter.x() ) * 180 / M_PI;
       mRotationCurrent = 0.0;
       break;
-    
+
     case Qgis::MouseHandlesAction::SelectItem:
     case Qgis::MouseHandlesAction::NoAction:
       break;
@@ -766,7 +766,7 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
       endItemCommand( item );
     }
     endMacroCommand();
-    
+
     mIsDragging = false;
   }
   else if ( mIsResizing )
@@ -806,13 +806,13 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
       endItemCommand( item );
     }
     endMacroCommand();
-    
+
     mIsResizing = false;
   }
   else if ( mIsRotating )
   {
     const QPointF itemRotationCenter = sceneTransform().map( rect().center() );
-  
+
     //move selected items
     startMacroCommand( tr( "Rotate Items" ) );
 
@@ -827,19 +827,19 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
       }
 
       const QPointF itemCenter = item->mapToScene( itemRect( item ) ).boundingRect().center();
-      
+
       QTransform transform;
       transform.translate( itemRotationCenter.x(), itemRotationCenter.y() );
       transform.rotate( mRotationDelta );
       transform.translate( -itemRotationCenter.x(), -itemRotationCenter.y() );
       const QPointF rotatedItemCenter = transform.map( itemCenter );
-      
+
       createItemCommand( item );
       rotateItem( item, mRotationDelta, rotatedItemCenter.x() - itemCenter.x(), rotatedItemCenter.y() - itemCenter.y() );
       endItemCommand( item );
     }
     endMacroCommand();
-    
+
     mIsRotating = false;
   }
 
@@ -925,7 +925,7 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition, bool
   {
     return;
   }
-  
+
   mRotationCurrent = std::atan2( currentPosition.y() - mRotationCenter.y(), currentPosition.x() - mRotationCenter.x() ) * 180 / M_PI;
   mRotationDelta = mRotationCurrent - mRotationBegin;
   if ( snapToCommonAngles )
@@ -938,17 +938,17 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition, bool
     }
     mRotationDelta = mRotationDelta >= 0 ? snappedRotationDelta : -snappedRotationDelta;
   }
-  
+
   const double itemRotationRadian = rotation() * M_PI / 180;
   const double deltaX = ( rect().width() / 2 ) * cos( itemRotationRadian ) - ( rect().height() / 2 ) * sin( itemRotationRadian );
   const double deltaY = ( rect().width() / 2 ) * sin( itemRotationRadian ) + ( rect().height() / 2 ) * cos( itemRotationRadian );
-  
+
   QTransform rotateTransform;
   rotateTransform.translate( deltaX, deltaY );
   rotateTransform.rotate( mRotationDelta );
   rotateTransform.translate( -deltaX, -deltaY );
   setTransform( rotateTransform );
-  
+
   //show current selection rotation in status bar
   showStatusMessage( tr( "rotation: %1°" ).arg( QString::number( mRotationDelta, 'f', 2 ) ) );
 
