@@ -253,7 +253,7 @@ endif()
 
 # additional analysis includes
 if(WITH_ANALYSIS)
-  include_directories(BEFORE
+  set(ANALYSIS_INCLUDE_DIRECTORIES_BEFORE
     ${CMAKE_BINARY_DIR}/src/analysis/processing
     ${CMAKE_BINARY_DIR}/src/analysis/georeferencing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
@@ -261,11 +261,14 @@ if(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-
-    if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
-       ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
-    endif()
   )
+  if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
+     list(APPEND ANALYSIS_INCLUDE_DIRECTORIES_BEFORE
+       ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+     )
+  endif()
+
+  include_directories(BEFORE ${ANALYSIS_INCLUDE_DIRECTORIES_BEFORE})
 
   # analysis module
   file(GLOB_RECURSE sip_files_analysis ${BINDING_FILES_ROOT_DIR}/analysis/*.sip ${BINDING_FILES_ROOT_DIR}/analysis/*.sip.in)
