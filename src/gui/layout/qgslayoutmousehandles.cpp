@@ -45,7 +45,7 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
   , mView( view )
 {
   setRotationEnabled( true );
-  
+
   //listen for selection changes, and update handles accordingly
   connect( mLayout, &QGraphicsScene::selectionChanged, this, &QgsLayoutMouseHandles::selectionChanged );
 

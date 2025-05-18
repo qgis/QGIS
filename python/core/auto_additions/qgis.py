@@ -11411,6 +11411,10 @@ Qgis.MouseHandlesAction.ResizeLeftUp.__doc__ = "Resize left up (Top left handle)
 Qgis.MouseHandlesAction.ResizeRightUp.__doc__ = "Resize right up (Top right handle)"
 Qgis.MouseHandlesAction.ResizeLeftDown.__doc__ = "Resize left down (Bottom left handle)"
 Qgis.MouseHandlesAction.ResizeRightDown.__doc__ = "Resize right down (Bottom right handle)"
+Qgis.MouseHandlesAction.RotateLeftUp.__doc__ = "Rotate left up (Top left handle)"
+Qgis.MouseHandlesAction.RotateRightUp.__doc__ = "Rotate right up (Top right handle)"
+Qgis.MouseHandlesAction.RotateLeftDown.__doc__ = "Rotate left up (Bottom left handle)"
+Qgis.MouseHandlesAction.RotateRightDown.__doc__ = "Rotate right up (Bottom right handle)"
 Qgis.MouseHandlesAction.SelectItem.__doc__ = "Select item"
 Qgis.MouseHandlesAction.NoAction.__doc__ = "No action"
 Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
@@ -11426,6 +11430,10 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 * ``ResizeRightUp``: Resize right up (Top right handle)
 * ``ResizeLeftDown``: Resize left down (Bottom left handle)
 * ``ResizeRightDown``: Resize right down (Bottom right handle)
+* ``RotateLeftUp``: Rotate left up (Top left handle)
+* ``RotateRightUp``: Rotate right up (Top right handle)
+* ``RotateLeftDown``: Rotate left up (Bottom left handle)
+* ``RotateRightDown``: Rotate right up (Bottom right handle)
 * ``SelectItem``: Select item
 * ``NoAction``: No action
 
