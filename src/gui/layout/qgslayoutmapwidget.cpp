@@ -114,7 +114,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   mLayersMenu = new QMenu( this );
   QToolButton *btnLayers = new QToolButton( this );
   btnLayers->setAutoRaise( true );
-  btnLayers->setToolTip( tr( "Layers" ) );
+  btnLayers->setToolTip( tr( "Set Map Extent to Layer Extent" ) );
   btnLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLayers.svg" ) ) );
   btnLayers->setPopupMode( QToolButton::InstantPopup );
   btnLayers->setMenu( mLayersMenu );
@@ -125,7 +125,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   mBookmarkMenu = new QMenu( this );
   QToolButton *btnBookmarks = new QToolButton( this );
   btnBookmarks->setAutoRaise( true );
-  btnBookmarks->setToolTip( tr( "Bookmarks" ) );
+  btnBookmarks->setToolTip( tr( "Set Map Extent to Bookmark Extent" ) );
   btnBookmarks->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
   btnBookmarks->setPopupMode( QToolButton::InstantPopup );
   btnBookmarks->setMenu( mBookmarkMenu );
