@@ -84,7 +84,7 @@ QString QgsTransformAlgorithm::shortHelpString() const
 
 QString QgsTransformAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a vector layer with geometries reprojected to a new CRS." );
+  return QObject::tr( "Creates a vector layer with geometries transformed to a new CRS." );
 }
 
 QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const

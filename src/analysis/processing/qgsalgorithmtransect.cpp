@@ -67,7 +67,7 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsTransectAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestring.\n" )
+  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestrings.\n" )
          + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" )
@@ -81,7 +81,7 @@ QString QgsTransectAlgorithm::shortHelpString() const
 
 QString QgsTransectAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates transects on vertices for (multi)linestring." );
+  return QObject::tr( "Creates transects on vertices for (multi)linestrings." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsTransectAlgorithm::documentationFlags() const
