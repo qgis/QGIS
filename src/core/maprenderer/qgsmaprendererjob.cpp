@@ -52,6 +52,7 @@
 #include "qgsmeshlayerlabeling.h"
 #include "qgsrasterlabeling.h"
 #include "qgsgeos.h"
+#include "qgspainting.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 const QgsSettingsEntryString *QgsMapRendererJob::settingsMaskBackend = new QgsSettingsEntryString( QStringLiteral( "mask-backend" ), QgsSettingsTree::sTreeMap, QString(), QStringLiteral( "Backend engine to use for selective masking" ) );
@@ -908,6 +909,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   }
   labelJob.context.setMaskIdProvider( &labelJob.maskIdProvider );
 
+  const bool hasNonDefaultComposition = labelingHasNonDefaultCompositionModes();
+
   // Prepare second pass jobs
   // - For raster rendering or vector rendering if effects are involved
   // 1st pass, 2nd pass and mask are rendered in QImage and composed in composeSecondPass
@@ -916,12 +919,15 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // masked symbol layer rendering during second pass, which is rendered in QPicture, second
   // pass job picture
 
-  // Allocate an image for labels
-  if ( !labelJob.img && !forceVector )
+  // Allocate an image or picture for labels, as suitable.
+  // If we have some non-default label composition modes, we CAN'T render to an image as that
+  // "flattens" composition modes and prevents them interacting with underlying layers.
+  const bool canUseImage = !forceVector && !hasNonDefaultComposition;
+  if ( !labelJob.img && canUseImage )
   {
     labelJob.img = allocateImage( QStringLiteral( "labels" ) );
   }
-  else if ( !labelJob.picture && forceVector )
+  else if ( !labelJob.picture && !canUseImage )
   {
     labelJob.picture.reset( new QPicture() );
   }
@@ -1372,6 +1378,12 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
     painter.setOpacity( 1.0 );
     painter.drawImage( 0, 0, *labelJob.img );
+  }
+  else if ( labelJob.picture && labelJob.complete )
+  {
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+    painter.setOpacity( 1.0 );
+    QgsPainting::drawPicture( &painter, QPointF( 0, 0 ), *labelJob.picture );
   }
   // when checking for a label cache image, we only look for those which would be drawn between 30% and 300% of the
   // original size. We don't want to draw massive pixelated labels on top of everything else, and we also don't need
