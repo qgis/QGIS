@@ -69,7 +69,7 @@ QString QgsSmoothAlgorithm::shortHelpString() const
 
 QString QgsSmoothAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Smooths the geometries in a line or polygon layer by adding vertices and corners." );
+  return QObject::tr( "Smooths the geometries in a line or polygon layer by adding vertices and rounding corners." );
 }
 
 QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const

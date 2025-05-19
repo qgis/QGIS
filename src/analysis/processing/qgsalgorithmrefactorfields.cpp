@@ -43,8 +43,7 @@ QString QgsRefactorFieldsAlgorithm::shortHelpString() const
 
 QString QgsRefactorFieldsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Allows editing the structure of the attributes table of a vector layer. Fields can be modified "
-                      "in their type and name, using a fields mapping." );
+  return QObject::tr( "Allows editing the structure of the attributes table of a vector layer, permitting field renaming, creation and deletion." );
 }
 
 QStringList QgsRefactorFieldsAlgorithm::tags() const

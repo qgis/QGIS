@@ -50,7 +50,7 @@ QString QgsShortestLineAlgorithm::groupId() const
 
 QString QgsShortestLineAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a line layer as the shortest line between features in source and destination layers." );
+  return QObject::tr( "Calculates the shortest lines between features in source and destination layers." );
 }
 
 QString QgsShortestLineAlgorithm::shortHelpString() const
