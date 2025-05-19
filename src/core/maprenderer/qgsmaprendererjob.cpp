@@ -314,6 +314,63 @@ bool QgsMapRendererJob::prepareLabelCache() const
   return canCache;
 }
 
+bool QgsMapRendererJob::labelingHasNonDefaultCompositionModes() const
+{
+  const QList<QgsMapLayer *> layers = mSettings.layers();
+  for ( QgsMapLayer *ml : layers )
+  {
+    if ( !QgsPalLabeling::staticWillUseLayer( ml ) )
+      continue;
+
+    switch ( ml->type() )
+    {
+      case Qgis::LayerType::Vector:
+      {
+        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( ml );
+        if ( vl->labelsEnabled() && vl->labeling()->hasNonDefaultCompositionMode() )
+        {
+          return true;
+        }
+        break;
+      }
+
+      case Qgis::LayerType::Mesh:
+      {
+        QgsMeshLayer *l = qobject_cast< QgsMeshLayer *>( ml );
+        if ( l->labelsEnabled() && l->labeling()->hasNonDefaultCompositionMode() )
+        {
+          return true;
+        }
+        break;
+      }
+
+      case Qgis::LayerType::Raster:
+      {
+        QgsRasterLayer *l = qobject_cast< QgsRasterLayer *>( ml );
+        if ( l->labelsEnabled() && l->labeling()->hasNonDefaultCompositionMode() )
+        {
+          return true;
+        }
+        break;
+      }
+
+      case Qgis::LayerType::VectorTile:
+      {
+        // TODO -- add detection of advanced labeling effects for vector tile layers
+        break;
+      }
+
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledScene:
+        break;
+    }
+  }
+
+  return false;
+}
 
 bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
