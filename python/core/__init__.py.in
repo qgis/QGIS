@@ -768,7 +768,7 @@ except ModuleNotFoundError:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
-   @static_method
+   @staticmethod
    def _geometry_from_shapely(shapely_geom):
        raise QgsNotSupportedException('QgsGeometry.from_shapely is not available, shapely is not installed on the system')
 
