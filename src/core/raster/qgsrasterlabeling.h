@@ -220,6 +220,19 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     virtual bool requiresAdvancedEffects() const = 0;
 
     /**
+     * Returns TRUE the labeling requires a non-default composition mode.
+     *
+     * This method is pessimistic, in that it will return TRUE in cases where composition
+     * modes cannot be easily determined in advance (e.g. when data-defined overrides are
+     * in place for composition modes).
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+
+    /**
      * Multiply opacity by \a opacityFactor.
      *
      * This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
@@ -283,6 +296,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     bool requiresAdvancedEffects() const override;
+    bool hasNonDefaultCompositionMode() const override;
     void multiplyOpacity( double opacityFactor ) override;
 
     //! Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved configuration
