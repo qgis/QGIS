@@ -415,6 +415,10 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
       job.img->fill( 0 );
       painter.begin( job.img );
     }
+    else if ( job.picture )
+    {
+      painter.begin( job.picture.get() );
+    }
     else
     {
       painter.begin( &self->mFinalImage );
