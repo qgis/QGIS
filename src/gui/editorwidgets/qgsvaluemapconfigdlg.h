@@ -93,6 +93,8 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     void removeSelectedButtonPushed();
     void loadFromLayerButtonPushed();
     void loadFromCSVButtonPushed();
+
+  friend class TestQgsValueMapConfigDlg;
 };
 
 #endif // QGSVALUEMAPCONFIGDLG_H
