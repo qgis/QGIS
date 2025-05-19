@@ -268,6 +268,20 @@ Returns ``True`` if this rule or any of its children requires advanced
 composition effects to render.
 %End
 
+        bool hasNonDefaultCompositionMode() const;
+%Docstring
+Returns ``True`` if this rule or any of its children requires a
+non-default composition mode.
+
+This method is pessimistic, in that it will return ``True`` in cases
+where composition modes cannot be easily determined in advance (e.g.
+when data-defined overrides are in place for composition modes).
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
+%End
+
         bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
 Accepts the specified symbology ``visitor``, causing it to visit all
@@ -320,6 +334,8 @@ Set pal settings for a specific provider (takes ownership).
 :param providerId: The id of the provider
 %End
     virtual bool requiresAdvancedEffects() const;
+
+    virtual bool hasNonDefaultCompositionMode() const;
 
  virtual void toSld( QDomNode &parent, const QVariantMap &properties ) const /Deprecated/;
 
