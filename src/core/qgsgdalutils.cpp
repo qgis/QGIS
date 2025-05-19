@@ -945,7 +945,14 @@ QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSys
 
 bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
 {
-  return vsiArchivePrefixes().contains( prefix );
+  const QStringList prefixes = vsiArchivePrefixes();
+  for ( const QString &archivePrefix : prefixes )
+  {
+    // catch chained prefixes, eg "/vsizip/vsicurl"
+    if ( prefix.contains( archivePrefix ) )
+      return true;
+  }
+  return false;
 }
 
 QStringList QgsGdalUtils::vsiArchiveFileExtensions()
