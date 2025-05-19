@@ -18,6 +18,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QSignalSpy>
+#include <QComboBox>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include "qgsattributeform.h"
@@ -34,6 +35,12 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsspinbox.h"
+#include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluerelationconfigdlg.h"
+#include "qgsrenderer.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsstyle.h"
+#include "qgscategorizedsymbolrendererwidget.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -63,6 +70,8 @@ class TestQgsAttributeForm : public QObject
     void testZeroDoubles();
     void testMinimumWidth();
     void testFieldConstraintDuplicateField();
+    void testDisableComboBoxes();
+    void testTest();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1274,6 +1283,227 @@ void TestQgsAttributeForm::testFieldConstraintDuplicateField()
   formEditorWidgets[0]->editorWidget()->setValues( 20, QVariantList() );
   QCOMPARE( formEditorWidgets[0]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultPass );
   QCOMPARE( formEditorWidgets[1]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultPass );
+}
+
+void TestQgsAttributeForm::testDisableComboBoxes()
+{
+ //  // make a temporary layer to check through
+ //  const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer" );
+ //  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+ //  // build a form, set a feature
+ //  // QgsFeature ft( layer->fields(), 1 );
+ //   QgsAttributeForm form( layer );
+ // form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+ //  // form.setFeature( ft );
+
+ //  // create a value map configuration
+ //  QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), layer, 0, nullptr ) );
+ //  QVariantMap config = valueMapConfig->config();
+
+ //  // set allow null in value map configuration and apply it to the layer
+ //  // layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+ //  // QComboBox *cb = form.findChild<QComboBox*>();
+ //  // QVERIFY( !cb->isEnabled() );
+ //  // QCOMPARE( cb->toolTip(), "No other values available" );
+
+ //  // QVariantMap valuePair;
+ //  // valuePair.insert( "2", "two" );
+ //  // QList<QVariant> valueList;
+ //  // valueList.insert( 0, valuePair );
+ //  // config["map"] = valueList;
+ //  // layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+ //  // cb = form.findChild<QComboBox*>();
+ //  // QVERIFY( cb->isEnabled() );
+ //  // QVERIFY( cb->toolTip().isEmpty() );
+
+ //  // // create a value relation configuration
+ //  // QgsValueRelationConfigDlg *valueRelationConfig = static_cast<QgsValueRelationConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueRelation" ), layer, 0, nullptr ) );
+ //  // config = valueRelationConfig->config();
+ //  // layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), config ) );
+ //  // cb = form.findChild<QComboBox*>();
+ //  // QVERIFY( !cb->isEnabled() );
+ //  // QCOMPARE( cb->toolTip(), "No values available" );
+
+ //  // //toggle allow null in value relation configuration
+ //  // config.remove(QStringLiteral( "AllowNull" ) );
+ //  // config.insert( QStringLiteral( "AllowNull" ), true );
+ //  // layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), config ) );
+ //  // cb = form.findChild<QComboBox*>();
+ //  // QVERIFY( !cb->isEnabled() );
+ //  // QCOMPARE( cb->toolTip(), "No other values available" );
+
+ //  QgsAttributeForm form2( layer );
+ //  QgsFeature ft2( layer->fields(), 2 );
+ //  form2.setMode( QgsAttributeEditorContext::AddFeatureMode );
+ //  form.setFeature( ft2 );
+
+ //  // QgsValueMapConfigDlg *valueMapConfig2 = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "Range" ), layer, 0, nullptr ) );
+ //  // QVariantMap config2 = valueMapConfig2->config();
+ //  // layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "Range" ), config2 ) );
+
+ //  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+ //  //set value in col0:
+ //  QgsEditorWidgetWrapper *ww0;
+ //  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
+ //  ww0->setValue( 1 );
+ //  qDebug()<<"w0: "<<ww0->value();
+
+
+
+
+
+
+ //   //const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer" );
+ //  //  QgsVectorLayer *layer2 = new QgsVectorLayer( def, QStringLiteral( "test2" ), QStringLiteral( "memory" ) );
+
+ //  // // build a form, set a feature
+ //  // QgsFeature ft3( layer2->fields(), 1 );
+ //  // QgsAttributeForm form3( layer2 );
+ //  // form3.setMode( QgsAttributeEditorContext::AddFeatureMode );
+ //  // form3.setFeature( ft3 );
+
+ //  // // create a value map configuration
+ //  // QgsValueMapConfigDlg *valueMapConfig2 = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), layer2, 0, nullptr ) );
+ //  // QVariantMap config2 = valueMapConfig2->config();
+
+ //  // layer2->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config2 ) );
+
+ //  // //set value in col0:
+ //  // QgsEditorWidgetWrapper *ww0;
+ //  // ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
+ //  // ww0->setValue( 1 );
+
+ //  // layer2->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), config ) );
+ //  // layer2->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+ //  // cb = form3.findChild<QComboBox*>();
+ //  // cb->setCurrentIndex(0);
+ //  // qDebug()<<"text0: "<<cb->currentText();
+ //  // qDebug()<<"count: "<<cb->count();
+ //  // qDebug()<<"w0: "<<ww0->value();
+
+ //  // // cb->setCurrentIndex(0);
+ //  // // qDebug()<<"text0: "<<cb->currentText();
+ //  // QVERIFY( cb->isEnabled() );
+ //  // QVERIFY( cb->toolTip().isEmpty() );
+
+ //  // delete valueMapConfig;
+}
+
+void TestQgsAttributeForm::testTest()
+{
+  // enum testCases
+  // {
+  //   classification
+  //   value
+  //   valueMap1,
+  //   valueMap2,
+  //   valueRelationNoVal
+  // };
+  QList widgetTypes = {"Classification", "ValueMap", "ValueRelation" };
+  for( QString widgetType : widgetTypes )
+  {
+
+    for( int i = 0; i<3; i++ )
+    {
+      // make a temporary layer to check through
+      const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer" );
+      QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+      bool allowNull = i;
+      // set default value
+      if ( i == 2 )
+        layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+
+      // build a form, set a feature
+      QgsFeature ft( layer->fields(), 1 );
+      QgsAttributeForm form( layer );
+      form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+      form.setFeature( ft );
+
+      // create a value map configuration
+      QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( widgetType, layer, 1, nullptr ) );
+      QVariantMap config = valueMapConfig->config();
+
+      // set allow null in value map configuration and apply it to the layer
+      config.remove(QStringLiteral("AllowNull"));
+      config.insert( QStringLiteral( "AllowNull" ), allowNull );
+
+      // set categorized renderer for classification widget type
+      if ( widgetType == "Classification" )
+      {
+        QgsCategorizedSymbolRenderer* renderer = new QgsCategorizedSymbolRenderer("col1");
+        QgsSymbol* symbol1 = QgsSymbol::defaultSymbol(layer->geometryType());
+        QgsSymbol* symbol2 = QgsSymbol::defaultSymbol(layer->geometryType());
+        switch( i )
+        {
+          case 1:
+            renderer->addCategory(QgsRendererCategory("Cat1", symbol1, "Cat1"));
+            break;
+          case 2:
+            renderer->addCategory(QgsRendererCategory("Cat1", symbol1, "Cat1"));
+            renderer->addCategory(QgsRendererCategory("Cat2", symbol2, "Cat2"));
+            break;
+        }
+        layer->setRenderer( renderer );
+      }
+
+      layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( widgetType, config ) );
+
+      //set value in col0:
+      QgsEditorWidgetWrapper *ww0;
+      ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+      ww0->setValue( 1 );
+      qDebug()<<"ww0 value:  "<<ww0->value();
+
+      QComboBox *cb = form.findChild<QComboBox*>("col1");
+      for (int i = 0; i<cb->count(); i++)
+        qDebug()<<"comboItem "<<i<<": "<<cb->itemText( i );
+      qDebug()<<"combo tooltip "<<cb->toolTip();
+
+
+      if ( !( widgetType == "ValueMap" && i == 0 ) )  //ToDO: remove if PR #39895 get's merged
+      {
+        switch( i )
+        {
+          case 0:
+            QVERIFY( !cb->isEnabled() );
+            QCOMPARE( cb->toolTip(), "No values available" );
+            break;
+          case 1:
+            QVERIFY( !cb->isEnabled() );
+            QCOMPARE( cb->toolTip(), "No other values available" );
+            break;
+          case 2:
+            QVERIFY( cb->isEnabled() );
+            QVERIFY( cb->toolTip().isEmpty() );
+        }
+      }
+      // QVERIFY( cb->isEnabled() );
+      // QVERIFY( cb->toolTip().isEmpty() );
+
+      // QgsValueMapConfigDlg *valueMapConfig2 = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueRelation" ), layer, 1, nullptr ) );
+      // QVariantMap config2 = valueMapConfig->config();
+      // config2.remove(QStringLiteral("AllowNull"));
+      // config2.insert( QStringLiteral( "AllowNull" ), false );
+      // layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), config2 ) );
+      // layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+
+      cb = form.findChild<QComboBox*>("col1");
+      for (int i = 0; i<cb->count(); i++)
+        qDebug()<<"comboItem "<<i<<": "<<cb->itemText( i );
+      //QVERIFY( !cb->isEnabled() );
+      //QCOMPARE( cb->toolTip(), "No values available" );
+
+      // config.remove(QStringLiteral("AllowNull"));
+      // config.insert( QStringLiteral( "AllowNull" ), true );
+      // layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), config ) );
+      // QVERIFY( cb->isEnabled() );
+      // QVERIFY( cb->toolTip().isEmpty() );
+
+      delete valueMapConfig;
+    }
+  }
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )
