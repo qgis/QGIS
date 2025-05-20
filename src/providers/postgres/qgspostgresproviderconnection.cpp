@@ -1937,11 +1937,11 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
   }
 }
 
-void QgsPostgresProviderConnection::moveTableToAnotherSchema( const QString &schema, const QString &tableName, const QString &newSchema ) const
+void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
 {
   const QString sql = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" )
-                        .arg( QgsPostgresConn::quotedIdentifier( schema ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( sourceSchema ) )
                         .arg( QgsPostgresConn::quotedIdentifier( tableName ) )
-                        .arg( QgsPostgresConn::quotedIdentifier( newSchema ) );
+                        .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) );
   executeSqlPrivate( sql );
 }
