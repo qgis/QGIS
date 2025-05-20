@@ -1548,7 +1548,7 @@ The development version
     {
       Antialiasing,
       DrawEditingInfo,
-      ForceVectorOutput,
+      PreferVectorOutput,
       UseAdvancedEffects,
       DrawLabeling,
       UseRenderingOptimization,
@@ -1572,7 +1572,7 @@ The development version
     enum class RenderContextFlag /BaseType=IntFlag/
     {
       DrawEditingInfo,
-      ForceVectorOutput,
+      PreferVectorOutput,
       UseAdvancedEffects,
       UseRenderingOptimization,
       DrawSelection,

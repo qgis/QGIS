@@ -247,19 +247,19 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   // check text format is correctly set
   l.renderContext().setTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
@@ -327,19 +327,19 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( !( rc.flags() & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   // check text format is correctly set
   l.renderContext().setTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );

@@ -74,7 +74,7 @@ Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
     flags = flags | Qgis::RenderContextFlag::LosslessImageRendering;
 
   // TODO - expose as layout context flag?
-  flags |= Qgis::RenderContextFlag::ForceVectorOutput;
+  flags |= Qgis::RenderContextFlag::PreferVectorOutput;
   return flags;
 }
 

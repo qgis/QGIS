@@ -806,7 +806,7 @@ void QgsElevationProfileWidget::exportAsPdf()
 
   QgsRenderContext rc = QgsRenderContext::fromQPainter( &p );
   rc.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-  rc.setFlag( Qgis::RenderContextFlag::ForceVectorOutput, true );
+  rc.setFlag( Qgis::RenderContextFlag::PreferVectorOutput, true );
   rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   rc.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
   rc.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );

@@ -101,7 +101,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-  context.setForceVectorOutput( true );
+  context.setFlag( Qgis::RenderContextFlag::PreferVectorOutput );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 

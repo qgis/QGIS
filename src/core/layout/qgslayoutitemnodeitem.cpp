@@ -78,7 +78,7 @@ void QgsLayoutNodesItem::draw( QgsLayoutItemRenderContext &context )
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
 
-  context.renderContext().setForceVectorOutput( true );
+  context.renderContext().setFlag( Qgis::RenderContextFlag::PreferVectorOutput );
   rescaleToFitBoundingBox();
   _draw( context );
 

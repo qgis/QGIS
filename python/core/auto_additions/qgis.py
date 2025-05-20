@@ -4807,9 +4807,9 @@ QgsMapSettings.Antialiasing.__doc__ = "Enable anti-aliasing for map rendering"
 QgsMapSettings.DrawEditingInfo = Qgis.MapSettingsFlag.DrawEditingInfo
 QgsMapSettings.DrawEditingInfo.is_monkey_patched = True
 QgsMapSettings.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
-QgsMapSettings.ForceVectorOutput = Qgis.MapSettingsFlag.ForceVectorOutput
-QgsMapSettings.ForceVectorOutput.is_monkey_patched = True
-QgsMapSettings.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsMapSettings.PreferVectorOutput = Qgis.MapSettingsFlag.PreferVectorOutput
+QgsMapSettings.PreferVectorOutput.is_monkey_patched = True
+QgsMapSettings.PreferVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images. This flag indicates that vectors should only be preferred when the rendering will appear (near) identical to raster renderings, even if it comes at the cost of rendering performance. It should NOT be used to force vector rendering when the result will appear notably different from a raster based render, e.g. in the case of a layer-wide opacity which requires rasterised flattening of the layer render. \n.. versionadded:: 3.44.\n Available as Qgis.MapSettingsFlag.ForceVectorOutput in older QGIS releases."
 QgsMapSettings.UseAdvancedEffects = Qgis.MapSettingsFlag.UseAdvancedEffects
 QgsMapSettings.UseAdvancedEffects.is_monkey_patched = True
 QgsMapSettings.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
@@ -4864,7 +4864,11 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 * ``Antialiasing``: Enable anti-aliasing for map rendering
 * ``DrawEditingInfo``: Enable drawing of vertex markers for layers in editing mode
-* ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images
+* ``PreferVectorOutput``: Vector graphics should not be cached and drawn as raster images. This flag indicates that vectors should only be preferred when the rendering will appear (near) identical to raster renderings, even if it comes at the cost of rendering performance. It should NOT be used to force vector rendering when the result will appear notably different from a raster based render, e.g. in the case of a layer-wide opacity which requires rasterised flattening of the layer render.
+
+  .. versionadded:: 3.44.
+
+   Available as Qgis.MapSettingsFlag.ForceVectorOutput in older QGIS releases.
 * ``UseAdvancedEffects``: Enable layer opacity and blending effects
 * ``DrawLabeling``: Enable drawing of labels on top of the map
 * ``UseRenderingOptimization``: Enable vector simplification and other rendering optimizations
@@ -4908,9 +4912,9 @@ QgsRenderContext.Flag = Qgis.RenderContextFlag
 QgsRenderContext.DrawEditingInfo = Qgis.RenderContextFlag.DrawEditingInfo
 QgsRenderContext.DrawEditingInfo.is_monkey_patched = True
 QgsRenderContext.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
-QgsRenderContext.ForceVectorOutput = Qgis.RenderContextFlag.ForceVectorOutput
-QgsRenderContext.ForceVectorOutput.is_monkey_patched = True
-QgsRenderContext.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsRenderContext.PreferVectorOutput = Qgis.RenderContextFlag.PreferVectorOutput
+QgsRenderContext.PreferVectorOutput.is_monkey_patched = True
+QgsRenderContext.PreferVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images. This flag indicates that vectors should only be preferred when the rendering will appear (near) identical to raster renderings, even if it comes at the cost of rendering performance. It should NOT be used to force vector rendering when the result will appear notably different from a raster based render, e.g. in the case of a layer-wide opacity which requires rasterised flattening of the layer render. \n.. versionadded:: 3.44.\n Available as Qgis.MapSettingsFlag.ForceVectorOutput in older QGIS releases."
 QgsRenderContext.UseAdvancedEffects = Qgis.RenderContextFlag.UseAdvancedEffects
 QgsRenderContext.UseAdvancedEffects.is_monkey_patched = True
 QgsRenderContext.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
@@ -4976,7 +4980,11 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 .. versionadded:: 3.22
 
 * ``DrawEditingInfo``: Enable drawing of vertex markers for layers in editing mode
-* ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images
+* ``PreferVectorOutput``: Vector graphics should not be cached and drawn as raster images. This flag indicates that vectors should only be preferred when the rendering will appear (near) identical to raster renderings, even if it comes at the cost of rendering performance. It should NOT be used to force vector rendering when the result will appear notably different from a raster based render, e.g. in the case of a layer-wide opacity which requires rasterised flattening of the layer render.
+
+  .. versionadded:: 3.44.
+
+   Available as Qgis.MapSettingsFlag.ForceVectorOutput in older QGIS releases.
 * ``UseAdvancedEffects``: Enable layer opacity and blending effects
 * ``UseRenderingOptimization``: Enable vector simplification and other rendering optimizations
 * ``DrawSelection``: Whether vector selections should be shown in the rendered map

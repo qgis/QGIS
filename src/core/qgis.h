@@ -2651,7 +2651,7 @@ class CORE_EXPORT Qgis
     {
       Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
+      PreferVectorOutput       = 0x04,  //!< Vector graphics should not be cached and drawn as raster images. This flag indicates that vectors should only be preferred when the rendering will appear (near) identical to raster renderings, even if it comes at the cost of rendering performance. It should NOT be used to force vector rendering when the result will appear notably different from a raster based render, e.g. in the case of a layer-wide opacity which requires rasterised flattening of the layer render. \since QGIS 3.44. Available as Qgis::MapSettingsFlag::ForceVectorOutput in older QGIS releases.
       UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
       DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
@@ -2682,7 +2682,7 @@ class CORE_EXPORT Qgis
     enum class RenderContextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
+      PreferVectorOutput       = 0x02,  //!< Vector graphics should not be cached and drawn as raster images. This flag indicates that vectors should only be preferred when the rendering will appear (near) identical to raster renderings, even if it comes at the cost of rendering performance. It should NOT be used to force vector rendering when the result will appear notably different from a raster based render, e.g. in the case of a layer-wide opacity which requires rasterised flattening of the layer render. \since QGIS 3.44. Available as Qgis::MapSettingsFlag::ForceVectorOutput in older QGIS releases.
       UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
       UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map

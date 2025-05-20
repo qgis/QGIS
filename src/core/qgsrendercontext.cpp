@@ -252,7 +252,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setExtent( extent );
   ctx.setMapExtent( mapSettings.visibleExtent() );
   ctx.setFlag( Qgis::RenderContextFlag::DrawEditingInfo, mapSettings.testFlag( Qgis::MapSettingsFlag::DrawEditingInfo ) );
-  ctx.setFlag( Qgis::RenderContextFlag::ForceVectorOutput, mapSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  ctx.setFlag( Qgis::RenderContextFlag::PreferVectorOutput, mapSettings.testFlag( Qgis::MapSettingsFlag::PreferVectorOutput ) );
   ctx.setFlag( Qgis::RenderContextFlag::UseAdvancedEffects, mapSettings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
   ctx.setFlag( Qgis::RenderContextFlag::UseRenderingOptimization, mapSettings.testFlag( Qgis::MapSettingsFlag::UseRenderingOptimization ) );
   ctx.setCoordinateTransform( QgsCoordinateTransform() );
@@ -314,7 +314,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
 bool QgsRenderContext::forceVectorOutput() const
 {
-  return mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput );
+  return mFlags.testFlag( Qgis::RenderContextFlag::PreferVectorOutput );
 }
 
 bool QgsRenderContext::useAdvancedEffects() const
@@ -349,7 +349,7 @@ void QgsRenderContext::setDrawEditingInformation( bool b )
 
 void QgsRenderContext::setForceVectorOutput( bool force )
 {
-  setFlag( Qgis::RenderContextFlag::ForceVectorOutput, force );
+  setFlag( Qgis::RenderContextFlag::PreferVectorOutput, force );
 }
 
 void QgsRenderContext::setShowSelection( const bool showSelection )

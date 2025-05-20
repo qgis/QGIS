@@ -450,7 +450,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       }
     }
 
-    bool forceVector = mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && !mSettings.testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
+    bool forceVector = mSettings.testFlag( Qgis::MapSettingsFlag::PreferVectorOutput ) && !mSettings.testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
     composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector );
 
     if ( !forceVector )

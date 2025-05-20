@@ -1091,8 +1091,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     screen.updateRenderContextForScreen( *context );
   }
 
-  const bool prevForceVector = context->forceVectorOutput();
-  context->setForceVectorOutput( true );
+  const bool prevPreferVector = context->flags().testFlag( Qgis::RenderContextFlag::PreferVectorOutput );
+  context->setFlag( Qgis::RenderContextFlag::PreferVectorOutput, true );
 
   const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity * 100 ) * 0.01 : mOpacity;
 
@@ -1242,7 +1242,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     QgsPainting::drawPicture( context->painter(), QPointF( 0, 0 ), *pictureForDeferredRendering );
   }
 
-  context->setForceVectorOutput( prevForceVector );
+  context->setFlag( Qgis::RenderContextFlag::PreferVectorOutput, prevPreferVector );
 }
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )

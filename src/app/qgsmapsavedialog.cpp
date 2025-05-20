@@ -342,7 +342,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
       break;
   }
 
-  mapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  mapSettings.setFlag( Qgis::MapSettingsFlag::PreferVectorOutput, true ); // force vector output (no caching of marker images etc.)
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, true );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );

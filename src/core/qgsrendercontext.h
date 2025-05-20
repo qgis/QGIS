@@ -363,8 +363,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * of any faster raster shortcuts.
      *
      * \see setForceVectorOutput()
+     * \deprecated QGIS 3.44. Use the Qgis::RenderContextFlag::PreferVectorOutput flag instead.
      */
-    bool forceVectorOutput() const;
+    Q_DECL_DEPRECATED bool forceVectorOutput() const SIP_DEPRECATED;
 
     /**
      * Returns TRUE if advanced effects such as blend modes such be used
@@ -587,8 +588,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * of any faster raster shortcuts.
      *
      * \see forceVectorOutput()
+     * \deprecated QGIS 3.44. Use the Qgis::RenderContextFlag::PreferVectorOutput flag instead.
      */
-    void setForceVectorOutput( bool force );
+    Q_DECL_DEPRECATED void setForceVectorOutput( bool force ) SIP_DEPRECATED;
 
     /**
      * Assigns the labeling engine

@@ -158,19 +158,19 @@ void TestQgsLayoutContext::renderContextFlags()
   Qgis::RenderContextFlags flags = context.renderContextFlags();
   QVERIFY( !( flags & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   context.setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   flags = context.renderContextFlags();
   QVERIFY( ( flags & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::PreferVectorOutput ) );
 
   context.setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   flags = context.renderContextFlags();
   QVERIFY( ( flags & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( ( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
-  QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
+  QVERIFY( ( flags & Qgis::RenderContextFlag::PreferVectorOutput ) );
 }
 
 void TestQgsLayoutContext::textFormat()

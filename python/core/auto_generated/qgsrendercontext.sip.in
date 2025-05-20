@@ -348,12 +348,16 @@ rendering to check if rendering should be canceled, if set. Maybe be
 .. versionadded:: 3.22
 %End
 
-    bool forceVectorOutput() const;
+ bool forceVectorOutput() const /Deprecated="Since 3.44. Use the Qgis.RenderContextFlag.PreferVectorOutput flag instead."/;
 %Docstring
 Returns ``True`` if rendering operations should use vector operations
 instead of any faster raster shortcuts.
 
 .. seealso:: :py:func:`setForceVectorOutput`
+
+.. deprecated:: 3.44
+
+   Use the :py:class:`Qgis`.RenderContextFlag.PreferVectorOutput flag instead.
 %End
 
     bool useAdvancedEffects() const;
@@ -597,12 +601,16 @@ second parameter gives a unique identifier to each one.
 .. seealso:: :py:func:`maskPainter`
 %End
 
-    void setForceVectorOutput( bool force );
+ void setForceVectorOutput( bool force ) /Deprecated="Since 3.44. Use the Qgis.RenderContextFlag.PreferVectorOutput flag instead."/;
 %Docstring
 Sets whether rendering operations should use vector operations instead
 of any faster raster shortcuts.
 
 .. seealso:: :py:func:`forceVectorOutput`
+
+.. deprecated:: 3.44
+
+   Use the :py:class:`Qgis`.RenderContextFlag.PreferVectorOutput flag instead.
 %End
 
 

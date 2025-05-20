@@ -611,7 +611,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     const QgsElevationShadingRenderer shadingRenderer = mSettings.elevationShadingRenderer();
 
     // if we can use the cache, let's do it and avoid rendering!
-    const bool canUseCache = !mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mCache;
+    const bool canUseCache = !mSettings.testFlag( Qgis::MapSettingsFlag::PreferVectorOutput ) && mCache;
     if ( canUseCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
@@ -724,7 +724,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // and the list of source layers that have a mask
   QHash<QString, QPair<QSet<QString>, QList<MaskSource>>> maskedSymbolLayers;
 
-  const bool forceVector = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
+  const bool forceVector = mapSettings().testFlag( Qgis::MapSettingsFlag::PreferVectorOutput )
                            && !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
 
   // First up, create a mapping of layer id to jobs. We need this to filter out any masking
@@ -1025,7 +1025,7 @@ QList<QPointer<QgsMapLayer> > QgsMapRendererJob::participatingLabelLayers( QgsLa
 
 void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) const
 {
-  if ( !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) || mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) )
+  if ( !mapSettings().testFlag( Qgis::MapSettingsFlag::PreferVectorOutput ) || mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks ) )
     return;
 
   for ( LayerRenderJob &job : secondPassJobs )
@@ -1083,7 +1083,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context.setCoordinateTransform( ct );
 
   // no cache, no image allocation
-  if ( mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
+  if ( mSettings.testFlag( Qgis::MapSettingsFlag::PreferVectorOutput ) )
     return job;
 
   // if we can use the cache, let's do it and avoid rendering!
