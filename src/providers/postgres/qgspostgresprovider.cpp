@@ -158,7 +158,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( QgsPostgresConn::connectionInfo( mUri, false ) ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 2 );
@@ -343,7 +343,7 @@ void QgsPostgresProvider::setListening( bool isListening )
 
   if ( isListening && !mListener )
   {
-    mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
+    mListener.reset( QgsPostgresListener::create( QgsPostgresConn::connectionInfo( mUri, false ) ).release() );
     connect( mListener.get(), &QgsPostgresListener::notify, this, &QgsPostgresProvider::notify );
   }
   else if ( !isListening && mListener )
@@ -4589,7 +4589,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   schemaTableName += quotedIdentifier( tableName );
   createdLayerUri = uri;
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( QgsPostgresConn::connectionInfo( dsUri, false ) ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( geometryColumn ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( schemaName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( tableName ), 2 );
@@ -5148,7 +5148,7 @@ QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVector
   for ( QgsVectorLayer *layer : constLayers )
   {
     const QgsPostgresProvider *pgProvider = qobject_cast<QgsPostgresProvider *>( layer->dataProvider() );
-    if ( pgProvider && pgProvider->mUri.connectionInfo( false ) == connectionInfo && pgProvider->mSchemaName == schema && pgProvider->mTableName == tableName )
+    if ( pgProvider && QgsPostgresConn::connectionInfo( pgProvider->mUri, false ) == connectionInfo && pgProvider->mSchemaName == schema && pgProvider->mTableName == tableName )
     {
       result.append( layer );
     }
@@ -5233,7 +5233,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     // try to find if we have layers for the referenced table
-    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
+    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, QgsPostgresConn::connectionInfo( mUri, false ), refSchema, refTable );
     if ( !refTableFound.contains( refTable ) )
     {
       for ( const QgsVectorLayer *foundLayer : foundLayers )
