@@ -153,13 +153,12 @@ QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature,
 Qgis::WkbType QgsTranslateAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   Qgis::WkbType wkb = inputWkbType;
-  if ( mDeltaZ != 0.0 )
+  if ( mDynamicDeltaZ || mDeltaZ != 0.0 )
     wkb = QgsWkbTypes::addZ( wkb );
-  if ( mDeltaM != 0.0 )
+  if ( mDynamicDeltaM || mDeltaM != 0.0 )
     wkb = QgsWkbTypes::addM( wkb );
   return wkb;
 }
-
 
 bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
@@ -178,4 +177,5 @@ bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   const Qgis::WkbType inPlaceWkbType = layer->wkbType();
   return inPlaceWkbType == outputWkbType( inPlaceWkbType );
 }
+
 ///@endcond
