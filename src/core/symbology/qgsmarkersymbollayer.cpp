@@ -3548,7 +3548,7 @@ void QgsSimpleMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   writeSldMarker( doc, element, context );
 }
 
-void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+bool QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   Q_UNUSED( context )
 
@@ -3607,6 +3607,7 @@ void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   extGraphElem.appendChild( formatElem );
 
   // TODO: write other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
+  return true;
 }
 
 //////////
