@@ -648,8 +648,10 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
+      const bool forceVector = ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) )
+                               || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
       if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-           && ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
+           && !forceVector )
       {
         // rasterize
         double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4;

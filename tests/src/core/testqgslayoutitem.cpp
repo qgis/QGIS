@@ -1942,6 +1942,11 @@ void TestQgsLayoutItem::blendMode()
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
   QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::BlendMode, QgsProperty::fromExpression( "'lighten'" ) );

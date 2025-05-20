@@ -348,26 +348,38 @@ rendering to check if rendering should be canceled, if set. Maybe be
 .. versionadded:: 3.22
 %End
 
-    bool forceVectorOutput() const;
+ bool forceVectorOutput() const /Deprecated="Since 3.44. Use rasterizedRenderingPolicy() instead."/;
 %Docstring
 Returns ``True`` if rendering operations should use vector operations
 instead of any faster raster shortcuts.
 
 .. seealso:: :py:func:`setForceVectorOutput`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.rasterizedRenderingPolicy` instead.
 %End
 
-    bool useAdvancedEffects() const;
+ bool useAdvancedEffects() const /Deprecated="Since 3.44. Use rasterizedRenderingPolicy() instead."/;
 %Docstring
 Returns ``True`` if advanced effects such as blend modes such be used
 
 .. seealso:: :py:func:`setUseAdvancedEffects`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.rasterizedRenderingPolicy` instead.
 %End
 
-    void setUseAdvancedEffects( bool enabled );
+ void setUseAdvancedEffects( bool enabled ) /Deprecated="Since 3.44. Use setRasterizedRenderingPolicy() instead."/;
 %Docstring
 Used to enable or disable advanced effects such as blend modes
 
 .. seealso:: :py:func:`useAdvancedEffects`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.setRasterizedRenderingPolicy` instead.
 %End
 
     bool drawEditingInformation() const;
@@ -597,12 +609,16 @@ second parameter gives a unique identifier to each one.
 .. seealso:: :py:func:`maskPainter`
 %End
 
-    void setForceVectorOutput( bool force );
+ void setForceVectorOutput( bool force ) /Deprecated="Since 3.44. Use setRasterizedRenderingPolicy() instead."/;
 %Docstring
 Sets whether rendering operations should use vector operations instead
 of any faster raster shortcuts.
 
 .. seealso:: :py:func:`forceVectorOutput`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.setRasterizedRenderingPolicy` instead.
 %End
 
 
@@ -1226,6 +1242,26 @@ during rendering.
 .. seealso:: :py:func:`setImageFormat`
 
 .. versionadded:: 3.22
+%End
+
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+%Docstring
+Returns the policy controlling when rasterisation of content during
+renders is permitted.
+
+.. seealso:: :py:func:`setRasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+%Docstring
+Sets the ``policy`` controlling when rasterisation of content during
+renders is permitted.
+
+.. seealso:: :py:func:`rasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
 %End
 
     Qgis::RendererUsage rendererUsage() const;

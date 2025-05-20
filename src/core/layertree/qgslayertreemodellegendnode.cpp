@@ -679,7 +679,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
-    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
     // setup a minimal expression context
@@ -769,8 +769,10 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     Q_NOWARN_DEPRECATED_PUSH
     // QGIS 4.0 -- ctx->context will be mandatory
-    const bool useAdvancedEffects = ctx->context ? ctx->context->flags() & Qgis::RenderContextFlag::UseAdvancedEffects : settings.useAdvancedEffects();
+    bool useAdvancedEffects = ctx->context ? ctx->context->flags() & Qgis::RenderContextFlag::UseAdvancedEffects : settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
+    if ( ctx->context && ctx->context->rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+      useAdvancedEffects = false;
 
     if ( opacity != 255 && useAdvancedEffects )
     {

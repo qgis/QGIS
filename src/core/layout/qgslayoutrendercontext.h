@@ -46,8 +46,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagDebug = 1 << 1,  //!< Debug/testing mode, items are drawn as solid rectangles.
       FlagOutlineOnly = 1 << 2, //!< Render items as outlines only.
       FlagAntialiasing = 1 << 3, //!< Use antialiasing when drawing items.
-      FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes.
-      FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
+      FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
       FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
       FlagDrawSelection = 1 << 7, //!< Draw selection
       FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
@@ -100,6 +100,22 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * Returns the combination of render context flags matched to the layout context's settings.
      */
     Qgis::RenderContextFlags renderContextFlags() const;
+
+    /**
+     * Returns the policy controlling when rasterization of content during renders is permitted.
+     *
+     * \see setRasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+
+    /**
+     * Sets the \a policy controlling when rasterization of content during renders is permitted.
+     *
+     * \see rasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
 
     /**
      * Sets the \a dpi for outputting the layout. This also sets the
@@ -373,6 +389,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
   private:
 
     Flags mFlags = Flags();
+    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
 
     QgsLayout *mLayout = nullptr;
 

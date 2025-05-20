@@ -484,7 +484,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       context.setMapToPixel( newCoordXForm );
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
-      context.setUseAdvancedEffects( true );
+      context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background
@@ -912,7 +912,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
       context.setDevicePixelRatio( devicePixelRatioF() );
-      context.setUseAdvancedEffects( true );
+      context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );
 
