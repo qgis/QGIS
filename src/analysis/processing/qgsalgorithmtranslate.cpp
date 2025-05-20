@@ -50,11 +50,6 @@ QString QgsTranslateAlgorithm::outputName() const
   return QObject::tr( "Translated" );
 }
 
-QString QgsTranslateAlgorithm::shortDescription() const
-{
-  return QObject::tr( "Translates geometries within a layer." );
-}
-
 QString QgsTranslateAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement." )
