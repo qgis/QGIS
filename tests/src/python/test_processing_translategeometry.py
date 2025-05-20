@@ -26,7 +26,7 @@ from qgis.core import (
     QgsProcessingFeedback,
     QgsProperty,
     QgsVectorLayer,
-    Qgis
+    Qgis,
 )
 import unittest
 from qgis.testing import QgisTestCase
@@ -55,7 +55,9 @@ class TestTranslateGeometry(QgisTestCase):
     def test_translate_dynamic_z(self):
         """Test translate with data-defined Z value"""
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById("native:translategeometry")
+        alg = QgsApplication.processingRegistry().createAlgorithmById(
+            "native:translategeometry"
+        )
         self.assertIsNotNone(alg)
 
         context = QgsProcessingContext()
@@ -76,7 +78,9 @@ class TestTranslateGeometry(QgisTestCase):
     def test_translate_dynamic_z(self):
         """Test translate with data-defined M value"""
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById("native:translategeometry")
+        alg = QgsApplication.processingRegistry().createAlgorithmById(
+            "native:translategeometry"
+        )
         self.assertIsNotNone(alg)
 
         context = QgsProcessingContext()
@@ -97,7 +101,9 @@ class TestTranslateGeometry(QgisTestCase):
     def test_translate_dynamic_zm(self):
         """Test translate with data-defined M value"""
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById("native:translategeometry")
+        alg = QgsApplication.processingRegistry().createAlgorithmById(
+            "native:translategeometry"
+        )
         self.assertIsNotNone(alg)
 
         context = QgsProcessingContext()
