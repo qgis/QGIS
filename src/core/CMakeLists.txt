@@ -1293,6 +1293,7 @@ set(QGIS_CORE_HDRS
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssingleitemmodel.h
+  qgssiputils.h
   qgssldexportcontext.h
   qgssnappingconfig.h
   qgssnappingutils.h

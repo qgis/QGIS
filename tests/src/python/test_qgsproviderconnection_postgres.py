@@ -941,6 +941,28 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         table_names = self._table_names(connUnprivilegedUser.tables(schema))
         self.assertNotIn("layer_w_role", table_names)
 
+    def test_rename_field(self):
+        """Test rename fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        CREATE TABLE qgis_test.rename_field (id SERIAL PRIMARY KEY);
+        ALTER TABLE qgis_test.rename_field ADD COLUMN geom geometry(POINT,4326);
+        ALTER TABLE qgis_test.rename_field ADD COLUMN column_1 TEXT;
+        INSERT INTO qgis_test.rename_field (id, geom, column_1) VALUES (221, ST_GeomFromText('point(9 45)', 4326), 'text');
+        """
+
+        conn.executeSql(sql)
+        fields = conn.fields("qgis_test", "rename_field")
+        self.assertEqual(fields.names(), ["id", "geom", "column_1"])
+
+        conn.renameField("qgis_test", "rename_field", "column_1", "new_column")
+
+        fields = conn.fields("qgis_test", "rename_field")
+        self.assertEqual(fields.names(), ["id", "geom", "new_column"])
+
 
 if __name__ == "__main__":
     unittest.main()

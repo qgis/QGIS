@@ -41,6 +41,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="mSourceLayerOnlySelected">
+        <property name="text">
+         <string>Selected features only</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -216,6 +223,17 @@
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconClearText.svg</normaloff>:/images/themes/default/mIconClearText.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mEditButton">
+          <property name="text">
+           <string>edits</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
           </property>
          </widget>
         </item>

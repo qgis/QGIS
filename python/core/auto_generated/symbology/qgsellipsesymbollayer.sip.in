@@ -79,10 +79,13 @@ Creates the symbol layer
 
     virtual QVariantMap properties() const;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;

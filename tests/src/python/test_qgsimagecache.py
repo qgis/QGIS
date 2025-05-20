@@ -15,6 +15,7 @@ import os
 import socketserver
 import threading
 import time
+import shutil
 
 from qgis.PyQt.QtCore import QCoreApplication, QSize
 from qgis.core import QgsApplication
@@ -157,6 +158,37 @@ class TestQgsImageCache(QgisTestCase):
                 use_checkerboard_background=True,
             )
         )
+
+    def testInvalidateCacheEntry(self):
+        """Test invalidating a cache entry."""
+        cache = QgsApplication.imageCache()
+
+        temp_image_path = os.path.join(
+            os.getenv("TMPDIR", "/tmp"), "test_sample_image.png"
+        )
+        original_image = os.path.join(TEST_DATA_DIR, "sample_image.png")
+        if os.path.exists(temp_image_path):
+            os.remove(temp_image_path)
+        self.assertTrue(os.path.exists(original_image))
+        self.assertTrue(os.path.isfile(original_image))
+        shutil.copy(original_image, temp_image_path)
+
+        invalidated_initial = cache.invalidateCacheEntry(temp_image_path)
+        self.assertFalse(invalidated_initial)
+
+        image, in_cache = cache.pathAsImage(temp_image_path, QSize(200, 200), True, 1.0)
+        self.assertFalse(image.isNull())
+        self.assertTrue(in_cache)
+
+        invalidated = cache.invalidateCacheEntry(temp_image_path)
+        self.assertTrue(invalidated)
+
+        invalidated_twice = cache.invalidateCacheEntry(temp_image_path)
+        self.assertFalse(invalidated_twice)
+
+        image, in_cache = cache.pathAsImage(temp_image_path, QSize(200, 200), True, 1.0)
+        self.assertFalse(image.isNull())
+        self.assertTrue(in_cache)
 
 
 if __name__ == "__main__":

@@ -45,6 +45,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgscurvepolygon.h"
 #include "qgsmasksymbollayer.h"
+#include "qgssldexportcontext.h"
 
 #include "qmath.h"
 #include <QColor>
@@ -2277,6 +2278,12 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
 
 void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt::BrushStyle brushStyle, const QColor &color )
 {
+  QgsSldExportContext context;
+  fillToSld( doc, element, context, brushStyle, color );
+}
+
+void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context, Qt::BrushStyle brushStyle, const QColor &color )
+{
   QString patternName;
   switch ( brushStyle )
   {
@@ -2309,7 +2316,7 @@ void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt
       break;
 
     default:
-      element.appendChild( doc.createComment( QStringLiteral( "Qt::BrushStyle '%1'' not supported yet" ).arg( brushStyle ) ) );
+      context.pushWarning( QObject::tr( "Brush style '%1' is not supported for SLD" ).arg( brushStyle ) );
       return;
   }
 
@@ -2323,7 +2330,7 @@ void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt
   const QColor strokeColor = !patternName.startsWith( QLatin1String( "brush://" ) ) ? color : QColor();
 
   /* Use WellKnownName tag to handle QT brush styles. */
-  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, strokeColor, Qt::SolidLine, -1, -1 );
+  wellKnownMarkerToSld( doc, graphicElem, patternName, fillColor, strokeColor, Qt::SolidLine, context, -1, -1 );
 }
 
 bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
@@ -2381,7 +2388,7 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
 }
 
 void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
-                                     Qt::PenStyle penStyle, const QColor &color, double width,
+                                     Qt::PenStyle penStyle, const QColor &color, QgsSldExportContext &context, double width,
                                      const Qt::PenJoinStyle *penJoinStyle, const Qt::PenCapStyle *penCapStyle,
                                      const QVector<qreal> *customDashPattern, double dashOffset )
 {
@@ -2390,7 +2397,7 @@ void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
 
   if ( penStyle == Qt::CustomDashLine && !customDashPattern )
   {
-    element.appendChild( doc.createComment( QStringLiteral( "WARNING: Custom dash pattern required but not provided. Using default dash pattern." ) ) );
+    context.pushWarning( QObject::tr( "WARNING: Custom dash pattern required but not provided. Using default dash pattern." ) );
     penStyle = Qt::DashLine;
   }
 
@@ -2431,7 +2438,7 @@ void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
       break;
 
     default:
-      element.appendChild( doc.createComment( QStringLiteral( "Qt::BrushStyle '%1'' not supported yet" ).arg( penStyle ) ) );
+      context.pushWarning( QObject::tr( "Pen style '%1' is not supported for SLD" ).arg( penStyle ) );
       return;
   }
 
@@ -2618,6 +2625,12 @@ void QgsSymbolLayerUtils::externalGraphicToSld( QDomDocument &doc, QDomElement &
 void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
     const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth )
 {
+  QgsSldExportContext context;
+  parametricSvgToSld( doc, graphicElem, path, fillColor, size, strokeColor, strokeWidth, context );
+}
+
+void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth, QgsSldExportContext &context )
+{
   // Parametric SVG paths are an extension that few systems will understand, but se:Graphic allows for fallback
   // symbols, this encodes the full parametric path first, the pure shape second, and a mark with the right colors as
   // a last resort for systems that cannot do SVG at all
@@ -2631,7 +2644,7 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
   QgsSymbolLayerUtils::externalGraphicToSld( doc, graphicElem, path, QStringLiteral( "image/svg+xml" ), fillColor, -1 );
   // finally encode a simple mark with the right colors/outlines for renderers that cannot do SVG at all
   graphicElem.appendChild( doc.createComment( QStringLiteral( "Well known marker fallback" ) ) );
-  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "square" ), fillColor, strokeColor, Qt::PenStyle::SolidLine, strokeWidth, -1 );
+  QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, QStringLiteral( "square" ), fillColor, strokeColor, Qt::PenStyle::SolidLine, context, strokeWidth, -1 );
 
   // size is encoded here, it's part of se:Graphic, not attached to the single symbol
   if ( size >= 0 )
@@ -2641,7 +2654,6 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
     graphicElem.appendChild( sizeElem );
   }
 }
-
 
 QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth )
 {
@@ -2707,6 +2719,12 @@ void QgsSymbolLayerUtils::externalMarkerToSld( QDomDocument &doc, QDomElement &e
     const QString &path, const QString &format, int *markIndex,
     const QColor &color, double size )
 {
+  QgsSldExportContext context;
+  externalMarkerToSld( doc, element, path, format, context, markIndex, color, size );
+}
+
+void QgsSymbolLayerUtils::externalMarkerToSld( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, QgsSldExportContext &context, int *markIndex, const QColor &color, double size )
+{
   QDomElement markElem = doc.createElement( QStringLiteral( "se:Mark" ) );
   element.appendChild( markElem );
 
@@ -2721,7 +2739,7 @@ void QgsSymbolLayerUtils::externalMarkerToSld( QDomDocument &doc, QDomElement &e
 
   // <Fill>
   QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
-  fillToSld( doc, fillElem, Qt::SolidPattern, color );
+  fillToSld( doc, fillElem, context, Qt::SolidPattern, color );
   markElem.appendChild( fillElem );
 
   // <Size>
@@ -2781,6 +2799,12 @@ void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &
     const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
     double strokeWidth, double size )
 {
+  QgsSldExportContext context;
+  wellKnownMarkerToSld( doc, element, name, color, strokeColor, strokeStyle, context, strokeWidth, size );
+}
+
+void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element, const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle, QgsSldExportContext &context, double strokeWidth, double size )
+{
   QDomElement markElem = doc.createElement( QStringLiteral( "se:Mark" ) );
   element.appendChild( markElem );
 
@@ -2792,7 +2816,7 @@ void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &
   if ( color.isValid() )
   {
     QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
-    fillToSld( doc, fillElem, Qt::SolidPattern, color );
+    fillToSld( doc, fillElem, context, Qt::SolidPattern, color );
     markElem.appendChild( fillElem );
   }
 
@@ -2800,7 +2824,7 @@ void QgsSymbolLayerUtils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &
   if ( strokeColor.isValid() )
   {
     QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
-    lineToSld( doc, strokeElem, strokeStyle, strokeColor, strokeWidth );
+    lineToSld( doc, strokeElem, strokeStyle, strokeColor, context, strokeWidth );
     markElem.appendChild( strokeElem );
   }
 
@@ -2862,10 +2886,16 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
 
 void QgsSymbolLayerUtils::createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc )
 {
+  QgsSldExportContext context;
+  createRotationElement( doc, element, rotationFunc, context );
+}
+
+void QgsSymbolLayerUtils::createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc, QgsSldExportContext &context )
+{
   if ( !rotationFunc.isEmpty() )
   {
     QDomElement rotationElem = doc.createElement( QStringLiteral( "se:Rotation" ) );
-    createExpressionElement( doc, rotationElem, rotationFunc );
+    createExpressionElement( doc, rotationElem, rotationFunc, context );
     element.appendChild( rotationElem );
   }
 }
@@ -2880,13 +2910,18 @@ bool QgsSymbolLayerUtils::rotationFromSldElement( QDomElement &element, QString 
   return true;
 }
 
-
 void QgsSymbolLayerUtils::createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc )
+{
+  QgsSldExportContext context;
+  createOpacityElement( doc, element, alphaFunc, context );
+}
+
+void QgsSymbolLayerUtils::createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc, QgsSldExportContext &context )
 {
   if ( !alphaFunc.isEmpty() )
   {
     QDomElement opacityElem = doc.createElement( QStringLiteral( "se:Opacity" ) );
-    createExpressionElement( doc, opacityElem, alphaFunc );
+    createExpressionElement( doc, opacityElem, alphaFunc, context );
     element.appendChild( opacityElem );
   }
 }
@@ -2969,6 +3004,12 @@ void QgsSymbolLayerUtils::labelTextToSld( QDomDocument &doc, QDomElement &elemen
     const QString &label, const QFont &font,
     const QColor &color, double size )
 {
+  QgsSldExportContext context;
+  labelTextToSld( doc, element, label, font, context, color, size );
+}
+
+void QgsSymbolLayerUtils::labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label, const QFont &font, QgsSldExportContext &context, const QColor &color, double size )
+{
   QDomElement labelElem = doc.createElement( QStringLiteral( "se:Label" ) );
   labelElem.appendChild( doc.createTextNode( label ) );
   element.appendChild( labelElem );
@@ -2987,7 +3028,7 @@ void QgsSymbolLayerUtils::labelTextToSld( QDomDocument &doc, QDomElement &elemen
   if ( color.isValid() )
   {
     QDomElement fillElem = doc.createElement( QStringLiteral( "Fill" ) );
-    fillToSld( doc, fillElem, Qt::SolidPattern, color );
+    fillToSld( doc, fillElem, context, Qt::SolidPattern, color );
     element.appendChild( fillElem );
   }
 }
@@ -3078,6 +3119,12 @@ QString QgsSymbolLayerUtils::ogrFeatureStyleBrush( const QColor &fillColor )
 
 void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc )
 {
+  QgsSldExportContext context;
+  createGeometryElement( doc, element, geomFunc, context );
+}
+
+void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc, QgsSldExportContext &context )
+{
   if ( geomFunc.isEmpty() )
     return;
 
@@ -3107,7 +3154,7 @@ void QgsSymbolLayerUtils::createGeometryElement( QDomDocument &doc, QDomElement 
    * like offset, centroid, ...
    */
 
-  createExpressionElement( doc, geometryElem, geomFunc );
+  createExpressionElement( doc, geometryElem, geomFunc, context );
 }
 
 bool QgsSymbolLayerUtils::geometryFromSldElement( QDomElement &element, QString &geomFunc )
@@ -3121,11 +3168,17 @@ bool QgsSymbolLayerUtils::geometryFromSldElement( QDomElement &element, QString 
 
 bool QgsSymbolLayerUtils::createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function )
 {
+  QgsSldExportContext context;
+  return createExpressionElement( doc, element, function, context );
+}
+
+bool QgsSymbolLayerUtils::createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function, QgsSldExportContext &context )
+{
   // let's use QgsExpression to generate the SLD for the function
   const QgsExpression expr( function );
   if ( expr.hasParserError() )
   {
-    element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
+    context.pushError( QObject::tr( "Parser error encountered when converting expression to SLD: %1 - Expression was: %2" ).arg( expr.parserErrorString(), function ) );
     return false;
   }
   const QDomElement filterElem = QgsOgcUtils::expressionToOgcExpression( expr, doc );
@@ -3134,8 +3187,13 @@ bool QgsSymbolLayerUtils::createExpressionElement( QDomDocument &doc, QDomElemen
   return true;
 }
 
-
 bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function )
+{
+  QgsSldExportContext context;
+  return createFunctionElement( doc, element, function, context );
+}
+
+bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function, QgsSldExportContext &context )
 {
   // else rule is not a valid expression
   if ( function == QLatin1String( "ELSE" ) )
@@ -3150,7 +3208,7 @@ bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement 
     const QgsExpression expr( function );
     if ( expr.hasParserError() )
     {
-      element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
+      context.pushError( QObject::tr( "Parser error encountered when converting expression to SLD: %1 - Expression was: %2" ).arg( expr.parserErrorString(), function ) );
       return false;
     }
     const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );

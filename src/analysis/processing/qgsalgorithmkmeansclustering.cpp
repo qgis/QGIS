@@ -64,8 +64,13 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsKMeansClusteringAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature.\n\n"
+  return QObject::tr( "This algorithm calculates the 2D distance based k-means cluster number for each input feature.\n\n"
                       "If input geometries are lines or polygons, the clustering is based on the centroid of the feature." );
+}
+
+QString QgsKMeansClusteringAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature." );
 }
 
 QgsKMeansClusteringAlgorithm *QgsKMeansClusteringAlgorithm::createInstance() const

@@ -57,6 +57,12 @@ QString QgsPoleOfInaccessibilityAlgorithm::shortHelpString() const
                         "attribute in the output layer." );
 }
 
+QString QgsPoleOfInaccessibilityAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point layer with features representing the most "
+                      "distant internal point from the boundary of the surface for a polygon layer." );
+}
+
 QString QgsPoleOfInaccessibilityAlgorithm::svgIconPath() const
 {
   return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) );
@@ -91,10 +97,10 @@ Qgis::WkbType QgsPoleOfInaccessibilityAlgorithm::outputWkbType( Qgis::WkbType in
 
 QgsFields QgsPoleOfInaccessibilityAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "dist_pole" ), QMetaType::Type::Double ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "dist_pole" ), QMetaType::Type::Double ) );
 
-  return outputFields;
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 QgsPoleOfInaccessibilityAlgorithm *QgsPoleOfInaccessibilityAlgorithm::createInstance() const

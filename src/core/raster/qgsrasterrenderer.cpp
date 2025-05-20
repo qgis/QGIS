@@ -20,6 +20,7 @@
 
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgssldexportcontext.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
@@ -38,7 +39,7 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
-  delete mRasterTransparency;
+
 }
 
 int QgsRasterRenderer::bandCount() const
@@ -118,8 +119,8 @@ bool QgsRasterRenderer::usesTransparency() const
 
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
 {
-  delete mRasterTransparency;
-  mRasterTransparency = t;
+  mRasterTransparency.reset( t );
+
 }
 
 QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
@@ -201,8 +202,8 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
-    delete mRasterTransparency;
-    mRasterTransparency = new QgsRasterTransparency();
+    mRasterTransparency.reset( new QgsRasterTransparency() );
+
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
 
@@ -226,7 +227,14 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bo
     setMinMaxOrigin( other->minMaxOrigin() );
 }
 
-void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap & ) const
+void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext & ) const
 {
   QDomElement rasterSymbolizerElem = doc.createElement( QStringLiteral( "sld:RasterSymbolizer" ) );
   element.appendChild( rasterSymbolizerElem );
@@ -238,6 +246,7 @@ void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QV
     opacityElem.appendChild( doc.createTextNode( QString::number( opacity() ) ) );
     rasterSymbolizerElem.appendChild( opacityElem );
   }
+  return true;
 }
 
 bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const

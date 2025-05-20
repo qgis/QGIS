@@ -97,7 +97,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "Executes a SQL command on a PostgreSQL database and loads the result as a table"
+            "Executes a SQL command on a PostgreSQL database and loads the result as a table."
         )
 
     def tags(self):

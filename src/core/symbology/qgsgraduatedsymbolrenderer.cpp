@@ -47,6 +47,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgspointdistancerenderer.h"
+#include "qgssldexportcontext.h"
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
@@ -337,17 +338,30 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
 
 void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QVariantMap newProps = props;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap newProps = oldProps;
   newProps[ QStringLiteral( "attribute" )] = mAttrName;
   newProps[ QStringLiteral( "method" )] = graduatedMethodStr( mGraduatedMethod );
+  context.setExtraProperties( newProps );
 
   // create a Rule for each range
   bool first = true;
+  bool result = true;
   for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); ++it )
   {
-    it->toSld( doc, element, newProps, first );
+    if ( !it->toSld( doc, element, mAttrName, context, first ) )
+      result = false;
     first = false;
   }
+  context.setExtraProperties( oldProps );
+  return result;
 }
 
 QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) const

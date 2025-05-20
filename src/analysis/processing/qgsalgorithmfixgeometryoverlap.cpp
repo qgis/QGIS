@@ -32,7 +32,12 @@ QString QgsFixGeometryOverlapAlgorithm::name() const
 
 QString QgsFixGeometryOverlapAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (overlap)" );
+  return QObject::tr( "Delete overlaps" );
+}
+
+QString QgsFixGeometryOverlapAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Deletes overlaps detected with the \"Overlaps\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryOverlapAlgorithm::tags() const
@@ -52,7 +57,7 @@ QString QgsFixGeometryOverlapAlgorithm::groupId() const
 
 QString QgsFixGeometryOverlapAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm deletes overlap sections based on an error layer from the check overlap algorithm.\n" );
+  return QObject::tr( "This algorithm deletes overlap sections based on an error layer from the \"Overlap\" algorithm in the \"Check geometry\" section.\n" );
 }
 
 QgsFixGeometryOverlapAlgorithm *QgsFixGeometryOverlapAlgorithm::createInstance() const
@@ -88,16 +93,18 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "No-overlap layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing overlaps" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -178,6 +185,9 @@ QVariantMap QgsFixGeometryOverlapAlgorithm::processAlgorithm( const QVariantMap 
   multiStepFeedback.setProgressText( QObject::tr( "Fixing errors..." ) );
   while ( errorFeaturesIt.nextFeature( errorFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     reportFeature.setGeometry( errorFeature.geometry() );
@@ -245,6 +255,9 @@ QVariantMap QgsFixGeometryOverlapAlgorithm::processAlgorithm( const QVariantMap 
   QgsFeatureIterator fixedFeaturesIt = fixedLayer->getFeatures();
   while ( fixedFeaturesIt.nextFeature( fixedFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )

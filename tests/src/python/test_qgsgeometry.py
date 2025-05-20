@@ -57,6 +57,7 @@ from qgis.core import (
 )
 import unittest
 import numpy
+import shapely
 from qgis.testing import start_app, QgisTestCase
 
 from utilities import compareWkt, unitTestDataPath, writeShape
@@ -12002,15 +12003,22 @@ class TestQgsGeometry(QgisTestCase):
     def testCoerce(self):
         """Test coerce function"""
 
-        def coerce_to_wkt(wkt, type, defaultZ=None, defaultM=None):
+        def coerce_to_wkt(
+            wkt, type, defaultZ=None, defaultM=None, avoidDuplicates=True
+        ):
             geom = QgsGeometry.fromWkt(wkt)
             if defaultZ is not None or defaultM is not None:
                 return [
                     g.asWkt(2)
-                    for g in geom.coerceToType(type, defaultZ or 0, defaultM or 0)
+                    for g in geom.coerceToType(
+                        type, defaultZ or 0, defaultM or 0, avoidDuplicates
+                    )
                 ]
             else:
-                return [g.asWkt(2) for g in geom.coerceToType(type)]
+                return [
+                    g.asWkt(2)
+                    for g in geom.coerceToType(type, avoidDuplicates=avoidDuplicates)
+                ]
 
         self.assertEqual(
             coerce_to_wkt("Point (1 1)", QgsWkbTypes.Type.Point), ["Point (1 1)"]
@@ -12035,6 +12043,15 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             coerce_to_wkt("Polygon((1 1, 2 2, 1 2, 1 1))", QgsWkbTypes.Type.Point),
             ["Point (1 1)", "Point (2 2)", "Point (1 2)"],
+        )
+        # keep duplicated nodes
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon((1 1, 2 2, 1 2, 1 1))",
+                QgsWkbTypes.Type.Point,
+                avoidDuplicates=False,
+            ),
+            ["Point (1 1)", "Point (2 2)", "Point (1 2)", "Point (1 1)"],
         )
         self.assertEqual(
             coerce_to_wkt("Polygon((1 1, 2 2, 1 2, 1 1))", QgsWkbTypes.Type.LineString),
@@ -12290,12 +12307,28 @@ class TestQgsGeometry(QgisTestCase):
             coerce_to_wkt("Polygon ((1 1, 1 2, 2 2, 1 1))", QgsWkbTypes.Type.Point),
             ["Point (1 1)", "Point (1 2)", "Point (2 2)"],
         )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.Point,
+                avoidDuplicates=False,
+            ),
+            ["Point (1 1)", "Point (1 2)", "Point (2 2)", "Point (1 1)"],
+        )
 
         self.assertEqual(
             coerce_to_wkt(
                 "Polygon ((1 1, 1 2, 2 2, 1 1))", QgsWkbTypes.Type.MultiPoint
             ),
             ["MultiPoint ((1 1),(1 2),(2 2))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.MultiPoint,
+                avoidDuplicates=False,
+            ),
+            ["MultiPoint ((1 1),(1 2),(2 2),(1 1))"],
         )
 
         self.assertEqual(
@@ -12312,6 +12345,23 @@ class TestQgsGeometry(QgisTestCase):
                 "Point (4 4)",
             ],
         )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.Point,
+                avoidDuplicates=False,
+            ),
+            [
+                "Point (1 1)",
+                "Point (1 2)",
+                "Point (2 2)",
+                "Point (1 1)",
+                "Point (3 3)",
+                "Point (4 3)",
+                "Point (4 4)",
+                "Point (3 3)",
+            ],
+        )
 
         self.assertEqual(
             coerce_to_wkt(
@@ -12319,6 +12369,14 @@ class TestQgsGeometry(QgisTestCase):
                 QgsWkbTypes.Type.MultiPoint,
             ),
             ["MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.MultiPoint,
+                avoidDuplicates=False,
+            ),
+            ["MultiPoint ((1 1),(1 2),(2 2),(1 1),(3 3),(4 3),(4 4),(3 3))"],
         )
 
         # polygon -> lines
@@ -14276,6 +14334,111 @@ class TestQgsGeometry(QgisTestCase):
                     [1.0, 1.0, 1, 1],
                 ],
             )
+        )
+
+    def testFromShapely(self):
+        """Test geometry creation from a shapely object."""
+
+        shapely_point = shapely.Point(1.0, 2.0)
+        qgs_point = QgsGeometry.from_shapely(shapely_point)
+        self.assertTrue(isinstance(qgs_point, QgsGeometry))
+        self.assertEqual(qgs_point.asWkt(), "Point (1 2)")
+
+        shapely_point_z = shapely.Point(1.0, 2.0, 3.0)
+        qgs_point_z = QgsGeometry.from_shapely(shapely_point_z)
+        self.assertTrue(isinstance(qgs_point_z, QgsGeometry))
+        self.assertEqual(qgs_point_z.asWkt(), "Point Z (1 2 3)")
+
+        shapely_multipoint = shapely.MultiPoint([(1.0, 2.0), (3.0, 4.0)])
+        qgs_multipoint = QgsGeometry.from_shapely(shapely_multipoint)
+        self.assertTrue(isinstance(qgs_multipoint, QgsGeometry))
+        self.assertEqual(qgs_multipoint.asWkt(), "MultiPoint ((1 2),(3 4))")
+
+        shapely_multipoint_z = shapely.MultiPoint([(1.0, 2.0, 3.0), (4.0, 5.0, 6.0)])
+        qgs_multipoint_z = QgsGeometry.from_shapely(shapely_multipoint_z)
+        self.assertTrue(isinstance(qgs_multipoint_z, QgsGeometry))
+        self.assertEqual(qgs_multipoint_z.asWkt(), "MultiPoint Z ((1 2 3),(4 5 6))")
+
+        shapely_linestring = shapely.LineString([(1.0, 2.0), (3.0, 4.0)])
+        qgs_linestring = QgsGeometry.from_shapely(shapely_linestring)
+        self.assertTrue(isinstance(qgs_linestring, QgsGeometry))
+        self.assertEqual(qgs_linestring.asWkt(), "LineString (1 2, 3 4)")
+
+        shapely_linestring_z = shapely.LineString([(1.0, 2.0, 3.0), (4.0, 5.0, 6.0)])
+        qgs_linestring_z = QgsGeometry.from_shapely(shapely_linestring_z)
+        self.assertEqual(qgs_linestring_z.asWkt(), "LineString Z (1 2 3, 4 5 6)")
+
+        shapely_multilinestring = shapely.MultiLineString(
+            [[(1.0, 2.0), (3.0, 4.0)], [(5.0, 6.0), (7.0, 8.0)]]
+        )
+        qgs_multilinestring = QgsGeometry.from_shapely(shapely_multilinestring)
+        self.assertEqual(
+            qgs_multilinestring.asWkt(), "MultiLineString ((1 2, 3 4),(5 6, 7 8))"
+        )
+
+        shapely_multilinestring_z = shapely.MultiLineString(
+            [[(1.0, 2.0, 3.0), (4.0, 5.0, 6.0)], [(7.0, 8.0, 9.0), (10.0, 11.0, 12.0)]]
+        )
+        qgs_multilinestring_z = QgsGeometry.from_shapely(shapely_multilinestring_z)
+        self.assertEqual(
+            qgs_multilinestring_z.asWkt(),
+            "MultiLineString Z ((1 2 3, 4 5 6),(7 8 9, 10 11 12))",
+        )
+
+        shapely_polygon = shapely.Polygon([(0, 0), (4, 0), (4, 4), (0, 4), (0, 0)])
+        qgs_polygon = QgsGeometry.from_shapely(shapely_polygon)
+        self.assertEqual(qgs_polygon.asWkt(), "Polygon ((0 0, 4 0, 4 4, 0 4, 0 0))")
+
+        # 3D Polygon
+        shapely_polygon_z = shapely.Polygon(
+            [(0, 0, 1), (4, 0, 2), (4, 4, 3), (0, 4, 4), (0, 0, 1)]
+        )
+        qgs_polygon_z = QgsGeometry.from_shapely(shapely_polygon_z)
+        self.assertEqual(
+            qgs_polygon_z.asWkt(), "Polygon Z ((0 0 1, 4 0 2, 4 4 3, 0 4 4, 0 0 1))"
+        )
+
+        poly1 = shapely.Polygon([(0, 0), (2, 0), (2, 2), (0, 2), (0, 0)])
+        poly2 = shapely.Polygon([(3, 3), (5, 3), (5, 5), (3, 5), (3, 3)])
+        shapely_multipolygon = shapely.MultiPolygon([poly1, poly2])
+        qgs_multipolygon = QgsGeometry.from_shapely(shapely_multipolygon)
+        self.assertEqual(
+            qgs_multipolygon.asWkt(),
+            "MultiPolygon (((0 0, 2 0, 2 2, 0 2, 0 0)),((3 3, 5 3, 5 5, 3 5, 3 3)))",
+        )
+
+        poly1_z = shapely.Polygon(
+            [(0, 0, 1), (2, 0, 2), (2, 2, 3), (0, 2, 4), (0, 0, 1)]
+        )
+        poly2_z = shapely.Polygon(
+            [(3, 3, 5), (5, 3, 6), (5, 5, 7), (3, 5, 8), (3, 3, 5)]
+        )
+        shapely_multipolygon_z = shapely.MultiPolygon([poly1_z, poly2_z])
+        qgs_multipolygon_z = QgsGeometry.from_shapely(shapely_multipolygon_z)
+        self.assertEqual(
+            qgs_multipolygon_z.asWkt(),
+            (
+                "MultiPolygon Z (((0 0 1, 2 0 2, 2 2 3, 0 2 4, 0 0 1)),((3 3 5, 5 3 6, 5 5 7, "
+                "3 5 8, 3 3 5)))"
+            ),
+        )
+
+        shapely_gc = shapely.GeometryCollection(
+            [
+                shapely.Point(1, 2),
+                shapely.LineString([(3, 4), (5, 6)]),
+                shapely.Polygon([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)]),
+            ]
+        )
+
+        qgs_gc = QgsGeometry.from_shapely(shapely_gc)
+        self.assertIsInstance(qgs_gc, QgsGeometry)
+        self.assertTrue(qgs_gc.isGeosValid())
+        self.assertTrue(qgs_gc.isMultipart())
+
+        self.assertEqual(
+            qgs_gc.asWkt(),
+            "GeometryCollection (Point (1 2),LineString (3 4, 5 6),Polygon ((0 0, 1 0, 1 1, 0 1, 0 0)))",
         )
 
 

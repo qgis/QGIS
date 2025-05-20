@@ -17,6 +17,12 @@ import sys
 import tempfile
 import math
 from datetime import datetime
+import http.server
+import os
+import socketserver
+import threading
+import time
+import shutil
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QByteArray, QTemporaryDir, QVariant
@@ -118,6 +124,19 @@ class PyQgsOGRProvider(QgisTestCase):
             shutil.copy(os.path.join(unitTestDataPath(), f), cls.temp_dir_path)
 
         cls.dirs_to_cleanup = [cls.basetestpath]
+
+        # Bring up a simple HTTP server, for vsicurl tests
+        os.chdir(unitTestDataPath() + "")
+
+        cls.httpd = socketserver.TCPServer(
+            ("localhost", 0), http.server.SimpleHTTPRequestHandler
+        )
+        cls.port = cls.httpd.server_address[1]
+        cls.port = cls.httpd.server_address[1]
+
+        cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
+        cls.httpd_thread.daemon = True
+        cls.httpd_thread.start()
 
     @classmethod
     def tearDownClass(cls):
@@ -660,6 +679,11 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
+
+        settings.setValue("proxy/proxyEnabled", False)
+        QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
+        gdal.SetConfigOption("GDAL_HTTP_PROXY", "")
+        gdal.SetConfigOption("GDAL_HTTP_PROXYUSERPWD", "")
 
     def testEditGeoJsonRemoveField(self):
         """Test bugfix of https://github.com/qgis/QGIS/issues/26484 (deleting an existing field)"""
@@ -3270,6 +3294,72 @@ class PyQgsOGRProvider(QgisTestCase):
         # Check feature geometries
         for feature in layer.getFeatures():
             self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.MultiPolygon)
+
+        # vsicurl
+        res = metadata.querySublayers(
+            f"/vsicurl/http://localhost:{self.port}/polys.shp"
+        )
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "polys")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(
+            res[0].uri(),
+            f"/vsicurl/http://localhost:{self.port}/polys.shp|layername=polys",
+        )
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.Polygon)
+        self.assertEqual(res[0].geometryColumnName(), "")
+        self.assertEqual(res[0].driverName(), "ESRI Shapefile")
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.MultiPolygon)
+
+        # vsicurl with zip
+        res = metadata.querySublayers(
+            f"/vsicurl/http://localhost:{self.port}/zip/points2.zip"
+        )
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "points.shp")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(
+            res[0].uri(),
+            f"/vsizip//vsicurl/http://localhost:{self.port}/zip/points2.zip/points.shp|layername=points",
+        )
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(res[0].geometryColumnName(), "")
+        self.assertEqual(res[0].driverName(), "ESRI Shapefile")
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
+
+        # vsicurl with zip, explicit vsizip prefix
+        res = metadata.querySublayers(
+            f"/vsizip//vsicurl/http://localhost:{self.port}/zip/points2.zip"
+        )
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "points")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(
+            res[0].uri(),
+            f"/vsizip//vsicurl/http://localhost:{self.port}/zip/points2.zip|layername=points",
+        )
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(res[0].geometryColumnName(), "")
+        self.assertEqual(res[0].driverName(), "ESRI Shapefile")
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
 
     @unittest.skipIf(
         int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 4, 0),

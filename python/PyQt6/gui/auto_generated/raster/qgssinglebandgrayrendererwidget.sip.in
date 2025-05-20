@@ -21,6 +21,12 @@ A widget for configuring a :py:class:`QgsSingleBandGrayRenderer`.
 %End
   public:
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Constructor for QgsSingleBandGrayRendererWidget.
+
+:param layer: associated raster layer
+:param extent: current canvas extent
+%End
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
 

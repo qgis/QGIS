@@ -396,7 +396,7 @@ tests:
  # This is VERY slow on proj 6+ builds due to the excessive amount of message log noise it causes to be emitted.
  # We need a way to disable the default handlers on individual QgsCoordinateTransform objects in order to avoid
  # this and speed the algorithm back up
- # - algorithm: qgis:findprojection
+ # - algorithm: native:findprojection
  #   name: Find projection
  #   params:
  #     INPUT:
@@ -543,7 +543,7 @@ tests:
               precision: 7
             fid: skip
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to centroid
     params:
       INPUT:
@@ -555,7 +555,7 @@ tests:
         name: expected/convert_poly_centroid.gml
         type: vector
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to multilinestring
     params:
       INPUT:
@@ -567,7 +567,7 @@ tests:
         name: expected/convert_poly_multiline.gml
         type: vector
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to nodes
     params:
       INPUT:

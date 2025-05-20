@@ -4,8 +4,8 @@ ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
-FROM      ubuntu:${DISTRO_VERSION} as binary-for-oracle
-MAINTAINER Denis Rouzaud <denis@opengis.ch>
+FROM      ubuntu:${DISTRO_VERSION} AS binary-for-oracle
+LABEL org.opencontainers.image.authors="Denis Rouzaud <denis@opengis.ch>"
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
 
@@ -112,6 +112,7 @@ RUN  apt-get update \
     requests \
     six \
     hdbcli \
+    shapely  \
   && apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
@@ -132,7 +133,7 @@ RUN unzip -n instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
 RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
 ENV PATH="/instantclient_21_16:${PATH}"
-ENV LD_LIBRARY_PATH="/instantclient_21_16:${LD_LIBRARY_PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_21_16"
 # workaround noble libaio SONAME issue -- see https://bugs.launchpad.net/ubuntu/+source/libaio/+bug/2067501
 RUN if [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ] ; then ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 ; fi
 
@@ -162,7 +163,7 @@ RUN curl -L https://github.com/PDAL/PDAL/releases/download/${PDAL_VERSION}/PDAL-
     && ninja \
     && ninja install
 
-FROM binary-for-oracle as binary-only
+FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \

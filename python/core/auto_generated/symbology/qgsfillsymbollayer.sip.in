@@ -58,7 +58,9 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsSimpleFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -1385,7 +1387,9 @@ versa when writing. Used internally when reading/writing symbols.
 
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool usesMapUnits() const;
 
@@ -1683,7 +1687,9 @@ caller takes ownership of the returned object.
 
     virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QImage toTiledPatternImage( ) const;
 
@@ -1987,7 +1993,9 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QImage toTiledPatternImage( ) const;
 
@@ -2900,7 +2908,9 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QgsCentroidFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual void setColor( const QColor &color );
 

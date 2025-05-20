@@ -54,6 +54,11 @@ QString QgsConvexHullAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
+QString QgsConvexHullAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the convex hull for each feature in an input layer." );
+}
+
 QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
 {
   return new QgsConvexHullAlgorithm();
@@ -61,10 +66,10 @@ QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
 
 QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  return fields;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )

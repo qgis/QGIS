@@ -80,6 +80,7 @@
 #include "qgsalgorithmconditionalbranch.h"
 #include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconverttocurves.h"
+#include "qgsalgorithmconvertgeometrytype.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmcoveragesimplify.h"
 #include "qgsalgorithmcoverageunion.h"
@@ -127,9 +128,11 @@
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfillnodata.h"
+#include "qgsalgorithmfillsinkswangliu.h"
 #include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfilterbygeometry.h"
 #include "qgsalgorithmfiltervertices.h"
+#include "qgsalgorithmfindprojection.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmflattenrelationships.h"
 #include "qgsalgorithmforcerhr.h"
@@ -389,6 +392,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvertToCurvesAlgorithm() );
+  addAlgorithm( new QgsConvertGeometryTypeAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsCopyLayerMetadataAlgorithm() );
   addAlgorithm( new QgsCoverageSimplifyAlgorithm() );
@@ -440,11 +444,13 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFieldCalculatorAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFillNoDataAlgorithm() );
+  addAlgorithm( new QgsFillSinksWangLiuAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
   addAlgorithm( new QgsFilterByGeometryAlgorithm() );
   addAlgorithm( new QgsFilterByLayerTypeAlgorithm() );
   addAlgorithm( new QgsFilterVerticesByM() );
   addAlgorithm( new QgsFilterVerticesByZ() );
+  addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );

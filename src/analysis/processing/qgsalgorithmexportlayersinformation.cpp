@@ -53,8 +53,13 @@ void QgsExportLayersInformationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsExportLayersInformationAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates a polygon layer with features corresponding to the extent of selected layer(s).\n\n"
+  return QObject::tr( "This algorithm creates a polygon layer with features corresponding to the extent of selected layer(s).\n\n"
                       "Additional layer details - CRS, provider name, file path, layer name, subset filter, abstract and attribution - are attached as attributes to each feature." );
+}
+
+QString QgsExportLayersInformationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a polygon layer with features corresponding to the extent of selected layer(s)." );
 }
 
 QgsExportLayersInformationAlgorithm *QgsExportLayersInformationAlgorithm::createInstance() const

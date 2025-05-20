@@ -214,7 +214,7 @@ class TestQgsLayerDefinition(QgisTestCase):
                 <provider encoding="UTF-8">memory</provider>
             </maplayer>
 
-            <maplayer type="vector"geometry="No geometry">
+            <maplayer type="vector" geometry="No geometry">
             <id>NewMemory_ffa4d8a4_e5be_46a9_a0e0_fb6ee924f3cd</id>
             <datasource>memory?geometry=NoGeometry&amp;field=BA_ART_LAT:string&amp;crs=EPSG:4326</datasource>
             <layername>NewMemory</layername>

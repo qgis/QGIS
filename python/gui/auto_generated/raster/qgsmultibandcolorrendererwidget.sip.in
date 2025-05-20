@@ -21,6 +21,12 @@ A widget for configuring a :py:class:`QgsMultiBandColorRenderer`.
 %End
   public:
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Constructor for QgsMultiBandColorRendererWidget.
+
+:param layer: associated raster layer
+:param extent: current canvas extent
+%End
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent );
 
     virtual QgsRasterRenderer *renderer() /Factory/;

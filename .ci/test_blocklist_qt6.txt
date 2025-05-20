@@ -2,8 +2,6 @@
 test_core_compositionconverter
 test_core_labelingengine
 test_core_layoutpicture
-# test_core_ogcutils runs fine locally on Fedora:rawhide but not on CI
-test_core_ogcutils
 test_core_vectortilelayer
 test_gui_processinggui
 test_app_advanceddigitizing
@@ -35,25 +33,14 @@ PyQgsStyleStorageMssql
 # To be fixed
 PyQgsAnnotation
 PyQgsAuthenticationSystem
-PyQgsDelimitedTextProvider
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
-PyQgsProject
-PyQgsFloatingWidget
 PyQgsLayoutHtml
-PyQgsMapBoxGlStyleConverter
-PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
-PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
-PyQgsSymbolLayerReadSld
-PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
-ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt4
-ProcessingGdalAlgorithmsVectorTest
 # PyQgsProviderRegistry runs fine locally on Fedora:rawhide but not on CI
 PyQgsProviderRegistry

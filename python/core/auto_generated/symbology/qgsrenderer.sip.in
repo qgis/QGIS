@@ -330,10 +330,23 @@ UserStyle element of a SLD style document
 :return: the renderer
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-used from subclasses to create SLD Rule elements following SLD v1.1
+Used from subclasses to create SLD Rule elements following SLD v1.1
 specs
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Exports the renderer to SLD Rule elements following the SLD v1.1 specs.
+
+Returns ``True`` if the renderer was exported to SLD successfully.
+
+.. versionadded:: 3.44
 %End
 
     QSet< QString > legendKeys() const;

@@ -5059,6 +5059,11 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
   mGpsConnection->setConnection( connection );
 }
 
+QgsAppGpsDigitizing *QgisApp::gpsDigitizing()
+{
+  return mGpsDigitizing;
+}
+
 QgsAppGpsSettingsMenu *QgisApp::gpsSettingsMenu()
 {
   return mGpsSettingsMenu;
@@ -12124,12 +12129,13 @@ void QgisApp::legendGroupSetWmsData()
     return;
 
   QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
-  if ( dlg.exec() )
+  dlg.setHasTimeDimension( currentGroup->hasWmsTimeDimension() );
+  if ( dlg.exec() && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() ) )
   {
-    if ( *dlg.serverProperties() != *currentGroup->serverProperties() )
-      QgsProject::instance()->setDirty( true );
+    QgsProject::instance()->setDirty( true );
 
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
+    currentGroup->setHasWmsTimeDimension( dlg.hasTimeDimension() );
   }
 }
 
@@ -13405,6 +13411,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
   }
 #else
   Q_UNUSED( name );
+  Q_UNUSED( sceneMode );
 #endif
   return nullptr;
 }

@@ -1302,7 +1302,7 @@ If you are interested in seeing embedded debug output, change the following
 CMake option:
 
 ```bash
--D CMAKE_BUILD_TYPE=DEBUG  # (or RELWITHDEBINFO)
+-D CMAKE_BUILD_TYPE=Debug  # (or RelWithDebInfo)
 ```
 
 This will flood your terminal or system log with lots of useful output from

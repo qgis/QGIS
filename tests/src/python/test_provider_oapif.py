@@ -2135,7 +2135,8 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             ),
             "wb",
         ) as f:
-            f.write(b"Location: /collections/mycollection/items/other_id\r\n")
+            # location in lower case to test fix for https://github.com/qgis/QGIS/issues/61729
+            f.write(b"location: /collections/mycollection/items/other_id\r\n")
 
         new_id = {
             "type": "Feature",

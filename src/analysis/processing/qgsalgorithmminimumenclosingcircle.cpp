@@ -65,6 +65,11 @@ QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
+QString QgsMinimumEnclosingCircleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the minimum enclosing circle which covers each feature in an input layer." );
+}
+
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
 {
   return new QgsMinimumEnclosingCircleAlgorithm();
@@ -84,10 +89,10 @@ bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsMapLayer *
 
 QgsFields QgsMinimumEnclosingCircleAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "radius" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  return fields;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "radius" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

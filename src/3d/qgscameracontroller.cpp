@@ -27,6 +27,7 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput>
 #include <QStringLiteral>
+#include <QQuaternion>
 #include <cmath>
 
 #include "qgslogger.h"
@@ -104,30 +105,53 @@ void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversion 
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
 {
-  const float oldPitch = mCameraPose.pitchAngle();
-  const float oldHeading = mCameraPose.headingAngle();
-  float newPitch = oldPitch + diffPitch;
-  float newHeading = oldHeading + diffHeading;
+  float newPitch = mCameraPose.pitchAngle() + diffPitch;
+  float newHeading = mCameraPose.headingAngle() + diffHeading;
 
   newPitch = std::clamp( newPitch, 0.f, 180.f ); // prevent going over the head
 
-  // First undo the previously applied rotation, then apply the new rotation
-  // (We can't just apply our euler angles difference because the camera may be already rotated)
-  const QQuaternion qNew = Qgs3DUtils::rotationFromPitchHeadingAngles( newPitch, newHeading );
-  const QQuaternion qOld = Qgs3DUtils::rotationFromPitchHeadingAngles( oldPitch, oldHeading );
-  const QQuaternion q = qNew * qOld.conjugated();
+  switch ( mScene->mapSettings()->sceneMode() )
+  {
+    case Qgis::SceneMode::Globe:
+    {
+      // When on a globe, we need to calculate "where is up" (the normal of a tangent plane).
+      // Also it uses different axes than the standard plane-based view.
+      // See QgsCameraPose::updateCameraGlobe(), we basically want to make sure
+      // that after an update, the camera stays in the same spot.
+      QgsVector3D viewCenterLatLon;
+      try
+      {
+        viewCenterLatLon = mGlobeCrsToLatLon.transform( mCameraPose.centerPoint() + mOrigin );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( QStringLiteral( "rotateCamera: ECEF -> lat,lon transform failed!" ) );
+        return;
+      }
+      QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( viewCenterLatLon.x() ) )
+                            * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( viewCenterLatLon.y() ) );
+      QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), newHeading )
+                                  * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), newPitch );
+      QVector3D newCameraToCenter = ( qLatLon * qPitchHeading * QVector3D( -1, 0, 0 ) ) * mCameraPose.distanceFromCenterPoint();
 
-  // get camera's view vector, rotate it to get new view center
-  const QVector3D position = mCamera->position();
-  QVector3D viewCenter = mCamera->viewCenter();
-  const QVector3D viewVector = viewCenter - position;
-  const QVector3D cameraToCenter = q * viewVector;
-  viewCenter = position + cameraToCenter;
+      mCameraPose.setCenterPoint( mCamera->position() + newCameraToCenter );
+      mCameraPose.setPitchAngle( newPitch );
+      mCameraPose.setHeadingAngle( newHeading );
+      updateCameraFromPose();
+      return;
+    }
 
-  mCameraPose.setCenterPoint( viewCenter );
-  mCameraPose.setPitchAngle( newPitch );
-  mCameraPose.setHeadingAngle( newHeading );
-  updateCameraFromPose();
+    case Qgis::SceneMode::Local:
+    {
+      QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( newPitch, newHeading );
+      QVector3D newCameraToCenter = q * QVector3D( 0, 0, -mCameraPose.distanceFromCenterPoint() );
+      mCameraPose.setCenterPoint( mCamera->position() + newCameraToCenter );
+      mCameraPose.setPitchAngle( newPitch );
+      mCameraPose.setHeadingAngle( newHeading );
+      updateCameraFromPose();
+      return;
+    }
+  }
 }
 
 void QgsCameraController::rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint )

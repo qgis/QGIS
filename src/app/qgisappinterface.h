@@ -20,6 +20,7 @@
 
 #include "qgis_app.h"
 #include "qgisinterface.h"
+#include "qgsappgpstools.h"
 #include "qgsapppluginmanagerinterface.h"
 
 class QTimer;
@@ -53,6 +54,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsPluginManagerInterface *pluginManagerInterface() override;
 
     QgsLayerTreeView *layerTreeView() override;
+
+    QgsGpsToolsInterface *gpsTools() override;
 
     void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) override;
     void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
@@ -333,6 +336,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
+
+    //! Pointer to the GpsToolsInterface object
+    QgsAppGpsTools mGpsToolsIface;
 };
 Q_NOWARN_DEPRECATED_POP
 

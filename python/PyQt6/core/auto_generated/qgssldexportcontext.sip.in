@@ -67,6 +67,70 @@ Returns the export file path for the SLD
 Sets the export file path for the SLD to ``exportFilePath``
 %End
 
+    QStringList errors() const;
+%Docstring
+Returns a list of errors which occurred during the conversion.
+
+.. seealso:: :py:func:`pushError`
+
+.. seealso:: :py:func:`warnings`
+
+.. versionadded:: 3.44
+%End
+
+    void pushError( const QString &error );
+%Docstring
+Pushes a ``error`` message generated during the conversion.
+
+.. seealso:: :py:func:`errors`
+
+.. seealso:: :py:func:`pushWarning`
+
+.. versionadded:: 3.44
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of warnings which occurred during the conversion.
+
+.. seealso:: :py:func:`pushWarning`
+
+.. seealso:: :py:func:`errors`
+
+.. versionadded:: 3.44
+%End
+
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+
+.. seealso:: :py:func:`warnings`
+
+.. seealso:: :py:func:`pushError`
+
+.. versionadded:: 3.44
+%End
+
+    QVariantMap extraProperties() const;
+%Docstring
+Returns the open ended set of properties that can drive/inform the SLD
+encoding.
+
+.. seealso:: :py:func:`setExtraProperties`
+
+.. versionadded:: 3.44
+%End
+
+    void setExtraProperties( const QVariantMap &properties );
+%Docstring
+Sets the open ended set of properties that can drive/inform the SLD
+encoding.
+
+.. seealso:: :py:func:`extraProperties`
+
+.. versionadded:: 3.44
+%End
+
 };
 
 

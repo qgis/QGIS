@@ -2223,6 +2223,10 @@ class CORE_EXPORT QgsGeometry
      * to Z, M or ZM versions.
      * By default 0.0 is used for Z and M.
      *
+     * Since QGIS 3.44, the parameters \a avoidDuplicates controls whether to keep duplicated nodes (e.g. start/end of rings)
+     * when promoting polygon geometries to points.
+     * By default duplicated nodes are ignored.
+     *
      * \note This method is much stricter than convertToType(), as it considers the exact WKB type
      * of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
      * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
@@ -2230,7 +2234,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.14
      */
-    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0 ) const;
+    QVector< QgsGeometry > coerceToType( Qgis::WkbType type, double defaultZ = 0, double defaultM = 0, bool avoidDuplicates = true ) const;
 
     /**
      * Try to convert the geometry to the requested type
