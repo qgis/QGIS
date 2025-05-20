@@ -2577,6 +2577,5 @@ void TestQgs3DRendering::test3DSceneExporterBig()
   mapSettings.setLayers( {} );
 }
 
-
 QGSTEST_MAIN( TestQgs3DRendering )
 #include "testqgs3drendering.moc"
