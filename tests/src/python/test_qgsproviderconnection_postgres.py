@@ -941,7 +941,6 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         table_names = self._table_names(connUnprivilegedUser.tables(schema))
         self.assertNotIn("layer_w_role", table_names)
 
-
     def test_rename_field(self):
         """Test rename fields"""
         md = QgsProviderRegistry.instance().providerMetadata("postgres")
@@ -962,7 +961,6 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         fields = conn.fields("qgis_test", "rename_field")
         self.assertEqual(fields.names(), ["id", "geom", "new_column"])
-
 
     def test_move_table_to_schema(self):
         """Test that table can be moved to another schema."""
