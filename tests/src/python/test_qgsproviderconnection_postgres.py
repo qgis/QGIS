@@ -941,6 +941,38 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         table_names = self._table_names(connUnprivilegedUser.tables(schema))
         self.assertNotIn("layer_w_role", table_names)
 
+    def test_move_table_to_schema(self):
+        """Test that table can be moved to another schema."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.table_to_move;
+        CREATE TABLE qgis_test.table_to_move (
+            id SERIAL PRIMARY KEY,
+            geom geometry(Geometry,4326)
+        );
+        CREATE SCHEMA schema_test;
+        """
+
+        conn.executeSql(sql)
+
+        # test table exist
+        table = conn.table("qgis_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
+        # move table to another schema
+        conn.moveTableToSchema(
+            "qgis_test",
+            "table_to_move",
+            "schema_test",
+        )
+
+        # test moved table exist in the schema
+        table = conn.table("schema_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
 
 if __name__ == "__main__":
     unittest.main()
