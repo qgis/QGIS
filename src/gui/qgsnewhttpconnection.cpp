@@ -364,7 +364,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
 }
 
-void QgsNewHttpConnection::showEvent(QShowEvent* event)
+void QgsNewHttpConnection::showEvent( QShowEvent *event )
 {
   QDialog::showEvent( event );
   adjustSize();
