@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>821</width>
-    <height>664</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,7 +43,7 @@
         <x>0</x>
         <y>0</y>
         <width>803</width>
-        <height>617</height>
+        <height>563</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -354,27 +354,27 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsMessageBar</class>
-   <extends>QWidget</extends>
-   <header>qgsmessagebar.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>qgsauthsettingswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
