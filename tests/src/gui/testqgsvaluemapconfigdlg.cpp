@@ -90,7 +90,6 @@ void TestQgsValueMapConfigDlg::testLoadFromCSV()
 
 void TestQgsValueMapConfigDlg::testTestTrimValues()
 {
-
   // Create a GPKG layer in a temporary file using GDAL
   QTemporaryDir tempDir;
   const QString tempFile = tempDir.path() + QDir::separator() + QStringLiteral( "test.gpkg" );
@@ -98,9 +97,8 @@ void TestQgsValueMapConfigDlg::testTestTrimValues()
   QList<QPair<QString, QString>> fields;
   fields << QPair<QString, QString>( QStringLiteral( "key" ), QStringLiteral( "String;1" ) );
   QString error;
-  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource(tempFile,  QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ),
-                                                       Qgis::WkbType::Point, fields, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error) );
-  QgsVectorLayer vl{ tempFile, QStringLiteral( "vl1" ), QStringLiteral( "ogr" ) };
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( tempFile, QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, fields, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+  QgsVectorLayer vl { tempFile, QStringLiteral( "vl1" ), QStringLiteral( "ogr" ) };
   QVERIFY( vl.isValid() );
   QCOMPARE( vl.fields().count(), 2 );
 
@@ -113,12 +111,11 @@ void TestQgsValueMapConfigDlg::testTestTrimValues()
 
   valueMapConfig->updateMap( valueList, false );
   valueMapConfig->addNullButtonPushed();
-  QVERIFY( ! valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ));
+  QVERIFY( !valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
 
   valueList[QStringLiteral( "33" )] = QStringLiteral( "Choice 33" );
-  valueMapConfig->updateMap( valueList, false  );
-  QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ));
-
+  valueMapConfig->updateMap( valueList, false );
+  QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsValueMapConfigDlg )

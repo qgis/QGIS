@@ -131,7 +131,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
   {
     // check cell value
     QTableWidgetItem *item = tableWidget->item( row, 0 );
-    if ( item && item->data(Qt::ItemDataRole::UserRole) != QgsValueMapFieldFormatter::NULL_VALUE )
+    if ( item && item->data( Qt::ItemDataRole::UserRole ) != QgsValueMapFieldFormatter::NULL_VALUE )
     {
       const QString validValue = checkValueLength( item->text() );
       if ( validValue.length() != item->text().length() )
