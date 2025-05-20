@@ -1892,7 +1892,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         if ( !md )
           return;
 
-        std::shared_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
         QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
 
@@ -1901,13 +1901,15 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           const QString originalSchemaName = item->parent()->name();
           const QString tableName = item->name();
 
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
           QString errCause;
-          if ( conn2 )
+          if ( conn3 )
           {
             try
             {
               QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn2->moveTableToAnotherSchema( originalSchemaName, tableName, dlg->selectedSchema() );
+              conn3->moveTableToSchema( originalSchemaName, tableName, dlg->selectedSchema() );
             }
             catch ( QgsProviderConnectionException &ex )
             {
