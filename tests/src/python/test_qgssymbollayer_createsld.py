@@ -1765,7 +1765,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom = QDomDocument()
         root = dom.createElement("FakeRoot")
         dom.appendChild(root)
-        symbolLayer.toSld(dom, root, {})
+        symbolLayer.toSld(dom, root, QgsSldExportContext())
         return dom, root
 
     def layerToSld(self, mapLayer):
