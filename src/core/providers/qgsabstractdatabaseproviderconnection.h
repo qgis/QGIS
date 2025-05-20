@@ -1051,7 +1051,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Move table to a different schema.
      *
-     * \param sourceSchema name of the source schema (schema is ignored if not supported by the backend).
+     * \param sourceSchema name of the source schema.
      * \param tableName name of the table.
      * \param targetSchema name of the target schema to move table to.
      *
