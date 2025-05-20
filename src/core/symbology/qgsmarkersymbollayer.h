@@ -706,7 +706,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \param properties QVariantMap properties object
      */
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
-   
+
     /**
      * Creates a new QgsRasterMarkerSymbolLayer from an SLD XML element.
      * \param element XML element containing SLD definition of symbol

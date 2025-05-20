@@ -473,7 +473,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static bool needFontMarker( QDomElement &element );
     static bool needSvgMarker( QDomElement &element );
-    
+
     /**
      * Checks if \a element contains an ExternalGraphic element that should translate to a raster marker. This is the case for any type of ExternalGraphic that is not an SVG.
      *
