@@ -595,6 +595,8 @@ void TestQgsProject::projectSaveUser()
 
   QVERIFY( p.saveUser().isEmpty() );
   QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( p.metadata().author().isEmpty() );
+  QVERIFY( !p.metadata().creationDateTime().isValid() );
   QVERIFY( !p.lastSaveDateTime().isValid() );
 
   s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core );
@@ -602,6 +604,8 @@ void TestQgsProject::projectSaveUser()
   p.write();
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.metadata().author(), QgsApplication::userFullName() );
+  QCOMPARE( p.metadata().creationDateTime().date(), QDateTime::currentDateTime().date() );
   QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
 
   QgsProject p2;
