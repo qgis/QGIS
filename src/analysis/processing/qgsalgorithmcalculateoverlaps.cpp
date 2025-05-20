@@ -77,6 +77,12 @@ QString QgsCalculateVectorOverlapsAlgorithm::shortHelpString() const
                       "by each of the selected overlay layers." );
 }
 
+QString QgsCalculateVectorOverlapsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the area and percentage cover by which features from an input layer "
+                      "are overlapped by features from a selection of overlay layers." );
+}
+
 QgsCalculateVectorOverlapsAlgorithm *QgsCalculateVectorOverlapsAlgorithm::createInstance() const
 {
   return new QgsCalculateVectorOverlapsAlgorithm();
@@ -99,8 +105,10 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
     {
       mLayerNames << layer->name();
       mOverlayerSources.emplace_back( std::make_unique<QgsVectorLayerFeatureSource>( vl ) );
-      mOutputFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QMetaType::Type::Double ) );
-      mOutputFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QMetaType::Type::Double ) );
+      QgsFields newFields;
+      newFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QMetaType::Type::Double ) );
+      newFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QMetaType::Type::Double ) );
+      mOutputFields = QgsProcessingUtils::combineFields( mOutputFields, newFields );
     }
   }
 

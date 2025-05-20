@@ -85,6 +85,12 @@ QString QgsJoinByAttributeAlgorithm::shortHelpString() const
                       "in each of them to define the join criteria." );
 }
 
+QString QgsJoinByAttributeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that is an extended version of the input one, "
+                      "with additional attributes taken from a second vector layer." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsJoinByAttributeAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;

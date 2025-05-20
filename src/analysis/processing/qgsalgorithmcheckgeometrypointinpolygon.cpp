@@ -32,7 +32,12 @@ QString QgsGeometryCheckPointInPolygonAlgorithm::name() const
 
 QString QgsGeometryCheckPointInPolygonAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (point in polygon)" );
+  return QObject::tr( "Points outside polygons" );
+}
+
+QString QgsGeometryCheckPointInPolygonAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detects points that are not in polygons from the polygon layer list." );
 }
 
 QStringList QgsGeometryCheckPointInPolygonAlgorithm::tags() const
@@ -80,16 +85,15 @@ void QgsGeometryCheckPointInPolygonAlgorithm::initAlgorithm( const QVariantMap &
     QStringLiteral( "POLYGONS" ), QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
-  ) );
-  addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Points outside polygons errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -117,7 +121,6 @@ QgsFields QgsGeometryCheckPointInPolygonAlgorithm::outputFields()
 
 QVariantMap QgsGeometryCheckPointInPolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString dest_output;
   QString dest_errors;
   const std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -136,12 +139,6 @@ QVariantMap QgsGeometryCheckPointInPolygonAlgorithm::processAlgorithm( const QVa
   const QList<QgsMapLayer *> polygonLayers = parameterAsLayerList( parameters, QStringLiteral( "POLYGONS" ), context );
   if ( polygonLayers.isEmpty() )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "POLYGONS" ) ) );
-
-  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
-  ) );
-  if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
     parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
@@ -208,10 +205,6 @@ QVariantMap QgsGeometryCheckPointInPolygonAlgorithm::processAlgorithm( const QVa
           << inputLayer->getFeature( error->featureId() ).attribute( uniqueIdField.name() );
     f.setAttributes( attrs );
 
-    f.setGeometry( error->geometry() );
-    if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
@@ -220,8 +213,13 @@ QVariantMap QgsGeometryCheckPointInPolygonAlgorithm::processAlgorithm( const QVa
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
   }
 
+  // cleanup memory of the pointed data
+  for ( const QgsGeometryCheckError *error : checkErrors )
+  {
+    delete error;
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
   outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
 
   return outputs;

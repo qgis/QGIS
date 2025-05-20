@@ -54,6 +54,11 @@ QString QgsLoadLayerAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm loads a layer to the current project." );
 }
 
+QString QgsLoadLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Loads a layer to the current project." );
+}
+
 QgsLoadLayerAlgorithm *QgsLoadLayerAlgorithm::createInstance() const
 {
   return new QgsLoadLayerAlgorithm();

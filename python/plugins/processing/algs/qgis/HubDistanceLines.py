@@ -22,6 +22,8 @@ __copyright__ = "(C) 2010, Michael Minn"
 from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     QgsField,
+    QgsFields,
+    QgsProcessingUtils,
     QgsGeometry,
     QgsDistanceArea,
     QgsFeature,
@@ -134,9 +136,10 @@ class HubDistanceLines(QgisAlgorithm):
 
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
 
-        fields = point_source.fields()
-        fields.append(QgsField("HubName", QMetaType.Type.QString))
-        fields.append(QgsField("HubDist", QMetaType.Type.Double))
+        newFields = QgsFields()
+        newFields.append(QgsField("HubName", QMetaType.Type.QString))
+        newFields.append(QgsField("HubDist", QMetaType.Type.Double))
+        fields = QgsProcessingUtils.combineFields(point_source.fields(), newFields)
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,

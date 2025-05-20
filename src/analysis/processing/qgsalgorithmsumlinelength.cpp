@@ -69,6 +69,13 @@ QString QgsSumLineLengthAlgorithm::shortHelpString() const
                       "two fields can be configured in the algorithm parameters." );
 }
 
+QString QgsSumLineLengthAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Takes a polygon layer and a line layer and "
+                      "measures the total length of lines and the total number of "
+                      "them that cross each polygon." );
+}
+
 QgsSumLineLengthAlgorithm *QgsSumLineLengthAlgorithm::createInstance() const
 {
   return new QgsSumLineLengthAlgorithm();

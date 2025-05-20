@@ -60,6 +60,12 @@ QString QgsGeometryByExpressionAlgorithm::shortHelpString() const
                       "which is available in the expression builder." );
 }
 
+QString QgsGeometryByExpressionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Updates existing geometries (or creates new geometries) for input "
+                      "features by use of a QGIS expression." );
+}
+
 QgsGeometryByExpressionAlgorithm *QgsGeometryByExpressionAlgorithm::createInstance() const
 {
   return new QgsGeometryByExpressionAlgorithm();

@@ -33,7 +33,7 @@ QString QgsAspectAlgorithm::displayName() const
 
 QStringList QgsAspectAlgorithm::tags() const
 {
-  return QObject::tr( "dem,aspect,terrain" ).split( ',' );
+  return QObject::tr( "dem,aspect,terrain,slope" ).split( ',' );
 }
 
 QString QgsAspectAlgorithm::group() const
@@ -52,6 +52,11 @@ QString QgsAspectAlgorithm::shortHelpString() const
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The final aspect raster layer contains values from 0 to 360 that express "
                         "the slope direction: starting from North (0°) and continuing clockwise." );
+}
+
+QString QgsAspectAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer representing the slope direction from a Digital Terrain Model." );
 }
 
 QgsAspectAlgorithm *QgsAspectAlgorithm::createInstance() const

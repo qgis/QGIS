@@ -48,7 +48,12 @@ QString QgsSymmetricalDifferenceAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm extracts the portions of features from both the Input and Overlay layers that do not overlap. "
                       "Overlapping areas between the two layers are removed. The attribute table of the Symmetrical Difference layer "
-                      "contains original attributes from both the Input and Difference layers." );
+                      "contains original attributes from both the Input and Overlay layers." );
+}
+
+QString QgsSymmetricalDifferenceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Extracts the portions of features from two layers that do not overlap." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsSymmetricalDifferenceAlgorithm::documentationFlags() const

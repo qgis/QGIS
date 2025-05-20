@@ -53,6 +53,11 @@ QString QgsConcaveHullAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm computes the concave hull of the features from an input layer." );
 }
 
+QString QgsConcaveHullAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes the concave hull of the features from an input layer." );
+}
+
 QgsConcaveHullAlgorithm *QgsConcaveHullAlgorithm::createInstance() const
 {
   return new QgsConcaveHullAlgorithm();

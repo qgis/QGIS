@@ -2459,7 +2459,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerLegend *mLegend = nullptr;
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
-    QgsMapLayerStyleManager *mStyleManager = nullptr;
+    std::unique_ptr<QgsMapLayerStyleManager> mStyleManager;
 
     Qgis::AutoRefreshMode mAutoRefreshMode = Qgis::AutoRefreshMode::Disabled;
 

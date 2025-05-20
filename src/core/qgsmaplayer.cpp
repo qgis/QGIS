@@ -66,6 +66,7 @@
 #include <QStandardPaths>
 #include <QUuid>
 #include <QRegularExpression>
+#include <QXmlStreamReader>
 
 #include <sqlite3.h>
 
@@ -91,7 +92,7 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type,
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
-  , mStyleManager( new QgsMapLayerStyleManager( this ) )
+  , mStyleManager( std::make_unique<QgsMapLayerStyleManager>( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
   mID = generateId( lyrname );
@@ -123,7 +124,7 @@ QgsMapLayer::~QgsMapLayer()
 
   delete m3DRenderer;
   delete mLegend;
-  delete mStyleManager;
+
 }
 
 void QgsMapLayer::clone( QgsMapLayer *layer ) const
@@ -2292,14 +2293,32 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   QDomDocument myDocument;
 
   // location of problem associated with errorMsg
-  int line, column;
+  int line = 0, column = 0;
   QString myErrorMessage;
 
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
     // read file
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
+    QXmlStreamReader xmlReader( &myFile );
+    xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "sld" ), QStringLiteral( "http://www.opengis.net/sld" ) ) );
+    xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "fes" ), QStringLiteral( "http://www.opengis.net/fes/2.0" ) ) );
+    xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) ) );
+    const QDomDocument::ParseResult result = myDocument.setContent( &xmlReader, QDomDocument::ParseOption::UseNamespaceProcessing );
+    if ( result )
+    {
+      resultFlag = true;
+    }
+    else
+    {
+      myErrorMessage = result.errorMessage;
+      line = result.errorLine;
+      column = result.errorColumn;
+    }
+#else
     resultFlag = myDocument.setContent( &myFile, true, &myErrorMessage, &line, &column );
+#endif
     if ( !resultFlag )
       myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
     myFile.close();
@@ -2805,7 +2824,7 @@ QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mStyleManager;
+  return mStyleManager.get();
 }
 
 void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
@@ -3227,6 +3246,9 @@ QString QgsMapLayer::generalHtmlMetadata() const
   // provider
   if ( dataProvider() )
     metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
+
+  // Layer ID
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Layer ID" ) + QStringLiteral( "</td><td>%1" ).arg( id() ) + QStringLiteral( "</td></tr>\n" );
 
   metadata += QLatin1String( "</table>\n<br><br>" );
 

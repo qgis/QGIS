@@ -49,6 +49,11 @@ QString QgsExecuteRegisteredSpatialiteQueryAlgorithm::groupId() const
 
 QString QgsExecuteRegisteredSpatialiteQueryAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm executes a SQL command on a SpatiaLite database." );
+}
+
+QString QgsExecuteRegisteredSpatialiteQueryAlgorithm::shortDescription() const
+{
   return QObject::tr( "Executes a SQL command on a SpatiaLite database." );
 }
 
