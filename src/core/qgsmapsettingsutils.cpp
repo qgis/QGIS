@@ -62,7 +62,7 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
         // check label blend modes
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
-          if ( currentVectorLayer->labeling()->requiresAdvancedEffects() )
+          if ( currentVectorLayer->labeling() && currentVectorLayer->labeling()->requiresAdvancedEffects() )
           {
             layers << layer->name();
           }
