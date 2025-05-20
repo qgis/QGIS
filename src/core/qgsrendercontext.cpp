@@ -43,6 +43,7 @@ QgsRenderContext::~QgsRenderContext() = default;
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
   , mFlags( rh.mFlags )
+  , mRasterizedRenderingPolicy( rh.mRasterizedRenderingPolicy )
   , mPainter( rh.mPainter )
   , mPreviewRenderPainter( rh.mPreviewRenderPainter )
   , mMaskPainter( rh.mMaskPainter )
@@ -101,6 +102,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
+  mRasterizedRenderingPolicy = rh.mRasterizedRenderingPolicy;
   mPainter = rh.mPainter;
   mPreviewRenderPainter = rh.mPreviewRenderPainter;
   mMaskPainter = rh.mMaskPainter;
@@ -270,6 +272,9 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Qgis::RenderContextFlag::SkipSymbolRendering, mapSettings.testFlag( Qgis::MapSettingsFlag::SkipSymbolRendering ) );
   ctx.setFlag( Qgis::RenderContextFlag::RecordProfile, mapSettings.testFlag( Qgis::MapSettingsFlag::RecordProfile ) );
   ctx.setFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks, mapSettings.testFlag( Qgis::MapSettingsFlag::AlwaysUseGlobalMasks ) );
+
+  ctx.setRasterizedRenderingPolicy( mapSettings.rasterizedRenderingPolicy() );
+
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );
@@ -314,17 +319,28 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
 bool QgsRenderContext::forceVectorOutput() const
 {
-  return mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput );
+  return mFlags.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
+         || mRasterizedRenderingPolicy != Qgis::RasterizedRenderingPolicy::AllowRasterization;
 }
 
 bool QgsRenderContext::useAdvancedEffects() const
 {
-  return mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects );
+  return mFlags.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
+         && mRasterizedRenderingPolicy != Qgis::RasterizedRenderingPolicy::ForceVector;
 }
 
 void QgsRenderContext::setUseAdvancedEffects( bool enabled )
 {
   setFlag( Qgis::RenderContextFlag::UseAdvancedEffects, enabled );
+
+  if ( enabled && mRasterizedRenderingPolicy == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
+  }
+  else if ( !enabled )
+  {
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
+  }
 }
 
 bool QgsRenderContext::drawEditingInformation() const
@@ -350,6 +366,23 @@ void QgsRenderContext::setDrawEditingInformation( bool b )
 void QgsRenderContext::setForceVectorOutput( bool force )
 {
   setFlag( Qgis::RenderContextFlag::ForceVectorOutput, force );
+  if ( force && mRasterizedRenderingPolicy == Qgis::RasterizedRenderingPolicy::AllowRasterization )
+  {
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
+  }
+  else if ( !force )
+  {
+    switch ( mRasterizedRenderingPolicy )
+    {
+      case Qgis::RasterizedRenderingPolicy::AllowRasterization:
+        break;
+
+      case Qgis::RasterizedRenderingPolicy::PreferVector:
+      case Qgis::RasterizedRenderingPolicy::ForceVector:
+        mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::AllowRasterization;
+        break;
+    }
+  }
 }
 
 void QgsRenderContext::setShowSelection( const bool showSelection )
@@ -816,6 +849,16 @@ void QgsRenderContext::setDevicePixelRatio( float ratio )
 QSize QgsRenderContext::deviceOutputSize() const
 {
   return outputSize() * mDevicePixelRatio;
+}
+
+Qgis::RasterizedRenderingPolicy QgsRenderContext::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
+
+void QgsRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
+{
+  mRasterizedRenderingPolicy = policy;
 }
 
 double QgsRenderContext::frameRate() const

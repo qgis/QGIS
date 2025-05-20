@@ -1198,8 +1198,11 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
+    const bool forceVector = ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) )
+                             || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
+
     if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-         && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
+         && ( !mLayout || !forceVector ) )
     {
       // rasterize
       double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter ) * 25.4;
@@ -1762,7 +1765,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setExpressionContext( expressionContext );
 
   // layout-specific overrides of flags
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  jobMapSettings.setRasterizedRenderingPolicy( mLayout->renderContext().rasterizedRenderingPolicy() );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
@@ -2629,7 +2632,8 @@ void QgsLayoutItemMap::drawAnnotations( QPainter *painter )
     return;
 
   QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( this, painter );
-  rc.setForceVectorOutput( true );
+  if ( rc.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::AllowRasterization )
+    rc.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   rc.setExpressionContext( createExpressionContext() );
   QList< QgsMapLayer * > layers = layersToRender( &rc.expressionContext() );
 

@@ -126,7 +126,7 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter *p, QgsRenderContext 
   context.setRendererScale( mMapCanvas->scale() );
   context.setScaleFactor( ms.outputDpi() / 25.4 );
 
-  context.setForceVectorOutput( true );
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   return true;
 }
 

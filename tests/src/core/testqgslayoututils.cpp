@@ -261,6 +261,10 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & Qgis::RenderContextFlag::ForceVectorOutput ) );
 
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QCOMPARE( rc.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
+
   // check text format is correctly set
   l.renderContext().setTextRenderFormat( Qgis::TextRenderFormat::AlwaysOutlines );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );

@@ -146,6 +146,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout
   QgsRenderContext context = createRenderContextForMap( referenceMap, painter, dpi );
   if ( layout )
   {
+    // TODO -- handle RasterizedRenderingPolicy here!!!!
     context.setFlags( layout->renderContext().renderContextFlags() );
     context.setTextRenderFormat( layout->renderContext().textRenderFormat() );
   }

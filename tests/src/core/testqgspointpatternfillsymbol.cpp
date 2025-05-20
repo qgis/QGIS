@@ -157,9 +157,9 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   mPointPatternFill->setSubSymbol( pointSymbol );
   mPointPatternFill->setDistanceX( 10 );
   mPointPatternFill->setDistanceY( 10 );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   const bool res = imageCheck( "symbol_pointfill_vector" );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
   mPointPatternFill->setDistanceX( 15 );
   mPointPatternFill->setDistanceY( 15 );
   QVERIFY( res );
@@ -174,7 +174,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   QPainter p;
   p.begin( &generator );
 
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   mMapSettings.setOutputSize( QSize( 100, 100 ) );
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
@@ -187,7 +187,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   job.start();
   job.waitForFinished();
   p.end();
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
 
   const QByteArray ba = buffer.data();
   QVERIFY( ba.contains( "fill=\"#ff0000\"" ) );
@@ -245,9 +245,9 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
   pointPatternFill->setDistanceX( 10 );
   pointPatternFill->setDistanceY( 10 );
   pointPatternFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QVERIFY( imageCheck( "symbol_pointfill_viewport_vector", layer.get() ) );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
 }
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
@@ -294,9 +294,9 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
   // With offset values greater than the pattern size (i.e. distance * 2 ), offsets values are modulos of offset against distance
   mPointPatternFill->setOffsetX( 19 );
   mPointPatternFill->setOffsetY( 19 );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   const bool res = imageCheck( "symbol_pointfill_offset_vector" );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
   mPointPatternFill->setOffsetX( 0 );
   mPointPatternFill->setOffsetY( 0 );
   QVERIFY( res );
@@ -347,9 +347,9 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
   mPointPatternFill->setDistanceY( 15 );
   mPointPatternFill->setOffsetX( 4 );
   mPointPatternFill->setOffsetY( 4 );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   const bool res = imageCheck( "pointfill_zero_space" );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
   QVERIFY( res );
 }
 
