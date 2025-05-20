@@ -164,7 +164,7 @@ void TestQgsSymbol::testCanvasClip()
   QgsMapSettings ms;
   QgsRectangle extent( -110.0, 25.0, -90, 40.0 );
   ms.setExtent( extent );
-  ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+  ms.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
 
   //line
   ms.setLayers( QList<QgsMapLayer *>() << mpLinesLayer );

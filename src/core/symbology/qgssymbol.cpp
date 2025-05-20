@@ -1091,8 +1091,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     screen.updateRenderContextForScreen( *context );
   }
 
-  const bool prevForceVector = context->forceVectorOutput();
-  context->setForceVectorOutput( true );
+  Qgis::RasterizedRenderingPolicy oldRasterizedRenderingPolicy = context->rasterizedRenderingPolicy();
+  context->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
 
   const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity * 100 ) * 0.01 : mOpacity;
 
@@ -1242,7 +1242,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     QgsPainting::drawPicture( context->painter(), QPointF( 0, 0 ), *pictureForDeferredRendering );
   }
 
-  context->setForceVectorOutput( prevForceVector );
+  context->setRasterizedRenderingPolicy( oldRasterizedRenderingPolicy );
 }
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )

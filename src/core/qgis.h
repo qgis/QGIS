@@ -2643,6 +2643,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( CoordinateTransformationFlags )
 
     /**
+     * Policies controlling when rasterisation of content during renders is permitted.
+     *
+     * \since QGIS 3.44
+     */
+    enum class RasterizedRenderingPolicy : int
+    {
+      AllowRasterization, //!< Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+      PreferVector, //!< Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
+      ForceVector, //!< Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
+    };
+    Q_ENUM( RasterizedRenderingPolicy )
+
+    /**
      * Flags which adjust the way maps are rendered.
      *
      * \since QGIS 3.22
@@ -2651,8 +2664,8 @@ class CORE_EXPORT Qgis
     {
       Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
+      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images. \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
+      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
       DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
@@ -2682,8 +2695,8 @@ class CORE_EXPORT Qgis
     enum class RenderContextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
+      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
+      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
       UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)

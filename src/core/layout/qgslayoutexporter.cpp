@@ -417,6 +417,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   ( void )dpiRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setFlags( settings.flags );
+  mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   QList< int > pages;
@@ -575,8 +577,17 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  if ( settings.forceVectorOutput )
+  {
+    mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, true );
+  }
+  else
+  {
+    mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+  }
 
   // Force synchronous legend graphics requests. Necessary for WMS GetPrint,
   // as otherwise processing the request ends before remote graphics are downloaded.
@@ -807,10 +818,17 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
-    iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
-
-    iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
-
+    if ( settings.forceVectorOutput )
+    {
+      iterator->layout()->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+      iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
+      iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, true );
+    }
+    else
+    {
+      iterator->layout()->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+      iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+    }
     iterator->layout()->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
     if ( first )
@@ -1044,7 +1062,18 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlags( settings.flags );
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  if ( settings.forceVectorOutput )
+  {
+    mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, true );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
+  }
+  else
+  {
+    mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, false );
+    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+  }
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
   mLayout->renderContext().setMaskSettings( createExportMaskSettings() );

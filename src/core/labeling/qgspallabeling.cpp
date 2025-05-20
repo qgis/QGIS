@@ -1494,7 +1494,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     }
   }
 
-  context.setUseAdvancedEffects( true );
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   context.setPainter( &painter );
 
   // slightly inset text to account for buffer/background

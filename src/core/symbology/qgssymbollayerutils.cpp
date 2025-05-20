@@ -1009,7 +1009,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   painter.begin( &picture );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
-  renderContext.setForceVectorOutput( true );
+  renderContext.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   renderContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );

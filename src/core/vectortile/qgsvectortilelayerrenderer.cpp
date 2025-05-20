@@ -274,6 +274,16 @@ bool QgsVectorTileLayerRenderer::render()
 
 bool QgsVectorTileLayerRenderer::forceRasterRender() const
 {
+  switch ( renderContext()->rasterizedRenderingPolicy() )
+  {
+    case Qgis::RasterizedRenderingPolicy::AllowRasterization:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      return false;
+  }
+
   if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
     return false;
 
