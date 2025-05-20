@@ -1049,16 +1049,16 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Move table to a new schema.
+     * Move table to a different schema.
      *
-     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param sourceSchema name of the source schema (schema is ignored if not supported by the backend).
      * \param tableName name of the table.
-     * \param newSchema name of the new schema to move table to.
+     * \param targetSchema name of the target schema to move table to.
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.44
      */
-    virtual void moveTableToAnotherSchema( const QString &schema, const QString &tableName, const QString &newSchema ) const SIP_THROW( QgsProviderConnectionException );
+    virtual void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const SIP_THROW( QgsProviderConnectionException );
 
 
     /**
