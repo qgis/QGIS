@@ -926,3 +926,13 @@ void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRende
   mShadingRenderer = elevationShadingRenderer;
 }
 
+Qgis::RasterizedRenderingPolicy QgsMapSettings::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
+
+void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
+{
+  mRasterizedRenderingPolicy = policy;
+}
+

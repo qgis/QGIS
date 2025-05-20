@@ -295,7 +295,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   const bool useImageCache = false;
   bool forceRasterOutput = containsAdvancedEffects();
   QPainter::CompositionMode blendMode = blendModeForRender();
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput
+       || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
   {
     // the FlagForceVectorOutput flag overrides everything, and absolutely DISABLES rasterisation
     // even when we need it to get correct rendering of opacity/blend modes/etc
@@ -1089,9 +1090,9 @@ QPainter::CompositionMode QgsLayoutItem::blendModeForRender() const
     mode = QPainter::CompositionMode_SourceOver;
   }
 
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
+  if ( mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
   {
-    // the FlagForceVectorOutput flag overrides everything, and absolutely DISABLES rasterisation
+    // this policy overrides everything, and absolutely DISABLES rasterisation
     // even when we need it to get correct rendering of opacity/blend modes/etc
     mode = QPainter::CompositionMode_SourceOver;
   }

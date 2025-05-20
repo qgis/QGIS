@@ -78,6 +78,16 @@ Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
   return flags;
 }
 
+Qgis::RasterizedRenderingPolicy QgsLayoutRenderContext::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
+
+void QgsLayoutRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
+{
+  mRasterizedRenderingPolicy = policy;
+}
+
 void QgsLayoutRenderContext::setDpi( double dpi )
 {
   if ( qgsDoubleNear( dpi, mMeasurementConverter.dpi() ) )

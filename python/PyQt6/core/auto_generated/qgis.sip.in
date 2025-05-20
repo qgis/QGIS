@@ -1544,6 +1544,13 @@ The development version
     typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
 
 
+    enum class RasterizedRenderingPolicy /BaseType=IntEnum/
+    {
+      AllowRasterization,
+      PreferVector,
+      ForceVector,
+    };
+
     enum class MapSettingsFlag /BaseType=IntFlag/
     {
       Antialiasing,

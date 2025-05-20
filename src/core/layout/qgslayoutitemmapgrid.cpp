@@ -627,7 +627,8 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, p );
-  context.setForceVectorOutput( true );
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::AllowRasterization )
+    context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   const QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
