@@ -886,15 +886,47 @@ void QgsOgrProvider::loadFields()
   QMutexLocker locker( datasetMutex );
 #endif
 
-  for ( int i = 0; i < fdef.GetFieldCount(); ++i )
+  for ( int fieldIndex = 0; fieldIndex < fdef.GetFieldCount(); ++fieldIndex )
   {
-    OGRFieldDefnH fldDef = fdef.GetFieldDefn( i );
+    OGRFieldDefnH fldDef = fdef.GetFieldDefn( fieldIndex );
     const OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
     const OGRFieldSubType ogrSubType = OGR_Fld_GetSubType( fldDef );
 
     QMetaType::Type varType = QMetaType::Type::UnknownType;
     QMetaType::Type varSubType = QMetaType::Type::UnknownType;
     QgsOgrUtils::ogrFieldTypeToQVariantType( ogrType, ogrSubType, varType, varSubType );
+
+    // Handle special case for OGRFieldType::OFSTJSON which is not always a map.
+    // If subtype is JSON and varType is map, try to load a feature and check if it's
+    // really an object (rather than something else like an array)
+    // fallback to string given that only JSON object (map) is supported.
+    if ( varType == QMetaType::Type::QVariantMap && ogrSubType == OFSTJSON )
+    {
+      QRecursiveMutex *layerMutex = nullptr;
+      OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( layerMutex );
+      QMutexLocker layerLocker( layerMutex );
+      gdal::ogr_feature_unique_ptr f( OGR_L_GetNextFeature( ogrLayer ) );
+      if ( f )
+      {
+        const char *json = OGR_F_GetFieldAsString( f.get(), fieldIndex );
+        if ( json && json[0] != '\0' )
+        {
+          try
+          {
+            const auto json_element = json::parse( json );
+            if ( ! json_element.is_object() )
+            {
+              varType = QMetaType::Type::QString;
+            }
+          }
+          catch ( const json::parse_error & )
+          {
+            varType = QMetaType::Type::QString;
+          }
+        }
+        OGR_L_ResetReading( ogrLayer );
+      }
+    }
 
     //TODO: fix this hack
 #ifdef ANDROID

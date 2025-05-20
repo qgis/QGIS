@@ -1862,7 +1862,6 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
     case OFTWideString:
       if ( ogrSubType == OFSTJSON )
       {
-        ogrSubType = OFSTJSON;
         variantType = QMetaType::Type::QVariantMap;
         variantSubType = QMetaType::Type::QString;
       }
