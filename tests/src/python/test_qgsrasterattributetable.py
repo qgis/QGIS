@@ -1396,7 +1396,10 @@ class TestQgsRasterAttributeTable(QgisTestCase):
         ramp = rat.colorRamp()
         ramp, labels = rat.colorRamp()
         self.assertEqual(len(ramp.stops()) + 1, len(labels))
-        self.assertEqual(labels, ["-1e+25 - 3e+12", "3e+12 - 1e+20", "1e+20 - 5e+25"])
+        self.assertEqual(
+            [x.lower() for x in labels],
+            ["-1e+25 - 3e+12", "3e+12 - 1e+20", "1e+20 - 5e+25"],
+        )
 
         ramp, labels = rat.colorRamp(2)
         self.assertEqual(len(ramp.stops()) + 1, len(labels))

@@ -178,10 +178,6 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mAuthGroupBox->hide();
     mGroupBox->layout()->removeWidget( mAuthGroupBox );
   }
-  // Adjust height
-  const int w = width();
-  adjustSize();
-  resize( w, height() );
 
   connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
   connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
@@ -366,6 +362,12 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ) ) ) );
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
+}
+
+void QgsNewHttpConnection::showEvent( QShowEvent *event )
+{
+  QDialog::showEvent( event );
+  adjustSize();
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const

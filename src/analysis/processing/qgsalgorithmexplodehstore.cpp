@@ -53,6 +53,11 @@ QString QgsExplodeHstoreAlgorithm::shortHelpString() const
                       "The expected field list is an optional comma separated list. By default, all unique keys are added. If this list is specified, only these fields are added and the HStore field is updated." );
 }
 
+QString QgsExplodeHstoreAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a copy of the input layer and adds a new field for every unique key in the HStore field." );
+}
+
 QgsProcessingAlgorithm *QgsExplodeHstoreAlgorithm::createInstance() const
 {
   return new QgsExplodeHstoreAlgorithm();

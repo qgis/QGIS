@@ -157,6 +157,11 @@ QString QgsGenerateElevationProfileAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates an elevation profile image from a list of map layer and an optional terrain." );
 }
 
+QString QgsGenerateElevationProfileAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates an elevation profile image from a list of map layer and an optional terrain." );
+}
+
 QgsGenerateElevationProfileAlgorithm *QgsGenerateElevationProfileAlgorithm::createInstance() const
 {
   return new QgsGenerateElevationProfileAlgorithm();

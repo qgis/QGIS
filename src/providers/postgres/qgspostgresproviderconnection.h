@@ -77,6 +77,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
     QString defaultPrimaryKeyColumnName() const override;
     void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const override;
+    void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
+
 
     static const QStringList CONFIGURATION_PARAMETERS;
     static const QString SETTINGS_BASE_KEY;

@@ -39,6 +39,7 @@ class QgsRectanglesOvalsDiamondsAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QIcon icon() const override;
     QString svgIconPath() const override;
     QList<int> inputLayerTypes() const override;

@@ -75,6 +75,11 @@ QString QgsFillNoDataAlgorithm::shortHelpString() const
                       "when applied to an integer raster)." );
 }
 
+QString QgsFillNoDataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster dataset with the NoData values in the input raster filled with a given value." );
+}
+
 QgsFillNoDataAlgorithm *QgsFillNoDataAlgorithm::createInstance() const
 {
   return new QgsFillNoDataAlgorithm();

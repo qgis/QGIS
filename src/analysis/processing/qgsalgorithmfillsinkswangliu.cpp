@@ -59,6 +59,11 @@ QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
                       "This algorithm is a port of the SAGA 'Fill Sinks (Wang & Liu)' tool." );
 }
 
+QString QgsFillSinksWangLiuAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Identifies and fills surface depressions in digital elevation models using a method proposed by Wang & Liu." );
+}
+
 void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

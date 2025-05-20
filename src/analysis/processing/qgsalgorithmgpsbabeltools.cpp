@@ -83,6 +83,11 @@ QString QgsConvertGpxFeatureTypeAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm uses the GPSBabel tool to convert GPX features from one type to another (e.g. converting all waypoint features to a route feature)." );
 }
 
+QString QgsConvertGpxFeatureTypeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Converts GPX features from one type to another." );
+}
+
 QgsConvertGpxFeatureTypeAlgorithm *QgsConvertGpxFeatureTypeAlgorithm::createInstance() const
 {
   return new QgsConvertGpxFeatureTypeAlgorithm();
@@ -282,6 +287,11 @@ QString QgsConvertGpsDataAlgorithm::svgIconPath() const
 QString QgsConvertGpsDataAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm uses the GPSBabel tool to convert a GPS data file from a range of formats to the GPX standard format." );
+}
+
+QString QgsConvertGpsDataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Converts a GPS data file from a range of formats to the GPX standard format." );
 }
 
 QgsConvertGpsDataAlgorithm *QgsConvertGpsDataAlgorithm::createInstance() const
@@ -485,6 +495,11 @@ QString QgsDownloadGpsDataAlgorithm::svgIconPath() const
 QString QgsDownloadGpsDataAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm uses the GPSBabel tool to download data from a GPS device into the GPX standard format." );
+}
+
+QString QgsDownloadGpsDataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Downloads data from a GPS device into the GPX standard format." );
 }
 
 QgsDownloadGpsDataAlgorithm *QgsDownloadGpsDataAlgorithm::createInstance() const
@@ -699,6 +714,11 @@ QString QgsUploadGpsDataAlgorithm::svgIconPath() const
 QString QgsUploadGpsDataAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm uses the GPSBabel tool to upload data to a GPS device from the GPX standard format." );
+}
+
+QString QgsUploadGpsDataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Uploads data to a GPS device from the GPX standard format." );
 }
 
 QgsUploadGpsDataAlgorithm *QgsUploadGpsDataAlgorithm::createInstance() const

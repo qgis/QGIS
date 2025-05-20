@@ -69,6 +69,11 @@ QString QgsPackageAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm collects a number of existing layers and packages them together into a single GeoPackage database." );
 }
 
+QString QgsPackageAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Packages a number of existing layers together into a single GeoPackage database." );
+}
+
 QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
 {
   return new QgsPackageAlgorithm();

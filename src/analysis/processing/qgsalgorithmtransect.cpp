@@ -67,7 +67,21 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsTransectAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestring.\n" ) + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." ) + QStringLiteral( "\n\n" ) + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" ) + QObject::tr( "- TR_FID: ID of the original feature\n" ) + QObject::tr( "- TR_ID: ID of the transect. Each transect have an unique ID\n" ) + QObject::tr( "- TR_SEGMENT: ID of the segment of the linestring\n" ) + QObject::tr( "- TR_ANGLE: Angle in degrees from the original line at the vertex\n" ) + QObject::tr( "- TR_LENGTH: Total length of the transect returned\n" ) + QObject::tr( "- TR_ORIENT: Side of the transect (only on the left or right of the line, or both side)\n" );
+  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestrings.\n" )
+         + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" )
+         + QObject::tr( "- TR_FID: ID of the original feature\n" )
+         + QObject::tr( "- TR_ID: ID of the transect. Each transect have an unique ID\n" )
+         + QObject::tr( "- TR_SEGMENT: ID of the segment of the linestring\n" )
+         + QObject::tr( "- TR_ANGLE: Angle in degrees from the original line at the vertex\n" )
+         + QObject::tr( "- TR_LENGTH: Total length of the transect returned\n" )
+         + QObject::tr( "- TR_ORIENT: Side of the transect (only on the left or right of the line, or both side)\n" );
+}
+
+QString QgsTransectAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates transects on vertices for (multi)linestrings." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsTransectAlgorithm::documentationFlags() const

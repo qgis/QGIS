@@ -504,8 +504,8 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::AuthCode ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::AuthCode ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Implicit ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Implicit ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ) );
-  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Pkce ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Pkce ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ClientCredentials ) );
 }
 
 

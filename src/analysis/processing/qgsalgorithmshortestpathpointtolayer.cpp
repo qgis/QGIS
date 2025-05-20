@@ -40,7 +40,14 @@ QStringList QgsShortestPathPointToLayerAlgorithm::tags() const
 
 QString QgsShortestPathPointToLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between given start point and multiple end points defined by point vector layer." );
+  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between a given start point "
+                      "and multiple end points defined by a point vector layer." );
+}
+
+QString QgsShortestPathPointToLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes optimal (shortest or fastest) route between a given start point "
+                      "and multiple end points defined by a point vector layer." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsShortestPathPointToLayerAlgorithm::documentationFlags() const
