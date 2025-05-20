@@ -723,7 +723,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
     bool usesMapUnits() const override;
     QColor color() const override;
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Calculates the marker aspect ratio between width and height.
