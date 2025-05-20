@@ -470,6 +470,11 @@ void QgsFrameGraph::setSize( QSize s )
   mRenderSurfaceSelector->setExternalRenderTargetSize( mSize );
 }
 
+Qt3DRender::QRenderCapture *QgsFrameGraph::renderCapture()
+{
+  return mRenderCapture;
+}
+
 void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 {
   if ( enabled == mRenderCaptureEnabled )

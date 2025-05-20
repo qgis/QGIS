@@ -39,7 +39,7 @@
         (Qt3DRender::QRenderStateSet{121/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
           (Qt3DRender::QLayerFilter{124/<no_name>}) [ (AcceptAnyMatchingLayers:[ {90/ambient_occlusion::Layer(Blur)} ]) ]
             (Qt3DRender::QRenderTargetSelector{128/ambient_occlusion::RenderTargetSelector(Blur)}) [ (outputs:[ (Color0:{126[R32F]/ambient_occlusion::ColorTarget(blur)) ]) ]
-    (Qt3DRender::QRenderTargetSelector{141/PostProcessingPass}) [ (outputs:[ (Color0:{144[RGB8_UNorm]/PostProcessingPass::ColorTarget), (Depth:{146[DepthFormat]/PostProcessingPass::DepthTarget) ]) ]
+    (Qt3DRender::QRenderTargetSelector{141/PostProcessingPass}) [D] [ (outputs:[ (Color0:{144[RGB8_UNorm]/PostProcessingPass::ColorTarget), (Depth:{146[DepthFormat]/PostProcessingPass::DepthTarget) ]) ]
       (Qt3DRender::QCameraSelector{147/Sub pass Postprocessing}) [ (Qt3DRender::QCamera:{51/shadow::LightCamera}) ]
         (Qt3DRender::QLayerFilter{148/<no_name>}) [ (AcceptAnyMatchingLayers:[ {150/<no_name>} ]) ]
           (Qt3DRender::QClearBuffers{149/<no_name>})
