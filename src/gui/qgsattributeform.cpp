@@ -1486,7 +1486,7 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
 
         for ( const QString &colName : referencedColumns )
         {
-          if ( name == colName )
+          if ( name.compare( colName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
           {
             wDeps.append( eww );
             break;
