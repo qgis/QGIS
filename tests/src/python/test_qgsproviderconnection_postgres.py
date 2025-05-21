@@ -983,6 +983,22 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         table = conn.table("qgis_test", "table_to_move")
         self.assertEqual(table.tableName(), "table_to_move")
 
+        # test fail in move - target schema does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move",
+                "schema_test_non_existent",
+            )
+
+        # test fail in move - table does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move_non_existent",
+                "schema_test",
+            )
+
         # move table to another schema
         conn.moveTableToSchema(
             "qgis_test",
