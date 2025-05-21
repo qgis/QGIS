@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmessagelog.h"
 #include "qgslayoutitemmapgrid.h"
 #include "moc_qgslayoutitemmapgrid.cpp"
 #include "qgslayoututils.h"
@@ -25,7 +24,6 @@
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"
-#include "qgssymbol.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsfontutils.h"
@@ -495,6 +493,8 @@ void QgsLayoutItemMapGrid::drawGridCrsTransform( QgsRenderContext &context, doub
       QList< GridLine >::const_iterator gridIt = mGridLines.constBegin();
       for ( ; gridIt != mGridLines.constEnd(); ++gridIt )
       {
+        context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), gridIt->coordinate );
+        context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), gridIt->coordinateType == QgsLayoutItemMapGrid::AnnotationCoordinate::Longitude ? "x" : "y" );
         drawGridLine( scalePolygon( gridIt->line, dotsPerMM ), context );
       }
     }
@@ -715,6 +715,10 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
       if ( vIt->coordinateType != AnnotationCoordinate::Longitude )
         continue;
       line = QLineF( vIt->line.first() * dotsPerMM, vIt->line.last() * dotsPerMM );
+
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), vIt->coordinate );
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "x" );
+
       drawGridLine( line, context );
     }
 
@@ -723,6 +727,10 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
       if ( hIt->coordinateType != AnnotationCoordinate::Latitude )
         continue;
       line = QLineF( hIt->line.first() * dotsPerMM, hIt->line.last() * dotsPerMM );
+
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), hIt->coordinate );
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "y" );
+
       drawGridLine( line, context );
     }
   }
