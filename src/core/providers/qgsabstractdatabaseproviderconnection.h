@@ -483,36 +483,36 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
-      CreateVectorTable = 1u << 1,                     //!< Can CREATE a vector (or aspatial) table/layer
-      DropRasterTable = 1u << 2,                       //!< Can DROP a raster table/layer
-      DropVectorTable = 1u << 3,                       //!< Can DROP a vector (or aspatial) table/layer
-      RenameVectorTable = 1u << 4,                     //!< Can RENAME a vector (or aspatial) table/layer
-      RenameRasterTable = 1u << 5,                     //!< Can RENAME a raster table/layer
-      CreateSchema = 1u << 6,                          //!< Can CREATE a schema
-      DropSchema = 1u << 7,                            //!< Can DROP a schema
-      RenameSchema = 1u << 8,                          //!< Can RENAME a schema
-      ExecuteSql = 1u << 9,                            //!< Can execute raw SQL queries (without returning results)
-      Vacuum = 1u << 10,                               //!< Can run vacuum
-      Tables = 1u << 11,                               //!< Can list tables
-      Schemas = 1u << 12,                              //!< Can list schemas (if not set, the connection does not support schemas)
-      SqlLayers = 1u << 13,                            //!< Can create vector layers from SQL SELECT queries
-      TableExists = 1u << 14,                          //!< Can check if table exists
-      Spatial = 1u << 15,                              //!< The connection supports spatial tables
-      CreateSpatialIndex = 1u << 16,                   //!< The connection can create spatial indices
-      SpatialIndexExists = 1u << 17,                   //!< The connection can determine if a spatial index exists
-      DeleteSpatialIndex = 1u << 18,                   //!< The connection can delete spatial indices for tables
-      DeleteField = 1u << 19,                          //!< Can delete an existing field/column
-      DeleteFieldCascade = 1u << 20,                   //!< Can delete an existing field/column with cascade
-      AddField = 1u << 21,                             //!< Can add a new field/column
-      ListFieldDomains = 1u << 22,                     //!< Can return a list of field domain names via fieldDomainNames() \since QGIS 3.26
-      RetrieveFieldDomain = 1u << 23,                  //!< Can retrieve field domain details from provider via fieldDomain() \since QGIS 3.26
-      SetFieldDomain = 1u << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() \since QGIS 3.26
-      AddFieldDomain = 1u << 25,                       //!< Can add new field domains to the database via addFieldDomain() \since QGIS 3.26
-      RenameField = 1u << 26,                          //!< Can rename existing fields via renameField() \since QGIS 3.28
-      RetrieveRelationships = 1u << 27,                //!< Can retrieve relationships from the database \since QGIS 3.28
-      AddRelationship = 1u << 28,                      //!< Can add new relationships to the database via addRelationship() \since QGIS 3.30
-      UpdateRelationship = 1u << 29,                   //!< Can update existing relationships in the database via updateRelationship() \since QGIS 3.30
-      DeleteRelationship = 1u << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() \since QGIS 3.30
+      CreateVectorTable = 1 << 1,                     //!< Can CREATE a vector (or aspatial) table/layer
+      DropRasterTable = 1 << 2,                       //!< Can DROP a raster table/layer
+      DropVectorTable = 1 << 3,                       //!< Can DROP a vector (or aspatial) table/layer
+      RenameVectorTable = 1 << 4,                     //!< Can RENAME a vector (or aspatial) table/layer
+      RenameRasterTable = 1 << 5,                     //!< Can RENAME a raster table/layer
+      CreateSchema = 1 << 6,                          //!< Can CREATE a schema
+      DropSchema = 1 << 7,                            //!< Can DROP a schema
+      RenameSchema = 1 << 8,                          //!< Can RENAME a schema
+      ExecuteSql = 1 << 9,                            //!< Can execute raw SQL queries (without returning results)
+      Vacuum = 1 << 10,                               //!< Can run vacuum
+      Tables = 1 << 11,                               //!< Can list tables
+      Schemas = 1 << 12,                              //!< Can list schemas (if not set, the connection does not support schemas)
+      SqlLayers = 1 << 13,                            //!< Can create vector layers from SQL SELECT queries
+      TableExists = 1 << 14,                          //!< Can check if table exists
+      Spatial = 1 << 15,                              //!< The connection supports spatial tables
+      CreateSpatialIndex = 1 << 16,                   //!< The connection can create spatial indices
+      SpatialIndexExists = 1 << 17,                   //!< The connection can determine if a spatial index exists
+      DeleteSpatialIndex = 1 << 18,                   //!< The connection can delete spatial indices for tables
+      DeleteField = 1 << 19,                          //!< Can delete an existing field/column
+      DeleteFieldCascade = 1 << 20,                   //!< Can delete an existing field/column with cascade
+      AddField = 1 << 21,                             //!< Can add a new field/column
+      ListFieldDomains = 1 << 22,                     //!< Can return a list of field domain names via fieldDomainNames() \since QGIS 3.26
+      RetrieveFieldDomain = 1 << 23,                  //!< Can retrieve field domain details from provider via fieldDomain() \since QGIS 3.26
+      SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() \since QGIS 3.26
+      AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() \since QGIS 3.26
+      RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() \since QGIS 3.28
+      RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database \since QGIS 3.28
+      AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() \since QGIS 3.30
+      UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() \since QGIS 3.30
+      DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() \since QGIS 3.30
       MoveTableToSchema = 1u << 31,                    //!< Can move table to another schema via moveTableToAnotherSchema() \since QGIS 3.44
     };
     Q_ENUM( Capability )
