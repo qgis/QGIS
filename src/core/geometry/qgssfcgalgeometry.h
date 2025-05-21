@@ -49,17 +49,26 @@
  * \brief SfcgalGeometry geometry type.
  * \since QGIS 3.44
  */
-class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
+class CORE_EXPORT QgsSfcgalGeometry
 {
   public:
     //! Constructor for an empty sfcgalGeometry geometry.
     QgsSfcgalGeometry();
 
-    //! Constructor with QgsAbstractGeometry and optional matching SFCGAL geometry
-    QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsGeom, sfcgal::shared_geom sfcgalGeom = nullptr );
+    //! Constructor with SFCGAL shared ptr
+    QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom );
 
-    //! Constructor with QgsGeometry and optional matching SFCGAL geometry
-    QgsSfcgalGeometry( const QgsGeometry &qgsGeom, sfcgal::shared_geom sfcgalGeom = nullptr );
+    //! Constructor with QgsAbstractGeometry unique_ptr
+    QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsGeom );
+
+    //! Constructor with QgsAbstractGeometry ptr
+    QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom );
+
+    //! Constructor with QgsAbstractGeometry ptr
+    QgsSfcgalGeometry( const QgsGeometry &qgsGeom );
+
+    //! Constructor from WKT
+    QgsSfcgalGeometry( const QString &wkt, QString *errorMsg = nullptr );
 
     //! Copy constructor
     QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom );
@@ -68,63 +77,34 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     sfcgal::shared_geom sfcgalGeometry() const { return mSfcgalGeom; }
 
     //! Returns the underlying QGIS geometry
-    const QgsAbstractGeometry *delegatedGeometry() const { return mQgsGeom.get(); }
+    QgsAbstractGeometry *asQgisGeometry( QString *errorMsg = nullptr ) const;
 
-    // QgsAbstractGeometry overrides: delegates to underlying QGIS geometry
-    QString geometryType() const override SIP_HOLDGIL;
-    QgsAbstractGeometry *clone() const override;
-    void clear() override;
-    bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
-    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QString asWkt( int precision = -1 ) const override;
-    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    QgsAbstractGeometry *createEmptyWithSameType() const override;
-    bool operator==( const QgsAbstractGeometry &other ) const override;
-    bool operator!=( const QgsAbstractGeometry &other ) const override;
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon ) const override;
-    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon ) const override;
-    QgsBox3D boundingBox3D() const override;
-    int dimension() const override;
-    void normalize() override;
-    bool fromWkt( const QString &wkt ) override;
-    QDomElement asGml2( QDomDocument &doc, int precision, const QString &ns, AxisOrder axisOrder ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision, const QString &ns, AxisOrder axisOrder ) const override;
-    QString asKml( int precision ) const override;
-    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ ) override;
-    void transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale ) override;
-    void draw( QPainter &p ) const override;
-    QPainterPath asQPainterPath() const override;
-    int vertexNumberFromVertexId( QgsVertexId id ) const override;
-    bool nextVertex( QgsVertexId &id, QgsPoint &vertex ) const override;
-    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const override;
-    QgsCoordinateSequence coordinateSequence() const override;
-    QgsPoint vertexAt( QgsVertexId id ) const override;
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const override;
-    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    bool deleteVertex( QgsVertexId position ) override;
-    double segmentLength( QgsVertexId startVertex ) const override;
-    QgsAbstractGeometry *toCurveType() const override;
-    QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints = false ) const override;
-    bool removeDuplicateNodes( double epsilon, bool useZValues ) override;
-    double vertexAngle( QgsVertexId vertex ) const override;
-    int vertexCount( int part, int ring ) const override;
-    int ringCount( int part ) const override;
-    int partCount() const override;
-    bool addZValue( double zValue = 0 ) override;
-    bool addMValue( double mValue = 0 ) override;
-    bool dropZValue() override;
-    bool dropMValue() override;
-    void swapXy() override;
-    bool isValid( QString &error, Qgis::GeometryValidityFlags flags ) const override;
-    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback ) override;
-    QgsAbstractGeometry *simplifyByDistance( double tolerance ) const override;
-    QgsPoint centroid() const override;
-    bool isEmpty() const override;
-    double area() const override;
-    double length() const override;
-    // End of QgsAbstractGeometry overrides
+    Qgis::WkbType wkbType( QString *errorMsg = nullptr ) const;
+    QString geometryType( QString *errorMsg = nullptr ) const SIP_HOLDGIL;
+    QgsSfcgalGeometry *clone() const;
+    bool fromWkb( QgsConstWkbPtr &wkbPtr, QString *errorMsg = nullptr );
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags(), QString *errorMsg = nullptr ) const;
+    bool fromWkt( const QString &wkt, QString *errorMsg = nullptr );
+    QString asWkt( int precision = -1, QString *errorMsg = nullptr ) const;
+
+    QgsSfcgalGeometry *boundary( QString *errorMsg = nullptr ) const SIP_FACTORY;
+    bool operator==( const QgsSfcgalGeometry &other ) const;
+    bool operator!=( const QgsSfcgalGeometry &other ) const;
+
+    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon, QString *errorMsg = nullptr ) const;
+    QgsBox3D boundingBox3D( QString *errorMsg = nullptr ) const;
+    int dimension( QString *errorMsg = nullptr ) const;
+    int partCount( QString *errorMsg = nullptr ) const;
+
+    bool addZValue( double zValue = 0, QString *errorMsg = nullptr );
+    bool addMValue( double mValue = 0, QString *errorMsg = nullptr );
+    bool dropZValue( QString *errorMsg = nullptr );
+    bool dropMValue( QString *errorMsg = nullptr );
+    void swapXy( QString *errorMsg = nullptr );
+    bool isValid( Qgis::GeometryValidityFlags flags, QString *errorMsg = nullptr ) const;
+    bool isEmpty( QString *errorMsg = nullptr ) const;
+    double area( QString *errorMsg = nullptr ) const;
+    double length( QString *errorMsg = nullptr ) const;
 
     /**
      * Checks this geometry is simple.
@@ -187,6 +167,14 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     bool intersects( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr ) const;
 
     /**
+     * Checks if \a otherGeom intersects this.
+     *
+     * \param otherGeom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    bool intersects( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr ) const;
+
+    /**
      * Calculate the intersection of this and \a otherGeom.
      *
      * \param otherGeom geometry to perform the operation
@@ -194,6 +182,15 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      * \param parameters can be used to specify parameters which control the intersection results
      */
     QgsSfcgalGeometry *intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    /**
+     * Calculate the intersection of this and \a otherGeom.
+     *
+     * \param otherGeom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     * \param parameters can be used to specify parameters which control the intersection results
+     */
+    QgsSfcgalGeometry *intersection( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Calculate the combination of this and \a geomList.
@@ -213,6 +210,15 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
     QgsSfcgalGeometry *difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
+     * Calculate the difference of this and \a otherGeom.
+     *
+     * \param otherGeom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     * \param parameters can be used to specify parameters which control the difference results
+     */
+    QgsSfcgalGeometry *difference( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    /**
      * Triangulates this geometry using constraint 2D Delaunay Triangulation (keep Z if defined)
      * \param errorMsg Error message returned by SFGCAL
      */
@@ -229,6 +235,17 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      * \param errorMsg Error message returned by SFGCAL
      */
     QgsSfcgalGeometry *envelope( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Cover test on 2D or 3D geometries
+     * Checks if \a geomA covers \a geomB.
+     * A 3D covers test is conducted when at least one geometry is 3D; otherwise, a 2D covers test is carried out.
+     *
+     * \param geomA first geometry to perform the operation
+     * \param geomB second geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    bool covers( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr ) const;
 
     /**
      * Calculate a 3D buffer where all points are at \a distance from the original geometry.
@@ -273,6 +290,7 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      */
     QgsSfcgalGeometry *extrude( const QgsPoint &extrusion, QString *errorMsg = nullptr ) const;
 
+
 #ifndef SIP_RUN
     /**
      * Cast the \a geom to the exact underlying QGIS geometry.
@@ -280,44 +298,47 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsAbstractGeometry *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsAbstractGeometry *cast( const QgsSfcgalGeometry *geom )
     {
-      if ( geom && dynamic_cast<const QgsSfcgalGeometry *>( geom ) )
+      if ( geom )
       {
-        const QgsSfcgalGeometry *sfcgalGeom = dynamic_cast<const QgsSfcgalGeometry *>( geom );
-        const Qgis::WkbType type = QgsWkbTypes::flatType( sfcgalGeom->wkbType() );
+        QString errorMsg;
+        const QgsAbstractGeometry *qgsGeom = geom->asQgisGeometry( &errorMsg );
+        CHECK_SUCCESS_LOG( &errorMsg, nullptr );
+
+        const Qgis::WkbType type = QgsWkbTypes::flatType( geom->wkbType() );
         switch ( type )
         {
           case Qgis::WkbType::Point:
-            return QgsPoint::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsPoint::cast( qgsGeom );
           case Qgis::WkbType::LineString:
-            return QgsLineString::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsLineString::cast( qgsGeom );
           case Qgis::WkbType::CircularString:
-            return QgsCircularString::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsCircularString::cast( qgsGeom );
           case Qgis::WkbType::CompoundCurve:
-            return QgsCompoundCurve::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsCompoundCurve::cast( qgsGeom );
           case Qgis::WkbType::Polygon:
-            return QgsPolygon::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsPolygon::cast( qgsGeom );
           case Qgis::WkbType::CurvePolygon:
-            return QgsCurvePolygon::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsCurvePolygon::cast( qgsGeom );
           case Qgis::WkbType::MultiLineString:
-            return QgsMultiLineString::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsMultiLineString::cast( qgsGeom );
           case Qgis::WkbType::MultiPolygon:
-            return QgsMultiPolygon::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsMultiPolygon::cast( qgsGeom );
           case Qgis::WkbType::MultiPoint:
-            return QgsMultiPoint::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsMultiPoint::cast( qgsGeom );
           case Qgis::WkbType::MultiCurve:
-            return QgsMultiCurve::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsMultiCurve::cast( qgsGeom );
           case Qgis::WkbType::MultiSurface:
-            return QgsMultiSurface::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsMultiSurface::cast( qgsGeom );
           case Qgis::WkbType::GeometryCollection:
-            return QgsGeometryCollection::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsGeometryCollection::cast( qgsGeom );
           case Qgis::WkbType::Triangle:
-            return QgsTriangle::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsTriangle::cast( qgsGeom );
           case Qgis::WkbType::PolyhedralSurface:
-            return QgsPolyhedralSurface::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsPolyhedralSurface::cast( qgsGeom );
           case Qgis::WkbType::TIN:
-            return QgsTriangulatedSurface::cast( sfcgalGeom->delegatedGeometry() );
+            return QgsTriangulatedSurface::cast( qgsGeom );
           default:
             return nullptr;
         }
@@ -327,18 +348,26 @@ class CORE_EXPORT QgsSfcgalGeometry : public QgsAbstractGeometry
 #endif
 
   protected:
-    int compareToSameClass( const QgsAbstractGeometry *other ) const override;
-    void clearCache() const override;
+    void clearCache() const;
 
   private:
     sfcgal::shared_geom mSfcgalGeom;
-    std::unique_ptr<QgsAbstractGeometry> mQgsGeom;
-
-    mutable bool mHasCachedValidity = false;
-    mutable QString mValidityFailureReason;
-
-    void resetQgsGeometry();
 };
+
+#ifndef SIP_RUN
+
+template<class T>
+inline T qgsgeometry_cast( QgsSfcgalGeometry *geom )
+{
+  return std::remove_pointer<T>::type::cast( geom );
+}
+
+template<class T>
+inline T qgsgeometry_cast( const QgsSfcgalGeometry *geom )
+{
+  return std::remove_pointer<T>::type::cast( geom );
+}
+#endif
 
 
 #endif // QGSSGCGAL_GEOMETRY_H

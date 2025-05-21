@@ -294,10 +294,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::sh
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom.get(), nullptr );
 
-  std::unique_ptr<QgsAbstractGeometry> qgsGeom = QgsSfcgalEngine::toAbstractGeometry( geom.get(), errorMsg );
-  CHECK_SUCCESS( errorMsg, std::unique_ptr<QgsSfcgalGeometry>( nullptr ) );
-
-  return std::make_unique<QgsSfcgalGeometry>( qgsGeom, geom );
+  return std::make_unique<QgsSfcgalGeometry>( geom );
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsSfcgalEngine::toAbstractGeometry( const sfcgal::geometry *geom, QString *errorMsg )
