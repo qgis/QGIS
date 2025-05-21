@@ -821,7 +821,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see setRotatedTicksEnabled()
      * \since QGIS 3.16
      */
-    double rotatedTicksEnabled() const { return mRotatedTicksEnabled; }
+    bool rotatedTicksEnabled() const { return mRotatedTicksEnabled; }
 
     /**
      * Sets the tick length calculation mode.
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see setRotatedAnnotationsEnabled()
      * \since QGIS 3.16
      */
-    double rotatedAnnotationsEnabled() const { return mRotatedAnnotationsEnabled; }
+    bool rotatedAnnotationsEnabled() const { return mRotatedAnnotationsEnabled; }
 
     /**
      * Sets the annotation length calculation mode.
