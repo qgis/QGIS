@@ -38,6 +38,7 @@
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
 #include "qgsogrproviderutils.h"
+#include "qgsjsonutils.h"
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
 #include "qgsweakrelation.h"
@@ -59,6 +60,7 @@
 
 #include "ogr_srs_api.h"
 
+#include "nlohmann/json.hpp"
 
 void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source ) const
 {
@@ -541,6 +543,23 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   if ( ok )
     *ok = true;
 
+
+  auto getJsonValue = [&]() -> bool
+  {
+    const char *json = OGR_F_GetFieldAsString( ogrFet, attIndex );
+    try
+    {
+      const nlohmann::json json_element = json::parse( json );
+      value = QgsJsonUtils::jsonToVariant( json_element );
+      return true;
+    }
+    catch ( const json::parse_error &e )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Error parsing JSON: %1" ).arg( e.what() ), 2 );
+      return false;
+    }
+  };
+
   if ( OGR_F_IsFieldSetAndNotNull( ogrFet, attIndex ) )
   {
     switch ( field.type() )
@@ -614,21 +633,24 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
       case QMetaType::Type::QStringList:
       {
-        QStringList list;
-        char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-        const int count = CSLCount( lst );
-        if ( count > 0 )
+        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
         {
-          list.reserve( count );
-          for ( int i = 0; i < count; i++ )
+          QStringList list;
+          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+          const int count = CSLCount( lst );
+          if ( count > 0 )
           {
-            if ( encoding )
-              list << encoding->toUnicode( lst[i] );
-            else
-              list << QString::fromUtf8( lst[i] );
+            list.reserve( count );
+            for ( int i = 0; i < count; i++ )
+            {
+              if ( encoding )
+                list << encoding->toUnicode( lst[i] );
+              else
+                list << QString::fromUtf8( lst[i] );
+            }
           }
+          value = list;
         }
-        value = list;
         break;
       }
 
@@ -638,72 +660,84 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         {
           case QMetaType::Type::QString:
           {
-            QStringList list;
-            char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-            const int count = CSLCount( lst );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QStringList list;
+              char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+              const int count = CSLCount( lst );
+              if ( count > 0 )
               {
-                if ( encoding )
-                  list << encoding->toUnicode( lst[i] );
-                else
-                  list << QString::fromUtf8( lst[i] );
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  if ( encoding )
+                    list << encoding->toUnicode( lst[i] );
+                  else
+                    list << QString::fromUtf8( lst[i] );
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
           case QMetaType::Type::Int:
           {
-            QVariantList list;
-            int count = 0;
-            const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QVariantList list;
+              int count = 0;
+              const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
+              if ( count > 0 )
               {
-                list << lst[i];
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  list << lst[i];
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
           case QMetaType::Type::Double:
           {
-            QVariantList list;
-            int count = 0;
-            const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QVariantList list;
+              int count = 0;
+              const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
+              if ( count > 0 )
               {
-                list << lst[i];
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  list << lst[i];
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
           case QMetaType::Type::LongLong:
           {
-            QVariantList list;
-            int count = 0;
-            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QVariantList list;
+              int count = 0;
+              const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+              if ( count > 0 )
               {
-                list << lst[i];
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  list << lst[i];
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 

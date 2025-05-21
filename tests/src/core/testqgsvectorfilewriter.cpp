@@ -568,10 +568,10 @@ void TestQgsVectorFileWriter::testExportArrayToGpkg()
   const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl2.isValid() );
   QCOMPARE( vl2.featureCount(), 1L );
-  QCOMPARE( vl2.fields().at( 1 ).type(), QMetaType::Type::QVariantMap );
-  QCOMPARE( vl2.fields().at( 1 ).subType(), QMetaType::Type::QString );
+  QCOMPARE( vl2.fields().at( 1 ).type(), QMetaType::Type::QVariantList );
+  QCOMPARE( vl2.fields().at( 1 ).subType(), QMetaType::Type::LongLong );
   QCOMPARE( vl2.fields().at( 1 ).typeName(), QStringLiteral( "JSON" ) );
-  QCOMPARE( vl2.fields().at( 2 ).type(), QMetaType::Type::QVariantMap );
+  QCOMPARE( vl2.fields().at( 2 ).type(), QMetaType::Type::QStringList );
   QCOMPARE( vl2.fields().at( 2 ).subType(), QMetaType::Type::QString );
   QCOMPARE( vl2.fields().at( 2 ).typeName(), QStringLiteral( "JSON" ) );
   QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toList(), QVariantList() << 1 << 2 << 3 );

@@ -896,11 +896,11 @@ void QgsOgrProvider::loadFields()
     QMetaType::Type varSubType = QMetaType::Type::UnknownType;
     QgsOgrUtils::ogrFieldTypeToQVariantType( ogrType, ogrSubType, varType, varSubType );
 
-    // Handle special case for OGRFieldType::OFSTJSON which is not always a map.
-    // If subtype is JSON and varType is map, try to load a feature and check if it's
+    // Handle special case for OGRFieldType::OFSTJSON which is not necessarily a map.
+    // If subtype is JSON try to load a feature and check if it's
     // really an object (rather than something else like an array)
-    // fallback to string given that only JSON object (map) is supported.
-    if ( varType == QMetaType::Type::QVariantMap && ogrSubType == OFSTJSON )
+    // fallback to string.
+    if ( ogrType == OFTString && ogrSubType == OFSTJSON )
     {
       QRecursiveMutex *layerMutex = nullptr;
       OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( layerMutex );
@@ -913,14 +913,56 @@ void QgsOgrProvider::loadFields()
         {
           try
           {
-            const auto json_element = json::parse( json );
-            if ( ! json_element.is_object() )
+            const nlohmann::json json_element = json::parse( json );
+            if ( json_element.is_array() )
             {
+              bool allStrings = true;
+              bool allInts = true;
+              bool allDoubles = true;
+              for ( const auto &item : json_element )
+              {
+                if ( !item.is_string() )
+                {
+                  allStrings = false;
+                }
+                if ( !item.is_number_integer() )
+                {
+                  allInts = false;
+                }
+                if ( !item.is_number_float() )
+                {
+                  allDoubles = false;
+                }
+              }
+              if ( allStrings )
+              {
+                varType = QMetaType::Type::QStringList;
+              }
+              else if ( allInts )
+              {
+                varType = QMetaType::Type::QVariantList;
+                varSubType = QMetaType::Type::LongLong;
+              }
+              else if ( allDoubles )
+              {
+                varType = QMetaType::Type::QVariantList;
+                varSubType = QMetaType::Type::Double;
+              }
+              else
+              {
+                QgsDebugMsgLevel( QStringLiteral( "JSON array contains mixed types, defaulting to string" ), 2 );
+                varType = QMetaType::Type::QString;
+              }
+            }
+            else if ( ! json_element.is_object() )
+            {
+              QgsDebugMsgLevel( QStringLiteral( "JSON is neither an array nor an object, defaulting to string" ), 2 );
               varType = QMetaType::Type::QString;
             }
           }
           catch ( const json::parse_error & )
           {
+            QgsDebugMsgLevel( QStringLiteral( "JSON is not valid, defaulting to string" ), 2 );
             varType = QMetaType::Type::QString;
           }
         }

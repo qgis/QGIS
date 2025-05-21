@@ -586,7 +586,7 @@ void TestQgsOgrProvider::testJSONFields_data()
   QTest::addColumn<QString>( "jsonData" );
   QTest::addColumn<int>( "expectedType" );
 
-  QTest::newRow( "array of map" ) << QStringLiteral( R"json(
+  QTest::newRow( "array of map string fallback" ) << QStringLiteral( R"json(
 {
   "type": "FeatureCollection",
   "features": [
@@ -719,6 +719,21 @@ void TestQgsOgrProvider::testJSONFields_data()
   ]
 }
 )json" ) << static_cast<int>( QMetaType::Type::QVariantList );
+
+
+  QTest::newRow( "array mixed types string fallback" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mixed_list": [1, 2.0, "a", true]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QString );
 }
 
 void TestQgsOgrProvider::testJSONFields()
