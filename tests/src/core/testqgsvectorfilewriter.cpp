@@ -572,7 +572,7 @@ void TestQgsVectorFileWriter::testExportArrayToGpkg()
   QCOMPARE( vl2.fields().at( 1 ).subType(), QMetaType::Type::LongLong );
   QCOMPARE( vl2.fields().at( 1 ).typeName(), QStringLiteral( "JSON" ) );
   QCOMPARE( vl2.fields().at( 2 ).type(), QMetaType::Type::QStringList );
-  QCOMPARE( vl2.fields().at( 2 ).subType(), QMetaType::Type::QString );
+  QCOMPARE( vl2.fields().at( 2 ).subType(), QMetaType::Type::UnknownType );
   QCOMPARE( vl2.fields().at( 2 ).typeName(), QStringLiteral( "JSON" ) );
   QCOMPARE( vl2.getFeature( 1 ).attribute( 1 ).toList(), QVariantList() << 1 << 2 << 3 );
   QCOMPARE( vl2.getFeature( 1 ).attribute( 2 ).toStringList(), QStringList() << "a" << "b" << "c" );

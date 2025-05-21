@@ -547,9 +547,15 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   auto getJsonValue = [&]() -> bool
   {
     const char *json = OGR_F_GetFieldAsString( ogrFet, attIndex );
+    QString jsonContent;
+    if ( encoding )
+      jsonContent = encoding->toUnicode( json ).toUtf8();
+    else
+      jsonContent = QString::fromUtf8( json ).toUtf8();
+
     try
     {
-      const nlohmann::json json_element = json::parse( json );
+      const nlohmann::json json_element = json::parse( jsonContent.toStdString() );
       value = QgsJsonUtils::jsonToVariant( json_element );
       return true;
     }
@@ -566,18 +572,20 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     {
       case QMetaType::Type::QString:
       {
-        if ( encoding )
-          value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
-        else
-          value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+        {
+          if ( encoding )
+            value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+          else
+            value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
 
 #ifdef Q_OS_WIN
-        // Fixes GH #41076 (empty strings shown as NULL), because we have checked before that it was NOT NULL
-        // Note:  QVariant( QString( ) ).isNull( ) is still true on windows so we really need string literal :(
-        if ( value.isNull() )
-          value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
+          // Fixes GH #41076 (empty strings shown as NULL), because we have checked before that it was NOT NULL
+          // Note:  QVariant( QString( ) ).isNull( ) is still true on windows so we really need string literal :(
+          if ( value.isNull() )
+            value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
 #endif
-
+        }
         break;
       }
       case QMetaType::Type::Int:
@@ -1867,7 +1875,6 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
       if ( ogrSubType == OFSTBoolean )
       {
         variantType = QMetaType::Type::Bool;
-        ogrSubType = OFSTBoolean;
       }
       else
         variantType = QMetaType::Type::Int;
