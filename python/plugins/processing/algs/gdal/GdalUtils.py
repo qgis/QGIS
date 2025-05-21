@@ -519,12 +519,14 @@ class GdalUtils:
 
     @staticmethod
     def ogrOutputLayerName(uri):
-        uri = uri.strip('"')
+        if uri.startswith('"') and uri.endswith('"'):
+            uri = uri.strip('"')
         return os.path.basename(os.path.splitext(uri)[0])
 
     @staticmethod
     def ogrLayerName(uri):
-        uri = uri.strip('"')
+        if uri.startswith('"') and uri.endswith('"'):
+            uri = uri.strip('"')
         if " table=" in uri:
             # table="schema"."table"
             re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')
