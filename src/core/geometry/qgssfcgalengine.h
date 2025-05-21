@@ -301,7 +301,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param tolerance max distance allowed between each point
      * \param errorMsg Error message returned by SFGCAL
      */
-    static bool isEqual( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance = 0.0, QString *errorMsg = nullptr );
+    static bool isEquals( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance = 0.0, QString *errorMsg = nullptr );
 
     /**
      * Checks if \a geom is empty.

@@ -483,7 +483,7 @@ void QgsSfcgalEngine::swapXy( sfcgal::geometry *geom, QString *errorMsg )
   sfcgal_geometry_swap_xy( geom );
 }
 
-bool QgsSfcgalEngine::isEqual( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance, QString *errorMsg )
+bool QgsSfcgalEngine::isEquals( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geomA, false );

@@ -73,7 +73,7 @@ class TestQgsSfcgal : public QgsTest
     void cleanup();         // will be called after every testfunction.
 
     void fromWkt();
-    void isEqual();
+    void isEquals();
     void boundary();
     void centroid();
     void dropZ();
@@ -366,7 +366,7 @@ void TestQgsSfcgal::fromWkt()
   QVERIFY( sfcgal::errorHandler()->getFullText().contains( "SFCGAL error occurred: WKT parse error" ) );
 }
 
-void TestQgsSfcgal::isEqual()
+void TestQgsSfcgal::isEquals()
 {
   initPainterTest();
 
@@ -937,7 +937,7 @@ void TestQgsSfcgal::buffer3DCheck()
     QVERIFY2( !isOK, "buffer3D geom matches expected from file, but should not!" );
 
     // isEquals passes with decimal dump
-    isOK = QgsSfcgalEngine::isEqual( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.001, &errorMsg );
+    isOK = QgsSfcgalEngine::isEquals( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.001, &errorMsg );
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
     QVERIFY2( isOK, "buffer3D geom does not match expected from file" );
   }

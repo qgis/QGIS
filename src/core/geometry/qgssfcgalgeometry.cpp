@@ -164,7 +164,7 @@ bool QgsSfcgalGeometry::operator==( const QgsAbstractGeometry &other ) const
   if ( otherGeom )
   {
     QString errorMsg; // used to retrieve failure messages if any
-    out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), otherGeom->mSfcgalGeom.get(), 0.0, &errorMsg );
+    out = QgsSfcgalEngine::isEquals( mSfcgalGeom.get(), otherGeom->mSfcgalGeom.get(), 0.0, &errorMsg );
     CHECK_SUCCESS_LOG( &errorMsg, false );
   }
   return out;
@@ -182,7 +182,7 @@ bool QgsSfcgalGeometry::fuzzyEqual( const QgsAbstractGeometry &other, double eps
   if ( otherGeom )
   {
     QString errorMsg; // used to retrieve failure messages if any
-    out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), otherGeom->mSfcgalGeom.get(), epsilon, &errorMsg );
+    out = QgsSfcgalEngine::isEquals( mSfcgalGeom.get(), otherGeom->mSfcgalGeom.get(), epsilon, &errorMsg );
     CHECK_SUCCESS_LOG( &errorMsg, false );
   }
   return out;
@@ -451,7 +451,7 @@ int QgsSfcgalGeometry::compareToSameClass( const QgsAbstractGeometry *other ) co
   sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( other, &errorMsg );
   CHECK_SUCCESS_LOG( &errorMsg, -1 );
 
-  int res = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), otherShared.get(), 0.0, &errorMsg );
+  int res = QgsSfcgalEngine::isEquals( mSfcgalGeom.get(), otherShared.get(), 0.0, &errorMsg );
   CHECK_SUCCESS_LOG( &errorMsg, -1 );
 
   return res ? 0 : -1;
