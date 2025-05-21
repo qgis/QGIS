@@ -3272,7 +3272,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     mSaveUser.clear();
     mSaveUserFull.clear();
-    mMetadata.setAuthor( "" );
+    mMetadata.setAuthor( QString() );
     mMetadata.setCreationDateTime( QDateTime() );
     mSaveDateTime = QDateTime();
   }
