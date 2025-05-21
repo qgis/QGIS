@@ -442,6 +442,54 @@ int QgsSfcgalEngine::dimension( const sfcgal::geometry *geom, QString *errorMsg 
   return out;
 }
 
+int QgsSfcgalEngine::partCount( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  int out;
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, -1 );
+
+  sfcgal_geometry_type_t type = sfcgal_geometry_type_id( geom );
+  CHECK_SUCCESS( errorMsg, -1 );
+
+  switch ( type )
+  {
+    case SFCGAL_TYPE_MULTIPOINT:
+    case SFCGAL_TYPE_MULTILINESTRING:
+    case SFCGAL_TYPE_MULTIPOLYGON:
+    case SFCGAL_TYPE_MULTISOLID:
+    case SFCGAL_TYPE_GEOMETRYCOLLECTION:
+      out = sfcgal_geometry_num_geometries( geom );
+      break;
+    case SFCGAL_TYPE_POLYGON:
+      out = sfcgal_polygon_num_interior_rings( geom ) + 1;
+      break;
+    case SFCGAL_TYPE_SOLID:
+      out = sfcgal_solid_num_shells( geom );
+      break;
+    case SFCGAL_TYPE_POLYHEDRALSURFACE:
+      out = sfcgal_polyhedral_surface_num_patches( geom );
+      break;
+    case SFCGAL_TYPE_TRIANGULATEDSURFACE:
+      out = sfcgal_triangulated_surface_num_patches( geom );
+      break;
+    case SFCGAL_TYPE_LINESTRING:
+      out = sfcgal_linestring_num_points( geom );
+      break;
+    case SFCGAL_TYPE_TRIANGLE:
+      out = 3;
+      break;
+    case SFCGAL_TYPE_POINT:
+      out = 1;
+      break;
+    default:
+      out = -1;
+  }
+
+  CHECK_SUCCESS( errorMsg, -1 );
+
+  return out;
+}
+
 bool QgsSfcgalEngine::addZValue( sfcgal::geometry *geom, double zValue, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
