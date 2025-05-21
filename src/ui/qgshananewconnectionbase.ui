@@ -36,7 +36,7 @@
     <widget class="QgsMessageBar" name="bar" native="true"/>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::Shape::NoFrame</enum>
      </property>
@@ -48,8 +48,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>446</width>
-        <height>772</height>
+        <width>452</width>
+        <height>770</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -171,7 +171,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>421</width>
-                <height>228</height>
+                <height>244</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="grdConnectionSettings" rowstretch="1,0,0,0,0">
@@ -977,6 +977,12 @@
    <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
@@ -1036,7 +1042,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>
