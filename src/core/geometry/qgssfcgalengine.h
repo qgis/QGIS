@@ -248,6 +248,18 @@ class CORE_EXPORT QgsSfcgalEngine
     static int dimension( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
     /**
+     * Returns the \a geom part count.
+     *
+     * - POINT, TRIANGLE, LINESTRING: vertex number
+     * - POLYGON, SOLID, POLYHEDRALSURFACE, TRIANGULATEDSURFACE: ring or patch or shell number
+     * - MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, MULTISOLID, GEOMETRYCOLLECTION: number of geom in collection
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
+    static int partCount( const sfcgal::geometry *geom, QString *errorMsg );
+
+    /**
      * Adds a z-dimension to the geometry, initialized to a preset value (existing Z values remains unchanged).
      *
      * \return true if success
