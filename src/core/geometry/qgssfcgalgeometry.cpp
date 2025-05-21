@@ -354,7 +354,13 @@ int QgsSfcgalGeometry::ringCount( int ) const
 
 int QgsSfcgalGeometry::partCount() const
 {
-  return mQgsGeom->partCount();
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  int out = QgsSfcgalEngine::partCount( mSfcgalGeom.get(), &errorMsg );
+  CHECK_SUCCESS_LOG( &errorMsg, -1 );
+
+  return out;
 }
 
 bool QgsSfcgalGeometry::addZValue( double zValue )
