@@ -424,6 +424,32 @@ tests:
         name: expected/filter_points_big.gml
         type: vector
 
+  - algorithm: model:Inner model
+    name: Inner model
+    params:
+      input:
+        name: custom/points_3857.gml|layername=points_3857
+        type: vector
+    results:
+      output:
+        name: expected/inner_model.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+
+  - algorithm: model:Outer model
+    name: Nested models
+    params:
+      input:
+        name: custom/points_3857.gml|layername=points_3857
+        type: vector
+    results:
+      output:
+        name: expected/nested_models.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+
   - algorithm: native:intersection
     name: Test Intersection (basic)
     params:
