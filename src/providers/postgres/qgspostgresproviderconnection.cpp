@@ -116,7 +116,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
     Capability::AddField,
-    Capability::RenameField
+    Capability::RenameField,
+    Capability::MoveTableToSchema
   };
   mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
@@ -1941,4 +1942,13 @@ void QgsPostgresProviderConnection::renameField( const QString &schema, const QS
 {
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME COLUMN %3 TO %4;" )
                        .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
+}
+
+void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
+{
+  const QString sql = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" )
+                        .arg( QgsPostgresConn::quotedIdentifier( sourceSchema ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( tableName ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) );
+  executeSqlPrivate( sql );
 }

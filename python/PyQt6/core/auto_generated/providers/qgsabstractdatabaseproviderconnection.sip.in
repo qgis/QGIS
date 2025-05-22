@@ -365,6 +365,7 @@ This information is calculated from the geometry columns types.
       AddRelationship,
       UpdateRelationship,
       DeleteRelationship,
+      MoveTableToSchema,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -993,6 +994,20 @@ Sets the ``comment`` for the existing field with the specified name.
 
 .. versionadded:: 3.32
 %End
+
+    virtual void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const;
+%Docstring
+Move table to a different schema.
+
+:param sourceSchema: name of the source schema.
+:param tableName: name of the table.
+:param targetSchema: name of the target schema to move table to.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.44
+%End
+
 
     SIP_PYOBJECT supportedRelationshipCardinalities() const /TypeHint="List[Qgis.RelationshipCardinality]"/;
 %Docstring
