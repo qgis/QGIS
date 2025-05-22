@@ -640,7 +640,9 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
 
     if ( mFeatureFilterProvider )
+    {
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );
+    }
 
     QgsMapLayerStyleOverride styleOverride( ml );
     if ( mSettings.layerStyleOverrides().contains( ml->id() ) )

@@ -30,6 +30,7 @@
 
 class QgsAnnotation;
 class QgsRenderedFeatureHandlerInterface;
+class QgsFeatureFilterProviderGroup;
 
 /**
  * \ingroup core
@@ -1225,6 +1226,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     QgsLayoutItemMapAtlasClippingSettings *mAtlasClippingSettings = nullptr;
     QgsLayoutItemMapItemClipPathSettings *mItemClippingSettings = nullptr;
+
+    std::unique_ptr<QgsFeatureFilterProviderGroup> mAtlasFeatureFilterProvider;
 
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation
