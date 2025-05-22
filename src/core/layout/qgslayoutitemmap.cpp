@@ -40,6 +40,8 @@
 #include "qgslabelingresults.h"
 #include "qgsvectortileutils.h"
 #include "qgsunittypes.h"
+#include "qgsfeaturefilter.h"
+#include "qgsfeaturefilterprovidergroup.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -1579,6 +1581,17 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   job.setFeatureFilterProvider( mLayout->renderContext().featureFilterProvider() );
 #endif
 
+  QgsFeatureFilterProviderGroup jobFeatureFilter;
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
+  {
+    jobFeatureFilter.addProvider( mAtlasFeatureFilterProvider.get() );
+    if ( job.featureFilterProvider() )
+    {
+      jobFeatureFilter.addProvider( job.featureFilterProvider() );
+    }
+    job.setFeatureFilterProvider( &jobFeatureFilter );
+  }
+
   // Render the map in this thread. This is done because of problems
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
@@ -1679,6 +1692,10 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   }
 
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLimitCoverageLayerRenderToCurrentFeature )
+  {
+    mPainterJob->setFeatureFilterProvider( mAtlasFeatureFilterProvider.get() );
+  }
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();
 
@@ -2919,8 +2936,16 @@ void QgsLayoutItemMap::refreshLabelMargin( bool updateItem )
 
 void QgsLayoutItemMap::updateAtlasFeature()
 {
-  if ( !atlasDriven() || !mLayout->reportContext().layer() )
+  if ( !mLayout->reportContext().layer() || !mLayout->reportContext().feature().isValid() )
     return; // nothing to do
+
+  QgsFeatureFilter *filter = new QgsFeatureFilter();
+  filter->setFilter( mLayout->reportContext().layer(), QgsExpression( QStringLiteral( "$id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
+  mAtlasFeatureFilterProvider.reset( new QgsFeatureFilterProviderGroup() );
+  mAtlasFeatureFilterProvider->addProvider( filter );
+
+  if ( !atlasDriven() )
+    return; // nothing else to do
 
   QgsRectangle bounds = computeAtlasRectangle();
   if ( bounds.isNull() )
