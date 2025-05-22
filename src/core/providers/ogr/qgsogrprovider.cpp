@@ -900,8 +900,6 @@ void QgsOgrProvider::loadFields()
     // If subtype is JSON try to load a feature and check if it's
     // really an object (rather than something else like an array)
     // fallback to string.
-    // Note that homogeneous arrays of numbers and strings are already correctly
-    // identified by OGR so we don't need to check them here.
     if ( ( ogrType == OFTString || ogrType == OFTWideString ) && ogrSubType == OFSTJSON )
     {
       QRecursiveMutex *layerMutex = nullptr;
