@@ -224,7 +224,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
       }
 
-      if ( rlayer )
+      if ( rlayer && mView->selectedLayerNodes().count() == 1 )
       {
         QAction *zoomToNative = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "Zoom to Nat&ive Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
         zoomToNative->setEnabled( rlayer->isValid() );
@@ -668,15 +668,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           case Qgis::LayerType::PointCloud:
           case Qgis::LayerType::TiledScene:
           {
-            bool enableSaveAs = ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) || ( rlayer && rlayer->isValid() );
             QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
             menuExportRaster->setObjectName( QStringLiteral( "exportMenu" ) );
-            QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
+            if (  mView->selectedLayerNodes().count() == 1 )
+            {
+              QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
+              connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [=] { QgisApp::instance()->saveAsFile(); } );
+              menuExportRaster->addAction( actionSaveAs );
+            }
             QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
-            connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [=] { QgisApp::instance()->saveAsFile(); } );
-            menuExportRaster->addAction( actionSaveAs );
-            actionSaveAs->setEnabled( enableSaveAs );
             connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
             menuExportRaster->addAction( actionSaveAsDefinitionLayer );
             connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [=] { QgisApp::instance()->saveStyleFile(); } );
