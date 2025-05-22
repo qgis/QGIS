@@ -3269,6 +3269,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
+    mMetadata.setAuthor( QgsApplication::userFullName() );
+    if ( !mMetadata.creationDateTime().isValid() )
+    {
+      mMetadata.setCreationDateTime( QDateTime( QDateTime::currentDateTime() ) );
+    }
     mSaveDateTime = QDateTime::currentDateTime();
     qgisNode.setAttribute( QStringLiteral( "saveDateTime" ), mSaveDateTime.toString( Qt::ISODate ) );
   }
@@ -3276,6 +3281,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     mSaveUser.clear();
     mSaveUserFull.clear();
+    mMetadata.setAuthor( QString() );
+    mMetadata.setCreationDateTime( QDateTime() );
     mSaveDateTime = QDateTime();
   }
   doc->appendChild( qgisNode );
