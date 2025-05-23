@@ -46,26 +46,26 @@ QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Q
   setEnabled( false );
 }
 
-void QgsDebugTextureEntity::setPosition( Qt::Corner corner, double size )
+void QgsDebugTextureEntity::setPosition( Qt::Corner corner, double size, double offset )
 {
-  setPosition( corner, QSizeF( size, size ) );
+  setPosition( corner, QSizeF( size, size ), QSizeF( offset, offset ) );
 }
 
-void QgsDebugTextureEntity::setPosition( Qt::Corner corner, QSizeF size )
+void QgsDebugTextureEntity::setPosition( Qt::Corner corner, QSizeF size, QSizeF offset )
 {
   switch ( corner )
   {
     case Qt::Corner::TopRightCorner:
-      setViewport( QPointF( 1.0f - size.width() / 2, 0.0f + size.height() / 2 ), 0.5 * size );
+      setViewport( QPointF( 1.0f - size.width() / 2 - offset.width(), offset.height() + size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::TopLeftCorner:
-      setViewport( QPointF( 0.0f + size.width() / 2, 0.0f + size.height() / 2 ), 0.5 * size );
+      setViewport( QPointF( offset.width() + size.width() / 2, offset.height() + size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::BottomRightCorner:
-      setViewport( QPointF( 1.0f - size.width() / 2, 1.0f - size.height() / 2 ), 0.5 * size );
+      setViewport( QPointF( 1.0f - size.width() / 2 - offset.width(), 1.0f - size.height() / 2 - offset.height() ), 0.5 * size );
       break;
     case Qt::Corner::BottomLeftCorner:
-      setViewport( QPointF( 0.0f + size.width() / 2, 1.0f - size.height() / 2 ), 0.5 * size );
+      setViewport( QPointF( offset.width() + size.width() / 2, 1.0f - size.height() / 2 - offset.height() ), 0.5 * size );
       break;
   }
 }
