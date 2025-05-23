@@ -32,6 +32,8 @@
 #include "qgspainting.h"
 #include "qgssldexportcontext.h"
 
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QFileInfo>
@@ -3106,6 +3108,40 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   return m.release();
 }
 
+QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
+{
+  QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
+  if ( graphicElem.isNull() )
+    return nullptr;
+
+  QDomElement extGraphElem = graphicElem.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
+  if ( extGraphElem.isNull() )
+    return nullptr;
+
+  QDomElement onlineResElem = extGraphElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
+  QDomElement inlineContEleme = extGraphElem.firstChildElement( QStringLiteral( "InlineContent" ) );
+
+  QString url = onlineResElem.attribute( "href", "" );
+  if ( ! onlineResElem.isNull() )
+  {
+    url = onlineResElem.attribute( "href", "" );
+    // transform regular data uris to QGIS's data uris (note that embedded images are usually provided as InlineContent)
+    url.replace( QRegularExpression( QStringLiteral( "^data:([^;]*;base64,)?(.*)$" ) ), QStringLiteral( "data:\\2" ) );
+  }
+  else if ( ! inlineContEleme.isNull() )
+  {
+    url = QStringLiteral( "data:" ) + inlineContEleme.text();
+  }
+  else
+  {
+    return nullptr;
+  }
+
+  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
+  // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
+  return m;
+}
+
 void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &properties )
 {
   if ( properties.contains( QStringLiteral( "alpha" ) ) )
@@ -3503,6 +3539,75 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
                         height ) );
 
   return symbolBounds;
+}
+
+void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  Q_UNUSED( context )
+
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
+  element.appendChild( graphicElem );
+
+  // <ExternalGraphic>
+  QDomElement extGraphElem = doc.createElement( QStringLiteral( "se:ExternalGraphic" ) );
+  graphicElem.appendChild( extGraphElem );
+
+  QMimeDatabase mimeDB;
+  QMimeType mimeType;
+
+  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
+  {
+    // <InlineContent>
+    QDomElement inlineContEleme = doc.createElement( QStringLiteral( "se:InlineContent" ) );
+    QString base64data = mPath;
+    base64data.remove( 0, 7 );
+
+    inlineContEleme.setAttribute( QStringLiteral( "encoding" ), QStringLiteral( "base64" ) );
+    inlineContEleme.appendChild( doc.createTextNode( base64data ) );
+    extGraphElem.appendChild( inlineContEleme );
+
+    // determine mime type
+    QByteArray ba = QByteArray::fromBase64( base64data.toUtf8() );
+    mimeType = mimeDB.mimeTypeForData( ba );
+
+  }
+  else
+  {
+    // <ExternalGraphic>
+    QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
+    QString url = mPath;
+
+    onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
+    onlineResElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+    extGraphElem.appendChild( onlineResElem );
+
+    // determine mime type
+    if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) )
+    {
+      // Qt can't guess mime type for remote URLs, and it seems geoserver can handle wrong image mime types
+      // but not generic ones, so let's hardcode to png.
+      mimeType = mimeDB.mimeTypeForName( "image/png" );
+    }
+    else
+    {
+      mimeType = mimeDB.mimeTypeForUrl( url );
+    }
+  }
+
+  QDomElement formatElem = doc.createElement( QStringLiteral( "se:Format" ) );
+  formatElem.appendChild( doc.createTextNode( mimeType.name() ) );
+  extGraphElem.appendChild( formatElem );
+
+  // TODO: write other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
+  return true;
 }
 
 //////////
