@@ -139,6 +139,11 @@ class TestQgsSfcgal : public QgsTest
     QPainter *mpPainter = nullptr;
     QPen mPen1;
     QPen mPen2;
+
+    QString mCylinderWkt;
+    QString mCubePolyHedWkt;
+    QString mCube1SolidWkt;
+    QString mCube2SolidWkt;
 };
 
 TestQgsSfcgal::TestQgsSfcgal()
@@ -227,6 +232,37 @@ void TestQgsSfcgal::initTestCase()
                     "(-6547.4512 5101.3843 -50, -7609.9000 6077.2203 -50, -7690.7384 4281.4510 -50, -5080.8101 2930.2934 50, -6547.4512 5101.3843 -50)"
                     ")" )
   );
+
+  mCylinderWkt = QString( "PolyhedralSurface Z (((150 90 0, 135.35 54.64 0, 100 40 0, 64.64 54.64 0, 50 90 0, 64.64 125.35 0, 100 140 0, 135.35 125.35 0, 150 90 0)),"
+                          "((150 90 30, 135.35 125.35 30, 100 140 30, 64.64 125.35 30, 50 90 30, 64.64 54.64 30, 100 40 30, 135.35 54.64 30, 150 90 30)),"
+                          "((150 90 0, 150 90 30, 135.35 54.64 30, 135.35 54.64 0, 150 90 0)),"
+                          "((135.35 54.64 0, 135.35 54.64 30, 100 40 30, 100 40 0, 135.35 54.64 0)),"
+                          "((100 40 0, 100 40 30, 64.64 54.64 30, 64.64 54.64 0, 100 40 0)),"
+                          "((64.64 54.64 0, 64.64 54.64 30, 50 90 30, 50 90 0, 64.64 54.64 0)),"
+                          "((50 90 0, 50 90 30, 64.64 125.35 30, 64.64 125.35 0, 50 90 0)),"
+                          "((64.64 125.35 0, 64.64 125.35 30, 100 140 30, 100 140 0, 64.64 125.35 0)),"
+                          "((100 140 0, 100 140 30, 135.35 125.35 30, 135.35 125.35 0, 100 140 0)),"
+                          "((135.35 125.35 0, 135.35 125.35 30, 150 90 30, 150 90 0, 135.35 125.35 0)))" );
+
+  mCubePolyHedWkt = QString( "PolyhedralSurface Z (((130 80 0, 80 30 0, 30 80 0, 80 130 0, 130 80 0)),"
+                             "((130 80 30, 80 130 30, 30 80 30, 80 30 30, 130 80 30)),"
+                             "((130 80 0, 130 80 30, 80 30 30, 80 30 0, 130 80 0)),"
+                             "((80 30 0, 80 30 30, 30 80 30, 30 80 0, 80 30 0)),"
+                             "((30 80 0, 30 80 30, 80 130 30, 80 130 0, 30 80 0)),"
+                             "((80 130 0, 80 130 30, 130 80 30, 130 80 0, 80 130 0)))" );
+
+  mCube1SolidWkt = QString( "SOLID Z ((((0.00 0.00 0.00,0.00 10.00 0.00,10.00 10.00 0.00,10.00 0.00 0.00,0.00 0.00 0.00)),"
+                            "((10.00 0.00 0.00,10.00 10.00 0.00,10.00 10.00 10.00,10.00 0.00 10.00,10.00 0.00 0.00)),"
+                            "((0.00 10.00 0.00,0.00 10.00 10.00,10.00 10.00 10.00,10.00 10.00 0.00,0.00 10.00 0.00)),"
+                            "((0.00 0.00 10.00,0.00 10.00 10.00,0.00 10.00 0.00,0.00 0.00 0.00,0.00 0.00 10.00)),"
+                            "((10.00 0.00 10.00,10.00 10.00 10.00,0.00 10.00 10.00,0.00 0.00 10.00,10.00 0.00 10.00)),"
+                            "((10.00 0.00 0.00,10.00 0.00 10.00,0.00 0.00 10.00,0.00 0.00 0.00,10.00 0.00 0.00))))" );
+  mCube2SolidWkt = QString( "SOLID Z ((((2.00 2.00 2.00,2.00 12.00 2.00,12.00 12.00 2.00,12.00 2.00 2.00,2.00 2.00 2.00)),"
+                            "((12.00 2.00 2.00,12.00 12.00 2.00,12.00 12.00 12.00,12.00 2.00 12.00,12.00 2.00 2.00)),"
+                            "((2.00 12.00 2.00,2.00 12.00 12.00,12.00 12.00 12.00,12.00 12.00 2.00,2.00 12.00 2.00)),"
+                            "((2.00 2.00 12.00,2.00 12.00 12.00,2.00 12.00 2.00,2.00 2.00 2.00,2.00 2.00 12.00)),"
+                            "((12.00 2.00 12.00,12.00 12.00 12.00,2.00 12.00 12.00,2.00 2.00 12.00,12.00 2.00 12.00)),"
+                            "((12.00 2.00 2.00,12.00 2.00 12.00,2.00 2.00 12.00,2.00 2.00 2.00,12.00 2.00 2.00))))" );
 }
 
 
@@ -743,6 +779,57 @@ void TestQgsSfcgal::intersection3d()
     QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)" ) );
     QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)" ) );
   }
+
+  {
+    // 1st: prepare geometries
+    QgsSfcgalGeometry cylinderGeom( mCylinderWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QgsSfcgalGeometry cubeGeom( mCubePolyHedWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+    // 2nd: intersect cylinder - cube
+    QgsSfcgalGeometry *resultGeom = cylinderGeom.intersection( cubeGeom, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QCOMPARE( resultGeom->wkbType(), Qgis::WkbType::GeometryCollectionZ );
+    QVERIFY2( resultGeom, ( QString( "resultGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+    QCOMPARE( resultGeom->partCount(), 7 );
+
+    const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( resultGeom->asQgisGeometry( &errorMsg ) );
+    QVERIFY( castGeom != nullptr );
+    QCOMPARE( castGeom->partCount(), 7 );
+
+    // 3rd: prepare compare
+    // load expected wkt
+    std::unique_ptr<QgsSfcgalGeometry> readGeom = openWktFile( "intersection3d_cyl_cube.wkt", &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( readGeom, "readGeom geometry is NULL." );
+
+    // 4th: check coverage between actual and expected geometry
+    QVERIFY2( readGeom->fuzzyEqual( *resultGeom, 0.1 ), "result geom does not match expected from file" );
+  }
+
+  {
+    // 1st: prepare geometries
+    QgsSfcgalGeometry cube1( mCube1SolidWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QgsSfcgalGeometry cube2( mCube2SolidWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+
+    // 2nd: intersection cube1 - cube2
+    QgsSfcgalGeometry *resultGeom = cube1.intersection( cube2, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    //QCOMPARE( resultGeom->wkbType(), Qgis::WkbType::SO );
+    QVERIFY2( resultGeom, ( QString( "resultGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+
+    // 3rd: prepare compare
+    // load expected wkt
+    std::unique_ptr<QgsSfcgalGeometry> readGeom = openWktFile( "intersection3d_cube_cube.wkt", &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( readGeom, "readGeom geometry is NULL." );
+
+    // 4th: check coverage between actual and expected geometry
+    QVERIFY2( readGeom->covers( *resultGeom ), "result geom does not match expected from file" );
+  }
 }
 
 void TestQgsSfcgal::unionCheck1()
@@ -839,46 +926,54 @@ void TestQgsSfcgal::difference3d()
   initPainterTest();
   QString errorMsg;
 
-  // 1st: prepare geometries
-  QString cylinderWkt( "POLYHEDRALSURFACE Z (((150 90 0,135.35533905932738 54.64466094067263 0,100 40 0,64.64466094067262 54.64466094067262 0,50 90 0,64.64466094067262 125.35533905932738 0,100 140 0,135.35533905932738 125.35533905932738 0,150 90 0)),"
-                       "((150 90 30,135.35533905932738 125.35533905932738 30,100 140 30,64.64466094067262 125.35533905932738 30,50 90 30,64.64466094067262 54.64466094067262 30,100 40 30,135.35533905932738 54.64466094067263 30,150 90 30)),"
-                       "((150 90 0,150 90 30,135.35533905932738 54.64466094067263 30,135.35533905932738 54.64466094067263 0,150 90 0)),"
-                       "((135.35533905932738 54.64466094067263 0,135.35533905932738 54.64466094067263 30,100 40 30,100 40 0,135.35533905932738 54.64466094067263 0)),"
-                       "((100 40 0,100 40 30,64.64466094067262 54.64466094067262 30,64.64466094067262 54.64466094067262 0,100 40 0)),"
-                       "((64.64466094067262 54.64466094067262 0,64.64466094067262 54.64466094067262 30,50 90 30,50 90 0,64.64466094067262 54.64466094067262 0)),"
-                       "((50 90 0,50 90 30,64.64466094067262 125.35533905932738 30,64.64466094067262 125.35533905932738 0,50 90 0)),"
-                       "((64.64466094067262 125.35533905932738 0,64.64466094067262 125.35533905932738 30,100 140 30,100 140 0,64.64466094067262 125.35533905932738 0)),"
-                       "((100 140 0,100 140 30,135.35533905932738 125.35533905932738 30,135.35533905932738 125.35533905932738 0,100 140 0)),"
-                       "((135.35533905932738 125.35533905932738 0,135.35533905932738 125.35533905932738 30,150 90 30,150 90 0,135.35533905932738 125.35533905932738 0)))" );
-  QgsSfcgalGeometry cylinderGeom( cylinderWkt, &errorMsg );
-  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  {
+    // 1st: prepare geometries
+    QgsSfcgalGeometry cube1( mCube1SolidWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QgsSfcgalGeometry cube2( mCube2SolidWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
-  QString cubeWkt( "POLYHEDRALSURFACE Z (((130 80 0,80 30 0,30 80 0,80 130 0,130 80 0)),"
-                   "((130 80 30,80 130 30,30 80 30,80 30 30,130 80 30)),"
-                   "((130 80 0,130 80 30,80 30 30,80 30 0,130 80 0)),"
-                   "((80 30 0,80 30 30,30 80 30,30 80 0,80 30 0)),"
-                   "((30 80 0,30 80 30,80 130 30,80 130 0,30 80 0)),"
-                   "((80 130 0,80 130 30,130 80 30,130 80 0,80 130 0)))" );
-  QgsSfcgalGeometry cubeGeom( cubeWkt, &errorMsg );
-  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    // 2nd: diff cube1 - cube2
+    QgsSfcgalGeometry *scDiffGeom = cube1.difference( cube2, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    //QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::SO );
+    QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
 
-  // 2nd: diff cylinder - cube
-  QgsSfcgalGeometry *scDiffGeom = cylinderGeom.difference( cubeGeom, &errorMsg );
-  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
-  QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::TINZ );
-  QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+    // 3rd: prepare compare
+    // load expected wkt
+    std::unique_ptr<QgsSfcgalGeometry> readGeom = openWktFile( "difference3d_cube_cube.wkt", &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( readGeom, "readGeom geometry is NULL." );
 
-  const QgsTriangulatedSurface *castGeom = qgsgeometry_cast<const QgsTriangulatedSurface *>( scDiffGeom->asQgisGeometry( &errorMsg ) );
-  QVERIFY( castGeom != nullptr );
+    // 4th: check coverage between actual and expected geometry
+    QVERIFY2( readGeom->covers( *scDiffGeom ), "diff geom does not match expected from file" );
+  }
 
-  // 3rd: prepare compare
-  // load expected wkt
-  std::unique_ptr<QgsSfcgalGeometry> readGeom = openWktFile( "difference3d_cyl_cube.wkt", &errorMsg );
-  QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
-  QVERIFY2( readGeom, "readGeom geometry is NULL." );
+  {
+    // 1st: prepare geometries
+    QgsSfcgalGeometry cylinderGeom( mCylinderWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QgsSfcgalGeometry cubeGeom( mCubePolyHedWkt, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
-  // 4th: check coverage between actual and expected geometry
-  QVERIFY2( readGeom->covers( *scDiffGeom ), "diff geom does not match expected from file" );
+    // 2nd: diff cylinder - cube
+    QgsSfcgalGeometry *scDiffGeom = cylinderGeom.difference( cubeGeom, &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::TINZ );
+    QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+
+    const QgsTriangulatedSurface *castGeom = qgsgeometry_cast<const QgsTriangulatedSurface *>( scDiffGeom->asQgisGeometry( &errorMsg ) );
+    QVERIFY( castGeom != nullptr );
+
+    // 3rd: prepare compare
+    // load expected wkt
+    std::unique_ptr<QgsSfcgalGeometry> readGeom = openWktFile( "difference3d_cyl_cube.wkt", &errorMsg );
+    QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+    QVERIFY2( readGeom, "readGeom geometry is NULL." );
+
+    // 4th: check coverage between actual and expected geometry
+    QVERIFY2( readGeom->covers( *scDiffGeom ), "diff geom does not match expected from file" );
+  }
 }
 
 void TestQgsSfcgal::buffer3DCheck()
