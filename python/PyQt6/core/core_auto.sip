@@ -53,10 +53,10 @@
 %Include auto_generated/qgsfeature.sip
 %Include auto_generated/qgsfeaturepickermodel.sip
 %Include auto_generated/qgsfeaturepickermodelbase.sip
-%Include auto_generated/qgsfeaturefiltermodel.sip
-%Include auto_generated/qgsfeaturefilterprovidergroup.sip
-%Include auto_generated/qgsfeaturefilterprovider.sip
 %Include auto_generated/qgsfeaturefilter.sip
+%Include auto_generated/qgsfeaturefiltermodel.sip
+%Include auto_generated/qgsfeaturefilterprovider.sip
+%Include auto_generated/qgsfeaturefilterprovidergroup.sip
 %Include auto_generated/qgsfeatureid.sip
 %Include auto_generated/qgsfeatureiterator.sip
 %Include auto_generated/qgsfeaturerequest.sip
