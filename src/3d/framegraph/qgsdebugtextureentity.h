@@ -54,6 +54,7 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mCenterTextureCoords = nullptr;
     Qt3DRender::QParameter *mSizeTextureCoords = nullptr;
     Qt3DRender::QParameter *mIsDepth = nullptr;
+    Qt3DRender::QParameter *mFlipTextureY = nullptr;
 };
 
 #endif // QGSDEBUGTEXTUREENTITY_H
