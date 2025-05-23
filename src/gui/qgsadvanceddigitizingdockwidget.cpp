@@ -1478,7 +1478,7 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
   const QgsPoint penultimatePt = penultimatePointV2( &penulPointExist );
 
   // --- angle
-  if ( !mAngleConstraint->isLocked() && previousPointExist )
+  if ( previousPointExist )
   {
     double prevAngle = 0.0;
 
@@ -1492,7 +1492,10 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
 
     // Modulus
     const double angle = std::fmod( xAngle - prevAngle, 360.0 );
-    mAngleConstraint->setValue( angle );
+    if ( !mAngleConstraint->isLocked() )
+    {
+      mAngleConstraint->setValue( angle );
+    }
 
     // Bearing (azimuth)
     double bearing { std::fmod( xAngle, 360.0 ) };
