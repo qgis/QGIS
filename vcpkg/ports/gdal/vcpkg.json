@@ -8,6 +8,7 @@
   "dependencies": [
     "json-c",
     "libgeotiff",
+    "arrow",
     {
       "name": "pkgconf",
       "host": true
@@ -41,6 +42,21 @@
     "default-features"
   ],
   "features": {
+    "arrow": {
+      "description": "Enable arrow support",
+      "dependencies": [
+        {
+          "name": "arrow",
+          "default-features": false
+        }
+      ]
+    },
+    "arrow-adbc": {
+      "description": "Arrow adbc support",
+      "dependencies": [
+        "arrow-adbc"
+      ]
+    },
     "aws-ec2-windows": {
       "description": "Optimized detection of AWS EC2 Windows hosts",
       "dependencies": [
@@ -76,6 +92,7 @@
             "lzma",
             "openjpeg",
             "openssl",
+            "parquet",
             "pcre2",
             "recommended-features",
             "webp",
@@ -218,6 +235,25 @@
       "description": "Use OpenSSL library",
       "dependencies": [
         "openssl"
+      ]
+    },
+    "parquet": {
+      "description": "Enable parquet reading support",
+      "dependencies": [
+        {
+          "name": "arrow",
+          "default-features": false,
+          "features": [
+            "parquet"
+          ]
+        },
+        {
+          "name": "gdal",
+          "default-features": false,
+          "features": [
+            "arrow"
+          ]
+        }
       ]
     },
     "pcre2": {

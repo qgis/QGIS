@@ -37,11 +37,6 @@
 #define QSCINTILLA_VERSION_STR "${QSCINTILLA_VERSION_STR}"
 #endif
 
-#if defined( __APPLE__ )
-//used by Mac to find system or bundle resources relative to amount of bundling
-#define QGIS_MACAPP_BUNDLE ${QGIS_MACAPP_BUNDLE}
-#endif
-
 #define PYTHON_VERSION "${Python_VERSION}"
 #define PYTHON_VERSION_MAJOR "${Python_VERSION_MAJOR}"
 #define PYTHON_VERSION_MINOR "${Python_VERSION_MINOR}"
@@ -50,6 +45,8 @@
 #define PROJ_VERSION_MAJOR ${PROJ_VERSION_MAJOR}
 #define PROJ_VERSION_MINOR ${PROJ_VERSION_MINOR}
 #define PROJ_VERSION_PATCH ${PROJ_VERSION_PATCH}
+
+#cmakedefine QGIS_MAC_BUNDLE
 
 #cmakedefine USING_NMAKE
 
