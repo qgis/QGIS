@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/server/qgsfeaturefilter.h                                        *
+ * src/core/qgsfeaturefilter.h                                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -60,7 +60,7 @@ Set a filter for the given layer.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/server/qgsfeaturefilter.h                                        *
+ * src/core/qgsfeaturefilter.h                                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
