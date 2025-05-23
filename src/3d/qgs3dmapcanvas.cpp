@@ -67,9 +67,10 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   mEngine = new QgsWindow3DEngine( this );
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [=]( const QImage &image ) {
-    image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
-    mEngine->setRenderCaptureEnabled( false );
-    emit savedAsImage( mCaptureFileName );
+    if ( image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() ) )
+    {
+      emit savedAsImage( mCaptureFileName );
+    }
   } );
 
   setCursor( Qt::OpenHandCursor );
@@ -211,7 +212,6 @@ void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFo
 
   mCaptureFileName = fileName;
   mCaptureFileFormat = fileFormat;
-  mEngine->setRenderCaptureEnabled( true );
   // Setup a frame action that is used to wait until next frame
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );

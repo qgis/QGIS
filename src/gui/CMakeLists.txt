@@ -961,6 +961,7 @@ set(QGIS_GUI_HDRS
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
   qgsmaplayersavestyledialog.h
+  qgsmaplayerserverpropertieswidget.h
   qgsmaplayerloadstyledialog.h
   qgsmaplayerrefreshsettingswidget.h
   qgsmaplayerstylecategoriesmodel.h

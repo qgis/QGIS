@@ -72,6 +72,19 @@ composition modes, which could prevent it being used as an isolated
 cached image or exported to a vector format.
 %End
 
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+%Docstring
+Returns ``True`` the labeling requires a non-default composition mode.
+
+This method is pessimistic, in that it will return ``True`` in cases
+where composition modes cannot be easily determined in advance (e.g.
+when data-defined overrides are in place for composition modes).
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
+%End
+
     virtual void multiplyOpacity( double opacityFactor );
 %Docstring
 Multiply opacity by ``opacityFactor``.
@@ -153,6 +166,8 @@ Set pal settings (takes ownership).
 %End
 
     virtual bool requiresAdvancedEffects() const;
+
+    virtual bool hasNonDefaultCompositionMode() const;
 
     virtual void multiplyOpacity( double opacityFactor );
 

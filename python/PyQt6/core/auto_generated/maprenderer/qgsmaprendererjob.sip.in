@@ -228,6 +228,20 @@ emitted when asynchronous rendering is finished (or canceled).
 
 
 
+    bool labelingHasNonDefaultCompositionModes() const;
+%Docstring
+Returns ``True`` if any component of the map labeling requires
+non-default composition modes.
+
+This method is pessimistic, in that it will return ``True`` in cases
+where composition modes cannot be easily determined in advance (e.g.
+when data-defined overrides are in place for composition modes).
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
+%End
+
 
 
 

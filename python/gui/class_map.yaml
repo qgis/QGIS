@@ -5138,6 +5138,7 @@ QgsNewGeoPackageLayerDialog: src/gui/qgsnewgeopackagelayerdialog.h#L30
 QgsNewHttpConnection.accept: src/gui/qgsnewhttpconnection.h#L94
 QgsNewHttpConnection.name: src/gui/qgsnewhttpconnection.h#L85
 QgsNewHttpConnection.preferredHttpMethod: src/gui/qgsnewhttpconnection.h#L177
+QgsNewHttpConnection.showEvent: src/gui/qgsnewhttpconnection.h#L206
 QgsNewHttpConnection.testConnectButton: src/gui/qgsnewhttpconnection.h#L134
 QgsNewHttpConnection.updateServiceSpecificSettings: src/gui/qgsnewhttpconnection.h#L201
 QgsNewHttpConnection.url: src/gui/qgsnewhttpconnection.h#L90

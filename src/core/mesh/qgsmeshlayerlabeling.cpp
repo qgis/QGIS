@@ -103,6 +103,15 @@ bool QgsMeshLayerSimpleLabeling::requiresAdvancedEffects() const
   return mSettings->containsAdvancedEffects();
 }
 
+bool QgsMeshLayerSimpleLabeling::hasNonDefaultCompositionMode() const
+{
+  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+         || mSettings->format().hasNonDefaultCompositionMode();
+}
+
 QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   const QDomElement settingsElem = element.firstChildElement( QStringLiteral( "settings" ) );
