@@ -36,6 +36,13 @@ if(NOT SDK_PATH STREQUAL "")
     message(FATAL_ERROR "VCPKG_TARGET_TRIPLET not set (set it to arm64-osx-dynamic-release or x64-osx-dynamic-release")
   endif()
   set(WITH_VCPKG ON)
+  # Create patch batch file for SIP build not working with SDK_PATH set on windows 
+  # until patch is applied to VCPKG upstream
+  IF (WIN32)
+    FILE(WRITE ${CMAKE_BINARY_DIR}/sip-build.bat "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/python.exe -m sipbuild.tools.build %*")
+    set(SIP_BUILD_EXECUTABLE "${CMAKE_BINARY_DIR}/sip-build.bat" )
+    message(STATUS "Setting SIP build override patch: ${SIP_BUILD_EXECUTABLE}")
+  endif()
 elseif(WITH_VCPKG)
   message(STATUS "Building local dependencies with VCPKG --")
   set(VCPKG_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/vcpkg_installed")
