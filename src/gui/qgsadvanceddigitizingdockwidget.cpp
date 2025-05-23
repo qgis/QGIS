@@ -352,7 +352,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [=]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool() );
+    const bool isDistanceChecked = QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool();
+    action->setChecked( isDistanceChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, isDistanceChecked );
   }
 
   {
@@ -362,7 +365,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [=]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/AngleShowInFloater" ), true ).toBool() );
+    const bool isAngleChecked = QgsSettings().value( QStringLiteral( "/Cad/AngleShowInFloater" ), true ).toBool();
+    action->setChecked( isAngleChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, isAngleChecked );
   }
 
   {
@@ -374,7 +380,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
     } );
     // There is no separate menu option for X and Y so let's check for X only.
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XCoordinateShowInFloater" ), true ).toBool() );
+    const bool isXCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/XCoordinateShowInFloater" ), true ).toBool();
+    action->setChecked( isXCoordinateChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, isXCoordinateChecked );
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, isXCoordinateChecked );
   }
 
   {
@@ -382,9 +393,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [=]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked );
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked && mTargetLayerSupportsZ );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/ZCoordinateShowInFloater" ), true ).toBool() );
+    const bool isZCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/ZCoordinateShowInFloater" ), true ).toBool();
+    action->setChecked( isZCoordinateChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, isZCoordinateChecked );
   }
 
   {
@@ -392,9 +407,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
     connect( action, &QAction::toggled, this, [=]( bool checked ) {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked );
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked && mTargetLayerSupportsM );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MCoordinateShowInFloater" ), true ).toBool() );
+    const bool isMCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/MCoordinateShowInFloater" ), true ).toBool();
+    action->setChecked( isMCoordinateChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, isMCoordinateChecked );
   }
 
   {
@@ -404,7 +423,11 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [=]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/BearingShowInFloater" ), false ).toBool() );
+    const bool isBearingChecked = QgsSettings().value( QStringLiteral( "/Cad/BearingShowInFloater" ), false ).toBool();
+    action->setChecked( isBearingChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, isBearingChecked );
   }
 
   {
@@ -414,7 +437,11 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     connect( action, &QAction::toggled, this, [=]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/CommonAngleSnappingShowInFloater" ), false ).toBool() );
+    const bool isCommonAngleSnappingChecked = QgsSettings().value( QStringLiteral( "/Cad/CommonAngleSnappingShowInFloater" ), false ).toBool();
+    action->setChecked( isCommonAngleSnappingChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, isCommonAngleSnappingChecked );
   }
 
   updateCapacity( true );
@@ -621,12 +648,19 @@ void QgsAdvancedDigitizingDockWidget::switchZM()
     }
   }
 
+  mTargetLayerSupportsM = enableM;
+  mTargetLayerSupportsZ = enableZ;
+
   setEnabledZ( enableZ );
   setEnabledM( enableM );
 }
 
 void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
 {
+  if ( enable && !mTargetLayerSupportsZ )
+  {
+    enable = false;
+  }
   mRelativeZButton->setEnabled( enable );
   mZLabel->setEnabled( enable );
   mZLineEdit->setEnabled( enable );
@@ -640,6 +674,10 @@ void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
 
 void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
 {
+  if ( enable && !mTargetLayerSupportsM )
+  {
+    enable = false;
+  }
   mRelativeMButton->setEnabled( enable );
   mMLabel->setEnabled( enable );
   mMLineEdit->setEnabled( enable );

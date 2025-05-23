@@ -1176,6 +1176,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QMenu *mCommonAngleActionsMenu = nullptr;
     QMenu *mFloaterActionsMenu = nullptr;
 
+    /* Store whether the target layer supports Z and M, to avoid unnecessary checks
+     * when floater settings are changed */
+    bool mTargetLayerSupportsZ = false;
+    bool mTargetLayerSupportsM = false;
+
     static const QgsSettingsEntryBool *settingsCadSnappingPriorityPrioritizeFeature;
     static const QgsSettingsEntryBool *settingsCadRecordConstructionGuides;
     static const QgsSettingsEntryBool *settingsCadShowConstructionGuides;
