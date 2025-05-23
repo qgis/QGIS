@@ -202,6 +202,11 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
 
     /**
+     * A color to represent a map layer ouput
+     */
+    QColor getColor() const override;
+
+    /**
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputLayer" ); }
@@ -381,11 +386,6 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputVariant" ); }
-
-    /**
-     * A color to represent a range parameter
-     */
-    QColor getColor() const override;
 
     QString type() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;

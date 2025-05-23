@@ -70,7 +70,7 @@ void QgsProcessingOutputVectorLayer::setDataType( Qgis::ProcessingSourceType typ
 
 QColor QgsProcessingOutputVectorLayer::getColor() const
 {
-  return QColor( 180, 180, 0 ); /* greenish yellow */
+  return QColor( 122, 0, 47 ); /* burgundy */
 }
 
 QgsProcessingOutputRasterLayer::QgsProcessingOutputRasterLayer( const QString &name, const QString &description )
@@ -92,7 +92,7 @@ QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QS
 
 QColor QgsProcessingOutputVectorTileLayer::getColor() const
 {
-  return QColor( 180, 180, 0 ); /* greenish yellow */
+  return QColor( 137, 150, 171 ); /* cold gray */
 }
 
 QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QString &description )
@@ -112,7 +112,7 @@ QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, 
 
 QColor QgsProcessingOutputHtml::getColor() const
 {
-  return QColor( 100, 100, 255 ); /* slate blueish */
+  return QColor( 120, 100, 255 ); /* lavender blue */
 }
 
 QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
@@ -148,7 +148,7 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
 
 QColor QgsProcessingOutputString::getColor() const
 {
-  return QColor( 100, 100, 255 ); /* slate blueish */
+  return QColor( 120, 100, 255 ); /* lavender blue */
 }
 
 QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, const QString &description )
@@ -220,6 +220,11 @@ QString QgsProcessingOutputMapLayer::type() const
   return typeName();
 }
 
+QColor QgsProcessingOutputMapLayer::getColor() const
+{
+  return QColor( 137, 150, 171 ); /* cold gray */
+}
+
 QgsProcessingOutputMultipleLayers::QgsProcessingOutputMultipleLayers( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
@@ -262,7 +267,7 @@ QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value,
 
 QColor QgsProcessingOutputMultipleLayers::getColor() const
 {
-  return QColor( 237, 142, 0 ); /* orange */
+  return QColor( 137, 150, 171 ); /* cold gray */
 }
 
 QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( const QString &name, const QString &description )
@@ -322,7 +327,3 @@ QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsPro
   return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputVariant::getColor() const
-{
-  return QColor( 34, 157, 214 ); /* blue */
-}

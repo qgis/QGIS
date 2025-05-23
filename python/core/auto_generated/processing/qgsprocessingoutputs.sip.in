@@ -194,6 +194,12 @@ raster), use :py:class:`QgsProcessingOutputVectorLayer` or
 Constructor for QgsProcessingOutputMapLayer.
 %End
 
+    virtual QColor getColor() const;
+
+%Docstring
+A color to represent a map layer ouput
+%End
+
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
@@ -397,12 +403,6 @@ Constructor for QgsProcessingOutputVariant.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-%End
-
-    virtual QColor getColor() const;
-
-%Docstring
-A color to represent a range parameter
 %End
 
     virtual QString type() const;

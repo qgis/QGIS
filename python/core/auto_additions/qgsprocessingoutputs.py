@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingoutputs.h
 try:
     QgsProcessingOutputMapLayer.typeName = staticmethod(QgsProcessingOutputMapLayer.typeName)
-    QgsProcessingOutputMapLayer.__overridden_methods__ = ['type']
+    QgsProcessingOutputMapLayer.__overridden_methods__ = ['getColor', 'type']
     QgsProcessingOutputMapLayer.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -37,7 +37,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingOutputVariant.typeName = staticmethod(QgsProcessingOutputVariant.typeName)
-    QgsProcessingOutputVariant.__overridden_methods__ = ['getColor', 'type', 'valueAsString']
+    QgsProcessingOutputVariant.__overridden_methods__ = ['type', 'valueAsString']
     QgsProcessingOutputVariant.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
