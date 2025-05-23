@@ -138,7 +138,7 @@ def register_function(
     """
 
     # Format the help text
-    helptemplate = string.Template("<h3>$name function</h3><br>$doc")
+    helptemplate = string.Template("<h3>function $name</h3>\n$doc")
     name = kwargs.get("name", function.__name__)
     helptext = kwargs.get("helpText") or function.__doc__ or ""
     helptext = helptext.strip()
