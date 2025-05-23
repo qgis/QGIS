@@ -46,13 +46,14 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
      * Sets the texture debugging parameters
      * \param corner the texture's corner position within the window
      * \param size the texture's size
+     * \param offset the offset between the corner of the window and the texture
      *
      * \since QGIS 4.0
      */
-    void setPosition( Qt::Corner corner, QSizeF size );
+    void setPosition( Qt::Corner corner, QSizeF size, QSizeF offset = QSizeF(0., 0.) );
 
     //! Sets the texture debugging parameters
-    void setPosition( Qt::Corner corner, double size );
+    void setPosition( Qt::Corner corner, double size, double offset = 0. );
 
   private:
     //! Sets the view port of the quad
