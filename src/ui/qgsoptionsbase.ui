@@ -2848,6 +2848,114 @@
                 <number>0</number>
                </property>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mCoordinateDisplayGroup">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Measurements, Coordinate and Bearing Display</string>
+                 </property>
+                 <property name="syncGroup">
+                  <string notr="true">projgeneral</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
+                  <item row="1" column="2">
+                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                    <property name="text">
+                     <string>Customize…</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_69">
+                    <property name="text">
+                     <string>Default bearing format for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="1" column="1">
+                   <spacer name="horizontalSpacer_11">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Maximum</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_72">
+                    <property name="text">
+                     <string>Default coordinate format for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
+                    <property name="text">
+                     <string>Customize…</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_11">
+                    <property name="text">
+                     <string>Default distance units for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="mDistanceUnitsComboBox"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="textLabel1_14">
+                    <property name="text">
+                     <string>Default area units for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2">
+                   <widget class="QComboBox" name="mAreaUnitsComboBox"/>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="mAngleUnitsLabel">
+                    <property name="toolTip">
+                     <string>Specifies the angle unit to use in te current and new projects.</string>
+                    </property>
+                    <property name="text">
+                     <string>Preferred angle units</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2">
+                   <widget class="QComboBox" name="mAngleUnitsComboBox"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mIdentifyGroupBox">
                  <property name="title">
                   <string>Identify</string>
@@ -2994,23 +3102,6 @@
                   <string>Measure Tool</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_21">
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="mAngleUnitsLabel">
-                    <property name="text">
-                     <string>Preferred angle units</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="textLabel1_14">
-                    <property name="text">
-                     <string>Preferred area units</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1" colspan="3">
-                   <widget class="QComboBox" name="mAngleUnitsComboBox"/>
-                  </item>
                   <item row="0" column="2" colspan="2">
                    <spacer>
                     <property name="orientation">
@@ -3023,9 +3114,6 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>
-                  <item row="3" column="1" colspan="3">
-                   <widget class="QComboBox" name="mDistanceUnitsComboBox"/>
                   </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_10">
@@ -3059,13 +3147,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="textLabel1_11">
-                    <property name="text">
-                     <string>Preferred distance units</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="1">
                    <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
                     <property name="text">
@@ -3092,9 +3173,6 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QgsSpinBox" name="mDecimalPlacesSpinBox"/>
-                  </item>
-                  <item row="4" column="1" colspan="3">
-                   <widget class="QComboBox" name="mAreaUnitsComboBox"/>
                   </item>
                  </layout>
                 </widget>
@@ -3219,49 +3297,12 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mCoordinateDisplayGroup">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
                  <property name="title">
-                  <string>Coordinate and Bearing Display</string>
                  </property>
-                 <property name="syncGroup">
-                  <string notr="true">projgeneral</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
                     <property name="text">
-                     <string>Customize…</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_69">
-                    <property name="text">
-                     <string>Default bearing format for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="3">
-                   <spacer name="horizontalSpacer_10">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1">
-                   <spacer name="horizontalSpacer_11">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -3276,20 +3317,8 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_72">
-                    <property name="text">
-                     <string>Default coordinate format for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="2">
-                   <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
-                    <property name="text">
-                     <string>Customize…</string>
                     </property>
-                   </widget>
-                  </item>
                  </layout>
                 </widget>
                </item>
