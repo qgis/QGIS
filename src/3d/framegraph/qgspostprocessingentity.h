@@ -18,9 +18,12 @@
 
 #include "qgsrenderpassquad.h"
 
-class QgsFrameGraph;
-class QgsShadowRenderView;
 class QgsDirectionalLightSettings;
+class QgsShadowRenderView;
+class QgsForwardRenderView;
+class QgsAmbientOcclusionRenderView;
+class QgsShadowSettings;
+class Qgs3DMapSettings;
 
 #define SIP_NO_FILE
 
@@ -38,7 +41,11 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
   public:
     //! Constructor
-    QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
+    QgsPostprocessingEntity( const QgsShadowRenderView &shadowRenderView,       //
+                             const QgsForwardRenderView &forwardRenderView,     //
+                             const QgsAmbientOcclusionRenderView &aoRenderView, //
+                             Qt3DRender::QLayer *layer,                         //
+                             QNode *parent = nullptr );
     //! Sets the parts of the scene where objects cast shadows
     void setupShadowRenderingExtent( float minX, float maxX, float minY, float maxY );
     //! Sets up a directional light that is used to render shadows
@@ -46,19 +53,21 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
     //! Sets the shadow bias value
-    void setShadowBias( float shadowBias );
+    void setShadowBias( double shadowBias );
+
+    /**
+     * Sets shadow rendering to use a directional light
+     * \since QGIS 3.44
+     */
+    void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QgsDirectionalLightSettings &light );
+
+    void updateEyeDomeSettings( const Qgs3DMapSettings &settings );
     //! Sets whether eye dome lighting is enabled
     void setEyeDomeLightingEnabled( bool enabled );
     //! Sets the eye dome lighting strength
     void setEyeDomeLightingStrength( double strength );
     //! Sets the eye dome lighting distance (contributes to the contrast of the image)
     void setEyeDomeLightingDistance( int distance );
-
-    /**
-     * Sets shadow rendering to use a directional light
-     * \since QGIS 3.44
-     */
-    void updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
 
     /**
      * Sets whether screen space ambient occlusion is enabled
