@@ -5470,6 +5470,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsTreeView</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>grpLocale</tabstop>
@@ -5539,6 +5540,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
+  <tabstop>cbxAutosizeAttributeTable</tabstop>
   <tabstop>mComboCopyFeatureFormat</tabstop>
   <tabstop>cmbAttrTableBehavior</tabstop>
   <tabstop>mAttrTableViewComboBox</tabstop>
@@ -5566,6 +5568,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
+  <tabstop>mLayerTreeInsertionMethod</tabstop>
   <tabstop>mShowFeatureCountByDefaultCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
@@ -5574,6 +5577,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>mMapTipsDelaySpinBox</tabstop>
   <tabstop>mRespectScreenDpiCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
+  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
+  <tabstop>mCustomizeBearingFormatButton</tabstop>
+  <tabstop>mDistanceUnitsComboBox</tabstop>
+  <tabstop>mAreaUnitsComboBox</tabstop>
+  <tabstop>mAngleUnitsComboBox</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
   <tabstop>mIdentifyHighlightBufferSpinBox</tabstop>
@@ -5581,12 +5589,17 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnMeasureColor</tabstop>
   <tabstop>mDecimalPlacesSpinBox</tabstop>
   <tabstop>mKeepBaseUnitCheckBox</tabstop>
-  <tabstop>mDistanceUnitsComboBox</tabstop>
-  <tabstop>mAreaUnitsComboBox</tabstop>
-  <tabstop>mAngleUnitsComboBox</tabstop>
-  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
-  <tabstop>mCustomizeBearingFormatButton</tabstop>
+  <tabstop>mIncludeHeader</tabstop>
+  <tabstop>mAlwaysUseDecimalPoint</tabstop>
+  <tabstop>mSeparatorComma</tabstop>
+  <tabstop>mSeparatorSemicolon</tabstop>
+  <tabstop>mSeparatorTab</tabstop>
+  <tabstop>mSeparatorColon</tabstop>
+  <tabstop>mSeparatorSpace</tabstop>
+  <tabstop>mSeparatorOther</tabstop>
+  <tabstop>mSeparatorCustom</tabstop>
   <tabstop>spinZoomFactor</tabstop>
+  <tabstop>reverseWheelZoom</tabstop>
   <tabstop>mListGlobalScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
@@ -5641,9 +5654,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOffsetXSpinBox</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mSnapToleranceSpinBox</tabstop>
+  <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mBtnAddTemplatePath</tabstop>
   <tabstop>mBtnRemoveTemplatePath</tabstop>
-  <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
@@ -5656,6 +5669,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBrowseCacheDirectory</tabstop>
   <tabstop>mCacheSize</tabstop>
   <tabstop>mClearCache</tabstop>
+  <tabstop>mAutoClearAccessCache</tabstop>
+  <tabstop>mClearAccessCache</tabstop>
   <tabstop>grpProxy</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
@@ -5666,23 +5681,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
-  <tabstop>mAutoClearAccessCache</tabstop>
-  <tabstop>mClearAccessCache</tabstop>
-  <tabstop>mLayerTreeInsertionMethod</tabstop>
-  <tabstop>mAlwaysUseDecimalPoint</tabstop>
-  <tabstop>mSeparatorComma</tabstop>
-  <tabstop>mSeparatorSpace</tabstop>
-  <tabstop>mSeparatorColon</tabstop>
-  <tabstop>mSeparatorSemicolon</tabstop>
-  <tabstop>mSeparatorTab</tabstop>
-  <tabstop>mSeparatorOther</tabstop>
-  <tabstop>mSeparatorCustom</tabstop>
-  <tabstop>mIncludeHeader</tabstop>
-  <tabstop>reverseWheelZoom</tabstop>
-  <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
