@@ -7097,7 +7097,8 @@ void QgsProcessingMultipleLayerLineEdit::dropEvent( QDropEvent *event )
   const QStringList uris = QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( mParam, event->mimeData(), {} );
   if ( !uris.isEmpty() )
   {
-    event->acceptProposedAction();
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
     QVariantList uriList;
     uriList.reserve( uris.size() );
     for ( const QString &uri : uris )
