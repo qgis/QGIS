@@ -3297,32 +3297,6 @@
                 </widget>
                </item>
                <item>
-                 <property name="title">
-                 </property>
-                    <property name="text">
-                    </property>
-                   </widget>
-                  </item>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Maximum</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="2">
-                    </property>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mZoomingGroupBox">
                  <property name="title">
                   <string>Zooming</string>
@@ -3336,7 +3310,35 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
+                   <spacer name="horizontalSpacer_110">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Maximum</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>50</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
                    <widget class="QgsSpinBox" name="spinZoomFactor">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>110</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
                     <property name="toolTip">
                      <string>Specifies the change in zoom level with each move of the mouse wheel.
 The bigger the number, the faster zooming with the mouse wheel will be.</string>
@@ -3361,6 +3363,19 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="3">
+                   <spacer name="horizontalSpacer_100">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_21">
                     <property name="text">
@@ -3368,7 +3383,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
+                  <item row="1" column="2">
                    <widget class="QCheckBox" name="reverseWheelZoom">
                     <property name="text">
                      <string/>
