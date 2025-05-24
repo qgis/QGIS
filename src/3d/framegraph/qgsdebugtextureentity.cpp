@@ -48,19 +48,24 @@ QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Q
 
 void QgsDebugTextureEntity::setPosition( Qt::Corner corner, double size )
 {
+  setPosition( corner, QSizeF( size, size ) );
+}
+
+void QgsDebugTextureEntity::setPosition( Qt::Corner corner, QSizeF size )
+{
   switch ( corner )
   {
     case Qt::Corner::TopRightCorner:
-      setViewport( QPointF( 1.0f - size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( 1.0f - size.width() / 2, 0.0f + size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::TopLeftCorner:
-      setViewport( QPointF( 0.0f + size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( 0.0f + size.width() / 2, 0.0f + size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::BottomRightCorner:
-      setViewport( QPointF( 1.0f - size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( 1.0f - size.width() / 2, 1.0f - size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::BottomLeftCorner:
-      setViewport( QPointF( 0.0f + size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( 0.0f + size.width() / 2, 1.0f - size.height() / 2 ), 0.5 * size );
       break;
   }
 }
