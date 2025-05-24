@@ -4847,6 +4847,21 @@ Qgis.CoordinateTransformationFlag.baseClass = Qgis
 Qgis.CoordinateTransformationFlags = lambda flags=0: Qgis.CoordinateTransformationFlag(flags)
 Qgis.CoordinateTransformationFlags.baseClass = Qgis
 CoordinateTransformationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.RasterizedRenderingPolicy.AllowRasterization.__doc__ = "Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering."
+Qgis.RasterizedRenderingPolicy.PreferVector.__doc__ = "Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes."
+Qgis.RasterizedRenderingPolicy.ForceVector.__doc__ = "Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes."
+Qgis.RasterizedRenderingPolicy.__doc__ = """Policies controlling when rasterisation of content during renders is permitted.
+
+.. versionadded:: 3.44
+
+* ``AllowRasterization``: Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+* ``PreferVector``: Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
+* ``ForceVector``: Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
+
+"""
+# --
+Qgis.RasterizedRenderingPolicy.baseClass = Qgis
 QgsMapSettings.Flag = Qgis.MapSettingsFlag
 # monkey patching scoped based enum
 QgsMapSettings.Antialiasing = Qgis.MapSettingsFlag.Antialiasing
@@ -4857,10 +4872,10 @@ QgsMapSettings.DrawEditingInfo.is_monkey_patched = True
 QgsMapSettings.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
 QgsMapSettings.ForceVectorOutput = Qgis.MapSettingsFlag.ForceVectorOutput
 QgsMapSettings.ForceVectorOutput.is_monkey_patched = True
-QgsMapSettings.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsMapSettings.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images. \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsMapSettings.UseAdvancedEffects = Qgis.MapSettingsFlag.UseAdvancedEffects
 QgsMapSettings.UseAdvancedEffects.is_monkey_patched = True
-QgsMapSettings.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
+QgsMapSettings.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsMapSettings.DrawLabeling = Qgis.MapSettingsFlag.DrawLabeling
 QgsMapSettings.DrawLabeling.is_monkey_patched = True
 QgsMapSettings.DrawLabeling.__doc__ = "Enable drawing of labels on top of the map"
@@ -4912,8 +4927,14 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 * ``Antialiasing``: Enable anti-aliasing for map rendering
 * ``DrawEditingInfo``: Enable drawing of vertex markers for layers in editing mode
-* ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images
+* ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images.
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``UseAdvancedEffects``: Enable layer opacity and blending effects
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``DrawLabeling``: Enable drawing of labels on top of the map
 * ``UseRenderingOptimization``: Enable vector simplification and other rendering optimizations
 * ``DrawSelection``: Whether vector selections should be shown in the rendered map
@@ -4959,10 +4980,10 @@ QgsRenderContext.DrawEditingInfo.is_monkey_patched = True
 QgsRenderContext.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
 QgsRenderContext.ForceVectorOutput = Qgis.RenderContextFlag.ForceVectorOutput
 QgsRenderContext.ForceVectorOutput.is_monkey_patched = True
-QgsRenderContext.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsRenderContext.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsRenderContext.UseAdvancedEffects = Qgis.RenderContextFlag.UseAdvancedEffects
 QgsRenderContext.UseAdvancedEffects.is_monkey_patched = True
-QgsRenderContext.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
+QgsRenderContext.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsRenderContext.UseRenderingOptimization = Qgis.RenderContextFlag.UseRenderingOptimization
 QgsRenderContext.UseRenderingOptimization.is_monkey_patched = True
 QgsRenderContext.UseRenderingOptimization.__doc__ = "Enable vector simplification and other rendering optimizations"
@@ -5026,7 +5047,13 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
 * ``DrawEditingInfo``: Enable drawing of vertex markers for layers in editing mode
 * ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``UseAdvancedEffects``: Enable layer opacity and blending effects
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``UseRenderingOptimization``: Enable vector simplification and other rendering optimizations
 * ``DrawSelection``: Whether vector selections should be shown in the rendered map
 * ``DrawSymbolBounds``: Draw bounds of symbols (for debugging/testing)

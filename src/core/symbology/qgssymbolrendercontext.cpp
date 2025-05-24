@@ -40,8 +40,9 @@ void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value )
 
 bool QgsSymbolRenderContext::forceVectorRendering() const
 {
-  return mRenderContext.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
-         || mRenderHints.testFlag( Qgis::SymbolRenderHint::ForceVectorRendering );
+  return  mRenderContext.testFlag( Qgis::RenderContextFlag::ForceVectorOutput )
+          || mRenderContext.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::AllowRasterization
+          || mRenderHints.testFlag( Qgis::SymbolRenderHint::ForceVectorRendering );
 }
 
 double QgsSymbolRenderContext::outputLineWidth( double width ) const
