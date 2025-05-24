@@ -3102,8 +3102,8 @@
                   <string>Measure Tool</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_21">
-                  <item row="0" column="2" colspan="2">
-                   <spacer>
+                  <item row="0" column="2">
+                   <spacer name="horizontalSpacer_12">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -3174,123 +3174,123 @@
                   <item row="1" column="1">
                    <widget class="QgsSpinBox" name="mDecimalPlacesSpinBox"/>
                   </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mMeasureToolCopySettingsGroupBox">
-                 <property name="title">
-                  <string>Measure Tool Copy Settings</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_22">
-                    <property name="text">
-                     <string>Include header</string>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QgsCollapsibleGroupBox" name="mMeasureToolCopySettingsGroupBox">
+                    <property name="title">
+                     <string>Copy Settings</string>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_23">
-                    <property name="text">
-                     <string>Separator</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QCheckBox" name="mAlwaysUseDecimalPoint">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <layout class="QGridLayout" name="gridLayout_6">
-                    <item row="0" column="0">
-                     <widget class="QRadioButton" name="mSeparatorComma">
-                      <property name="text">
-                       <string>Comma</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QRadioButton" name="mSeparatorSpace">
-                      <property name="text">
-                       <string>Space</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QRadioButton" name="mSeparatorColon">
-                      <property name="text">
-                       <string>Colon</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QRadioButton" name="mSeparatorSemicolon">
-                      <property name="text">
-                       <string>Semicolon</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QRadioButton" name="mSeparatorTab">
-                      <property name="text">
-                       <string>Tab</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <layout class="QHBoxLayout" name="horizontalLayout_3">
-                      <item>
-                       <widget class="QRadioButton" name="mSeparatorOther">
-                        <property name="text">
-                         <string>Other</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QLineEdit" name="mSeparatorCustom">
-                        <property name="enabled">
-                         <bool>false</bool>
-                        </property>
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="maxLength">
-                         <number>3</number>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QCheckBox" name="mIncludeHeader">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_24">
-                    <property name="toolTip">
-                     <string>Use a dot as the decimal separator, even if the current locale uses a different character</string>
-                    </property>
-                    <property name="text">
-                     <string>Always use decimal point</string>
-                    </property>
+                    <layout class="QGridLayout" name="gridLayout_20">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_22">
+                       <property name="text">
+                        <string>Include header</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_23">
+                       <property name="text">
+                        <string>Separator</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="mAlwaysUseDecimalPoint">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <layout class="QGridLayout" name="gridLayout_6">
+                       <item row="0" column="0">
+                        <widget class="QRadioButton" name="mSeparatorComma">
+                         <property name="text">
+                          <string>Comma</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QRadioButton" name="mSeparatorSpace">
+                         <property name="text">
+                          <string>Space</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QRadioButton" name="mSeparatorColon">
+                         <property name="text">
+                          <string>Colon</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QRadioButton" name="mSeparatorSemicolon">
+                         <property name="text">
+                          <string>Semicolon</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QRadioButton" name="mSeparatorTab">
+                         <property name="text">
+                          <string>Tab</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <layout class="QHBoxLayout" name="horizontalLayout_3">
+                         <item>
+                          <widget class="QRadioButton" name="mSeparatorOther">
+                           <property name="text">
+                            <string>Other</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="mSeparatorCustom">
+                           <property name="enabled">
+                            <bool>false</bool>
+                           </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maxLength">
+                            <number>3</number>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QCheckBox" name="mIncludeHeader">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_24">
+                       <property name="toolTip">
+                        <string>Use a dot as the decimal separator, even if the current locale uses a different character</string>
+                       </property>
+                       <property name="text">
+                        <string>Always use decimal point</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
