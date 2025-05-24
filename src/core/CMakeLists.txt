@@ -480,7 +480,9 @@ set(QGIS_CORE_SRCS
   qgsfeaturesink.cpp
   qgsfeaturesource.cpp
   qgsfeaturestore.cpp
+  qgsfeaturefilter.cpp
   qgsfeaturefiltermodel.cpp
+  qgsfeaturefilterprovidergroup.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
   qgsfieldformatter.cpp
@@ -1165,8 +1167,10 @@ set(QGIS_CORE_HDRS
   qgsfeaturepickermodel.h
   qgsfeaturepickermodelbase.h
   qgsfeatureexpressionvaluesgatherer.h
+  qgsfeaturefilter.h
   qgsfeaturefiltermodel.h
   qgsfeaturefilterprovider.h
+  qgsfeaturefilterprovidergroup.h
   qgsfeatureid.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h

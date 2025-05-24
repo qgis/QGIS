@@ -139,6 +139,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.fixedscale_render_test()
         self.predefinedscales_render_test()
         self.hidden_render_test()
+        self.limit_render_test()
         self.legend_test()
         self.rotation_test()
 
@@ -157,6 +158,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas = l.atlas()
         atlas.setEnabled(True)
         atlas.setHideCoverage(True)
+        atlas.setLimitCoverageLayerRenderToCurrentFeature(True)
         atlas.setFilenameExpression("filename exp")
         atlas.setCoverageLayer(vector_layer)
         atlas.setPageNameExpression("page name")
@@ -174,6 +176,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas2 = l2.atlas()
         self.assertTrue(atlas2.enabled())
         self.assertTrue(atlas2.hideCoverage())
+        self.assertTrue(atlas2.limitCoverageLayerRenderToCurrentFeature())
         self.assertEqual(atlas2.filenameExpression(), "filename exp")
         self.assertEqual(atlas2.coverageLayer(), vector_layer)
         self.assertEqual(atlas2.pageNameExpression(), "page name")
@@ -501,6 +504,28 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas.endRender()
 
         self.atlas.setHideCoverage(False)
+
+    def limit_render_test(self):
+        self.atlas_map.setExtent(
+            QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620)
+        )
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
+        self.atlas.setLimitCoverageLayerRenderToCurrentFeature(True)
+
+        self.atlas.beginRender()
+
+        for i in range(0, 2):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            self.assertTrue(
+                self.render_layout_check(
+                    "atlas_limit%d" % (i + 1), self.layout, allowed_mismatch=200
+                )
+            )
+        self.atlas.endRender()
+
+        self.atlas.setLimitCoverageLayerRenderToCurrentFeature(False)
 
     def sorting_render_test(self):
         self.atlas_map.setExtent(

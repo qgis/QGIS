@@ -140,7 +140,7 @@
              <bool>false</bool>
             </property>
             <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
-             <item row="4" column="2">
+             <item row="5" column="2">
               <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
                <property name="toolTip">
                 <string>Sort direction</string>
@@ -153,17 +153,17 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="1">
+             <item row="5" column="1">
               <widget class="QgsFieldExpressionWidget" name="mAtlasSortExpressionWidget" native="true"/>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QCheckBox" name="mAtlasFeatureFilterCheckBox">
                <property name="text">
                 <string>Filter with</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="2">
+             <item row="4" column="2">
               <widget class="QToolButton" name="mAtlasFeatureFilterButton">
                <property name="text">
                 <string>…</string>
@@ -175,6 +175,13 @@
               </widget>
              </item>
              <item row="1" column="0" colspan="3">
+              <widget class="QCheckBox" name="mAtlasLimitCoverageLayerRenderCheckBox">
+               <property name="text">
+                <string>Only render current feature on coverage layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="3">
               <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
                <property name="text">
                 <string>Hidden coverage layer</string>
@@ -188,14 +195,14 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="3" column="0">
               <widget class="QLabel" name="label">
                <property name="text">
                 <string>Page name</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="4" column="1">
               <widget class="QLineEdit" name="mAtlasFeatureFilterEdit"/>
              </item>
              <item row="0" column="1" colspan="2">
@@ -208,7 +215,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="1" colspan="2">
+             <item row="3" column="1" colspan="2">
               <widget class="QgsFieldExpressionWidget" name="mPageNameWidget" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -224,7 +231,7 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0">
+             <item row="5" column="0">
               <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
