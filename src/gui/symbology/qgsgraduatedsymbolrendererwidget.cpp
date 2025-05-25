@@ -498,7 +498,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mModel = new QgsGraduatedSymbolRendererModel( this, screen() );
 
-  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
+  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setLayer( mLayer );
 
   btnChangeGraduatedSymbol->setLayer( mLayer );
