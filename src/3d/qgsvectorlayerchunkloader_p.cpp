@@ -16,6 +16,7 @@
 #include "qgsvectorlayerchunkloader_p.h"
 #include "moc_qgsvectorlayerchunkloader_p.cpp"
 #include "qgs3dutils.h"
+#include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
@@ -317,8 +318,12 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
 
-        // TODO: use also geo transform matrix here???
-        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, transformMatrix, nodeIntPoint, triangleIndex ) )
+        // the node geometry has been translated by chunkOrigin
+        // This translation is stored in the QTransform component
+        // this needs to be taken into account to get the whole transformation
+        const QMatrix4x4 nodeTransformMatrix = node->entity()->findChild<QgsGeoTransform *>()->matrix();
+        const QMatrix4x4 fullTransformMatrix = transformMatrix * nodeTransformMatrix;
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, fullTransformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;

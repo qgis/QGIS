@@ -111,6 +111,7 @@ class TestQgs3DRendering : public QgsTest
     void testDebugMap();
     void test3DSceneExporter();
     void test3DSceneExporterBig();
+    void test3DSceneRay3D();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -2575,6 +2576,71 @@ void TestQgs3DRendering::test3DSceneExporterBig()
 
   delete scene;
   mapSettings.setLayers( {} );
+}
+
+void TestQgs3DRendering::test3DSceneRay3D()
+{
+  // confifure map Settings
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( mProject->crs() );
+  mapSettings.setExtent( mLayerDtm->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+
+  QgsFlatTerrainSettings *flatTerrainSettings = new QgsFlatTerrainSettings;
+  mapSettings.setTerrainSettings( flatTerrainSettings );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  // create the 3d scene
+  const QSize winSize( 640, 480 ); // default window size
+  QgsOffscreen3DEngine engine;
+  engine.setSize( winSize );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, -280, 0 ), 50, 40.0, -10.0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "ray_3d", "ray_3d", img, QString(), 50, QSize( 0, 0 ), 2 );
+
+  // click on a building
+  // building and terrain are hit
+  // the distance to the building should be smaller than the distance to the terrain
+  Qt3DRender::QCamera *camera = scene->cameraController()->camera();
+  const QPoint clickedPoint1( 115, 374 );
+  const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( clickedPoint1, winSize, camera );
+  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits1 = Qgs3DUtils::castRay( scene, ray1, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  QCOMPARE( allHits1.size(), 2 );
+  QVERIFY( allHits1.contains( mLayerBuildings ) );
+  QVERIFY( allHits1.contains( nullptr ) );
+  QCOMPARE( allHits1[mLayerBuildings].size(), 1 );
+  QCOMPARE( allHits1[nullptr].size(), 1 );
+  const float buildingDistance1 = allHits1[mLayerBuildings][0].distance;
+  const float terrainDistance1 = allHits1[nullptr][0].distance;
+  QGSCOMPARENEAR( buildingDistance1, 33.59, 1.0 );
+  QGSCOMPARENEAR( terrainDistance1, 45.46, 1.0 );
+
+
+  // clicking on the terrain
+  // the building layer should not be hit
+  const QPoint clickedPoint2( 419, 326 );
+  const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera );
+  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits2 = Qgs3DUtils::castRay( scene, ray2, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  QCOMPARE( allHits2.size(), 1 );
+  QVERIFY( !allHits2.contains( mLayerBuildings ) );
+  QVERIFY( allHits2.contains( nullptr ) );
+  QCOMPARE( allHits2[nullptr].size(), 1 );
+  const float terrainDistance2 = allHits2[nullptr][0].distance;
+  QGSCOMPARENEAR( terrainDistance2, 45.59, 1.0 );
+
+  delete scene;
 }
 
 
