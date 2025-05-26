@@ -45,6 +45,7 @@ namespace Qt3DRender
 class QgsPostprocessingRenderView : public QgsAbstractRenderView
 {
   public:
+    //! Default constructor
     QgsPostprocessingRenderView( const QString &viewName,                     //
                                  QgsShadowRenderView &shadowRenderView,       //
                                  QgsForwardRenderView &forwardRenderView,     //
@@ -57,7 +58,7 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
     //! Returns the render capture object used to take an image of the postprocessing buffer of the scene
     Qt3DRender::QRenderCapture *renderCapture() const;
 
-    //! Return the QT3D entity used to do the rendering
+    //! Returns the QT3D entity used to do the rendering
     QgsPostprocessingEntity *entity() const;
 
     /**
