@@ -144,9 +144,11 @@ class polygonize(GdalAlgorithm):
 
         arguments.append(output_details.connection_string)
 
-        layerName = GdalUtils.ogrOutputLayerName(output_details.connection_string)
-        if layerName:
-            arguments.append(layerName)
+        # Output layer name
+        arguments.append(
+            os.path.basename(os.path.splitext(output_details.connection_string)[0])
+        )
+
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
         if input_details.credential_options:
