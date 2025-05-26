@@ -121,10 +121,20 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
 
   // Set the painter back to regular stroke thickness
   p = pen();
-  p.setColor( color );
+  QColor endColor = mEndItem->getLinkColor( mEndEdge, mEndIndex );
+  color.setAlpha( 255 );
+
+  QLinearGradient gradient;
+  QPointF startPoint = path().pointAtPercent( 0.0 );
+  QPointF endPoint = path().pointAtPercent( 1.0 );
+  gradient.setStart( startPoint );
+  gradient.setFinalStop( endPoint );
+  gradient.setColorAt( 0, color );
+  gradient.setColorAt( 1, endColor );
+
+  p.setBrush( QBrush( gradient ) );
   p.setWidth( 2 );
   painter->setPen( p );
-
   painter->drawPath( path() );
 }
 
