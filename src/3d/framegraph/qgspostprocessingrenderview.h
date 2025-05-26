@@ -57,15 +57,20 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
     //! Returns the render capture object used to take an image of the postprocessing buffer of the scene
     Qt3DRender::QRenderCapture *renderCapture() const;
 
+    //! Return the QT3D entity used to do the rendering
     QgsPostprocessingEntity *entity() const;
 
     /**
      * Sets whether it will be possible to render to an image
-     * \since QGIS 3.18
      */
     void setOffScreenRenderCaptureEnabled( bool enabled );
 
+    //! Returns the top node of all subpasses
     QVector<Qt3DRender::QFrameGraphNode *> subPasses() const;
+
+    /**
+     * Updates the subpasses with the new \a topNodes
+     */
     void setSubPasses( QVector<Qt3DRender::QFrameGraphNode *> topNodes );
 
   private:

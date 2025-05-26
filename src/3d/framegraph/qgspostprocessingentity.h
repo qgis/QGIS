@@ -61,6 +61,10 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void updateShadowSettings( const QgsShadowSettings &shadowSettings, const QgsDirectionalLightSettings &light );
 
+    /**
+     * Updates eye dome lighting settings from \a settings
+     * \since QGIS 3.44
+     */
     void updateEyeDomeSettings( const Qgs3DMapSettings &settings );
     //! Sets whether eye dome lighting is enabled
     void setEyeDomeLightingEnabled( bool enabled );
