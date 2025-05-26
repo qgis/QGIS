@@ -518,12 +518,6 @@ class GdalUtils:
         return GdalConnectionDetails(connection_string=ogrstr, format=f'"{format}"')
 
     @staticmethod
-    def ogrOutputLayerName(uri):
-        if uri.startswith('"') and uri.endswith('"'):
-            uri = uri.strip('"')
-        return os.path.basename(os.path.splitext(uri)[0])
-
-    @staticmethod
     def ogrLayerName(uri):
         if uri.startswith('"') and uri.endswith('"'):
             uri = uri.strip('"')
