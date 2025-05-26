@@ -255,11 +255,11 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
             break;
           }
         }
-        return QObject::tr( "'%1' from algorithm '%2'" ).arg( outputName, alg.description() );
+        return QObject::tr( "<%1>" ).arg( alg.description() );
       }
       else
       {
-        return QObject::tr( "'%1' from algorithm '%2'" ).arg( mOutputName, mChildId );
+        return QObject::tr( "<%1>" ).arg( mChildId );
       }
     }
 
