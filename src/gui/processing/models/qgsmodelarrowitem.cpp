@@ -125,8 +125,8 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   color.setAlpha( 255 );
 
   QLinearGradient gradient;
-  QPointF startPoint = path().pointAtPercent( 0.0 );
-  QPointF endPoint = path().pointAtPercent( 1.0 );
+  QPointF startPoint = path().pointAtPercent( 0.3 );
+  QPointF endPoint = path().pointAtPercent( 0.7 );
   gradient.setStart( startPoint );
   gradient.setFinalStop( endPoint );
   gradient.setColorAt( 0, color );

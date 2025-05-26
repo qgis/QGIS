@@ -112,7 +112,7 @@ QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, 
 
 QColor QgsProcessingOutputHtml::getColor() const
 {
-  return QColor( 120, 100, 255 ); /* lavender blue */
+  return QColor( 255, 131, 23 ); /* orange */
 }
 
 QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
@@ -148,7 +148,7 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
 
 QColor QgsProcessingOutputString::getColor() const
 {
-  return QColor( 120, 100, 255 ); /* lavender blue */
+  return QColor( 255, 131, 23 ); /* orange */
 }
 
 QgsProcessingOutputBoolean::QgsProcessingOutputBoolean( const QString &name, const QString &description )
