@@ -1928,7 +1928,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     /**
      * A color to represent a crs parameter
      */
-    QColor getColor() const override { return QColor( 120, 100, 255 ); /* lavender blue */ };
+    QColor getColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 
     /**
      * Get a user friendly string representation of the provided parameter value.
@@ -3101,7 +3101,7 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
     /**
      * A color to represent a string parameter
      */
-    QColor getColor() const override { return QColor( 120, 100, 255 ); /* lavender blue */ };
+    QColor getColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -3197,7 +3197,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
     /**
      * A color to represent an expression parameter
      */
-    QColor getColor() const override { return QColor( 120, 100, 255 ); /* lavender blue */ };
+    QColor getColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 
     /**
      * Returns the type name for the parameter class.
@@ -4474,7 +4474,7 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
     /**
      * A color to represent a datetime parameter
      */
-    QColor getColor() const override { return QColor( 120, 100, 255 ); /* lavender blue */ };
+    QColor getColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 
     /**
      * Returns the type name for the parameter class.
