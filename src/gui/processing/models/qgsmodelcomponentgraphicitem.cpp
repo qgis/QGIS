@@ -1302,13 +1302,14 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
-              paramValueAsStr = QStringLiteral( ": output from '%1'" ).arg( firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
+              paramValueAsStr = QStringLiteral( ": <%1>" ).arg( firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelParameter:
             {
               QString friendlyName = firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) );
-              paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": value from '%1'" ).arg( friendlyName );
+              // paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": value from '%1'" ).arg( friendlyName );
+              paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": <%1>" ).arg( friendlyName );
               break;
             }
 
