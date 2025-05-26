@@ -294,6 +294,7 @@ void TestQgsGeometryCollection::geometryCollection()
   QVERIFY( !c17.fromWkb( wkbPointPtr ) );
   QCOMPARE( c17.wkbType(), Qgis::WkbType::GeometryCollection );
 
+
   //as JSON
   QgsGeometryCollection exportC;
   part.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 0, 0 ) << QgsPoint( Qgis::WkbType::Point, 0, 10 ) << QgsPoint( Qgis::WkbType::Point, 10, 10 ) << QgsPoint( Qgis::WkbType::Point, 10, 0 ) << QgsPoint( Qgis::WkbType::Point, 0, 0 ) );
@@ -1475,6 +1476,60 @@ void TestQgsGeometryCollection::testfromToWkt()
                    "PolyhedralSurface Z (((0 0 1, 0 10 1, 10 10 1, 10 0 1, 0 0 1))),"
                    "TIN Z (((0.1 0.1 10.2, 1.13 0.2 10.3, 0.4 2.3 10.4, 0.1 0.1 10.2)))"
                    ")" );
+
+  QgsGeometryCollection c22;
+  QVERIFY( c22.fromWkt( wkt21 ) );
+  QCOMPARE( c21.numGeometries(), c22.numGeometries() );
+  for ( int i = 0; i < c21.numGeometries(); i++ )
+  {
+    QCOMPARE( *c21.geometryN( 0 ), *c22.geometryN( 0 ) );
+  }
+
+  // mixed type all EMPTY
+  QString emptyWkt = QString( "GeometryCollection ("
+                              "Point EMPTY,"
+                              "LineString EMPTY,"
+                              "Polygon EMPTY,"
+                              "CircularString EMPTY,"
+                              "CompoundCurve EMPTY,"
+                              "CurvePolygon EMPTY,"
+                              "MultiPoint EMPTY,"
+                              "MultiLineString EMPTY,"
+                              "MultiPolygon EMPTY,"
+                              "GeometryCollection EMPTY,"
+                              "MultiCurve EMPTY,"
+                              "MultiSurface EMPTY,"
+                              "Triangle EMPTY,"
+                              "PolyhedralSurface EMPTY,"
+                              "TIN EMPTY"
+                              ")" );
+
+  QgsGeometryCollection c23;
+  QVERIFY( c23.fromWkt( emptyWkt ) );
+  QCOMPARE( c23.numGeometries(), 15 );
+
+  // mixed type partial EMPTY
+  QString partialWkt = QString( "GeometryCollection ("
+                                "Point Z (0 0 1),"
+                                "LineString EMPTY,"
+                                "Polygon EMPTY,"
+                                "CircularString EMPTY,"
+                                "CompoundCurve EMPTY,"
+                                "CurvePolygon EMPTY,"
+                                "MultiPoint EMPTY,"
+                                "MultiLineString EMPTY,"
+                                "MultiPolygon EMPTY,"
+                                "GeometryCollection EMPTY,"
+                                "MultiCurve EMPTY,"
+                                "MultiSurface EMPTY,"
+                                "Triangle EMPTY,"
+                                "PolyhedralSurface EMPTY,"
+                                "TIN EMPTY"
+                                ")" );
+
+  QgsGeometryCollection c24;
+  QVERIFY( c24.fromWkt( partialWkt ) );
+  QCOMPARE( c24.numGeometries(), 15 );
 }
 
 void TestQgsGeometryCollection::testCopyConstructor()
