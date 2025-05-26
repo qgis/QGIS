@@ -1237,7 +1237,14 @@ void QgsProcessingDistanceWidgetWrapper::setUnits( Qgis::DistanceUnit units )
   }
   else
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( units ) ) );
+    // Only reset the combo if the base units have changed
+    // or we might loose any user-set unit when changing layer.
+    // See issue #61470
+    if ( mBaseUnit != units )
+    {
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( units ) ) );
+    }
+
     mUnitsCombo->show();
     mLabel->hide();
   }
