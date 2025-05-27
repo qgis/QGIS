@@ -85,6 +85,7 @@ void TestQgsTextEditWrapper::defaultValueClause()
   wrapper.setValues( QgsUnsetAttributeValue( QStringLiteral( "Autogenerate" ) ), {} );
   QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
   QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+  QCOMPARE( wrapper.value().toString(), QStringLiteral( "Autogenerate" ) );
 
   // set explicit text
   widget->setText( QStringLiteral( "11" ) );
