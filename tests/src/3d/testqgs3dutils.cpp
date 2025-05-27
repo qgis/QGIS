@@ -15,6 +15,7 @@
 
 #include "qgstest.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 
 #include "qgsbox3d.h"
@@ -88,6 +89,7 @@ void TestQgs3DUtils::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  Qgs3D::initialize();
 }
 
 //runs after all tests
