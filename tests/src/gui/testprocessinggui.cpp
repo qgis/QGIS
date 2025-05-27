@@ -387,6 +387,7 @@ void TestProcessingGui::init()
 
 void TestProcessingGui::cleanup()
 {
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestProcessingGui::testModelUndo()
@@ -2175,7 +2176,7 @@ void TestProcessingGui::testDistanceWrapper()
 
   TestProcessingContextGenerator generator( context );
   wrapper.registerProcessingContextGenerator( &generator );
-  wrapper.setUnitParameterValue( id );
+  wrapper.setUnitParameterValue( QVariant::fromValue( id ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
@@ -2190,10 +2191,20 @@ void TestProcessingGui::testDistanceWrapper()
   wrapper.setParameterValue( 2, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
 
-  wrapper.setUnitParameterValue( id );
-  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
+  // Changing to a layer with a CRS that has compatible units won't change the units
+  wrapper.setUnitParameterValue( QVariant::fromValue( id ) );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
   wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5000.0 );
+  QCOMPARE( wrapper.mUnitsCombo->currentIndex(), wrapper.mUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Kilometers ) ) );
+
+  // Changing to a layer with 4326 projection will reset the units
+  const QString id2 = vl2->id();
+  QgsProject::instance()->addMapLayer( vl2.release() );
+  wrapper.setUnitParameterValue( QVariant::fromValue( id2 ) );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+  wrapper.setParameterValue( 2, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
 
   delete w;
 
