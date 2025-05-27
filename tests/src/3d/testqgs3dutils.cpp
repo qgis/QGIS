@@ -82,6 +82,9 @@ class TestQgs3DUtils : public QgsTest
     void testScreenPointToMapCoordinates();
     void testLineSegmentToClippingPlanes();
     void testLineSegmentToCameraPose();
+
+  private:
+    QgsRasterLayer *mLayerRgb;
 };
 
 //runs before all tests
@@ -90,6 +93,9 @@ void TestQgs3DUtils::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
+
+  mLayerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  QVERIFY( mLayerRgb->isValid() );
 }
 
 //runs after all tests
@@ -521,11 +527,10 @@ void TestQgs3DUtils::testDecomposeTransformMatrix()
 
 void TestQgs3DUtils::testScreenPointToMapCoordinates()
 {
-  QgsRasterLayer *layer = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
   Qgs3DMapSettings map;
-  map.setCrs( layer->crs() );
-  map.setExtent( layer->extent() );
-  map.setLayers( QList<QgsMapLayer *>() << layer );
+  map.setCrs( mLayerRgb->crs() );
+  map.setExtent( mLayerRgb->extent() );
+  map.setLayers( QList<QgsMapLayer *>() << mLayerRgb );
   QgsOffscreen3DEngine engine;
   const Qgs3DMapScene *scene = new Qgs3DMapScene( map, &engine );
   const QgsPoint mapPoint = Qgs3DUtils::screenPointToMapCoordinates( QPoint( 50, 50 ), QSize( 100, 100 ), scene->cameraController(), &map );
