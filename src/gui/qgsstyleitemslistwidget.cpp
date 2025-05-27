@@ -541,7 +541,7 @@ void QgsStyleItemsListWidget::openStyleManager()
        || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
   {
     // fallback to modal dialog
-    QgsStyleManagerDialog dlg( mStyle, this );
+    QgsStyleManagerDialog dlg( this );
     dlg.exec();
 
     updateModelFilters(); // probably not needed -- the model should automatically update if any changes were made
