@@ -1,8 +1,8 @@
 /***************************************************************************
   qgspostprocessingrenderview.cpp
   --------------------------------------
-  Date                 : August 2022
-  Copyright            : (C) 2022 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
+  Date                 : May 2025
+  Copyright            : (C) 2025 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
   Email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
@@ -18,6 +18,11 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/qsubtreeenabler.h>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/QRenderTargetOutput>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QNoDraw>
 #include <QNode>
 #include "qgspostprocessingentity.h"

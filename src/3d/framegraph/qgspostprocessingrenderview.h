@@ -1,8 +1,8 @@
 /***************************************************************************
   qgspostprocessingrenderview.h
   --------------------------------------
-  Date                 : august 2022
-  Copyright            : (C) 2022 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
+  Date                 : May 2025
+  Copyright            : (C) 2025 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
   Email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
