@@ -640,6 +640,10 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     }
   }
 
+  QgsScopedProjSilentLogger errorLogger;
+
+  QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
+
 #if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
   const auto legacyImplementation = [this, &rect, xMin, yMin, yMax, direction, handle180Crossover]()
   {
@@ -660,8 +664,6 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     std::vector<double> x( nXPoints * static_cast< std::size_t >( nYPoints ) );
     std::vector<double> y( nXPoints * static_cast< std::size_t >( nYPoints ) );
     std::vector<double> z( nXPoints * static_cast< std::size_t >( nYPoints ) );
-
-    QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
 
     // Populate the vectors
 
@@ -764,9 +766,17 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // delegate logic to proj if version >= 8.2 available
 #if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=2)
 
-  QgsScopedProjSilentLogger errorLogger;
-
-  QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
+  if ( !( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+          ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) ) )
+  {
+    // PROJ < 9.7 has for example issues from world coverage in EPSG:4326
+    // to Spilhaus. But do not use the legacy implementation when going through
+    // geographic as the proj_trans_bounds() heuristics to detect anti-meridian
+    // crossing is better
+    return legacyImplementation();
+  }
+#endif
 
   ProjData projData = d->threadLocalProjData();
   PJ_CONTEXT *projContext = QgsProjContext::get();
@@ -808,8 +818,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   double transYMax = 0;
 
   proj_errno_reset( projData );
-  // proj documentation recommends 21 points for densification
-  constexpr int DENSIFY_POINTS = 21;
+  // proj documentation recommends 21 points for densification, bump to
+  // 30 for higher accuracy in some situations
+  constexpr int DENSIFY_POINTS = 30;
   int projResult = proj_trans_bounds( projContext, projData, ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
                                       xMin, yMin, xMax, yMax,
                                       &transXMin, &transYMin, &transXMax, &transYMax, DENSIFY_POINTS );
