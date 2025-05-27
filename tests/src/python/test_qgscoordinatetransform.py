@@ -19,6 +19,7 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
     QgsPointXY,
+    QgsProjUtils,
     QgsCsException,
 )
 import unittest
@@ -511,6 +512,25 @@ class TestQgsCoordinateTransform(QgisTestCase):
         self.assertAlmostEqual(transformedExtent.yMinimum(), 45.092624, delta=1e-6)
         self.assertAlmostEqual(transformedExtent.xMaximum(), 24.363125, delta=1e-6)
         self.assertAlmostEqual(transformedExtent.yMaximum(), 45.547942, delta=1e-6)
+
+    @unittest.skipIf(
+        [QgsProjUtils.projVersionMajor(), QgsProjUtils.projVersionMinor()] < [9, 6],
+        "Spilhaus support added in Proj 9.6",
+    )
+    def testTransformBoundingBoxWGS84ToSpilhaus(self):
+
+        context = QgsCoordinateTransformContext()
+        extent = QgsRectangle(-180, -90, 180, 90)
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            QgsCoordinateReferenceSystem("ESRI:54099"),
+            context,
+        )
+        transformedExtent = transform.transformBoundingBox(extent)
+        self.assertLess(transformedExtent.xMinimum(), -16000000)
+        self.assertLess(transformedExtent.yMinimum(), -16000000)
+        self.assertGreater(transformedExtent.xMaximum(), 16000000)
+        self.assertGreater(transformedExtent.yMaximum(), 16000000)
 
 
 if __name__ == "__main__":
