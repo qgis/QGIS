@@ -58,6 +58,8 @@ class TestQgsOgrProvider : public QgsTest
     void testExtent();
     void testVsiCredentialOptions();
     void testVsiCredentialOptionsQuerySublayers();
+    void testJSONFields_data();
+    void testJSONFields();
 
   private:
     QString mTestDataDir;
@@ -576,6 +578,230 @@ void TestQgsOgrProvider::testVsiCredentialOptionsQuerySublayers()
   // cleanup
   VSIClearPathSpecificOptions( "/vsis3/cdn.proj.org" );
 #endif
+}
+
+
+void TestQgsOgrProvider::testJSONFields_data()
+{
+  QTest::addColumn<QString>( "jsonData" );
+  QTest::addColumn<int>( "expectedType" );
+  QTest::addColumn<int>( "expectedSubType" );
+
+  QTest::newRow( "array of map string fallback" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "array_of_map": [
+          {
+            "a": 1,
+            "b": 2.0
+          }
+        ]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QString )
+                                                  << static_cast<int>( QMetaType::Type::UnknownType );
+
+  QTest::newRow( "simple map" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "map": {
+          "a": 1,
+          "b": 2.0
+        }
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QVariantMap )
+                                << static_cast<int>( QMetaType::Type::QString );
+
+  QTest::newRow( "complex map" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "map": {
+          "a": 1,
+          "b": [2.0, "c"]
+        }
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QVariantMap )
+                                 << static_cast<int>( QMetaType::Type::QString );
+
+  QTest::newRow( "int" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "int": 1
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::Int )
+                         << static_cast<int>( QMetaType::Type::UnknownType );
+
+  QTest::newRow( "stringlist" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "string_list": [ "a", "b", "c" ]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QStringList )
+                                << static_cast<int>( QMetaType::Type::QString );
+
+  QTest::newRow( "string" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "string": "a"
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QString )
+                            << static_cast<int>( QMetaType::Type::UnknownType );
+
+  QTest::newRow( "double" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "double": 1.0
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::Double )
+                            << static_cast<int>( QMetaType::Type::UnknownType );
+
+  QTest::newRow( "bool" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "bool": true
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::Bool )
+                          << static_cast<int>( QMetaType::Type::UnknownType );
+
+  QTest::newRow( "int list" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "int_list": [1, 2, 3]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QVariantList )
+                              << static_cast<int>( QMetaType::Type::Int );
+
+  QTest::newRow( "real list" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "real_list": [1.0, 2.1, 3]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QVariantList )
+                               << static_cast<int>( QMetaType::Type::Double );
+
+
+  QTest::newRow( "array mixed types string fallback" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mixed_list": [1, 2.0, "a", true]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QString )
+                                                       << static_cast<int>( QMetaType::Type::UnknownType );
+
+  QTest::newRow( "array mixed numeric types" ) << QStringLiteral( R"json(
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mixed_numeric_list": [1, 2.3]
+      }
+    }
+  ]
+}
+)json" ) << static_cast<int>( QMetaType::Type::QVariantList )
+                                               << static_cast<int>( QMetaType::Type::Double );
+}
+
+void TestQgsOgrProvider::testJSONFields()
+{
+  QFETCH( QString, jsonData );
+  QFETCH( int, expectedType );
+  QFETCH( int, expectedSubType );
+
+  QTemporaryDir dir;
+  QString filePath = dir.path() + "/test.json";
+  QFile file( filePath );
+  if ( file.open( QIODevice::WriteOnly ) )
+  {
+    QTextStream textStream( &file );
+    textStream << jsonData;
+    file.close();
+  }
+  QgsVectorLayer layer { filePath, QStringLiteral( "json" ), QLatin1String( "ogr" ) };
+  QVERIFY( layer.isValid() );
+  QgsFields fields = layer.fields();
+  QCOMPARE( fields.count(), 1 );
+  QgsField field = fields.at( 0 );
+  QCOMPARE( static_cast<int>( field.type() ), expectedType );
+  QCOMPARE( static_cast<int>( field.subType() ), expectedSubType );
 }
 
 
