@@ -5086,6 +5086,40 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Flags for controlling how a layout is rendered.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsLayoutRenderContext::Flag
+     *
+     * \since QGIS 3.44
+    */
+    enum class LayoutRenderFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Debug SIP_MONKEYPATCH_COMPAT_NAME( FlagDebug ) = 1 << 1,  //!< Debug/testing mode, items are drawn as solid rectangles.
+      OutlineOnly SIP_MONKEYPATCH_COMPAT_NAME( FlagOutlineOnly ) = 1 << 2, //!< Render items as outlines only.
+      Antialiasing SIP_MONKEYPATCH_COMPAT_NAME( FlagAntialiasing ) = 1 << 3, //!< Use antialiasing when drawing items.
+      UseAdvancedEffects SIP_MONKEYPATCH_COMPAT_NAME( FlagUseAdvancedEffects ) = 1 << 4, //!< Enable advanced effects such as blend modes. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      ForceVectorOutput SIP_MONKEYPATCH_COMPAT_NAME( FlagForceVectorOutput ) = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      HideCoverageLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagHideCoverageLayer ) = 1 << 6, //!< Hide coverage layer in outputs
+      DrawSelection SIP_MONKEYPATCH_COMPAT_NAME( FlagDrawSelection ) = 1 << 7, //!< Draw selection
+      DisableTiledRasterLayerRenders SIP_MONKEYPATCH_COMPAT_NAME( FlagDisableTiledRasterLayerRenders ) = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+      RenderLabelsByMapLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagRenderLabelsByMapLayer ) = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+      LosslessImageRendering SIP_MONKEYPATCH_COMPAT_NAME( FlagLosslessImageRendering ) = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+      SynchronousLegendGraphics SIP_MONKEYPATCH_COMPAT_NAME( FlagSynchronousLegendGraphics ) = 1 << 11, //!< Query legend graphics synchronously.
+      AlwaysUseGlobalMasks SIP_MONKEYPATCH_COMPAT_NAME( FlagAlwaysUseGlobalMasks ) = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
+    };
+    Q_ENUM( LayoutRenderFlag )
+
+    /**
+     * Flags for controlling how a layout is rendered.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsLayoutRenderContext::Flags
+     *
+     * \since QGIS 3.44
+    */
+    Q_DECLARE_FLAGS( LayoutRenderFlags, LayoutRenderFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLayoutRenderContext, Flags )
+    Q_FLAG( LayoutRenderFlags )
+
+    /**
      * Picture formats.
      *
      * \note Prior to QGIS 3.40 this was available as QgsLayoutItemPicture::Format.
@@ -6159,6 +6193,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorRenderingSimplificationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
+Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

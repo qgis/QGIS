@@ -90,7 +90,7 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   const bool prevSmoothTransform = painter->testRenderHint( QPainter::RenderHint::SmoothPixmapTransform );
-  if ( mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagAntialiasing ) )
+  if ( mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Antialiasing ) )
     painter->setRenderHint( QPainter::RenderHint::SmoothPixmapTransform, true );
 
   //picture resizing

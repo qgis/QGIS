@@ -598,10 +598,10 @@ void TestQgsLayoutMap::layersToRender()
   QVERIFY( f1.isValid() );
   l.reportContext().setFeature( f1 );
   l.reportContext().setLayer( mPointsLayer );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, true );
   QCOMPARE( map->layersToRender(), layers2 );
 
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, false );
   QCOMPARE( map->layersToRender(), layers );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
@@ -1752,7 +1752,7 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   p.addMapLayer( pointsLayer );
 
   QgsLayout l( &p );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::RenderLabelsByMapLayer );
   l.initializeDefaults();
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
   map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );

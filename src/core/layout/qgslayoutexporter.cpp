@@ -280,7 +280,7 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
   LayoutGuideHider guideHider( mLayout );
   ( void ) guideHider;
 
-  painter->setRenderHint( QPainter::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
+  painter->setRenderHint( QPainter::Antialiasing, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
 
   mLayout->render( painter, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), region );
 }
@@ -371,7 +371,7 @@ class LayoutContextSettingsRestorer
   private:
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
-    QgsLayoutRenderContext::Flags mPreviousFlags = QgsLayoutRenderContext::Flags();
+    Qgis::LayoutRenderFlags mPreviousFlags;
     Qgis::TextRenderFormat mPreviousTextFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
@@ -418,7 +418,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   QList< int > pages;
@@ -580,18 +580,18 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   if ( settings.forceVectorOutput )
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, true );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
   }
   else
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
   }
 
   // Force synchronous legend graphics requests. Necessary for WMS GetPrint,
   // as otherwise processing the request ends before remote graphics are downloaded.
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagSynchronousLegendGraphics, true );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::SynchronousLegendGraphics, true );
 
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
   mLayout->renderContext().setExportThemes( settings.exportThemes );
@@ -599,7 +599,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ExportResult result = Success;
   if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
   {
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::RenderLabelsByMapLayer, true );
 
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
@@ -641,7 +641,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         //error beginning print
         return FileError;
       }
-      p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+      p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering );
       layerExportResult = printPrivate( &printer, p, false, subSettings.dpi, subSettings.rasterizeWholeImage );
       p.end();
       return layerExportResult;
@@ -751,7 +751,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       //error beginning print
       return FileError;
     }
-    p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+    p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering );
     result = printPrivate( &printer, p, false, settings.dpi, settings.rasterizeWholeImage );
     p.end();
 
@@ -821,13 +821,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     if ( settings.forceVectorOutput )
     {
       iterator->layout()->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
-      iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
-      iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, true );
+      iterator->layout()->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
+      iterator->layout()->renderContext().setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
     }
     else
     {
       iterator->layout()->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
-      iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+      iterator->layout()->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
     }
     iterator->layout()->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
@@ -841,7 +841,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
         //error beginning print
         return PrintError;
       }
-      p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+      p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering );
     }
 
     QgsLayoutExporter exporter( iterator->layout() );
@@ -944,7 +944,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.rasterizeWholeImage );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, !settings.rasterizeWholeImage );
 
   preparePrint( mLayout, &printer, true );
   QPainter p;
@@ -953,7 +953,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
     //error beginning print
     return PrintError;
   }
-  p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+  p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering );
   ExportResult result = printPrivate( &printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
@@ -1007,7 +1007,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
-    iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.rasterizeWholeImage );
+    iterator->layout()->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, !settings.rasterizeWholeImage );
 
     if ( first )
     {
@@ -1018,7 +1018,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
         //error beginning print
         return PrintError;
       }
-      p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+      p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering );
     }
 
     QgsLayoutExporter exporter( iterator->layout() );
@@ -1065,14 +1065,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   if ( settings.forceVectorOutput )
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, true );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
   }
   else
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, false );
-    mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, false );
+    mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
   }
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
@@ -1137,7 +1137,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
 
     if ( settings.exportAsLayers )
     {
-      mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, settings.exportLabelsToSeparateLayers );
+      mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::RenderLabelsByMapLayer, settings.exportLabelsToSeparateLayers );
       const QRectF paperRect = QRectF( pageItem->pos().x(),
                                        pageItem->pos().y(),
                                        pageItem->rect().width(),
