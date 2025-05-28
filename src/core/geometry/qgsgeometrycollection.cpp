@@ -26,6 +26,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipoint.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
+#include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
+#include "qgspolyhedralsurface.h"
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
 #include "qgsfeedback.h"
@@ -382,12 +385,16 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
-                            << new QgsCircularString << new QgsCompoundCurve
-                            << new QgsCurvePolygon
-                            << new QgsMultiPoint << new QgsMultiLineString
-                            << new QgsMultiPolygon << new QgsGeometryCollection
-                            << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
+  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon //
+                            << new QgsCircularString << new QgsCompoundCurve       //
+                            << new QgsCurvePolygon                                 //
+                            << new QgsMultiPoint << new QgsMultiLineString         //
+                            << new QgsMultiPolygon << new QgsGeometryCollection    //
+                            << new QgsMultiCurve << new QgsMultiSurface            //
+                            << new QgsTriangle << new QgsPolyhedralSurface         //
+                            << new QgsTriangulatedSurface                          //
+                            ,
+                            QStringLiteral( "GeometryCollection" ) );
 }
 
 int QgsGeometryCollection::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const
