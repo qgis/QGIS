@@ -94,8 +94,7 @@ bool QgsGroupLayerRenderer::render()
     context.setExtent( extentInChildLayerCrs );
 
     QImage image;
-    if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-         && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+    if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
     {
       context.painter()->setCompositionMode( mRendererCompositionModes[i] );
     }
@@ -148,9 +147,6 @@ bool QgsGroupLayerRenderer::forceRasterRender() const
     case Qgis::RasterizedRenderingPolicy::ForceVector:
       return false;
   }
-
-  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
-    return false;
 
   if ( mForceRasterRender || !qgsDoubleNear( mLayerOpacity, 1.0 ) )
     return true;
