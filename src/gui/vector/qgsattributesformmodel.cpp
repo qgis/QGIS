@@ -1703,15 +1703,15 @@ bool QgsAttributesFormProxyModel::filterAcceptsRow( int sourceRow, const QModelI
   if ( !sourceIndex.isValid() )
     return false;
 
-  // If display matches, accept it before any other checks
-  if ( sourceIndex.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+  // If name or alias match, accept it before any other checks
+  if ( sourceIndex.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || sourceIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
     return true;
 
   // Child is accepted if any of its parents is accepted
   QModelIndex parent = sourceIndex.parent();
   while ( parent.isValid() )
   {
-    if ( parent.data( Qt::DisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+    if ( parent.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || parent.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
       return true;
 
     parent = parent.parent();
