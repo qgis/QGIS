@@ -1198,8 +1198,8 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
-    const bool forceVector = ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
-                             || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
+    const bool forceVector = mLayout && ( ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
+                                          || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector );
 
     if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
          && ( !mLayout || !forceVector ) )
