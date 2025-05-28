@@ -420,7 +420,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   ( void )dpiRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setFlags( settings.flags );
-  mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
   QList< int > pages;
