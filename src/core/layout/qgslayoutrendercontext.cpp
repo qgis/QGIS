@@ -86,6 +86,18 @@ Qgis::RasterizedRenderingPolicy QgsLayoutRenderContext::rasterizedRenderingPolic
 void QgsLayoutRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
 {
   mRasterizedRenderingPolicy = policy;
+  switch ( mRasterizedRenderingPolicy )
+  {
+    case Qgis::RasterizedRenderingPolicy::AllowRasterization:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      mFlags.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, false );
+      mFlags.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
+      break;
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      mFlags.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
+      mFlags.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
+      break;
+  }
 }
 
 void QgsLayoutRenderContext::setDpi( double dpi )
@@ -161,4 +173,13 @@ QgsFeatureFilterProvider *QgsLayoutRenderContext::featureFilterProvider() const
 void QgsLayoutRenderContext::setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider )
 {
   mFeatureFilterProvider = featureFilterProvider;
+}
+
+void QgsLayoutRenderContext::matchRasterizedRenderingPolicyToFlags()
+{
+  if ( !mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput )
+       && mFlags.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
+  else if ( mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
 }

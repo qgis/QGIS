@@ -648,8 +648,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
-      const bool forceVector = mLayout && ( ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::ForceVectorOutput )
-                                            || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector );
+      const bool forceVector = mLayout && mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
       if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
            && !forceVector )
       {

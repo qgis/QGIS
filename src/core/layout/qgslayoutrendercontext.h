@@ -370,6 +370,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
 
   private:
 
+    void matchRasterizedRenderingPolicyToFlags();
+
     Qgis::LayoutRenderFlags mFlags;
     Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
 
