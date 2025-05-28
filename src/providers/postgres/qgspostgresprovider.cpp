@@ -1765,7 +1765,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString() );
+    return QVariant();
   }
 }
 
@@ -2023,7 +2023,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString() );
+    return QVariant();
   }
 }
 
