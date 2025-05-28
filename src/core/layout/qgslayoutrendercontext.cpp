@@ -32,6 +32,7 @@ void QgsLayoutRenderContext::setFlags( const Qgis::LayoutRenderFlags flags )
     return;
 
   mFlags = flags;
+  matchRasterizedRenderingPolicyToFlags();
   emit flagsChanged( mFlags );
 }
 
@@ -47,6 +48,7 @@ void QgsLayoutRenderContext::setFlag( const Qgis::LayoutRenderFlag flag, const b
     return;
 
   mFlags = newFlags;
+  matchRasterizedRenderingPolicyToFlags();
   emit flagsChanged( mFlags );
 }
 
@@ -180,6 +182,7 @@ void QgsLayoutRenderContext::matchRasterizedRenderingPolicyToFlags()
   if ( !mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput )
        && mFlags.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
-  else if ( mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput ) )
+  else if ( mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput )
+            || !mFlags.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
 }
