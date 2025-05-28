@@ -769,12 +769,10 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     Q_NOWARN_DEPRECATED_PUSH
     // QGIS 4.0 -- ctx->context will be mandatory
-    bool useAdvancedEffects = ctx->context ? ctx->context->flags() & Qgis::RenderContextFlag::UseAdvancedEffects : settings.useAdvancedEffects();
+    const bool forceVector = ctx->context ? ctx->context->rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector : !settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
-    if ( ctx->context && ctx->context->rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
-      useAdvancedEffects = false;
 
-    if ( opacity != 255 && useAdvancedEffects )
+    if ( opacity != 255 && !forceVector )
     {
       // if this is a semi transparent layer, we need to draw symbol to an image (to flatten it first)
 

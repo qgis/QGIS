@@ -653,7 +653,7 @@ bool QgsRasterLayerRenderer::forceRasterRender() const
           return false;
       }
 
-      if ( renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) ) )
+      if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
         return true;
     }
   }

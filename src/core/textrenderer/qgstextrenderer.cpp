@@ -681,8 +681,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   QgsScopedQPainterState painterState( p );
   context.setPainterFlagsUsingContext( p );
 
-  if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-       && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
   {
     p->setCompositionMode( buffer.blendMode() );
   }
@@ -1205,8 +1204,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
       QgsScopedQPainterState painterState( p );
       context.setPainterFlagsUsingContext( p );
 
-      if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-           && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+      if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
       {
         p->setCompositionMode( background.blendMode() );
       }
@@ -1346,8 +1344,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         drawShadow( context, component, format );
       }
 
-      if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-           && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+      if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
       {
         p->setCompositionMode( background.blendMode() );
       }
@@ -1467,8 +1464,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   // this was historically ALWAYS set for text renderer. We may want to consider getting it to respect the
   // corresponding flag in the render context instead...
   p->setRenderHint( QPainter::SmoothPixmapTransform );
-  if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-       && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
   {
     p->setCompositionMode( shadow.blendMode() );
   }
@@ -2131,8 +2127,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       referenceScaleOverride.reset();
 
       // now render the actual text
-      if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-           && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+      if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
       {
         context.painter()->setCompositionMode( format.blendMode() );
       }
@@ -2300,8 +2295,7 @@ void QgsTextRenderer::renderDeferredBuffer( QgsRenderContext &context,
   if ( !qgsDoubleNear( rotation, 0.0 ) )
     context.painter()->rotate( rotation );
 
-  if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-       && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
   {
     context.painter()->setCompositionMode( format.buffer().blendMode() );
   }
@@ -2340,8 +2334,7 @@ void QgsTextRenderer::renderDeferredBuffer( QgsRenderContext &context,
     drawShadow( context, bufferComponent, format );
 
     // also draw buffer
-    if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-         && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+    if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
     {
       context.painter()->setCompositionMode( buffer.blendMode() );
     }
@@ -2615,8 +2608,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         }
 
         // paint the text
-        if ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-             && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+        if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
         {
           context.painter()->setCompositionMode( format.blendMode() );
         }

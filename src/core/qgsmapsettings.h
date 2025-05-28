@@ -1016,6 +1016,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void updateDerived();
 
   private:
+    void matchRasterizedRenderingPolicyToFlags();
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
     QList< QgsMapClippingRegion > mClippingRegions;

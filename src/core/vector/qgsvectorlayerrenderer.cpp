@@ -195,7 +195,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mForceRasterRender = true;
   }
 
-  const bool allowFlattening = context.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) || context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector;
+  const bool allowFlattening = context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector;
   if ( allowFlattening &&
        ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
          || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
@@ -317,8 +317,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   }
 
   // Per feature blending mode
-  if ( ( context.flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-         && context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector
        && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
   {
     // set the painter to the feature blend mode, so that features drawn

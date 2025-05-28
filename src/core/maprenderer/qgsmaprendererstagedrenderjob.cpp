@@ -107,8 +107,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
     emit layerRenderingStarted( job.layerId );
     job.renderer->renderContext()->setPainter( painter );
 
-    if ( job.context()->flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
-         && job.context()->rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+    if ( job.context()->rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
