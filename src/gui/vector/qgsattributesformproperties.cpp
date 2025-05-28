@@ -669,7 +669,7 @@ void QgsAttributesFormProperties::addContainer()
 
 void QgsAttributesFormProperties::removeTabOrGroupButton()
 {
-  // deleting a item may delete any number of nested child items -- so we delete
+  // deleting an item may delete any number of nested child items -- so we delete
   // them one at a time and then see if there's any selection left
   while ( true )
   {
@@ -1586,11 +1586,28 @@ void QgsAttributesFormProperties::updatedFields()
 
 void QgsAttributesFormProperties::updateFilteredItems( const QString &filterText )
 {
+  const int availableWidgetsPreviousSelectionCount = mAvailableWidgetsView->selectionModel()->selectedRows().count();
+  const int formLayoutPreviousSelectionCount = mFormLayoutView->selectionModel()->selectedRows().count();
+
   static_cast< QgsAttributesAvailableWidgetsView *>( mAvailableWidgetsView )->setFilterText( filterText );
   mAvailableWidgetsView->expandAll();
 
   static_cast< QgsAttributesFormLayoutView *>( mFormLayoutView )->setFilterText( filterText );
   mFormLayoutView->expandAll();
+
+  // If there was no previous selection leave as is, since
+  // after a filter change no new selection may be added (only lost).
+  if ( !( availableWidgetsPreviousSelectionCount == 0 && formLayoutPreviousSelectionCount == 0 ) )
+  {
+    const int selectedAvailableWidgetItemCount = mAvailableWidgetsView->selectionModel()->selectedRows().count();
+    const int selectedFormLayoutItemCount = mFormLayoutView->selectionModel()->selectedRows().count();
+
+    if ( selectedAvailableWidgetItemCount == 0 && selectedFormLayoutItemCount == 0 )
+    {
+      // Clear right-hand side panel since all selected items have been filtered out
+      clearAttributeTypeFrame();
+    }
+  }
 }
 
 void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
