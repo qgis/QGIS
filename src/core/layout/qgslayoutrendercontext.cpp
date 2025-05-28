@@ -20,13 +20,13 @@
 
 QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
   : QObject( layout )
-  , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
+  , mFlags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
   , mLayout( layout )
 {
   mSimplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::NoSimplification );
 }
 
-void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags )
+void QgsLayoutRenderContext::setFlags( const Qgis::LayoutRenderFlags flags )
 {
   if ( flags == mFlags )
     return;
@@ -35,13 +35,13 @@ void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags
   emit flagsChanged( mFlags );
 }
 
-void QgsLayoutRenderContext::setFlag( const QgsLayoutRenderContext::Flag flag, const bool on )
+void QgsLayoutRenderContext::setFlag( const Qgis::LayoutRenderFlag flag, const bool on )
 {
-  Flags newFlags = mFlags;
+  Qgis::LayoutRenderFlags newFlags = mFlags;
   if ( on )
     newFlags |= flag;
   else
-    newFlags &= ~flag;
+    newFlags &= ~static_cast< int >( flag );
 
   if ( newFlags == mFlags )
     return;
@@ -50,12 +50,12 @@ void QgsLayoutRenderContext::setFlag( const QgsLayoutRenderContext::Flag flag, c
   emit flagsChanged( mFlags );
 }
 
-QgsLayoutRenderContext::Flags QgsLayoutRenderContext::flags() const
+Qgis::LayoutRenderFlags QgsLayoutRenderContext::flags() const
 {
   return mFlags;
 }
 
-bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag ) const
+bool QgsLayoutRenderContext::testFlag( const Qgis::LayoutRenderFlag flag ) const
 {
   return mFlags.testFlag( flag );
 }
@@ -63,14 +63,14 @@ bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag )
 Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
 {
   Qgis::RenderContextFlags flags = Qgis::RenderContextFlags();
-  if ( mFlags & FlagAntialiasing )
+  if ( mFlags & Qgis::LayoutRenderFlag::Antialiasing )
   {
     flags = flags | Qgis::RenderContextFlag::Antialiasing;
     flags = flags | Qgis::RenderContextFlag::HighQualityImageTransforms;
   }
-  if ( mFlags & FlagUseAdvancedEffects )
+  if ( mFlags & Qgis::LayoutRenderFlag::UseAdvancedEffects )
     flags = flags | Qgis::RenderContextFlag::UseAdvancedEffects;
-  if ( mFlags & FlagLosslessImageRendering )
+  if ( mFlags & Qgis::LayoutRenderFlag::LosslessImageRendering )
     flags = flags | Qgis::RenderContextFlag::LosslessImageRendering;
 
   // TODO - expose as layout context flag?

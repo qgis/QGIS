@@ -71,23 +71,23 @@ void TestQgsLayoutContext::flags()
   const QSignalSpy spyFlagsChanged( &context, &QgsLayoutRenderContext::flagsChanged );
 
   //test getting and setting flags
-  context.setFlags( QgsLayoutRenderContext::Flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
+  context.setFlags( Qgis::LayoutRenderFlags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects ) );
   // default flags, so should be no signal
   QCOMPARE( spyFlagsChanged.count(), 0 );
 
-  QVERIFY( context.flags() == ( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
-  QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagAntialiasing ) );
-  QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
-  QVERIFY( !context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
-  context.setFlag( QgsLayoutRenderContext::FlagDebug );
+  QVERIFY( context.flags() == ( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects ) );
+  QVERIFY( context.testFlag( Qgis::LayoutRenderFlag::Antialiasing ) );
+  QVERIFY( context.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) );
+  QVERIFY( !context.testFlag( Qgis::LayoutRenderFlag::Debug ) );
+  context.setFlag( Qgis::LayoutRenderFlag::Debug );
   QCOMPARE( spyFlagsChanged.count(), 1 );
-  QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
-  context.setFlag( QgsLayoutRenderContext::FlagDebug, false );
+  QVERIFY( context.testFlag( Qgis::LayoutRenderFlag::Debug ) );
+  context.setFlag( Qgis::LayoutRenderFlag::Debug, false );
   QCOMPARE( spyFlagsChanged.count(), 2 );
-  QVERIFY( !context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
-  context.setFlag( QgsLayoutRenderContext::FlagDebug, false ); //no change
+  QVERIFY( !context.testFlag( Qgis::LayoutRenderFlag::Debug ) );
+  context.setFlag( Qgis::LayoutRenderFlag::Debug, false ); //no change
   QCOMPARE( spyFlagsChanged.count(), 2 );
-  context.setFlags( QgsLayoutRenderContext::FlagDebug );
+  context.setFlags( Qgis::LayoutRenderFlag::Debug );
   QCOMPARE( spyFlagsChanged.count(), 3 );
 }
 
@@ -154,19 +154,19 @@ void TestQgsLayoutContext::dpi()
 void TestQgsLayoutContext::renderContextFlags()
 {
   QgsLayoutRenderContext context( nullptr );
-  context.setFlags( QgsLayoutRenderContext::Flags() );
+  context.setFlags( Qgis::LayoutRenderFlags() );
   Qgis::RenderContextFlags flags = context.renderContextFlags();
   QVERIFY( !( flags & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
   QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
 
-  context.setFlag( QgsLayoutRenderContext::FlagAntialiasing );
+  context.setFlag( Qgis::LayoutRenderFlag::Antialiasing );
   flags = context.renderContextFlags();
   QVERIFY( ( flags & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( !( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
   QVERIFY( ( flags & Qgis::RenderContextFlag::ForceVectorOutput ) );
 
-  context.setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
+  context.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects );
   flags = context.renderContextFlags();
   QVERIFY( ( flags & Qgis::RenderContextFlag::Antialiasing ) );
   QVERIFY( ( flags & Qgis::RenderContextFlag::UseAdvancedEffects ) );
