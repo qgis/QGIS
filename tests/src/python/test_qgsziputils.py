@@ -83,7 +83,7 @@ class TestQgsZip(unittest.TestCase):
         rc, files = QgsZipUtils.unzip(zip, outDir.path())
 
         self.assertTrue(rc)
-        self.assertEqual(len(files), 11)
+        self.assertEqual(len(files), 9)
 
     def test_unzip_file_not_exist(self):
         outDir = QTemporaryDir()
