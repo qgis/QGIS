@@ -10054,6 +10054,129 @@ Qgis.LayoutUnitType.__doc__ = """Types of layout units
 """
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+QgsLayoutRenderContext.Flag = Qgis.LayoutRenderFlag
+# monkey patching scoped based enum
+QgsLayoutRenderContext.FlagDebug = Qgis.LayoutRenderFlag.Debug
+QgsLayoutRenderContext.Flag.FlagDebug = Qgis.LayoutRenderFlag.Debug
+QgsLayoutRenderContext.FlagDebug.is_monkey_patched = True
+QgsLayoutRenderContext.FlagDebug.__doc__ = "Debug/testing mode, items are drawn as solid rectangles."
+QgsLayoutRenderContext.FlagOutlineOnly = Qgis.LayoutRenderFlag.OutlineOnly
+QgsLayoutRenderContext.Flag.FlagOutlineOnly = Qgis.LayoutRenderFlag.OutlineOnly
+QgsLayoutRenderContext.FlagOutlineOnly.is_monkey_patched = True
+QgsLayoutRenderContext.FlagOutlineOnly.__doc__ = "Render items as outlines only."
+QgsLayoutRenderContext.FlagAntialiasing = Qgis.LayoutRenderFlag.Antialiasing
+QgsLayoutRenderContext.Flag.FlagAntialiasing = Qgis.LayoutRenderFlag.Antialiasing
+QgsLayoutRenderContext.FlagAntialiasing.is_monkey_patched = True
+QgsLayoutRenderContext.FlagAntialiasing.__doc__ = "Use antialiasing when drawing items."
+QgsLayoutRenderContext.FlagUseAdvancedEffects = Qgis.LayoutRenderFlag.UseAdvancedEffects
+QgsLayoutRenderContext.Flag.FlagUseAdvancedEffects = Qgis.LayoutRenderFlag.UseAdvancedEffects
+QgsLayoutRenderContext.FlagUseAdvancedEffects.is_monkey_patched = True
+QgsLayoutRenderContext.FlagUseAdvancedEffects.__doc__ = "Enable advanced effects such as blend modes. \n.. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead."
+QgsLayoutRenderContext.FlagForceVectorOutput = Qgis.LayoutRenderFlag.ForceVectorOutput
+QgsLayoutRenderContext.Flag.FlagForceVectorOutput = Qgis.LayoutRenderFlag.ForceVectorOutput
+QgsLayoutRenderContext.FlagForceVectorOutput.is_monkey_patched = True
+QgsLayoutRenderContext.FlagForceVectorOutput.__doc__ = "Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \n.. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead."
+QgsLayoutRenderContext.FlagHideCoverageLayer = Qgis.LayoutRenderFlag.HideCoverageLayer
+QgsLayoutRenderContext.Flag.FlagHideCoverageLayer = Qgis.LayoutRenderFlag.HideCoverageLayer
+QgsLayoutRenderContext.FlagHideCoverageLayer.is_monkey_patched = True
+QgsLayoutRenderContext.FlagHideCoverageLayer.__doc__ = "Hide coverage layer in outputs"
+QgsLayoutRenderContext.FlagDrawSelection = Qgis.LayoutRenderFlag.DrawSelection
+QgsLayoutRenderContext.Flag.FlagDrawSelection = Qgis.LayoutRenderFlag.DrawSelection
+QgsLayoutRenderContext.FlagDrawSelection.is_monkey_patched = True
+QgsLayoutRenderContext.FlagDrawSelection.__doc__ = "Draw selection"
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders = Qgis.LayoutRenderFlag.DisableTiledRasterLayerRenders
+QgsLayoutRenderContext.Flag.FlagDisableTiledRasterLayerRenders = Qgis.LayoutRenderFlag.DisableTiledRasterLayerRenders
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.is_monkey_patched = True
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.__doc__ = "If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports."
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer = Qgis.LayoutRenderFlag.RenderLabelsByMapLayer
+QgsLayoutRenderContext.Flag.FlagRenderLabelsByMapLayer = Qgis.LayoutRenderFlag.RenderLabelsByMapLayer
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.is_monkey_patched = True
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.__doc__ = "When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers"
+QgsLayoutRenderContext.FlagLosslessImageRendering = Qgis.LayoutRenderFlag.LosslessImageRendering
+QgsLayoutRenderContext.Flag.FlagLosslessImageRendering = Qgis.LayoutRenderFlag.LosslessImageRendering
+QgsLayoutRenderContext.FlagLosslessImageRendering.is_monkey_patched = True
+QgsLayoutRenderContext.FlagLosslessImageRendering.__doc__ = "Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF)."
+QgsLayoutRenderContext.FlagSynchronousLegendGraphics = Qgis.LayoutRenderFlag.SynchronousLegendGraphics
+QgsLayoutRenderContext.Flag.FlagSynchronousLegendGraphics = Qgis.LayoutRenderFlag.SynchronousLegendGraphics
+QgsLayoutRenderContext.FlagSynchronousLegendGraphics.is_monkey_patched = True
+QgsLayoutRenderContext.FlagSynchronousLegendGraphics.__doc__ = "Query legend graphics synchronously."
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
+QgsLayoutRenderContext.Flag.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.is_monkey_patched = True
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \n.. versionadded:: 3.38"
+Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendered.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsLayoutRenderContext`.Flag
+
+.. versionadded:: 3.44
+
+* ``Debug``: Debug/testing mode, items are drawn as solid rectangles.
+
+  Available as ``QgsLayoutRenderContext.FlagDebug`` in older QGIS releases.
+
+* ``OutlineOnly``: Render items as outlines only.
+
+  Available as ``QgsLayoutRenderContext.FlagOutlineOnly`` in older QGIS releases.
+
+* ``Antialiasing``: Use antialiasing when drawing items.
+
+  Available as ``QgsLayoutRenderContext.FlagAntialiasing`` in older QGIS releases.
+
+* ``UseAdvancedEffects``: Enable advanced effects such as blend modes.
+
+  .. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead.
+
+
+  Available as ``QgsLayoutRenderContext.FlagUseAdvancedEffects`` in older QGIS releases.
+
+* ``ForceVectorOutput``: Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
+
+  .. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead.
+
+
+  Available as ``QgsLayoutRenderContext.FlagForceVectorOutput`` in older QGIS releases.
+
+* ``HideCoverageLayer``: Hide coverage layer in outputs
+
+  Available as ``QgsLayoutRenderContext.FlagHideCoverageLayer`` in older QGIS releases.
+
+* ``DrawSelection``: Draw selection
+
+  Available as ``QgsLayoutRenderContext.FlagDrawSelection`` in older QGIS releases.
+
+* ``DisableTiledRasterLayerRenders``: If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+
+  Available as ``QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders`` in older QGIS releases.
+
+* ``RenderLabelsByMapLayer``: When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+
+  Available as ``QgsLayoutRenderContext.FlagRenderLabelsByMapLayer`` in older QGIS releases.
+
+* ``LosslessImageRendering``: Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+
+  Available as ``QgsLayoutRenderContext.FlagLosslessImageRendering`` in older QGIS releases.
+
+* ``SynchronousLegendGraphics``: Query legend graphics synchronously.
+
+  Available as ``QgsLayoutRenderContext.FlagSynchronousLegendGraphics`` in older QGIS releases.
+
+* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports.
+
+  .. versionadded:: 3.38
+
+
+  Available as ``QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks`` in older QGIS releases.
+
+
+"""
+# --
+Qgis.LayoutRenderFlag.baseClass = Qgis
+Qgis.LayoutRenderFlags = lambda flags=0: Qgis.LayoutRenderFlag(flags)
+QgsLayoutRenderContext.Flags = Qgis.LayoutRenderFlags
+Qgis.LayoutRenderFlags.baseClass = Qgis
+LayoutRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayoutItemPicture.Format = Qgis.PictureFormat
 # monkey patching scoped based enum
 QgsLayoutItemPicture.FormatSVG = Qgis.PictureFormat.SVG

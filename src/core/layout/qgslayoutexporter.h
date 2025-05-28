@@ -167,7 +167,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct ImageExportSettings
     {
       ImageExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -222,11 +222,10 @@ class CORE_EXPORT QgsLayoutExporter
        */
       bool exportMetadata = true;
 
-
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * A list of predefined scales to use with the layout. This is used
@@ -234,7 +233,6 @@ class CORE_EXPORT QgsLayoutExporter
        * \since QGIS 3.10
        */
       QVector<qreal> predefinedMapScales;
-
 
       /**
        * Image quality, typically used for JPEG compression (whose quality ranges from 1 to 100)
@@ -277,7 +275,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct PdfExportSettings
     {
       PdfExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -317,7 +315,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * Text rendering format, which controls how text should be rendered in the export (e.g.
@@ -455,7 +453,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct PrintExportSettings
     {
       PrintExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -471,7 +469,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * A list of predefined scales to use with the layout. This is used
@@ -511,7 +509,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct SvgExportSettings
     {
       SvgExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -566,7 +564,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * Text rendering format, which controls how text should be rendered in the export (e.g.

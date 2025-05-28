@@ -641,14 +641,14 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
     QSizeF layoutSize = mLayout->convertToLayoutUnits( sizeWithUnits() );
 
-    if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
+    if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
     mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
 
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
-      const bool forceVector = mLayout && ( ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput )
+      const bool forceVector = mLayout && ( ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::ForceVectorOutput )
                                             || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector );
       if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
            && !forceVector )

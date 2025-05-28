@@ -295,7 +295,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   const bool useImageCache = false;
   bool forceRasterOutput = containsAdvancedEffects();
   QPainter::CompositionMode blendMode = blendModeForRender();
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput
+  if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::ForceVectorOutput
        || mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
   {
     // the FlagForceVectorOutput flag overrides everything, and absolutely DISABLES rasterisation
@@ -1084,7 +1084,7 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
 QPainter::CompositionMode QgsLayoutItem::blendModeForRender() const
 {
   QPainter::CompositionMode mode = mEvaluatedBlendMode;
-  if ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects ) )
+  if ( !( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::UseAdvancedEffects ) )
   {
     // advanced effects disabled, reset blend mode
     mode = QPainter::CompositionMode_SourceOver;
@@ -1399,7 +1399,7 @@ void QgsLayoutItem::preparePainter( QPainter *painter )
 
   painter->setRenderHint( QPainter::Antialiasing, shouldDrawAntialiased() );
 
-  painter->setRenderHint( QPainter::LosslessImageRendering, mLayout && mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagLosslessImageRendering ) );
+  painter->setRenderHint( QPainter::LosslessImageRendering, mLayout && mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::LosslessImageRendering ) );
 }
 
 bool QgsLayoutItem::shouldDrawAntialiased() const
@@ -1408,12 +1408,12 @@ bool QgsLayoutItem::shouldDrawAntialiased() const
   {
     return true;
   }
-  return mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagAntialiasing ) && !mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagDebug );
+  return mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Antialiasing ) && !mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug );
 }
 
 bool QgsLayoutItem::shouldDrawDebugRect() const
 {
-  return mLayout && mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagDebug );
+  return mLayout && mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug );
 }
 
 QSizeF QgsLayoutItem::applyMinimumSize( const QSizeF targetSize )

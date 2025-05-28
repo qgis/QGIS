@@ -151,9 +151,9 @@ QVariantMap QgsLayoutToImageAlgorithm::processAlgorithm( const QVariantMap &para
   settings.generateWorldFile = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
 
   if ( parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context ) )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagAntialiasing;
+    settings.flags = settings.flags | Qgis::LayoutRenderFlag::Antialiasing;
   else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagAntialiasing;
+    settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::Antialiasing );
 
   switch ( exporter.exportToImage( dest, settings ) )
   {
