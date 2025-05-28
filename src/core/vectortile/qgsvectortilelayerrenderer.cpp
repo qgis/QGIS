@@ -284,9 +284,6 @@ bool QgsVectorTileLayerRenderer::forceRasterRender() const
       return false;
   }
 
-  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
-    return false;
-
   if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
     return true;
 
