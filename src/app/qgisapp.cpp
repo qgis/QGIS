@@ -11508,6 +11508,12 @@ void QgisApp::projectCrsChanged()
       askUserForDatumTransform( it.value()->crs(), QgsProject::instance()->crs(), it.value() );
     }
   }
+
+  // update CRS of the main annotation layer if it is empty
+  if ( QgsProject::instance()->mainAnnotationLayer() && QgsProject::instance()->mainAnnotationLayer()->isEmpty() && QgsProject::instance()->mainAnnotationLayer()->crs() != QgsProject::instance()->crs() )
+  {
+    QgsProject::instance()->mainAnnotationLayer()->setCrs( QgsProject::instance()->crs() );
+  }
 }
 
 void QgisApp::projectTemporalRangeChanged()
