@@ -51,11 +51,6 @@ Returns the original data provider's default value clause.
 
     operator QVariant() const;
 
-    QString toString() const;
-%Docstring
-Override QVariant.toString that would return an empty string.
-%End
-
 };
 
 

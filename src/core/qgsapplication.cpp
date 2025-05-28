@@ -378,7 +378,6 @@ void QgsApplication::init( QString profileFolder )
     QMetaType::registerEqualsComparator<QgsDateRange>();
     QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
 #endif
-    QMetaType::registerConverter<QgsUnsetAttributeValue, QString>( &QgsUnsetAttributeValue::toString );
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
     qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );

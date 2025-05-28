@@ -72,12 +72,6 @@ class CORE_EXPORT QgsUnsetAttributeValue
       return QVariant::fromValue( *this );
     }
 
-    //! Override QVariant::toString that would return an empty string.
-    QString toString() const
-    {
-      return mDefaultValueClause;
-    }
-
   private:
 
     QString mDefaultValueClause;

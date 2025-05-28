@@ -2362,6 +2362,65 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 0, QgsFieldConstraints.Constraint.ConstraintUnique, 59
             )
         )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintUnique,
+                QgsUnsetAttributeValue(),
+            )
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintNotNull,
+                QgsUnsetAttributeValue(),
+            )
+        )
+
+    def testUnsetAttributeValue(self):
+        """Test that QgsUnsetAttributeValue is handled correctly by the provider."""
+
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."test_unset_attribute_value" CASCADE'
+        )
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."test_unset_attribute_value" ( pk SERIAL NOT NULL PRIMARY KEY, test_int SMALLINT UNIQUE NOT NULL DEFAULT 16)'
+        )
+
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable table="qgis_test"."test_unset_attribute_value" sql=',
+            "test",
+            "postgres",
+        )
+
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature(vl.fields())
+        feature.setAttribute("test_int", QgsUnsetAttributeValue())
+
+        self.assertTrue(vl.dataProvider().addFeatures([feature]))
+
+        # Reload the layer and check the value
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable table="qgis_test"."test_unset_attribute_value" sql=',
+            "test",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attribute("test_int"), 16)
+
+        self.assertFalse(
+            QgsVectorLayerUtils.valueExists(vl, 1, QgsUnsetAttributeValue())
+        )
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 1, 16))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 1, 17))
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1))
+        f["test_int"] = QgsUnsetAttributeValue()
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1))
 
     def testVectorLayerUtilsCreateFeatureWithProviderDefault(self):
         vl = QgsVectorLayer(
