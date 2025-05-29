@@ -2630,7 +2630,7 @@ void QgsLayoutItemMap::drawAnnotations( QPainter *painter )
     return;
 
   QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( this, painter );
-  if ( rc.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::AllowRasterization )
+  if ( rc.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
     rc.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   rc.setExpressionContext( createExpressionContext() );
   QList< QgsMapLayer * > layers = layersToRender( &rc.expressionContext() );

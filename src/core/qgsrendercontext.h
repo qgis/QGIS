@@ -1232,7 +1232,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     void matchRasterizedRenderingPolicyToFlags();
 
     Qgis::RenderContextFlags mFlags;
-    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::AllowRasterization;
+    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
 
     //! Painter for rendering operations
     QPainter *mPainter = nullptr;

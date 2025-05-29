@@ -238,7 +238,7 @@ void QgsMapSettings::matchRasterizedRenderingPolicyToFlags()
 {
   if ( !mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
        && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
-    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::AllowRasterization;
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
   else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
             && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
@@ -950,7 +950,7 @@ void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPoli
   mRasterizedRenderingPolicy = policy;
   switch ( mRasterizedRenderingPolicy )
   {
-    case Qgis::RasterizedRenderingPolicy::AllowRasterization:
+    case Qgis::RasterizedRenderingPolicy::Default:
       mFlags.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
       mFlags.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
       break;

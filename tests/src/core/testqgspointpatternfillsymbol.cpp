@@ -164,7 +164,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   mMapSettings.setExtent( mpPolysLayer->extent() );
   const bool res = QGSRENDERMAPSETTINGSCHECK( "symbol_pointfill_vector", "symbol_pointfill_vector", mMapSettings );
 
-  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   mPointPatternFill->setDistanceX( 15 );
   mPointPatternFill->setDistanceY( 15 );
   QVERIFY( res );
@@ -192,7 +192,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
   job.start();
   job.waitForFinished();
   p.end();
-  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
 
   const QByteArray ba = buffer.data();
   QVERIFY( ba.contains( "fill=\"#ff0000\"" ) );
@@ -258,7 +258,7 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
   mMapSettings.setExtent( layer->extent() );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "symbol_pointfill_viewport_vector", "symbol_pointfill_viewport_vector", mMapSettings );
 
-  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
 }
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
@@ -315,7 +315,7 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
   mPointPatternFill->setOffsetY( 19 );
   mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   const bool res = QGSRENDERMAPSETTINGSCHECK( "symbol_pointfill_offset_vector", "symbol_pointfill_offset_vector", mMapSettings );
-  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   mPointPatternFill->setOffsetX( 0 );
   mPointPatternFill->setOffsetY( 0 );
   QVERIFY( res );
@@ -377,7 +377,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
   mMapSettings.setLayers( { mpPolysLayer } );
   mMapSettings.setExtent( mpPolysLayer->extent() );
   const bool res = QGSRENDERMAPSETTINGSCHECK( "pointfill_zero_space", "pointfill_zero_space", mMapSettings );
-  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::AllowRasterization );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   QVERIFY( res );
 }
 
