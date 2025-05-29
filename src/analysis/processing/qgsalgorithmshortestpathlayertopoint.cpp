@@ -103,7 +103,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
   QVector<QgsPointXY> points;
   points.push_front( endPoint );
   QHash<int, QgsAttributes> sourceAttributes;
-  loadPoints( startPoints.get(), points, sourceAttributes, context, feedback );
+  loadPoints( startPoints.get(), &points, &sourceAttributes, context, feedback, nullptr );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
   QVector<QgsPointXY> snappedPoints;
