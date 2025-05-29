@@ -4800,14 +4800,14 @@ Qgis.CoordinateTransformationFlag.baseClass = Qgis
 Qgis.CoordinateTransformationFlags.baseClass = Qgis
 CoordinateTransformationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.RasterizedRenderingPolicy.AllowRasterization.__doc__ = "Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering."
+Qgis.RasterizedRenderingPolicy.Default.__doc__ = "Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering."
 Qgis.RasterizedRenderingPolicy.PreferVector.__doc__ = "Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes."
 Qgis.RasterizedRenderingPolicy.ForceVector.__doc__ = "Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes."
 Qgis.RasterizedRenderingPolicy.__doc__ = """Policies controlling when rasterisation of content during renders is permitted.
 
 .. versionadded:: 3.44
 
-* ``AllowRasterization``: Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+* ``Default``: Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
 * ``PreferVector``: Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
 * ``ForceVector``: Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
 

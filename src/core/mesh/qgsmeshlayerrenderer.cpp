@@ -454,7 +454,7 @@ bool QgsMeshLayerRenderer::forceRasterRender() const
 {
   switch ( renderContext()->rasterizedRenderingPolicy() )
   {
-    case Qgis::RasterizedRenderingPolicy::AllowRasterization:
+    case Qgis::RasterizedRenderingPolicy::Default:
     case Qgis::RasterizedRenderingPolicy::PreferVector:
       break;
 

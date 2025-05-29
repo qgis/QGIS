@@ -374,7 +374,7 @@ class LayoutContextSettingsRestorer
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
     Qgis::LayoutRenderFlags mPreviousFlags;
-    Qgis::RasterizedRenderingPolicy mPreviousRasterPolicy = Qgis::RasterizedRenderingPolicy::AllowRasterization;
+    Qgis::RasterizedRenderingPolicy mPreviousRasterPolicy = Qgis::RasterizedRenderingPolicy::Default;
     Qgis::TextRenderFormat mPreviousTextFormat = Qgis::TextRenderFormat::AlwaysOutlines;
     int mPreviousExportLayer = 0;
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;

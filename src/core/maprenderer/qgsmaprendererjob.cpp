@@ -669,7 +669,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     const QgsElevationShadingRenderer shadingRenderer = mSettings.elevationShadingRenderer();
 
     // if we can use the cache, let's do it and avoid rendering!
-    const bool canUseCache = mSettings.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::AllowRasterization
+    const bool canUseCache = mSettings.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default
                              && mCache;
     if ( canUseCache && mCache->hasCacheImage( ml->id() ) )
     {
@@ -1147,7 +1147,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context.setCoordinateTransform( ct );
 
   // no cache, no image allocation
-  if ( mSettings.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::AllowRasterization )
+  if ( mSettings.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default )
     return job;
 
   // if we can use the cache, let's do it and avoid rendering!
