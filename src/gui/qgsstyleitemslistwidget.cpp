@@ -541,7 +541,7 @@ void QgsStyleItemsListWidget::openStyleManager()
        || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
   {
     // fallback to modal dialog
-    std::unique_ptr<  QgsStyleManagerDialog > dlg;
+    std::unique_ptr< QgsStyleManagerDialog > dlg;
     if ( mStyle && mStyle != QgsStyle::defaultStyle() )
     {
       dlg = std::make_unique< QgsStyleManagerDialog >( mStyle, this );
