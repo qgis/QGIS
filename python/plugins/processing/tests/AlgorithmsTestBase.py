@@ -48,6 +48,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingUtils,
     QgsProcessingFeedback,
+    QgsProperty,
 )
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.testing import _UnexpectedSuccess, QgisTestCase, start_app
@@ -292,6 +293,9 @@ class AlgorithmsTest:
                     )
                 # trim final separator ::|::
                 return tmp[:-5]
+            elif param["type"] == "property":
+                if param.get("expression"):
+                    return QgsProperty.fromExpression(param["expression"])
         except TypeError:
             # No type specified, use whatever is there
             return param
