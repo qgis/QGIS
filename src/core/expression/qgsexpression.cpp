@@ -343,6 +343,12 @@ void QgsExpression::detach()
   }
 }
 
+void QgsExpression::initFunctionHelp()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, buildFunctionHelp );
+}
+
 void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
   detach();
