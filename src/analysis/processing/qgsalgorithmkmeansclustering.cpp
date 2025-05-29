@@ -21,7 +21,7 @@
 
 ///@cond PRIVATE
 
-const int KMEANS_MAX_ITERATIONS = 1000;
+constexpr uint KMEANS_MAX_ITERATIONS = 1000;
 
 QString QgsKMeansClusteringAlgorithm::name() const
 {
@@ -111,7 +111,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   // build list of point inputs - if it's already a point, use that. If not, take the centroid.
   feedback->pushInfo( QObject::tr( "Collecting input points" ) );
-  const double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
+  const double step = source->featureCount() > 0 ? 50.0 / static_cast< double >( source->featureCount() ) : 1;
   int i = 0;
   int n = 0;
   int featureWithGeometryCount = 0;
@@ -119,7 +119,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   std::vector<Feature> clusterFeatures;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
-  QHash<QgsFeatureId, int> idToObj;
+  QHash<QgsFeatureId, std::size_t> idToObj;
   while ( features.nextFeature( feat ) )
   {
     i++;
@@ -179,8 +179,10 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   // cluster size
   std::unordered_map<int, int> clusterSize;
-  for ( const int obj : idToObj )
-    clusterSize[clusterFeatures[obj].cluster]++;
+  for ( auto it = idToObj.constBegin(); it != idToObj.constEnd(); ++it )
+  {
+    clusterSize[clusterFeatures[it.value()].cluster]++;
+  }
 
   features = source->getFeatures();
   i = 0;
@@ -235,7 +237,7 @@ void QgsKMeansClusteringAlgorithm::initClustersFarthestPoints( std::vector<Featu
     return;
   }
 
-  long duplicateCount = 1;
+  std::size_t duplicateCount = 1;
   // initially scan for two most distance points from each other, p1 and p2
   std::size_t p1 = 0;
   std::size_t p2 = 0;
@@ -264,7 +266,7 @@ void QgsKMeansClusteringAlgorithm::initClustersFarthestPoints( std::vector<Featu
 
   if ( feedback && duplicateCount > 1 )
   {
-    feedback->pushWarning( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, duplicateCount ) );
+    feedback->pushWarning( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, static_cast< int >( duplicateCount ) ) );
   }
 
   // By now two points should be found and be not the same
@@ -340,13 +342,13 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
   std::mt19937 gen( rd() );
   std::uniform_int_distribution<size_t> distrib( 0, n - 1 );
 
-  int p1 = distrib( gen );
+  std::size_t p1 = distrib( gen );
   centers[0] = points[p1].point;
 
   // calculate distances and total error (sum of distances of points to center)
   std::vector<double> distances( n );
   double totalError = 0;
-  long duplicateCount = 1;
+  std::size_t duplicateCount = 1;
   for ( size_t i = 0; i < n; i++ )
   {
     double distance = points[i].point.sqrDist( centers[0] );
@@ -359,7 +361,7 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
   }
   if ( feedback && duplicateCount > 1 )
   {
-    feedback->pushWarning( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, duplicateCount ) );
+    feedback->pushWarning( QObject::tr( "There are at least %n duplicate input(s), the number of output clusters may be less than was requested", nullptr, static_cast< int >( duplicateCount ) ) );
   }
 
   // greedy kmeans++
@@ -367,7 +369,7 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
   // chosen independently according to the same probability distribution), and then among these L
   // centers, the one that decreases the k-means cost the most is chosen
   // Bhattacharya, Anup & Eube, Jan & Röglin, Heiko & Schmidt, Melanie. (2019). Noisy, greedy and Not So greedy k-means++
-  unsigned int numCandidateCenters = 2 + std::floor( std::log( k ) );
+  unsigned int numCandidateCenters = 2 + static_cast< int >( std::floor( std::log( k ) ) );
   std::vector<double> randomNumbers( numCandidateCenters );
   std::vector<size_t> candidateCenters( numCandidateCenters );
 
@@ -479,9 +481,9 @@ void QgsKMeansClusteringAlgorithm::calculateKMeans( std::vector<QgsKMeansCluster
   }
 
   if ( !converged && feedback )
-    feedback->reportError( QObject::tr( "Clustering did not converge after %n iteration(s)", nullptr, i ) );
+    feedback->reportError( QObject::tr( "Clustering did not converge after %n iteration(s)", nullptr, static_cast<int>( i ) ) );
   else if ( feedback )
-    feedback->pushInfo( QObject::tr( "Clustering converged after %n iteration(s)", nullptr, i ) );
+    feedback->pushInfo( QObject::tr( "Clustering converged after %n iteration(s)", nullptr, static_cast<int>( i ) ) );
 }
 
 // ported from https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwkmeans.c
