@@ -194,10 +194,7 @@ void QgsCallout::setEnabled( bool enabled )
 QgsPropertiesDefinition QgsCallout::propertyDefinitions()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-    initPropertyDefinitions();
-  } );
+  std::call_once( initialized, initPropertyDefinitions );
   return sPropertyDefinitions;
 }
 

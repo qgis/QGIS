@@ -226,6 +226,73 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
 }
 
+void registerMetaTypes()
+{
+  qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+  qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
+  qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
+  qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
+  qRegisterMetaType<Qgis::LayoutUnit>( "Qgis::LayoutUnit" );
+  qRegisterMetaType<QgsUnsetAttributeValue>( "QgsUnsetAttributeValue" );
+  qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+  qRegisterMetaType<QgsFields>( "QgsFields" );
+  qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+  qRegisterMetaType<QgsProperty>( "QgsProperty" );
+  qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
+  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
+  qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
+  qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
+  qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
+  qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+  qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
+  qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
+  qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
+  qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
+  qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
+  qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
+  qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+  qRegisterMetaType<QgsFeature>( "QgsFeature" );
+  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+  qRegisterMetaType<QgsInterval>( "QgsInterval" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+  qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
+  qRegisterMetaType<QgsPoint>( "QgsPoint" );
+  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+  qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
+  qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
+  qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
+  // TODO: when tests can run against Qt6 builds, check for any regressions
+  qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#endif
+  qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
+  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
+  QMetaType::registerEqualsComparator<QgsProperty>();
+  QMetaType::registerEqualsComparator<QgsDateTimeRange>();
+  QMetaType::registerEqualsComparator<QgsDateRange>();
+  QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
+#endif
+  qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
+  qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );
+  qRegisterMetaType<QgsIntRange>( "QgsIntRange" );
+  qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
+  qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
+  qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
+  qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
+  qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
+  qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
+  qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
+};
+
 void QgsApplication::init( QString profileFolder )
 {
   // Initialize application members in desktop app (at this point, profile folder is known)
@@ -257,72 +324,7 @@ void QgsApplication::init( QString profileFolder )
   *sProfilePath() = profileFolder;
 
   static std::once_flag sMetaTypesRegistered;
-  std::call_once( sMetaTypesRegistered, []
-  {
-    qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
-    qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
-    qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
-    qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
-    qRegisterMetaType<Qgis::LayoutUnit>( "Qgis::LayoutUnit" );
-    qRegisterMetaType<QgsUnsetAttributeValue>( "QgsUnsetAttributeValue" );
-    qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
-    qRegisterMetaType<QgsFields>( "QgsFields" );
-    qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-    qRegisterMetaType<QgsProperty>( "QgsProperty" );
-    qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
-    qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
-    qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
-    qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
-    qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
-    qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
-    qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
-    qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
-    qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
-    qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
-    qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
-    qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
-    qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
-    qRegisterMetaType<QgsFeature>( "QgsFeature" );
-    qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
-    qRegisterMetaType<QgsInterval>( "QgsInterval" );
-    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
-    qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
-    qRegisterMetaType<QgsPoint>( "QgsPoint" );
-    qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
-    qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
-    qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
-    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
-    qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-    qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
-    qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
-    // TODO: when tests can run against Qt6 builds, check for any regressions
-    qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#endif
-    qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
-    qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
-    qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QMetaType::registerComparators<QgsProcessingModelChildDependency>();
-    QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
-    QMetaType::registerEqualsComparator<QgsProperty>();
-    QMetaType::registerEqualsComparator<QgsDateTimeRange>();
-    QMetaType::registerEqualsComparator<QgsDateRange>();
-    QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
-#endif
-    qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
-    qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
-    qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );
-    qRegisterMetaType<QgsIntRange>( "QgsIntRange" );
-    qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
-    qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
-    qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
-    qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
-    qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
-    qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
-    qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
-  } );
+  std::call_once( sMetaTypesRegistered, registerMetaTypes );
 
   ( void ) resolvePkgPath();
 
