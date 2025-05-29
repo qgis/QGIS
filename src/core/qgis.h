@@ -2649,7 +2649,7 @@ class CORE_EXPORT Qgis
      */
     enum class RasterizedRenderingPolicy : int
     {
-      AllowRasterization, //!< Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+      Default, //!< Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
       PreferVector, //!< Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
       ForceVector, //!< Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
     };

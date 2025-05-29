@@ -90,7 +90,7 @@ void QgsLayoutRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRende
   mRasterizedRenderingPolicy = policy;
   switch ( mRasterizedRenderingPolicy )
   {
-    case Qgis::RasterizedRenderingPolicy::AllowRasterization:
+    case Qgis::RasterizedRenderingPolicy::Default:
     case Qgis::RasterizedRenderingPolicy::PreferVector:
       mFlags.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, false );
       mFlags.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );

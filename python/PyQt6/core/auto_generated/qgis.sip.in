@@ -1546,7 +1546,7 @@ The development version
 
     enum class RasterizedRenderingPolicy /BaseType=IntEnum/
     {
-      AllowRasterization,
+      Default,
       PreferVector,
       ForceVector,
     };

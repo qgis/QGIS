@@ -970,7 +970,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QColor mSelectionColor;
 
     Qgis::MapSettingsFlags mFlags;
-    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::AllowRasterization;
+    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
     QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
     double mSegmentationTolerance;
