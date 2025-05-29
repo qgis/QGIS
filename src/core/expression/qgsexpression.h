@@ -821,6 +821,8 @@ class CORE_EXPORT QgsExpression
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;
     //! \note not available in Python bindings
+    static void buildFunctionHelp() SIP_SKIP;
+    //! \note not available in Python bindings
     static void initVariableHelp() SIP_SKIP;
 
     friend class QgsExpressionNodeFunction;
