@@ -824,6 +824,8 @@ class CORE_EXPORT QgsExpression
     static void buildFunctionHelp() SIP_SKIP;
     //! \note not available in Python bindings
     static void initVariableHelp() SIP_SKIP;
+    //! \note not available in Python bindings
+    static void buildVariableHelp() SIP_SKIP;
 
     friend class QgsExpressionNodeFunction;
     static QRecursiveMutex sFunctionsMutex;
