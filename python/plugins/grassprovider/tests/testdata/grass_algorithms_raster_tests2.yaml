@@ -327,6 +327,7 @@ tests:
         - 61d6cea43ff284ea8909f071b3f13344e146430b7754ad25321a05af
         - 702e4fbf8f35d9c4759f1a1e437c2680b45a84d5175d862d92db1f06
         - 8082737b192683878f415dd28bd8988e64e74198668c4c5b477ad1b8
+        - 2f1b12a7f0c2da87c8ffde15a45207b1660f5bd15ce41b397900ec8a
         type: rasterhash
 
   - algorithm: grass7:r.info
