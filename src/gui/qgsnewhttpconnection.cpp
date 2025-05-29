@@ -149,21 +149,21 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mWmsOptionsGroupBox->setTitle( tr( "WCS Options" ) );
 
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
-      mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+      mWmsOptionsGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
 
       sbFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( sbFeatureCount );
+      mWmsOptionsGroupBox->layout()->removeWidget( sbFeatureCount );
       lblFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblFeatureCount );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblFeatureCount );
 
       cmbDpiMode->setVisible( false );
-      mGroupBox->layout()->removeWidget( cmbDpiMode );
+      mWmsOptionsGroupBox->layout()->removeWidget( cmbDpiMode );
       lblDpiMode->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblDpiMode );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblDpiMode );
       cmbTilePixelRatio->setVisible( false );
-      mGroupBox->layout()->removeWidget( cmbTilePixelRatio );
+      mWmsOptionsGroupBox->layout()->removeWidget( cmbTilePixelRatio );
       lblTilePixelRatio->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblTilePixelRatio );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
 
@@ -367,7 +367,6 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 void QgsNewHttpConnection::showEvent( QShowEvent *event )
 {
   QDialog::showEvent( event );
-  adjustSize();
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
