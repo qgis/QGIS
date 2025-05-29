@@ -1532,6 +1532,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -1540,7 +1541,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
     double thisM = m ? *m++ : 0.0;
 
     const double segmentLength = QgsGeometryUtilsBase::distance2D( thisX, thisY, prevX, prevY );
-    while ( nextPointDistance < distanceTraversed + segmentLength || qgsDoubleNear( nextPointDistance, distanceTraversed + segmentLength ) )
+    while ( nextPointDistance < distanceTraversed + segmentLength || qgsDoubleNear( nextPointDistance, distanceTraversed + segmentLength, eps ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
       const double distanceToPoint = std::min( nextPointDistance - distanceTraversed, segmentLength );
