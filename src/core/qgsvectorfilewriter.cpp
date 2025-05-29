@@ -284,12 +284,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( metadataFound )
     {
-      QStringList allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
+      QStringList allExts = metadata.glob.split( ' ', Qt::SkipEmptyParts );
       bool found = false;
       const auto constAllExts = allExts;
       for ( const QString &ext : constAllExts )
       {
-        if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
+        if ( vectorFileName.endsWith( '.' + ext.mid( 2 ), Qt::CaseInsensitive ) )
         {
           found = true;
           break;
