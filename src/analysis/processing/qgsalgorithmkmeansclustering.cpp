@@ -74,7 +74,7 @@ QString QgsKMeansClusteringAlgorithm::shortHelpString() const
                       "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n"
                       "References:\n"
                       "Arthur, David & Vassilvitskii, Sergei. (2007). K-Means++: The Advantages of Careful Seeding. Proc. of the Annu. ACM-SIAM Symp. on Discrete Algorithms. 8.\n\n"
-                      "Bhattacharya, Anup & Eube, Jan & Röglin, Heiko & Schmidt, Melanie. (2019). Noisy, Greedy and Not So Greedy k-means++");
+                      "Bhattacharya, Anup & Eube, Jan & Röglin, Heiko & Schmidt, Melanie. (2019). Noisy, Greedy and Not So Greedy k-means++" );
 }
 
 QString QgsKMeansClusteringAlgorithm::shortDescription() const
@@ -387,9 +387,9 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
       cumSum[j] += cumSum[j - 1];
     }
 
-    // binary search for the index of the first element greater than or equal to random numbers 
+    // binary search for the index of the first element greater than or equal to random numbers
     for ( unsigned int j = 0; j < numCandidateCenters; j++ )
-    { 
+    {
       size_t low = 0;
       size_t high = n - 1;
 
@@ -403,21 +403,22 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
         else
         {
           // size_t cannot be negative
-          if ( mid == 0 )  
+          if ( mid == 0 )
             break;
-          
+
           high = mid - 1;
         }
       }
       // clip candidate center to the number of points
       if ( low >= n )
       {
-          low = n - 1;
+        low = n - 1;
       }
       candidateCenters[j] = low;
     }
 
-    std::vector<std::vector<double>> distancesCandidateCenters( numCandidateCenters, std::vector<double>( n ) );;
+    std::vector<std::vector<double>> distancesCandidateCenters( numCandidateCenters, std::vector<double>( n ) );
+    ;
 
     // store distances between previous and new candidate center, error and best candidate index
     double currentError = 0;
