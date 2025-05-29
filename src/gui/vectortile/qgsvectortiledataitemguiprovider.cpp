@@ -16,6 +16,7 @@
 #include "qgsvectortiledataitemguiprovider.h"
 #include "moc_qgsvectortiledataitemguiprovider.cpp"
 
+#include "qgsapplication.h"
 #include "qgsvectortiledataitems.h"
 #include "qgsvectortileconnectiondialog.h"
 #include "qgsarcgisvectortileconnectiondialog.h"
@@ -127,7 +128,7 @@ void QgsVectorTileDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsVectorTileDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsVectorTileConnectionDialog dlg;
+  QgsVectorTileConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 

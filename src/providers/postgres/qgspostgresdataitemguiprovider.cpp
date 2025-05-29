@@ -16,6 +16,7 @@
 #include "qgspostgresdataitemguiprovider.h"
 #include "moc_qgspostgresdataitemguiprovider.cpp"
 
+#include "qgsapplication.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgspostgresdataitems.h"
 #include "qgspgnewconnection.h"
@@ -273,7 +274,7 @@ QString QgsPostgresDataItemGuiProvider::typeNameFromLayer( const QgsPostgresLaye
 
 void QgsPostgresDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsPgNewConnection nc( nullptr );
+  QgsPgNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     item->refresh();
