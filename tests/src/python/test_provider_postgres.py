@@ -2384,7 +2384,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             'DROP TABLE IF EXISTS qgis_test."test_unset_attribute_value" CASCADE'
         )
         self.execSQLCommand(
-            'CREATE TABLE qgis_test."test_unset_attribute_value" ( pk SERIAL NOT NULL PRIMARY KEY, test_int SMALLINT UNIQUE NOT NULL DEFAULT 16)'
+            'CREATE TABLE qgis_test."test_unset_attribute_value" ( pk SERIAL NOT NULL PRIMARY KEY, test_int SMALLINT UNIQUE NOT NULL DEFAULT 16, test_int_no_default SMALLINT NOT NULL)'
         )
 
         vl = QgsVectorLayer(
@@ -2398,6 +2398,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         feature = QgsFeature(vl.fields())
         feature.setAttribute("test_int", QgsUnsetAttributeValue())
+        feature.setAttribute("test_int_no_default", 17)
 
         self.assertTrue(vl.dataProvider().addFeatures([feature]))
 
@@ -2412,15 +2413,31 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(vl.featureCount(), 1)
         f = next(vl.getFeatures())
         self.assertEqual(f.attribute("test_int"), 16)
+        self.assertEqual(f.attribute("test_int_no_default"), 17)
 
         self.assertFalse(
             QgsVectorLayerUtils.valueExists(vl, 1, QgsUnsetAttributeValue())
         )
         self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 1, 16))
         self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 1, 17))
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 2, 17))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 2, 16))
         self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1))
         f["test_int"] = QgsUnsetAttributeValue()
         self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1))
+        f["test_int_no_default"] = QgsUnsetAttributeValue()
+
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                2, QgsFieldConstraints.Constraint.ConstraintUnique, 18
+            )
+        )
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                2, QgsFieldConstraints.Constraint.ConstraintNotNull, 18
+            )
+        )
+        self.assertFalse(QgsVectorLayerUtils.validateAttribute(vl, f, 2))
 
     def testVectorLayerUtilsCreateFeatureWithProviderDefault(self):
         vl = QgsVectorLayer(

@@ -2103,7 +2103,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
   {
     // stricter check - if we are evaluating default values only on commit then we can only bypass the check
     // if the attribute values matches the original default clause
-    return mDefaultValues.contains( fieldIndex ) && ( mDefaultValues.value( fieldIndex ) == value.toString() || QgsVariantUtils::isUnsetAttributeValue( value ) ) && !QgsVariantUtils::isNull( value );
+    return mDefaultValues.contains( fieldIndex ) && !mDefaultValues.value( fieldIndex ).isEmpty() && ( mDefaultValues.value( fieldIndex ) == value.toString() || QgsVariantUtils::isUnsetAttributeValue( value ) ) && !QgsVariantUtils::isNull( value );
   }
 }
 
