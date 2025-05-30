@@ -309,10 +309,23 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertEqual(mime_elem.text(), "image/gif")
 
     def testRasterMarker_embedded(self):
-
         # a red 4x4 pixel GIF
         symbol = QgsRasterMarkerSymbolLayer(
             path="base64:R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw=="
+        )
+        _, root = self.symbolToSld(symbol)
+        b64_textnode = root.elementsByTagName("se:InlineContent").item(0).toElement()
+        self.assertEqual(
+            b64_textnode.text(),
+            "R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
+        )
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
+        self.assertEqual(mime_elem.text(), "image/gif")
+
+    def testRasterMarker_embeddedBase64DataUrl(self):
+        # a red 4x4 pixel GIF
+        symbol = QgsRasterMarkerSymbolLayer(
+            path="data:image/gif;base64,R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw=="
         )
         _, root = self.symbolToSld(symbol)
         b64_textnode = root.elementsByTagName("se:InlineContent").item(0).toElement()

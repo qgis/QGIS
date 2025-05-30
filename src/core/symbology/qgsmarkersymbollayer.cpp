@@ -3110,27 +3110,26 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
 
 QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
+  const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
     return nullptr;
 
-  QDomElement extGraphElem = graphicElem.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
-  if ( extGraphElem.isNull() )
+  const QDomElement externalGraphicElem = graphicElem.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
+  if ( externalGraphicElem.isNull() )
     return nullptr;
 
-  QDomElement onlineResElem = extGraphElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
-  QDomElement inlineContEleme = extGraphElem.firstChildElement( QStringLiteral( "InlineContent" ) );
+  const QDomElement onlineResourceElem = externalGraphicElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
+  const QDomElement inlineContentElem = externalGraphicElem.firstChildElement( QStringLiteral( "InlineContent" ) );
 
-  QString url = onlineResElem.attribute( "href", "" );
-  if ( ! onlineResElem.isNull() )
+  QString url;
+  if ( !onlineResourceElem.isNull() )
   {
-    url = onlineResElem.attribute( "href", "" );
-    // transform regular data uris to QGIS's data uris (note that embedded images are usually provided as InlineContent)
-    url.replace( QRegularExpression( QStringLiteral( "^data:([^;]*;base64,)?(.*)$" ) ), QStringLiteral( "data:\\2" ) );
+    url = onlineResourceElem.attribute( QStringLiteral( "href" ) );
+    // no further processing to do, both base64 data urls and direct file/http urls are compatible with raster markers already
   }
-  else if ( ! inlineContEleme.isNull() )
+  else if ( !inlineContentElem.isNull() && inlineContentElem.attribute( QStringLiteral( "encoding" ) ) == QLatin1String( "base64" ) )
   {
-    url = QStringLiteral( "data:" ) + inlineContEleme.text();
+    url = QStringLiteral( "base64:" ) + inlineContentElem.text();
   }
   else
   {
@@ -3563,21 +3562,33 @@ bool QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   QMimeDatabase mimeDB;
   QMimeType mimeType;
 
+  QString base64data;
   if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
+  {
+    base64data = mPath.mid( 7 );
+  }
+  else
+  {
+    QString mime;
+    QString data;
+    if ( QgsAbstractContentCacheBase::parseBase64DataUrl( mPath, &mime, &data ) )
+    {
+      base64data = data;
+    }
+  }
+
+  if ( !base64data.isEmpty() )
   {
     // <InlineContent>
     QDomElement inlineContEleme = doc.createElement( QStringLiteral( "se:InlineContent" ) );
-    QString base64data = mPath;
-    base64data.remove( 0, 7 );
 
     inlineContEleme.setAttribute( QStringLiteral( "encoding" ), QStringLiteral( "base64" ) );
     inlineContEleme.appendChild( doc.createTextNode( base64data ) );
     extGraphElem.appendChild( inlineContEleme );
 
     // determine mime type
-    QByteArray ba = QByteArray::fromBase64( base64data.toUtf8() );
+    const QByteArray ba = QByteArray::fromBase64( base64data.toUtf8() );
     mimeType = mimeDB.mimeTypeForData( ba );
-
   }
   else
   {

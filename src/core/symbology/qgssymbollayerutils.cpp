@@ -1801,7 +1801,7 @@ bool QgsSymbolLayerUtils::hasExternalGraphic( QDomElement &element )
   return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
 }
 
-bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QString format )
+bool QgsSymbolLayerUtils::hasExternalGraphicV2( const QDomElement &element, const QString format )
 {
   const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
@@ -1826,6 +1826,7 @@ bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QStr
   // check for a valid content
   const QDomElement onlineResourceElem = externalGraphicElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
   const QDomElement inlineContentElem = externalGraphicElem.firstChildElement( QStringLiteral( "InlineContent" ) );
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( !onlineResourceElem.isNull() )
   {
     return true;
@@ -1838,6 +1839,7 @@ bool QgsSymbolLayerUtils::hasExternalGraphicV2( QDomElement &element, const QStr
   {
     return false;
   }
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 bool QgsSymbolLayerUtils::hasWellKnownMark( QDomElement &element )
@@ -1895,12 +1897,12 @@ bool QgsSymbolLayerUtils::needFontMarker( QDomElement &element )
   return false;
 }
 
-bool QgsSymbolLayerUtils::needSvgMarker( QDomElement &element )
+bool QgsSymbolLayerUtils::needSvgMarker( const QDomElement &element )
 {
   return hasExternalGraphicV2( element, QStringLiteral( "image/svg+xml" ) );
 }
 
-bool QgsSymbolLayerUtils::needRasterMarker( QDomElement &element )
+bool QgsSymbolLayerUtils::needRasterMarker( const QDomElement &element )
 {
   // any external graphic except SVGs are considered rasters
   return hasExternalGraphicV2( element, QString() ) && !needSvgMarker( element );

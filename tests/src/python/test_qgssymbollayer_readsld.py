@@ -651,7 +651,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
         self.assertEqual(
             marker.path(),
-            f"data:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+            f"base64:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
         )
 
     def test_read_QgsRasterMarkerSymbolLayer_embedded_datauri(self):
@@ -665,7 +665,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
         self.assertEqual(
             marker.path(),
-            f"data:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+            f"data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
         )
 
 
