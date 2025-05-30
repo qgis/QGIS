@@ -26,28 +26,14 @@
 
 ///@cond PRIVATE
 
-
-/**
- * Native k-means clustering algorithm.
- */
-class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorithm
+class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-    QgsKMeansClusteringAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsKMeansClusteringAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
-  private:
     struct Feature
     {
         Feature( QgsPointXY point )
@@ -58,13 +44,30 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorit
         int cluster = -1;
     };
 
-    static void initClustersFarthestPoints( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
-    static void initClustersPlusPlus( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
     static void calculateKMeans( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
     static void findNearest( std::vector<Feature> &points, const std::vector<QgsPointXY> &centers, int k, bool &changed );
     static void updateMeans( const std::vector<Feature> &points, std::vector<QgsPointXY> &centers, std::vector<uint> &weights, int k );
+};
 
+class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsKMeansClusteringAlgorithmBase
+{
+  public:
+    QgsKMeansClusteringAlgorithm() = default;
+    
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsKMeansClusteringAlgorithm *createInstance() const override SIP_FACTORY;
+
+  private:
+    static void initClustersFarthestPoints( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
+    static void initClustersPlusPlus( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
     friend class TestQgsProcessingAlgsPt1;
+
+  protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 };
 
 ///@endcond PRIVATE
