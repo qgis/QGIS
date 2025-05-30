@@ -361,3 +361,15 @@ tests:
         hash: 38169bd8e8ff1400109936c8de70e429ab319926a053ab5142791010
         type: rasterhash
 
+  - algorithm: native:concavehullbyfeature
+    name: Concave hull by feature
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: custom/concave_hull_points.gml|layername=concave_hull_points
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/concave_hull_by_feature.gml
+        type: vector
