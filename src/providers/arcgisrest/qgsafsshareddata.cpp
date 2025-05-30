@@ -362,7 +362,7 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
   featuresJson.reserve( features.size() );
   for ( const QgsFeature &feature : features )
   {
-    featuresJson.append( QgsArcGisRestUtils::featureToJson( feature, context ) );
+    featuresJson.append( QgsArcGisRestUtils::featureToJson( feature, context, QgsCoordinateReferenceSystem(), QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry | QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes | QgsArcGisRestUtils::FeatureToJsonFlag::SkipUnsetAttributes ) );
   }
 
   const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( featuresJson ).dump( 2 ) );
@@ -418,7 +418,7 @@ bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool incl
   if ( includeGeometries )
     flags |= QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry;
   if ( includeAttributes )
-    flags |= QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes;
+    flags |= QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes | QgsArcGisRestUtils::FeatureToJsonFlag::SkipUnsetAttributes;
 
   QVariantList featuresJson;
   featuresJson.reserve( features.size() );
