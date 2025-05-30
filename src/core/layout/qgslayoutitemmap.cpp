@@ -2484,7 +2484,7 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   //remove atlas coverage layer if required
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagHideCoverageLayer )
+  if ( mLayout->reportContext().feature().isValid() && ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagHideCoverageLayer ) )
   {
     //hiding coverage layer
     int removeAt = renderLayers.indexOf( mLayout->reportContext().layer() );
