@@ -51,6 +51,7 @@ class TestQgsLayoutContext : public QgsTest
     void scales();
     void simplifyMethod();
     void maskRenderSettings();
+    void deprecatedFlagsRasterizePolicy();
 };
 
 void TestQgsLayoutContext::cleanupTestCase()
@@ -270,6 +271,34 @@ void TestQgsLayoutContext::maskRenderSettings()
   settings2.setSimplificationTolerance( 11 );
   context.setMaskSettings( settings2 );
   QCOMPARE( context.maskSettings().simplifyTolerance(), 11 );
+}
+
+void TestQgsLayoutContext::deprecatedFlagsRasterizePolicy()
+{
+  QgsLayout l( QgsProject::instance() );
+  QgsLayoutRenderContext context( &l );
+
+  // test translation of rasterize policies to flags
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  QVERIFY( context.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput ) );
+  QVERIFY( !context.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) );
+
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  QVERIFY( !context.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput ) );
+  QVERIFY( context.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) );
+
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+  QVERIFY( !context.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput ) );
+  QVERIFY( context.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) );
+
+  context.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
+  QCOMPARE( context.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
+  context.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, false );
+  QCOMPARE( context.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::PreferVector );
+
+  context.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
+  context.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
+  QCOMPARE( context.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )
