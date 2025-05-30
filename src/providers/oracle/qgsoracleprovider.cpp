@@ -1396,7 +1396,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         QgsField fld = field( fieldId[i] );
         if ( ( QgsVariantUtils::isNull( value ) && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() )
              || ( value.toString() == defaultValues[i] )
-             || value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+             || QgsVariantUtils::isUnsetAttributeValue( value ) )
         {
           value = evaluateDefaultExpression( defaultValues[i], fld.type() );
         }
@@ -1862,7 +1862,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
             QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
             continue;
           }
-          if ( siter.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          if ( QgsVariantUtils::isUnsetAttributeValue( siter.value() ) )
           {
             continue;
           }

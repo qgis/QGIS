@@ -483,7 +483,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return true;
   }
 
-  if ( v.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+  if ( QgsVariantUtils::isUnsetAttributeValue( v ) )
   {
     return true;
   }

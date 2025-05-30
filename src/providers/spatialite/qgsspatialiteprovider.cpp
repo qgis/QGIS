@@ -4143,7 +4143,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         if (
           ( mDefaultValues.contains( i ) && ( mDefaultValues.value( i ) == attributevec.at( i ).toString() || !attributevec.at( i ).isValid() ) )
-          || ( attributevec.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          || ( QgsVariantUtils::isUnsetAttributeValue( attributevec.at( i ) ) )
         )
         {
           defaultIndexes.push_back( i );
@@ -4610,7 +4610,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
       {
         QgsField fld = field( siter.key() );
         const QVariant &val = siter.value();
-        if ( val.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        if ( QgsVariantUtils::isUnsetAttributeValue( val ) )
           continue;
 
         if ( !first )

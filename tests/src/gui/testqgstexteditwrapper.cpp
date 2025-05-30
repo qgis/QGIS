@@ -84,7 +84,7 @@ void TestQgsTextEditWrapper::defaultValueClause()
 
   wrapper.setValues( QgsUnsetAttributeValue( QStringLiteral( "Autogenerate" ) ), {} );
   QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
-  QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+  QVERIFY( QgsVariantUtils::isUnsetAttributeValue( wrapper.value() ) );
 
   // set explicit text
   widget->setText( QStringLiteral( "11" ) );
@@ -94,7 +94,7 @@ void TestQgsTextEditWrapper::defaultValueClause()
   // reset to unset value (this time without the default value clause, should still work)
   wrapper.setValues( QgsUnsetAttributeValue(), {} );
   QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
-  QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+  QVERIFY( QgsVariantUtils::isUnsetAttributeValue( wrapper.value() ) );
 
   // set to null
   widget->clear();
@@ -103,7 +103,7 @@ void TestQgsTextEditWrapper::defaultValueClause()
   // reset to unset value (this time without the default value clause, should still work)
   wrapper.setValues( QgsUnsetAttributeValue(), {} );
   QCOMPARE( widget->text(), QStringLiteral( "Autogenerate" ) );
-  QCOMPARE( wrapper.value().userType(), qMetaTypeId< QgsUnsetAttributeValue >() );
+  QVERIFY( QgsVariantUtils::isUnsetAttributeValue( wrapper.value() ) );
 
   // null -> valid value
   widget->clear();

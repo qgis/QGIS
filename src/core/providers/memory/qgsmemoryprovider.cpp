@@ -682,7 +682,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         continue;
 
       QVariant attrValue = it2.value();
-      if ( attrValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( attrValue ) )
         continue;
 
       // Check attribute conversion
