@@ -272,7 +272,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def testRasterMarker_remote(self):
         symbol = QgsRasterMarkerSymbolLayer(
-            path="https://example.com/image.png",
+            path="file://localhost/image.png",
         )
         _, root = self.symbolToSld(symbol)
         href_attr = (
@@ -281,7 +281,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             .attributes()
             .namedItem("xlink:href")
         )
-        self.assertEqual("https://example.com/image.png", href_attr.nodeValue())
+        self.assertEqual("file://localhost/image.png", href_attr.nodeValue())
         mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
         self.assertEqual(
             mime_elem.text(),
