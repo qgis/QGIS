@@ -10,7 +10,7 @@
           <se:PointSymbolizer>
             <se:Graphic>
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="https://example.com/image.png"/>
+                <se:OnlineResource xlink:type="simple" xlink:href="file://localhost/image.png"/>
                 <se:Format>application/octet-stream</se:Format>
               </se:ExternalGraphic>
               <se:Rotation>
