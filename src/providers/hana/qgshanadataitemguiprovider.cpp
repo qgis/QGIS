@@ -18,7 +18,7 @@
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
 #include "moc_qgshanadataitemguiprovider.cpp"
-#cinlude "qgsapplication.h"
+#include "qgsapplication.h"
 #include "qgshananewconnection.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanasourceselect.h"
