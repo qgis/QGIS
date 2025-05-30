@@ -628,7 +628,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         maplayer.loadSldStyle(file_path)
         marker = maplayer.renderer().symbol().symbolLayers()[0]
         self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
-        self.assertEqual(marker.path(), "https://example.com/image.png")
+        self.assertEqual(marker.path(), "file://localhost/image.png")
 
     def test_read_QgsRasterMarkerSymbolLayer_local(self):
         """Test reading raster markers"""
