@@ -594,11 +594,19 @@ void TestQgsLayoutMap::layersToRender()
   QCOMPARE( map->layersToRender(), layers );
 
   // hide coverage layer
+  QgsFeature f1 = mPointsLayer->getFeature( 1 );
+  QVERIFY( f1.isValid() );
+  l.reportContext().setFeature( f1 );
   l.reportContext().setLayer( mPointsLayer );
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
   QCOMPARE( map->layersToRender(), layers2 );
 
   l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, false );
+  QCOMPARE( map->layersToRender(), layers );
+
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
+  QCOMPARE( map->layersToRender(), layers2 );
+  l.reportContext().setFeature( QgsFeature() );
   QCOMPARE( map->layersToRender(), layers );
 }
 
