@@ -32,7 +32,7 @@ QString QgsConcaveHullByFeatureAlgorithm::displayName() const
 
 QStringList QgsConcaveHullByFeatureAlgorithm::tags() const
 {
-  return QObject::tr( "concave,hull,bounds,bounding" ).split( ',' );
+  return QObject::tr( "concave,hull,bounds,bounding,convex" ).split( ',' );
 }
 
 QString QgsConcaveHullByFeatureAlgorithm::group() const
