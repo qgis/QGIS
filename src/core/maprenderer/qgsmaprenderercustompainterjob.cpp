@@ -302,7 +302,9 @@ void QgsMapRendererCustomPainterJob::doRender()
 
     emit layerRenderingStarted( job.layerId );
 
-    if ( ! hasSecondPass && job.context()->useAdvancedEffects() )
+    if ( ! hasSecondPass && ( job.context()->flags().testFlag( Qgis::RenderContextFlag::UseAdvancedEffects )
+                              && job.context()->rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+       )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode

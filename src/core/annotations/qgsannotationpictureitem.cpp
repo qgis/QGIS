@@ -60,7 +60,9 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
         }
       }
 
-      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(), context.forceVectorOutput(), aspectRatio );
+      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(),
+                               context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default,
+                               aspectRatio );
       const double pictureWidth = picture.boundingRect().width();
       const double pictureHeight = picture.boundingRect().height();
 

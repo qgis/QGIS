@@ -4193,11 +4193,11 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
-  settings.flags |= QgsLayoutRenderContext::FlagUseAdvancedEffects;
+  settings.flags |= Qgis::LayoutRenderFlag::UseAdvancedEffects;
   if ( imageDlg.antialiasing() )
-    settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
+    settings.flags |= Qgis::LayoutRenderFlag::Antialiasing;
   else
-    settings.flags &= ~QgsLayoutRenderContext::FlagAntialiasing;
+    settings.flags &= ~static_cast< int >( Qgis::LayoutRenderFlag::Antialiasing );
 
   settings.quality = imageDlg.quality();
   if ( settings.quality != -1 )
@@ -4317,9 +4317,9 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   if ( disableRasterTiles )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+    settings.flags = settings.flags | Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders;
   else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+    settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders );
 
   return true;
 }
@@ -4443,14 +4443,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
 
   if ( disableRasterTiles )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+    settings.flags = settings.flags | Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders;
   else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+    settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders );
 
   if ( losslessImages )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagLosslessImageRendering;
+    settings.flags = settings.flags | Qgis::LayoutRenderFlag::LosslessImageRendering;
   else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagLosslessImageRendering;
+    settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::LosslessImageRendering );
 
   return true;
 }

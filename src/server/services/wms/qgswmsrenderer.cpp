@@ -585,7 +585,7 @@ namespace QgsWms
       // Set scales
       exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
       // Draw selections
-      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      exportSettings.flags |= Qgis::LayoutRenderFlag::DrawSelection;
       if ( atlas )
       {
         //export first page of atlas
@@ -620,7 +620,7 @@ namespace QgsWms
       // Set scales
       exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
       // Draw selections
-      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      exportSettings.flags |= Qgis::LayoutRenderFlag::DrawSelection;
       // Destination image size in px
       QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
 
@@ -687,7 +687,7 @@ namespace QgsWms
           exportSettings.dpi = dpi;
       }
       // Draw selections
-      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      exportSettings.flags |= Qgis::LayoutRenderFlag::DrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
       // Set scales. 1. Prio: request, 2. Prio: predefined mapscales in layout
@@ -714,11 +714,11 @@ namespace QgsWms
       exportSettings.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
       if ( mWmsParameters.pdfLosslessImageCompression() )
       {
-        exportSettings.flags |= QgsLayoutRenderContext::FlagLosslessImageRendering;
+        exportSettings.flags |= Qgis::LayoutRenderFlag::LosslessImageRendering;
       }
       if ( mWmsParameters.pdfDisableTiledRasterRendering() )
       {
-        exportSettings.flags |= QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+        exportSettings.flags |= Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders;
       }
 
       // Export all pages

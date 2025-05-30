@@ -94,8 +94,10 @@ bool QgsGroupLayerRenderer::render()
     context.setExtent( extentInChildLayerCrs );
 
     QImage image;
-    if ( context.useAdvancedEffects() )
+    if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
+    {
       context.painter()->setCompositionMode( mRendererCompositionModes[i] );
+    }
 
     QPainter *prevPainter = context.painter();
     std::unique_ptr< QPainter > imagePainter;
@@ -136,8 +138,15 @@ bool QgsGroupLayerRenderer::render()
 
 bool QgsGroupLayerRenderer::forceRasterRender() const
 {
-  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
-    return false;
+  switch ( renderContext()->rasterizedRenderingPolicy() )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      return false;
+  }
 
   if ( mForceRasterRender || !qgsDoubleNear( mLayerOpacity, 1.0 ) )
     return true;

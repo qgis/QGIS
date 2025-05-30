@@ -78,7 +78,9 @@ void QgsLayoutNodesItem::draw( QgsLayoutItemRenderContext &context )
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
 
-  context.renderContext().setForceVectorOutput( true );
+  if ( context.renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
+    context.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+
   rescaleToFitBoundingBox();
   _draw( context );
 

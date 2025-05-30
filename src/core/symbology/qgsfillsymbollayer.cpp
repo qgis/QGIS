@@ -587,7 +587,7 @@ QImage QgsSimpleFillSymbolLayer::toTiledPatternImage( ) const
   renderContext.setFlag( Qgis::RenderContextFlag::RenderMapTile );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
-  renderContext.setForceVectorOutput( true );
+  renderContext.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QgsSymbolRenderContext symbolContext( renderContext, Qgis::RenderUnit::Pixels, 1.0, false, Qgis::SymbolRenderHints() );
 
   std::unique_ptr< QgsSimpleFillSymbolLayer > layerClone( clone() );
@@ -2714,7 +2714,7 @@ QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
   renderContext.setFlag( Qgis::RenderContextFlag::RenderMapTile );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
-  renderContext.setForceVectorOutput( true );
+  renderContext.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QgsSymbolRenderContext symbolContext( renderContext, Qgis::RenderUnit::Pixels, 1.0, false, Qgis::SymbolRenderHints() );
 
   std::unique_ptr< QgsLinePatternFillSymbolLayer > layerClone( clone() );
@@ -3143,7 +3143,6 @@ bool QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
   lineRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
   QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
   lineRenderContext.setMapToPixel( mtp );
-  lineRenderContext.setForceVectorOutput( false );
   lineRenderContext.setExpressionContext( context.renderContext().expressionContext() );
   lineRenderContext.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
   lineRenderContext.setDisabledSymbolLayersV2( context.renderContext().disabledSymbolLayersV2() );
@@ -3918,7 +3917,6 @@ bool QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     context.renderContext().setPainterFlagsUsingContext( &p );
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
-    pointRenderContext.setForceVectorOutput( false );
     pointRenderContext.setExpressionContext( context.renderContext().expressionContext() );
     pointRenderContext.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
@@ -4530,7 +4528,7 @@ QImage QgsPointPatternFillSymbolLayer::toTiledPatternImage() const
   renderContext.setFlag( Qgis::RenderContextFlag::RenderMapTile );
   renderContext.setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
-  renderContext.setForceVectorOutput( true );
+  renderContext.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QgsSymbolRenderContext symbolContext( renderContext, Qgis::RenderUnit::Pixels, 1.0, false, Qgis::SymbolRenderHints() );
 
   std::unique_ptr< QgsPointPatternFillSymbolLayer > layerClone( clone() );

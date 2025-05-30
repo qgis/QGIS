@@ -251,7 +251,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true );
   mMapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   mMapSettings.setTransformContext( context.transformContext() );
   mMapSettings.setExtentBuffer( extentBuffer );
 

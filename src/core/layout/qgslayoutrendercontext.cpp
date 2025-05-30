@@ -20,42 +20,44 @@
 
 QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
   : QObject( layout )
-  , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
+  , mFlags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
   , mLayout( layout )
 {
   mSimplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlag::NoSimplification );
 }
 
-void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags )
+void QgsLayoutRenderContext::setFlags( const Qgis::LayoutRenderFlags flags )
 {
   if ( flags == mFlags )
     return;
 
   mFlags = flags;
+  matchRasterizedRenderingPolicyToFlags();
   emit flagsChanged( mFlags );
 }
 
-void QgsLayoutRenderContext::setFlag( const QgsLayoutRenderContext::Flag flag, const bool on )
+void QgsLayoutRenderContext::setFlag( const Qgis::LayoutRenderFlag flag, const bool on )
 {
-  Flags newFlags = mFlags;
+  Qgis::LayoutRenderFlags newFlags = mFlags;
   if ( on )
     newFlags |= flag;
   else
-    newFlags &= ~flag;
+    newFlags &= ~static_cast< int >( flag );
 
   if ( newFlags == mFlags )
     return;
 
   mFlags = newFlags;
+  matchRasterizedRenderingPolicyToFlags();
   emit flagsChanged( mFlags );
 }
 
-QgsLayoutRenderContext::Flags QgsLayoutRenderContext::flags() const
+Qgis::LayoutRenderFlags QgsLayoutRenderContext::flags() const
 {
   return mFlags;
 }
 
-bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag ) const
+bool QgsLayoutRenderContext::testFlag( const Qgis::LayoutRenderFlag flag ) const
 {
   return mFlags.testFlag( flag );
 }
@@ -63,19 +65,41 @@ bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag )
 Qgis::RenderContextFlags QgsLayoutRenderContext::renderContextFlags() const
 {
   Qgis::RenderContextFlags flags = Qgis::RenderContextFlags();
-  if ( mFlags & FlagAntialiasing )
+  if ( mFlags & Qgis::LayoutRenderFlag::Antialiasing )
   {
     flags = flags | Qgis::RenderContextFlag::Antialiasing;
     flags = flags | Qgis::RenderContextFlag::HighQualityImageTransforms;
   }
-  if ( mFlags & FlagUseAdvancedEffects )
+  if ( mFlags & Qgis::LayoutRenderFlag::UseAdvancedEffects )
     flags = flags | Qgis::RenderContextFlag::UseAdvancedEffects;
-  if ( mFlags & FlagLosslessImageRendering )
+  if ( mFlags & Qgis::LayoutRenderFlag::LosslessImageRendering )
     flags = flags | Qgis::RenderContextFlag::LosslessImageRendering;
 
   // TODO - expose as layout context flag?
   flags |= Qgis::RenderContextFlag::ForceVectorOutput;
   return flags;
+}
+
+Qgis::RasterizedRenderingPolicy QgsLayoutRenderContext::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
+
+void QgsLayoutRenderContext::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
+{
+  mRasterizedRenderingPolicy = policy;
+  switch ( mRasterizedRenderingPolicy )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      mFlags.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, false );
+      mFlags.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
+      break;
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      mFlags.setFlag( Qgis::LayoutRenderFlag::ForceVectorOutput, true );
+      mFlags.setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
+      break;
+  }
 }
 
 void QgsLayoutRenderContext::setDpi( double dpi )
@@ -151,4 +175,14 @@ QgsFeatureFilterProvider *QgsLayoutRenderContext::featureFilterProvider() const
 void QgsLayoutRenderContext::setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider )
 {
   mFeatureFilterProvider = featureFilterProvider;
+}
+
+void QgsLayoutRenderContext::matchRasterizedRenderingPolicyToFlags()
+{
+  if ( !mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput )
+       && mFlags.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
+  else if ( mFlags.testFlag( Qgis::LayoutRenderFlag::ForceVectorOutput )
+            || !mFlags.testFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
 }

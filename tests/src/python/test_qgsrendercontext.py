@@ -994,7 +994,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
     def testMapUnitScaleFactor(self):
-        # test QgsSymbolLayerUtils::mapUnitScaleFactor() using QgsMapUnitScale
+        # test QgsSymbolLayerUtils.mapUnitScaleFactor() using QgsMapUnitScale
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -1206,6 +1206,41 @@ class TestQgsRenderContext(QgisTestCase):
                 "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
                 "Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))",
             ],
+        )
+
+    def test_deprecated_flags_rasterize_policy(self):
+        context = QgsRenderContext()
+
+        # test translation of rasterize policies to flags
+        context.setRasterizedRenderingPolicy(Qgis.RasterizedRenderingPolicy.ForceVector)
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.ForceVectorOutput))
+        self.assertFalse(context.testFlag(Qgis.RenderContextFlag.UseAdvancedEffects))
+
+        context.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.ForceVectorOutput))
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.UseAdvancedEffects))
+
+        context.setRasterizedRenderingPolicy(Qgis.RasterizedRenderingPolicy.Default)
+        self.assertFalse(context.testFlag(Qgis.RenderContextFlag.ForceVectorOutput))
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.UseAdvancedEffects))
+
+        context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, True)
+        self.assertEqual(
+            context.rasterizedRenderingPolicy(),
+            Qgis.RasterizedRenderingPolicy.PreferVector,
+        )
+        context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, False)
+        self.assertEqual(
+            context.rasterizedRenderingPolicy(), Qgis.RasterizedRenderingPolicy.Default
+        )
+
+        context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, True)
+        context.setFlag(Qgis.RenderContextFlag.UseAdvancedEffects, False)
+        self.assertEqual(
+            context.rasterizedRenderingPolicy(),
+            Qgis.RasterizedRenderingPolicy.ForceVector,
         )
 
 

@@ -1057,8 +1057,27 @@ Sets the shading ``renderer`` used to render shading on the entire map
 .. versionadded:: 3.30
 %End
 
-  protected:
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+%Docstring
+Returns the policy controlling when rasterisation of content during
+renders is permitted.
 
+.. seealso:: :py:func:`setRasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+%Docstring
+Sets the ``policy`` controlling when rasterisation of content during
+renders is permitted.
+
+.. seealso:: :py:func:`rasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+  protected:
 
 
 
