@@ -1180,7 +1180,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         if ( field.name.isEmpty() || field.isAutoIncrement )
           continue;
 
-        if ( QgsVariantUtils::isUnsetAttributeValue( it2 ) )
+        if ( QgsVariantUtils::isUnsetAttributeValue( it2.value() ) )
           continue;
 
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
