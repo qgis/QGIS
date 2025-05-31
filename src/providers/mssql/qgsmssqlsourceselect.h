@@ -76,6 +76,8 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
 
     void reset() override;
 
+    QString settingPath() const override;
+
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );
 
