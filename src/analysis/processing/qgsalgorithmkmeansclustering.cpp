@@ -551,4 +551,193 @@ void QgsKMeansClusteringAlgorithm::initClustersPlusPlus( std::vector<Feature> &p
   }
 }
 
+//
+// QgsKMeansClusteringFromSeedLayerAlgorithm
+//
+
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::name() const
+{
+  return QStringLiteral( "kmeansclusteringfromseedlayer" );
+}
+
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::displayName() const
+{
+  return QObject::tr( "K-means clustering (from seed layer)" );
+}
+
+void QgsKMeansClusteringFromSeedLayerAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SEED" ), QObject::tr( "Seed layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
+  fieldNameParam->setFlags( fieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( fieldNameParam.release() );
+  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ), QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
+  sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( sizeFieldNameParam.release() );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clusters" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+}
+
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the 2D distance based k-means cluster number for each input feature.\n\n"
+                      "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n" );
+}
+
+QString QgsKMeansClusteringFromSeedLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature.\n"
+                      "Uses the provided seed layer for starting centers." );
+}
+
+QgsKMeansClusteringFromSeedLayerAlgorithm *QgsKMeansClusteringFromSeedLayerAlgorithm::createInstance() const
+{
+  return new QgsKMeansClusteringFromSeedLayerAlgorithm();
+}
+
+QVariantMap QgsKMeansClusteringFromSeedLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
+  std::unique_ptr<QgsProcessingFeatureSource> seedSource( parameterAsSource( parameters, QStringLiteral( "SEED" ), context ) );
+  if ( !seedSource )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "SEED" ) ) );
+
+  QgsFields outputFields = source->fields();
+  QgsFields newFields;
+  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  newFields.append( QgsField( clusterFieldName, QMetaType::Type::Int ) );
+  const QString clusterSizeFieldName = parameterAsString( parameters, QStringLiteral( "SIZE_FIELD_NAME" ), context );
+  newFields.append( QgsField( clusterSizeFieldName, QMetaType::Type::Int ) );
+  outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
+
+  QString dest;
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, source->wkbType(), source->sourceCrs() ) );
+  if ( !sink )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  // build list of point inputs - if it's already a point, use that. If not, take the centroid.
+  feedback->pushInfo( QObject::tr( "Collecting input points" ) );
+  const double step = source->featureCount() + seedSource->featureCount() > 0 ? 50.0 / static_cast< double >( source->featureCount() + seedSource->featureCount() ) : 1;
+  int i = 0;
+  int n = 0;
+  int featureWithGeometryCount = 0;
+  QgsFeature feat;
+
+  std::vector<Feature> clusterFeatures;
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
+  QHash<QgsFeatureId, std::size_t> idToObj;
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( i * step );
+    if ( !feat.hasGeometry() )
+      continue;
+    featureWithGeometryCount++;
+
+    QgsPointXY point;
+    if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == Qgis::WkbType::Point )
+      point = QgsPointXY( *qgsgeometry_cast<const QgsPoint *>( feat.geometry().constGet() ) );
+    else
+    {
+      const QgsGeometry centroid = feat.geometry().centroid();
+      if ( centroid.isNull() )
+        continue; // centroid failed, e.g. empty linestring
+
+      point = QgsPointXY( *qgsgeometry_cast<const QgsPoint *>( centroid.constGet() ) );
+    }
+
+    n++;
+
+    idToObj[feat.id()] = clusterFeatures.size();
+    clusterFeatures.emplace_back( Feature( point ) );
+  }
+
+  feedback->pushInfo( QObject::tr( "Collecting seed points" ) );
+  std::vector<QgsPointXY> centers;
+  QgsFeatureIterator seedFeatures = seedSource->getFeatures( QgsFeatureRequest().setNoAttributes() );
+  while ( seedFeatures.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+    
+    feedback->setProgress( i * step );
+    if ( !feat.hasGeometry() )
+      continue;
+
+    centers.emplace_back( QgsPointXY( *qgsgeometry_cast<const QgsPoint *>( feat.geometry().constGet() ) ) );
+  }
+
+  int k = centers.size();
+
+  if ( n < k )
+  {
+    feedback->reportError( QObject::tr( "Number of geometries is less than the number of clusters requested, not all clusters will get data" ) );
+    k = n;
+  }
+
+  if ( k > 1 )
+  {
+    feedback->pushInfo( QObject::tr( "Calculating clusters" ) );
+
+    calculateKMeans( clusterFeatures, centers, k, feedback );
+  }
+
+  // cluster size
+  std::unordered_map<int, int> clusterSize;
+  for ( auto it = idToObj.constBegin(); it != idToObj.constEnd(); ++it )
+  {
+    clusterSize[clusterFeatures[it.value()].cluster]++;
+  }
+
+  features = source->getFeatures();
+  i = 0;
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( 50 + i * step );
+    QgsAttributes attr = feat.attributes();
+    const auto obj = idToObj.find( feat.id() );
+    if ( !feat.hasGeometry() || obj == idToObj.end() )
+    {
+      attr << QVariant() << QVariant();
+    }
+    else if ( k <= 1 )
+    {
+      attr << 0 << featureWithGeometryCount;
+    }
+    else
+    {
+      const int cluster = clusterFeatures[*obj].cluster;
+      attr << cluster << clusterSize[cluster];
+    }
+    feat.setAttributes( attr );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+  }
+
+  sink->finalize();
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
 ///@endcond
