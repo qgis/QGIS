@@ -14,11 +14,15 @@
  ***************************************************************************/
 #include <QCoreApplication>
 #include <QLocale>
+#include <QSignalSpy>
+#include <QTest>
 
 #include "qgstest.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsnumericformat.h"
+#include "qgsbearingnumericformat.h"
 
 class TestQgsAdvancedDigitizingDockWidget : public QObject
 {
@@ -33,6 +37,7 @@ class TestQgsAdvancedDigitizingDockWidget : public QObject
     void cleanup();         // will be called after every testfunction.
 
     void parseUserInput();
+    void angleAzimuthVisibility();
 };
 
 void TestQgsAdvancedDigitizingDockWidget::initTestCase()
@@ -135,6 +140,34 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
   result = widget.parseUserInput( QStringLiteral( "100" ), Qgis::CadConstraintType::Distance, ok );
   QCOMPARE( result, 100.0 * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::FeetUSSurvey ) );
   QVERIFY( ok );
+}
+
+void TestQgsAdvancedDigitizingDockWidget::angleAzimuthVisibility()
+{
+  // Checks that azimuth is visibible even if the angle constraint is locked
+  // See: issue GH #61587
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.mapSettings().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  QgsAdvancedDigitizingDockWidget widget { &canvas };
+  widget.setCadEnabled( true );
+  widget.setPoints( { QgsPointXY( 0, 0 ), QgsPointXY( 1, 0 ) } );
+  widget.mAngleConstraint->setLockMode( QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+  widget.mAngleConstraint->setValue( 45 );
+  QCOMPARE( widget.mAngleConstraint->lockMode(), QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+
+  QSignalSpy spy( &widget, &QgsAdvancedDigitizingDockWidget::valueBearingChanged );
+
+  // Add one point at 45 degrees angle
+  const QgsPoint point( 2, 1 );
+  widget.addPoint( point );
+  widget.updateUnlockedConstraintValues( point );
+
+  QCOMPARE( spy.count(), 1 );
+  QList<QVariant> args = spy.takeFirst();
+  const QgsNumericFormatContext context;
+  const QString bearingText { QgsProject::instance()->displaySettings()->bearingFormat()->formatDouble( 45, context ) };
+  QCOMPARE( args.at( 0 ).toString(), bearingText );
 }
 
 QGSTEST_MAIN( TestQgsAdvancedDigitizingDockWidget )
