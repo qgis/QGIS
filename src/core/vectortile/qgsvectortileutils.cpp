@@ -132,7 +132,14 @@ QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &s
         {
           // take a random one from the list
           // we might want to save the alternatives for a fallback later
-          sources.insert( sourceName, tiles[rand() % tiles.count()].toString() );
+          QString tilesString = tiles[rand() % tiles.count()].toString();
+          QUrl tilesUrl( tilesString );
+          if ( tilesUrl.isRelative() )
+          {
+            QUrl temporaryStyleUrl( styleUrl );
+            tilesString = QStringLiteral( "%1://%2%3" ).arg( temporaryStyleUrl.scheme(), temporaryStyleUrl.host(), tilesString );
+          }
+          sources.insert( sourceName, tilesString );
         }
       }
       return sources;
