@@ -67,7 +67,7 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsKMeansClusteringA
     friend class TestQgsProcessingAlgsPt1;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 class ANALYSIS_EXPORT QgsKMeansClusteringFromSeedLayerAlgorithm : public QgsKMeansClusteringAlgorithmBase
@@ -83,7 +83,7 @@ class ANALYSIS_EXPORT QgsKMeansClusteringFromSeedLayerAlgorithm : public QgsKMea
     QgsKMeansClusteringFromSeedLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
