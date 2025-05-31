@@ -137,7 +137,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
+    virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
+
 #ifndef SIP_RUN
+
+    virtual QColor getLinkColor( Qt::Edge edge, int index );
 
     /**
      * Shows a preview of setting a new \a rect for the item.
@@ -237,7 +241,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     /**
      * Returns the output socket graphics items at the specified \a index.
-     * 
+     *
      * May return NULLPTR if no corresponding output socket exists.
      * \since QGIS 3.44
      */
@@ -363,6 +367,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void updateButtonPositions();
 
+    /**
+     * Get the fallback color if parameter or output do not have a specific color
+     */
+    QColor fallbackColor() const { return mFallbackColor; };
+
   private:
     QSizeF itemSize() const;
 
@@ -400,6 +409,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     bool mIsHovering = false;
     QSizeF mTempSize;
+    QColor mFallbackColor = QColor( 128, 128, 128 ); /* mid gray */
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
 
@@ -426,6 +436,10 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    QString getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) override;
+
+    QColor getLinkColor( Qt::Edge edge, int index ) override;
 
   protected:
     QColor fillColor( State state ) const override;
