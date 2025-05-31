@@ -44,6 +44,8 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
   , mLayout( layout )
   , mView( view )
 {
+  setRotationEnabled( true );
+
   //listen for selection changes, and update handles accordingly
   connect( mLayout, &QGraphicsScene::selectionChanged, this, &QgsLayoutMouseHandles::selectionChanged );
 
@@ -249,6 +251,16 @@ void QgsLayoutMouseHandles::expandItemList( const QList<QgsLayoutItem *> &items,
 void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double deltaY )
 {
   qgis::down_cast<QgsLayoutItem *>( item )->attemptMoveBy( deltaX, deltaY );
+}
+
+void QgsLayoutMouseHandles::rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY )
+{
+  QgsLayoutItem *itm = qgis::down_cast<QgsLayoutItem *>( item );
+  QgsLayoutItem::ReferencePoint previousReferencePoint = itm->referencePoint();
+  itm->setReferencePoint( QgsLayoutItem::Middle );
+  itm->attemptMoveBy( deltaCenterX, deltaCenterY );
+  itm->setItemRotation( itm->itemRotation() + deltaDegree, true );
+  itm->setReferencePoint( previousReferencePoint );
 }
 
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
