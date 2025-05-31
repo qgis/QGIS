@@ -281,6 +281,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   QDomElement child = root.firstChildElement();
   bool reassignAll = false;
+  bool skipAll = false;
   while ( !child.isNull() )
   {
     actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
@@ -312,15 +313,21 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
           text = shortcut->whatsThis();
         }
 
-        if ( !reassignAll )
+        if ( !reassignAll && !skipAll )
         {
-          const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No );
-          if ( res == QMessageBox::No )
+          const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+          if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
           {
+            skipAll = res == QMessageBox::NoToAll;
             child = child.nextSiblingElement();
             continue;
           }
           reassignAll = res == QMessageBox::YesToAll;
+        }
+        else if ( skipAll )
+        {
+          child = child.nextSiblingElement();
+          continue;
         }
         mManager->setObjectKeySequence( previousAction ? qobject_cast<QObject *>( previousAction ) : qobject_cast<QObject *>( previousShortcut ), QString() );
       }
@@ -357,15 +364,21 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
             text = shortcut->whatsThis();
           }
 
-          if ( !reassignAll )
+          if ( !reassignAll && !skipAll )
           {
-            const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No );
-            if ( res == QMessageBox::No )
+            const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+            if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
             {
+              skipAll = res == QMessageBox::NoToAll;
               child = child.nextSiblingElement();
               continue;
             }
             reassignAll = res == QMessageBox::YesToAll;
+          }
+          else if ( skipAll )
+          {
+            child = child.nextSiblingElement();
+            continue;
           }
           mManager->setObjectKeySequence( previousObj, QString() );
         }
