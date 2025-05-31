@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsKMeansClusteringA
 {
   public:
     QgsKMeansClusteringAlgorithm() = default;
-    
+
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -74,7 +74,7 @@ class ANALYSIS_EXPORT QgsKMeansClusteringFromSeedLayerAlgorithm : public QgsKMea
 {
   public:
     QgsKMeansClusteringFromSeedLayerAlgorithm() = default;
-    
+
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
