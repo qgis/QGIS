@@ -1,6 +1,6 @@
 /***************************************************************************
-                       qgsfeaturefilterprovidergroup.h
-                       -------------------------------
+                              qgsfeaturefilter.h
+                              ------------------
   begin                : 26-10-2017
   copyright            : (C) 2017 by Patrick Valsecchi
   email                : patrick dot valsecchi at camptocamp dot com
@@ -15,27 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATUREFILTERPROVIDERGROUP_H
-#define QGSFEATUREFILTERPROVIDERGROUP_H
+#ifndef QGSFEATUREFILTER_H
+#define QGSFEATUREFILTER_H
 
 #include "qgsfeaturefilterprovider.h"
-#include "qgis_server.h"
+#include "qgis_core.h"
 
-#include <QList>
+#include <QMap>
+
+class QgsExpression;
 
 /**
- * \ingroup server
- * \class QgsFeatureFilterProviderGroup
- * \brief A filter filter provider grouping several filter providers.
+ * \ingroup core
+ * \class QgsFeatureFilter
+ * \brief A feature filter provider allowing to set filter expressions on a per-layer basis.
  */
-class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvider
+class CORE_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 {
   public:
     //! Constructor
-    QgsFeatureFilterProviderGroup() = default;
+    QgsFeatureFilter() = default;
 
     /**
-     * Filter the features of the layer.
+     * Filter the features of the layer
      * \param layer the layer to control
      * \param filterFeatures the request to fill
      */
@@ -50,15 +52,14 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
     QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
-     * Add another filter provider to the group
-     * \param provider The provider to add
-     * \return itself
+     * Set a filter for the given layer.
+     * \param layer the layer to filter
+     * \param expression the filter expression
      */
-    QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
-
+    void setFilter( const QgsVectorLayer *layer, const QgsExpression &expression );
 
   private:
-    QList<const QgsFeatureFilterProvider *> mProviders;
+    QMap<QString, QString> mFilters;
 };
 
 #endif
