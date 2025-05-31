@@ -481,6 +481,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsKeepNBiggestPartsAlgorithm() );
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
+  addAlgorithm( new QgsKMeansClusteringFromSeedLayerAlgorithm() );
   addAlgorithm( new QgsLayerToBookmarksAlgorithm() );
   addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
   addAlgorithm( new QgsLayoutAtlasToImageAlgorithm() );
