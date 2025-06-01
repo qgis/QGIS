@@ -497,10 +497,6 @@ elseif(MINGW)
   )
 endif()
 
-if(HAVE_OPENCL)
-  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
-endif()
-
 if(ENABLE_MODELTEST)
   include_directories(../../tests/qt_modeltest)
 endif()

@@ -554,13 +554,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   )
 endif()
 
-# install headers
-
-if(HAVE_OPENCL)
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
-endif()
-
-
 
 #############################################################
 # qgis_analysis library

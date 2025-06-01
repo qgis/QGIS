@@ -2215,7 +2215,6 @@ if (HAVE_OPENCL)
     set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
         qgsopenclutils.h
     )
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if (WITH_EPT)
@@ -2482,6 +2481,7 @@ endif()
 
 if(HAVE_OPENCL)
   target_link_libraries(qgis_core ${OpenCL_LIBRARY})
+  target_include_directories(qgis_core PUBLIC ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if(WITH_INTERNAL_NLOHMANN_JSON)
