@@ -1216,6 +1216,13 @@ class QgsVectorFileWriterMetadataContainer
                              false  // Default value
                            ) );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+      layerOptions.insert( QStringLiteral( "HEADER" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to write a header line with the field names." ),
+                             true  // Default value
+                           ) );
+#endif
+
       driverMetadata.insert( QStringLiteral( "CSV" ),
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "Comma Separated Value [CSV]" ),
