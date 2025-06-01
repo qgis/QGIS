@@ -1194,7 +1194,8 @@ class QgsVectorFileWriterMetadataContainer
                              QStringList()
                              << QStringLiteral( "COMMA" )
                              << QStringLiteral( "SEMICOLON" )
-                             << QStringLiteral( "TAB" ),
+                             << QStringLiteral( "TAB" )
+                             << QStringLiteral( "SPACE" ),
                              QStringLiteral( "COMMA" ) // Default value
                            ) );
 
