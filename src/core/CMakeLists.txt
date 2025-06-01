@@ -2484,9 +2484,6 @@ if(HAVE_OPENCL)
   target_link_libraries(qgis_core ${OpenCL_LIBRARY})
 endif()
 
-
-install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-
 if(WITH_INTERNAL_NLOHMANN_JSON)
   install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
   install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/detail/abi_macros.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann/detail)
@@ -2650,9 +2647,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

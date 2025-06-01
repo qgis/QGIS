@@ -8,7 +8,6 @@ ADD_FLEX_BISON_DEPENDENCY(QgsRasterCalcLexer QgsRasterCalcParser)
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
-
   ${FLEX_QgsRasterCalcLexer_OUTPUTS}
   ${BISON_QgsRasterCalcParser_OUTPUTS}
 
@@ -601,8 +600,6 @@ GENERATE_EXPORT_HEADER(
 
 set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_analysis.h)
 
-install(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-
 #generate unversioned libs for android
 if (NOT ANDROID)
   set_target_properties(qgis_analysis PROPERTIES
@@ -639,9 +636,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_analysis
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

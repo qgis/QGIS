@@ -1785,7 +1785,6 @@ elseif (APPLE)
 elseif (UNIX)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
 endif()
-install(FILES ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 
 #generate unversioned libs for android
 if (NOT ANDROID)
@@ -1873,12 +1872,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_gui
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-# ui headers to install, don't exist at target definition time, install manually
-install(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})
