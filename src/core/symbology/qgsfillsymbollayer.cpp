@@ -3258,7 +3258,8 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     context.setOriginalValueVariable( mDistance );
     distance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::LineDistance, context.renderContext().expressionContext(), mDistance );
   }
-  const double outputPixelDistance = context.renderContext().convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
+  // Clip distance to a reasonable distance to avoid app freezes
+  const double outputPixelDistance = std::max( 0.025, context.renderContext().convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale ) );
 
   double offset = mOffset;
   double outputPixelOffset = mOffsetUnit == Qgis::RenderUnit::Percentage ? outputPixelDistance * offset / 100
@@ -4068,7 +4069,8 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mDistanceX );
     distanceX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::DistanceX, context.renderContext().expressionContext(), mDistanceX );
   }
-  const double width = context.renderContext().convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale );
+  // Clip width step to a reasonable distance to avoid app freezes
+  const double width = std::max( 0.025, context.renderContext().convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale ) );
 
   double distanceY = mDistanceY;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DistanceY ) )
@@ -4076,7 +4078,8 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mDistanceY );
     distanceY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::DistanceY, context.renderContext().expressionContext(), mDistanceY );
   }
-  const double height = context.renderContext().convertToPainterUnits( distanceY, mDistanceYUnit, mDistanceYMapUnitScale );
+  // Clip height step to a reasonable distance to avoid app freezes
+  const double height = std::max( 0.025, context.renderContext().convertToPainterUnits( distanceY, mDistanceYUnit, mDistanceYMapUnitScale ) );
 
   double offsetX = mOffsetX;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::OffsetX ) )
