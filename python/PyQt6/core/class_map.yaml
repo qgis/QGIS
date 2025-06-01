@@ -1178,11 +1178,11 @@ QgsArcGisRestUtils.convertRenderer: src/core/providers/arcgis/qgsarcgisrestutils
 QgsArcGisRestUtils.convertSpatialReference: src/core/providers/arcgis/qgsarcgisrestutils.h#L148
 QgsArcGisRestUtils.convertSymbol: src/core/providers/arcgis/qgsarcgisrestutils.h#L155
 QgsArcGisRestUtils.crsToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L212
-QgsArcGisRestUtils.featureToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L248
-QgsArcGisRestUtils.fieldDefinitionToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L265
+QgsArcGisRestUtils.featureToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L249
+QgsArcGisRestUtils.fieldDefinitionToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L266
 QgsArcGisRestUtils.geometryToJson: src/core/providers/arcgis/qgsarcgisrestutils.h#L203
-QgsArcGisRestUtils.serviceTypeFromString: src/core/providers/arcgis/qgsarcgisrestutils.h#L272
-QgsArcGisRestUtils.variantToAttributeValue: src/core/providers/arcgis/qgsarcgisrestutils.h#L258
+QgsArcGisRestUtils.serviceTypeFromString: src/core/providers/arcgis/qgsarcgisrestutils.h#L273
+QgsArcGisRestUtils.variantToAttributeValue: src/core/providers/arcgis/qgsarcgisrestutils.h#L259
 QgsArcGisRestUtils: src/core/providers/arcgis/qgsarcgisrestutils.h#L114
 QgsArchive.addFile: src/core/qgsarchive.h#L72
 QgsArchive.clear: src/core/qgsarchive.h#L65
