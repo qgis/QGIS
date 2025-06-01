@@ -1195,8 +1195,11 @@ class QgsVectorFileWriterMetadataContainer
                              << QStringLiteral( "COMMA" )
                              << QStringLiteral( "SEMICOLON" )
                              << QStringLiteral( "TAB" )
-                             << QStringLiteral( "SPACE" ),
-                             QStringLiteral( "COMMA" ) // Default value
+                             << QStringLiteral( "SPACE" )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+                             << QStringLiteral( "PIPE" )
+#endif
+                             , QStringLiteral( "COMMA" ) // Default value
                            ) );
 
       layerOptions.insert( QStringLiteral( "STRING_QUOTING" ), new QgsVectorFileWriter::SetOption(
