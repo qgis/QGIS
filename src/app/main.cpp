@@ -408,6 +408,9 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            // warnings triggered from KDE libraries, not related to QGIS
            msg.contains( QLatin1String( "This plugin supports grabbing the mouse only for popup windows" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "KServiceTypeTrader" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "No node found for item that was just removed" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "Audio notification requested" ), Qt::CaseInsensitive ) ||
 
+           // something from deep within Qt6 (looks like a malformed SVG in a platform theme), not related to us
+           msg.contains( QLatin1String( "The requested buffer size is too big, ignoring" ) ) ||
+
            // coming from WebEngine:
            msg.contains( QLatin1String( "An OpenGL Core Profile was requested, but it is not supported on the current platform" ), Qt::CaseInsensitive ) )
         break;
