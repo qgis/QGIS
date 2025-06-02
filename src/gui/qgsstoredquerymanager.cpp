@@ -186,7 +186,12 @@ QList<QgsStoredQueryManager::QueryDetails> QgsStoredQueryManager::allQueries() c
 
   std::sort( res.begin(), res.end(), [=]( const QueryDetails &a, const QueryDetails &b ) {
     if ( a.name == b.name )
-      return a.backend == Qgis::QueryStorageBackend::CurrentProject;
+    {
+      if ( a.backend == b.backend )
+        return false;
+      else
+        return a.backend == Qgis::QueryStorageBackend::CurrentProject;
+    }
 
     return QString::localeAwareCompare( a.name, b.name ) < 0;
   } );
