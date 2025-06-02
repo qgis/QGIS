@@ -1546,6 +1546,31 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
+  QFont defaultFont = QApplication::font();
+  bool defaultFontCustomized = false;
+  const double fontSize = settings.value( QStringLiteral( "/app/fontPointSize" ), defaultFont.pointSizeF() ).toDouble();
+  if ( fontSize != defaultFont.pointSizeF() )
+  {
+    defaultFont.setPointSizeF( fontSize );
+    defaultFontCustomized = true;
+  }
+
+  QString fontFamily = settings.value( QStringLiteral( "/app/fontFamily" ), defaultFont.family() ).toString();
+  if ( fontFamily != defaultFont.family() )
+  {
+    const QFont tempFont( fontFamily );
+    if ( tempFont.family() == fontFamily )
+    {
+      // font exists on system, proceed
+      defaultFont.setFamily( fontFamily );
+      defaultFontCustomized = true;
+    }
+  }
+  if ( defaultFontCustomized )
+  {
+    QApplication::setFont( defaultFont );
+  }
+
   QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
