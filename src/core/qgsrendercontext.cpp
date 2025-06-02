@@ -466,7 +466,7 @@ double QgsRenderContext::convertToPainterUnits( double size, Qgis::RenderUnit un
     convertedSize *= symbologyReferenceScaleFactor;
   }
 
-  if ( mFlags & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( mFlags & Qgis::RenderContextFlag::RenderSymbolPreview || mFlags & Qgis::RenderContextFlag::RenderLayerTree )
   {
     // apply property based constraints in order to optimise symbol preview rendering
     switch ( property )
