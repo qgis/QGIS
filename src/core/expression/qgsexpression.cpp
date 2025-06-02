@@ -35,15 +35,15 @@ extern QgsExpressionNode *parseExpression( const QString &str, QString &parserEr
 
 Q_GLOBAL_STATIC( QgsStringMap, sVariableHelpTexts )
 Q_GLOBAL_STATIC( QgsStringMap, sGroups )
+Q_GLOBAL_STATIC( HelpTextHash, sFunctionHelpTexts )
 
-HelpTextHash QgsExpression::sFunctionHelpTexts;
 QRecursiveMutex QgsExpression::sFunctionsMutex;
 QMap< QString, int> QgsExpression::sFunctionIndexMap;
 
 ///@cond PRIVATE
 HelpTextHash &QgsExpression::functionHelpTexts()
 {
-  return sFunctionHelpTexts;
+  return *sFunctionHelpTexts();
 }
 ///@endcond
 
@@ -573,10 +573,11 @@ QString QgsExpression::helpText( QString name )
 {
   QgsExpression::initFunctionHelp();
 
-  if ( !sFunctionHelpTexts.contains( name ) )
+  const HelpTextHash &functionHelpTexts = *sFunctionHelpTexts();
+  if ( !functionHelpTexts.contains( name ) )
     return tr( "function help for %1 missing" ).arg( name );
 
-  const Help &f = sFunctionHelpTexts[ name ];
+  const Help &f = functionHelpTexts[ name ];
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
@@ -709,10 +710,11 @@ QStringList QgsExpression::tags( const QString &name )
   QStringList tags = QStringList();
 
   QgsExpression::initFunctionHelp();
+  const HelpTextHash &functionHelpTexts = *sFunctionHelpTexts();
 
-  if ( sFunctionHelpTexts.contains( name ) )
+  if ( functionHelpTexts.contains( name ) )
   {
-    const Help &f = sFunctionHelpTexts[ name ];
+    const Help &f = functionHelpTexts[ name ];
 
     for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {

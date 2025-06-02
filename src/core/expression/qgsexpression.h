@@ -816,8 +816,6 @@ class CORE_EXPORT QgsExpression
 
     QgsExpressionPrivate *d = nullptr;
 
-    static HelpTextHash sFunctionHelpTexts;
-
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;
     //! \note not available in Python bindings
