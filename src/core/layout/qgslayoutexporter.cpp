@@ -2280,7 +2280,6 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
   const QLatin1String xmpMMNS( "http://ns.adobe.com/xap/1.0/mm/" );
   const QLatin1String pdfNS( "http://ns.adobe.com/pdf/1.3/" );
   const QLatin1String pdfaidNS( "http://www.aiim.org/pdfa/ns/id/" );
-  const QLatin1String pdfxidNS( "http://www.npes.org/pdfx/ns/id/" );
 
   QByteArray xmpMetadata;
   QBuffer output( &xmpMetadata );
@@ -2296,7 +2295,6 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
   w.writeNamespace( xmpMMNS, "xmpMM" );  //#spellok
   w.writeNamespace( pdfNS, "pdf" );  //#spellok
   w.writeNamespace( pdfaidNS, "pdfaid" );  //#spellok
-  w.writeNamespace( pdfxidNS, "pdfxid" );  //#spellok
 
   w.writeStartElement( adobeNS, "xmpmeta" );
   w.writeStartElement( rdfNS, "RDF" );
@@ -2357,6 +2355,8 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
     case QPagedPaintDevice::PdfVersion_1_6:
       break;
     case QPagedPaintDevice::PdfVersion_X4:
+      const QLatin1String pdfxidNS( "http://www.npes.org/pdfx/ns/id/" );
+      w.writeNamespace( pdfxidNS, "pdfxid" );  //#spellok
       w.writeStartElement( rdfNS, "Description" );
       w.writeAttribute( rdfNS, "about", "" );
       w.writeAttribute( pdfxidNS, "GTS_PDFXVersion", "PDF/X-4" );
