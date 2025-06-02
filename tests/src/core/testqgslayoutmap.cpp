@@ -604,7 +604,7 @@ void TestQgsLayoutMap::layersToRender()
   l.renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, false );
   QCOMPARE( map->layersToRender(), layers );
 
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, true );
   QCOMPARE( map->layersToRender(), layers2 );
   l.reportContext().setFeature( QgsFeature() );
   QCOMPARE( map->layersToRender(), layers );
