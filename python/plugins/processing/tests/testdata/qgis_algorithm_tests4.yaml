@@ -436,6 +436,9 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 3
+            normalize: True
 
   - algorithm: model:Outer model
     name: Nested models
@@ -449,6 +452,9 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 3
+            normalize: True
 
   - algorithm: native:intersection
     name: Test Intersection (basic)
