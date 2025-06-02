@@ -2862,34 +2862,75 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="textLabel1_11">
+                    <property name="text">
+                     <string>Default distance units for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="label_72">
+                    <property name="text">
+                     <string>Default coordinate format for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="2">
+                   <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
                     <property name="text">
                      <string>Customize…</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="4" column="2">
+                   <widget class="QComboBox" name="mDistanceUnitsComboBox"/>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Decimal places</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QgsSpinBox" name="mDecimalPlacesSpinBox"/>
+                  </item>
+                  <item row="5" column="2">
+                   <widget class="QComboBox" name="mAreaUnitsComboBox"/>
+                  </item>
                   <item row="1" column="0">
+                   <widget class="QLabel" name="label_13">
+                    <property name="toolTip">
+                     <string>If unchecked large numbers will be converted from m. to km. and from ft. to miles</string>
+                    </property>
+                    <property name="text">
+                     <string>Keep base unit</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="textLabel1_14">
+                    <property name="text">
+                     <string>Default area units for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
                    <widget class="QLabel" name="label_69">
                     <property name="text">
                      <string>Default bearing format for new projects</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="3">
-                   <spacer name="horizontalSpacer_10">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1">
+                  <item row="8" column="1">
                    <spacer name="horizontalSpacer_11">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -2905,41 +2946,27 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_72">
-                    <property name="text">
-                     <string>Default coordinate format for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
+                  <item row="8" column="2">
+                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
                     <property name="text">
                      <string>Customize…</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="8" column="3">
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="2" column="0">
-                   <widget class="QLabel" name="textLabel1_11">
-                    <property name="text">
-                     <string>Default distance units for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="mDistanceUnitsComboBox"/>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="textLabel1_14">
-                    <property name="text">
-                     <string>Default area units for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="2">
-                   <widget class="QComboBox" name="mAreaUnitsComboBox"/>
-                  </item>
-                  <item row="4" column="0">
                    <widget class="QLabel" name="mAngleUnitsLabel">
                     <property name="toolTip">
                      <string>Specifies the angle unit to use in te current and new projects.</string>
@@ -2949,7 +2976,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="2">
+                  <item row="2" column="2">
                    <widget class="QComboBox" name="mAngleUnitsComboBox"/>
                   </item>
                  </layout>
@@ -3146,33 +3173,6 @@
                      <string/>
                     </property>
                    </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Decimal places</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_13">
-                    <property name="toolTip">
-                     <string>If unchecked large numbers will be converted from m. to km. and from ft. to miles</string>
-                    </property>
-                    <property name="text">
-                     <string>Keep base unit</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QgsSpinBox" name="mDecimalPlacesSpinBox"/>
                   </item>
                   <item row="3" column="0" colspan="3">
                    <widget class="QgsCollapsibleGroupBox" name="mMeasureToolCopySettingsGroupBox">
@@ -5577,18 +5577,18 @@ p, li { white-space: pre-wrap; }
   <tabstop>mMapTipsDelaySpinBox</tabstop>
   <tabstop>mRespectScreenDpiCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
-  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
-  <tabstop>mCustomizeBearingFormatButton</tabstop>
+  <tabstop>mDecimalPlacesSpinBox</tabstop>
+  <tabstop>mKeepBaseUnitCheckBox</tabstop>
+  <tabstop>mAngleUnitsComboBox</tabstop>
   <tabstop>mDistanceUnitsComboBox</tabstop>
   <tabstop>mAreaUnitsComboBox</tabstop>
-  <tabstop>mAngleUnitsComboBox</tabstop>
+  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
+  <tabstop>mCustomizeBearingFormatButton</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
   <tabstop>mIdentifyHighlightBufferSpinBox</tabstop>
   <tabstop>mIdentifyHighlightMinWidthSpinBox</tabstop>
   <tabstop>pbnMeasureColor</tabstop>
-  <tabstop>mDecimalPlacesSpinBox</tabstop>
-  <tabstop>mKeepBaseUnitCheckBox</tabstop>
   <tabstop>mIncludeHeader</tabstop>
   <tabstop>mAlwaysUseDecimalPoint</tabstop>
   <tabstop>mSeparatorComma</tabstop>
