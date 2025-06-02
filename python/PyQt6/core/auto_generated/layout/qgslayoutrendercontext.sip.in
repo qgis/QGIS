@@ -34,6 +34,7 @@ layout.
       FlagLosslessImageRendering,
       FlagSynchronousLegendGraphics,
       FlagAlwaysUseGlobalMasks,
+      FlagLimitCoverageLayerRenderToCurrentFeature,
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 

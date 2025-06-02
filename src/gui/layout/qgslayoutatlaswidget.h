@@ -48,6 +48,7 @@ class GUI_EXPORT QgsLayoutAtlasWidget : public QWidget, private Ui::QgsLayoutAtl
     void changeCoverageLayer( QgsMapLayer *layer );
     void mAtlasFilenamePatternEdit_editingFinished();
     void mAtlasFilenameExpressionButton_clicked();
+    void mAtlasLimitCoverageLayerRenderCheckBox_stateChanged( int state );
     void mAtlasHideCoverageCheckBox_stateChanged( int state );
     void mAtlasSingleFileCheckBox_stateChanged( int state );
     void mAtlasSortFeatureCheckBox_stateChanged( int state );
