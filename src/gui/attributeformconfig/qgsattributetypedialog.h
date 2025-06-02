@@ -305,8 +305,6 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
 
     void updateMergePolicyLabel();
 
-    void updateGeneralProperties( const QString &type );
-
   private:
     QgsVectorLayer *mLayer = nullptr;
     int mFieldIdx;
