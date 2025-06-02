@@ -4992,6 +4992,9 @@ QgsRenderContext.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths fo
 QgsRenderContext.DisableSymbolClippingToExtent = Qgis.RenderContextFlag.DisableSymbolClippingToExtent
 QgsRenderContext.DisableSymbolClippingToExtent.is_monkey_patched = True
 QgsRenderContext.DisableSymbolClippingToExtent.__doc__ = "Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable. \n.. versionadded:: 3.40"
+QgsRenderContext.RenderLayerTree = Qgis.RenderContextFlag.RenderLayerTree
+QgsRenderContext.RenderLayerTree.is_monkey_patched = True
+QgsRenderContext.RenderLayerTree.__doc__ = "The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \n.. versionadded:: 3.40.8"
 Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
 .. versionadded:: 3.22
@@ -5041,6 +5044,10 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 * ``DisableSymbolClippingToExtent``: Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable.
 
   .. versionadded:: 3.40
+
+* ``RenderLayerTree``: The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial
+
+  .. versionadded:: 3.40.8
 
 
 """
