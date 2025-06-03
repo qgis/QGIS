@@ -2072,7 +2072,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         # Inheritance
         if class_pattern_match.group("domain"):
             m = class_pattern_match.group("domain")
-            m = re.sub(r"public +(\w+, *)*(Ui::\w+,? *)+", "", m)
+            dbg_info(f"class: {CONTEXT.classname[-1]} domain is {m}")
+            m = re.sub(r"(?:(?:,\s*)?public|(?:,\s*)?protected|,)\s+Ui::\w+\s*", "", m)
             m = re.sub(r"public +", "", m)
             m = re.sub(r"[,:]?\s*private +\w+(::\w+)?", "", m)
 
