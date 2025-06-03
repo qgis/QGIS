@@ -280,8 +280,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QString actionSettingKey;
 
   QDomElement child = root.firstChildElement();
-  bool reassignAll = false;
-  bool skipAll = false;
+  ActionOnExisting actionOnExisting = ActionOnExisting::Ask;
   while ( !child.isNull() )
   {
     actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
@@ -313,18 +312,24 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
           text = shortcut->whatsThis();
         }
 
-        if ( !reassignAll && !skipAll )
+        if ( actionOnExisting == ActionOnExisting::Ask )
         {
           const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
           if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
           {
-            skipAll = res == QMessageBox::NoToAll;
+            if ( res == QMessageBox::NoToAll )
+            {
+              actionOnExisting = ActionOnExisting::SkipAll;
+            }
             child = child.nextSiblingElement();
             continue;
           }
-          reassignAll = res == QMessageBox::YesToAll;
+          if ( res == QMessageBox::YesToAll )
+          {
+            actionOnExisting = ActionOnExisting::ReassignAll;
+          }
         }
-        else if ( skipAll )
+        else if ( actionOnExisting == ActionOnExisting::SkipAll )
         {
           child = child.nextSiblingElement();
           continue;
@@ -364,18 +369,24 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
             text = shortcut->whatsThis();
           }
 
-          if ( !reassignAll && !skipAll )
+          if ( actionOnExisting == ActionOnExisting::Ask )
           {
             const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
             if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
             {
-              skipAll = res == QMessageBox::NoToAll;
+              if ( res == QMessageBox::NoToAll )
+              {
+                actionOnExisting = ActionOnExisting::SkipAll;
+              }
               child = child.nextSiblingElement();
               continue;
             }
-            reassignAll = res == QMessageBox::YesToAll;
+            if ( res == QMessageBox::YesToAll )
+            {
+              actionOnExisting = ActionOnExisting::ReassignAll;
+            }
           }
-          else if ( skipAll )
+          else if ( actionOnExisting == ActionOnExisting::SkipAll )
           {
             child = child.nextSiblingElement();
             continue;
