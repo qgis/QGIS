@@ -330,6 +330,42 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void closePolygon();
 
+    /**
+     * Called when the geometry is captured.
+     *
+     * A more specific handler is also called afterwards (pointCaptured(), lineCaptured() or polygonCaptured()).
+     *
+     * \since QGIS 3.26
+     */
+    virtual void geometryCaptured( const QgsGeometry &geometry ) { Q_UNUSED( geometry ) }
+
+    /**
+     * Called when a point is captured.
+     *
+     * The generic geometryCaptured() method will be called immediately before this point-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void pointCaptured( const QgsPoint &point ) { Q_UNUSED( point ) }
+
+    /**
+     * Called when a line is captured
+     *
+     * The generic geometryCaptured() method will be called immediately before this line-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void lineCaptured( const QgsCurve *line ) { Q_UNUSED( line ) }
+
+    /**
+     * Called when a polygon is captured.
+     *
+     * The generic geometryCaptured() method will be called immediately before this polygon-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) { Q_UNUSED( polygon ) }
+
   protected slots:
 
     /**
@@ -338,34 +374,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void stopCapturing();
 
   private:
-    /**
-     * Called when the geometry is captured
-     * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
-     * \since QGIS 3.26
-     */
-    virtual void geometryCaptured( const QgsGeometry &geometry ) SIP_FORCE { Q_UNUSED( geometry ) }
-
-    /**
-     * Called when a point is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void pointCaptured( const QgsPoint &point ) SIP_FORCE { Q_UNUSED( point ) }
-
-    /**
-     * Called when a line is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void lineCaptured( const QgsCurve *line ) SIP_FORCE { Q_UNUSED( line ) }
-
-    /**
-     * Called when a polygon is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) SIP_FORCE { Q_UNUSED( polygon ) }
-
     //! whether tracing has been requested by the user
     bool tracingEnabled();
     //! first point that will be used as a start of the trace
