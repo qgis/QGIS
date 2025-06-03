@@ -921,6 +921,8 @@ bool QgsCameraController::onKeyPressedTerrainNavigation( QKeyEvent *event )
     case Qt::Key_PageUp:
       tElev += 1;
       break;
+    default:
+      break;
   }
 
   if ( tx || ty )
@@ -998,6 +1000,8 @@ bool QgsCameraController::onKeyPressedGlobeTerrainNavigation( QKeyEvent *event )
     case Qt::Key_PageUp:
       globeZoom( 1 / ZOOM_FACTOR );
       return true;
+    default:
+      break;
   }
   return false;
 }
@@ -1049,6 +1053,8 @@ bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
       }
       break;
     }
+    default:
+      break;
   }
 
   if ( !event->isAutoRepeat() && walkNavigationSavedKeys.contains( event->key() ) )
@@ -1319,6 +1325,9 @@ bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
         case Qt::Key_5:
           rotateCameraToHome();
           return true;
+
+        default:
+          break;
       }
     }
 
