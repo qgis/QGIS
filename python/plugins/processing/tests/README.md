@@ -152,18 +152,20 @@ Add the expected GML and XSD in the folder.
 
 #### Vector with tolerance
 
-Sometimes different platforms create slightly different results which are
-still acceptable. In this case (but only then) you may also use additional
-properties to define how exactly a layer is compared.
+Sometimes, different platforms create slightly different results that are still acceptable. 
+In such cases — and only in such cases — you can use additional properties to define how a 
+layer is compared.
 
-To deal with a certain tolerance for output values you can specify a
-`compare` property for an output. The compare property can contain sub-properties
-for `fields`. This contains information about how precisely a certain field is
-compared (`precision`) or a field can even entirely be `skip`ed. There is a special
-field name `__all__` which will apply a certain tolerance to all fields.
-There is another property `geometry`  which also accepts a `precision` which is
-applied to each vertex.
+To handle a certain tolerance for output values, you can specify a `compare` property for an output. The `compare` property can include sub-properties for `fields` and `geometry`.
 
+The `fields` section lets you control how precisely specific fields are compared. You can:
+- Use `precision` to set a numerical tolerance.
+- Use `skip` to ignore a field entirely.
+- Use `__all__` to apply the same tolerance to all fields.
+
+The `geometry` section also accepts a `precision` value, which applies to each vertex coordinate.
+
+Example configuration:
 ```yaml
 OUTPUT:
   type: vector
