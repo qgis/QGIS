@@ -85,7 +85,7 @@ class BatchOutputSelectionPanel(QWidget):
             self.pushButton.clicked.connect(self.showSelectionDialog)
         else:
             self.menu = QMenu(self.pushButton)
-            self.menu.addAction("Select File/Folder…", self.showSelectionDialog)
+            self.menu.addAction(self.tr("Select File/Folder…"), self.showSelectionDialog)
             self.menu.addAction(self.actionTemporaryOutput)
             self.pushButton.setMenu(self.menu)
 
