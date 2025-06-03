@@ -22,7 +22,7 @@
 #include <QAbstractItemView>
 
 // milliseconds to swallow child wheel events for after a scroll occurs
-#define TIMEOUT 1000
+constexpr qint64 TIMEOUT = 1000;
 
 QgsScrollArea::QgsScrollArea( QWidget *parent )
   : QScrollArea( parent )
@@ -48,18 +48,18 @@ void QgsScrollArea::resizeEvent( QResizeEvent *event )
 
 void QgsScrollArea::scrollOccurred()
 {
-  mTimer.setSingleShot( true );
-  mTimer.start( TIMEOUT );
+  mTimer.restart();
+  mTimerActive = true;
 }
 
 bool QgsScrollArea::hasScrolled() const
 {
-  return mTimer.isActive();
+  return mTimerActive && mTimer.elapsed() < TIMEOUT;
 }
 
 void QgsScrollArea::resetHasScrolled()
 {
-  mTimer.stop();
+  mTimerActive = false;
 }
 
 void QgsScrollArea::setVerticalOnly( bool verticalOnly )
