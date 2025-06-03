@@ -1890,8 +1890,6 @@ void QgsOptions::saveOptions()
   {
     mStyleSheetBuilder->setUserFontSize( newFontSize );
     mStyleSheetBuilder->setUserFontFamily( newUserFontFamily );
-    // trigger a style sheet build to propagate saved settings
-    mStyleSheetBuilder->updateStyleSheet();
   }
 
   mDefaultDatumTransformTableWidget->transformContext().writeSettings();
