@@ -16,6 +16,7 @@
 #include "qgscameracontroller.h"
 #include "moc_qgscameracontroller.cpp"
 #include "qgseventtracing.h"
+#include "qgsraycastingutils_p.h"
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
@@ -1272,24 +1273,53 @@ bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
   }
   else if ( event->type() == QKeyEvent::Type::KeyPress || event->type() == QEvent::ShortcutOverride )
   {
-    if ( event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_QuoteLeft )
+    if ( event->modifiers() & Qt::ControlModifier )
     {
-      // switch navigation mode
-      switch ( mCameraNavigationMode )
+      switch ( event->key() )
       {
-        case Qgis::NavigationMode::Walk:
-          setCameraNavigationMode(
-            mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe
-              ? Qgis::NavigationMode::GlobeTerrainBased
-              : Qgis::NavigationMode::TerrainBased
-          );
-          break;
-        case Qgis::NavigationMode::TerrainBased:
-        case Qgis::NavigationMode::GlobeTerrainBased:
-          setCameraNavigationMode( Qgis::NavigationMode::Walk );
-          break;
+        case Qt::Key_QuoteLeft:
+        {
+          // switch navigation mode
+          switch ( mCameraNavigationMode )
+          {
+            case Qgis::NavigationMode::Walk:
+              setCameraNavigationMode(
+                mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe
+                  ? Qgis::NavigationMode::GlobeTerrainBased
+                  : Qgis::NavigationMode::TerrainBased
+              );
+              break;
+            case Qgis::NavigationMode::TerrainBased:
+            case Qgis::NavigationMode::GlobeTerrainBased:
+              setCameraNavigationMode( Qgis::NavigationMode::Walk );
+              break;
+          }
+          return true;
+        }
+
+        // Make sure to sync the key combinations with strings in Qgs3DAxis::createMenu()!
+        case Qt::Key_8:
+          rotateCameraToNorth();
+          return true;
+        case Qt::Key_6:
+          rotateCameraToEast();
+          return true;
+        case Qt::Key_2:
+          rotateCameraToSouth();
+          return true;
+        case Qt::Key_4:
+          rotateCameraToWest();
+          return true;
+        case Qt::Key_9:
+          rotateCameraToTop();
+          return true;
+        case Qt::Key_3:
+          rotateCameraToBottom();
+          return true;
+        case Qt::Key_5:
+          rotateCameraToHome();
+          return true;
       }
-      return true;
     }
 
     switch ( mCameraNavigationMode )
@@ -1382,4 +1412,29 @@ void QgsCameraController::setOrigin( const QgsVector3D &origin )
   mOrigin = origin;
 
   updateCameraFromPose();
+}
+
+void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
+{
+  QgsVector3D pos = lookingAtPoint();
+  double elevation = 0.0;
+  if ( mScene->mapSettings()->terrainRenderingEnabled() )
+  {
+    QgsDebugMsgLevel( "Checking elevation from terrain...", 2 );
+    QVector3D camPos = mCamera->position();
+    QgsRayCastingUtils::Ray3D ray( camPos, pos.toVector3D() - camPos, mCamera->farPlane() );
+    const QVector<QgsRayCastingUtils::RayHit> hits = mScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
+    if ( !hits.isEmpty() )
+    {
+      elevation = hits.at( 0 ).pos.z();
+      QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
+    }
+    else
+    {
+      QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
+    }
+  }
+  pos.set( pos.x(), pos.y(), elevation + mScene->terrainEntity()->terrainElevationOffset() );
+
+  setLookingAtPoint( pos, ( mCamera->position() - pos.toVector3D() ).length(), pitch, yaw );
 }

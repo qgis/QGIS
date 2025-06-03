@@ -102,15 +102,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     // axis picking and menu
     void onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits );
     void onAxisModeChanged( Qgs3DAxisSettings::Mode mode );
-    void onCameraViewChange( float pitch, float yaw );
-
-    void onCameraViewChangeHome() { onCameraViewChange( 45.0f, 45.0f ); }
-    void onCameraViewChangeTop() { onCameraViewChange( 0.0f, 90.0f ); }
-    void onCameraViewChangeNorth() { onCameraViewChange( 90.0f, 180.0f ); }
-    void onCameraViewChangeEast() { onCameraViewChange( 90.0f, 90.0f ); }
-    void onCameraViewChangeSouth() { onCameraViewChange( 90.0f, 0.0f ); }
-    void onCameraViewChangeWest() { onCameraViewChange( 90.0f, -90.0f ); }
-    void onCameraViewChangeBottom() { onCameraViewChange( 180.0f, 0.0f ); }
 
   private:
     void createAxisScene();
@@ -129,7 +120,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     // axis picking and menu
     void init3DObjectPicking();
-    bool handleKeyEvent( QKeyEvent *keyEvent );
     void createMenu();
     void hideMenu();
     void displayMenuAt( const QPoint &position );

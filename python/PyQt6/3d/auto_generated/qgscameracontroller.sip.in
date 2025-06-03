@@ -298,6 +298,35 @@ Returns the origin of the scene in map coordinates
 .. versionadded:: 3.44
 %End
 
+    void rotateCameraToHome();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToTop();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToNorth();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToEast();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToSouth();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToWest();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToBottom();
+%Docstring
+.. versionadded:: 3.44
+%End
+
   public slots:
 
     void setCameraNavigationMode( Qgis::NavigationMode navigationMode );
