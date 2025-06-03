@@ -176,7 +176,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   if ( !hasDataDefinedSize )
   {
     double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -262,7 +262,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   if ( hasDataDefinedSize || createdNewPath )
   {
     double s = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1155,7 +1155,7 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
 {
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
   const double deviceRatio = context.renderContext().devicePixelRatio();
-  if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!

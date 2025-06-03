@@ -1600,6 +1600,7 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
+      RenderLayerTree
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
