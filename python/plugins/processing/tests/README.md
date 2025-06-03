@@ -223,7 +223,8 @@ OUTPUT_DIR:
   type: directory
 ```
 
-### Algorithm Context
+Algorithm Context
+------------------
 
 There are few more definitions that can modify context of the algorithm - these can be specified at top level of test:
 
