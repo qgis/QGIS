@@ -26,8 +26,6 @@ template CORE_EXPORT QList<int> SIP_SKIP;
 template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
 #endif
 
-SIP_NO_FILE
-
 class QgsMeshEditingError;
 class QgsMeshVertexCirculator;
 
