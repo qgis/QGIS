@@ -2422,9 +2422,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 1, 17))
         self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 2, 17))
         self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 2, 16))
-        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1))
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1)[0])
         f["test_int"] = QgsUnsetAttributeValue()
-        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1))
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1)[0])
         f["test_int_no_default"] = QgsUnsetAttributeValue()
 
         self.assertFalse(
@@ -2437,7 +2437,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 2, QgsFieldConstraints.Constraint.ConstraintNotNull, 18
             )
         )
-        self.assertFalse(QgsVectorLayerUtils.validateAttribute(vl, f, 2))
+        self.assertFalse(QgsVectorLayerUtils.validateAttribute(vl, f, 2)[0])
 
     def testVectorLayerUtilsCreateFeatureWithProviderDefault(self):
         vl = QgsVectorLayer(

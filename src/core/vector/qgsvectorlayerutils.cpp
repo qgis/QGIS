@@ -446,9 +446,11 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
     if ( !exempt )
     {
-      valid = valid && !QgsVariantUtils::isNull( value );
 
-      if ( QgsVariantUtils::isNull( value ) )
+      const bool isNullOrUnset { QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) };
+      valid = valid && !isNullOrUnset;
+
+      if ( isNullOrUnset )
       {
         errors << QObject::tr( "value is NULL" );
         notNullConstraintViolated = true;
