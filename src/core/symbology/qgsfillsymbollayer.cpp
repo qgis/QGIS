@@ -3259,11 +3259,7 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     distance = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::LineDistance, context.renderContext().expressionContext(), mDistance );
   }
   // Clip distance to a reasonable distance to avoid app freezes
-  const double outputPixelDistance = std::max(
-                                       ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree )
-                                       ? 0.1
-                                       : 0.025,
-                                       context.renderContext().convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale ) );
+  double outputPixelDistance = context.renderContext().convertToPainterUnits( distance, mDistanceUnit, mDistanceMapUnitScale );
 
   double offset = mOffset;
   double outputPixelOffset = mOffsetUnit == Qgis::RenderUnit::Percentage ? outputPixelDistance * offset / 100
@@ -3279,6 +3275,13 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
   // if invalid parameters, skip out
   if ( qgsDoubleNear( distance, 0 ) )
     return;
+
+  // Clip distance to a reasonable distance to avoid app freezes
+  outputPixelDistance = std::max(
+                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree )
+                          ? 0.1
+                          : 0.025,
+                          outputPixelDistance );
 
   p->save();
 
@@ -4073,12 +4076,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mDistanceX );
     distanceX = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::DistanceX, context.renderContext().expressionContext(), mDistanceX );
   }
-  // Clip width step to a reasonable distance to avoid app freezes
-  const double width = std::max(
-                         ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree )
-                         ? 0.1
-                         : 0.025,
-                         context.renderContext().convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale ) );
+  double width = context.renderContext().convertToPainterUnits( distanceX, mDistanceXUnit, mDistanceXMapUnitScale );
 
   double distanceY = mDistanceY;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::DistanceY ) )
@@ -4086,12 +4084,7 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     context.setOriginalValueVariable( mDistanceY );
     distanceY = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::DistanceY, context.renderContext().expressionContext(), mDistanceY );
   }
-  // Clip height step to a reasonable distance to avoid app freezes
-  const double height = std::max(
-                          ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree )
-                          ? 0.1
-                          : 0.025,
-                          context.renderContext().convertToPainterUnits( distanceY, mDistanceYUnit, mDistanceYMapUnitScale ) );
+  double height = context.renderContext().convertToPainterUnits( distanceY, mDistanceYUnit, mDistanceYMapUnitScale );
 
   double offsetX = mOffsetX;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::OffsetX ) )
@@ -4142,6 +4135,16 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   // if invalid parameters, skip out
   if ( qgsDoubleNear( width, 0 ) || qgsDoubleNear( height, 0 ) || width < 0 || height < 0 )
     return;
+
+  // Clip width and heights steps to a reasonable distance to avoid app freezes
+  width = std::max( ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree )
+                    ? 0.1
+                    : 0.025,
+                    width );
+  height = std::max( ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree )
+                     ? 0.1
+                     : 0.025,
+                     height );
 
   p->save();
 
