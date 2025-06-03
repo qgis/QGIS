@@ -4814,6 +4814,19 @@ Qgis.RasterizedRenderingPolicy.__doc__ = """Policies controlling when rasterisat
 """
 # --
 Qgis.RasterizedRenderingPolicy.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RenderFormat.Raster.__doc__ = "Use raster-based rendering"
+Qgis.RenderFormat.Vector.__doc__ = "Use vector-based rendering"
+Qgis.RenderFormat.__doc__ = """Rendering formats.
+
+.. versionadded:: 3.44
+
+* ``Raster``: Use raster-based rendering
+* ``Vector``: Use vector-based rendering
+
+"""
+# --
+Qgis.RenderFormat.baseClass = Qgis
 QgsMapSettings.Flag = Qgis.MapSettingsFlag
 # monkey patching scoped based enum
 QgsMapSettings.Antialiasing = Qgis.MapSettingsFlag.Antialiasing
