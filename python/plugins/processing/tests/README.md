@@ -1,9 +1,16 @@
 Algorithm tests
 ===============
 
-To test algorithms you can add entries into `testdata/qgis_algorithm_tests.yaml` or `testdata/gdal_algorithm_tests.yaml` as appropriate.
+To test QGIS Processing algorithms, YAML-based test cases are defined in the following files:
 
-This file is structured with [yaml syntax](http://www.yaml.org/start.html).
+- `qgis_algorithm_tests1.yaml` through `qgis_algorithm_tests5.yaml` – QGIS core algorithm tests  
+- `gdal_algorithm_vector_tests.yaml` – GDAL vector-related tests  
+- `gdal_algorithm_raster_tests.yaml` – GDAL raster-related tests  
+- `script_algorithm_tests.yaml` – Custom script-based tests
+
+All of these files are located in: `python/plugins/processing/tests/testdata/`
+
+This file is structured with [yaml syntax](https://yaml.org/).
 
 A basic test appears under the toplevel key `tests` and looks like this:
 
@@ -21,25 +28,34 @@ A basic test appears under the toplevel key `tests` and looks like this:
 
 How To
 ------
+To add a new test for a QGIS Processing algorithm, follow these steps:
 
-To add a new test please follow these steps:
+### 1. Run the Algorithm in QGIS
 
- 1. **Run the algorithm** you want to test in QGIS from the processing toolbox. If the
-result is a vector layer prefer GML, with its XSD, as output for its support of mixed
-geometry types and good readability. Redirect output to
-`python/plugins/processing/tests/testdata/expected`. For input layers prefer to use what's already there in the folder `testdata`. If you need extra data, put it into `testdata/custom`.
+- Use the **Processing Toolbox** to run the algorithm you want to test.
+- For **vector outputs**, prefer using **GML format with XSD** — this format supports mixed geometry types and offers good readability.
+- Save the output to: `python/plugins/processing/tests/testdata/expected/`
+- For input layers, reuse data already present in: `python/plugins/processing/tests/testdata/`
 
- 2. When you have run the algorithm, go to *Processing* > *History* and find the
-algorithm which you have just run. **Right click the algorithm and click "Create Test"**.
-A new window will open with a text definition.
+If additional data is required, place it under: `python/plugins/processing/tests/testdata/custom/`
 
- 3. Open the file `python/plugins/processing/tests/testdata/algorithm_tests.yaml`,
-**copy the text definition** there.
+### 2. Generate the Test Definition
 
-The first string from the command goes to the key `algorithm`, the subsequent
-ones to `params` and the last one(s) to `results`.
+- Open **Processing ► History** after running the algorithm.
+- Locate your algorithm run, right-click it, and select **Create Test**.
+- A new window will appear with the YAML test definition.
 
-The above translates to
+### 3. Add the Test to the Appropriate File
+
+Paste the test definition into the correct YAML file inside: `python/plugins/processing/tests/testdata/`
+
+Use the following guidelines:
+- `qgis_algorithm_tests1.yaml` to `qgis_algorithm_tests5.yaml`: QGIS core algorithms
+- `gdal_algorithm_vector_tests.yaml`: GDAL vector-related algorithms
+- `gdal_algorithm_raster_tests.yaml`: GDAL raster-related algorithms
+- `script_algorithm_tests.yaml`: Custom script-based tests
+
+### 4. Example YAML Test Entry
 
 ```yaml
 - name: densify
@@ -53,11 +69,12 @@ The above translates to
       type: vector
       name: expected/polys_densify.gml
 ```
+### 5. Adding Script-Based Tests
+To create tests for custom Processing scripts:
+- Place the script file in the following directory: `python/plugins/processing/tests/testdata/scripts/`
+- The script file name must exactly match the script algorithm name used in your test definition.
 
-It is also possible to create tests for Processing scripts. Scripts
-should be placed in the `scripts` subdirectory in the test data directory
-`python/plugins/processing/tests/testdata/`. Script file name
-should match script algorithm name.
+For example, if your test refers to an algorithm named my_custom_buffer, your script should be saved as: `python/plugins/processing/tests/testdata/scripts/my_custom_buffer.py`
 
 Params and results
 ------------------
