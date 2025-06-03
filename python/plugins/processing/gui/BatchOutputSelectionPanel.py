@@ -75,7 +75,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.pushButton.setText("…")
 
         self.actionTemporaryOutput = QAction(
-            "Create Temporary Layer",
+            self.tr("Create Temporary Layer"),
             self,
         )
         self.actionTemporaryOutput.setCheckable(True)
