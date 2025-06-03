@@ -34,11 +34,11 @@ class QgsMeshVertexCirculator;
  *
  * \brief Class that wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements
  *
- *  A topological face need to:
+ * A topological face must:
  *
  * - be convex
- * - counter clock wise
- * - not share an unique vertex with another face
+ * - be oriented counter-clockwise
+ * - not share a unique vertex with another face
  *
  * \since QGIS 3.22
  */
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \brief Class that contains independent faces an topological information about this faces
      *
-     * This class supports unique shared vertex between faces
+     * This class supports unique shared vertices between faces.
      *
      * \since QGIS 3.22
      */

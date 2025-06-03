@@ -16,11 +16,11 @@ class QgsTopologicalMesh
 Wraps a :py:class:`QgsMesh` to ensure the consistency of the mesh during
 editing and helps to access elements from other elements.
 
-A topological face need to:
+A topological face must:
 
 - be convex
-- counter clock wise
-- not share an unique vertex with another face
+- be oriented counter-clockwise
+- not share a unique vertex with another face
 
 .. versionadded:: 3.22
 %End
@@ -38,7 +38,7 @@ A topological face need to:
 Contains independent faces and topological information about these
 faces.
 
-This class supports unique shared vertex between faces
+This class supports unique shared vertices between faces.
 
 .. versionadded:: 3.22
 %End
