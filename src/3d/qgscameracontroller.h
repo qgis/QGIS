@@ -282,6 +282,22 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     const QgsVector3D origin() const { return mOrigin; }
 
+    // Convenience methods to set camera view to standard positions
+    //! Rotate to diagonal view. \since QGIS 3.44
+    void rotateCameraToHome() { rotateToRespectingTerrain( 45.0f, 45.0f ); }
+    //! Rotate to top-down view. \since QGIS 3.44
+    void rotateCameraToTop() { rotateToRespectingTerrain( 0.0f, 90.0f ); }
+    //! Rotate to view from the north. \since QGIS 3.44
+    void rotateCameraToNorth() { rotateToRespectingTerrain( 90.0f, 180.0f ); }
+    //! Rotate to view from the east. \since QGIS 3.44
+    void rotateCameraToEast() { rotateToRespectingTerrain( 90.0f, 90.0f ); }
+    //! Rotate to view from the south. \since QGIS 3.44
+    void rotateCameraToSouth() { rotateToRespectingTerrain( 90.0f, 0.0f ); }
+    //! Rotate to view from the west. \since QGIS 3.44
+    void rotateCameraToWest() { rotateToRespectingTerrain( 90.0f, -90.0f ); }
+    //! Rotate to bottom-up view. \since QGIS 3.44
+    void rotateCameraToBottom() { rotateToRespectingTerrain( 180.0f, 0.0f ); }
+
   public slots:
 
     /**
@@ -331,6 +347,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     bool isATranslationRotationSequence( MouseOperation newOperation ) const;
 
     void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint() );
+
+    /**
+     * Rotate the camera to the given orientation while raycasting the
+     * looking-at point to the terrain.
+     * \since QGIS 3.44
+     */
+    void rotateToRespectingTerrain( float pitch, float yaw );
 
   signals:
     //! Emitted when camera has been updated
