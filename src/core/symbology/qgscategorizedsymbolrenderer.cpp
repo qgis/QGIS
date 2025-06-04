@@ -460,7 +460,7 @@ bool labelLessThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2
 
 bool labelGreaterThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 )
 {
-  return !labelLessThan( c1, c2 );
+  return QString::localeAwareCompare( c1.label(), c2.label() ) > 0;
 }
 
 void QgsCategorizedSymbolRenderer::sortByLabel( Qt::SortOrder order )
