@@ -30,7 +30,7 @@ A topological face must:
 %End
   public:
 
-    using FaceNeighbors;
+    typedef QVector<int> FaceNeighbors;
 
     class TopologicalFaces
 {
@@ -48,20 +48,12 @@ This class supports unique shared vertices between faces.
 %End
       public:
 
-        QVector<QgsMeshFace>  meshFaces() const;
-%Docstring
-Returns faces
-%End
 
         void clear();
 %Docstring
 Clears all data contained in the instance.
 %End
 
-        QVector<FaceNeighbors> facesNeighborhood() const;
-%Docstring
-Returns the face neighborhood of the faces, indexing is local
-%End
 
         int vertexToFace( int vertexIndex ) const;
 %Docstring
@@ -85,22 +77,14 @@ mesh, only accessible from the QgsTopologicalMesh class.
 %End
       public:
 
-        QVector<QgsMeshFace> addedFaces() const;
-%Docstring
-Returns the face that are added with this changes
-%End
 
-        QVector<QgsMeshFace> removedFaces() const;
-%Docstring
-Returns the faces that are removed with this changes
-%End
 
         QList<int> removedFaceIndexes() const;
 %Docstring
 Returns the indexes of the faces that are removed with this changes
 %End
 
-        QVector<QgsMeshVertex> addedVertices() const;
+        QVector<QgsPoint> addedVertices() const;
 %Docstring
 Returns the added vertices with this changes
 %End
@@ -161,10 +145,6 @@ QgsTopologicalMesh instance that contains and handles this mesh (does
 not take ownership).
 %End
 
-    static TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, bool uniqueSharedVertexAllowed, QgsMeshEditingError &error );
-%Docstring
-Creates new topological faces that are not yet included in the mesh
-%End
 
 
     QVector<int> neighborsOfFace( int faceIndex ) const;
@@ -205,11 +185,6 @@ Returns whether the vertex is a free vertex
 Returns a list of vertices are not linked to any faces
 %End
 
-    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
-%Docstring
-Returns a vertex circulator linked to this mesh around the vertex with
-index ``vertexIndex``
-%End
 
 
     QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
@@ -355,14 +330,6 @@ Checks the topology of the face and sets it counter clockwise if
 necessary
 %End
 
-    static QgsMeshEditingError checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise );
-%Docstring
-Checks the topology of the ``vertices`` as they are contained in a face
-and returns indication on direction. If the face is clockwise,
-``clockwise`` is ``True``
-
-.. versionadded:: 3.30
-%End
 
     void reindex();
 %Docstring
@@ -401,111 +368,6 @@ Returns vertex position in face
 
 };
 
-class QgsMeshVertexCirculator
-{
-%Docstring(signature="appended")
-Convenience class that turns around a vertex and provides information
-about faces and vertices.
-
-.. versionadded:: 3.22
-%End
-
-%TypeHeaderCode
-#include "qgstopologicalmesh.h"
-%End
-  public:
-
-    QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex );
-%Docstring
-Constructor with ``topologicalMesh`` and ``vertexIndex``
-%End
-
-    QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int faceIndex, int vertexIndex );
-%Docstring
-Constructor with ``topologicFaces``, ``vertexIndex`` and the index
-``faceIndex`` of the face containing the vertex
-
-.. note::
-
-   This circulator only concerns faces that are in the same bloc of the face ``faceIndex``. Other faces that could be share only
-   the vertex ``vertexIndex`` can't be accessible with this circulator
-%End
-
-    QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int vertexIndex );
-%Docstring
-Constructor with ``topologicFaces``, ``vertexIndex``
-
-.. note::
-
-   This circulator only concerns faces that are in the same bloc of the first face linked to the vertex ``vertexIndex``.
-   Other faces that could be share only the vertex ``vertexIndex`` can't be accessible with this circulator
-%End
-
-    int turnCounterClockwise() const;
-%Docstring
-Turns counter clockwise around the vertex and returns the new current
-face, -1 if the circulator pass a boundary or circulator is invalid
-%End
-
-    int turnClockwise() const;
-%Docstring
-Turns counter clockwise around the vertex and returns the new current
-face, -1 if the circulator pass a boundary or circulator is invalid
-%End
-
-    int currentFaceIndex() const;
-%Docstring
-Returns the current face index, -1 if the circulator has passed a
-boundary or circulator is invalid
-%End
-
-    QgsMeshFace currentFace() const;
-%Docstring
-Returns the current face, empty face if the circulator pass a boundary
-or circulator is invalid
-%End
-
-    bool goBoundaryClockwise() const;
-%Docstring
-Sets the circulator on the boundary face turning clockwise, return false
-is there isn't boundary face
-%End
-
-    bool goBoundaryCounterClockwise() const;
-%Docstring
-Sets the circulator on the boundary face turning counter clockwise,
-return false is there isn't boundary face
-%End
-
-    int oppositeVertexClockwise() const;
-%Docstring
-Returns the opposite vertex of the current face and on the edge on the
-side turning clockwise
-%End
-
-    int oppositeVertexCounterClockwise() const;
-%Docstring
-Returns the opposite vertex of the current face and on the edge on the
-side turning counter clockwise
-%End
-
-    bool isValid() const;
-%Docstring
-Returns whether the vertex circulator is valid
-%End
-
-    QList<int> facesAround() const;
-%Docstring
-Returns all the faces indexes around the vertex
-%End
-
-    int degree() const;
-%Docstring
-Returns the degree of the vertex, that is the count of other vertices
-linked
-%End
-
-};
 
 /************************************************************************
  * This file has been generated automatically from                      *
