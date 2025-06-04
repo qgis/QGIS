@@ -1851,9 +1851,17 @@ void QgsOptions::saveOptions()
   //
   // Locale settings
   //
-  QgsApplication::settingsLocaleUserLocale->setValue( cboTranslation->currentData().toString() );
+  if ( grpLocale->isChecked() )
+  {
+    QString newLocale = cboTranslation->currentData().toString();
+    if ( !newLocale.isEmpty() )
+      QgsApplication::settingsLocaleUserLocale->setValue( newLocale );
+
+    QString newGlobalLocale = cboGlobalLocale->currentData().toString();
+    if ( !newGlobalLocale.isEmpty() )
+      QgsApplication::settingsLocaleGlobalLocale->setValue( newGlobalLocale );
+  }
   QgsApplication::settingsLocaleOverrideFlag->setValue( grpLocale->isChecked() );
-  QgsApplication::settingsLocaleGlobalLocale->setValue( cboGlobalLocale->currentData().toString() );
 
   // Number settings
   QgsApplication::settingsLocaleShowGroupSeparator->setValue( cbShowGroupSeparator->isChecked() );
