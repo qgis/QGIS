@@ -24,7 +24,7 @@ except (NameError, AttributeError):
 try:
     QgsPointCloudLayer.__attribute_docs__ = {'subsetStringChanged': "Emitted when the layer's subset string has changed.\n\n.. versionadded:: 3.26\n", 'raiseError': 'Signals an error related to this point cloud layer.\n\n.. versionadded:: 3.26\n', 'statisticsCalculationStateChanged': 'Emitted when statistics calculation state has changed\n\n.. versionadded:: 3.26\n', 'chunkAttributeValuesChanged': 'Emitted when a node gets some attribute values of some points changed\n\n.. versionadded:: 3.42\n'}
     QgsPointCloudLayer.__virtual_methods__ = ['readStyle', 'writeStyle', 'loadDefaultStyle']
-    QgsPointCloudLayer.__overridden_methods__ = ['clone', 'extent', 'createMapRenderer', 'createProfileGenerator', 'dataProvider', 'supportsEditing', 'isEditable', 'isModified', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'encodedSource', 'decodedSource', 'htmlMetadata', 'elevationProperties']
+    QgsPointCloudLayer.__overridden_methods__ = ['clone', 'extent', 'createMapRenderer', 'profileSource', 'createProfileGenerator', 'dataProvider', 'supportsEditing', 'isEditable', 'isModified', 'readXml', 'writeXml', 'readSymbology', 'writeSymbology', 'setTransformContext', 'encodedSource', 'decodedSource', 'htmlMetadata', 'elevationProperties']
     QgsPointCloudLayer.__signal_arguments__ = {'raiseError': ['msg: str'], 'statisticsCalculationStateChanged': ['state: QgsPointCloudLayer.PointCloudStatisticsCalculationState'], 'chunkAttributeValuesChanged': ['n: QgsPointCloudNodeId']}
     QgsPointCloudLayer.__group__ = ['pointcloud']
 except (NameError, AttributeError):
