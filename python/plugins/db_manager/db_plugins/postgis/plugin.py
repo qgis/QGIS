@@ -62,7 +62,7 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return QCoreApplication.translate("db_manager", "PostGIS")
+        return QCoreApplication.translate("db_manager", "PostgreSQL")
 
     @classmethod
     def providerName(self):
