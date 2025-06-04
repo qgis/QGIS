@@ -456,7 +456,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    SIP_SKIP bool fromCollectionWkt( const QString &wkt, const QVector<Qgis::WkbType> &subtypes, const QString &defaultChildWkbType = QString() );
 
     QgsBox3D calculateBoundingBox3D() const override;
     void clearCache() const override;

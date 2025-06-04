@@ -71,8 +71,8 @@ QgsMultiSurface *QgsMultiSurface::toCurveType() const
 bool QgsMultiSurface::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,
-                            QVector<QgsAbstractGeometry *>() << new QgsPolygon << new QgsCurvePolygon,
-                            QStringLiteral( "Polygon" ) );
+  { Qgis::WkbType::Polygon, Qgis::WkbType::CurvePolygon },
+  QStringLiteral( "Polygon" ) );
 }
 
 QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
