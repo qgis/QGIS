@@ -298,6 +298,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       if ( !found )
       {
+        allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
         vectorFileName += '.' + allExts[0];
       }
     }
