@@ -409,6 +409,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
+  processing/qgsprocessingguiutils.cpp
   processing/qgsprocessinghelpeditorwidget.cpp
   processing/qgsprocessinghistoryprovider.cpp
   processing/qgsprocessinghistorywidget.cpp
@@ -1408,6 +1409,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingfieldmapwidgetwrapper.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
+  processing/qgsprocessingguiutils.h
   processing/qgsprocessinghelpeditorwidget.h
   processing/qgsprocessinghistoryprovider.h
   processing/qgsprocessinghistorywidget.h
