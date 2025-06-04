@@ -202,10 +202,9 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
 
     // only keep selected attributes
     QgsAttributes attributes;
-    QList<int>::const_iterator  fieldItr;
-    for ( fieldItr  = fields2Indices.constBegin(); fieldItr != fields2Indices.constEnd(); ++fieldItr )
+    for ( int field2Index : fields2Indices )
     {
-      attributes << f.attribute( *fieldItr );
+      attributes << f.attribute( field2Index );
     }
     input2AttributeCache.insert( f.id(), attributes );
 
