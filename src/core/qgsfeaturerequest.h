@@ -57,7 +57,7 @@
  * The options may be chained, e.g.:
  *
  * \code{.py}
- *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest.ExactIntersect)
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(Qgis.FeatureRequestFlag.ExactIntersect)
  * \endcode
  *
  * Examples:
@@ -68,7 +68,7 @@
  *   # fetch all features, only one attribute
  *   QgsFeatureRequest().setSubsetOfAttributes(['myfield'], layer.fields())
  *   # fetch all features, without geometries
- *   QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+ *   QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry)
  *   # fetch only features from particular extent
  *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
  *   # fetch only features from particular extent, where the 'type' attribute is equal to 'road':
