@@ -24,7 +24,7 @@
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor( 35, 35, 35 )
 #define DEFAULT_SIMPLEMARKER_JOINSTYLE    Qt::BevelJoin
-#define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
+#define DEFAULT_SIMPLEMARKER_SIZE         Qgis::DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
 
 #include <QPen>
@@ -39,7 +39,9 @@ class QgsPathResolver;
 /**
  * \ingroup core
  * \class QgsSimpleMarkerSymbolLayerBase
- * \brief Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
+ * \brief Abstract base class for simple marker symbol layers.
+ *
+ * Handles creation of the symbol shapes but
  * leaves the actual drawing of the symbols to subclasses.
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
@@ -170,7 +172,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 /**
  * \ingroup core
  * \class QgsSimpleMarkerSymbolLayer
- * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+ * \brief Simple marker symbol layer, consisting of a rendered shape with solid fill color and a stroke.
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {
@@ -220,7 +222,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsSimpleMarkerSymbolLayer *clone() const override SIP_FACTORY;
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
+
+    Q_DECL_DEPRECATED void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
@@ -483,12 +489,13 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
+#define DEFAULT_SVGMARKER_SIZE         ( 2 * Qgis::DEFAULT_POINT_SIZE )
 #define DEFAULT_SVGMARKER_ANGLE        0
 
 /**
  * \ingroup core
  * \class QgsSvgMarkerSymbolLayer
+ * \brief A marker symbol layer which renders an SVG graphic.
  */
 class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
@@ -524,7 +531,10 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QVariantMap properties() const override;
     bool usesMapUnits() const override;
     QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
+    Q_DECL_DEPRECATED void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Returns the marker SVG path.
@@ -669,7 +679,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_RASTERMARKER_SIZE         2*DEFAULT_POINT_SIZE
+#define DEFAULT_RASTERMARKER_SIZE         ( 2 * Qgis::DEFAULT_POINT_SIZE )
 #define DEFAULT_RASTERMARKER_ANGLE        0
 
 /**
@@ -698,6 +708,15 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
+     * Creates a new QgsRasterMarkerSymbolLayer from an SLD XML element.
+     * \param element XML element containing SLD definition of symbol
+     * \returns new QgsRasterMarkerSymbolLayer
+     *
+     * \since QGIS 3.44
+     */
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+
+    /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
      * Used internally when reading/writing symbols.
      */
@@ -712,6 +731,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsRasterMarkerSymbolLayer *clone() const override SIP_FACTORY;
     bool usesMapUnits() const override;
     QColor color() const override;
+    Q_DECL_DEPRECATED void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Calculates the marker aspect ratio between width and height.
@@ -851,6 +872,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 /**
  * \ingroup core
  * \class QgsFontMarkerSymbolLayer
+ * \brief A marker symbol layer which displays characters rendered using a font.
  */
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
@@ -899,8 +921,10 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QVariantMap properties() const override;
 
     QgsFontMarkerSymbolLayer *clone() const override SIP_FACTORY;
-
-    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
+    Q_DECL_DEPRECATED void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     bool usesMapUnits() const override;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
 

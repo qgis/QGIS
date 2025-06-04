@@ -231,7 +231,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
         break;
     }
 
+    label->beginCommand( QObject::tr( "Resize to Text" ) );
     label->adjustSizeToText( reference );
+    label->endCommand();
   } );
 
   registry->addLayoutItemGuiMetadata( labelItemMetadata.release() );
@@ -293,6 +295,9 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   scalebarItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
     QgsLayoutItemScaleBar *scalebar = qobject_cast<QgsLayoutItemScaleBar *>( item );
     Q_ASSERT( scalebar );
+
+    // default to project's scale calculation method
+    scalebar->setMethod( scalebar->layout()->project()->scaleMethod() );
 
     // try to find a good map to link the scalebar with by default
     if ( QgsLayoutItemMap *targetMap = findSensibleDefaultLinkedMapItem( scalebar ) )

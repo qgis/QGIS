@@ -15,7 +15,7 @@
 class QgsModelDesignerDialog : QMainWindow
 {
 %Docstring(signature="appended")
-Model designer dialog base class
+Model designer dialog base class.
 
 .. warning::
 
@@ -36,12 +36,14 @@ Model designer dialog base class
 
     void beginUndoCommand( const QString &text, int id = 0 );
 %Docstring
-Starts an undo command. This should be called before any changes are made to the model.
+Starts an undo command. This should be called before any changes are
+made to the model.
 %End
 
     void endUndoCommand();
 %Docstring
-Ends the current undo command. This should be called after changes are made to the model.
+Ends the current undo command. This should be called after changes are
+made to the model.
 %End
 
     QgsProcessingModelAlgorithm *model();
@@ -105,19 +107,22 @@ Raise, unminimize and activate this window.
 
     bool validateSave( SaveAction action );
 %Docstring
-Checks if the model can current be saved, and returns ``True`` if it can.
+Checks if the model can current be saved, and returns ``True`` if it
+can.
 %End
 
     bool checkForUnsavedChanges();
 %Docstring
-Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
+Checks if there are unsaved changes in the model, and if so, prompts the
+user to save them.
 
 Returns ``False`` if the cancel option was selected
 %End
 
     void setLastRunResult( const QgsProcessingModelResult &result );
 %Docstring
-Sets the ``result`` of the last run of the model through the designer window.
+Sets the ``result`` of the last run of the model through the designer
+window.
 %End
 
     void setModelName( const QString &name );

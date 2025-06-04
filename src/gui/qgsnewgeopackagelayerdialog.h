@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * \brief Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers
+ * \brief Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers.
 */
 class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
@@ -51,12 +51,12 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
     /**
      * Returns the database path
      */
-    QString databasePath() const { return mDatabase->filePath(); }
+    QString databasePath() const { return mFileName->filePath(); }
 
     /**
      * Sets the initial database \a path
      */
-    void setDatabasePath( const QString &path ) { mDatabase->setFilePath( path ); }
+    void setDatabasePath( const QString &path ) { mFileName->setFilePath( path ); }
 
     /**
      * Sets the database path widgets to a locked and read-only mode.

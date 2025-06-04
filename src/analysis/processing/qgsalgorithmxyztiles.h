@@ -130,6 +130,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QPointer<QEventLoop> mEventLoop;
     QList<MetaTile> mMetaTiles;
     QMap<QgsMapRendererSequentialJob *, MetaTile> mRendererJobs;
+    Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
 };
 
 

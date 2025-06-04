@@ -13,10 +13,10 @@
 class QgsEditorWidgetRegistry : QObject
 {
 %Docstring(signature="appended")
-This class manages all known edit widget factories.
+A registry that manages all known edit widget factories.
 
-:py:class:`QgsEditorWidgetRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.editorWidgetRegistry()`.
+:py:class:`QgsEditorWidgetRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsGui.editorWidgetRegistry()`.
 %End
 
 %TypeHeaderCode
@@ -25,17 +25,20 @@ This class manages all known edit widget factories.
   public:
     QgsEditorWidgetRegistry();
 %Docstring
-Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
+Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not
+usually directly created, but rather accessed through
 :py:func:`QgsGui.editorWidgetRegistry()`.
 %End
 
     void initEditors( QgsMapCanvas *mapCanvas = 0, QgsMessageBar *messageBar = 0 );
 %Docstring
-Registers all the default widgets.
-Only call this once on startup of an application.
+Registers all the default widgets. Only call this once on startup of an
+application.
 
-:param mapCanvas: Specify a map canvas with which the widgets (relation reference) work
-:param messageBar: Specify a message bar on which messages by widgets will be shown while working with the map canvas
+:param mapCanvas: Specify a map canvas with which the widgets (relation
+                  reference) work
+:param messageBar: Specify a message bar on which messages by widgets
+                   will be shown while working with the map canvas
 
 .. note::
 
@@ -49,35 +52,46 @@ Only call this once on startup of an application.
 Find the best editor widget and its configuration for a given field.
 
 :param vl: The vector layer for which this widget will be created
-:param fieldName: The field name on the specified layer for which this widget will be created
+:param fieldName: The field name on the specified layer for which this
+                  widget will be created
 
 :return: The id of the widget type to use and its config
 %End
 
     QgsEditorWidgetWrapper *create( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent /TransferThis/ ) /Factory/;
 %Docstring
-Create an attribute editor widget wrapper of a given type for a given field.
-The editor may be ``None`` if you want the widget wrapper to create a default widget.
+Create an attribute editor widget wrapper of a given type for a given
+field. The editor may be ``None`` if you want the widget wrapper to
+create a default widget.
 
-:param widgetId: The id of the widget type to create an attribute editor for
+:param widgetId: The id of the widget type to create an attribute editor
+                 for
 :param vl: The vector layer for which this widget will be created
-:param fieldIdx: The field index on the specified layer for which this widget will be created
-:param config: A configuration which should be used for the widget creation
-:param editor: An editor widget which will be used instead of an autocreated widget
-:param parent: The parent which will be used for the created wrapper and the created widget
+:param fieldIdx: The field index on the specified layer for which this
+                 widget will be created
+:param config: A configuration which should be used for the widget
+               creation
+:param editor: An editor widget which will be used instead of an
+               autocreated widget
+:param parent: The parent which will be used for the created wrapper and
+               the created widget
 
 :return: A new widget wrapper
 %End
 
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent /TransferThis/ ) /Factory/;
 %Docstring
-Create an attribute editor widget wrapper of the best type for a given field.
-The editor may be ``None`` if you want the widget wrapper to create a default widget.
+Create an attribute editor widget wrapper of the best type for a given
+field. The editor may be ``None`` if you want the widget wrapper to
+create a default widget.
 
 :param vl: The vector layer for which this widget will be created
-:param fieldIdx: The field index on the specified layer for which this widget will be created
-:param editor: An editor widget which will be used instead of an autocreated widget
-:param parent: The parent which will be used for the created wrapper and the created widget
+:param fieldIdx: The field index on the specified layer for which this
+                 widget will be created
+:param editor: An editor widget which will be used instead of an
+               autocreated widget
+:param parent: The parent which will be used for the created wrapper and
+               the created widget
 
 :return: A new widget wrapper
 %End
@@ -88,9 +102,11 @@ The editor may be ``None`` if you want the widget wrapper to create a default wi
 %Docstring
 Creates a configuration widget
 
-:param widgetId: The id of the widget type to create a configuration widget for
+:param widgetId: The id of the widget type to create a configuration
+                 widget for
 :param vl: The vector layer for which this widget will be created
-:param fieldIdx: The field index on the specified layer for which this widget will be created
+:param fieldIdx: The field index on the specified layer for which this
+                 widget will be created
 :param parent: The parent widget for the created widget
 
 :return: A new configuration widget
@@ -103,6 +119,15 @@ Gets the human readable name for a widget type
 :param widgetId: The widget type to get the name for
 
 :return: A human readable name
+%End
+
+    bool isReadOnly( const QString &widgetId );
+%Docstring
+Gets the widget's read-only flag
+
+:param widgetId: The widget type to get the read-only flag for
+
+.. versionadded:: 3.44
 %End
 
     QMap<QString, QgsEditorWidgetFactory *> factories();
@@ -123,10 +148,12 @@ Gets a factory for the given widget type id.
 %Docstring
 Register a new widget factory with the given id
 
-:param widgetId: The id which will be used later to refer to this widget type
+:param widgetId: The id which will be used later to refer to this widget
+                 type
 :param widgetFactory: The factory which will create this widget type
 
-:return: ``True``, if successful, ``False``, if the widgetId is already in use or widgetFactory is ``None``
+:return: ``True``, if successful, ``False``, if the widgetId is already
+         in use or widgetFactory is ``None``
 %End
 
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin );

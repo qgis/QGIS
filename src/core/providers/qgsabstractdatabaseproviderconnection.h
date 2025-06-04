@@ -32,8 +32,7 @@ class QgsProviderSqlQueryBuilder;
 
 
 /**
- * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
- * for DB based connections.
+ * \brief Provides common functionality for database based connections.
  *
  * This class performs low level DB operations without asking
  * the user for confirmation or handling currently opened layers and the registry
@@ -514,6 +513,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() \since QGIS 3.30
       UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() \since QGIS 3.30
       DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() \since QGIS 3.30
+      MoveTableToSchema = 1u << 31,                    //!< Can move table to another schema via moveTableToAnotherSchema() \since QGIS 3.44
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -582,6 +582,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
 
     /**
+     * Represents capabilities of the database provider connection when importing table data.
+     *
+     * \since QGIS 3.44
+     */
+    virtual Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const = 0;
+
+    /**
      * Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
      * \since QGIS 3.22
      */
@@ -603,6 +610,42 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * \brief Stores all information required to create a QgsVectorLayerExporter for the backend.
+     * \see createVectorLayerExporterDestinationUri()
+     *
+     * \since QGIS 3.44
+     */
+    struct CORE_EXPORT VectorLayerExporterOptions
+    {
+      //! Name for the new layer
+      QString layerName;
+
+      //! Optional schema for the new layer. May not be supported by all providers.
+      QString schema;
+
+      //! WKB type for destination layer geometry
+      Qgis::WkbType wkbType = Qgis::WkbType::NoGeometry;
+
+      //! List of primary key column names. Note that some providers may ignore this if not supported.
+      QStringList primaryKeyColumns;
+
+      //! Preferred name for the geometry column, if required. Note that some providers may ignore this if a specific geometry column name is required.
+      QString geometryColumn;
+
+    };
+
+    /**
+     * Creates a URI for use with QgsVectorLayerExporter corresponding to given destination table \a options for the backend.
+     *
+     * \param options defines the desired destination table details
+     * \param providerOptions will be set to a map of options to pass to createVectorTable() or the provider's createEmptyTable method.
+     * \returns destination URI for use with QgsVectorLayerExporter
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     */
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions SIP_OUT ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Checks whether a table \a name exists in the given \a schema.
@@ -717,11 +760,34 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Creates and returns a (possibly invalid) vector layer based on the \a sql statement and optional \a options.
+     * Creates and returns a (possibly invalid) vector layer based on a SQL statement and \a options.
+     *
+     * The validateSqlVectorLayer() method can be used in advance to test whether the options are valid
+     * for the provider, and retrieve a user-friendly explanation if not.
+     *
      * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
+     * \see validateSqlVectorLayer()
+     *
      * \since QGIS 3.22
      */
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
+
+    /**
+     * Validates the SQL query \a options to determine if it is possible to create a vector layer based on a SQL statement and \a options.
+     *
+     * The base class method returns TRUE and does not do any checks.
+     *
+     * \param options SQL statement and options
+     * \param message will be set to a translated, user-friendly explanation if the SQL is not valid for the provider.
+     *
+     * \returns TRUE if the SQL is valid for the provider.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
+     * \see createSqlVectorLayer()
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message SIP_OUT ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns the SQL layer options from a \a layerSource.
@@ -866,6 +932,28 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QSet< QString > illegalFieldNames() const;
 
     /**
+     * Returns the default name to use for a primary key column for the connection.
+     *
+     * The returned name will match common practice for the database backend.
+     *
+     * The base class method returns "pk".
+     *
+     * \since QGIS 3.44
+     */
+    virtual QString defaultPrimaryKeyColumnName() const;
+
+    /**
+     * Returns the default name to use for a geometry column for the connection.
+     *
+     * The returned name will match common practice for the database backend.
+     *
+     * The base class method returns "geom".
+     *
+     * \since QGIS 3.44
+     */
+    virtual QString defaultGeometryColumnName() const;
+
+    /**
      * Returns a list of field domain names present on the provider.
      *
      * This is supported on providers with the Capability::ListFieldDomains capability only.
@@ -936,6 +1024,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Sets the \a comment for the existing table with the specified name.
+     *
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param comment comment to set for the table. Set to an empty string to remove a previously set comment.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.44
+     */
+    virtual void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
      * Sets the \a comment for the existing field with the specified name.
      *
      * \param fieldName name of the field to be modified
@@ -947,6 +1047,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.32
      */
     virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Move table to a different schema.
+     *
+     * \param sourceSchema name of the source schema.
+     * \param tableName name of the table.
+     * \param targetSchema name of the target schema to move table to.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.44
+     */
+    virtual void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const SIP_THROW( QgsProviderConnectionException );
+
 
     /**
      * Returns a list of relationship cardinalities which are supported by the provider.

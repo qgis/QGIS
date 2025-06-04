@@ -15,7 +15,7 @@
 class QgsHttpHeaders
 {
 %Docstring(signature="appended")
-This class implements simple http header management.
+Implements simple HTTP header management.
 
 .. versionadded:: 3.24
 %End
@@ -30,17 +30,18 @@ This class implements simple http header management.
 %Docstring
 Constructor from map
 
-:param headers:
+:param headers: 
 %End
 
     QgsHttpHeaders();
 
  QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) /Deprecated="Since 3.30. Use a variant map settings and the default constructor instead."/;
 %Docstring
-Constructor from :py:class:`QgsSettings` ``settings`` object and root ``key``
+Constructor from :py:class:`QgsSettings` ``settings`` object and root
+``key``
 
-:param settings:
-:param key:
+:param settings: 
+:param key: 
 
 .. deprecated:: 3.30
 
@@ -51,14 +52,14 @@ Constructor from :py:class:`QgsSettings` ``settings`` object and root ``key``
 %Docstring
 Constructor from default :py:class:`QgsSettings` object and root ``key``
 
-:param key:
+:param key: 
 %End
 
     QgsHttpHeaders( const QDomElement &element );
 %Docstring
 Constructor from a QDomElement ``element``
 
-:param element:
+:param element: 
 %End
 
     virtual ~QgsHttpHeaders();
@@ -72,11 +73,14 @@ Returns the headers as a variant map
 
  bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const /Deprecated="Since 3.30. Directly use a variant setting instead."/;
 %Docstring
-Updates the ``settings`` by adding all the http headers in the path "key/PATH_PREFIX/"
+Updates the ``settings`` by adding all the http headers in the path
+"key/PATH_PREFIX/"
 
-KEY_REFERER value will be available at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
+KEY_REFERER value will be available at path
+"key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward
+compatibility)
 
-:param settings:
+:param settings: 
 :param key: sub group path
 
 :return: ``True`` if the update succeed
@@ -104,7 +108,8 @@ Updates an ``uri`` by adding all the HTTP headers
 %Docstring
 Updates a ``map`` by adding all the HTTP headers
 
-KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and
+key "KEY_REFERER" (for backward compatibility)
 
 :return: ``True`` if the update succeed
 %End
@@ -113,7 +118,9 @@ KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and key "KEY
 %Docstring
 Updates a DOM element by adding all the HTTP headers
 
-KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+KEY_REFERER value will be available at attribute
+"KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward
+compatibility)
 
 :param el: DOM element
 
@@ -129,9 +136,10 @@ KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and at
 %Docstring
 Loads headers from the ``settings``
 
-key KEY_REFERER will be read at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
+key KEY_REFERER will be read at path "key/PATH_PREFIX/KEY_REFERER" and
+path "key/KEY_REFERER" (for backward compatibility)
 
-:param settings:
+:param settings: 
 :param key: sub group path
 %End
 
@@ -139,25 +147,27 @@ key KEY_REFERER will be read at path "key/PATH_PREFIX/KEY_REFERER" and path "key
 %Docstring
 Loads headers from the ``uri``
 
-:param uri:
+:param uri: 
 %End
 
     void setFromMap( const QVariantMap &map );
 %Docstring
 Loads headers from the ``map``
 
-key KEY_REFERER will be read from key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+key KEY_REFERER will be read from key "KEY_PREFIX+KEY_REFERER" and key
+"KEY_REFERER" (for backward compatibility)
 
-:param map:
+:param map: 
 %End
 
     void setFromDomElement( const QDomElement &element );
 %Docstring
 Loads headers from the ``element``
 
-key KEY_REFERER will be read from attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+key KEY_REFERER will be read from attribute "KEY_PREFIX+KEY_REFERER" and
+attribute "KEY_REFERER" (for backward compatibility)
 
-:param element:
+:param element: 
 %End
 
     QString sanitizeKey( const QString &key ) const;
@@ -183,8 +193,7 @@ insert a ``key`` with the specific ``value``
 
     QList<QString> keys() const;
 %Docstring
-
-:return: the list of all http header keys
+Returns the list of all HTTP header keys.
 %End
 
     QString toSpacedString() const;

@@ -5,10 +5,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsTiledSceneRendererAbstractMetadata.__abstract_methods__ = ['createRenderer']
     QgsTiledSceneRendererAbstractMetadata.__group__ = ['tiledscene']
 except (NameError, AttributeError):
     pass
 try:
+    QgsTiledSceneRendererMetadata.__overridden_methods__ = ['createRenderer']
     QgsTiledSceneRendererMetadata.__group__ = ['tiledscene']
 except (NameError, AttributeError):
     pass

@@ -32,6 +32,7 @@ class QgsProcessingModelComment;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
+class QgsModelDesignerSocketGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 class QgsProcessingModelGroupBox;
@@ -96,6 +97,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the model associated with this item.
      */
     QgsProcessingModelAlgorithm *model();
+
+    /**
+     * Returns the model associated with this item.
+     */
+    const QgsProcessingModelAlgorithm *model() const SIP_SKIP;
 
     /**
      * Returns the associated view.
@@ -228,6 +234,15 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * \returns calculated link point in item coordinates.
      */
     QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
+
+    /**
+     * Returns the output socket graphics items at the specified \a index.
+     * 
+     * May return NULLPTR if no corresponding output socket exists.
+     * \since QGIS 3.44
+     */
+    QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) const;
+
 
     /**
      * Called when the comment attached to the item should be edited.
@@ -367,6 +382,10 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
 
+    QList< QgsModelDesignerSocketGraphicItem * > mInSockets;
+    QList< QgsModelDesignerSocketGraphicItem * > mOutSockets;
+
+
     static constexpr double MIN_COMPONENT_WIDTH = 70;
     static constexpr double MIN_COMPONENT_HEIGHT = 30;
 
@@ -413,6 +432,9 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
+
+    int linkPointCount( Qt::Edge edge ) const override;
+    QString linkPointText( Qt::Edge edge, int index ) const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:

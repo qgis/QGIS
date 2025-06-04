@@ -108,7 +108,7 @@ QgsGdalOption QgsGdalOption::fromXmlNode( const CPLXMLNode *node )
     }
     return option;
   }
-  else if ( pszType && EQUAL( pszType, "double" ) )
+  else if ( pszType && ( EQUAL( pszType, "double" ) || EQUAL( pszType, "float" ) ) )
   {
     option.type = QgsGdalOption::Type::Double;
     if ( pszDefault )
@@ -529,13 +529,13 @@ char **QgsGdalUtils::papszFromStringList( const QStringList &list )
   return papszRetList;
 }
 
-QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOptions, const QString &format )
+QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &creationOptions, const QString &format )
 {
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( ! myGdalDriver )
     return QStringLiteral( "invalid GDAL driver" );
 
-  char **papszOptions = papszFromStringList( createOptions );
+  char **papszOptions = papszFromStringList( creationOptions );
   // get error string?
   const int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
   CSLDestroy( papszOptions );
@@ -543,6 +543,24 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
   if ( !ok )
     return QStringLiteral( "Failed GDALValidateCreationOptions() test" );
   return QString();
+}
+
+static void setRPCTransformerOptions( GDALDatasetH hSrcDS, char  ***opts )
+{
+  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
+  {
+    // Some RPC may contain a HEIGHT_DEFAULT entry, that must be used as the
+    // best default for RPC_HEIGHT. See https://github.com/OSGeo/gdal/pull/11989
+    const char *heightStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_DEFAULT", "RPC" );
+    if ( !heightStr )
+    {
+      // Otherwise well-behaved RPC should have height offset which is also
+      // a resaonable default for RPC_HEIGHT.
+      heightStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
+    }
+    if ( heightStr )
+      *opts = CSLAddNameValue( *opts, "RPC_HEIGHT", heightStr );
+  }
 }
 
 GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
@@ -554,27 +572,16 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
   const GDALWarpOptions *psOptionsIn )
 {
   char **opts = nullptr;
-  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
-  {
-    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
-    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
-    if ( heightOffStr )
-      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
-  }
-
-  return GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
+  setRPCTransformerOptions( hSrcDS, &opts );
+  GDALDatasetH hRetDS = GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
+  CSLDestroy( opts );
+  return hRetDS;
 }
 
 void *QgsGdalUtils::rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, char **papszOptions )
 {
   char **opts = CSLDuplicate( papszOptions );
-  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
-  {
-    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
-    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
-    if ( heightOffStr )
-      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
-  }
+  setRPCTransformerOptions( hSrcDS, &opts );
   void *transformer = GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, opts );
   CSLDestroy( opts );
   return transformer;
@@ -945,7 +952,14 @@ QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSys
 
 bool QgsGdalUtils::isVsiArchivePrefix( const QString &prefix )
 {
-  return vsiArchivePrefixes().contains( prefix );
+  const QStringList prefixes = vsiArchivePrefixes();
+  for ( const QString &archivePrefix : prefixes )
+  {
+    // catch chained prefixes, eg "/vsizip/vsicurl"
+    if ( prefix.contains( archivePrefix ) )
+      return true;
+  }
+  return false;
 }
 
 QStringList QgsGdalUtils::vsiArchiveFileExtensions()

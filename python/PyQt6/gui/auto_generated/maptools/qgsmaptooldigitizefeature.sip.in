@@ -11,9 +11,11 @@
 class QgsMapToolDigitizeFeature : QgsMapToolCaptureLayerGeometry
 {
 %Docstring(signature="appended")
-This tool digitizes geometry of new point/line/polygon features on already existing vector layers
-Once the map tool is enabled, user can digitize the feature geometry.
-A signal will then be emitted.
+This tool digitizes geometry of new point/line/polygon features on
+already existing vector layers.
+
+Once the map tool is enabled, user can digitize the feature geometry. A
+signal will then be emitted.
 
 .. versionadded:: 3.10
 %End
@@ -28,7 +30,9 @@ QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
 
 :param canvas: the map canvas
 :param cadDockWidget: widget to setup advanced digitizing parameters
-:param mode: type of geometry to capture (point/line/polygon), :py:class:`QgsMapToolCapture`.CaptureNone to autodetect geometry
+:param mode: type of geometry to capture (point/line/polygon),
+             :py:class:`QgsMapToolCapture`.CaptureNone to autodetect
+             geometry
 %End
 
     virtual QgsMapToolCapture::Capabilities capabilities() const;
@@ -67,8 +71,8 @@ Emitted whenever the digitizing has been successfully completed
 
     void digitizingFinished();
 %Docstring
-Emitted whenever the digitizing has been ended without digitizing
-any feature
+Emitted whenever the digitizing has been ended without digitizing any
+feature
 %End
 
     void digitizingCanceled();
@@ -89,13 +93,21 @@ Check if CaptureMode matches layer type. Default is ``True``.
 Check if CaptureMode matches layer type. Default is ``True``.
 %End
 
-  private:
+    virtual void layerGeometryCaptured( const QgsGeometry &geometry ) ${SIP_FINAL};
+
+%Docstring
+Called when the feature has been digitized.
+
+:param geometry: the digitized geometry
+%End
+
     virtual void featureDigitized( const QgsFeature &feature );
 %Docstring
 Called when the feature has been digitized
 
 .. versionadded:: 3.26
 %End
+
 };
 
 /************************************************************************

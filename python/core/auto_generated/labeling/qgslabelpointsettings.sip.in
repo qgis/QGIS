@@ -12,10 +12,12 @@
 class QgsLabelPointSettings
 {
 %Docstring(signature="appended")
-
 Contains settings related to how the label engine places and formats
-labels for point features, or polygon features which are labeled in
-the "around" or "over" centroid placement modes.
+labels for point-like features.
+
+:py:class:`QgsLabelPointSettings` can be used for point features, or
+polygon features which are labeled in the "around" or "over" centroid
+placement modes.
 
 .. versionadded:: 3.38
 %End
@@ -30,8 +32,8 @@ the "around" or "over" centroid placement modes.
 
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
-Updates the point settings to respect any data defined properties
-set within the specified ``properties`` collection.
+Updates the point settings to respect any data defined properties set
+within the specified ``properties`` collection.
 %End
 
     Qgis::LabelQuadrantPosition quadrant() const;
@@ -53,7 +55,8 @@ Sets the ``quadrant`` in which to offset labels from the point.
 Returns the ordered list of predefined label positions for points.
 
 Positions earlier in the list will be prioritized over later positions.
-Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
+Only used when the placement is set to
+:py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
 
 .. seealso:: :py:func:`setPredefinedPositionOrder`
 %End
@@ -63,20 +66,23 @@ Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPo
 Sets the ordered list of predefined label positions for points.
 
 Positions earlier in the list will be prioritized over later positions.
-Only used when the placement is set to :py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
+Only used when the placement is set to
+:py:class:`Qgis`.LabelPlacement.OrderedPositionsAroundPoint.
 
 .. seealso:: :py:func:`predefinedPositionOrder`
 %End
 
     double maximumDistance() const;
 %Docstring
-Returns the maximum distance which labels are allowed to be from their corresponding points.
+Returns the maximum distance which labels are allowed to be from their
+corresponding points.
 
-This setting works alongside the standard label offset distance properties to define a permissible
-range of distances at which labels can be placed from their points.
+This setting works alongside the standard label offset distance
+properties to define a permissible range of distances at which labels
+can be placed from their points.
 
-The default value is 0, which indicates that no maximum is set and the label's usual distance
-from point will always be respected.
+The default value is 0, which indicates that no maximum is set and the
+label's usual distance from point will always be respected.
 
 .. seealso:: :py:func:`setMaximumDistance`
 
@@ -87,13 +93,15 @@ from point will always be respected.
 
     void setMaximumDistance( double distance );
 %Docstring
-Sets the maximum ``distance`` which labels are allowed to be from their corresponding points.
+Sets the maximum ``distance`` which labels are allowed to be from their
+corresponding points.
 
-This setting works alongside the standard label offset distance properties to define a permissible
-range of distances at which labels can be placed from their points.
+This setting works alongside the standard label offset distance
+properties to define a permissible range of distances at which labels
+can be placed from their points.
 
-Setting ``distance`` to 0 indicates that no maximum is set and the label's usual distance
-from point will always be respected.
+Setting ``distance`` to 0 indicates that no maximum is set and the
+label's usual distance from point will always be respected.
 
 .. seealso:: :py:func:`maximumDistance`
 

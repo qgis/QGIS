@@ -14,8 +14,8 @@
 class QgsPointCloudLayerExporter /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-
-Handles exporting point cloud layers to memory layers, OGR supported files and PDAL supported files.
+Handles exporting point cloud layers to memory layers, OGR supported
+files and PDAL supported files.
 
 .. versionadded:: 3.28
 %End
@@ -39,7 +39,8 @@ Handles exporting point cloud layers to memory layers, OGR supported files and P
 
     QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
 %Docstring
-Constructor for QgsPointCloudLayerExporter, associated with the specified ``layer``.
+Constructor for QgsPointCloudLayerExporter, associated with the
+specified ``layer``.
 
 .. note::
 
@@ -70,8 +71,8 @@ Gets the name for the new layer.
 
     void setFilterExtent( const QgsRectangle extent );
 %Docstring
-Sets a filter extent for points to be exported in the target CRS
-Points that fall outside the extent will be skipped.
+Sets a filter extent for points to be exported in the target CRS Points
+that fall outside the extent will be skipped.
 
 .. seealso:: :py:func:`setCrs`
 %End
@@ -83,20 +84,22 @@ Gets the filter extent for points to be exported.
 
     void setFilterGeometry( const QgsAbstractGeometry *geometry );
 %Docstring
-Sets a spatial filter for points to be exported based on ``geom`` in the point cloud's CRS.
-Points that do not intersect ``geometry`` will be skipped.
+Sets a spatial filter for points to be exported based on ``geom`` in the
+point cloud's CRS. Points that do not intersect ``geometry`` will be
+skipped.
 %End
 
     void setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly = false );
 %Docstring
-Sets a spatial filter for points to be exported based on the features of ``layer``.
-Points that do not intersect the ``layer``'s features will be skipped.
+Sets a spatial filter for points to be exported based on the features of
+``layer``. Points that do not intersect the ``layer``'s features will be
+skipped.
 %End
 
     void setZRange( const QgsDoubleRange zRange );
 %Docstring
-Sets an inclusive range for Z values to be exported.
-Points with Z values outside the range will be skipped.
+Sets an inclusive range for Z values to be exported. Points with Z
+values outside the range will be skipped.
 %End
 
     QgsDoubleRange zRange() const;
@@ -106,7 +109,8 @@ Gets the inclusive range for Z values to be exported.
 
     void setFeedback( QgsFeedback *feedback );
 %Docstring
-Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting.
+Sets a :py:class:`QgsFeedback` object to allow cancellation / progress
+reporting.
 
 .. note::
 
@@ -115,13 +119,14 @@ Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting
 
     QgsFeedback *feedback() const;
 %Docstring
-Gets a pointer to the :py:class:`QgsFeedback` object used for cancellation / progress reporting, or None if not set.
+Gets a pointer to the :py:class:`QgsFeedback` object used for
+cancellation / progress reporting, or None if not set.
 %End
 
     void setAttributes( const QStringList &attributes );
 %Docstring
-Sets the list of point cloud ``attributes`` that will be exported.
-If never called, all attributes will be exported.
+Sets the list of point cloud ``attributes`` that will be exported. If
+never called, all attributes will be exported.
 
 .. note::
 
@@ -149,8 +154,9 @@ Gets the list of point cloud attributes that will be exported.
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
-Sets the ``crs`` for the exported file, and the transform ``context`` that will be used
-for reprojection if different from the point cloud layer's CRS.
+Sets the ``crs`` for the exported file, and the transform ``context``
+that will be used for reprojection if different from the point cloud
+layer's CRS.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -188,7 +194,8 @@ Gets the maximum number of points to be exported. 0 means no limit.
 
     void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action );
 %Docstring
-Sets whether an existing output vector file should be overwritten on appended to.
+Sets whether an existing output vector file should be overwritten on
+appended to.
 
 .. note::
 
@@ -197,9 +204,10 @@ Sets whether an existing output vector file should be overwritten on appended to
 
     void prepareExport();
 %Docstring
-Creates the :py:class:`QgsVectorLayer` for exporting to a memory layer, if necessary.
-This method allows the exported memory layer to be created in the main thread. If not explicitly called, this method
-will be implicitly called by :py:func:`~QgsPointCloudLayerExporter.doExport`.
+Creates the :py:class:`QgsVectorLayer` for exporting to a memory layer,
+if necessary. This method allows the exported memory layer to be created
+in the main thread. If not explicitly called, this method will be
+implicitly called by :py:func:`~QgsPointCloudLayerExporter.doExport`.
 %End
 
     void doExport();
@@ -209,14 +217,14 @@ Performs the actual exporting operation.
 
     QgsMapLayer *takeExportedLayer() /Factory/;
 %Docstring
-Gets a pointer to the exported layer.
-Caller takes ownership of the returned object.
+Gets a pointer to the exported layer. Caller takes ownership of the
+returned object.
 %End
 
     QString lastError() const;
 %Docstring
-Gets the last error that occurred during the exporting operation.
-If no error occurred an empty string is returned.
+Gets the last error that occurred during the exporting operation. If no
+error occurred an empty string is returned.
 %End
 
       public:
@@ -231,9 +239,12 @@ If no error occurred an empty string is returned.
 class QgsPointCloudLayerExporterTask : QgsTask
 {
 %Docstring(signature="appended")
-:py:class:`QgsTask` task which performs a :py:class:`QgsPointCloudLayerExporter` layer export operation as a background
-task. This can be used to export a point cloud layer out to a provider without blocking the
-QGIS interface.
+:py:class:`QgsTask` task which performs a
+:py:class:`QgsPointCloudLayerExporter` layer export operation as a
+background task.
+
+This can be used to export a point cloud layer out to a provider without
+blocking the QGIS interface.
 
 .. versionadded:: 3.28
 %End
@@ -245,7 +256,8 @@ QGIS interface.
 
     QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter );
 %Docstring
-Constructor for QgsPointCloudLayerExporterTask. Takes ownership of ``exporter``.
+Constructor for QgsPointCloudLayerExporterTask. Takes ownership of
+``exporter``.
 %End
 
     virtual void cancel();

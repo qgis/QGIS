@@ -13,7 +13,6 @@
 class QgsTextDocumentRenderContext
 {
 %Docstring(signature="appended")
-
 Encapsulates the context in which a text document is to be rendered.
 
 .. warning::
@@ -46,7 +45,8 @@ Sets associated text renderer flags.
 %Docstring
 Returns the maximum width (in painter units) for rendered text.
 
-This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is set.
+This is used to control text wrapping, when the
+:py:class:`Qgis`.TextRendererFlag.WrapLines flag is set.
 
 .. seealso:: :py:func:`setMaximumWidth`
 %End
@@ -55,7 +55,8 @@ This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFla
 %Docstring
 Sets the maximum width (in painter units) for rendered text.
 
-This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFlag.WrapLines flag is set.
+This is used to control text wrapping, when the
+:py:class:`Qgis`.TextRendererFlag.WrapLines flag is set.
 
 .. seealso:: :py:func:`maximumWidth`
 %End
@@ -65,7 +66,6 @@ This is used to control text wrapping, when the :py:class:`Qgis`.TextRendererFla
 class QgsTextDocumentMetrics
 {
 %Docstring(signature="appended")
-
 Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
 
 .. warning::
@@ -83,21 +83,24 @@ Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
     static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
         const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
 %Docstring
-Returns precalculated text metrics for a text ``document``, when rendered using the
-given base ``format`` and render ``context``.
+Returns precalculated text metrics for a text ``document``, when
+rendered using the given base ``format`` and render ``context``.
 
-The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
-:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually calculations
-based on the resultant font metrics. Failure to do so will result in poor quality text rendering
-at small font sizes.
+The optional ``scaleFactor`` parameter can specify a font size scaling
+factor. It is recommended to set this to
+:py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then
+manually calculations based on the resultant font metrics. Failure to do
+so will result in poor quality text rendering at small font sizes.
 
-Since QGIS 3.40 the optional ``documentContext`` argument can be used to pass text renderer context to change the
-logistics of the calculated metrics.
+Since QGIS 3.40 the optional ``documentContext`` argument can be used to
+pass text renderer context to change the logistics of the calculated
+metrics.
 %End
 
     bool isNullFontSize() const;
 %Docstring
-Returns ``True`` if the metrics could not be calculated because the text format has a null font size.
+Returns ``True`` if the metrics could not be calculated because the text
+format has a null font size.
 
 .. versionadded:: 3.30
 %End
@@ -106,8 +109,10 @@ Returns ``True`` if the metrics could not be calculated because the text format 
 %Docstring
 Returns the document associated with the calculated metrics.
 
-Note that this may not exactly match the original document which was used in the call to :py:func:`~QgsTextDocumentMetrics.calculateMetrics`,
-as certain settings (such as text wrapping) require restructuring the document.
+Note that this may not exactly match the original document which was
+used in the call to :py:func:`~QgsTextDocumentMetrics.calculateMetrics`,
+as certain settings (such as text wrapping) require restructuring the
+document.
 
 .. versionadded:: 3.40
 %End
@@ -119,9 +124,10 @@ Returns the overall size of the document.
 
     QRectF outerBounds( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 %Docstring
-Returns the outer bounds of the document, which is the :py:func:`~QgsTextDocumentMetrics.documentSize` adjusted to account
-for any text elements which fall outside of the usual document margins (such as super or
-sub script elements)
+Returns the outer bounds of the document, which is the
+:py:func:`~QgsTextDocumentMetrics.documentSize` adjusted to account for
+any text elements which fall outside of the usual document margins (such
+as super or sub script elements)
 
 .. warning::
 
@@ -149,34 +155,38 @@ Returns the cap height for the first line of text.
 
     double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
-Returns the offset from the top of the document to the text baseline for the given block index.
+Returns the offset from the top of the document to the text baseline for
+the given block index.
 %End
 
     double fragmentHorizontalAdvance( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
-Returns the horizontal advance of the fragment at the specified block and fragment index.
+Returns the horizontal advance of the fragment at the specified block
+and fragment index.
 
 .. versionadded:: 3.30
 %End
 
     double fragmentVerticalOffset( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
-Returns the vertical offset from a text block's baseline which should be applied
-to the fragment at the specified index within that block.
+Returns the vertical offset from a text block's baseline which should be
+applied to the fragment at the specified index within that block.
 
 .. versionadded:: 3.30
 %End
 
     double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
-Returns the fixed height of the fragment at the specified block and fragment index, or -1 if the fragment does not have a fixed height.
+Returns the fixed height of the fragment at the specified block and
+fragment index, or -1 if the fragment does not have a fixed height.
 
 .. versionadded:: 3.40
 %End
 
     double fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
-Returns the ascent of the fragment at the specified block and fragment index.
+Returns the ascent of the fragment at the specified block and fragment
+index.
 
 .. seealso:: :py:func:`fragmentDescent`
 
@@ -185,7 +195,8 @@ Returns the ascent of the fragment at the specified block and fragment index.
 
     double fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 %Docstring
-Returns the descent of the fragment at the specified block and fragment index.
+Returns the descent of the fragment at the specified block and fragment
+index.
 
 .. seealso:: :py:func:`fragmentAscent`
 
@@ -220,7 +231,8 @@ Returns the maximum ascent encountered in the specified block.
 
     QFont fragmentFont( int blockIndex, int fragmentIndex ) const;
 %Docstring
-Returns the calculated font for the fragment at the specified block and fragment indices.
+Returns the calculated font for the fragment at the specified block and
+fragment indices.
 %End
 
     double ascentOffset() const;
@@ -232,8 +244,9 @@ Returns the ascent offset of the first block in the document.
 %Docstring
 Returns the vertical margin for the specified block index.
 
-If ``blockIndex`` >= 0 then the returned value will be the margin to place after the block.
-If ``blockIndex`` < 0 then the returned value will be the margin to place before the first block.
+If ``blockIndex`` >= 0 then the returned value will be the margin to
+place after the block. If ``blockIndex`` < 0 then the returned value
+will be the margin to place before the first block.
 
 .. seealso:: :py:func:`blockLeftMargin`
 

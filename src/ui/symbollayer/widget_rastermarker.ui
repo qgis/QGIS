@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>372</width>
-    <height>485</height>
+    <height>495</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -295,23 +295,7 @@
     </layout>
    </item>
    <item row="10" column="1">
-    <widget class="QComboBox" name="mHorizontalAnchorComboBox">
-     <item>
-      <property name="text">
-       <string>Left</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>HCenter</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Right</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="mHorizontalAnchorComboBox"/>
    </item>
    <item row="9" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalAnchorDDBtn">
@@ -380,23 +364,7 @@
     </widget>
    </item>
    <item row="9" column="1">
-    <widget class="QComboBox" name="mVerticalAnchorComboBox">
-     <item>
-      <property name="text">
-       <string>Top</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>VCenter</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Bottom</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="mVerticalAnchorComboBox"/>
    </item>
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
@@ -451,10 +419,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsRatioLockButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsratiolockbutton.h</header>
-   <container>1</container>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -462,14 +429,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRatioLockButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsratiolockbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

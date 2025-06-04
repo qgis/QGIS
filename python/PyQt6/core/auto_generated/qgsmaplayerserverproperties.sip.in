@@ -14,7 +14,7 @@
 class QgsServerMetadataUrlProperties
 {
 %Docstring(signature="appended")
-Manages QGIS Server properties for a map layer
+Manages QGIS Server properties for a map layer.
 
 .. versionadded:: 3.22
 %End
@@ -74,6 +74,10 @@ Add a metadataUrl for the layer
 Gets the parent layer
 %End
 
+
+    bool operator==( const QgsServerMetadataUrlProperties &other ) const;
+    bool operator!=( const QgsServerMetadataUrlProperties &other ) const;
+
   protected:
 
 
@@ -85,7 +89,7 @@ Gets the parent layer
 class QgsServerWmsDimensionProperties
 {
 %Docstring(signature="appended")
-Manages QGIS Server properties for Wms dimensions
+Manages QGIS Server properties for WMS dimensions.
 
 .. versionadded:: 3.22
 %End
@@ -126,6 +130,10 @@ Manages QGIS Server properties for Wms dimensions
 %Docstring
 Constructor for WmsDimensionInfo.
 %End
+
+      bool operator==( const WmsDimensionInfo &other ) const;
+      bool operator!=( const WmsDimensionInfo &other ) const;
+
       QString name;
       QString fieldName;
       QString endFieldName;
@@ -136,6 +144,10 @@ Constructor for WmsDimensionInfo.
     };
 
     virtual ~QgsServerWmsDimensionProperties();
+
+
+    bool operator==( const QgsServerWmsDimensionProperties &other ) const;
+    bool operator!=( const QgsServerWmsDimensionProperties &other ) const;
 
     static QMap<int, QString> wmsDimensionDefaultDisplayLabels();
 %Docstring
@@ -148,9 +160,11 @@ Returns WMS Dimension default display labels
 %Docstring
 Adds a QGIS Server WMS Dimension
 
-:param wmsDimInfo: QGIS Server WMS Dimension object with, name, field, etc
+:param wmsDimInfo: QGIS Server WMS Dimension object with, name, field,
+                   etc
 
-:return: ``True`` if QGIS Server WMS Dimension has been successfully added
+:return: ``True`` if QGIS Server WMS Dimension has been successfully
+         added
 
 .. versionadded:: 3.10
 %End
@@ -159,7 +173,8 @@ Adds a QGIS Server WMS Dimension
 %Docstring
 Removes a QGIS Server WMS Dimension
 
-:return: ``True`` if QGIS Server WMS Dimension was found and successfully removed
+:return: ``True`` if QGIS Server WMS Dimension was found and
+         successfully removed
 
 .. versionadded:: 3.10
 %End
@@ -195,7 +210,7 @@ Gets the parent layer
 class QgsMapLayerServerProperties: QgsServerMetadataUrlProperties, QgsServerWmsDimensionProperties
 {
 %Docstring(signature="appended")
-Manages QGIS Server properties for a map layer
+Manages QGIS Server properties for a map layer.
 
 .. versionadded:: 3.10
 %End
@@ -214,6 +229,10 @@ Constructor - Creates a Map Layer QGIS Server Properties
 
 :param layer: The map layer
 %End
+
+
+    bool operator==( const QgsMapLayerServerProperties &other ) const;
+    bool operator!=( const QgsMapLayerServerProperties &other ) const;
 
     void copyTo( QgsMapLayerServerProperties *properties ) const;
 %Docstring
@@ -245,7 +264,8 @@ Reset properties to default
 
     void setShortName( const QString &name );
 %Docstring
-Sets the short ``name`` of the layer used by QGIS Server to identify the layer.
+Sets the short ``name`` of the layer used by QGIS Server to identify the
+layer.
 
 .. seealso:: :py:func:`shortName`
 
@@ -254,7 +274,8 @@ Sets the short ``name`` of the layer used by QGIS Server to identify the layer.
 
     QString shortName() const;
 %Docstring
-Returns the short name of the layer used by QGIS Server to identify the layer.
+Returns the short name of the layer used by QGIS Server to identify the
+layer.
 
 .. seealso:: :py:func:`setShortName`
 
@@ -263,7 +284,8 @@ Returns the short name of the layer used by QGIS Server to identify the layer.
 
     void setTitle( const QString &title );
 %Docstring
-Sets the ``title`` of the layer used by QGIS Server in GetCapabilities request.
+Sets the ``title`` of the layer used by QGIS Server in GetCapabilities
+request.
 
 .. seealso:: :py:func:`title`
 
@@ -272,7 +294,8 @@ Sets the ``title`` of the layer used by QGIS Server in GetCapabilities request.
 
     void setWfsTitle( const QString &title );
 %Docstring
-Sets the ``title`` of the layer used by QGIS Server in WFS GetCapabilities request.
+Sets the ``title`` of the layer used by QGIS Server in WFS
+GetCapabilities request.
 
 .. seealso:: :py:func:`title`
 
@@ -281,7 +304,8 @@ Sets the ``title`` of the layer used by QGIS Server in WFS GetCapabilities reque
 
     QString title() const;
 %Docstring
-Returns the title of the layer used by QGIS Server in GetCapabilities request.
+Returns the title of the layer used by QGIS Server in GetCapabilities
+request.
 
 .. seealso:: :py:func:`setTitle`
 
@@ -300,7 +324,8 @@ QGIS WFS in GetCapabilities request.
 
     void setAbstract( const QString &abstract );
 %Docstring
-Sets the ``abstract`` of the layer used by QGIS Server in GetCapabilities request.
+Sets the ``abstract`` of the layer used by QGIS Server in
+GetCapabilities request.
 
 .. seealso:: :py:func:`abstract`
 
@@ -309,7 +334,8 @@ Sets the ``abstract`` of the layer used by QGIS Server in GetCapabilities reques
 
     QString abstract() const;
 %Docstring
-Returns the abstract of the layerused by QGIS Server in GetCapabilities request.
+Returns the abstract of the layerused by QGIS Server in GetCapabilities
+request.
 
 .. seealso:: :py:func:`setAbstract`
 
@@ -318,7 +344,8 @@ Returns the abstract of the layerused by QGIS Server in GetCapabilities request.
 
     void setKeywordList( const QString &keywords );
 %Docstring
-Sets the ``keywords``  list of the layerused by QGIS Server in GetCapabilities request.
+Sets the ``keywords`` list of the layerused by QGIS Server in
+GetCapabilities request.
 
 .. seealso:: :py:func:`keywordList`
 
@@ -327,7 +354,8 @@ Sets the ``keywords``  list of the layerused by QGIS Server in GetCapabilities r
 
     QString keywordList() const;
 %Docstring
-Returns the keyword list of the layerused by QGIS Server in GetCapabilities request.
+Returns the keyword list of the layerused by QGIS Server in
+GetCapabilities request.
 
 .. seealso:: :py:func:`setKeywordList`
 
@@ -336,9 +364,11 @@ Returns the keyword list of the layerused by QGIS Server in GetCapabilities requ
 
     void setDataUrl( const QString &dataUrl );
 %Docstring
-Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
+Sets the DataUrl of the layer used by QGIS Server in GetCapabilities
+request.
 
-DataUrl is a a link to the underlying data represented by a particular layer.
+DataUrl is a a link to the underlying data represented by a particular
+layer.
 
 .. seealso:: :py:func:`dataUrl`
 
@@ -347,9 +377,11 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
     QString dataUrl() const;
 %Docstring
-Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
+Returns the DataUrl of the layer used by QGIS Server in GetCapabilities
+request.
 
-DataUrl is a a link to the underlying data represented by a particular layer.
+DataUrl is a a link to the underlying data represented by a particular
+layer.
 
 .. seealso:: :py:func:`setDataUrl`
 
@@ -358,9 +390,11 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
     void setDataUrlFormat( const QString &dataUrlFormat );
 %Docstring
-Sets the DataUrl ``format`` of the layerused by QGIS Server in GetCapabilities request.
+Sets the DataUrl ``format`` of the layerused by QGIS Server in
+GetCapabilities request.
 
-DataUrl is a a link to the underlying data represented by a particular layer.
+DataUrl is a a link to the underlying data represented by a particular
+layer.
 
 .. seealso:: :py:func:`dataUrlFormat`
 
@@ -369,9 +403,11 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
     QString dataUrlFormat() const;
 %Docstring
-Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
+Returns the DataUrl format of the layer used by QGIS Server in
+GetCapabilities request.
 
-DataUrl is a a link to the underlying data represented by a particular layer.
+DataUrl is a a link to the underlying data represented by a particular
+layer.
 
 .. seealso:: :py:func:`setDataUrlFormat`
 
@@ -380,7 +416,8 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
     void setAttribution( const QString &attrib );
 %Docstring
-Sets the ``attribution`` of the layer used by QGIS Server in GetCapabilities request.
+Sets the ``attribution`` of the layer used by QGIS Server in
+GetCapabilities request.
 
 Attribution indicates the provider of a layer or collection of layers.
 
@@ -391,7 +428,8 @@ Attribution indicates the provider of a layer or collection of layers.
 
     QString attribution() const;
 %Docstring
-Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
+Returns the attribution of the layer used by QGIS Server in
+GetCapabilities request.
 
 Attribution indicates the provider of a layer or collection of layers.
 
@@ -402,7 +440,8 @@ Attribution indicates the provider of a layer or collection of layers.
 
     void setAttributionUrl( const QString &url );
 %Docstring
-Sets the attribution ``url`` of the layer used by QGIS Server in GetCapabilities request.
+Sets the attribution ``url`` of the layer used by QGIS Server in
+GetCapabilities request.
 
 Attribution indicates the provider of a layer or collection of layers.
 
@@ -413,7 +452,8 @@ Attribution indicates the provider of a layer or collection of layers.
 
     QString attributionUrl() const;
 %Docstring
-Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
+Returns the attribution URL of the layer used by QGIS Server in
+GetCapabilities request.
 
 Attribution indicates the provider of a layer or collection of layers.
 
@@ -422,14 +462,49 @@ Attribution indicates the provider of a layer or collection of layers.
 .. versionadded:: 3.38
 %End
 
+    void setLegendUrl( const QString &legendUrl );
+%Docstring
+Sets the URL for the layer's legend.
+
+.. versionadded:: 3.44
+%End
+
+    QString legendUrl() const;
+%Docstring
+Returns the URL for the layer's legend.
+
+.. versionadded:: 3.44
+%End
+
+    void setLegendUrlFormat( const QString &legendUrlFormat );
+%Docstring
+Sets the format for a URL based layer legend.
+
+.. versionadded:: 3.44
+%End
+
+    QString legendUrlFormat() const;
+%Docstring
+Returns the format for a URL based layer legend.
+
+.. versionadded:: 3.44
+%End
+
     virtual const QgsMapLayer *layer() const;
 %Docstring
 Gets the parent layer
 %End
 };
 
+
 class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
 {
+%Docstring(signature="appended")
+Convenient class for API compatibility.
+
+.. deprecated:: 3.22
+.. versionadded:: 3.10
+%End
 
 %TypeHeaderCode
 #include "qgsmaplayerserverproperties.h"
@@ -438,7 +513,6 @@ class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
     static const QMetaObject staticMetaObject;
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

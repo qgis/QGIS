@@ -23,7 +23,7 @@
 /**
  * \ingroup core
  * \class QgsColorRamp
- * \brief Abstract base class for color ramps
+ * \brief Abstract base class for color ramps.
  */
 class CORE_EXPORT QgsColorRamp
 {

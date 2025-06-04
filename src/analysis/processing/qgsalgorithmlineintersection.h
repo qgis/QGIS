@@ -41,6 +41,7 @@ class QgsLineIntersectionAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsLineIntersectionAlgorithm *createInstance() const override SIP_FACTORY;

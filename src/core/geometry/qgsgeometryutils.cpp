@@ -101,7 +101,7 @@ QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, co
 {
   QgsPoint closestPoint;
   QgsVertexId vertexAfter;
-  geometry.closestSegment( point, closestPoint, vertexAfter, nullptr, DEFAULT_SEGMENT_EPSILON );
+  geometry.closestSegment( point, closestPoint, vertexAfter, nullptr, Qgis::DEFAULT_SEGMENT_EPSILON );
   if ( vertexAfter.isValid() )
   {
     const QgsPoint pointAfter = geometry.vertexAt( vertexAfter );
@@ -1019,6 +1019,7 @@ QPair<Qgis::WkbType, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt
 {
   QString wktParsed = wkt;
   QString contents;
+  bool isEmpty = false;
   const QLatin1String empty { "EMPTY" };
   if ( wkt.contains( empty, Qt::CaseInsensitive ) )
   {
@@ -1032,9 +1033,14 @@ QPair<Qgis::WkbType, QString> QgsGeometryUtils::wktReadBlock( const QString &wkt
       // Extract the part of the QString to the left of "EMPTY"
       wktParsed = wktParsed.left( index );
       contents = empty;
+      isEmpty = true;
+    }
+    else
+    {
+      wktParsed = wkt; // reset to original content
     }
   }
-  else
+  if ( !isEmpty )
   {
     const int openedParenthesisCount = wktParsed.count( '(' );
     const int closedParenthesisCount = wktParsed.count( ')' );

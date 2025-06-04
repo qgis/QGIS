@@ -23,14 +23,18 @@
 
 /**
  * \ingroup gui
- * \brief Configuration widget for QgsRasterContourRenderer
+ * \brief Configuration widget for QgsRasterContourRenderer.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsRasterContourRendererWidget : public QgsRasterRendererWidget, private Ui::QgsRasterContourRendererWidget
 {
     Q_OBJECT
   public:
-    //! Constructs the widget
+    /**
+     * Constructor for QgsRasterContourRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     //! Widget creation function (mainly for the use by the renderer registry)

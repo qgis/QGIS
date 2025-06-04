@@ -155,6 +155,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
       mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     else if ( cameraNavigationMode == QLatin1String( "walk-navigation" ) )
       mCameraNavigationMode = Qgis::NavigationMode::Walk;
+    else if ( cameraNavigationMode == QLatin1String( "globe-terrain-based-navigation" ) )
+      mCameraNavigationMode = Qgis::NavigationMode::GlobeTerrainBased;
     mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
 
@@ -325,6 +327,9 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
     case Qgis::NavigationMode::Walk:
       elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "walk-navigation" ) );
       break;
+    case Qgis::NavigationMode::GlobeTerrainBased:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "globe-terrain-based-navigation" ) );
+      break;
   }
   elemCamera.setAttribute( QStringLiteral( "camera-movement-speed" ), mCameraMovementSpeed );
   elem.appendChild( elemCamera );
@@ -455,6 +460,11 @@ QgsRectangle Qgs3DMapSettings::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( sceneMode() == Qgis::SceneMode::Globe )
+  {
+    QgsDebugError( QStringLiteral( "extent() should not be used with globe!" ) );
+  }
+
   return mExtent;
 }
 
@@ -464,6 +474,11 @@ void Qgs3DMapSettings::setExtent( const QgsRectangle &extent )
 
   if ( extent == mExtent )
     return;
+
+  if ( sceneMode() == Qgis::SceneMode::Globe )
+  {
+    QgsDebugError( QStringLiteral( "setExtent() should not be used with globe!" ) );
+  }
 
   mExtent = extent;
   const QgsPointXY center = mExtent.center();
@@ -513,6 +528,16 @@ void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mCrs = crs;
+
+  // for convenience, make sure the navigation mode is consistent with the scene mode
+  if ( sceneMode() == Qgis::SceneMode::Globe && mCameraNavigationMode == Qgis::NavigationMode::TerrainBased )
+  {
+    setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+  }
+  else if ( sceneMode() == Qgis::SceneMode::Local && mCameraNavigationMode == Qgis::NavigationMode::GlobeTerrainBased )
+  {
+    setCameraNavigationMode( Qgis::NavigationMode::TerrainBased );
+  }
 }
 
 QgsCoordinateReferenceSystem Qgs3DMapSettings::crs() const
@@ -520,6 +545,13 @@ QgsCoordinateReferenceSystem Qgs3DMapSettings::crs() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mCrs;
+}
+
+Qgis::SceneMode Qgs3DMapSettings::sceneMode() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mCrs.type() == Qgis::CrsType::Geocentric ? Qgis::SceneMode::Globe : Qgis::SceneMode::Local;
 }
 
 QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const

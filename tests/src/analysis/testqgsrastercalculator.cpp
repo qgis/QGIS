@@ -78,6 +78,9 @@ class TestQgsRasterCalculator : public QgsTest
     void parseFunctionTypeString();   //test the parsing of the formule for the tFunction type
     void testFunctionTypeWithLayer(); //test of conditional statement
 
+    void testCreationOptions();
+    void testNoDataValue();
+
   private:
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
     QgsRasterLayer *mpLandsatRasterLayer4326 = nullptr;
@@ -464,7 +467,7 @@ void TestQgsRasterCalculator::calcWithLayers()
   tmpFile.close();
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
@@ -482,7 +485,7 @@ void TestQgsRasterCalculator::calcWithLayers()
 
   //now try with 2 raster bands
   QgsRasterCalculator rc2( QStringLiteral( "\"landsat@1\" + \"landsat@2\"" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc2.processCalculation() ), 0 );
+  QCOMPARE( rc2.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
@@ -523,7 +526,7 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   tmpFile.close();
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + \"landsat_4326@2\"" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
@@ -570,6 +573,7 @@ void TestQgsRasterCalculator::calcWithDataType_data()
   QTest::newRow( "Float64 with OpenCL" ) << static_cast<int>( GDT_Float64 ) << true;
 #endif
 }
+
 void TestQgsRasterCalculator::calcWithDataType()
 {
   QFETCH( int, dataType );
@@ -668,7 +672,7 @@ void TestQgsRasterCalculator::calcWithDataType()
   entries << entry1;
 
   QgsRasterCalculator rc( QStringLiteral( "\"dem@1\" * 2" ), tempResultFilePath, QStringLiteral( "GTiff" ), extent, crs, 2, 2, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
 
   auto result = std::make_unique<QgsRasterLayer>( tempResultFilePath, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
@@ -680,7 +684,6 @@ void TestQgsRasterCalculator::calcWithDataType()
   QCOMPARE( block->value( 1, 0 ), 6 );
   QCOMPARE( block->value( 1, 1 ), 8 );
 }
-
 
 void TestQgsRasterCalculator::findNodes()
 {
@@ -779,16 +782,15 @@ void TestQgsRasterCalculator::errors()
   tmpFile.close();
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 6 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::BandError );
   QCOMPARE( rc.lastError(), QStringLiteral( "Band number 0 is not valid for entry landsat@0" ) );
 
   entry1.bandNumber = 10; // bad band
   entries.clear();
   entries << entry1;
   rc = QgsRasterCalculator( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 6 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::BandError );
   QCOMPARE( rc.lastError(), QStringLiteral( "Band number 10 is not valid for entry landsat@0" ) );
-
 
   // no raster
   entry1.raster = nullptr;
@@ -796,7 +798,7 @@ void TestQgsRasterCalculator::errors()
   entries.clear();
   entries << entry1;
   rc = QgsRasterCalculator( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 2 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::InputLayerError );
   QCOMPARE( rc.lastError(), QStringLiteral( "No raster layer for entry landsat@0" ) );
 
   // bad driver
@@ -805,19 +807,19 @@ void TestQgsRasterCalculator::errors()
   entries.clear();
   entries << entry1;
   rc = QgsRasterCalculator( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "xxxxx" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 1 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::CreateOutputError );
   QCOMPARE( rc.lastError(), QStringLiteral( "Could not obtain driver for xxxxx" ) );
 
   // bad filename
   rc = QgsRasterCalculator( QStringLiteral( "\"landsat@0\"" ), QStringLiteral( "/goodluckwritinghere/blah/blah.tif" ), QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 1 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::CreateOutputError );
   QCOMPARE( rc.lastError(), QStringLiteral( "Could not create output /goodluckwritinghere/blah/blah.tif" ) );
 
   // canceled
   QgsFeedback feedback;
   feedback.cancel();
   rc = QgsRasterCalculator( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation( &feedback ) ), 3 );
+  QCOMPARE( rc.processCalculation( &feedback ), QgsRasterCalculator::Result::Canceled );
   QVERIFY( rc.lastError().isEmpty() );
 }
 
@@ -881,7 +883,7 @@ void TestQgsRasterCalculator::testOutputCrsFromRasterEntries()
   tmpFile.close();
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@0\"" ), tmpName, QStringLiteral( "GTiff" ), extent, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
   //open output file and check results
   QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->crs(), mpLandsatRasterLayer->crs() );
@@ -905,7 +907,6 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
-
   auto _chk = [=]( const QString &formula, const std::vector<float> &values, bool useOpenCL ) {
     qDebug() << formula;
 
@@ -922,7 +923,7 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
     QString tmpName = tmpFile.fileName();
     tmpFile.close();
     QgsRasterCalculator rc( formula, tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-    QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+    QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
     //open output file and check results
     QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
     QCOMPARE( result->width(), 2 );
@@ -988,7 +989,7 @@ void TestQgsRasterCalculator::testStatistics()
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" * 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, { entry1 }, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check stats are there
   auto ds = GDALOpenEx( tmpName.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_READONLY, nullptr, nullptr, nullptr );
@@ -1048,7 +1049,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   // Test with one raster as condition and numbers as first and second option
   // if ( landsat@1 > 124.5, 100.0 , 5.0 )
   QgsRasterCalculator rc( QStringLiteral( " if(\"landsat@1\">124.5, 100.0 , 5.0 ) " ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc.processCalculation() ), 0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   auto result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
@@ -1066,7 +1067,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   // Test with one raster as condition, one raster first option and number as second option
   // if ( landsat@1 > 124.5, landsat@1 + landsat@2 , 5.0 )
   QgsRasterCalculator rc2( QStringLiteral( " if(\"landsat@1\">124.5, \"landsat@1\" + \"landsat@2\" , 5.0 ) " ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc2.processCalculation() ), 0 );
+  QCOMPARE( rc2.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
@@ -1083,7 +1084,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   // Test with one raster as condition, one raster first option and number as second option
   // if ( landsat@1 > 124.5, landsat@1 + landsat@2 , landsat@3 )
   QgsRasterCalculator rc3( QStringLiteral( " if(\"landsat@1\">124.5, \"landsat@1\" + \"landsat@2\" , \"landsat@1\" - \"landsat@2\" ) " ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc3.processCalculation() ), 0 );
+  QCOMPARE( rc3.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
@@ -1100,7 +1101,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   // Test with scalar (always true) as condition, one raster first option and number as second option
   // if ( 5 > 4, landsat@1 + landsat@2 , 0 )
   QgsRasterCalculator rc4( QStringLiteral( " if( 5>4 , \"landsat@1\" + \"landsat@2\" , 0 ) " ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc4.processCalculation() ), 0 );
+  QCOMPARE( rc4.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
@@ -1117,7 +1118,7 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   // Test with scalar (always false) as condition, one raster first option and number as second option
   // if ( 4 > 5, landsat@1 + landsat@2 , 0 )
   QgsRasterCalculator rc5( QStringLiteral( " if( 4>5 , \"landsat@1\" + \"landsat@2\" , 0 ) " ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
-  QCOMPARE( static_cast<int>( rc5.processCalculation() ), 0 );
+  QCOMPARE( rc5.processCalculation(), QgsRasterCalculator::Result::Success );
 
   //open output file and check results
   result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "result" ) );
@@ -1130,6 +1131,65 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( block->value( 1, 1 ), 0.0 );
   QCOMPARE( block->value( 2, 0 ), 0.0 );
   QCOMPARE( block->value( 2, 1 ), 0.0 );
+}
+
+void TestQgsRasterCalculator::testCreationOptions()
+{
+  QgsRasterCalculatorEntry entry;
+  entry.bandNumber = 1;
+  entry.raster = mpLandsatRasterLayer;
+  entry.ref = QStringLiteral( "landsat@1" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry;
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QTemporaryFile tmpFile;
+  tmpFile.setFileTemplate( "rc-XXXXXX.tif" );
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QString worldFileName = tmpName.replace( QStringLiteral( ".tif" ), QStringLiteral( ".tfw" ) );
+  QFile worldFile( worldFileName );
+  QVERIFY( !worldFile.exists() );
+
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
+  rc.setCreationOptions( QStringList() << "TFW=YES" );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
+
+  QVERIFY( worldFile.exists() );
+  worldFile.remove();
+}
+
+void TestQgsRasterCalculator::testNoDataValue()
+{
+  QgsRasterCalculatorEntry entry;
+  entry.bandNumber = 1;
+  entry.raster = mpLandsatRasterLayer;
+  entry.ref = QStringLiteral( "landsat@1" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry;
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" + 2" ), tmpName, QStringLiteral( "GTiff" ), extent, crs, 2, 3, entries, QgsProject::instance()->transformContext() );
+  rc.setNoDataValue( -5555.0 );
+  QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
+
+  //open output file and check results
+  const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpName, QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
+  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -5555.0 );
 }
 
 QGSTEST_MAIN( TestQgsRasterCalculator )

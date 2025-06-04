@@ -12,11 +12,12 @@
 class QgsAbstractFileContentSourceLineEdit : QWidget /Abstract/
 {
 %Docstring(signature="appended")
-Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
+Abstract base class for widgets which allow users to select content from
+a file, embedding a file, etc.
 
-This class is designed to be used by content which is managed by a :py:class:`QgsAbstractContentCache`,
-i.e. it can handle either direct file paths, base64 encoded contents, or remote HTTP
-urls.
+This class is designed to be used by content which is managed by a
+:py:class:`QgsAbstractContentCache`, i.e. it can handle either direct
+file paths, base64 encoded contents, or remote HTTP urls.
 
 .. versionadded:: 3.6
 %End
@@ -27,13 +28,14 @@ urls.
   public:
     QgsAbstractFileContentSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAbstractFileContentSourceLineEdit, with the specified ``parent`` widget.
+Constructor for QgsAbstractFileContentSourceLineEdit, with the specified
+``parent`` widget.
 %End
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
-to the appropriate message bar.
+Sets the message ``bar`` associated with the widget. This allows the
+widget to push feedback messages to the appropriate message bar.
 
 .. seealso:: :py:func:`messageBar`
 %End
@@ -56,8 +58,8 @@ Returns the current file source.
 
     void setLastPathSettingsKey( const QString &key );
 %Docstring
-Sets a specific settings ``key`` to use when storing the last
-used path for the file source.
+Sets a specific settings ``key`` to use when storing the last used path
+for the file source.
 %End
 
     QgsPropertyOverrideButton *propertyOverrideToolButton() const;
@@ -118,8 +120,8 @@ A line edit widget with toolbutton for setting a raster image path.
 
     QgsPictureSourceLineEditBase( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified ``parent`` widget.
-The default format is SVG.
+Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified
+``parent`` widget. The default format is SVG.
 %End
 
     void setMode( Format format );
@@ -130,7 +132,8 @@ Defines the mode of the source line edit
   protected:
     QgsPictureSourceLineEditBase( Format format, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified ``parent`` widget.
+Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified
+``parent`` widget.
 %End
 
 };
@@ -154,7 +157,8 @@ Designed for use with :py:class:`QgsSvgCache`.
   public:
     QgsSvgSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsSvgSourceLineEdit, with the specified ``parent`` widget.
+Constructor for QgsSvgSourceLineEdit, with the specified ``parent``
+widget.
 %End
 };
 
@@ -176,7 +180,8 @@ Designed for use with :py:class:`QgsImageCache`.
   public:
     QgsImageSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsImageSourceLineEdit, with the specified ``parent`` widget.
+Constructor for QgsImageSourceLineEdit, with the specified ``parent``
+widget.
 %End
 };
 
@@ -184,7 +189,8 @@ Constructor for QgsImageSourceLineEdit, with the specified ``parent`` widget.
 class QgsAnimatedImageSourceLineEdit : QgsPictureSourceLineEditBase
 {
 %Docstring(signature="appended")
-A line edit widget with toolbutton for setting an animated raster image path.
+A line edit widget with toolbutton for setting an animated raster image
+path.
 
 Designed for use with :py:class:`QgsImageCache`.
 
@@ -199,7 +205,8 @@ Designed for use with :py:class:`QgsImageCache`.
   public:
     QgsAnimatedImageSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAnimatedImageSourceLineEdit, with the specified ``parent`` widget.
+Constructor for QgsAnimatedImageSourceLineEdit, with the specified
+``parent`` widget.
 %End
 };
 

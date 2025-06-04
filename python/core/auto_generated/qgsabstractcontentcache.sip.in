@@ -15,8 +15,9 @@ class QgsAbstractContentCacheEntry
 %Docstring(signature="appended")
 Base class for entries in a :py:class:`QgsAbstractContentCache`.
 
-Subclasses must take care to correctly implement the :py:func:`~isEqual` method, applying their
-own logic for testing extra cache properties (e.g. image size for an image-based cache).
+Subclasses must take care to correctly implement the :py:func:`~isEqual`
+method, applying their own logic for testing extra cache properties
+(e.g. image size for an image-based cache).
 
 .. versionadded:: 3.6
 %End
@@ -28,7 +29,8 @@ own logic for testing extra cache properties (e.g. image size for an image-based
 
     QgsAbstractContentCacheEntry( const QString &path );
 %Docstring
-Constructor for QgsAbstractContentCacheEntry for an entry relating to the specified ``path``.
+Constructor for QgsAbstractContentCacheEntry for an entry relating to
+the specified ``path``.
 %End
 
     virtual ~QgsAbstractContentCacheEntry();
@@ -55,16 +57,17 @@ Returns the memory usage in bytes for the entry.
 
     virtual void dump() const = 0;
 %Docstring
-Dumps debugging strings containing the item's properties. For testing purposes only.
+Dumps debugging strings containing the item's properties. For testing
+purposes only.
 %End
 
   protected:
 
     virtual bool isEqual( const QgsAbstractContentCacheEntry *other ) const = 0;
 %Docstring
-Tests whether this entry matches another entry. Subclasses must take care to check
-that the type of ``other`` is of a matching class, and then test extra cache-specific
-properties, such as image size.
+Tests whether this entry matches another entry. Subclasses must take
+care to check that the type of ``other`` is of a matching class, and
+then test extra cache-specific properties, such as image size.
 %End
 
   private:
@@ -74,10 +77,10 @@ properties, such as image size.
 class QgsAbstractContentCacheBase: QObject
 {
 %Docstring(signature="appended")
-
 A QObject derived base class for :py:class:`QgsAbstractContentCache`.
 
-Required because template based class (such as :py:class:`QgsAbstractContentCache`) cannot use the Q_OBJECT macro.
+Required because template based class (such as
+:py:class:`QgsAbstractContentCache`) cannot use the Q_OBJECT macro.
 
 .. versionadded:: 3.6
 %End
@@ -89,20 +92,22 @@ Required because template based class (such as :py:class:`QgsAbstractContentCach
 
     QgsAbstractContentCacheBase( QObject *parent );
 %Docstring
-Constructor for QgsAbstractContentCacheBase, with the specified ``parent`` object.
+Constructor for QgsAbstractContentCacheBase, with the specified
+``parent`` object.
 %End
 
     static bool parseBase64DataUrl( const QString &path, QString *mimeType /Out/ = 0, QString *data /Out/ = 0 );
 %Docstring
-Parses a ``path`` to determine if it represents a base 64 encoded HTML data URL, and if so, extracts the components
-of the URL.
+Parses a ``path`` to determine if it represents a base 64 encoded HTML
+data URL, and if so, extracts the components of the URL.
 
 Data URLs are of the form ``data:[<mediatype>;]base64,<data>``.
 
 :param path: path to test
 
 :return: - ``True`` if ``path`` is a base 64 encoded data URL
-         - mimeType: the extracted mime type if the ``path`` is a data URL
+         - mimeType: the extracted mime type if the ``path`` is a data
+           URL
          - data: the extracted base64 data if the ``path`` is a data URL
 
 .. versionadded:: 3.40
@@ -111,15 +116,16 @@ Data URLs are of the form ``data:[<mediatype>;]base64,<data>``.
 
     static bool parseEmbeddedStringData( const QString &path, QString *mimeType /Out/ = 0, QString *data /Out/ = 0 );
 %Docstring
-Parses a ``path`` to determine if it represents a embedded string data, and if so, extracts the components
-of the URL.
+Parses a ``path`` to determine if it represents a embedded string data,
+and if so, extracts the components of the URL.
 
 Data URLs are of the form ``data:[<mediatype>;]utf8,<data>``.
 
 :param path: path to test
 
 :return: - ``True`` if ``path`` is an embedded string data URL
-         - mimeType: the extracted mime type if the ``path`` is a data URL
+         - mimeType: the extracted mime type if the ``path`` is a data
+           URL
          - data: the extracted string data if the ``path`` is a data URL
 
 .. versionadded:: 3.42
@@ -132,29 +138,45 @@ Returns ``True`` if ``path`` represents base64 encoded data.
 .. versionadded:: 3.40
 %End
 
+    virtual bool invalidateCacheEntry( const QString &path );
+%Docstring
+Invalidates a cache entry for the specified ``path``.
+
+If an entry exists for the given ``path``, it will be removed from the
+cache.
+
+:param path: The path of the cache entry to invalidate.
+
+:return: ``True`` if an entry was invalidated, ``False`` otherwise.
+
+.. versionadded:: 3.44
+%End
+
   signals:
 
     void remoteContentFetched( const QString &url );
 %Docstring
-Emitted when the cache has finished retrieving content from a remote ``url``.
+Emitted when the cache has finished retrieving content from a remote
+``url``.
 %End
 
   protected:
 
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const;
 %Docstring
-Runs additional checks on a network ``reply`` to ensure that the reply content is
-consistent with that required by the cache.
+Runs additional checks on a network ``reply`` to ensure that the reply
+content is consistent with that required by the cache.
 %End
 
   protected slots:
 
     virtual void onRemoteContentFetched( const QString &url, bool success );
 %Docstring
-Triggered after remote content (i.e. HTTP linked content at the given ``url``) has been fetched.
+Triggered after remote content (i.e. HTTP linked content at the given
+``url``) has been fetched.
 
-The ``success`` argument will be ``True`` if the content was successfully fetched, or ``False`` if
-it was not fetched successfully.
+The ``success`` argument will be ``True`` if the content was
+successfully fetched, or ``False`` if it was not fetched successfully.
 %End
 
 };

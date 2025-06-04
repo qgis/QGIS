@@ -32,6 +32,7 @@ class QgsDxfExportAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsDxfExportAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -41,6 +42,7 @@ class QgsDxfExportAlgorithm : public QgsProcessingAlgorithm
 
   private:
     QMap<QString, QString> mMapThemeStyleOverrides;
+    Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
 };
 
 ///@endcond PRIVATE

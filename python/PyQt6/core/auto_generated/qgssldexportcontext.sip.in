@@ -10,7 +10,8 @@
 class QgsSldExportContext
 {
 %Docstring(signature="appended")
-The :py:class:`QgsSldExportContext` class holds SLD export options and other information related to SLD export of a QGIS layer style.
+Holds SLD export options and other information related to SLD export of
+a QGIS layer style.
 
 .. versionadded:: 3.30
 %End
@@ -31,10 +32,9 @@ Constructs a default SLD export context
 
     QgsSldExportContext( const Qgis::SldExportOptions &options, const Qgis::SldExportVendorExtension &vendorExtension, const QString &filePath );
 %Docstring
-/brief Create a new QgsSldExportContext
-/param options SLD export options
-/param vendorExtension SLD export vendor extension
-/param filePath SLD export file path
+/brief Create a new QgsSldExportContext /param options SLD export
+options /param vendorExtension SLD export vendor extension /param
+filePath SLD export file path
 %End
 
     Qgis::SldExportOptions exportOptions() const;
@@ -65,6 +65,70 @@ Returns the export file path for the SLD
     void setExportFilePath( const QString &exportFilePath );
 %Docstring
 Sets the export file path for the SLD to ``exportFilePath``
+%End
+
+    QStringList errors() const;
+%Docstring
+Returns a list of errors which occurred during the conversion.
+
+.. seealso:: :py:func:`pushError`
+
+.. seealso:: :py:func:`warnings`
+
+.. versionadded:: 3.44
+%End
+
+    void pushError( const QString &error );
+%Docstring
+Pushes a ``error`` message generated during the conversion.
+
+.. seealso:: :py:func:`errors`
+
+.. seealso:: :py:func:`pushWarning`
+
+.. versionadded:: 3.44
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of warnings which occurred during the conversion.
+
+.. seealso:: :py:func:`pushWarning`
+
+.. seealso:: :py:func:`errors`
+
+.. versionadded:: 3.44
+%End
+
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+
+.. seealso:: :py:func:`warnings`
+
+.. seealso:: :py:func:`pushError`
+
+.. versionadded:: 3.44
+%End
+
+    QVariantMap extraProperties() const;
+%Docstring
+Returns the open ended set of properties that can drive/inform the SLD
+encoding.
+
+.. seealso:: :py:func:`setExtraProperties`
+
+.. versionadded:: 3.44
+%End
+
+    void setExtraProperties( const QVariantMap &properties );
+%Docstring
+Sets the open ended set of properties that can drive/inform the SLD
+encoding.
+
+.. seealso:: :py:func:`extraProperties`
+
+.. versionadded:: 3.44
 %End
 
 };

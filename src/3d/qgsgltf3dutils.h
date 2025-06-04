@@ -45,7 +45,7 @@ namespace Qt3DCore
 }
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  *
  * Utility functions for dealing with GLTF models in 3D map views.
  *

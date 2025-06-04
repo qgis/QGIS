@@ -13,11 +13,10 @@
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAbstractDatabaseProviderConnection` class provides common functionality
-for DB based connections.
+Provides common functionality for database based connections.
 
-This class performs low level DB operations without asking
-the user for confirmation or handling currently opened layers and the registry
+This class performs low level DB operations without asking the user for
+confirmation or handling currently opened layers and the registry
 entries, it is responsibility of the client code to keep layers in sync.
 The class methods will throw exceptions in case the requested operation
 is not supported or cannot be performed without errors.
@@ -58,7 +57,8 @@ Returns the column names.
         QList<QList<QVariant> > rows( QgsFeedback *feedback = 0 );
 %Docstring
 Returns the result rows by calling the iterator internally and fetching
-all the rows, an optional ``feedback`` can be used to interrupt the fetching loop.
+all the rows, an optional ``feedback`` can be used to interrupt the
+fetching loop.
 
 .. note::
 
@@ -93,7 +93,8 @@ Returns the number of fetched rows.
 
         long long rowCount( ) const;
 %Docstring
-Returns the number of rows returned by a SELECT query or :py:class:`Qgis`.FeatureCountState.UnknownCount if unknown.
+Returns the number of rows returned by a SELECT query or
+:py:class:`Qgis`.FeatureCountState.UnknownCount if unknown.
 
 .. seealso:: :py:func:`fetchedRowCount`
 %End
@@ -191,7 +192,8 @@ Sets the table name to ``name``.
 
         void addGeometryColumnType( Qgis::WkbType type, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Appends the geometry column ``type`` with the given ``srid`` to the geometry column types list.
+Appends the geometry column ``type`` with the given ``srid`` to the
+geometry column types list.
 %End
 
         QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> geometryColumnTypes() const;
@@ -218,13 +220,14 @@ columns, the geometry column name is appended to the table name.
 
         TableProperty at( int index ) const;
 %Docstring
-Returns the table property corresponding to the geometry type at
-the given ``index``.
+Returns the table property corresponding to the geometry type at the
+given ``index``.
 %End
 
         QString schema() const;
 %Docstring
-Returns the schema or an empty string for backends that do not support a schema.
+Returns the schema or an empty string for backends that do not support a
+schema.
 %End
 
         void setSchema( const QString &schema );
@@ -281,21 +284,22 @@ Sets the table ``comment``.
 %Docstring
 Returns additional information about the table.
 
-Provider classes may use this property
-to store custom bits of information.
+Provider classes may use this property to store custom bits of
+information.
 %End
 
         void setInfo( const QVariantMap &info );
 %Docstring
 Sets additional information about the table to ``info``.
 
-Provider classes may use this property
-to store custom bits of information.
+Provider classes may use this property to store custom bits of
+information.
 %End
 
         int geometryColumnCount() const;
 %Docstring
-Returns the number of geometry columns in the original table this entry refers to.
+Returns the number of geometry columns in the original table this entry
+refers to.
 
 This information is used internally to build the :py:func:`defaultName`.
 %End
@@ -312,7 +316,8 @@ Sets a ``flag``.
 
         int maxCoordinateDimensions() const;
 %Docstring
-Returns the maximum coordinate dimensions of the geometries of a vector table.
+Returns the maximum coordinate dimensions of the geometries of a vector
+table.
 
 This information is calculated from the geometry columns types.
 
@@ -360,6 +365,7 @@ This information is calculated from the geometry columns types.
       AddRelationship,
       UpdateRelationship,
       DeleteRelationship,
+      MoveTableToSchema,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -381,9 +387,11 @@ This information is calculated from the geometry columns types.
 
     QgsAbstractDatabaseProviderConnection( const QString &name );
 %Docstring
-Creates a new connection with ``name`` by reading its configuration from the settings.
+Creates a new connection with ``name`` by reading its configuration from
+the settings.
 
-If a connection with this name cannot be found, an empty connection will be returned.
+If a connection with this name cannot be found, an empty connection will
+be returned.
 %End
 
     QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration );
@@ -415,14 +423,24 @@ Returns extended connection capabilities.
 
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
 %Docstring
-Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
+Returns connection geometry column capabilities (Z, M, SinglePart,
+Curves).
 
 .. versionadded:: 3.16
 %End
 
+    virtual Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const = 0;
+%Docstring
+Represents capabilities of the database provider connection when
+importing table data.
+
+.. versionadded:: 3.44
+%End
+
     virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 %Docstring
-Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
+Returns SQL layer definition capabilities (Filters, GeometryColumn,
+PrimaryKeys).
 
 .. versionadded:: 3.22
 %End
@@ -439,7 +457,38 @@ Returns the URI string for the given ``table`` and ``schema``.
 
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const;
 %Docstring
-Creates an empty table with ``name`` in the given ``schema`` (schema is ignored if not supported by the backend).
+Creates an empty table with ``name`` in the given ``schema`` (schema is
+ignored if not supported by the backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+%End
+
+    struct VectorLayerExporterOptions
+    {
+      QString layerName;
+
+      QString schema;
+
+      Qgis::WkbType wkbType;
+
+      QStringList primaryKeyColumns;
+
+      QString geometryColumn;
+
+    };
+
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions /Out/ ) const;
+%Docstring
+Creates a URI for use with :py:class:`QgsVectorLayerExporter`
+corresponding to given destination table ``options`` for the backend.
+
+:param options: defines the desired destination table details
+
+:return: - destination URI for use with
+           :py:class:`QgsVectorLayerExporter`
+         - providerOptions: a map of options to pass to
+           :py:func:`~QgsAbstractDatabaseProviderConnection.createVectorTable`
+           or the provider's createEmptyTable method.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
@@ -453,7 +502,8 @@ Checks whether a table ``name`` exists in the given ``schema``.
 
     virtual void dropVectorTable( const QString &schema, const QString &name ) const;
 %Docstring
-Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
+Drops a vector (or aspatial) table with given ``schema`` (schema is
+ignored if not supported by the backend) and ``name``.
 
 .. note::
 
@@ -464,7 +514,8 @@ Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if n
 
     virtual void dropRasterTable( const QString &schema, const QString &name ) const;
 %Docstring
-Drops a raster table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
+Drops a raster table with given ``schema`` (schema is ignored if not
+supported by the backend) and ``name``.
 
 .. note::
 
@@ -475,7 +526,8 @@ Drops a raster table with given ``schema`` (schema is ignored if not supported b
 
     virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const;
 %Docstring
-Renames a vector or aspatial table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
+Renames a vector or aspatial table with given ``schema`` (schema is
+ignored if not supported by the backend) and ``name``.
 
 .. note::
 
@@ -486,7 +538,8 @@ Renames a vector or aspatial table with given ``schema`` (schema is ignored if n
 
     virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const;
 %Docstring
-Renames a raster table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
+Renames a raster table with given ``schema`` (schema is ignored if not
+supported by the backend) and ``name``.
 
 .. note::
 
@@ -521,7 +574,8 @@ Drops an entire schema with the specified name.
 Deletes the field with the specified name.
 
 :param fieldName: name of the field to be deleted
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 :param tableName: name of the table
 :param force: if ``True``, a DROP CASCADE will drop all related objects
 
@@ -539,7 +593,8 @@ Deletes the field with the specified name.
 Adds a field.
 
 :param field: specification of the new field
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 :param tableName: name of the table
 
 .. note::
@@ -555,7 +610,8 @@ Adds a field.
 %Docstring
 Renames an existing field.
 
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 :param tableName: name of the table
 :param name: current name of field
 :param newName: new name for field
@@ -571,8 +627,9 @@ Renames an existing field.
 
     virtual void renameSchema( const QString &name, const QString &newName ) const;
 %Docstring
-Renames a schema with the specified ``name``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+Renames a schema with the specified ``name``. Raises a
+:py:class:`QgsProviderConnectionException` if any errors are
+encountered.
 
 .. note::
 
@@ -583,7 +640,8 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = 0 ) const;
 %Docstring
-Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array, optionally ``feedback`` can be provided.
+Executes raw ``sql`` and returns the (possibly empty) list of results in
+a multi-dimensional array, optionally ``feedback`` can be provided.
 
 .. seealso:: :py:func:`execSql`
 
@@ -592,11 +650,43 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const  /Factory/;
 %Docstring
-Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
+Creates and returns a (possibly invalid) vector layer based on a SQL
+statement and ``options``.
 
-:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+The
+:py:func:`~QgsAbstractDatabaseProviderConnection.validateSqlVectorLayer`
+method can be used in advance to test whether the options are valid for
+the provider, and retrieve a user-friendly explanation if not.
+
+:raises QgsProviderConnectionException: if any errors are encountered or
+                                        if SQL layer creation is not
+                                        supported.
+
+.. seealso:: :py:func:`validateSqlVectorLayer`
 
 .. versionadded:: 3.22
+%End
+
+    virtual bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message /Out/ ) const;
+%Docstring
+Validates the SQL query ``options`` to determine if it is possible to
+create a vector layer based on a SQL statement and ``options``.
+
+The base class method returns ``True`` and does not do any checks.
+
+:param options: SQL statement and options
+
+:return: - ``True`` if the SQL is valid for the provider.
+         - message: a translated, user-friendly explanation if the SQL
+           is not valid for the provider.
+
+:raises QgsProviderConnectionException: if any errors are encountered or
+                                        if SQL layer creation is not
+                                        supported.
+
+.. seealso:: :py:func:`createSqlVectorLayer`
+
+.. versionadded:: 3.44
 %End
 
     virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource );
@@ -607,14 +697,17 @@ Returns the SQL layer options from a ``layerSource``.
 
    the default implementation returns a default constructed option object.
 
-:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+:raises QgsProviderConnectionException: if any errors are encountered or
+                                        if SQL layer creation is not
+                                        supported.
 
 .. versionadded:: 3.22
 %End
 
     virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const;
 %Docstring
-Executes raw ``sql`` and returns the (possibly empty) query results, optionally ``feedback`` can be provided.
+Executes raw ``sql`` and returns the (possibly empty) query results,
+optionally ``feedback`` can be provided.
 
 .. seealso:: :py:func:`executeSql`
 
@@ -625,16 +718,19 @@ Executes raw ``sql`` and returns the (possibly empty) query results, optionally 
 
     virtual void vacuum( const QString &schema, const QString &name ) const;
 %Docstring
-Vacuum the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
+Vacuum the database table with given ``schema`` and ``name`` (schema is
+ignored if not supported by the backend).
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const;
 %Docstring
-Creates a spatial index for the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
+Creates a spatial index for the database table with given ``schema`` and
+``name`` (schema is ignored if not supported by the backend).
 
-The ``options`` argument can be used to provide extra options controlling the spatial index creation.
+The ``options`` argument can be used to provide extra options
+controlling the spatial index creation.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -643,8 +739,9 @@ The ``options`` argument can be used to provide extra options controlling the sp
 
     virtual bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const;
 %Docstring
-Determines whether a spatial index exists for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
-ignored if not supported by the backend).
+Determines whether a spatial index exists for the database table with
+given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and
+``geometryColumn`` are ignored if not supported by the backend).
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -653,8 +750,9 @@ ignored if not supported by the backend).
 
     virtual void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const;
 %Docstring
-Deletes the existing spatial index for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
-ignored if not supported by the backend).
+Deletes the existing spatial index for the database table with given
+``schema``, ``name`` and ``geometryColumn`` (``schema`` and
+``geometryColumn`` are ignored if not supported by the backend).
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -666,9 +764,11 @@ ignored if not supported by the backend).
 %Docstring
 Returns information on a ``table`` in the given ``schema``.
 
-Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel the request.
+Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel
+the request.
 
-:raises QgsProviderConnectionException: if any errors are encountered or if the table does not exist.
+:raises QgsProviderConnectionException: if any errors are encountered or
+                                        if the table does not exist.
 
 .. note::
 
@@ -681,8 +781,10 @@ Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel the req
 %Docstring
 Returns information on the tables in the given schema.
 
-:param schema: name of the schema (ignored if not supported by the backend)
-:param flags: filter tables by flags, this option completely overrides search options stored in the connection
+:param schema: name of the schema (ignored if not supported by the
+               backend)
+:param flags: filter tables by flags, this option completely overrides
+              search options stored in the connection
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
@@ -700,7 +802,8 @@ Returns information about the existing schemas.
 %Docstring
 Returns the fields of a ``table`` and ``schema``.
 
-Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel the request.
+Since QGIS 3.32 the optional ``feedback`` argument can be used to cancel
+the request.
 
 .. note::
 
@@ -732,9 +835,9 @@ Returns the provider key.
 
     virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 %Docstring
-Returns a dictionary of SQL keywords supported by the provider.
-The default implementation returns an list of common reserved words under the
-"Keyword" and "Constant" categories.
+Returns a dictionary of SQL keywords supported by the provider. The
+default implementation returns an list of common reserved words under
+the "Keyword" and "Constant" categories.
 
 Subclasses should add provider- and/or connection- specific words.
 
@@ -743,17 +846,42 @@ Subclasses should add provider- and/or connection- specific words.
 
     virtual QSet< QString > illegalFieldNames() const;
 %Docstring
-Returns a list of field names which are considered illegal by the connection and
-should not be used when creating or altering fields.
+Returns a list of field names which are considered illegal by the
+connection and should not be used when creating or altering fields.
 
 .. versionadded:: 3.30
+%End
+
+    virtual QString defaultPrimaryKeyColumnName() const;
+%Docstring
+Returns the default name to use for a primary key column for the
+connection.
+
+The returned name will match common practice for the database backend.
+
+The base class method returns "pk".
+
+.. versionadded:: 3.44
+%End
+
+    virtual QString defaultGeometryColumnName() const;
+%Docstring
+Returns the default name to use for a geometry column for the
+connection.
+
+The returned name will match common practice for the database backend.
+
+The base class method returns "geom".
+
+.. versionadded:: 3.44
 %End
 
     virtual QStringList fieldDomainNames() const;
 %Docstring
 Returns a list of field domain names present on the provider.
 
-This is supported on providers with the Capability.ListFieldDomains capability only.
+This is supported on providers with the Capability.ListFieldDomains
+capability only.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -764,7 +892,8 @@ This is supported on providers with the Capability.ListFieldDomains capability o
 
     virtual QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const;
 %Docstring
-Returns a list of field domain types which are supported by the provider.
+Returns a list of field domain types which are supported by the
+provider.
 
 .. versionadded:: 3.28
 %End
@@ -773,9 +902,11 @@ Returns a list of field domain types which are supported by the provider.
 %Docstring
 Returns the field domain with the specified ``name`` from the provider.
 
-The caller takes ownership of the return object. Will return ``None`` if no matching field domain is found.
+The caller takes ownership of the return object. Will return ``None`` if
+no matching field domain is found.
 
-This is supported on providers with the Capability.RetrieveFieldDomain capability only.
+This is supported on providers with the Capability.RetrieveFieldDomain
+capability only.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -786,12 +917,18 @@ This is supported on providers with the Capability.RetrieveFieldDomain capabilit
 
     virtual void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const;
 %Docstring
-Sets the field domain name for the existing field with the specified name.
+Sets the field domain name for the existing field with the specified
+name.
 
 :param fieldName: name of the field to be modified
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 :param tableName: name of the table
-:param domainName: name of the domain to set for the field. Must be an existing field domain (see :py:func:`~QgsAbstractDatabaseProviderConnection.fieldDomainNames`). Set to an empty string to remove a previously set domain.
+:param domainName: name of the domain to set for the field. Must be an
+                   existing field domain (see
+                   :py:func:`~QgsAbstractDatabaseProviderConnection.fieldDomainNames`).
+                   Set to an empty string to remove a previously set
+                   domain.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -803,7 +940,8 @@ Sets the field domain name for the existing field with the specified name.
 Adds a new field ``domain`` to the database.
 
 :param domain: field domain to add
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -815,13 +953,30 @@ Adds a new field ``domain`` to the database.
 Sets the ``alias`` for the existing field with the specified name.
 
 :param fieldName: name of the field to be modified
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 :param tableName: name of the table
-:param alias: alias to set for the field. Set to an empty string to remove a previously set alias.
+:param alias: alias to set for the field. Set to an empty string to
+              remove a previously set alias.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.32
+%End
+
+    virtual void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const;
+%Docstring
+Sets the ``comment`` for the existing table with the specified name.
+
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
+:param tableName: name of the table
+:param comment: comment to set for the table. Set to an empty string to
+                remove a previously set comment.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.44
 %End
 
     virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const;
@@ -829,18 +984,35 @@ Sets the ``alias`` for the existing field with the specified name.
 Sets the ``comment`` for the existing field with the specified name.
 
 :param fieldName: name of the field to be modified
-:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
 :param tableName: name of the table
-:param comment: comment to set for the field. Set to an empty string to remove a previously set comment.
+:param comment: comment to set for the field. Set to an empty string to
+                remove a previously set comment.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.32
 %End
 
+    virtual void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const;
+%Docstring
+Move table to a different schema.
+
+:param sourceSchema: name of the source schema.
+:param tableName: name of the table.
+:param targetSchema: name of the target schema to move table to.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.44
+%End
+
+
     SIP_PYOBJECT supportedRelationshipCardinalities() const /TypeHint="List[Qgis.RelationshipCardinality]"/;
 %Docstring
-Returns a list of relationship cardinalities which are supported by the provider.
+Returns a list of relationship cardinalities which are supported by the
+provider.
 
 .. versionadded:: 3.30
 %End
@@ -881,7 +1053,8 @@ Returns a list of relationship cardinalities which are supported by the provider
 
     SIP_PYOBJECT supportedRelationshipStrengths() const /TypeHint="List[Qgis.RelationshipStrength]"/;
 %Docstring
-Returns a list of relationship strengths which are supported by the provider.
+Returns a list of relationship strengths which are supported by the
+provider.
 
 .. versionadded:: 3.30
 %End
@@ -929,12 +1102,15 @@ Returns the relationship capabilities supported by the provider.
 
     virtual QStringList relatedTableTypes() const;
 %Docstring
-Returns a list of the related table types supported by the database format.
+Returns a list of the related table types supported by the database
+format.
 
-The related table type is a free-form string representing the type of related features, where the
-exact interpretation is format dependent. For instance, table types from GeoPackage
-relationships will directly reflect the categories from the GeoPackage related
-tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+The related table type is a free-form string representing the type of
+related features, where the exact interpretation is format dependent.
+For instance, table types from GeoPackage relationships will directly
+reflect the categories from the GeoPackage related tables extension
+(i.e. "media", "simple attributes", "features", "attributes" and
+"tiles").
 
 .. versionadded:: 3.30
 %End
@@ -943,10 +1119,12 @@ tables extension (i.e. "media", "simple attributes", "features", "attributes" an
 %Docstring
 Returns a list of relationships detected in the database.
 
-This is supported on providers with the Capability.RetrieveRelationships capability only.
+This is supported on providers with the Capability.RetrieveRelationships
+capability only.
 
-If a ``schema`` and/or ``tableName`` are specified, then only relationships where the specified table
-forms the left (or "parent" / "referenced") side of the relationship are retrieved.
+If a ``schema`` and/or ``tableName`` are specified, then only
+relationships where the specified table forms the left (or "parent" /
+"referenced") side of the relationship are retrieved.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -982,7 +1160,8 @@ Deletes an existing ``relationship`` in the database.
 
     virtual QgsProviderSqlQueryBuilder *queryBuilder() const /Factory/;
 %Docstring
-Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
+Returns a SQL query builder for the connection, which provides an
+interface for provider-specific creation of SQL queries.
 
 The caller takes ownership of the returned object.
 
@@ -991,21 +1170,25 @@ The caller takes ownership of the returned object.
 
     virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const;
 %Docstring
-Search the stored layer metadata in the connection,
-optionally limiting the search to the metadata identifier, title,
-abstract, keywords and categories.
-``searchContext`` context for the search
-``searchString`` limit the search to metadata having an extent intersecting ``geographicExtent``,
-an optional ``feedback`` can be used to monitor and control the search process.
+Search the stored layer metadata in the connection, optionally limiting
+the search to the metadata identifier, title, abstract, keywords and
+categories. ``searchContext`` context for the search ``searchString``
+limit the search to metadata having an extent intersecting
+``geographicExtent``, an optional ``feedback`` can be used to monitor
+and control the search process.
 
-The default implementation raises a :py:class:`QgsNotSupportedException`, data providers may implement
-the search functionality.
+The default implementation raises a
+:py:class:`QgsNotSupportedException`, data providers may implement the
+search functionality.
 
-A :py:class:`QgsProviderConnectionException` is raised in case of errors happening during the search for
-providers that implement the search functionality.
+A :py:class:`QgsProviderConnectionException` is raised in case of errors
+happening during the search for providers that implement the search
+functionality.
 
-:return: a (possibly empty) list of :py:class:`QgsLayerMetadataProviderResult`, throws a :py:class:`QgsProviderConnectionException`
-         if any error occurred during the search.
+:return: a (possibly empty) list of
+         :py:class:`QgsLayerMetadataProviderResult`, throws a
+         :py:class:`QgsProviderConnectionException` if any error
+         occurred during the search.
 
 :raises QgsProviderConnectionException: 
 
@@ -1021,14 +1204,16 @@ providers that implement the search functionality.
 %Docstring
 Checks if ``capability`` is supported.
 
-:raises QgsProviderConnectionException: if the capability is not supported
+:raises QgsProviderConnectionException: if the capability is not
+                                        supported
 %End
 
     void checkCapability( Qgis::DatabaseProviderConnectionCapability2 capability ) const;
 %Docstring
 Checks if ``capability`` is supported.
 
-:raises QgsProviderConnectionException: if the capability is not supported
+:raises QgsProviderConnectionException: if the capability is not
+                                        supported
 %End
 
 

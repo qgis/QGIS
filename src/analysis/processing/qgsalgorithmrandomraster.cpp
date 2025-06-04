@@ -45,10 +45,17 @@ void QgsRandomRasterAlgorithmBase::initAlgorithm( const QVariantMap & )
   //add specific parameters
   addAlgorithmParams();
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
 }
@@ -78,7 +85,12 @@ QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &p
   std::random_device rd {};
   std::mt19937 mersenneTwister { rd() };
 
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -94,9 +106,9 @@ QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &p
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
 
   writer->setOutputFormat( outputFormat );
@@ -201,7 +213,10 @@ QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &p
       default:
         break;
     }
-    provider->writeBlock( &block, 1, 0, row );
+    if ( !provider->writeBlock( &block, 1, 0, row ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
     feedback->setProgress( row * step );
   }
 
@@ -230,7 +245,7 @@ QStringList QgsRandomUniformRasterAlgorithm::tags() const
 
 QString QgsRandomUniformRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with random values.\n"
                       "By default, the values will range between the minimum and "
                       "maximum value of the specified output raster type. This can "
@@ -240,6 +255,12 @@ QString QgsRandomUniformRasterAlgorithm::shortHelpString() const
                       "the full value range of the chosen raster data type. "
                       "Choosing bounds outside the acceptable range of the output "
                       "raster type will abort the algorithm." );
+}
+
+QString QgsRandomUniformRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with random values." );
 }
 
 QgsRandomUniformRasterAlgorithm *QgsRandomUniformRasterAlgorithm::createInstance() const
@@ -423,7 +444,7 @@ QStringList QgsRandomBinomialRasterAlgorithm::tags() const
 
 QString QgsRandomBinomialRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with binomially distributed random values.\n"
                       "By default, the values will be chosen given an N of 10 and a probability of 0.5. "
                       "This can be overridden by using the advanced parameter for N and probability. "
@@ -431,6 +452,12 @@ QString QgsRandomBinomialRasterAlgorithm::shortHelpString() const
                       "The binomial distribution random values are defined as positive integer numbers. "
                       "A floating point raster will represent a cast of integer values "
                       "to floating point." );
+}
+
+QString QgsRandomBinomialRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with binomially distributed random values." );
 }
 
 QgsRandomBinomialRasterAlgorithm *QgsRandomBinomialRasterAlgorithm::createInstance() const
@@ -521,12 +548,18 @@ QStringList QgsRandomExponentialRasterAlgorithm::tags() const
 
 QString QgsRandomExponentialRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with exponentially distributed random values.\n"
                       "By default, the values will be chosen given a lambda of 1.0. "
                       "This can be overridden by using the advanced parameter for lambda. "
                       "The raster data type is set to Float32 by default as "
                       "the exponential distribution random values are floating point numbers." );
+}
+
+QString QgsRandomExponentialRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with exponentially distributed random values." );
 }
 
 QgsRandomExponentialRasterAlgorithm *QgsRandomExponentialRasterAlgorithm::createInstance() const
@@ -600,12 +633,18 @@ QStringList QgsRandomGammaRasterAlgorithm::tags() const
 
 QString QgsRandomGammaRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with gamma distributed random values.\n"
                       "By default, the values will be chosen given an alpha and beta value of 1.0. "
                       "This can be overridden by using the advanced parameter for alpha and beta. "
                       "The raster data type is set to Float32 by default as "
                       "the gamma distribution random values are floating point numbers." );
+}
+
+QString QgsRandomGammaRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with gamma distributed random values." );
 }
 
 QgsRandomGammaRasterAlgorithm *QgsRandomGammaRasterAlgorithm::createInstance() const
@@ -684,7 +723,7 @@ QStringList QgsRandomGeometricRasterAlgorithm::tags() const
 
 QString QgsRandomGeometricRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with geometrically distributed random values.\n"
                       "By default, the values will be chosen given a probability of 0.5. "
                       "This can be overridden by using the advanced parameter for mean "
@@ -692,6 +731,12 @@ QString QgsRandomGeometricRasterAlgorithm::shortHelpString() const
                       "The geometric distribution random values are defined as positive integer numbers. "
                       "A floating point raster will represent a cast of "
                       "integer values to floating point." );
+}
+
+QString QgsRandomGeometricRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with geometrically distributed random values." );
 }
 
 QgsRandomGeometricRasterAlgorithm *QgsRandomGeometricRasterAlgorithm::createInstance() const
@@ -777,7 +822,7 @@ QStringList QgsRandomNegativeBinomialRasterAlgorithm::tags() const
 
 QString QgsRandomNegativeBinomialRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with negative binomially distributed random values.\n"
                       "By default, the values will be chosen given a distribution parameter k of 10.0 "
                       "and a probability of 0.5. "
@@ -786,6 +831,12 @@ QString QgsRandomNegativeBinomialRasterAlgorithm::shortHelpString() const
                       "The negative binomial distribution random values are defined as positive integer numbers. "
                       "A floating point raster will represent a cast of "
                       "integer values to floating point." );
+}
+
+QString QgsRandomNegativeBinomialRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with negative binomially distributed random values." );
 }
 
 QgsRandomNegativeBinomialRasterAlgorithm *QgsRandomNegativeBinomialRasterAlgorithm::createInstance() const
@@ -876,13 +927,19 @@ QStringList QgsRandomNormalRasterAlgorithm::tags() const
 
 QString QgsRandomNormalRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with normally distributed random values.\n"
                       "By default, the values will be chosen given a mean of 0.0 and "
                       "a standard deviation of 1.0. This can be overridden by "
                       "using the advanced parameters for mean and standard deviation "
                       "value. The raster data type is set to Float32 by default "
                       "as the normal distribution random values are floating point numbers." );
+}
+
+QString QgsRandomNormalRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with normally distributed random values." );
 }
 
 QgsRandomNormalRasterAlgorithm *QgsRandomNormalRasterAlgorithm::createInstance() const
@@ -960,13 +1017,19 @@ QStringList QgsRandomPoissonRasterAlgorithm::tags() const
 
 QString QgsRandomPoissonRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a raster layer for given extent and cell size "
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell size "
                       "filled with poisson distributed random values.\n"
                       "By default, the values will be chosen given a mean of 1.0. "
                       "This can be overridden by using the advanced parameter for mean "
                       "value. The raster data type is set to Integer types (Integer16 by default). "
                       "The poisson distribution random values are positive integer numbers. "
                       "A floating point raster will represent a cast of integer values to floating point." );
+}
+
+QString QgsRandomPoissonRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size "
+                      "filled with poisson distributed random values." );
 }
 
 QgsRandomPoissonRasterAlgorithm *QgsRandomPoissonRasterAlgorithm::createInstance() const

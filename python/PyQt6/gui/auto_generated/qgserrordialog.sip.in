@@ -11,6 +11,9 @@
 
 class QgsErrorDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog which shows error details.
+%End
 
 %TypeHeaderCode
 #include "qgserrordialog.h"

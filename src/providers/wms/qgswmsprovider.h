@@ -367,7 +367,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     //! In case of MBTiles layer, setup capabilities from its metadata
     bool setupMBTilesCapabilities( const QString &uri );
 
-    QImage *draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback );
+    QImage draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRectangle &effectiveExtent, double &sourceResolution, QgsRasterBlockFeedback *feedback );
 
     /**
      * Try to get best extent for the layer in given CRS. Returns true on success, false otherwise (layer not found, invalid CRS, transform failed)
@@ -448,9 +448,9 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-        TileImage( const QRectF &r, const QImage &i, bool smooth )
+        TileImage( const QRect &r, const QImage &i, bool smooth )
           : rect( r ), img( i ), smooth( smooth ) {}
-        QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+        QRect rect;  //!< Destination rectangle for a tile (in screen coordinates)
         QImage img;  //!< Cached tile to be drawn
         bool smooth; //!< Whether to use antialiasing/smooth transforms when rendering tile
     } TileImage;

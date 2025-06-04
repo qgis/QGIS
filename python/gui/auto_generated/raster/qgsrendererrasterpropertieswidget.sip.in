@@ -13,6 +13,9 @@
 
 class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 {
+%Docstring(signature="appended")
+A widget for configuring properties of a raster layer renderer.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererrasterpropertieswidget.h"
@@ -23,14 +26,15 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 A widget to hold the renderer properties for a raster layer.
 
 :param layer: The raster layer to style
-:param canvas: The canvas object used to calculate the max and min values from the extent.
+:param canvas: The canvas object used to calculate the max and min
+               values from the extent.
 :param parent: Parent object
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
-map scale and other properties from the canvas.
+Sets the map canvas associated with the dialog. This allows the widget
+to retrieve the current map scale and other properties from the canvas.
 
 :param canvas: map canvas
 %End

@@ -58,7 +58,7 @@ QString QgsSplitLinesByLengthAlgorithm::shortHelpString() const
 
 QString QgsSplitLinesByLengthAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Splits lines into parts which are no longer than a specified length." );
+  return QObject::tr( "Splits lines into parts which are not longer than a specified length." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitLinesByLengthAlgorithm::documentationFlags() const
@@ -110,6 +110,13 @@ Qgis::WkbType QgsSplitLinesByLengthAlgorithm::outputWkbType( Qgis::WkbType input
   return QgsWkbTypes::singleType( inputWkbType );
 }
 
+QgsFields QgsSplitLinesByLengthAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields newFields;
+  newFields.append( QgsField( "order", QMetaType::Type::Int ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
+}
+
 QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   if ( !f.hasGeometry() )
@@ -123,9 +130,9 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
       distance = mLengthProperty.valueAsDouble( context.expressionContext(), distance );
 
     QgsFeature outputFeature;
-    outputFeature.setAttributes( f.attributes() );
     QgsFeatureList features;
     const QgsGeometry inputGeom = f.geometry();
+    int order = 0;
     for ( auto it = inputGeom.const_parts_begin(); it != inputGeom.const_parts_end(); ++it )
     {
       const QgsCurve *part = qgsgeometry_cast<const QgsCurve *>( *it );
@@ -138,6 +145,8 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
       while ( start < length )
       {
         outputFeature.setGeometry( QgsGeometry( part->curveSubstring( start, end ) ) );
+        outputFeature.setAttributes( f.attributes() << order );
+        order++;
         start += distance;
         end += distance;
         features << outputFeature;

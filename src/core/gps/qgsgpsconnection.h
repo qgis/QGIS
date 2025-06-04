@@ -44,7 +44,7 @@ template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
  * \ingroup core
- * \brief Abstract base class for connection to a GPS device
+ * \brief Abstract base class for connections to a GPS device.
 */
 class CORE_EXPORT QgsGpsConnection : public QObject
 {

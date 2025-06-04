@@ -38,7 +38,8 @@ Constructor for Class
     class MultiValueClass
 {
 %Docstring(signature="appended")
-Properties of a multi value class: a class that contains multiple values.
+Properties of a multi value class: a class that contains multiple
+values.
 
 .. versionadded:: 3.30
 %End
@@ -74,9 +75,6 @@ Constructor for QgsPalettedRasterRenderer.
 
     virtual QgsPalettedRasterRenderer *clone() const /Factory/;
 
-%Docstring
-QgsPalettedRasterRenderer cannot be copied. Use :py:func:`~QgsPalettedRasterRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
 
@@ -144,7 +142,9 @@ Returns the raster band used for rendering the raster.
 
     virtual QList<int> usesBands() const;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
@@ -170,9 +170,11 @@ Converts a raster color ``table`` to paletted renderer class data.
 
     static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, int classificationColumn = -1, QgsColorRamp *ramp = 0 );
 %Docstring
-Reads and returns classes from the Raster Attribute Table ``attributeTable``, optionally classifying the attribute table
-by ``classificationColumn`` and setting the colors from ``ramp``.
-The default value of -1 for the classificationColumn uses the first available value column.
+Reads and returns classes from the Raster Attribute Table
+``attributeTable``, optionally classifying the attribute table by
+``classificationColumn`` and setting the colors from ``ramp``. The
+default value of -1 for the classificationColumn uses the first
+available value column.
 
 .. note::
 
@@ -183,7 +185,8 @@ The default value of -1 for the classificationColumn uses the first available va
 
     static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
 %Docstring
-Converts a ``string`` containing a color table or class data to to paletted renderer class data.
+Converts a ``string`` containing a color table or class data to to
+paletted renderer class data.
 
 .. seealso:: :py:func:`classDataFromFile`
 
@@ -192,14 +195,16 @@ Converts a ``string`` containing a color table or class data to to paletted rend
 
     static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
 %Docstring
-Opens a color table file and returns corresponding paletted renderer class data.
+Opens a color table file and returns corresponding paletted renderer
+class data.
 
 .. seealso:: :py:func:`classDataFromString`
 %End
 
     static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
 %Docstring
-Converts classes to a string representation, using the .clr/gdal color table file format.
+Converts classes to a string representation, using the .clr/gdal color
+table file format.
 
 .. seealso:: :py:func:`classDataFromString`
 %End
@@ -207,8 +212,9 @@ Converts classes to a string representation, using the .clr/gdal color table fil
     static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0,
         QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
-Generates class data from a ``raster``, for the specified ``bandNumber``. An optional
-color ``ramp`` can be specified to automatically assign colors from the ramp.
+Generates class data from a ``raster``, for the specified
+``bandNumber``. An optional color ``ramp`` can be specified to
+automatically assign colors from the ramp.
 %End
 
 

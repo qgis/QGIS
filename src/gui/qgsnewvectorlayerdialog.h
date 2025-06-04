@@ -28,6 +28,7 @@
 /**
  * \ingroup gui
  * \class QgsNewVectorLayerDialog
+ * \brief A dialog for configuring the properties of a new vector layer.
  */
 class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {
@@ -39,7 +40,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
      *
      * If the \a initialPath argument is specified, then the dialog will default to the specified filename.
      *
-     * \returns fileName on success, empty string use aborted, QString() if creation failed
+     * \returns fileName on success, empty string if aborted or creation failed
      *
      * \deprecated QGIS 3.4.5. Use execAndCreateLayer() instead.
      */

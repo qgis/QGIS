@@ -138,7 +138,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * \ingroup core
-     * \brief  This class keeps data about a rules for rule-based renderer.
+     * \brief Represents an individual rule for a rule-based renderer.
      *
      * A rule consists of a symbol, filter expression and range of scales.
      * If filter is empty, it matches all features.
@@ -183,7 +183,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool needsGeometry() const;
 
-        //! \note available in Python bindings as symbol2
+        /**
+         * Returns a list of the symbols used by this rule and all children of this rule.
+         */
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
@@ -309,8 +311,19 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! clone this rule, return new instance
         QgsRuleBasedRenderer::Rule *clone() const SIP_FACTORY;
 
-        //! Saves the symbol layer as SLD
-        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+        /**
+         * Saves the symbol layer as SLD.
+         *
+         * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+         */
+        Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const SIP_DEPRECATED;
+
+        /**
+         * Saves the rule to SLD.
+         *
+         * \since QGIS 3.44
+         */
+        bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
         /**
          * Create a rule from the SLD provided in element and for the specified geometry type.
@@ -522,7 +535,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Creates a new rule based renderer from an SLD XML element.

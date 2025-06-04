@@ -627,22 +627,26 @@ void TestQgsMultiSurface::boundary()
 
 void TestQgsMultiSurface::cast()
 {
-  QVERIFY( !QgsMultiSurface::cast( nullptr ) );
+  QVERIFY( !QgsMultiSurface::cast( static_cast< const QgsAbstractGeometry *>( nullptr ) ) );
 
   QgsMultiSurface ms;
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 
   ms.clear();
   ms.fromWkt( QStringLiteral( "MultiSurfaceZ()" ) );
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 
   ms.clear();
   ms.fromWkt( QStringLiteral( "MultiSurfaceM()" ) );
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 
   ms.clear();
   ms.fromWkt( QStringLiteral( "MultiSurfaceZM()" ) );
   QVERIFY( QgsMultiSurface::cast( &ms ) );
+  QVERIFY( QgsGeometryCollection::cast( &ms ) );
 }
 
 void TestQgsMultiSurface::toCurveType()

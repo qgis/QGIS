@@ -604,6 +604,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
       QSet< QString > usedAlternativeNames;
 #endif
+
+      const QString ogrFidColumnName { OGR_L_GetFIDColumn( mLayer ) };
+      const int fidNameIndex = OGR_FD_GetFieldIndex( defn, ogrFidColumnName.toUtf8() );
+      // if native fid column in created layer matches an attribute from the user-specified fields, we'll be
+      // promoting that to a real attribute.
+      const bool promoteFidColumnToAttribute = !ogrFidColumnName.isEmpty() && fidNameIndex < 0 && fields.lookupField( ogrFidColumnName ) >= 0;
+      int offsetRoomForFid = promoteFidColumnToAttribute ? 1 : 0;
+
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
         QgsField attrField = fields.at( fldIdx );
@@ -972,8 +980,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
         {
           QgsDebugError( "error creating field " + attrField.name() );
-          mErrorMessage = QObject::tr( "Creation of field %1 failed (OGR error: %2)" )
+          mErrorMessage = QObject::tr( "Creation of field %1 (%2) failed (OGR error: %3)" )
                           .arg( attrField.name(),
+                                QVariant::typeToName( attrField.type() ),
                                 QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrAttributeCreationFailed;
           return;
@@ -994,6 +1003,20 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                   QString::fromUtf8( CPLGetLastErrorMsg() ) );
             mError = ErrAttributeCreationFailed;
             return;
+          }
+        }
+
+        if ( promoteFidColumnToAttribute )
+        {
+          if ( ogrFidColumnName.compare( attrField.name(), Qt::CaseInsensitive ) == 0 )
+          {
+            ogrIdx = 0;
+            offsetRoomForFid = 0;
+          }
+          else
+          {
+            // shuffle to make space for fid column
+            ogrIdx += offsetRoomForFid;
           }
         }
 
@@ -1156,7 +1179,8 @@ class QgsVectorFileWriterMetadataContainer
 
       layerOptions.insert( QStringLiteral( "CREATE_CSVT" ), new QgsVectorFileWriter::BoolOption(
                              QObject::tr( "Create the associated .csvt file to describe the type of each "
-                                          "column of the layer and its optional width and precision." ),
+                                          "column of the layer and its optional width and precision. "
+                                          "This option also creates a .prj file which stores coordinate system information." ),
                              false  // Default value
                            ) );
 

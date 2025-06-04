@@ -62,7 +62,9 @@ QgsModelGraphicsView::~QgsModelGraphicsView()
 
 void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasText() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) )
+       || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) )
+       || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -83,6 +85,18 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     } );
     event->accept();
   }
+  else if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) ) )
+  {
+    QByteArray data = event->mimeData()->data( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) );
+    QDataStream stream( &data, QIODevice::ReadOnly );
+    QString paramTypeId;
+    stream >> paramTypeId;
+
+    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] {
+      emit inputDropped( paramTypeId, dropPoint );
+    } );
+    event->accept();
+  }
   else if ( event->mimeData()->hasText() )
   {
     const QString itemId = event->mimeData()->text();
@@ -99,7 +113,9 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 
 void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasText() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) )
+       || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) )
+       || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -229,7 +245,7 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MiddleButton )
+    if ( event->button() == Qt::MiddleButton && mTool != mSpacePanTool && mTool != mSpaceZoomTool )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -327,7 +343,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() && mTool != mMidMouseButtonPanTool )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {
@@ -442,6 +458,17 @@ void QgsModelGraphicsView::endMacroCommand()
   emit macroCommandEnded();
 }
 
+void QgsModelGraphicsView::beginCommand( const QString &text )
+{
+  emit commandBegun( text );
+}
+
+void QgsModelGraphicsView::endCommand()
+{
+  emit commandEnded();
+}
+
+
 void QgsModelGraphicsView::snapSelected()
 {
   QgsModelGraphicsScene *s = modelScene();
@@ -481,7 +508,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   if ( operation == ClipboardCut )
   {
     emit macroCommandStarted( tr( "Cut Items" ) );
-    emit beginCommand( QString() );
+    emit commandBegun( QString() );
   }
 
   QList<QVariant> paramComponents;
@@ -589,7 +616,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   if ( operation == ClipboardCut )
   {
     emit deleteSelectedItems();
-    emit endCommand();
+    emit commandEnded();
     emit macroCommandEnded();
   }
 
@@ -607,7 +634,10 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return;
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     QVariantMap res = QgsXmlUtils::readVariant( docElem ).toMap();
@@ -632,7 +662,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit beginCommand( tr( "Paste Items" ) );
+      beginCommand( tr( "Paste Items" ) );
 
       QRectF pastedBounds;
 
@@ -801,7 +831,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit endCommand();
+      emit commandEnded();
     }
   }
 

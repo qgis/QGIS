@@ -16,9 +16,15 @@ QgsProcessingToolboxModelNode.NodeRecent = QgsProcessingToolboxModelNode.NodeTyp
 QgsProcessingToolboxModelNode.NodeType.NodeRecent = QgsProcessingToolboxModelNode.NodeType.Recent
 QgsProcessingToolboxModelNode.NodeRecent.is_monkey_patched = True
 QgsProcessingToolboxModelNode.NodeRecent.__doc__ = "Recent algorithms node"
+QgsProcessingToolboxModelNode.Parameter = QgsProcessingToolboxModelNode.NodeType.Parameter
+QgsProcessingToolboxModelNode.Parameter.is_monkey_patched = True
+QgsProcessingToolboxModelNode.Parameter.__doc__ = "Parameter node, \n.. versionadded:: 3.44"
+QgsProcessingToolboxModelNode.ParameterGroup = QgsProcessingToolboxModelNode.NodeType.ParameterGroup
+QgsProcessingToolboxModelNode.ParameterGroup.is_monkey_patched = True
+QgsProcessingToolboxModelNode.ParameterGroup.__doc__ = "Parameter group node \n.. versionadded:: 3.44"
 QgsProcessingToolboxModelNode.Favorite = QgsProcessingToolboxModelNode.NodeType.Favorite
 QgsProcessingToolboxModelNode.Favorite.is_monkey_patched = True
-QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, since QGIS 3.40"
+QgsProcessingToolboxModelNode.Favorite.__doc__ = "Favorites algorithms node, \n.. versionadded:: 3.40"
 QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible model node types
 
 * ``Provider``: Provider node
@@ -37,7 +43,18 @@ QgsProcessingToolboxModelNode.NodeType.__doc__ = """Enumeration of possible mode
 
   Available as ``QgsProcessingToolboxModelNode.NodeRecent`` in older QGIS releases.
 
-* ``Favorite``: Favorites algorithms node, since QGIS 3.40
+* ``Parameter``: Parameter node,
+
+  .. versionadded:: 3.44
+
+* ``ParameterGroup``: Parameter group node
+
+  .. versionadded:: 3.44
+
+* ``Favorite``: Favorites algorithms node,
+
+  .. versionadded:: 3.40
+
 
 """
 # --
@@ -72,6 +89,9 @@ QgsProcessingToolboxModel.RoleProviderFlags = QgsProcessingToolboxModel.CustomRo
 QgsProcessingToolboxModel.Roles.RoleProviderFlags = QgsProcessingToolboxModel.CustomRole.ProviderFlags
 QgsProcessingToolboxModel.RoleProviderFlags.is_monkey_patched = True
 QgsProcessingToolboxModel.RoleProviderFlags.__doc__ = "Returns the node's provider flags"
+QgsProcessingToolboxModel.ParameterTypeId = QgsProcessingToolboxModel.CustomRole.ParameterTypeId
+QgsProcessingToolboxModel.ParameterTypeId.is_monkey_patched = True
+QgsProcessingToolboxModel.ParameterTypeId.__doc__ = "Untranslated parameter type unique identifier for parameter nodes \n.. versionadded:: 3.44"
 QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -107,6 +127,10 @@ QgsProcessingToolboxModel.CustomRole.__doc__ = """Custom model roles.
 * ``ProviderFlags``: Returns the node's provider flags
 
   Available as ``QgsProcessingToolboxModel.RoleProviderFlags`` in older QGIS releases.
+
+* ``ParameterTypeId``: Untranslated parameter type unique identifier for parameter nodes
+
+  .. versionadded:: 3.44
 
 
 """
@@ -156,34 +180,52 @@ QgsProcessingToolboxProxyModel.Filters.baseClass = QgsProcessingToolboxProxyMode
 Filters = QgsProcessingToolboxProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsProcessingToolboxModel.__attribute_docs__ = {'recentAlgorithmAdded': 'Emitted whenever recent algorithms are added to the model.\n', 'favoriteAlgorithmAdded': 'Emitted whenever favorite algorithms are added to the model.\n'}
+    QgsProcessingToolboxModel.__overridden_methods__ = ['flags', 'data', 'rowCount', 'columnCount', 'index', 'parent', 'mimeData']
     QgsProcessingToolboxModel.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelNode.__abstract_methods__ = ['nodeType']
     QgsProcessingToolboxModelNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelRecentNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelRecentNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelFavoriteNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelFavoriteNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelParameterGroupNode.__overridden_methods__ = ['nodeType']
+    QgsProcessingToolboxModelParameterGroupNode.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsProcessingToolboxModelProviderNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelProviderNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelGroupNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelGroupNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelAlgorithmNode.__overridden_methods__ = ['nodeType']
     QgsProcessingToolboxModelAlgorithmNode.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxModelParameterNode.__overridden_methods__ = ['nodeType']
+    QgsProcessingToolboxModelParameterNode.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsProcessingToolboxProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan', 'data']
     QgsProcessingToolboxProxyModel.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

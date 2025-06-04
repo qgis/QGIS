@@ -1,6 +1,6 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.23.0)
+cmake_minimum_required(VERSION 3.22.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
@@ -43,6 +43,7 @@ elseif(WITH_VCPKG)
 else()
   message(STATUS "Building with system libraries --")
 endif()
+
 
 if(WITH_VCPKG)
   if(WIN32)
@@ -1102,6 +1103,14 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 # if run from the build directory QGIS will detect it and alter the paths
 file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
 
+# Write the qgis.env file to the bin folder to allow running qgis.exe correctly from build folder
+# and find the SDK installed folders. Only runs when VCPKG_APPLOCAL_DEPS=OFF because ON means it is packaged together
+if(WITH_VCPKG AND NOT VCPKG_APPLOCAL_DEPS AND WIN32)
+  # Used in the env.in file to setup the correct paths to the SDK folder
+    set(VCPKG_TARGET_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}")
+    configure_file("${CMAKE_SOURCE_DIR}/ms-windows/dev/qgis.env.in" "${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgis.env")
+endif()
+
 # manual page - makes sense only on unix systems
 if (UNIX AND NOT APPLE)
   set (DEFAULT_MANUAL_SUBDIR  man)
@@ -1175,7 +1184,7 @@ if (WITH_CORE AND WITH_BINDINGS)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 25)
+  set(SIP_CONCAT_PARTS 20)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
     set(Python_SITEARCH ${QGIS_DATA_DIR}/python)

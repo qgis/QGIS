@@ -132,6 +132,8 @@ const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = n
 
 const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettingsTree::sTreeSvg, QStringList() );
 
+const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections = new QgsSettingsEntryInteger( QStringLiteral( "connection-pool-maximum-concurrent-connections" ), QgsSettingsTree::sTreeCore, 4, QObject::tr( "Maximum number of concurrent connections per connection pool" ), Qgis::SettingsOptions(), 4, 999 );
+
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
 #include <pwd.h>
@@ -224,6 +226,73 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
 }
 
+void registerMetaTypes()
+{
+  qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+  qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
+  qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
+  qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
+  qRegisterMetaType<Qgis::LayoutUnit>( "Qgis::LayoutUnit" );
+  qRegisterMetaType<QgsUnsetAttributeValue>( "QgsUnsetAttributeValue" );
+  qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+  qRegisterMetaType<QgsFields>( "QgsFields" );
+  qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+  qRegisterMetaType<QgsProperty>( "QgsProperty" );
+  qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
+  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
+  qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
+  qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
+  qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
+  qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+  qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
+  qRegisterMetaType<Qgis::LayoutRenderFlags>( "Qgis::LayoutRenderFlags" );
+  qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
+  qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
+  qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
+  qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
+  qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+  qRegisterMetaType<QgsFeature>( "QgsFeature" );
+  qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+  qRegisterMetaType<QgsInterval>( "QgsInterval" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+  qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
+  qRegisterMetaType<QgsPoint>( "QgsPoint" );
+  qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
+  qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
+  qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+  qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
+  qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
+  qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
+  // TODO: when tests can run against Qt6 builds, check for any regressions
+  qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#endif
+  qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
+  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
+  QMetaType::registerEqualsComparator<QgsProperty>();
+  QMetaType::registerEqualsComparator<QgsDateTimeRange>();
+  QMetaType::registerEqualsComparator<QgsDateRange>();
+  QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
+#endif
+  qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
+  qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );
+  qRegisterMetaType<QgsIntRange>( "QgsIntRange" );
+  qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
+  qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
+  qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
+  qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
+  qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
+  qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
+  qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
+};
+
 void QgsApplication::init( QString profileFolder )
 {
   // Initialize application members in desktop app (at this point, profile folder is known)
@@ -255,72 +324,7 @@ void QgsApplication::init( QString profileFolder )
   *sProfilePath() = profileFolder;
 
   static std::once_flag sMetaTypesRegistered;
-  std::call_once( sMetaTypesRegistered, []
-  {
-    qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
-    qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
-    qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
-    qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
-    qRegisterMetaType<Qgis::LayoutUnit>( "Qgis::LayoutUnit" );
-    qRegisterMetaType<QgsUnsetAttributeValue>( "QgsUnsetAttributeValue" );
-    qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
-    qRegisterMetaType<QgsFields>( "QgsFields" );
-    qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-    qRegisterMetaType<QgsProperty>( "QgsProperty" );
-    qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
-    qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
-    qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
-    qRegisterMetaType<Qgis::GpsFixStatus>( "Qgis::GpsFixStatus" );
-    qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
-    qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
-    qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
-    qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
-    qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
-    qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
-    qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
-    qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
-    qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
-    qRegisterMetaType<QgsFeature>( "QgsFeature" );
-    qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
-    qRegisterMetaType<QgsInterval>( "QgsInterval" );
-    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
-    qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
-    qRegisterMetaType<QgsPoint>( "QgsPoint" );
-    qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
-    qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
-    qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
-    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
-    qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-    qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
-    qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
-    // TODO: when tests can run against Qt6 builds, check for any regressions
-    qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#endif
-    qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
-    qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
-    qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QMetaType::registerComparators<QgsProcessingModelChildDependency>();
-    QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
-    QMetaType::registerEqualsComparator<QgsProperty>();
-    QMetaType::registerEqualsComparator<QgsDateTimeRange>();
-    QMetaType::registerEqualsComparator<QgsDateRange>();
-    QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
-#endif
-    qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
-    qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
-    qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );
-    qRegisterMetaType<QgsIntRange>( "QgsIntRange" );
-    qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
-    qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
-    qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
-    qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
-    qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
-    qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
-    qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
-  } );
+  std::call_once( sMetaTypesRegistered, registerMetaTypes );
 
   ( void ) resolvePkgPath();
 
@@ -478,7 +482,7 @@ void QgsApplication::init( QString profileFolder )
   // it's actually required
   QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
   if ( !members()->mStyleModel )
-    members()->mStyleModel = new QgsStyleModel( defaultStyle );
+    members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
 
   ABISYM( mInitialized ) = true;
 }
@@ -489,29 +493,29 @@ void QgsApplication::installTranslators()
   // Remove translators if any are already installed
   if ( mQgisTranslator )
   {
-    removeTranslator( mQgisTranslator );
-    delete mQgisTranslator;
-    mQgisTranslator = nullptr;
+    removeTranslator( mQgisTranslator.get() );
+    mQgisTranslator.reset( );
+
   }
   if ( mQtTranslator )
   {
-    removeTranslator( mQtTranslator );
-    delete mQtTranslator;
-    mQtTranslator = nullptr;
+    removeTranslator( mQtTranslator.get() );
+    mQtTranslator.reset( );
+
   }
   if ( mQtBaseTranslator )
   {
-    removeTranslator( mQtBaseTranslator );
-    delete mQtBaseTranslator;
-    mQtBaseTranslator = nullptr;
+    removeTranslator( mQtBaseTranslator.get() );
+    mQtBaseTranslator.reset( );
+
   }
 
   if ( *sTranslation() != QLatin1String( "C" ) )
   {
-    mQgisTranslator = new QTranslator( this );
+    mQgisTranslator = std::make_unique<QTranslator>( this );
     if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + *sTranslation(), i18nPath() ) )
     {
-      installTranslator( mQgisTranslator );
+      installTranslator( mQgisTranslator.get() );
     }
     else
     {
@@ -529,20 +533,20 @@ void QgsApplication::installTranslators()
     qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
 #endif
 
-    mQtTranslator = new QTranslator( this );
+    mQtTranslator = std::make_unique<QTranslator>( this );
     if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), qtTranslationsPath ) )
     {
-      installTranslator( mQtTranslator );
+      installTranslator( mQtTranslator.get() );
     }
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
 
-    mQtBaseTranslator = new QTranslator( this );
+    mQtBaseTranslator = std::make_unique<QTranslator>( this );
     if ( mQtBaseTranslator->load( QStringLiteral( "qtbase_" ) + *sTranslation(), qtTranslationsPath ) )
     {
-      installTranslator( mQtBaseTranslator );
+      installTranslator( mQtBaseTranslator.get() );
     }
     else
     {
@@ -558,9 +562,6 @@ QgsApplication::~QgsApplication()
 
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
-  delete mQgisTranslator;
-  delete mQtTranslator;
-  delete mQtBaseTranslator;
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -1424,38 +1425,8 @@ QString QgsApplication::osName()
 
 int QgsApplication::systemMemorySizeMb()
 {
-#if defined(Q_OS_ANDROID)
-  return -1;
-#elif defined(Q_OS_MAC)
-  return -1;
-#elif defined(Q_OS_WIN)
-  MEMORYSTATUSEX memoryStatus;
-  ZeroMemory( &memoryStatus, sizeof( MEMORYSTATUSEX ) );
-  memoryStatus.dwLength = sizeof( MEMORYSTATUSEX );
-  if ( GlobalMemoryStatusEx( &memoryStatus ) )
-  {
-    return memoryStatus.ullTotalPhys / ( 1024 * 1024 );
-  }
-  else
-  {
-    return -1;
-  }
-#elif defined(Q_OS_LINUX)
-  constexpr int megabyte = 1024 * 1024;
-  struct sysinfo si;
-  sysinfo( &si );
-  return si.totalram / megabyte;
-#elif defined(Q_OS_FREEBSD)
-  return -1;
-#elif defined(Q_OS_OPENBSD)
-  return -1;
-#elif defined(Q_OS_NETBSD)
-  return -1;
-#elif defined(Q_OS_UNIX)
-  return -1;
-#else
-  return -1;
-#endif
+  // Bytes to Mb (using 1024 * 1024)
+  return static_cast<int>( CPLGetUsablePhysicalRAM() / 1048576 );
 }
 
 QString QgsApplication::platform()
@@ -2135,7 +2106,7 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
 
 int QgsApplication::maxConcurrentConnectionsPerPool() const
 {
-  return CONN_POOL_MAX_CONCURRENT_CONNS;
+  return settingsConnectionPoolMaximumConcurrentConnections->value();
 }
 
 void QgsApplication::setTranslation( const QString &translation )
@@ -2183,7 +2154,7 @@ void QgsApplication::setNullRepresentation( const QString &nullRepresentation )
 
 QgsActionScopeRegistry *QgsApplication::actionScopeRegistry()
 {
-  return members()->mActionScopeRegistry;
+  return members()->mActionScopeRegistry.get();
 }
 
 bool QgsApplication::createDatabase( QString *errorMessage )
@@ -2444,42 +2415,42 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
 QgsTaskManager *QgsApplication::taskManager()
 {
-  return members()->mTaskManager;
+  return members()->mTaskManager.get();
 }
 
 QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
 {
-  return members()->mSettingsRegistryCore;
+  return members()->mSettingsRegistryCore.get();
 }
 
 QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()
 {
-  return members()->mColorSchemeRegistry;
+  return members()->mColorSchemeRegistry.get();
 }
 
 QgsPaintEffectRegistry *QgsApplication::paintEffectRegistry()
 {
-  return members()->mPaintEffectRegistry;
+  return members()->mPaintEffectRegistry.get();
 }
 
 QgsRendererRegistry *QgsApplication::rendererRegistry()
 {
-  return members()->mRendererRegistry;
+  return members()->mRendererRegistry.get();
 }
 
 QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
 {
-  return members()->mRasterRendererRegistry;
+  return members()->mRasterRendererRegistry.get();
 }
 
 QgsPointCloudRendererRegistry *QgsApplication::pointCloudRendererRegistry()
 {
-  return members()->mPointCloudRendererRegistry;
+  return members()->mPointCloudRendererRegistry.get();
 }
 
 QgsTiledSceneRendererRegistry *QgsApplication::tiledSceneRendererRegistry()
 {
-  return members()->mTiledSceneRendererRegistry;
+  return members()->mTiledSceneRendererRegistry.get();
 }
 
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
@@ -2504,457 +2475,457 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 
 QgsCoordinateReferenceSystemRegistry *QgsApplication::coordinateReferenceSystemRegistry()
 {
-  return members()->mCrsRegistry;
+  return members()->mCrsRegistry.get();
 }
 
 QgsSvgCache *QgsApplication::svgCache()
 {
-  return members()->mSvgCache;
+  return members()->mSvgCache.get();
 }
 
 QgsImageCache *QgsApplication::imageCache()
 {
-  return members()->mImageCache;
+  return members()->mImageCache.get();
 }
 
 QgsSourceCache *QgsApplication::sourceCache()
 {
-  return members()->mSourceCache;
+  return members()->mSourceCache.get();
 }
 
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
-  return members()->mNetworkContentFetcherRegistry;
+  return members()->mNetworkContentFetcherRegistry.get();
 }
 
 QgsValidityCheckRegistry *QgsApplication::validityCheckRegistry()
 {
-  return members()->mValidityCheckRegistry;
+  return members()->mValidityCheckRegistry.get();
 }
 
 QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
 {
-  return members()->mSymbolLayerRegistry;
+  return members()->mSymbolLayerRegistry.get();
 }
 
 QgsCalloutRegistry *QgsApplication::calloutRegistry()
 {
-  return members()->mCalloutRegistry;
+  return members()->mCalloutRegistry.get();
 }
 
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 {
-  return members()->mLayoutItemRegistry;
+  return members()->mLayoutItemRegistry.get();
 }
 
 QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
 {
-  return members()->mAnnotationItemRegistry;
+  return members()->mAnnotationItemRegistry.get();
 }
 
 QgsSensorRegistry *QgsApplication::sensorRegistry()
 {
-  return members()->mSensorRegistry;
+  return members()->mSensorRegistry.get();
 }
 
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
-  return members()->mGpsConnectionRegistry;
+  return members()->mGpsConnectionRegistry.get();
 }
 
 QgsBabelFormatRegistry *QgsApplication::gpsBabelFormatRegistry()
 {
-  return members()->mGpsBabelFormatRegistry;
+  return members()->mGpsBabelFormatRegistry.get();
 }
 
 QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
 {
-  return members()->mPluginLayerRegistry;
+  return members()->mPluginLayerRegistry.get();
 }
 
 QgsClassificationMethodRegistry *QgsApplication::classificationMethodRegistry()
 {
-  return members()->mClassificationMethodRegistry;
+  return members()->mClassificationMethodRegistry.get();
 }
 
 QgsBookmarkManager *QgsApplication::bookmarkManager()
 {
-  return members()->mBookmarkManager;
+  return members()->mBookmarkManager.get();
 }
 
 QgsTileDownloadManager *QgsApplication::tileDownloadManager()
 {
-  return members()->mTileDownloadManager;
+  return members()->mTileDownloadManager.get();
 }
 
 QgsRecentStyleHandler *QgsApplication::recentStyleHandler()
 {
-  return members()->mRecentStyleHandler;
+  return members()->mRecentStyleHandler.get();
 }
 
 QgsDatabaseQueryLog *QgsApplication::databaseQueryLog()
 {
-  return members()->mQueryLogger;
+  return members()->mQueryLogger.get();
 }
 
 QgsStyleModel *QgsApplication::defaultStyleModel()
 {
-  return members()->mStyleModel;
+  return members()->mStyleModel.get();
 }
 
 QgsFontManager *QgsApplication::fontManager()
 {
-  return members()->mFontManager;
+  return members()->mFontManager.get();
 }
 
 QgsMessageLog *QgsApplication::messageLog()
 {
-  return members()->mMessageLog;
+  return members()->mMessageLog.get();
 }
 
 QgsProcessingRegistry *QgsApplication::processingRegistry()
 {
-  return members()->mProcessingRegistry;
+  return members()->mProcessingRegistry.get();
 }
 
 QgsConnectionRegistry *QgsApplication::connectionRegistry()
 {
-  return members()->mConnectionRegistry;
+  return members()->mConnectionRegistry.get();
 }
 
 QgsLayerMetadataProviderRegistry *QgsApplication::layerMetadataProviderRegistry()
 {
-  return members()->mLayerMetadataProviderRegistry;
+  return members()->mLayerMetadataProviderRegistry.get();
 }
 
 QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
 {
-  return members()->mPageSizeRegistry;
+  return members()->mPageSizeRegistry.get();
 }
 
 QgsAnnotationRegistry *QgsApplication::annotationRegistry()
 {
-  return members()->mAnnotationRegistry;
+  return members()->mAnnotationRegistry.get();
 }
 
 QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry()
 {
-  return members()->mNumericFormatRegistry;
+  return members()->mNumericFormatRegistry.get();
 }
 
 QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
 {
-  return members()->mFieldFormatterRegistry;
+  return members()->mFieldFormatterRegistry.get();
 }
 
 Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
 {
-  return members()->m3DRendererRegistry;
+  return members()->m3DRendererRegistry.get();
 }
 
 Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry()
 {
-  return members()->m3DSymbolRegistry;
+  return members()->m3DSymbolRegistry.get();
 }
 
 QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 {
-  return members()->mScaleBarRendererRegistry;
+  return members()->mScaleBarRendererRegistry.get();
 }
 
 QgsLabelingEngineRuleRegistry *QgsApplication::labelingEngineRuleRegistry()
 {
-  return members()->mLabelingEngineRuleRegistry;
+  return members()->mLabelingEngineRuleRegistry.get();
 }
 
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
-  return members()->mProjectStorageRegistry;
+  return members()->mProjectStorageRegistry.get();
 }
 
 QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
 {
-  return members()->mExternalStorageRegistry;
+  return members()->mExternalStorageRegistry.get();
 }
 
 QgsProfileSourceRegistry *QgsApplication::profileSourceRegistry()
 {
-  return members()->mProfileSourceRegistry;
+  return members()->mProfileSourceRegistry.get();
 }
 
 QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
 {
-  return members()->mLocalizedDataPathRegistry;
+  return members()->mLocalizedDataPathRegistry.get();
 }
 
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
-  mSettingsRegistryCore = new QgsSettingsRegistryCore();
-  mLocalizedDataPathRegistry = new QgsLocalizedDataPathRegistry();
-  mMessageLog = new QgsMessageLog();
+  mSettingsRegistryCore = std::make_unique<QgsSettingsRegistryCore>();
+  mLocalizedDataPathRegistry = std::make_unique<QgsLocalizedDataPathRegistry>();
+  mMessageLog = std::make_unique<QgsMessageLog>();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
 
   {
     profiler->start( tr( "Create query logger" ) );
-    mQueryLogger = new QgsDatabaseQueryLog();
+    mQueryLogger = std::make_unique<QgsDatabaseQueryLog>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup coordinate reference system registry" ) );
-    mCrsRegistry = new QgsCoordinateReferenceSystemRegistry();
+    mCrsRegistry = std::make_unique<QgsCoordinateReferenceSystemRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Create connection registry" ) );
-    mConnectionRegistry = new QgsConnectionRegistry();
+    mConnectionRegistry = std::make_unique<QgsConnectionRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Create project storage registry" ) );
-    mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    mProjectStorageRegistry = std::make_unique<QgsProjectStorageRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Create layer metadata provider registry" ) );
-    mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
+    mLayerMetadataProviderRegistry = std::make_unique<QgsLayerMetadataProviderRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Create font manager" ) );
-    mFontManager = new QgsFontManager();
+    mFontManager = std::make_unique<QgsFontManager>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup task manager" ) );
-    mTaskManager = new QgsTaskManager();
+    mTaskManager = std::make_unique<QgsTaskManager>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup action scope registry" ) );
-    mActionScopeRegistry = new QgsActionScopeRegistry();
+    mActionScopeRegistry = std::make_unique<QgsActionScopeRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup numeric formats" ) );
-    mNumericFormatRegistry = new QgsNumericFormatRegistry();
+    mNumericFormatRegistry = std::make_unique<QgsNumericFormatRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup field formats" ) );
-    mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
+    mFieldFormatterRegistry = std::make_unique<QgsFieldFormatterRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup SVG cache" ) );
-    mSvgCache = new QgsSvgCache();
+    mSvgCache = std::make_unique<QgsSvgCache>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup image cache" ) );
-    mImageCache = new QgsImageCache();
+    mImageCache = std::make_unique<QgsImageCache>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup source cache" ) );
-    mSourceCache = new QgsSourceCache();
+    mSourceCache = std::make_unique<QgsSourceCache>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup color scheme registry" ) );
-    mColorSchemeRegistry = new QgsColorSchemeRegistry();
+    mColorSchemeRegistry = std::make_unique<QgsColorSchemeRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup paint effect" ) );
-    mPaintEffectRegistry = new QgsPaintEffectRegistry();
+    mPaintEffectRegistry = std::make_unique<QgsPaintEffectRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup symbol layer registry" ) );
-    mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+    mSymbolLayerRegistry = std::make_unique<QgsSymbolLayerRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Recent style handler" ) );
-    mRecentStyleHandler = new QgsRecentStyleHandler();
+    mRecentStyleHandler = std::make_unique<QgsRecentStyleHandler>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup callout registry" ) );
-    mCalloutRegistry = new QgsCalloutRegistry();
+    mCalloutRegistry = std::make_unique<QgsCalloutRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup renderer registry" ) );
-    mRendererRegistry = new QgsRendererRegistry();
+    mRendererRegistry = std::make_unique<QgsRendererRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup raster renderer registry" ) );
-    mRasterRendererRegistry = new QgsRasterRendererRegistry();
+    mRasterRendererRegistry = std::make_unique<QgsRasterRendererRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup point cloud renderer registry" ) );
-    mPointCloudRendererRegistry = new QgsPointCloudRendererRegistry();
+    mPointCloudRendererRegistry = std::make_unique<QgsPointCloudRendererRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup tiled scene renderer registry" ) );
-    mTiledSceneRendererRegistry = new QgsTiledSceneRendererRegistry();
+    mTiledSceneRendererRegistry = std::make_unique<QgsTiledSceneRendererRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup GPS registry" ) );
-    mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
+    mGpsConnectionRegistry = std::make_unique<QgsGpsConnectionRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup GPSBabel format registry" ) );
-    mGpsBabelFormatRegistry = new QgsBabelFormatRegistry();
+    mGpsBabelFormatRegistry = std::make_unique<QgsBabelFormatRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup plugin layer registry" ) );
-    mPluginLayerRegistry = new QgsPluginLayerRegistry();
+    mPluginLayerRegistry = std::make_unique<QgsPluginLayerRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup Processing registry" ) );
-    mProcessingRegistry = new QgsProcessingRegistry();
+    mProcessingRegistry = std::make_unique<QgsProcessingRegistry>();
     profiler->end();
   }
-  mPageSizeRegistry = new QgsPageSizeRegistry();
+  mPageSizeRegistry = std::make_unique<QgsPageSizeRegistry>();
   {
     profiler->start( tr( "Setup layout item registry" ) );
-    mLayoutItemRegistry = new QgsLayoutItemRegistry();
+    mLayoutItemRegistry = std::make_unique<QgsLayoutItemRegistry>();
     mLayoutItemRegistry->populate();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup annotation registry" ) );
-    mAnnotationRegistry = new QgsAnnotationRegistry();
+    mAnnotationRegistry = std::make_unique<QgsAnnotationRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup annotation item registry" ) );
-    mAnnotationItemRegistry = new QgsAnnotationItemRegistry();
+    mAnnotationItemRegistry = std::make_unique<QgsAnnotationItemRegistry>();
     mAnnotationItemRegistry->populate();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup labeling engine rule registry" ) );
-    mLabelingEngineRuleRegistry = new QgsLabelingEngineRuleRegistry();
+    mLabelingEngineRuleRegistry = std::make_unique<QgsLabelingEngineRuleRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup sensor registry" ) );
-    mSensorRegistry = new QgsSensorRegistry();
+    mSensorRegistry = std::make_unique<QgsSensorRegistry>();
     mSensorRegistry->populate();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup 3D symbol registry" ) );
-    m3DSymbolRegistry = new Qgs3DSymbolRegistry();
+    m3DSymbolRegistry = std::make_unique<Qgs3DSymbolRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup 3D renderer registry" ) );
-    m3DRendererRegistry = new Qgs3DRendererRegistry();
+    m3DRendererRegistry = std::make_unique<Qgs3DRendererRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup external storage registry" ) );
-    mExternalStorageRegistry = new QgsExternalStorageRegistry();
+    mExternalStorageRegistry = std::make_unique<QgsExternalStorageRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup profile source registry" ) );
-    mProfileSourceRegistry = new QgsProfileSourceRegistry();
+    mProfileSourceRegistry = std::make_unique<QgsProfileSourceRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup network content cache" ) );
-    mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+    mNetworkContentFetcherRegistry = std::make_unique<QgsNetworkContentFetcherRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup layout check registry" ) );
-    mValidityCheckRegistry = new QgsValidityCheckRegistry();
+    mValidityCheckRegistry = std::make_unique<QgsValidityCheckRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup classification registry" ) );
-    mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
+    mClassificationMethodRegistry = std::make_unique<QgsClassificationMethodRegistry>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup bookmark manager" ) );
-    mBookmarkManager = new QgsBookmarkManager( nullptr );
+    mBookmarkManager = std::make_unique<QgsBookmarkManager>( nullptr );
     profiler->end();
   }
   {
     profiler->start( tr( "Setup tile download manager" ) );
-    mTileDownloadManager = new QgsTileDownloadManager();
+    mTileDownloadManager = std::make_unique<QgsTileDownloadManager>();
     profiler->end();
   }
   {
     profiler->start( tr( "Setup scalebar registry" ) );
-    mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
+    mScaleBarRendererRegistry = std::make_unique<QgsScaleBarRendererRegistry>();
     profiler->end();
   }
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
-  delete mStyleModel;
-  delete mTileDownloadManager;
-  delete mScaleBarRendererRegistry;
-  delete mValidityCheckRegistry;
-  delete mActionScopeRegistry;
-  delete m3DRendererRegistry;
-  delete m3DSymbolRegistry;
-  delete mAnnotationRegistry;
-  delete mColorSchemeRegistry;
-  delete mFieldFormatterRegistry;
-  delete mGpsConnectionRegistry;
-  delete mGpsBabelFormatRegistry;
-  delete mMessageLog;
-  delete mPaintEffectRegistry;
-  delete mPluginLayerRegistry;
-  delete mProcessingRegistry;
-  delete mPageSizeRegistry;
-  delete mAnnotationItemRegistry;
-  delete mSensorRegistry;
-  delete mLayoutItemRegistry;
-  delete mPointCloudRendererRegistry;
-  delete mTiledSceneRendererRegistry;
-  delete mRasterRendererRegistry;
-  delete mRendererRegistry;
-  delete mSvgCache;
-  delete mImageCache;
-  delete mSourceCache;
-  delete mCalloutRegistry;
-  delete mRecentStyleHandler;
-  delete mLabelingEngineRuleRegistry;
-  delete mSymbolLayerRegistry;
-  delete mExternalStorageRegistry;
-  delete mProfileSourceRegistry;
-  delete mTaskManager;
-  delete mNetworkContentFetcherRegistry;
-  delete mClassificationMethodRegistry;
-  delete mNumericFormatRegistry;
-  delete mBookmarkManager;
-  delete mConnectionRegistry;
-  delete mProjectStorageRegistry;
-  delete mLayerMetadataProviderRegistry;
-  delete mFontManager;
-  delete mLocalizedDataPathRegistry;
-  delete mCrsRegistry;
-  delete mQueryLogger;
-  delete mSettingsRegistryCore;
+  // we reset unique_ptr manually because we care about destruction order
+  mStyleModel.reset();
+  mTileDownloadManager.reset();
+  mScaleBarRendererRegistry.reset();
+  mValidityCheckRegistry.reset();
+  mActionScopeRegistry.reset();
+  m3DRendererRegistry.reset();
+  m3DSymbolRegistry.reset();
+  mAnnotationRegistry.reset();
+  mColorSchemeRegistry.reset();
+  mFieldFormatterRegistry.reset();
+  mGpsConnectionRegistry.reset();
+  mGpsBabelFormatRegistry.reset();
+  mMessageLog.reset();
+  mPaintEffectRegistry.reset();
+  mPluginLayerRegistry.reset();
+  mProcessingRegistry.reset();
+  mPageSizeRegistry.reset();
+  mAnnotationItemRegistry.reset();
+  mSensorRegistry.reset();
+  mLayoutItemRegistry.reset();
+  mPointCloudRendererRegistry.reset();
+  mTiledSceneRendererRegistry.reset();
+  mRasterRendererRegistry.reset();
+  mRendererRegistry.reset();
+  mSvgCache.reset();
+  mImageCache.reset();
+  mSourceCache.reset();
+  mCalloutRegistry.reset();
+  mRecentStyleHandler.reset();
+  mLabelingEngineRuleRegistry.reset();
+  mSymbolLayerRegistry.reset();
+  mExternalStorageRegistry.reset();
+  mProfileSourceRegistry.reset();
+  mTaskManager.reset();
+  mNetworkContentFetcherRegistry.reset();
+  mClassificationMethodRegistry.reset();
+  mNumericFormatRegistry.reset();
+  mBookmarkManager.reset();
+  mConnectionRegistry.reset();
+  mProjectStorageRegistry.reset();
+  mLayerMetadataProviderRegistry.reset();
+  mFontManager.reset();
+  mLocalizedDataPathRegistry.reset();
+  mCrsRegistry.reset();
+  mQueryLogger.reset();
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

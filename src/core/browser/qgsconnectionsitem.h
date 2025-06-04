@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * \brief A Collection that represents a root group of connections from a single data provider
+ * \brief A browser item that represents a root group of connections from a single data provider.
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem

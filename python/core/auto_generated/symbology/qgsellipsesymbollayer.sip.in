@@ -12,7 +12,8 @@
 class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
-A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
+A symbol layer for rendering objects with major and minor axis (e.g.
+ellipse, rectangle, etc).
 %End
 
 %TypeHeaderCode
@@ -49,7 +50,8 @@ Returns a list of all available shape types.
 %Docstring
 Returns ``True`` if a ``shape`` has a fill.
 
-:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines only
+:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines
+         only
 
 .. versionadded:: 3.20
 %End
@@ -77,10 +79,13 @@ Creates the symbol layer
 
     virtual QVariantMap properties() const;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
@@ -130,11 +135,12 @@ Sets the rendered ellipse marker shape.
 
     static QgsEllipseSymbolLayer::Shape decodeShape( const QString &name, bool *ok = 0 );
 %Docstring
-Attempts to decode a string representation of a shape name to the corresponding
-shape.
+Attempts to decode a string representation of a shape name to the
+corresponding shape.
 
 :param name: encoded shape name
-:param ok: if specified, will be set to ``True`` if shape was successfully decoded
+:param ok: if specified, will be set to ``True`` if shape was
+           successfully decoded
 
 :return: decoded name
 

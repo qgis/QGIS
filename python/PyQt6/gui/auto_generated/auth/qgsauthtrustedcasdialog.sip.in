@@ -14,7 +14,8 @@
 class QgsAuthTrustedCAsDialog : QDialog
 {
 %Docstring(signature="appended")
-Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
+Widget for listing trusted Certificate (Intermediate) Authorities used
+in secure connections.
 %End
 
 %TypeHeaderCode

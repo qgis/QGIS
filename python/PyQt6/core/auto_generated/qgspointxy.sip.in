@@ -15,25 +15,33 @@
 class QgsPointXY
 {
 %Docstring(signature="appended")
-A class to represent a 2D point.
+Represents a 2D point.
 
-A :py:class:`QgsPointXY` represents a strictly 2-dimensional position, with only X and Y coordinates.
-This is a very lightweight class, designed to minimize the memory requirements of storing
-millions of points.
+A :py:class:`QgsPointXY` represents a strictly 2-dimensional position,
+with only X and Y coordinates. This is a very lightweight class,
+designed to minimize the memory requirements of storing millions of
+points.
 
-In many scenarios it is preferable to use a :py:class:`QgsPoint` instead which also
-supports optional Z and M values. :py:class:`QgsPointXY` should only be used for situations where
-a point can only EVER be two dimensional.
+In many scenarios it is preferable to use a :py:class:`QgsPoint` instead
+which also supports optional Z and M values. :py:class:`QgsPointXY`
+should only be used for situations where a point can only EVER be two
+dimensional.
 
 Some valid use cases for :py:class:`QgsPointXY` include:
 
 - A mouse cursor location
-- A coordinate on a purely 2-dimensional rendered map, e.g. a :py:class:`QgsMapCanvas`
-- A coordinate in a raster, vector tile, or other purely 2-dimensional layer
+- A coordinate on a purely 2-dimensional rendered map, e.g. a
+  :py:class:`QgsMapCanvas`
+- A coordinate in a raster, vector tile, or other purely 2-dimensional
+  layer
 
-Use cases for which :py:class:`QgsPointXY` is NOT a valid choice include:
+Use cases for which :py:class:`QgsPointXY` is NOT a valid choice
+include:
 
-- Storage of coordinates for a geometry. Since :py:class:`QgsPointXY` is strictly 2-dimensional it should never be used to store coordinates for vector geometries, as this will involve a loss of any z or m values present in the geometry.
+- Storage of coordinates for a geometry. Since :py:class:`QgsPointXY` is
+  strictly 2-dimensional it should never be used to store coordinates
+  for vector geometries, as this will involve a loss of any z or m
+  values present in the geometry.
 
 .. seealso:: :py:class:`QgsPoint`
 %End
@@ -74,8 +82,7 @@ Create a point from a QPoint
 
     QgsPointXY( const QgsPoint &point ) /HoldGIL/;
 %Docstring
-Create a new point.
-Z and M values will be dropped.
+Create a new point. Z and M values will be dropped.
 %End
 
     ~QgsPointXY();
@@ -122,19 +129,21 @@ Converts a point to a QPointF
 
     QString toString( int precision = -1 ) const;
 %Docstring
-Returns a string representation of the point (x, y) with a preset ``precision``.
-If  ``precision`` is -1, then a default precision will be used.
+Returns a string representation of the point (x, y) with a preset
+``precision``. If ``precision`` is -1, then a default precision will be
+used.
 %End
 
     QString asWkt() const;
 %Docstring
-Returns the well known text representation for the point (e.g. "POINT(x y)").
-The wkt is created without an SRID.
+Returns the well known text representation for the point (e.g. "POINT(x
+y)"). The wkt is created without an SRID.
 %End
 
     double sqrDist( double x, double y ) const /HoldGIL/;
 %Docstring
-Returns the squared distance between this point a specified x, y coordinate.
+Returns the squared distance between this point a specified x, y
+coordinate.
 
 .. seealso:: :py:func:`distance`
 %End
@@ -165,31 +174,34 @@ Returns the distance between this point and another point.
 .. seealso:: :py:func:`sqrDist`
 %End
 
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const /HoldGIL/;
 %Docstring
 Returns the minimum distance between this point and a segment
 %End
 
     double azimuth( const QgsPointXY &other ) const /HoldGIL/;
 %Docstring
-Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+Calculates azimuth between this point and other one (clockwise in
+degree, starting from north)
 %End
 
     QgsPointXY project( double distance, double bearing ) const /HoldGIL/;
 %Docstring
-Returns a new point which corresponds to this point projected by a specified distance
-in a specified bearing.
+Returns a new point which corresponds to this point projected by a
+specified distance in a specified bearing.
 
 :param distance: distance to project
-:param bearing: angle to project in, clockwise in degrees starting from north
+:param bearing: angle to project in, clockwise in degrees starting from
+                north
 %End
 
     bool isEmpty() const /HoldGIL/;
 %Docstring
-Returns ``True`` if the geometry is empty.
-Unlike :py:class:`QgsPoint`, this class is also used to retrieve graphical coordinates like QPointF.
-It therefore has the default coordinates (0.0).
-A QgsPointXY is considered empty, when the coordinates have not been explicitly filled in.
+Returns ``True`` if the geometry is empty. Unlike :py:class:`QgsPoint`,
+this class is also used to retrieve graphical coordinates like QPointF.
+It therefore has the default coordinates (0.0). A QgsPointXY is
+considered empty, when the coordinates have not been explicitly filled
+in.
 
 .. versionadded:: 3.10
 %End
@@ -208,7 +220,8 @@ Compares this point with another point with a fuzzy tolerance
 
     bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;
 %Docstring
-Compares this point with another point with a fuzzy tolerance using distance comparison
+Compares this point with another point with a fuzzy tolerance using
+distance comparison
 
 :param other: point to compare with
 :param epsilon: maximum difference for coordinates between the points

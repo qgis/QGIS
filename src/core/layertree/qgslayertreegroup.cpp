@@ -20,7 +20,6 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsgrouplayer.h"
-#include "qgspainting.h"
 
 #include <QDomElement>
 #include <QStringList>
@@ -29,6 +28,7 @@
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
+  , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
   init();
 }
@@ -39,8 +39,12 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   , mChangingChildVisibility( other.mChangingChildVisibility )
   , mMutuallyExclusive( other.mMutuallyExclusive )
   , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
+  , mWmsHasTimeDimension( other.mWmsHasTimeDimension )
   , mGroupLayer( other.mGroupLayer )
+  , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
+  other.serverProperties()->copyTo( mServerProperties.get() );
+
   init();
 }
 
@@ -346,7 +350,7 @@ QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findGroups( bool recursive ) const
   return list;
 }
 
-QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   if ( element.tagName() != QLatin1String( "layer-tree-group" ) )
     return nullptr;
@@ -366,16 +370,49 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsRe
 
   groupNode->setIsMutuallyExclusive( isMutuallyExclusive, mutuallyExclusiveChildIndex );
 
+  groupNode->mWmsHasTimeDimension = element.attribute( QStringLiteral( "wms-has-time-dimension" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
+
   groupNode->mGroupLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "groupLayer" ) ) );
+
+  readLegacyServerProperties( groupNode );
+
+  groupNode->serverProperties()->readXml( element );
 
   return groupNode;
 }
 
-QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context )
+void QgsLayerTreeGroup::readLegacyServerProperties( QgsLayerTreeGroup *groupNode )
+{
+  const QVariant wmsShortName  = groupNode->customProperty( QStringLiteral( "wmsShortName" ) );
+  if ( wmsShortName.isValid() )
+  {
+    groupNode->serverProperties()->setShortName( wmsShortName.toString() );
+    groupNode->removeCustomProperty( QStringLiteral( "wmsShortName" ) );
+  }
+
+  const QVariant wmsTitle = groupNode->customProperty( QStringLiteral( "wmsTitle" ) );
+  if ( wmsTitle.isValid() )
+  {
+    groupNode->serverProperties()->setTitle( wmsTitle.toString() );
+    groupNode->removeCustomProperty( QStringLiteral( "wmsTitle" ) );
+  }
+
+  const QVariant wmsAbstract = groupNode->customProperty( QStringLiteral( "wmsAbstract" ) );
+  if ( wmsAbstract.isValid() )
+  {
+    groupNode->serverProperties()->setAbstract( wmsAbstract.toString() );
+    groupNode->removeCustomProperty( QStringLiteral( "wmsAbstract" ) );
+  }
+}
+
+QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context )
 {
   QgsLayerTreeGroup *node = readXml( element, context );
-  if ( node )
-    node->resolveReferences( project );
+  if ( !node )
+    return nullptr;
+
+  node->resolveReferences( project );
+
   return node;
 }
 
@@ -391,9 +428,17 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
     elem.setAttribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "1" ) );
     elem.setAttribute( QStringLiteral( "mutually-exclusive-child" ), mMutuallyExclusiveChildIndex );
   }
+
+  if ( mWmsHasTimeDimension )
+  {
+    elem.setAttribute( QStringLiteral( "wms-has-time-dimension" ), QStringLiteral( "1" ) );
+  }
+
   elem.setAttribute( QStringLiteral( "groupLayer" ), mGroupLayer.layerId );
 
   writeCommonXml( elem );
+
+  serverProperties()->writeXml( elem, doc );
 
   for ( QgsLayerTreeNode *node : std::as_const( mChildren ) )
     node->writeXml( elem, context );
@@ -401,7 +446,7 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
   parentElement.appendChild( elem );
 }
 
-void QgsLayerTreeGroup::readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context )
+void QgsLayerTreeGroup::readChildrenFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   QList<QgsLayerTreeNode *> nodes;
   QDomElement childElem = element.firstChildElement();
@@ -638,4 +683,24 @@ void QgsLayerTreeGroup::setItemVisibilityCheckedRecursive( bool checked )
   mChangingChildVisibility = false;
 
   updateGroupLayers();
+}
+
+QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties()
+{
+  return mServerProperties.get();
+}
+
+const QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties() const
+{
+  return mServerProperties.get();
+}
+
+void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension )
+{
+  mWmsHasTimeDimension = hasWmsTimeDimension;
+}
+
+bool QgsLayerTreeGroup::hasWmsTimeDimension() const
+{
+  return mWmsHasTimeDimension;
 }

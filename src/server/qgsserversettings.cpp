@@ -160,6 +160,10 @@ void QgsServerSettings::initSettings()
   const Setting sProjectCacheStrategy = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Project's cache strategy. Possible values are 'off','filesystem' or 'periodic'" ), QStringLiteral( "/qgis/server_project_cache_strategy" ), QMetaType::Type::QString, QVariant( "" ), QVariant() };
   mSettings[sProjectCacheStrategy.envVar] = sProjectCacheStrategy;
 
+  // the default config cache size
+  const Setting sProjectCacheSize = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_SIZE, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Project's cache size, in number of projects." ), QStringLiteral( "/qgis/server_project_cache_size" ), QMetaType::Type::QString, QVariant( 100 ), QVariant() };
+  mSettings[sProjectCacheSize.envVar] = sProjectCacheSize;
+
   const Setting sAllowedExtraSqlTokens = { QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "List of comma separated SQL tokens to be added to the list of allowed tokens that the services accepts when filtering features" ), QStringLiteral( "/qgis/server_allowed_extra_sql_tokens" ), QMetaType::Type::QString, QVariant( "" ), QVariant() };
   mSettings[sAllowedExtraSqlTokens.envVar] = sAllowedExtraSqlTokens;
 
@@ -466,10 +470,28 @@ QString QgsServerSettings::projectCacheStrategy() const
   QString result = value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY ).toString();
   if ( result.compare( QLatin1String( "filesystem" ) ) && result.compare( QLatin1String( "periodic" ) ) && result.compare( QLatin1String( "off" ) ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy, expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Warning );
+    if ( !result.isEmpty() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy '%1', expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ).arg( result ), "Server", Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "No cache strategy was specified. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Info );
+    }
     result = QStringLiteral( "filesystem" );
   }
   return result;
+}
+
+int QgsServerSettings::projectCacheSize() const
+{
+  bool ok;
+  int size = value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_SIZE ).toInt( &ok );
+  if ( ok && size >= 1 )
+    return size;
+
+  QgsMessageLog::logMessage( QStringLiteral( "Invalid project cache size, expecting integer - defaulting to 100" ), "Server", Qgis::MessageLevel::Warning );
+  return 100;
 }
 
 QStringList QgsServerSettings::allowedExtraSqlTokens() const

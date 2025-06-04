@@ -28,7 +28,8 @@ class QgsSnapIndicator;
 
 /**
  * \ingroup gui
- * \brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
+ * \brief A QgsMapTool which gives events directly in map coordinates and allows filtering of events.
+ *
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
  * An event filter can be set on the map tool to filter and modify the events in map coordinates (\see QgsMapToolMapEventFilter).

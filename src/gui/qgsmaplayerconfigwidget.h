@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
 /**
  * \ingroup gui
  * \class QgsMapLayerConfigWidget
- * \brief A panel widget that can be shown in the map style dock
+ * \brief A panel widget that can be shown in the map style dock.
  */
 class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 {

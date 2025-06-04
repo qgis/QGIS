@@ -11,7 +11,7 @@
 class QgsZipItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+A browser item for zip (archive) files.
 %End
 
 %TypeHeaderCode
@@ -49,7 +49,6 @@ Constructor
 
  static QString vsiPrefix( const QString &uri ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Will be removed in QGIS 4.0.
@@ -64,9 +63,7 @@ Creates a new data item from the specified path.
 %Docstring
 Creates a new data item from the specified path.
 
-.. note::
 
-   available in Python as itemFromFilePath
 %End
 
     static QIcon iconZip();

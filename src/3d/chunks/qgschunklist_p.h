@@ -32,7 +32,7 @@
 class QgsChunkNode;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Element of a double-linked list
  *
  * \note Not available in Python bindings
@@ -53,7 +53,7 @@ struct QgsChunkListEntry
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Double linked list of chunks.
  *
  * The list does not own entries.

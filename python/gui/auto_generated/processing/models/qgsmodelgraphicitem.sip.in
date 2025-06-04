@@ -29,10 +29,12 @@ A flat button graphic item for use in the Processing model designer.
   public:
     QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent /TransferThis/, const QPicture &picture, const QPointF &position, const QSizeF &size = QSizeF( 16, 16 ) );
 %Docstring
-Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified ``parent`` item.
+Constructor for QgsModelDesignerFlatButtonGraphicItem, with the
+specified ``parent`` item.
 
-The ``picture`` argument specifies a QPicture object containing the graphic to render
-for the button. The button will be rendered at the specified ``position`` and ``size``.
+The ``picture`` argument specifies a QPicture object containing the
+graphic to render for the button. The button will be rendered at the
+specified ``position`` and ``size``.
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
@@ -46,6 +48,11 @@ for the button. The button will be rendered at the specified ``position`` and ``
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
 
+
+    QPointF position() const;
+%Docstring
+Returns the button's position.
+%End
 
     void setPosition( const QPointF &position );
 %Docstring
@@ -76,7 +83,8 @@ Sets the ``picture`` to render for the button graphics.
 class QgsModelDesignerFoldButtonGraphicItem : QgsModelDesignerFlatButtonGraphicItem
 {
 %Docstring(signature="appended")
-A button allowing folding or expanding component graphics in the Processing model designer.
+A button allowing folding or expanding component graphics in the
+Processing model designer.
 
 .. warning::
 
@@ -91,10 +99,11 @@ A button allowing folding or expanding component graphics in the Processing mode
   public:
     QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent /TransferThis/, bool folded, const QPointF &position, const QSizeF &size = QSizeF( 11, 11 ) );
 %Docstring
-Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified ``parent`` item.
+Constructor for QgsModelDesignerFoldButtonGraphicItem, with the
+specified ``parent`` item.
 
-The ``folded`` argument specifies whether the button should initially indicate the folded (collapsed)
-state.
+The ``folded`` argument specifies whether the button should initially
+indicate the folded (collapsed) state.
 
 The button will be rendered at the specified ``position`` and ``size``.
 %End
@@ -108,8 +117,70 @@ The button will be rendered at the specified ``position`` and ``size``.
 %Docstring
 Emitted when the button ``folded`` state changes.
 
-If ``folded`` is ``True``, the button represents the collapsed state for the item.
+If ``folded`` is ``True``, the button represents the collapsed state for
+the item.
 %End
+
+};
+
+
+class QgsModelDesignerSocketGraphicItem : QgsModelDesignerFlatButtonGraphicItem
+{
+%Docstring(signature="appended")
+A socket allowing linking component together.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicitem.h"
+%End
+  public:
+    QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent /TransferThis/, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
+%Docstring
+Constructor for QgsModelDesignerSocketGraphicItem, with the specified
+``parent`` item.
+
+The ``index`` argument specifies whether the input or output index of
+this socket inside the component And the ``edge`` argument specifies if
+it's an input socket( Qt.Edge.TopEdge ) or output ( Qt.Edge.BottomEdge )
+
+The sockets will be rendered at the specified ``position``
+%End
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+    int index() const;
+%Docstring
+Returns the index of this socket in either
+QgsModelDesignerSocketGraphicItem.mInSockets or
+QgsModelDesignerSocketGraphicItem.mOutSockets array
+%End
+    Qt::Edge edge() const;
+%Docstring
+Returns on which edge this socket is: * Qt.Edge.TopEdge for input socket
+* Qt.Edge.BottomEdge for output socket
+%End
+    bool isInput() const;
+%Docstring
+Returns whether the socket is an input socket or not
+
+Convenient function around mEdge member
+%End
+    QgsProcessingModelComponent *component();
+%Docstring
+Return the component associated to the socket */
+%End
+    QgsModelComponentGraphicItem *componentItem();
+%Docstring
+Return the parent graphic item associated to the socket */
+%End
+  signals:
+
 
 };
 

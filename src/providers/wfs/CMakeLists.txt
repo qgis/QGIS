@@ -8,6 +8,7 @@ set(WFS_SRCS
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
   qgswfsfeatureiterator.cpp
+  qgswfsgetcapabilities.cpp
   qgswfsgetfeature.cpp
   qgswfsrequest.cpp
   qgswfsconnection.cpp
@@ -35,6 +36,7 @@ set(WFS_SRCS
   oapif/qgsoapifoptionsrequest.cpp
   oapif/qgsoapifprovider.cpp
   oapif/qgsoapifqueryablesrequest.cpp
+  oapif/qgsoapifschemarequest.cpp
   oapif/qgsoapifsingleitemrequest.cpp
   oapif/qgsoapifutils.cpp
 )

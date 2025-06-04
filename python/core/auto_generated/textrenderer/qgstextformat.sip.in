@@ -43,9 +43,10 @@ set to an invalid state (see :py:func:`~QgsTextFormat.isValid`).
 %Docstring
 Returns ``True`` if the format is valid.
 
-A default constructed QgsTextFormat is invalid, until at least one or more properties
-have been set on the format. An invalid state can be used as a representation of a "not set"
-text format, e.g. for indicating that a default text format should be used.
+A default constructed QgsTextFormat is invalid, until at least one or
+more properties have been set on the format. An invalid state can be
+used as a representation of a "not set" text format, e.g. for indicating
+that a default text format should be used.
 
 .. note::
 
@@ -58,7 +59,8 @@ text format, e.g. for indicating that a default text format should be used.
 
     void setValid();
 %Docstring
-Sets the format to a valid state, without changing any of the default format settings.
+Sets the format to a valid state, without changing any of the default
+format settings.
 
 .. seealso:: :py:func:`isValid`
 
@@ -126,8 +128,8 @@ Returns a reference to the masking settings.
 
     void setMask( const QgsTextMaskSettings &maskSettings );
 %Docstring
-Sets the text's masking settings.
-Masks may be defined in contexts where the text is rendered over some map layers, for labeling especially.
+Sets the text's masking settings. Masks may be defined in contexts where
+the text is rendered over some map layers, for labeling especially.
 
 :param maskSettings: mask settings
 
@@ -139,8 +141,8 @@ Masks may be defined in contexts where the text is rendered over some map layers
     QFont font() const;
 %Docstring
 Returns the font used for rendering text. Note that the size of the font
-is not used, and :py:func:`~QgsTextFormat.size` should be called instead to determine the size
-of rendered text.
+is not used, and :py:func:`~QgsTextFormat.size` should be called instead
+to determine the size of rendered text.
 
 .. seealso:: :py:func:`scaledFont`
 
@@ -153,14 +155,17 @@ of rendered text.
 
     QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
-Returns a font with the size scaled to match the format's size settings (including
-units and map unit scale) for a specified render context.
+Returns a font with the size scaled to match the format's size settings
+(including units and map unit scale) for a specified render context.
 
 :param context: destination render context
-:param scaleFactor: optional font size scaling factor. It is recommended to set this to
-                    :py:func:`QgsTextRenderer.calculateScaleFactorForFormat()` and then manually scale painter devices or calculations
-                    based on the resultant font metrics. Failure to do so will result in poor quality text rendering
-                    at small font sizes.
+:param scaleFactor: optional font size scaling factor. It is recommended
+                    to set this to
+                    :py:func:`QgsTextRenderer.calculateScaleFactorForFormat()`
+                    and then manually scale painter devices or
+                    calculations based on the resultant font metrics.
+                    Failure to do so will result in poor quality text
+                    rendering at small font sizes.
 
 :return: font with scaled size
 
@@ -171,9 +176,9 @@ units and map unit scale) for a specified render context.
 
     void setFont( const QFont &font );
 %Docstring
-Sets the font used for rendering text. Note that the size of the font
-is not used, and :py:func:`~QgsTextFormat.setSize` should be called instead to explicitly set the size
-of rendered text.
+Sets the font used for rendering text. Note that the size of the font is
+not used, and :py:func:`~QgsTextFormat.setSize` should be called instead
+to explicitly set the size of rendered text.
 
 :param font: desired font
 
@@ -186,7 +191,8 @@ of rendered text.
 
     QString namedStyle() const;
 %Docstring
-Returns the named style for the font used for rendering text (e.g., "bold").
+Returns the named style for the font used for rendering text (e.g.,
+"bold").
 
 .. seealso:: :py:func:`setNamedStyle`
 
@@ -270,7 +276,8 @@ Sets whether the format is set to force an italic style.
 
     QStringList families() const;
 %Docstring
-Returns the list of font families to use when restoring the text format, in order of precedence.
+Returns the list of font families to use when restoring the text format,
+in order of precedence.
 
 .. warning::
 
@@ -284,11 +291,14 @@ Returns the list of font families to use when restoring the text format, in orde
 
     void setFamilies( const QStringList &families );
 %Docstring
-Sets a list of font ``families`` to use for the text format, in order of precedence.
+Sets a list of font ``families`` to use for the text format, in order of
+precedence.
 
-When restoring serialized versions of the text format then the first matching font family
-from this list will be used for the text format. This provides a way to specify a list of possible
-font families which are used as fallbacks if a family isn't available on a particular QGIS install (CSS style).
+When restoring serialized versions of the text format then the first
+matching font family from this list will be used for the text format.
+This provides a way to specify a list of possible font families which
+are used as fallbacks if a family isn't available on a particular QGIS
+install (CSS style).
 
 .. warning::
 
@@ -302,7 +312,8 @@ font families which are used as fallbacks if a family isn't available on a parti
 
     double size() const;
 %Docstring
-Returns the size for rendered text. Units are retrieved using :py:func:`~QgsTextFormat.sizeUnit`.
+Returns the size for rendered text. Units are retrieved using
+:py:func:`~QgsTextFormat.sizeUnit`.
 
 .. seealso:: :py:func:`setSize`
 
@@ -313,7 +324,8 @@ Returns the size for rendered text. Units are retrieved using :py:func:`~QgsText
 %Docstring
 Sets the size for rendered text.
 
-:param size: size of rendered text. Units are set using :py:func:`~QgsTextFormat.setSizeUnit`
+:param size: size of rendered text. Units are set using
+             :py:func:`~QgsTextFormat.setSizeUnit`
 
 .. seealso:: :py:func:`size`
 
@@ -347,7 +359,8 @@ Sets the units for the size of rendered text.
     QgsMapUnitScale sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the size. This is only used if the
-:py:func:`~QgsTextFormat.sizeUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+:py:func:`~QgsTextFormat.sizeUnit` is set to
+:py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
@@ -357,7 +370,8 @@ Returns the map unit scale object for the size. This is only used if the
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the size. This is only used if the
-:py:func:`~QgsTextFormat.sizeUnit` is set to :py:class:`QgsUnitTypes`.RenderMapUnit.
+:py:func:`~QgsTextFormat.sizeUnit` is set to
+:py:class:`QgsUnitTypes`.RenderMapUnit.
 
 .. seealso:: :py:func:`sizeMapUnitScale`
 
@@ -382,8 +396,8 @@ Sets the color that text will be rendered in.
 
     double opacity() const;
 %Docstring
-Returns the text's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
-opaque).
+Returns the text's opacity. The opacity is a double value between 0
+(fully transparent) and 1 (totally opaque).
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -392,8 +406,9 @@ opaque).
 %Docstring
 Multiply opacity by ``opacityFactor``.
 
-This method multiplies the opacity of all the labeling elements (text, shadow, buffer etc.)
-by ``opacityFactor`` effectively changing the opacity of the whole labeling.
+This method multiplies the opacity of all the labeling elements (text,
+shadow, buffer etc.) by ``opacityFactor`` effectively changing the
+opacity of the whole labeling.
 
 .. versionadded:: 3.32
 %End
@@ -402,8 +417,8 @@ by ``opacityFactor`` effectively changing the opacity of the whole labeling.
 %Docstring
 Sets the text's opacity.
 
-:param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
-                opaque)
+:param opacity: opacity as a double value between 0 (fully transparent)
+                and 1 (totally opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -412,11 +427,13 @@ Sets the text's opacity.
 %Docstring
 Returns the text's stretch factor.
 
-The stretch factor matches a condensed or expanded version of the font or applies a stretch
-transform that changes the width of all characters in the font by factor percent.
+The stretch factor matches a condensed or expanded version of the font
+or applies a stretch transform that changes the width of all characters
+in the font by factor percent.
 
-For example, a factor of 150 results in all characters in the font being 1.5 times
-(ie. 150%) wider. The minimum stretch factor is 1, and the maximum stretch factor is 4000.
+For example, a factor of 150 results in all characters in the font being
+1.5 times (ie. 150%) wider. The minimum stretch factor is 1, and the
+maximum stretch factor is 4000.
 
 .. seealso:: :py:func:`setStretchFactor`
 
@@ -427,11 +444,13 @@ For example, a factor of 150 results in all characters in the font being 1.5 tim
 %Docstring
 Sets the text's stretch ``factor``.
 
-The stretch factor matches a condensed or expanded version of the font or applies a stretch
-transform that changes the width of all characters in the font by factor percent.
+The stretch factor matches a condensed or expanded version of the font
+or applies a stretch transform that changes the width of all characters
+in the font by factor percent.
 
-For example, setting ``factor`` to 150 results in all characters in the font being 1.5 times
-(ie. 150%) wider. The minimum stretch factor is 1, and the maximum stretch factor is 4000.
+For example, setting ``factor`` to 150 results in all characters in the
+font being 1.5 times (ie. 150%) wider. The minimum stretch factor is 1,
+and the maximum stretch factor is 4000.
 
 .. seealso:: :py:func:`stretchFactor`
 
@@ -458,9 +477,12 @@ Sets the blending mode used for drawing the text.
 %Docstring
 Returns the line height for text.
 
-If :py:func:`~QgsTextFormat.lineHeightUnit` is :py:class:`QgsUnitTypes`.RenderPercentage (the default), then this is a number representing
-the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
-Otherwise the line height is an absolute measurement in :py:func:`~QgsTextFormat.lineHeightUnit`.
+If :py:func:`~QgsTextFormat.lineHeightUnit` is
+:py:class:`QgsUnitTypes`.RenderPercentage (the default), then this is a
+number representing the leading between lines as a multiplier of line
+height (where 0 - 1.0 represents 0 to 100% of text line height).
+Otherwise the line height is an absolute measurement in
+:py:func:`~QgsTextFormat.lineHeightUnit`.
 
 .. seealso:: :py:func:`setLineHeight`
 
@@ -471,9 +493,12 @@ Otherwise the line height is an absolute measurement in :py:func:`~QgsTextFormat
 %Docstring
 Sets the line height for text.
 
-If :py:func:`~QgsTextFormat.lineHeightUnit` is :py:class:`QgsUnitTypes`.RenderPercentage (the default), then ``height`` is a number representing
-the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
-Otherwise ``height`` is an absolute measurement in :py:func:`~QgsTextFormat.lineHeightUnit`.
+If :py:func:`~QgsTextFormat.lineHeightUnit` is
+:py:class:`QgsUnitTypes`.RenderPercentage (the default), then ``height``
+is a number representing the leading between lines as a multiplier of
+line height (where 0 - 1.0 represents 0 to 100% of text line height).
+Otherwise ``height`` is an absolute measurement in
+:py:func:`~QgsTextFormat.lineHeightUnit`.
 
 .. seealso:: :py:func:`lineHeight`
 
@@ -523,7 +548,8 @@ Returns the distance for tab stops.
 %Docstring
 Sets the ``distance`` for tab stops.
 
-The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
+The units are specified using
+:py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
 
 .. note::
 
@@ -584,7 +610,8 @@ Returns the tab position.
 %Docstring
 Returns the list of tab positions for tab stops.
 
-The units are specified using :py:func:`~QgsTextFormat.tabStopDistanceUnit`.
+The units are specified using
+:py:func:`~QgsTextFormat.tabStopDistanceUnit`.
 
 .. note::
 
@@ -605,7 +632,8 @@ The units are specified using :py:func:`~QgsTextFormat.tabStopDistanceUnit`.
 %Docstring
 Sets the list of tab ``positions`` for tab stops.
 
-The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
+The units are specified using
+:py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
 
 .. note::
 
@@ -648,8 +676,9 @@ Sets the ``unit`` used for the tab stop distance.
 
     QgsMapUnitScale tabStopDistanceMapUnitScale() const;
 %Docstring
-Returns the map unit scale object for the tab stop distance. This is only used if the
-tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
+Returns the map unit scale object for the tab stop distance. This is
+only used if the tab stop distance is set to
+:py:class:`Qgis`.RenderUnit.MapUnits.
 
 .. seealso:: :py:func:`setTabStopDistanceMapUnitScale`
 
@@ -660,8 +689,9 @@ tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
 
     void setTabStopDistanceMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Sets the map unit ``scale`` object for the tab stop distance. This is only used if the
-tab stop distance is set to :py:class:`Qgis`.RenderUnit.MapUnits.
+Sets the map unit ``scale`` object for the tab stop distance. This is
+only used if the tab stop distance is set to
+:py:class:`Qgis`.RenderUnit.MapUnits.
 
 .. seealso:: :py:func:`tabStopDistanceMapUnitScale`
 
@@ -708,8 +738,8 @@ Sets the text ``capitalization`` style.
 
     bool allowHtmlFormatting() const;
 %Docstring
-Returns ``True`` if text should be treated as a HTML document and HTML tags should be used for formatting
-the rendered text.
+Returns ``True`` if text should be treated as a HTML document and HTML
+tags should be used for formatting the rendered text.
 
 .. warning::
 
@@ -727,8 +757,8 @@ the rendered text.
 
     void setAllowHtmlFormatting( bool allow );
 %Docstring
-Sets whether text should be treated as a HTML document and HTML tags should be used for formatting
-the rendered text.
+Sets whether text should be treated as a HTML document and HTML tags
+should be used for formatting the rendered text.
 
 .. warning::
 
@@ -755,7 +785,8 @@ Returns the background color for text previews.
 
     void setPreviewBackgroundColor( const QColor &color );
 %Docstring
-Sets the background ``color`` that text will be rendered on for previews.
+Sets the background ``color`` that text will be rendered on for
+previews.
 
 .. seealso:: :py:func:`previewBackgroundColor`
 
@@ -785,8 +816,8 @@ Write settings into a DOM element.
 
     QMimeData *toMimeData() const /Factory/;
 %Docstring
-Returns new mime data representing the text format settings.
-Caller takes responsibility for deleting the returned object.
+Returns new mime data representing the text format settings. Caller
+takes responsibility for deleting the returned object.
 
 .. seealso:: :py:func:`fromMimeData`
 %End
@@ -794,8 +825,8 @@ Caller takes responsibility for deleting the returned object.
     static QgsTextFormat fromQFont( const QFont &font );
 %Docstring
 Returns a text format matching the settings from an input ``font``.
-Unlike :py:func:`~QgsTextFormat.setFont`, this method also handles the size and size units
-from ``font``.
+Unlike :py:func:`~QgsTextFormat.setFont`, this method also handles the
+size and size units from ``font``.
 
 .. seealso:: :py:func:`toQFont`
 
@@ -805,8 +836,8 @@ from ``font``.
     QFont toQFont() const;
 %Docstring
 Returns a QFont matching the relevant settings from this text format.
-Unlike :py:func:`~QgsTextFormat.font`, this method also handles the size and size units
-from the text format.
+Unlike :py:func:`~QgsTextFormat.font`, this method also handles the size
+and size units from the text format.
 
 .. seealso:: :py:func:`fromQFont`
 
@@ -815,30 +846,41 @@ from the text format.
 
     static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
 %Docstring
-Attempts to parse the provided mime ``data`` as a QgsTextFormat.
-If data can be parsed as a text format, ``ok`` will be set to ``True``.
+Attempts to parse the provided mime ``data`` as a QgsTextFormat. If data
+can be parsed as a text format, ``ok`` will be set to ``True``.
 
 .. seealso:: :py:func:`toMimeData`
 %End
 
     bool containsAdvancedEffects() const;
 %Docstring
-Returns ``True`` if any component of the font format requires advanced effects
-such as blend modes, which require output in raster formats to be fully respected.
+Returns ``True`` if any component of the font format requires advanced
+effects such as blend modes, which require output in raster formats to
+be fully respected.
+%End
+
+    bool hasNonDefaultCompositionMode() const;
+%Docstring
+Returns ``True`` if any component of the font format requires a
+non-default composition mode.
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
 %End
 
     bool fontFound() const;
 %Docstring
-Returns ``True`` if the specified font was found on the system, or ``False``
-if the font was not found and a replacement was used instead.
+Returns ``True`` if the specified font was found on the system, or
+``False`` if the font was not found and a replacement was used instead.
 
 .. seealso:: :py:func:`resolvedFontFamily`
 %End
 
     QString resolvedFontFamily() const;
 %Docstring
-Returns the family for the resolved font, ie if the specified font
-was not found on the system this will return the name of the replacement
+Returns the family for the resolved font, ie if the specified font was
+not found on the system this will return the name of the replacement
 font.
 
 .. seealso:: :py:func:`fontFound`
@@ -846,7 +888,8 @@ font.
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
-Returns a reference to the format's property collection, used for data defined overrides.
+Returns a reference to the format's property collection, used for data
+defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
@@ -856,7 +899,8 @@ Returns a reference to the format's property collection, used for data defined o
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 %Docstring
-Returns all field names referenced by the configuration (e.g. from data defined properties).
+Returns all field names referenced by the configuration (e.g. from data
+defined properties).
 
 .. versionadded:: 3.14
 %End
@@ -865,7 +909,8 @@ Returns all field names referenced by the configuration (e.g. from data defined 
 %Docstring
 Sets the format's property collection, used for data defined overrides.
 
-:param collection: property collection. Existing properties will be replaced.
+:param collection: property collection. Existing properties will be
+                   replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
@@ -874,7 +919,8 @@ Sets the format's property collection, used for data defined overrides.
 
     void updateDataDefinedProperties( QgsRenderContext &context );
 %Docstring
-Updates the format by evaluating current values of data defined properties.
+Updates the format by evaluating current values of data defined
+properties.
 
 .. versionadded:: 3.10
 %End
@@ -887,19 +933,26 @@ Returns a pixmap preview for a text ``format``.
 :param size: target pixmap size
 :param previewText: text to render in preview, or empty for default text
 :param padding: space between icon edge and color ramp
-:param screen: can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
+:param screen: can be used to specify the destination screen properties
+               for the icon. This allows the icon to be generated using
+               the correct DPI and device pixel ratio for the target
+               screen (since QGIS 3.32)
 
 .. versionadded:: 3.10
 %End
 
     QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
 %Docstring
-Returns a CSS string representing the specified text format as closely as possible.
+Returns a CSS string representing the specified text format as closely
+as possible.
 
-:param pointToPixelMultiplier: scaling factor to apply to convert point sizes to pixel font sizes.
-                               The CSS returned by this function will always use pixels for font sizes, so this parameter
-                               should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
-                               destination DPI)
+:param pointToPixelMultiplier: scaling factor to apply to convert point
+                               sizes to pixel font sizes. The CSS
+                               returned by this function will always use
+                               pixels for font sizes, so this parameter
+                               should be set to a suitable value to
+                               convert point sizes to pixels (e.g.,
+                               taking into account destination DPI)
 
 :return: partial CSS string, e.g., "line-height: 120%;"
 

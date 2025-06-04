@@ -68,6 +68,16 @@ class TestQgsSymbol : public QgsTest
     void testParseColor();
     void testParseColorList();
     void symbolProperties();
+
+    //
+    // Regression Testing
+    //
+
+    /** To check if the interval of the marker symbols of a marker line is set
+ *  correctly after loading a style from a sld-file. It is a regression test
+ *  for ticket #24954 which was fixed with change r22a1
+ */
+    void regression24954();
 };
 
 // slots
@@ -154,7 +164,7 @@ void TestQgsSymbol::testCanvasClip()
   QgsMapSettings ms;
   QgsRectangle extent( -110.0, 25.0, -90, 40.0 );
   ms.setExtent( extent );
-  ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+  ms.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
 
   //line
   ms.setLayers( QList<QgsMapLayer *>() << mpLinesLayer );
@@ -446,6 +456,25 @@ void TestQgsSymbol::symbolProperties()
 
   delete fillSymbol;
   delete fillSymbol2;
+}
+
+void TestQgsSymbol::regression24954()
+{
+  //test if the interval value for marker placement is read from an sld file
+  QString sldFileName( mTestDataDir + "symbol_layer/QgsMarkerLineSymbolLayer.sld" );
+
+  bool defaultLoadedFlag = false;
+
+  //load style from sld
+  mpLinesLayer->loadSldStyle( sldFileName, defaultLoadedFlag );
+
+  //create a symbol and convert it's first layer to a marker line symbol layer
+  QgsFeatureRenderer *renderer = mpLinesLayer->renderer();
+  QgsRenderContext renderContext;
+  QgsSymbol *symbol = renderer->symbols( renderContext ).at( 0 );
+  QgsMarkerLineSymbolLayer *symbolLayer = static_cast<QgsMarkerLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
+
+  QVERIFY( symbolLayer->interval() == 3.3 );
 }
 
 QGSTEST_MAIN( TestQgsSymbol )

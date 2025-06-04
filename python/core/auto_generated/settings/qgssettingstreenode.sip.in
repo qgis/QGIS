@@ -13,12 +13,12 @@
 class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNode` is a tree node for the settings tree
-to help organizing and introspecting the tree.
+A tree node for the settings tree to help organizing and introspecting
+the tree.
 
-It is either a root node, a normal node or
-a named list (to store a group of settings under a dynamic named key).
-to automatically register a settings entry on its creation when a parent is provided.
+It is either a root node, a normal node or a named list (to store a
+group of settings under a dynamic named key). to automatically register
+a settings entry on its creation when a parent is provided.
 
 .. seealso:: :py:class:`QgsSettingsTree`
 
@@ -48,16 +48,17 @@ to automatically register a settings entry on its creation when a parent is prov
 
     QgsSettingsTreeNode *createChildNode( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
-Creates a normal tree node
-It will return the existing child node if it exists at the given key
+Creates a normal tree node It will return the existing child node if it
+exists at the given key
 
 :raises QgsSettingsException: if a setting exists with the same key
 %End
 
     QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() ) throw( QgsSettingsException ) /KeepReference/;
 %Docstring
-Creates a named list tree node.
-This is useful to register groups of settings for several named items (for instance credentials for several named services)
+Creates a named list tree node. This is useful to register groups of
+settings for several named items (for instance credentials for several
+named services)
 %End
 
 
@@ -71,7 +72,8 @@ Returns the type of node
 Registers a child setting
 
 :param setting: the setting to register
-:param key: the key of the setting (not the complete key from its parents)
+:param key: the key of the setting (not the complete key from its
+            parents)
 
 .. note::
 
@@ -89,8 +91,10 @@ Registers a child setting
 Unregisters the child setting
 
 :param setting: the setting to unregister
-:param deleteSettingValues: if ``True``, the values of the settings will also be deleted
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param deleteSettingValues: if ``True``, the values of the settings will
+                            also be deleted
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 %End
 
     void unregisterChildNode( QgsSettingsTreeNode *node );
@@ -156,6 +160,7 @@ Registers a child nodes
   private:
     QgsSettingsTreeNode();
 %Docstring
+Default constructor for QgsSettingsTreeNode.
 
 .. note::
 
@@ -171,9 +176,11 @@ Registers a child nodes
 class QgsSettingsTreeNamedListNode : QgsSettingsTreeNode
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsTreeNamedListNode` is a named list tree node for the settings tree
-to help organizing and introspecting the tree.
-the named list node is used to store a group of settings under a dynamically named key.
+A named list tree node for the settings tree to help organizing and
+introspecting the tree.
+
+The named list node is used to store a group of settings under a
+dynamically named key.
 
 .. seealso:: :py:class:`QgsSettingsTree`
 
@@ -194,19 +201,24 @@ the named list node is used to store a group of settings under a dynamically nam
 %Docstring
 Returns the list of items
 
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
+:raises QgsSettingsException: if the number of given parent named items
+                              doesn't match the complete key definition
 %End
 
     QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring
 Returns the list of items
 
-:param origin: can be used to restrict the origin of the setting (local or global)
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param origin: can be used to restrict the origin of the setting (local
+               or global)
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
+:raises QgsSettingsException: if the number of given parent named items
+                              doesn't match the complete key definition
 %End
 
 
@@ -215,18 +227,22 @@ Returns the list of items
 Sets the selected named item from the named list node
 
 :param item: the item to set as selected
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
+:raises QgsSettingsException: if the number of given parent named items
+                              doesn't match the complete key definition
 %End
 
     QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
 Returns the selected named item from the named list node
 
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
+:raises QgsSettingsException: if the number of given parent named items
+                              doesn't match the complete key definition
 %End
 
     void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
@@ -234,18 +250,22 @@ Returns the selected named item from the named list node
 Deletes a named item from the named list node
 
 :param item: the item to delete
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
+:raises QgsSettingsException: if the number of given parent named items
+                              doesn't match the complete key definition
 %End
 
     void deleteAllItems( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
 %Docstring
 Deletes all items from the named list node
 
-:param parentsNamedItems: the list of named items in the parent named list (if any)
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
 
-:raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
+:raises QgsSettingsException: if the number of given parent named items
+                              doesn't match the complete key definition
 
 .. versionadded:: 3.30.1
 %End
@@ -264,6 +284,7 @@ Init the nodes with the specific ``options``
   private:
     QgsSettingsTreeNamedListNode();
 %Docstring
+Constructor for QgsSettingsTreeNamedListNode.
 
 .. note::
 
@@ -271,7 +292,6 @@ Init the nodes with the specific ``options``
 
 .. seealso:: :py:func:`QgsSettingsTree.createPluginTreeNode`
 %End
-    QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other );
 };
 
 /************************************************************************

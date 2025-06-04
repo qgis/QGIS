@@ -22,25 +22,27 @@
 
 class QgsVectorDataProvider;
 
-#ifdef SIP_RUN
-% ModuleHeaderCode
-#include "qgstestutils.h"
-% End
-#endif
-
 ///@cond PRIVATE
 
 // Used only for utilities required for the QGIS Python unit tests - not stable or public API
-namespace QgsTestUtils
+class CORE_EXPORT QgsTestUtils
 {
+  public:
 
-  /**
-   * Runs a thready safety test on iterators from a vector data \a provider, by concurrently
-   * requesting features from the provider.
-   *
-   * This method returns TRUE... or it segfaults.
-   */
-  CORE_EXPORT bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
+    /**
+     * Runs a thready safety test on iterators from a vector data \a provider, by concurrently
+     * requesting features from the provider.
+     *
+     * This method returns TRUE... or it segfaults.
+     */
+    static bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
+
+    /**
+     * Compares two DOM elements and returns TRUE if they are equivalent.
+     *
+     * Dumps useful diff information to the console if the elements differ.
+     */
+    static bool compareDomElements( const QDomElement &element1, const QDomElement &element2 );
 
 };
 

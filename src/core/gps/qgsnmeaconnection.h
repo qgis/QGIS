@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * \brief Evaluates NMEA sentences coming from a GPS device
+ * \brief Evaluates NMEA sentences coming from a GPS device.
  */
 class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
 {

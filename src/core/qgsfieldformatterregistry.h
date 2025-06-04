@@ -16,21 +16,21 @@
 #ifndef QGSFIELDKITREGISTRY_H
 #define QGSFIELDKITREGISTRY_H
 
+#include <memory>
 #include <QHash>
 #include <QString>
 #include <QObject>
+#include <QReadWriteLock>
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsfieldformatter.h"
 
-#include <QReadWriteLock>
-
-class QgsFieldFormatter;
 class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
+ * \brief A registry which manages classes of QgsFieldFormatter.
  *
  * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::fieldFormatterRegistry().
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 
   private:
     QHash<QString, QgsFieldFormatter *> mFieldFormatters;
-    QgsFieldFormatter *mFallbackFieldFormatter = nullptr;
+    std::unique_ptr<QgsFieldFormatter> mFallbackFieldFormatter;
     mutable QReadWriteLock mLock;
 };
 

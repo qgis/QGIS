@@ -60,7 +60,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
 
 /**
  * \ingroup core
- * \brief This class represents a coordinate reference system (CRS).
+ * \brief Represents a coordinate reference system (CRS).
  *
  * Coordinate reference system object defines a specific map projection, as well as transformations
  * between different coordinate reference systems. There are various ways how a CRS can be defined:
@@ -162,7 +162,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * QGIS also features a GUI for management of local custom CRS definitions.
  *
  * There are therefore two databases: one for shipped CRS definitions and one for custom CRS definitions.
- * Custom CRS have internal IDs (accessible with srsid()) greater or equal to \ref USER_CRS_START_ID.
+ * Custom CRS have internal IDs (accessible with srsid()) greater or equal to \ref Qgis::USER_CRS_START_ID.
  * The local CRS databases should never be accessed directly with SQLite functions, instead
  * you should use QgsCoordinateReferenceSystem API for CRS lookups and for managements of custom CRS.
  *
@@ -178,8 +178,19 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * \section crs_construct_and_copy Object Construction and Copying
  *
- * The easiest way of creating CRS instances is to use QgsCoordinateReferenceSystem(const QString&)
- * constructor that automatically recognizes definition format from the given string.
+ * The easiest way of creating CRS instances is to use the string argument
+ * constructor, which automatically recognizes the definition format from the given string. E.g.
+ *
+ * \code{.py}
+ * # directly constructing using a known authority:id pair
+ * crs_from_authid = QgsCoordinateReferenceSystem("EPSG:27700")
+ *
+ * # constructing from a proj string, note the 'PROJ:' prefix
+ * crs_from_proj = QgsCoordinateReferenceSystem("PROJ:+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+ *
+ * # constructing from a WKT string, note the 'WKT:' prefix
+ * crs_from_wkt = QgsCoordinateReferenceSystem('WKT:PROJCS["Arc 1950 / UTM zone 36S",GEOGCS["Arc 1950...')
+ * \endcode
  *
  * Creation of CRS object involves some queries in a local SQLite database, which may
  * be potentially expensive. Consequently, CRS creation methods use an internal cache to avoid
@@ -363,6 +374,23 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.38
      */
     static QgsCoordinateReferenceSystem createCompoundCrs( const QgsCoordinateReferenceSystem &horizontalCrs, const QgsCoordinateReferenceSystem &verticalCrs, QString &error SIP_OUT );
+
+    /**
+     * Creates a geocentric CRS given an \a ellipsoid definition.
+     *
+     * Returns an invalid CRS if the ellipsoid definition is not valid.
+     *
+     * \warning The returned CRS will be based on the ellipsoid parameters only,
+     * and will not have any datum associated with it. This prevents accurate
+     * datum shifts from occurring when transforming coordinates to
+     * or from the returned CRS. Any transformations involving this CRS
+     * will result in a ballpark (null) datum shift. The returned object should
+     * NOT be used when high accuracy transformations are required.
+     *
+     * \see toGeocentricCrs()
+     * \since QGIS 3.44
+     */
+    static QgsCoordinateReferenceSystem createGeocentricCrs( const QString &ellipsoid );
 
     // Misc helper functions -----------------------
 
@@ -1018,6 +1046,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.24
      */
     QgsCoordinateReferenceSystem toGeographicCrs() const;
+
+    /**
+     * Returns a new geocentric CRS based on this CRS object.
+     *
+     * If possible, the returned geocentric CRS will have the same datum (or
+     * datum ensemble) as this object.
+     *
+     * May return an invalid CRS if the geocentric CRS could not be determined.
+     *
+     * \see createGeocentricCrs()
+     * \since QGIS 3.44
+     */
+    QgsCoordinateReferenceSystem toGeocentricCrs() const;
 
     /**
      * Returns the horizontal CRS associated with this CRS object.

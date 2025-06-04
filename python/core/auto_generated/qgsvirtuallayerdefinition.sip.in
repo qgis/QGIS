@@ -12,10 +12,11 @@
 class QgsVirtualLayerDefinition
 {
 %Docstring(signature="appended")
-Class to manipulate the definition of a virtual layer
+Manipulates the definition of a virtual layer.
 
-It is used to extract parameters from an initial virtual layer definition as well as
-to store the complete, expanded definition once types have been detected.
+It is used to extract parameters from an initial virtual layer
+definition as well as to store the complete, expanded definition once
+types have been detected.
 %End
 
 %TypeHeaderCode
@@ -26,8 +27,8 @@ to store the complete, expanded definition once types have been detected.
     class SourceLayer
 {
 %Docstring(signature="appended")
-A SourceLayer is either a reference to a live layer in the registry
-or all the parameters needed to load it (provider key, source, etc.)
+Either a reference to a live layer in the registry or all the parameters
+needed to load it (provider key, source, etc.).
 %End
 
 %TypeHeaderCode
@@ -82,19 +83,20 @@ Constructor with an optional file path
 
     static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 %Docstring
-Constructor to build a definition from a QUrl
-The path part of the URL is extracted as well as the following optional keys:
-layer_ref=layer_id[:name]               represents a live layer referenced by its ID. An optional name can be given
-layer=provider:source[:name[:encoding]] represents a layer given by its provider key, its source url (URL-encoded).
-An optional name and encoding can be given
-geometry=column_name[:type:srid]        gives the definition of the geometry column.
-Type can be either a WKB type code or a string (point, linestring, etc.)
-srid is an integer
-uid=column_name                         is the name of a column with unique integer values.
-nogeometry                              is a flag to force the layer to be a non-geometry layer
-query=sql                               represents the SQL query. Must be URL-encoded
-field=column_name:[int|real|text]       represents a field with its name and its type
-subsetstring=subset_string              represents the subsetstring
+Constructor to build a definition from a QUrl The path part of the URL
+is extracted as well as the following optional keys:
+layer_ref=layer_id[:name] represents a live layer referenced by its ID.
+An optional name can be given layer=provider:source[:name[:encoding]]
+represents a layer given by its provider key, its source url
+(URL-encoded). An optional name and encoding can be given
+geometry=column_name[:type:srid] gives the definition of the geometry
+column. Type can be either a WKB type code or a string (point,
+linestring, etc.) srid is an integer uid=column_name is the name of a
+column with unique integer values. nogeometry is a flag to force the
+layer to be a non-geometry layer query=sql represents the SQL query.
+Must be URL-encoded field=column_name:[int|real|text] represents a field
+with its name and its type subsetstring=subset_string represents the
+subsetstring
 %End
 
     QUrl toUrl() const;
@@ -104,7 +106,8 @@ Convert the definition into a QUrl
 
     QString toString() const;
 %Docstring
-Convert into a QString that can be read by the virtual layer provider
+Converts the definition into a string that can be read by the virtual
+layer provider
 %End
 
     void addSource( const QString &name, const QString &ref );
@@ -153,8 +156,8 @@ Sets the name of the field with unique identifiers
 
     void setLazy( bool lazy );
 %Docstring
-Sets the lazy mode. If ``lazy`` is ``True``, then the loading is
-delayed until an explicit reloading of the layer.
+Sets the lazy mode. If ``lazy`` is ``True``, then the loading is delayed
+until an explicit reloading of the layer.
 
 :param lazy: ``True`` to delay the loading, ``False`` otherwise
 
@@ -187,9 +190,8 @@ Sets the name of the geometry field
 
     Qgis::WkbType geometryWkbType() const;
 %Docstring
-Gets the type of the geometry
-:py:class:`QgsWkbTypes`.NoGeometry to hide any geometry
-:py:class:`QgsWkbTypes`.Unknown for unknown types
+Gets the type of the geometry :py:class:`QgsWkbTypes`.NoGeometry to hide
+any geometry :py:class:`QgsWkbTypes`.Unknown for unknown types
 %End
     void setGeometryWkbType( Qgis::WkbType t );
 %Docstring
@@ -216,17 +218,20 @@ Sets field definitions
 
     bool hasSourceLayer( const QString &name ) const;
 %Docstring
-Convenience method to test if a given source layer is part of the definition
+Convenience method to test if a given source layer is part of the
+definition
 %End
 
     bool hasReferencedLayers() const;
 %Docstring
-Convenience method to test whether the definition has referenced (live) layers
+Convenience method to test whether the definition has referenced (live)
+layers
 %End
 
     bool hasDefinedGeometry() const;
 %Docstring
-Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
+Convenient method to test if the geometry is defined (not NoGeometry and
+not Unknown)
 %End
 
     QString subsetString() const;

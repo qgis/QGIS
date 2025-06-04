@@ -25,7 +25,9 @@ class QgsMessageBarItem;
 
 /**
  * \ingroup gui
- * \brief Extension of QgsTracer that provides extra functionality:
+ * \brief Extension of QgsTracer that provides extra functionality.
+ *
+ * This tracer subclass adds:
  *
  * - automatic updates of own configuration based on canvas settings
  * - reporting of issues to the user via message bar

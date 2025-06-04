@@ -33,8 +33,8 @@ Creates a new parameter of this type.
     virtual QString description() const = 0;
 %Docstring
 A human readable and translatable description for this parameter type.
-This can be a longer description suitable for tooltips and other elements
-that give the user context for a given parameter.
+This can be a longer description suitable for tooltips and other
+elements that give the user context for a given parameter.
 %End
 
     virtual QString name() const = 0;
@@ -46,8 +46,9 @@ This will be used in comboboxes and list widgets.
 
     virtual QString pythonImportString() const;
 %Docstring
-Returns a valid Python import string for importing the corresponding parameter type,
-e.g. "from qgis.core import :py:class:`QgsProcessingParameterBoolean`".
+Returns a valid Python import string for importing the corresponding
+parameter type, e.g. "from qgis.core import
+:py:class:`QgsProcessingParameterBoolean`".
 
 .. seealso:: :py:func:`className`
 
@@ -66,46 +67,116 @@ Returns the corresponding class name for the parameter type.
 
     virtual QString id() const = 0;
 %Docstring
-A static id for this type which will be used for storing this parameter type.
+A static id for this type which will be used for storing this parameter
+type.
 %End
 
     virtual Qgis::ProcessingParameterTypeFlags flags() const;
 %Docstring
-Determines if this parameter is available in the modeler.
-The default implementation returns ``True``.
+Determines if this parameter is available in the modeler. The default
+implementation returns ``True``.
 %End
 
     virtual QVariantMap metadata() const;
 %Docstring
-Metadata for this parameter type. Can be used for example to define custom widgets.
-The default implementation returns an empty map.
+Metadata for this parameter type. Can be used for example to define
+custom widgets. The default implementation returns an empty map.
 %End
 
     virtual QStringList acceptedPythonTypes() const;
 %Docstring
-Returns a list of the Python data types accepted as values for the parameter.
-E.g. "str", ":py:class:`QgsVectorLayer`", ":py:class:`QgsMapLayer`", etc.
+Returns a list of the Python data types accepted as values for the
+parameter. E.g. "str", ":py:class:`QgsVectorLayer`",
+":py:class:`QgsMapLayer`", etc.
 
-These values should should match the Python types exactly
-(e.g. "str" not "string", "bool" not "boolean"). Extra explanatory help can
-be used (which must be translated), eg "str: as comma delimited list of numbers".
+These values should should match the Python types exactly (e.g. "str"
+not "string", "bool" not "boolean"). Extra explanatory help can be used
+(which must be translated), eg "str: as comma delimited list of
+numbers".
 
 .. seealso:: :py:func:`acceptedStringValues`
 %End
 
     virtual QStringList acceptedStringValues() const;
 %Docstring
-Returns a descriptive list of the possible string values acceptable for the parameter.
+Returns a descriptive list of the possible string values acceptable for
+the parameter.
 
-E.g. for a :py:class:`QgsProcessingParameterVectorLayer` this may include "Path to a vector layer",
-for :py:class:`QgsProcessingParameterBoolean` "1 for true, 0 for false" etc.
+E.g. for a :py:class:`QgsProcessingParameterVectorLayer` this may
+include "Path to a vector layer", for
+:py:class:`QgsProcessingParameterBoolean` "1 for true, 0 for false" etc.
 
-Extra explanatory help can be used (which must be translated), eg "a comma delimited list of numbers".
+Extra explanatory help can be used (which must be translated), eg "a
+comma delimited list of numbers".
 
 .. seealso:: :py:func:`acceptedPythonTypes`
 
 .. versionadded:: 3.8
 %End
+
+    virtual QStringList acceptedParameterTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing parameter types for inputs for
+this parameter type.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values for
+:py:func:`QgsProcessingParameterDefinition.type()`.
+
+Subclasses should return a list of all
+:py:func:`QgsProcessingParameterDefinition.type()` values which can be
+used as input values for the parameter.
+
+.. seealso:: :py:func:`acceptedOutputTypes`
+
+.. seealso:: :py:func:`acceptedDataTypes`
+
+.. versionadded:: 3.44
+%End
+
+    virtual QStringList acceptedOutputTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing output types for inputs for this
+parameter type.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values for
+:py:func:`QgsProcessingOutputDefinition.type()`.
+
+Subclasses should return a list of all
+:py:func:`QgsProcessingOutputDefinition.type()` values which can be used
+as values for the parameter.
+
+.. seealso:: :py:func:`acceptedParameterTypes`
+
+.. seealso:: :py:func:`acceptedDataTypes`
+
+.. versionadded:: 3.44
+%End
+
+    virtual QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
+%Docstring
+Returns a list of compatible Processing data types for inputs for this
+parameter type for the specified ``parameter``.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list
+corresponds to the various available values from
+:py:class:`QgsProcessing`.SourceType.
+
+Subclasses should return a list of all
+:py:class:`QgsProcessing`.SourceType values which can be used as values
+for the parameter.
+
+.. seealso:: :py:func:`acceptedParameterTypes`
+
+.. seealso:: :py:func:`acceptedOutputTypes`
+
+.. versionadded:: 3.44
+%End
+
 };
 
 /************************************************************************

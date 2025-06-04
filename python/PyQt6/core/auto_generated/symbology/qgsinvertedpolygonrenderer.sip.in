@@ -10,16 +10,18 @@
 class QgsInvertedPolygonRenderer : QgsMergedFeatureRenderer
 {
 %Docstring(signature="appended")
-:py:class:`QgsInvertedPolygonRenderer` is a polygon-only feature renderer used to
-display features inverted, where the exterior is turned to an interior
-and where the exterior theoretically spans the entire plane, allowing
-to mask the surroundings of some features.
+A polygon-only feature renderer used to display features inverted.
 
-It is designed on top of another feature renderer, which is called "embedded"
-Most of the methods are then only proxies to the embedded renderer.
+The exterior of the polygon is turned to an interior and where the
+exterior theoretically spans the entire plane, allowing to mask the
+surroundings of some features.
 
-Features are collected to form one "inverted" polygon
-during :py:func:`~renderFeature` and rendered on :py:func:`~stopRender`.
+It is designed on top of another feature renderer, which is called
+"embedded" Most of the methods are then only proxies to the embedded
+renderer.
+
+Features are collected to form one "inverted" polygon during
+:py:func:`~renderFeature` and rendered on :py:func:`~stopRender`.
 %End
 
 %TypeHeaderCode
@@ -31,16 +33,14 @@ during :py:func:`~renderFeature` and rendered on :py:func:`~stopRender`.
 %Docstring
 Constructor
 
-:param embeddedRenderer: optional embeddedRenderer. If ``None``, a default one will be assigned.
-                         Ownership will be transferred.
+:param embeddedRenderer: optional embeddedRenderer. If ``None``, a
+                         default one will be assigned. Ownership will be
+                         transferred.
 %End
 
 
     virtual QgsInvertedPolygonRenderer *clone() const /Factory/;
 
-%Docstring
-Direct copies are forbidden. Use :py:func:`~QgsInvertedPolygonRenderer.clone` instead.
-%End
 
     virtual QString dump() const;
 
@@ -55,24 +55,33 @@ Creates a renderer out of an XML, for loading
 
     bool preprocessingEnabled() const;
 %Docstring
+Returns ``True`` if the geometries are to be preprocessed (merged with
+an union) before rendering.
 
-:return: ``True`` if the geometries are to be preprocessed (merged with an union) before rendering.
+.. seealso:: :py:func:`setPreprocessingEnabled`
 %End
 
     void setPreprocessingEnabled( bool enabled );
 %Docstring
+Sets whether geometries preprocessing is enabled.
 
-:param enabled: enables or disables the preprocessing.
-                When enabled, geometries will be merged with an union before being rendered.
-                It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
-                This will involve some CPU-demanding computations and is thus disabled by default.
+When enabled, geometries will be merged with an union before being
+rendered.
+
+This allows fixing some rendering artifacts (when rendering overlapping
+polygons for instance). This will involve some CPU-demanding
+computations and is thus disabled by default.
+
+.. seealso:: :py:func:`preprocessingEnabled`
 %End
 
     static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
+Creates a QgsInvertedPolygonRenderer by a conversion from an existing
+renderer.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
 };

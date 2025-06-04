@@ -110,7 +110,7 @@ long QgsCoordinateReferenceSystemRegistry::addUserCrs( const QgsCoordinateRefere
   if ( QgsCoordinateReferenceSystem::getRecordCount() == 0 )
   {
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo,wkt) values ("
-            + QString::number( USER_CRS_START_ID )
+            + QString::number( Qgis::USER_CRS_START_ID )
             + ',' + QgsSqliteUtils::quotedString( name )
             + ',' + ( !crs.d->mProjectionAcronym.isEmpty() ? QgsSqliteUtils::quotedString( crs.d->mProjectionAcronym ) : QStringLiteral( "''" ) )
             + ',' + quotedEllipsoidString

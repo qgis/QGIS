@@ -90,7 +90,7 @@ struct StatsProcessor
         }
       }
 
-      if ( !block.get() )
+      if ( !block )
       {
         updateFeedback();
         return QgsPointCloudStatistics();
@@ -138,6 +138,8 @@ struct StatsProcessor
         }
       }
 
+      QVector<double> sumOfSquares( attributes.size(), 0 );
+      QVector<double> partialMean( attributes.size(), 0 );
       for ( int i = 0; i < count; ++i )
       {
         for ( int j = 0; j < attributes.size(); ++j )
@@ -157,14 +159,27 @@ struct StatsProcessor
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
           stats.mean += attributeValue / count;
-          // TODO: add stDev calculation
           stats.count++;
+
+          // Single pass stdev
+          const double delta = attributeValue - partialMean[j];
+          partialMean[j] += delta / stats.count;
+          sumOfSquares[j] += delta * ( attributeValue - partialMean[j] );
+
           if ( classifiableAttributesOffsetSet.contains( attributeOffset ) )
           {
             stats.classCount[( int )attributeValue ]++;
           }
         }
       }
+
+      for ( int j = 0; j < attributes.size(); ++j )
+      {
+        const QString attributeName = attributes.at( j ).name();
+        QgsPointCloudAttributeStatistics &stats = statsMap[ attributeName ];
+        stats.stDev = std::sqrt( sumOfSquares[j] / ( stats.count - 1.0 ) );
+      }
+
       updateFeedback();
       return QgsPointCloudStatistics( count, statsMap );
     }

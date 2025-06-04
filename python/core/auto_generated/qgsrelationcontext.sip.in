@@ -13,7 +13,9 @@
 class QgsRelationContext
 {
 %Docstring(signature="appended")
-Context for relations. Used to resolve layers from projects.
+Context for relations.
+
+Used to resolve layers from projects.
 
 .. versionadded:: 3.11
 %End

@@ -36,7 +36,7 @@
 
 /**
  * \ingroup core
- * \brief Configuration storage class for authentication method configurations
+ * \brief Configuration storage class for authentication method configurations.
  */
 class CORE_EXPORT QgsAuthMethodConfig
 {
@@ -201,7 +201,7 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 /**
  * \ingroup core
- * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
+ * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain.
  * \note Useful for caching the bundle during application run sessions
  */
 class CORE_EXPORT QgsPkiBundle
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsPkiBundle
 
 /**
  * \ingroup core
- * \brief Storage set for constructed SSL certificate, key, associated with an authentication config
+ * \brief Storage set for constructed SSL certificate, key, associated with an authentication config.
  */
 class CORE_EXPORT QgsPkiConfigBundle
 {
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsPkiConfigBundle
 
 /**
  * \ingroup core
- * \brief Configuration container for SSL server connection exceptions or overrides
+ * \brief Configuration container for SSL server connection exceptions or overrides.
  */
 class CORE_EXPORT QgsAuthConfigSslServer
 {

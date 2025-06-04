@@ -13,11 +13,14 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir, QMetaType
 from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsField,
+    QgsFields,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRasterLayer,
@@ -783,6 +786,229 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertEqual(vl.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 1)
+
+    def test_createVectorLayerExporterDestinationUri(self):
+        """
+        Test createVectorLayerExporterDestinationUri
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        export_options = (
+            QgsAbstractDatabaseProviderConnection.VectorLayerExporterOptions()
+        )
+        export_options.layerName = "new_layer"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertFalse(res_ds.schema())
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.schema = "dest_schema"
+
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertFalse(res_ds.geometryColumn())
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.wkbType = Qgis.WkbType.Point
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geom")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.geometryColumn = "geometry"
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertFalse(res_ds.keyColumn())
+
+        export_options.primaryKeyColumns = ["pk"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertEqual(res_ds.keyColumn(), "pk")
+
+        # multiple key columns
+        export_options.primaryKeyColumns = ["pk", "pk2"]
+        res, options = conn.createVectorLayerExporterDestinationUri(export_options)
+        self.assertFalse(options)
+        res_ds = QgsDataSourceUri(res)
+        src_ds = QgsDataSourceUri(self.uri)
+        self.assertEqual(res_ds.host(), src_ds.host())
+        self.assertEqual(res_ds.service(), src_ds.service())
+        self.assertEqual(res_ds.database(), src_ds.database())
+        self.assertEqual(res_ds.username(), src_ds.username())
+        self.assertEqual(res_ds.password(), src_ds.password())
+        self.assertEqual(res_ds.table(), "new_layer")
+        self.assertEqual(res_ds.schema(), "dest_schema")
+        self.assertEqual(res_ds.geometryColumn(), "geometry")
+        self.assertEqual(res_ds.keyColumn(), "pk,pk2")
+
+    def test_create_layer_w_roles(self):
+        """
+        Test layer creation with roles
+        """
+
+        uriUserWithrole = (
+            self.uri
+            + " user=qgis_test_user password=qgis_test_user_password session_role=qgis_test_group"
+        )
+        uriOtherUserWithrole = (
+            self.uri
+            + " user=qgis_test_another_user password=qgis_test_another_user_password session_role=qgis_test_group"
+        )
+        uriUnprivilegedUser = (
+            self.uri
+            + " user=qgis_test_unprivileged_user password=qgis_test_unprivileged_user_password"
+        )
+        schema = "qgis_test"
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        connUserWithrole = md.createConnection(uriUserWithrole, {})
+        self.assertTrue(connUserWithrole)
+
+        connOtherUserWithrole = md.createConnection(uriOtherUserWithrole, {})  # spellok
+        self.assertTrue(connOtherUserWithrole)  # spellok
+
+        connUnprivilegedUser = md.createConnection(uriUnprivilegedUser, {})
+        self.assertTrue(connUnprivilegedUser)
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.layer_w_role;
+        """
+
+        connUserWithrole.executeSql(sql)
+
+        fields = QgsFields()
+        fields.append(QgsField("test", QMetaType.Type.QString))
+        crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
+
+        connUserWithrole.createVectorTable(
+            schema, "layer_w_role", fields, QgsWkbTypes.Type.Point, crs, False, {}
+        )
+        table_names = self._table_names(connUserWithrole.tables(schema))
+        self.assertIn("layer_w_role", table_names)
+
+        table_names = self._table_names(connOtherUserWithrole.tables(schema))  # spellok
+        self.assertIn("layer_w_role", table_names)
+
+        table_names = self._table_names(connUnprivilegedUser.tables(schema))
+        self.assertNotIn("layer_w_role", table_names)
+
+    def test_rename_field(self):
+        """Test rename fields"""
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        CREATE TABLE qgis_test.rename_field (id SERIAL PRIMARY KEY);
+        ALTER TABLE qgis_test.rename_field ADD COLUMN geom geometry(POINT,4326);
+        ALTER TABLE qgis_test.rename_field ADD COLUMN column_1 TEXT;
+        INSERT INTO qgis_test.rename_field (id, geom, column_1) VALUES (221, ST_GeomFromText('point(9 45)', 4326), 'text');
+        """
+
+        conn.executeSql(sql)
+        fields = conn.fields("qgis_test", "rename_field")
+        self.assertEqual(fields.names(), ["id", "geom", "column_1"])
+
+        conn.renameField("qgis_test", "rename_field", "column_1", "new_column")
+
+        fields = conn.fields("qgis_test", "rename_field")
+        self.assertEqual(fields.names(), ["id", "geom", "new_column"])
+
+    def test_move_table_to_schema(self):
+        """Test that table can be moved to another schema."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.table_to_move;
+        CREATE TABLE qgis_test.table_to_move (
+            id SERIAL PRIMARY KEY,
+            geom geometry(Geometry,4326)
+        );
+        CREATE SCHEMA schema_test;
+        """
+
+        conn.executeSql(sql)
+
+        # test table exist
+        table = conn.table("qgis_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
+        # test fail in move - target schema does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move",
+                "schema_test_non_existent",
+            )
+
+        # test fail in move - table does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move_non_existent",
+                "schema_test",
+            )
+
+        # move table to another schema
+        conn.moveTableToSchema(
+            "qgis_test",
+            "table_to_move",
+            "schema_test",
+        )
+
+        # test moved table exist in the schema
+        table = conn.table("schema_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
 
 
 if __name__ == "__main__":

@@ -70,6 +70,58 @@ def _date_range_repr(self):
 QgsDateTimeRange.__repr__ = _datetime_range_repr
 QgsDateRange.__repr__ = _date_range_repr
 
+
+QgsDateRange.__doc__ = """Stores a date range.
+
+Invalid dates as the beginning or end are permitted. In this case, the bound is
+considered to be infinite. E.g.
+
+.. code-block:: python
+
+    # a range containing all dates before 2017-1-1
+    QgsDateRange(QDate(),QDate(2017,1,1))
+
+    # a range containing all dates after 2017-1-1
+    QgsDateRange(QDate(2017,1,1),QDate())
+
+
+.. seealso:: :py:class:`QgsDateTimeRange`
+
+QgsDateRange(begin: Union[QDate, datetime.date], end: Union[QDate, datetime.date], includeBeginning: bool = True, includeEnd: bool = True)
+Constructor for QgsDateRange. The ``begin`` and ``end`` are
+specified, and optionally whether or not these bounds are included in
+the range.
+
+QgsDateRange(QgsDateRange)
+Copy constructor.
+"""
+
+QgsDateTimeRange.__doc__ = """Stores a range of date times.
+
+Invalid date times as the beginning or end are permitted. In this case, the bound is
+considered to be infinite. E.g.
+
+.. code-block:: python
+
+    # a range containing all dates before 2017-1-1
+    QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1))
+
+    # a range containing all dates after 2017-1-1
+    QgsDateTimeRange(QDateTime(2017,1,1),QDateTime())
+
+
+.. seealso:: :py:class:`QgsDateRange`
+
+QgsDateTimeRange(begin: Union[QDateTime, datetime.datetime], end: Union[QDateTime, datetime.datetime], includeBeginning: bool = True, includeEnd: bool = True)
+Constructor for QgsDateTimeRange. The ``begin`` and ``end`` are
+specified, and optionally whether or not these bounds are included in
+the range.
+
+QgsDateTimeRange(QgsDateTimeRange)
+Copy constructor.
+"""
+
+
 QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
 QgsOptionalExpression.__bool__ = lambda self: self.enabled()
 QgsUnsetAttributeValue.__hash__ = lambda self: 2178310
@@ -251,11 +303,19 @@ QgsBox3d = QgsBox3D
 QgsMesh3dAveragingMethod = QgsMesh3DAveragingMethod
 QgsMesh3dDataBlock = QgsMesh3DDataBlock
 
-GEOWKT = geoWkt()
+GEOWKT = Qgis.geoWkt()
+geoWkt = Qgis.geoWkt
+GEOPROJ4 = Qgis.geoProj4()
+geoProj4 = Qgis.geoProj4
+GEO_EPSG_CRS_AUTHID = Qgis.geographicCrsAuthId()
+geoEpsgCrsAuthId = Qgis.geographicCrsAuthId
+GEO_NONE = Qgis.geoNone()
+geoNone = Qgis.geoNone
+
+DEFAULT_POINT_SIZE = Qgis.DEFAULT_POINT_SIZE
+DEFAULT_LINE_WIDTH = Qgis.DEFAULT_LINE_WIDTH
+DEFAULT_SEGMENT_EPSILON = Qgis.DEFAULT_SEGMENT_EPSILON
 PROJECT_SCALES = Qgis.defaultProjectScales()
-GEOPROJ4 = geoProj4()
-GEO_EPSG_CRS_AUTHID = geoEpsgCrsAuthId()
-GEO_NONE = geoNone()
 
 # TODO QGIS 4.0 - remove, require use of explicit getter/setter
 
@@ -682,11 +742,26 @@ try:
 
    QgsGeometry.as_shapely = _geometry_as_shapely
 
+   @staticmethod
+   def _geometry_from_shapely(shapely_geom: _sg.base.BaseGeometry) -> QgsGeometry:
+      geom = QgsGeometry()
+      geom.fromWkb(shapely_geom.wkb)
+
+      return geom
+
+   QgsGeometry.from_shapely = _geometry_from_shapely
+
 except ModuleNotFoundError:
    def _geometry_as_shapely(self):
        raise QgsNotSupportedException('QgsGeometry.as_shapely is not available, shapely is not installed on the system')
 
    QgsGeometry.as_shapely = _geometry_as_shapely
+
+   @staticmethod
+   def _geometry_from_shapely(shapely_geom):
+       raise QgsNotSupportedException('QgsGeometry.from_shapely is not available, shapely is not installed on the system')
+
+   QgsGeometry.from_shapely = _geometry_from_shapely
 
 
 QgsRasterBlock.as_numpy.__doc__ = """
@@ -725,4 +800,12 @@ Returns the geometry data as a shapely object.
 :raises QgsNotSupportedException: if shapely is not available on the system
 
 .. versionadded:: 3.40
+"""
+
+QgsGeometry.from_shapely.__doc__ = """
+Creates a new geometry from a shapely object.
+
+:raises QgsNotSupportedException: if shapely is not available on the system
+
+.. versionadded:: 3.44
 """

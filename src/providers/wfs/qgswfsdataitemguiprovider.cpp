@@ -16,12 +16,14 @@
 #include "qgswfsdataitemguiprovider.h"
 #include "moc_qgswfsdataitemguiprovider.cpp"
 
+#include "qgsapplication.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswfsnewconnection.h"
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -75,7 +77,7 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsWFSNewConnection nc( nullptr );
+  QgsWFSNewConnection nc( QgsApplication::instance()->activeWindow() );
   nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   if ( nc.exec() )
@@ -117,11 +119,15 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsPagesize->setValue( QgsOwsConnection::settingsPagesize->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPagingEnabled->setValue( QgsOwsConnection::settingsPagingEnabled->value( detailsParameters ), newDetailsParameters );
 
+  QgsOwsConnection::settingsPreferredHttpMethod->setValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ), newDetailsParameters );
+
   QgsOwsConnection::settingsUsername->setValue( QgsOwsConnection::settingsUsername->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPassword->setValue( QgsOwsConnection::settingsPassword->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsAuthCfg->setValue( QgsOwsConnection::settingsAuthCfg->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsHeaders->setValue( QgsOwsConnection::settingsHeaders->value( detailsParameters ), newDetailsParameters );
+
+  QgsOwsConnection::settingsWfsFeatureMode->setValue( QgsOwsConnection::settingsWfsFeatureMode->value( detailsParameters ), newDetailsParameters );
 
   item->parent()->refreshConnections();
 }

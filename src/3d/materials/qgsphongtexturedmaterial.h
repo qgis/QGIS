@@ -34,7 +34,7 @@ namespace Qt3DRender
 ///@cond PRIVATE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief A diffuseSpecular material adapted from Qt's qdiffusespecularmaterial.h
  * \since QGIS 3.40
  */

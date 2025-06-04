@@ -136,7 +136,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      */
     void setSymbol( std::shared_ptr<QgsSymbol> symbol ) SIP_SKIP
     {
-      mSymbol = symbol;
+      mSymbol = std::move( symbol );
       updatePreview();
     }
 

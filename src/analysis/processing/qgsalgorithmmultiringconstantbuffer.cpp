@@ -52,7 +52,12 @@ QString QgsMultiRingConstantBufferAlgorithm::outputName() const
 
 QString QgsMultiRingConstantBufferAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes multi-ring ('donuts') buffer for all the features in an input layer, using a fixed or dynamic distance and rings number." );
+  return QObject::tr( "This algorithm computes multi-ring ('donuts') buffer for the features in an input layer, using a fixed or dynamic distance and number of rings." );
+}
+
+QString QgsMultiRingConstantBufferAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes multi-ring ('donuts') buffer using a fixed or dynamic distance and number of rings." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiRingConstantBufferAlgorithm::documentationFlags() const
@@ -109,10 +114,10 @@ bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &p
 
 QgsFields QgsMultiRingConstantBufferAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "ringId" ), QMetaType::Type::Int, QString(), 10, 0 ) );
-  fields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  return fields;
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "ringId" ), QMetaType::Type::Int, QString(), 10, 0 ) );
+  newFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsMultiRingConstantBufferAlgorithm::sourceFlags() const

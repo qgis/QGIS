@@ -185,9 +185,13 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
               continue;
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
-              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, QgsModelArrowItem::Marker::Circle );
+            {
+              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, QgsModelArrowItem::Marker::Circle );
+            }
             else
-              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::Circle );
+            {
+              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::NoMarker, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::NoMarker );
+            }
             addItem( arrow );
           }
         }
@@ -318,6 +322,16 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString
   return mGroupBoxItems.value( uuid );
 }
 
+QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::childAlgorithmItem( const QString &childId )
+{
+  return mChildAlgorithmItems.value( childId );
+}
+
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name )
+{
+  return mParameterItems.value( name );
+}
+
 void QgsModelGraphicsScene::selectAll()
 {
   //select all items in scene
@@ -399,6 +413,9 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
       {
         LinkSource l;
         l.item = mParameterItems.value( source.parameterName() );
+        l.edge = Qt::BottomEdge;
+        l.linkIndex = 0;
+
         res.append( l );
         break;
       }
@@ -505,6 +522,11 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
   messageWidget->layout()->addWidget( detailsButton );
   mMessageBar->clearWidgets();
   mMessageBar->pushWidget( messageWidget, level, 0 );
+}
+
+void QgsModelGraphicsScene::requestRebuildRequired()
+{
+  emit rebuildRequired();
 }
 
 ///@endcond

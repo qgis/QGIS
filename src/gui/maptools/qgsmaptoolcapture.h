@@ -40,7 +40,8 @@ class QgsMapToolShapeMetadata;
 
 /**
  * \ingroup gui
- * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
+ * Base class for map tools capable of capturing point, lines and polygons.
+ *
  * The tool supports different techniques: straight segments, curves, streaming and shapes
  * Once the the geometry is captured the virtual private handler geometryCaptured is called
  * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
@@ -241,12 +242,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
-     * Fetches the original point from the source layer.
-     * If topological editing is activated.
-     * The points are projected to the current layer CRS.
+     * Fetches the original point from the source layer if it has the same
+     * CRS as the current layer.
+     * If topological editing is activated, the points are projected to the
+     * current layer CRS.
      * \returns
      *  0 in case of success
-     *  1 if not applicable (invalid layer)
+     *  1 if not applicable (CRS mismatch / invalid layer)
      *  2 in case of failure
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
@@ -328,6 +330,42 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void closePolygon();
 
+    /**
+     * Called when the geometry is captured.
+     *
+     * A more specific handler is also called afterwards (pointCaptured(), lineCaptured() or polygonCaptured()).
+     *
+     * \since QGIS 3.26
+     */
+    virtual void geometryCaptured( const QgsGeometry &geometry ) { Q_UNUSED( geometry ) }
+
+    /**
+     * Called when a point is captured.
+     *
+     * The generic geometryCaptured() method will be called immediately before this point-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void pointCaptured( const QgsPoint &point ) { Q_UNUSED( point ) }
+
+    /**
+     * Called when a line is captured
+     *
+     * The generic geometryCaptured() method will be called immediately before this line-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void lineCaptured( const QgsCurve *line ) { Q_UNUSED( line ) }
+
+    /**
+     * Called when a polygon is captured.
+     *
+     * The generic geometryCaptured() method will be called immediately before this polygon-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) { Q_UNUSED( polygon ) }
+
   protected slots:
 
     /**
@@ -336,34 +374,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void stopCapturing();
 
   private:
-    /**
-     * Called when the geometry is captured
-     * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
-     * \since QGIS 3.26
-     */
-    virtual void geometryCaptured( const QgsGeometry &geometry ) SIP_FORCE { Q_UNUSED( geometry ) }
-
-    /**
-     * Called when a point is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void pointCaptured( const QgsPoint &point ) SIP_FORCE { Q_UNUSED( point ) }
-
-    /**
-     * Called when a line is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void lineCaptured( const QgsCurve *line ) SIP_FORCE { Q_UNUSED( line ) }
-
-    /**
-     * Called when a polygon is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) SIP_FORCE { Q_UNUSED( polygon ) }
-
     //! whether tracing has been requested by the user
     bool tracingEnabled();
     //! first point that will be used as a start of the trace

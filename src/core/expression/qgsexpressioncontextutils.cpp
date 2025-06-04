@@ -429,12 +429,22 @@ void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer *layer, const QStr
   if ( !layer )
     return;
 
-  //write variable to layer
+  // write variable to layer
   QStringList variableNames = layer->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
   QStringList variableValues = layer->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
 
-  variableNames << name;
-  variableValues << value.toString();
+  // Set variable value if it is already in list
+  const int index = variableNames.indexOf( name );
+  if ( index != -1 )
+  {
+    variableValues[ index ] = value.toString();
+  }
+  // Otherwise, append it to the list
+  else
+  {
+    variableNames << name;
+    variableValues << value.toString();
+  }
 
   layer->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
   layer->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
@@ -1419,7 +1429,7 @@ bool LoadLayerFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpr
     if ( QThread::currentThread() == store->thread() )
       loadLayer();
     else
-      QMetaObject::invokeMethod( store, loadLayer, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( store, std::move( loadLayer ), Qt::BlockingQueuedConnection );
 
     return res;
   }

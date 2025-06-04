@@ -12,7 +12,7 @@
 class QgsDevToolWidgetFactory
 {
 %Docstring(signature="appended")
-Factory class for creating custom developer/debugging tool pages
+Factory class for creating custom developer/debugging tool pages.
 
 .. versionadded:: 3.14
 %End
@@ -23,7 +23,8 @@ Factory class for creating custom developer/debugging tool pages
   public:
     QgsDevToolWidgetFactory( const QString &title = QString(), const QIcon &icon = QIcon() );
 %Docstring
-Constructor for a QgsDevToolWidgetFactory with the specified ``title`` and ``icon``.
+Constructor for a QgsDevToolWidgetFactory with the specified ``title``
+and ``icon``.
 %End
 
     virtual ~QgsDevToolWidgetFactory();
@@ -37,7 +38,8 @@ Returns the icon that will be shown in the tool in the panel.
 
     void setIcon( const QIcon &icon );
 %Docstring
-Sets the ``icon`` for the factory object, which will be shown for the tool in the panel.
+Sets the ``icon`` for the factory object, which will be shown for the
+tool in the panel.
 
 .. seealso:: :py:func:`icon`
 %End
@@ -58,7 +60,8 @@ Set the translated ``title`` for the tool.
 %Docstring
 Factory function to create the widget on demand as needed by the dock.
 
-The ``parent`` argument gives the correct parent for the newly created widget.
+The ``parent`` argument gives the correct parent for the newly created
+widget.
 %End
 
 };

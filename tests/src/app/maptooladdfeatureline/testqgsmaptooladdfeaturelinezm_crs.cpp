@@ -74,7 +74,6 @@ void TestQgsMapToolAddFeatureLineZMCRS::initTestCase()
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
 
-
   mCanvas = new QgsMapCanvas();
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mCanvas->setFrameStyle( QFrame::NoFrame );
@@ -82,15 +81,16 @@ void TestQgsMapToolAddFeatureLineZMCRS::initTestCase()
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   mCanvas->show();
 
-
+  // Create capture layer in EPSG:3857
   mCaptureLayer = new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=EPSG:3857" ), QStringLiteral( "Line Capture Layer" ), QStringLiteral( "memory" ) );
   QVERIFY( mCaptureLayer->isValid() );
   QgsProject::instance()->addMapLayers( { mCaptureLayer } );
 
-
-  mSnappingLayer = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:4326" ), QStringLiteral( "Snapping Points" ), QStringLiteral( "memory" ) );
+  // Create snapping layer in EPSG:3946
+  mSnappingLayer = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:3946" ), QStringLiteral( "Snapping Points" ), QStringLiteral( "memory" ) );
   QVERIFY( mSnappingLayer->isValid() );
 
+  // Add a snapping point with ZM values
   QgsFeature snapFeature( mSnappingLayer->fields() );
   QgsPoint snapPoint( 7, 4, 999, 888 );
   snapFeature.setGeometry( QgsGeometry::fromPoint( snapPoint ) );
@@ -98,7 +98,6 @@ void TestQgsMapToolAddFeatureLineZMCRS::initTestCase()
   mSnappingLayer->addFeature( snapFeature );
   mSnappingLayer->commitChanges();
   QCOMPARE( mSnappingLayer->featureCount(), ( long ) 1 );
-
 
   QgsProject::instance()->addMapLayers( { mSnappingLayer, mCaptureLayer } );
   mCanvas->setLayers( { mCaptureLayer, mSnappingLayer } );
@@ -114,41 +113,59 @@ void TestQgsMapToolAddFeatureLineZMCRS::cleanupTestCase()
 
 void TestQgsMapToolAddFeatureLineZMCRS::testZMCRS()
 {
+  // Set default Z and M values for digitizing
   QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 222 );
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 456 );
 
   mCanvas->setCurrentLayer( mCaptureLayer );
   mCaptureLayer->startEditing();
 
+  // Configure snapping
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
-  snapConfig.setTolerance( 2 );
-  snapConfig.setUnits( Qgis::MapToolUnit::Layer );
+  snapConfig.setTolerance( 20 );
+  snapConfig.setUnits( Qgis::MapToolUnit::Pixels );
   snapConfig.setMode( Qgis::SnappingMode::AllLayers );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // Wait for snapping locators to be initialized
   mCanvas->snappingUtils()->locatorForLayer( mSnappingLayer )->init();
   mCanvas->snappingUtils()->locatorForLayer( mCaptureLayer )->init();
+
+  // Create the capture tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
   mCanvas->setMapTool( mCaptureTool );
 
+  // Record existing features before capture
   QSet<QgsFeatureId> oldFids;
   QgsFeatureIterator it = mCaptureLayer->getFeatures();
   QgsFeature f;
   while ( it.nextFeature( f ) )
     oldFids.insert( f.id() );
 
+  // Get transformed coordinates of the snapping point
   QgsPointXY p2XY = mCanvas->mapSettings().layerToMapCoordinates( mSnappingLayer, QgsPointXY( 7, 4 ) );
-  QPoint p1( int( ( 0.0 / 10 ) * 512 ), int( ( ( 10 - 1.0 ) / 10 ) * 512 ) );           // (0,1)
-  QPoint p2( int( ( p2XY.x() / 10 ) * 512 ), int( ( ( 10 - p2XY.y() ) / 10 ) * 512 ) ); // (7,4) – should snap
-  QPoint p3( int( ( 2.0 / 10 ) * 512 ), int( ( ( 10 - 2.0 ) / 10 ) * 512 ) );           // (2,2) – should remain unsnapped
 
+  // Convert map coordinates to screen coordinates for mouse events
+  QPoint p1( int( ( 0.0 / 10 ) * 512 ), int( ( ( 10 - 1.0 ) / 10 ) * 512 ) );           // (0,1)
+  QPoint p2( int( ( p2XY.x() / 10 ) * 512 ), int( ( ( 10 - p2XY.y() ) / 10 ) * 512 ) ); // Transformed point
+  QPoint p3( int( ( 2.0 / 10 ) * 512 ), int( ( ( 10 - 2.0 ) / 10 ) * 512 ) );           // (2,2)
+
+  // Click to add first point (default Z/M)
   QTest::mouseClick( mCanvas->viewport(), Qt::LeftButton, Qt::NoModifier, p1 );
+
+  // Move to and click the second point (should snap and inherit Z/M)
   QTest::mouseMove( mCanvas->viewport(), p2 );
   QTest::mouseClick( mCanvas->viewport(), Qt::LeftButton, Qt::NoModifier, p2 );
+
+  // Add third point (default Z/M)
   QTest::mouseClick( mCanvas->viewport(), Qt::LeftButton, Qt::NoModifier, p3 );
+
+  // Finish the line with right click
   QTest::mouseClick( mCanvas->viewport(), Qt::RightButton, Qt::NoModifier, p3 );
 
+  // Find the newly created feature
   QgsFeature newFeature;
   QgsFeatureIterator itNew = mCaptureLayer->getFeatures();
   while ( itNew.nextFeature( f ) )
@@ -161,9 +178,31 @@ void TestQgsMapToolAddFeatureLineZMCRS::testZMCRS()
   }
   QVERIFY( newFeature.isValid() );
 
-  QString expectedWkt = QStringLiteral( "LineString ZM (0 1 456 222, 7 4 999 888, 2 2 456 222)" );
-  qDebug() << "Captured geometry:" << newFeature.geometry().asWkt();
-  QCOMPARE( newFeature.geometry().asWkt( 0 ), expectedWkt );
+  // Get the geometry as a QgsLineString to access Z and M values
+  const QgsLineString *linestring = qgsgeometry_cast<const QgsLineString *>( newFeature.geometry().constGet() );
+  QVERIFY( linestring );
+
+  // Verify geometry has 3 vertices
+  QCOMPARE( linestring->numPoints(), 3 );
+
+  // Check first vertex: should have default Z/M
+  QgsPoint point1 = linestring->pointN( 0 );
+  QCOMPARE( point1.z(), 456.0 );
+  QCOMPARE( point1.m(), 222.0 );
+
+  // Check second vertex: should have the snapped point's Z/M
+  QgsPoint point2 = linestring->pointN( 1 );
+  QCOMPARE( point2.z(), 999.0 );
+  QCOMPARE( point2.m(), 888.0 );
+
+  // Check third vertex: should have default Z/M
+  QgsPoint point3 = linestring->pointN( 2 );
+  QCOMPARE( point3.z(), 456.0 );
+  QCOMPARE( point3.m(), 222.0 );
+
+  // Undo the changes
+  mCaptureLayer->undoStack()->undo();
+  mCaptureLayer->rollBack();
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLineZMCRS )

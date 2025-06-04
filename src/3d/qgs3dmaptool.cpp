@@ -44,6 +44,16 @@ void Qgs3DMapTool::keyPressEvent( QKeyEvent *event )
   Q_UNUSED( event )
 }
 
+void Qgs3DMapTool::keyReleaseEvent( QKeyEvent *event )
+{
+  Q_UNUSED( event )
+}
+
+void Qgs3DMapTool::mouseWheelEvent( QWheelEvent *event )
+{
+  Q_UNUSED( event )
+}
+
 void Qgs3DMapTool::activate()
 {
 }

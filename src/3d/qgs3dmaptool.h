@@ -23,12 +23,13 @@
 class Qgs3DMapCanvas;
 class QMouseEvent;
 class QKeyEvent;
+class QWheelEvent;
 
 #define SIP_NO_FILE
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for map tools operating on 3D map canvas.
  * \note Not available in Python bindings
  * \since QGIS 3.36 (since QGIS 3.4 in QGIS_APP library)
@@ -49,6 +50,10 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     virtual void mouseMoveEvent( QMouseEvent *event );
     //! Reimplement to handle key press \a event forwarded by the parent Qgs3DMapCanvas
     virtual void keyPressEvent( QKeyEvent *event );
+    //! Reimplement to handle key release \a event forwarded by the parent Qgs3DMapCanvas
+    virtual void keyReleaseEvent( QKeyEvent *event );
+    //! Reimplement to handle mouse wheel \a event forwarded by the parent Qgs3DMapCanvas
+    virtual void mouseWheelEvent( QWheelEvent *event );
 
     //! Called when set as currently active map tool
     virtual void activate();
@@ -58,14 +63,6 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
 
     //! Mouse cursor to be used when the tool is active
     virtual QCursor cursor() const;
-
-    /**
-     * Whether the default mouse controls to zoom/pan/rotate camera can stay enabled
-     * while the tool is active. This may be useful for some basic tools using just
-     * mouse clicks (e.g. identify, measure), but it could be creating conflicts when used
-     * with more advanced tools. Default implementation returns TRUE.
-     */
-    virtual bool allowsCameraControls() const { return true; }
 
     //! Returns the parent Qgs3DMapCanvas
     Qgs3DMapCanvas *canvas();

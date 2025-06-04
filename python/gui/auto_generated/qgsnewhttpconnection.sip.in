@@ -13,8 +13,8 @@
 class QgsNewHttpConnection : QDialog
 {
 %Docstring(signature="appended")
-Dialog to allow the user to configure and save connection
-information for an HTTP Server for WMS, etc.
+Dialog to allow the user to configure and save connection information
+for an HTTP Server for WMS, etc.
 %End
 
 %TypeHeaderCode
@@ -50,8 +50,8 @@ Constructor for QgsNewHttpConnection.
 The ``types`` argument dictates which connection type settings should be
 shown in the dialog.
 
-The ``flags`` argument allows specifying flags which control the dialog behavior
-and appearance.
+The ``flags`` argument allows specifying flags which control the dialog
+behavior and appearance.
 %End
 
     QString name() const;
@@ -97,6 +97,13 @@ Returns the "test connection" button.
 
 
 
+    Qgis::HttpMethod preferredHttpMethod() const;
+%Docstring
+Returns the selected preferred HTTP method.
+
+.. versionadded:: 3.44
+%End
+
 
     virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
@@ -114,8 +121,14 @@ Returns the QSettings key for WMS related settings for the connection.
 
     void updateServiceSpecificSettings();
 %Docstring
-Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS
-and WMS related settings).
+Triggers a resync of the GUI widgets for the service specific settings
+(i.e. WFS and WMS related settings).
+%End
+
+    virtual void showEvent( QShowEvent *event );
+
+%Docstring
+Adjust height of dialog to fit the content.
 %End
 
 };

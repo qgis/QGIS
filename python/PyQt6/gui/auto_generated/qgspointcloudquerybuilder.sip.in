@@ -12,10 +12,11 @@ class QgsPointCloudQueryBuilder : QgsSubsetStringEditorInterface
 %Docstring(signature="appended")
 Query Builder for layers.
 
-The query builder allows interactive creation of an expression for limiting the
-points displayed in a point cloud layer. The point attributes are displayed and
-value ranges can be viewed to aid in constructing the expression.
-A test function checks that the typed expression is valid.
+The query builder allows interactive creation of an expression for
+limiting the points displayed in a point cloud layer. The point
+attributes are displayed and value ranges can be viewed to aid in
+constructing the expression. A test function checks that the typed
+expression is valid.
 
 .. versionadded:: 3.26
 %End
@@ -26,8 +27,8 @@ A test function checks that the typed expression is valid.
   public:
     QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
-This constructor is used when the query builder is called from the
-layer properties dialog
+This constructor is used when the query builder is called from the layer
+properties dialog
 
 :param layer: existing point cloud layer
 :param parent: Parent widget

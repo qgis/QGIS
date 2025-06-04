@@ -25,6 +25,8 @@ QgsLegendSettings::QgsLegendSettings()
   , mWmsLegendSize( 50, 25 )
   , mRasterStrokeColor( Qt::black )
 {
+  mStyleMap.resize( static_cast< int >( Qgis::LegendComponent::SymbolLabel ) + 1 );
+
   rstyle( Qgis::LegendComponent::Title ).setMargin( QgsLegendStyle::Bottom, 3.5 );
   rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Top, 3 );
   rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Top, 3 );
@@ -275,4 +277,3 @@ void QgsLegendSettings::setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &j
 {
   mJsonRenderFlags = jsonRenderFlags;
 }
-

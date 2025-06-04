@@ -15,6 +15,8 @@
 
 #include "qgsarcgisrestdataitemguiprovider.h"
 #include "moc_qgsarcgisrestdataitemguiprovider.cpp"
+
+#include "qgsapplication.h"
 #include "qgsarcgisrestdataitems.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
@@ -147,7 +149,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
 void QgsArcGisRestDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewArcGisRestConnectionDialog nc( nullptr, QString() );
+  QgsNewArcGisRestConnectionDialog nc( QgsApplication::instance()->activeWindow(), QString() );
   nc.setWindowTitle( tr( "Create a New ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )

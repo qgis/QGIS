@@ -13,7 +13,8 @@
 class QgsProcessingToolboxTreeView : QTreeView
 {
 %Docstring(signature="appended")
-Processing toolbox tree view, showing algorithms and providers in a tree structure.
+Processing toolbox tree view, showing algorithms and providers in a tree
+structure.
 
 .. warning::
 
@@ -28,17 +29,20 @@ Processing toolbox tree view, showing algorithms and providers in a tree structu
   public:
     QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
-Constructor for QgsProcessingToolboxTreeView, with the specified ``parent`` widget.
+Constructor for QgsProcessingToolboxTreeView, with the specified
+``parent`` widget.
 
-If ``registry`` is set, then the view will automatically be populated with algorithms
-and providers from the registry. Otherwise, users must manually call :py:func:`~QgsProcessingToolboxTreeView.setRegistry`
-to associate a registry with the view.
+If ``registry`` is set, then the view will automatically be populated
+with algorithms and providers from the registry. Otherwise, users must
+manually call :py:func:`~QgsProcessingToolboxTreeView.setRegistry` to
+associate a registry with the view.
 
-If ``recentLog`` is specified then it will be used to create a "Recently used" top
-level group containing recently used algorithms.
+If ``recentLog`` is specified then it will be used to create a "Recently
+used" top level group containing recently used algorithms.
 
-If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. Since QGIS 3.40
+If ``favoriteManager`` is specified then it will be used to create a
+"Favorites" top level group containing favorite algorithms. Since QGIS
+3.40
 %End
 
     void setRegistry(
@@ -49,11 +53,12 @@ level group containing favorite algorithms. Since QGIS 3.40
 %Docstring
 Sets the processing ``registry`` associated with the view.
 
-If ``recentLog`` is specified then it will be used to create a "Recently used" top
-level group containing recently used algorithms.
+If ``recentLog`` is specified then it will be used to create a "Recently
+used" top level group containing recently used algorithms.
 
-If ``favoriteManager`` is specified then it will be used to create a "Favorites" top
-level group containing favorite algorithms. Since QGIS 3.40
+If ``favoriteManager`` is specified then it will be used to create a
+"Favorites" top level group containing favorite algorithms. Since QGIS
+3.40
 %End
 
     void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model /Transfer/ );
@@ -72,6 +77,23 @@ if the index does not correspond to an algorithm.
 Returns the currently selected algorithm in the tree view, or ``None``
 if no algorithm is currently selected.
 %End
+
+    const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index );
+%Docstring
+Returns the model parameter at the specified tree view ``index``, or
+``None`` if the index does not correspond to a model parameter.
+
+.. versionadded:: 3.44
+%End
+
+    const QgsProcessingParameterType *selectedParameterType();
+%Docstring
+Returns the currently selected model parameter in the tree view, or
+``None`` if no model parameter is currently selected.
+
+.. versionadded:: 3.44
+%End
+
 
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
@@ -98,8 +120,8 @@ Sets the vector ``layer`` for the in-place algorithms
 
     void setFilterString( const QString &filter );
 %Docstring
-Sets a ``filter`` string, used to filter out the contents of the view
-to matching algorithms.
+Sets a ``filter`` string, used to filter out the contents of the view to
+matching algorithms.
 %End
 
   protected:

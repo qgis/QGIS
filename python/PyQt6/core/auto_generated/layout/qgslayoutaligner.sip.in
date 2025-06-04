@@ -13,8 +13,9 @@ class QgsLayoutAligner
 %Docstring(signature="appended")
 Handles aligning and distributing sets of layout items.
 
-:py:class:`QgsLayoutAligner` contains methods for automatically aligning and distributing
-sets of layout items, e.g. aligning a group of items to top or left sides.
+:py:class:`QgsLayoutAligner` contains methods for automatically aligning
+and distributing sets of layout items, e.g. aligning a group of items to
+top or left sides.
 %End
 
 %TypeHeaderCode
@@ -57,21 +58,24 @@ sets of layout items, e.g. aligning a group of items to top or left sides.
 %Docstring
 Aligns a set of ``items`` from a ``layout`` in place.
 
-The ``alignment`` argument specifies the method to use when aligning the items.
+The ``alignment`` argument specifies the method to use when aligning the
+items.
 %End
 
     static void distributeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Distribution distribution );
 %Docstring
 Distributes a set of ``items`` from a ``layout`` in place.
 
-The ``distribution`` argument specifies the method to use when distributing the items.
+The ``distribution`` argument specifies the method to use when
+distributing the items.
 %End
 
     static void resizeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Resize resize );
 %Docstring
 Resizes a set of ``items`` from a ``layout`` in place.
 
-The ``resize`` argument specifies the method to use when resizing the items.
+The ``resize`` argument specifies the method to use when resizing the
+items.
 %End
 
 };

@@ -23,6 +23,7 @@ QgsCategorizedSymbolRendererWidget.CustomRole.__doc__ = """Custom model roles.
 QgsCategorizedSymbolRendererWidget.CustomRole.baseClass = QgsCategorizedSymbolRendererWidget
 try:
     QgsCategorizedSymbolRendererWidget.create = staticmethod(QgsCategorizedSymbolRendererWidget.create)
+    QgsCategorizedSymbolRendererWidget.__overridden_methods__ = ['renderer', 'setContext', 'createExpressionContext', 'setSymbolLevels', 'pasteSymbolToSelection', 'selectedSymbols', 'refreshSymbolView', 'keyPressEvent']
     QgsCategorizedSymbolRendererWidget.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

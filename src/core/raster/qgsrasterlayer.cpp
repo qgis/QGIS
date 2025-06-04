@@ -62,6 +62,7 @@ email                : tim at linfiniti.com
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 #include "qgsrasterlabeling.h"
+#include "qgssldexportcontext.h"
 
 #include <cmath>
 #include <cstdio>
@@ -1766,18 +1767,26 @@ void QgsRasterLayer::setLabeling( QgsAbstractRasterLayerLabeling *labeling )
   triggerRepaint();
 }
 
-bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props ) const
+bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &, const QVariantMap &props ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSld( node, doc, context );
+  return true;
+}
+
+bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  Q_UNUSED( errorMessage )
-
-  QVariantMap localProps = QVariantMap( props );
+  QVariantMap localProps = context.extraProperties();
   if ( hasScaleBasedVisibility() )
   {
     // TODO: QgsSymbolLayerUtils::mergeScaleDependencies generate SE only and not SLD1.0
     QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
   }
+  context.setExtraProperties( localProps );
 
   if ( isSpatial() ) // TODO: does it make sense this control?
   {
@@ -1849,7 +1858,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     }
 
     // export renderer dependent tags
-    mPipe->renderer()->toSld( doc, typeStyleRuleElem, localProps );
+    mPipe->renderer()->toSld( doc, typeStyleRuleElem, context );
 
     // inject raster layer parameters in RasterSymbolizer tag because
     // they belongs to rasterlayer and not to the renderer => avoid to
@@ -1940,7 +1949,6 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
 
 #if 0
       // TODO: check if the below mapping formula make sense to map QGIS contrast with SLD gamma value
-      //
       // add SLD1.0 ContrastEnhancement GammaValue = QGIS Contrast
       // SLD1.0 does only define 1 as neutral/center double value but does not define range.
       // because https://en.wikipedia.org/wiki/Gamma_correction assumed gamma is >0.
@@ -2590,8 +2598,6 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   writeRasterAttributeTableExternalPaths( layer_node, document, context );
 
   writeStyleManager( layer_node, document );
-
-  serverProperties()->writeXml( layer_node, document );
 
   //write out the symbology
   QString errorMsg;

@@ -147,7 +147,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( QgsPostgresConn::connectionInfo( mUri, false ) ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 2 );
@@ -332,7 +332,7 @@ void QgsPostgresProvider::setListening( bool isListening )
 
   if ( isListening && !mListener )
   {
-    mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
+    mListener = QgsPostgresListener::create( QgsPostgresConn::connectionInfo( mUri, false ) );
     connect( mListener.get(), &QgsPostgresListener::notify, this, &QgsPostgresProvider::notify );
   }
   else if ( !isListening && mListener )
@@ -1765,7 +1765,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString() );
+    return QVariant();
   }
 }
 
@@ -1906,7 +1906,7 @@ bool QgsPostgresProvider::parseEnumRange( QStringList &enumValues, const QString
 {
   enumValues.clear();
 
-  QString enumRangeSql = QStringLiteral( "SELECT enumlabel FROM pg_catalog.pg_enum WHERE enumtypid=(SELECT atttypid::regclass FROM pg_attribute WHERE attrelid=%1::regclass AND attname=%2)" )
+  QString enumRangeSql = QStringLiteral( "SELECT enumlabel FROM pg_catalog.pg_enum WHERE enumtypid=(SELECT atttypid::regclass FROM pg_attribute WHERE attrelid=%1::regclass AND attname=%2) ORDER BY enumsortorder" )
                            .arg( quotedValue( mQuery ), quotedValue( attributeName ) );
   QgsPostgresResult enumRangeRes( connectionRO()->LoggedPQexec( QStringLiteral( "QgsPostgresProvider" ), enumRangeSql ) );
   if ( enumRangeRes.PQresultStatus() != PGRES_TUPLES_OK )
@@ -2023,7 +2023,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString() );
+    return QVariant();
   }
 }
 
@@ -3536,6 +3536,9 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
   }
 #endif
 
+  // clone the share because the feature subset differs (and thus also the feature count etc)
+  mShared = mShared->clone();
+
   // Update datasource uri too
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
@@ -4372,7 +4375,7 @@ void postgisGeometryType( Qgis::WkbType wkbType, QString &geometryType, int &dim
   }
 }
 
-Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString *errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri, QString *errorMessage, const QMap<QString, QVariant> *options )
 {
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
@@ -4395,8 +4398,9 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
     schemaTableName += quotedIdentifier( schemaName ) + '.';
   }
   schemaTableName += quotedIdentifier( tableName );
+  createdLayerUri = uri;
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( QgsPostgresConn::connectionInfo( dsUri, false ) ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( geometryColumn ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( schemaName ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( tableName ), 2 );
@@ -4955,7 +4959,7 @@ QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVector
   for ( QgsVectorLayer *layer : constLayers )
   {
     const QgsPostgresProvider *pgProvider = qobject_cast<QgsPostgresProvider *>( layer->dataProvider() );
-    if ( pgProvider && pgProvider->mUri.connectionInfo( false ) == connectionInfo && pgProvider->mSchemaName == schema && pgProvider->mTableName == tableName )
+    if ( pgProvider && QgsPostgresConn::connectionInfo( pgProvider->mUri, false ) == connectionInfo && pgProvider->mSchemaName == schema && pgProvider->mTableName == tableName )
     {
       result.append( layer );
     }
@@ -5040,7 +5044,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     // try to find if we have layers for the referenced table
-    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
+    const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, QgsPostgresConn::connectionInfo( mUri, false ), refSchema, refTable );
     if ( !refTableFound.contains( refTable ) )
     {
       for ( const QgsVectorLayer *foundLayer : foundLayers )
@@ -5136,11 +5140,11 @@ QList<QgsDataItemProvider *> QgsPostgresProviderMetadata::dataItemProviders() co
 
 // ---------------------------------------------------------------------------
 
-Qgis::VectorExportResult QgsPostgresProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsPostgresProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsPostgresProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage, options
+    &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
   );
 }
 

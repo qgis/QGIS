@@ -113,7 +113,6 @@ class VectorLayerScatterplot(QgisAlgorithm):
                 self.XAXIS_LOG,
                 self.tr("Use logarithmic scale for x-axis"),
                 defaultValue=False,
-                optional=True,
             )
         )
 
@@ -122,7 +121,6 @@ class VectorLayerScatterplot(QgisAlgorithm):
                 self.YAXIS_LOG,
                 self.tr("Use logarithmic scale for y-axis"),
                 defaultValue=False,
-                optional=True,
             )
         )
 

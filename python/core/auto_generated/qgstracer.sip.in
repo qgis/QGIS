@@ -14,7 +14,7 @@
 class QgsTracer : QObject
 {
 %Docstring(signature="appended")
-Utility class that construct a planar graph from the input vector
+Utility class that constructs a planar graph from the input vector
 layers and provides shortest path search for tracing of existing
 features.
 %End
@@ -62,51 +62,59 @@ Sets the ``renderContext`` used for tracing only on visible features.
 
     QgsRectangle extent() const;
 %Docstring
-Gets extent to which graph's features will be limited (empty extent means no limit)
+Gets extent to which graph's features will be limited (empty extent
+means no limit)
 %End
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Sets extent to which graph's features will be limited (empty extent means no limit)
+Sets extent to which graph's features will be limited (empty extent
+means no limit)
 %End
 
     double offset() const;
 %Docstring
-Gets offset in map units that should be applied to the traced paths returned from :py:func:`~QgsTracer.findShortestPath`.
-Positive offset for right side, negative offset for left side.
+Gets offset in map units that should be applied to the traced paths
+returned from :py:func:`~QgsTracer.findShortestPath`. Positive offset
+for right side, negative offset for left side.
 %End
 
     void setOffset( double offset );
 %Docstring
-Set offset in map units that should be applied to the traced paths returned from :py:func:`~QgsTracer.findShortestPath`.
-Positive offset for right side, negative offset for left side.
+Set offset in map units that should be applied to the traced paths
+returned from :py:func:`~QgsTracer.findShortestPath`. Positive offset
+for right side, negative offset for left side.
 %End
 
 
     void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
 %Docstring
-Gets extra parameters for offset curve algorithm (used when offset is non-zero)
+Gets extra parameters for offset curve algorithm (used when offset is
+non-zero)
 %End
 
 
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 %Docstring
-Set extra parameters for offset curve algorithm (used when offset is non-zero)
+Set extra parameters for offset curve algorithm (used when offset is
+non-zero)
 %End
 
     int maxFeatureCount() const;
 %Docstring
-Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
+Gets maximum possible number of features in graph. If the number is
+exceeded, graph is not created.
 %End
     void setMaxFeatureCount( int count );
 %Docstring
-Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
+Gets maximum possible number of features in graph. If the number is
+exceeded, graph is not created.
 %End
 
     bool init();
 %Docstring
-Build the internal data structures. This may take some time
-depending on how big the input layers are. It is not necessary
-to call this method explicitly - it will be called by :py:func:`~QgsTracer.findShortestPath`
+Build the internal data structures. This may take some time depending on
+how big the input layers are. It is not necessary to call this method
+explicitly - it will be called by :py:func:`~QgsTracer.findShortestPath`
 if necessary.
 %End
 
@@ -117,8 +125,8 @@ Whether the internal data structures have been initialized
 
     bool hasTopologyProblem() const;
 %Docstring
-Whether there was an error during graph creation due to noding exception,
-indicating some input data topology problems
+Whether there was an error during graph creation due to noding
+exception, indicating some input data topology problems
 %End
 
     enum PathError
@@ -133,28 +141,33 @@ indicating some input data topology problems
     QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error /Out/ = 0 );
 %Docstring
 Given two points, find the shortest path and return points on the way.
-The optional "error" argument may receive error code (PathError enum) if it is not ``None``
+The optional "error" argument may receive error code (PathError enum) if
+it is not ``None``
 
-:return: array of points - trace of linestrings of other features (empty array one error)
+:return: array of points - trace of linestrings of other features (empty
+         array one error)
 %End
 
     bool isPointSnapped( const QgsPointXY &pt );
 %Docstring
-Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
+Find out whether the point is snapped to a vertex or edge (i.e. it can
+be used for tracing start/stop)
 %End
 
     void setAddPointsOnIntersectionsEnabled( bool enable );
 %Docstring
-When ``enable`` is ``True``, the shortest path's straight segments will include vertices where the input layers intersect, even if
-no such vertex existed on the input layers
+When ``enable`` is ``True``, the shortest path's straight segments will
+include vertices where the input layers intersect, even if no such
+vertex existed on the input layers
 
 .. versionadded:: 3.40
 %End
 
     bool addPointsOnIntersectionsEnabled() const;
 %Docstring
-Returns whether the shortest path's straight segments will include vertices where the input layers intersect, even if
-no such vertex existed on the input layers
+Returns whether the shortest path's straight segments will include
+vertices where the input layers intersect, even if no such vertex
+existed on the input layers
 
 .. versionadded:: 3.40
 %End
@@ -162,9 +175,9 @@ no such vertex existed on the input layers
 
     virtual void configure();
 %Docstring
-Allows derived classes to setup the settings just before the tracer is initialized.
-This allows the configuration to be set in a lazy way only when it is really necessary.
-Default implementation does nothing.
+Allows derived classes to setup the settings just before the tracer is
+initialized. This allows the configuration to be set in a lazy way only
+when it is really necessary. Default implementation does nothing.
 %End
 
   protected slots:

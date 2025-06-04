@@ -12,7 +12,7 @@
 class QgsDirectoryItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")
-A directory: contains subdirectories and layers
+A browser item for directories: contains subdirectories and layers.
 %End
 
 %TypeHeaderCode
@@ -24,12 +24,13 @@ A directory: contains subdirectories and layers
 %Docstring
 Constructor for QgsDirectoryItem, with the specified ``parent`` item.
 
-The ``name`` argument specifies the text to show in the model for the item. This is usually
-the directory name, but in certain cases may differ for special directories (e.g. "Home").
-If a non-directory-name text is used, it should be a translated string when appropriate.
+The ``name`` argument specifies the text to show in the model for the
+item. This is usually the directory name, but in certain cases may
+differ for special directories (e.g. "Home"). If a non-directory-name
+text is used, it should be a translated string when appropriate.
 
-The ``path`` argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
-directory path must be specified.
+The ``path`` argument specifies the directory path in the file system
+(e.g. "/home/gsherman/stuff"). A valid directory path must be specified.
 %End
 
 
@@ -38,18 +39,22 @@ directory path must be specified.
 %Docstring
 Constructor for QgsDirectoryItem, with the specified ``parent`` item.
 
-The ``name`` argument specifies the text to show in the model for the item. This is usually
-the directory name, but in certain cases may differ for special directories (e.g. "Home").
-If a non-directory-name text is used, it should be a translated string when appropriate.
+The ``name`` argument specifies the text to show in the model for the
+item. This is usually the directory name, but in certain cases may
+differ for special directories (e.g. "Home"). If a non-directory-name
+text is used, it should be a translated string when appropriate.
 
-The ``dirPath`` argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
-directory path must be specified.
+The ``dirPath`` argument specifies the directory path in the file system
+(e.g. "/home/gsherman/stuff"). A valid directory path must be specified.
 
-The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form, but is usually
-the same as ``dirPath`` or ``dirPath`` with a prefix, e.g. "favorites:/home/gsherman/Downloads"). QgsDirectoryItem
-items pointing to different ``dirPaths`` should always use a different item ``path``.
+The ``path`` argument gives the item path in the browser tree. The
+``path`` string can take any form, but is usually the same as
+``dirPath`` or ``dirPath`` with a prefix, e.g.
+"favorites:/home/gsherman/Downloads"). QgsDirectoryItem items pointing
+to different ``dirPaths`` should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+The optional ``providerKey`` string can be used to specify the key for
+the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -90,8 +95,10 @@ Sets the directory's icon ``color``.
 
 Setting an invalid color will cause the default icon color to be used.
 
-This is a transient property, and will not permanently alter the directory's colors
-in future QGIS sessions. Use :py:func:`~QgsDirectoryItem.setCustomColor` to permanently set the directory's color.
+This is a transient property, and will not permanently alter the
+directory's colors in future QGIS sessions. Use
+:py:func:`~QgsDirectoryItem.setCustomColor` to permanently set the
+directory's color.
 
 .. seealso:: :py:func:`iconColor`
 
@@ -100,9 +107,11 @@ in future QGIS sessions. Use :py:func:`~QgsDirectoryItem.setCustomColor` to perm
 
     static void setCustomColor( const QString &directory, const QColor &color );
 %Docstring
-Sets a custom icon ``color`` to use for the items for the corresponding ``directory`` path.
+Sets a custom icon ``color`` to use for the items for the corresponding
+``directory`` path.
 
-If ``color`` is an invalid color then the default icon color will be used.
+If ``color`` is an invalid color then the default icon color will be
+used.
 
 .. versionadded:: 3.20
 %End
@@ -110,7 +119,6 @@ If ``color`` is an invalid color then the default icon color will be used.
  virtual QWidget *paramWidget() /Factory,Deprecated="Since 3.20. "/;
 
 %Docstring
-
 .. deprecated:: 3.20
 %End
     virtual bool hasDragEnabled() const;
@@ -126,10 +134,12 @@ Check if the given path is hidden from the browser model
 %Docstring
 Returns the monitoring setting for a directory ``path``.
 
-This method returns the monitoring setting for ``path`` only. If no explicit monitoring setting
-is in place for the path then :py:class:`Qgis`.BrowserDirectoryMonitoring.Default is returned.
+This method returns the monitoring setting for ``path`` only. If no
+explicit monitoring setting is in place for the path then
+:py:class:`Qgis`.BrowserDirectoryMonitoring.Default is returned.
 
-This method does not consider the monitoring setting of parent directories.
+This method does not consider the monitoring setting of parent
+directories.
 
 .. versionadded:: 3.20
 %End
@@ -138,17 +148,21 @@ This method does not consider the monitoring setting of parent directories.
 %Docstring
 Returns ``True`` if a directory ``path`` should be monitored by default.
 
-In the absence of any other settings this will dictate whether the directory is monitored. This method
-does not consider an explicit monitoring setting set for the path, which can be determined by
-calling :py:func:`~QgsDirectoryItem.monitoringForPath`.
+In the absence of any other settings this will dictate whether the
+directory is monitored. This method does not consider an explicit
+monitoring setting set for the path, which can be determined by calling
+:py:func:`~QgsDirectoryItem.monitoringForPath`.
 
-All parent directories will be checked to determine whether they have monitoring
-manually enabled or disabled. As soon as a parent directory is found which has monitoring
-manually enabled or disabled then the corresponding value will be returned.
+All parent directories will be checked to determine whether they have
+monitoring manually enabled or disabled. As soon as a parent directory
+is found which has monitoring manually enabled or disabled then the
+corresponding value will be returned.
 
-If no explicit setting is in place for a parent directory, then a check will be made to determine
-whether the path resides on a known slow drive. If so, monitoring is disabled by default and
-``False`` will be returned. Otherwise paths are monitored by default and the function will return ``True``.
+If no explicit setting is in place for a parent directory, then a check
+will be made to determine whether the path resides on a known slow
+drive. If so, monitoring is disabled by default and ``False`` will be
+returned. Otherwise paths are monitored by default and the function will
+return ``True``.
 
 .. seealso:: :py:func:`isMonitored`
 
@@ -159,8 +173,8 @@ whether the path resides on a known slow drive. If so, monitoring is disabled by
 
     bool isMonitored() const;
 %Docstring
-Returns ``True`` if the directory is currently being monitored for changes and the item auto-refreshed
-when these occur.
+Returns ``True`` if the directory is currently being monitored for
+changes and the item auto-refreshed when these occur.
 
 .. versionadded:: 3.20
 %End
@@ -201,7 +215,6 @@ This is a persistent setting, which is saved in QSettings.
 class QgsDirectoryParamWidget : QTreeWidget
 {
 %Docstring(signature="appended")
-
 Browser parameter widget implementation for directory items.
 %End
 

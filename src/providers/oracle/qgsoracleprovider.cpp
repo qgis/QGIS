@@ -1054,7 +1054,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
 {
   QgsOracleConn *conn = connectionRO();
   if ( !conn )
-    return QVariant( QString() );
+    return QVariant();
 
   try
   {
@@ -1073,7 +1073,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
-      return QVariant( QString() );
+      return QVariant();
     }
 
     if ( qry.next() )
@@ -1085,7 +1085,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
   {
     ;
   }
-  return QVariant( QString() );
+  return QVariant();
 }
 
 // Returns the list of unique values of an attribute
@@ -1163,7 +1163,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
-      return QVariant( QString() );
+      return QVariant();
     }
 
     if ( qry.next() )
@@ -1176,7 +1176,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     ;
   }
 
-  return QVariant( QString() );
+  return QVariant();
 }
 
 
@@ -3076,7 +3076,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
 }
 
 
-Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &createdLayerUri, QString &errorMessage, const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( wkbType )
   Q_UNUSED( options )
@@ -3084,6 +3084,7 @@ Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer( const QString &uri
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
   QString ownerName = dsUri.schema();
+  createdLayerUri = uri;
 
   QgsDebugMsgLevel( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ), 2 );
 
@@ -3552,11 +3553,11 @@ QgsTransaction *QgsOracleProviderMetadata::createTransaction( const QString &con
 
 // ---------------------------------------------------------------------------
 
-Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsOracleProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    oldToNewAttrIdxMap, errorMessage, options
+    oldToNewAttrIdxMap, createdLayerUri, errorMessage, options
   );
 }
 

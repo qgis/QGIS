@@ -28,6 +28,7 @@
 #include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"
 
+
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
@@ -42,19 +43,10 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 void Qgs3DMapToolMeasureLine::activate()
 {
   mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() ) );
-  mRubberBand->setHideLastMarker( true );
 
-  if ( mIsAlreadyActivated )
-  {
-    restart();
-    updateSettings();
-  }
-  else
-  {
-    // Set style
-    updateSettings();
-    mIsAlreadyActivated = true;
-  }
+  restart();
+  updateSettings();
+
   // Show dialog
   mDialog->updateSettings();
   mDialog->show();
@@ -62,8 +54,6 @@ void Qgs3DMapToolMeasureLine::activate()
 
 void Qgs3DMapToolMeasureLine::deactivate()
 {
-  restart();
-
   mRubberBand.reset();
 
   // Hide dialog
@@ -81,7 +71,6 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   {
     restart();
   }
-  mDone = false;
 
   const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->size(), mCanvas->cameraController()->camera() );
   const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( true, mCanvas->size(), mCanvas->cameraController()->camera()->farPlane() ) );
@@ -148,10 +137,11 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
 void Qgs3DMapToolMeasureLine::restart()
 {
   mPoints.clear();
-  mDone = true;
+  mDone = false;
   mDialog->resetTable();
 
   mRubberBand->reset();
+  mRubberBand->setHideLastMarker( true );
 }
 
 void Qgs3DMapToolMeasureLine::undo()
@@ -170,7 +160,7 @@ void Qgs3DMapToolMeasureLine::undo()
     mPoints.removeLast();
     mDialog->removeLastPoint();
 
-    mRubberBand->removeLastPoint();
+    mRubberBand->removePenultimatePoint();
   }
 }
 
@@ -195,11 +185,8 @@ void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
   if ( mPoints.isEmpty() || mDone )
     return;
 
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
-  const float dist = ray.direction().y() == 0 ? 0 : static_cast<float>( mPoints.last().z() - ray.origin().y() ) / ray.direction().y();
-  const QVector3D hoverPoint = ray.origin() + ray.direction() * dist;
-  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hoverPoint, mCanvas->mapSettings()->origin() );
-  mRubberBand->moveLastPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() / canvas()->mapSettings()->terrainSettings()->verticalScale() ) );
+  const QgsPoint pointMap = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
+  mRubberBand->moveLastPoint( pointMap );
 }
 
 void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
@@ -225,7 +212,7 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
 
 void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *event )
 {
-  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
+  if ( !mDone && ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
     undo();
   }

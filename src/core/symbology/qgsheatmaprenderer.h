@@ -29,7 +29,7 @@ class QgsColorRamp;
 /**
  * \ingroup core
  * \class QgsHeatmapRenderer
- * \brief A renderer which draws points as a live heatmap
+ * \brief A renderer which draws points as a live heatmap.
  */
 class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 {
@@ -48,9 +48,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     void stopRender( QgsRenderContext &context ) override;
-    //! \note symbolForFeature2 in Python bindings
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-    //! \note symbol2 in Python bindings
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
     QString dump() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;

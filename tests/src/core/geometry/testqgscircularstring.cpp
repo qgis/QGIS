@@ -91,6 +91,7 @@ class TestQgsCircularString : public QObject
     void toFromWKT();
     void exportImport();
     void addToPainterPath();
+    void cast();
 };
 
 void TestQgsCircularString::emptyConstructor()
@@ -1872,6 +1873,28 @@ void TestQgsCircularString::addToPainterPath()
   QGSCOMPARENEAR( pPath.currentPosition().x(), 11.0, 0.01 );
   QGSCOMPARENEAR( pPath.currentPosition().y(), 12.0, 0.01 );
   QVERIFY( !pPath.isEmpty() );
+}
+
+void TestQgsCircularString::cast()
+{
+  QVERIFY( !QgsCircularString::cast( static_cast< const QgsAbstractGeometry * >( nullptr ) ) );
+
+  QgsCircularString cs;
+  QVERIFY( QgsCircularString::cast( &cs ) );
+
+  cs.clear();
+
+  cs.fromWkt( QStringLiteral( "CircularString Z (10 0 1, 10 1 1, 10 2 1)" ) );
+  QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
+
+  cs.fromWkt( QStringLiteral( "CircularString M (10 0 1, 10 1 1, 10 2 1)" ) );
+  QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
+
+  cs.fromWkt( QStringLiteral( "CircularString ZM (10 0 1 2, 10 1 1 2, 10 2 1 2)" ) );
+  QVERIFY( QgsCircularString::cast( &cs ) );
+  QVERIFY( QgsCurve::cast( &cs ) );
 }
 
 void TestQgsCircularString::toCurveType()

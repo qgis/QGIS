@@ -48,7 +48,7 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::groupId() const
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm can be used to filter a digital elevation model in order to classify its cells into ground and object (non-ground) cells.\n\n"
+  return QObject::tr( "This algorithm can be used to filter a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells.\n\n"
                       "The tool uses concepts as described by Vosselman (2000) and is based on the assumption that a large height difference between two nearby "
                       "cells is unlikely to be caused by a steep slope in the terrain. The probability that the higher cell might be non-ground increases when "
                       "the distance between the two cells decreases. Therefore the filter defines a maximum height difference (<i>dz_max</i>) between two cells as a "
@@ -61,6 +61,11 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
                       "relaxing (<i>dz_max( d ) = d * s + ci</i>) or amplifying (<i>dz_max( d ) = d * s - ci</i>) the filter criterium.\n\n"
                       "References: Vosselman, G. (2000): Slope based filtering of laser altimetry data. IAPRS, Vol. XXXIII, Part B3, Amsterdam, The Netherlands, 935-942\n\n"
                       "This algorithm is a port of the SAGA 'DTM Filter (slope-based)' tool." );
+}
+
+QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Filters a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells." );
 }
 
 void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
@@ -85,10 +90,17 @@ void QgsRasterDtmSlopeBasedFilterAlgorithm::initAlgorithm( const QVariantMap & )
   stDevParam->setHelp( QObject::tr( "The standard deviation used to calculate a 5% confidence interval applied to the height threshold." ) );
   addParameter( stDevParam.release() );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   auto outputLayerGroundParam = std::make_unique<QgsProcessingParameterRasterDestination>( QStringLiteral( "OUTPUT_GROUND" ), QObject::tr( "Output layer (ground)" ), QVariant(), true, true );
   outputLayerGroundParam->setHelp( QObject::tr( "The filtered DEM containing only cells classified as ground." ) );
@@ -131,7 +143,12 @@ bool QgsRasterDtmSlopeBasedFilterAlgorithm::prepareAlgorithm( const QVariantMap 
 
 QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString groundOutputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT_GROUND" ), context );
   std::unique_ptr<QgsRasterFileWriter> groundWriter;
   std::unique_ptr<QgsRasterDataProvider> groundDestProvider;
@@ -143,9 +160,9 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
     groundWriter = std::make_unique<QgsRasterFileWriter>( groundOutputFile );
     groundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
-    if ( !createOptions.isEmpty() )
+    if ( !creationOptions.isEmpty() )
     {
-      groundWriter->setCreateOptions( createOptions.split( '|' ) );
+      groundWriter->setCreationOptions( creationOptions.split( '|' ) );
     }
     groundWriter->setOutputFormat( outputFormat );
 
@@ -171,9 +188,9 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
 
     nonGroundWriter = std::make_unique<QgsRasterFileWriter>( nonGroundOutputFile );
     nonGroundWriter->setOutputProviderKey( QStringLiteral( "gdal" ) );
-    if ( !createOptions.isEmpty() )
+    if ( !creationOptions.isEmpty() )
     {
-      nonGroundWriter->setCreateOptions( createOptions.split( '|' ) );
+      nonGroundWriter->setCreationOptions( creationOptions.split( '|' ) );
     }
     nonGroundWriter->setOutputFormat( outputFormat );
 
@@ -337,9 +354,19 @@ QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVari
       }
     }
     if ( groundDestProvider )
-      groundDestProvider->writeBlock( outputGroundBlock.get(), mBand, tileLeft, tileTop );
+    {
+      if ( !groundDestProvider->writeBlock( outputGroundBlock.get(), mBand, tileLeft, tileTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( groundDestProvider->error().summary() ) );
+      }
+    }
     if ( nonGroundDestProvider )
-      nonGroundDestProvider->writeBlock( outputNonGroundBlock.get(), mBand, tileLeft, tileTop );
+    {
+      if ( !nonGroundDestProvider->writeBlock( outputNonGroundBlock.get(), mBand, tileLeft, tileTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( nonGroundDestProvider->error().summary() ) );
+      }
+    }
   }
   if ( groundDestProvider )
     groundDestProvider->setEditable( false );

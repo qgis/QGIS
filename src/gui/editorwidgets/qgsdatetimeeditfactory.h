@@ -24,9 +24,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsDateTimeEditFactory
+ * \brief Editor widget factory for datetime widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
 {
   public:

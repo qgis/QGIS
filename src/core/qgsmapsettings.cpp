@@ -234,6 +234,18 @@ void QgsMapSettings::updateDerived()
 
 }
 
+void QgsMapSettings::matchRasterizedRenderingPolicyToFlags()
+{
+  if ( !mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
+       && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
+  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
+            && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
+  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
+            && !mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+    mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
+}
 
 QSize QgsMapSettings::outputSize() const
 {
@@ -393,6 +405,7 @@ bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 void QgsMapSettings::setFlags( Qgis::MapSettingsFlags flags )
 {
   mFlags = flags;
+  matchRasterizedRenderingPolicyToFlags();
 }
 
 void QgsMapSettings::setFlag( Qgis::MapSettingsFlag flag, bool on )
@@ -401,6 +414,7 @@ void QgsMapSettings::setFlag( Qgis::MapSettingsFlag flag, bool on )
     mFlags |= flag;
   else
     mFlags &= ~( static_cast< int >( flag ) );
+  matchRasterizedRenderingPolicyToFlags();
 }
 
 Qgis::MapSettingsFlags QgsMapSettings::flags() const
@@ -418,6 +432,16 @@ Qgis::DistanceUnit QgsMapSettings::mapUnits() const
   return mScaleCalculator.mapUnits();
 }
 
+Qgis::ScaleCalculationMethod QgsMapSettings::scaleMethod() const
+{
+  return mScaleCalculator.method();
+}
+
+void QgsMapSettings::setScaleMethod( Qgis::ScaleCalculationMethod method )
+{
+  mScaleCalculator.setMethod( method );
+  updateDerived();
+}
 
 bool QgsMapSettings::hasValidSettings() const
 {
@@ -914,5 +938,30 @@ const QgsElevationShadingRenderer &QgsMapSettings::elevationShadingRenderer() co
 void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer )
 {
   mShadingRenderer = elevationShadingRenderer;
+}
+
+Qgis::RasterizedRenderingPolicy QgsMapSettings::rasterizedRenderingPolicy() const
+{
+  return mRasterizedRenderingPolicy;
+}
+
+void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
+{
+  mRasterizedRenderingPolicy = policy;
+  switch ( mRasterizedRenderingPolicy )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+      mFlags.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+      mFlags.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
+      break;
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      mFlags.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+      mFlags.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
+      break;
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      mFlags.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+      mFlags.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
+      break;
+  }
 }
 

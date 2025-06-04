@@ -29,7 +29,7 @@
 /**
  * \ingroup gui
  * \class QgsHttpHeaderWidget
- * \brief Display referer http header field and collapsible table of key/value pairs
+ * \brief Displays referer HTTP header field and collapsible table of key/value pairs.
  *
  * \since QGIS 3.24
  */
@@ -46,7 +46,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     ~QgsHttpHeaderWidget();
 
     /**
-     * \return build a new \a QgsHttpHeaders according to data in the UI
+     * Returns the headers as defined in the widget.
      */
     QgsHttpHeaders httpHeaders() const;
 

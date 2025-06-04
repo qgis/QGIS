@@ -53,6 +53,7 @@ class QLabel;
 /**
  * \ingroup gui
  * \class QgsRelationReferenceWidget
+ * \brief A widget which shows related features.
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
@@ -199,6 +200,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setFormFeature( const QgsFeature &formFeature );
 
     /**
+     * Set the current parent form feature
+     *
+     * \since QGIS 3.42.2
+     */
+    void setParentFormFeature( const QgsFeature &parentFormFeature );
+
+    /**
      * Returns the public data source of the referenced layer
      * \since QGIS 3.12
      */
@@ -258,7 +266,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setFetchLimit( int fetchLimit ) { mFetchLimit = fetchLimit; }
 
-
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -268,6 +275,14 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     //! unset the currently related feature
     void deleteForeignKeys();
+
+    /**
+      * Trigger save of the embedded referenced attribute form.
+      * Returns TRUE on success or if no embedded form is present.
+      *
+      * \since QGIS 3.42
+      */
+    bool saveReferencedAttributeForm();
 
   protected:
     void showEvent( QShowEvent *e ) override;
@@ -315,7 +330,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar *mMessageBar = nullptr;
     QVariantList mForeignKeys;
     QgsFeature mFeature;
-    QgsFeature mFormFeature;
     // Index of the referenced layer key
     QStringList mReferencedFields;
     bool mAllowNull = true;

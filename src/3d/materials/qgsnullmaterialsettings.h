@@ -25,7 +25,7 @@
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Null shading material used for rendering models and scenes with native textures.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

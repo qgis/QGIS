@@ -20,6 +20,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
 #include "qgsattributeform.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -31,6 +32,10 @@ QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorL
 
 QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
 {
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  if ( form )
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsRelationReferenceWidgetWrapper::widgetValueChanged );
+
   QgsRelationReferenceWidget *w = new QgsRelationReferenceWidget( parent );
   return w;
 }
@@ -73,6 +78,8 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   if ( !config( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
   {
     mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
+    mWidget->setFormFeature( formFeature() );
+    mWidget->setParentFormFeature( ctx->parentFormFeature() );
   }
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 
@@ -117,6 +124,12 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   }
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );
+}
+
+void QgsRelationReferenceWidgetWrapper::aboutToSave()
+{
+  // Save changes in the embedded form
+  mWidget->saveReferencedAttributeForm();
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value() const
@@ -293,6 +306,36 @@ void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()
           mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
           break;
       }
+    }
+  }
+}
+
+void QgsRelationReferenceWidgetWrapper::parentFormValueChanged( const QString &attribute, const QVariant &value )
+{
+  // Update the parent feature in the context ( which means to replace the whole context :/ )
+  QgsAttributeEditorContext ctx { context() };
+  QgsFeature feature { context().parentFormFeature() };
+  feature.setAttribute( attribute, value );
+  ctx.setParentFormFeature( feature );
+  setContext( ctx );
+
+  // Check if the change might affect the filter expression and the cache needs updates
+  if ( QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mWidget->filterExpression() )
+       && QgsValueRelationFieldFormatter::expressionParentFormAttributes( mExpression ).contains( attribute ) )
+  {
+    mWidget->setParentFormFeature( context().parentFormFeature() );
+  }
+}
+
+void QgsRelationReferenceWidgetWrapper::widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged )
+{
+  if ( attributeChanged )
+  {
+    setFormFeatureAttribute( attribute, newValue );
+    if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mWidget->filterExpression() )
+         && QgsValueRelationFieldFormatter::expressionFormAttributes( mWidget->filterExpression() ).contains( attribute ) )
+    {
+      mWidget->setFormFeature( formFeature() );
     }
   }
 }

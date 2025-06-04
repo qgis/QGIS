@@ -47,7 +47,7 @@ class APP_EXPORT QgsBookmarkEditorDialog : public QDialog, private Ui::QgsBookma
     /**
      * Constructor for QgsBookmarkEditorDialog
      */
-    QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inProject = false, QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
+    QgsBookmarkEditorDialog( const QgsBookmark &bookmark, bool inProject = false, QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
 
   private slots:
 

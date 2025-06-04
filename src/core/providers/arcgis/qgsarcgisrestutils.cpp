@@ -793,36 +793,36 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
   markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
   markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
 
-  QgsMarkerSymbolLayer::HorizontalAnchorPoint hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
-  QgsMarkerSymbolLayer::VerticalAnchorPoint vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+  Qgis::HorizontalAnchorPoint hAlign = Qgis::HorizontalAnchorPoint::Center;
+  Qgis::VerticalAnchorPoint vAlign = Qgis::VerticalAnchorPoint::Center;
 
   QString horizontalAnchorPoint = symbolData.value( QStringLiteral( "horizontalAlignment" ) ).toString();
   QString verticalAnchorPoint = symbolData.value( QStringLiteral( "verticalAlignment" ) ).toString();
 
   if ( horizontalAnchorPoint == QString( "center" ) )
   {
-    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::HCenter;
+    hAlign = Qgis::HorizontalAnchorPoint::Center;
   }
   else if ( horizontalAnchorPoint == QString( "left" ) )
   {
-    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Left;
+    hAlign = Qgis::HorizontalAnchorPoint::Left;
   }
   else if ( horizontalAnchorPoint == QString( "right" ) )
   {
-    hAlign = QgsMarkerSymbolLayer::HorizontalAnchorPoint::Right;
+    hAlign = Qgis::HorizontalAnchorPoint::Right;
   }
 
   if ( verticalAnchorPoint == QString( "center" ) )
   {
-    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::VCenter;
+    vAlign = Qgis::VerticalAnchorPoint::Center;
   }
   else if ( verticalAnchorPoint == QString( "top" ) )
   {
-    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Top;
+    vAlign = Qgis::VerticalAnchorPoint::Top;
   }
   else if ( verticalAnchorPoint == QString( "bottom" ) )
   {
-    vAlign = QgsMarkerSymbolLayer::VerticalAnchorPoint::Bottom;
+    vAlign = Qgis::VerticalAnchorPoint::Bottom;
   }
 
   markerLayer->setHorizontalAnchorPoint( hAlign );
@@ -1831,8 +1831,17 @@ QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const 
   const QgsFields fields = feature.fields();
   for ( const QgsField &field : fields )
   {
+    QVariant value = feature.attribute( field.name() );
+    if ( value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+    {
+      if ( flags.testFlag( FeatureToJsonFlag::SkipUnsetAttributes ) )
+        continue;
+      else
+        value = QVariant(); // reset to null, we can't store 'QgsUnsetAttributeValue' as json
+    }
+
     if ( ( flags & FeatureToJsonFlag::IncludeNonObjectIdAttributes ) || field.name() == context.objectIdFieldName() )
-      attributes.insert( field.name(), variantToAttributeValue( feature.attribute( field.name() ), field.type(), context ) );
+      attributes.insert( field.name(), variantToAttributeValue( value, field.type(), context ) );
   }
   if ( !attributes.isEmpty() )
   {

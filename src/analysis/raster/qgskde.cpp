@@ -44,7 +44,7 @@ QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEs
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::run()
 {
   const Result result = prepare();
-  if ( result != Success )
+  if ( result != QgsKernelDensityEstimation::Result::Success )
     return result;
 
   QgsAttributeList requiredAttributes;
@@ -73,35 +73,35 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   GDALDriverH driver = GDALGetDriverByName( mOutputFormat.toUtf8() );
   if ( !driver )
   {
-    return DriverError;
+    return QgsKernelDensityEstimation::Result::DriverError;
   }
 
   if ( !mSource )
-    return InvalidParameters;
+    return QgsKernelDensityEstimation::Result::InvalidParameters;
 
   mBounds = calculateBounds();
   if ( mBounds.isNull() )
-    return InvalidParameters;
+    return QgsKernelDensityEstimation::Result::InvalidParameters;
 
   const int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
   const int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
   if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
-    return FileCreationError;
+    return QgsKernelDensityEstimation::Result::FileCreationError;
 
   // open the raster in GA_Update mode
   mDatasetH.reset( GDALOpen( mOutputFile.toUtf8().constData(), GA_Update ) );
   if ( !mDatasetH )
-    return FileCreationError;
+    return QgsKernelDensityEstimation::Result::FileCreationError;
   mRasterBandH = GDALGetRasterBand( mDatasetH.get(), 1 );
   if ( !mRasterBandH )
-    return FileCreationError;
+    return QgsKernelDensityEstimation::Result::FileCreationError;
 
   mBufferSize = -1;
   if ( mRadiusField < 0 )
     mBufferSize = radiusSizeInPixels( mRadius );
 
-  return Success;
+  return QgsKernelDensityEstimation::Result::Success;
 }
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const QgsFeature &feature )
@@ -109,7 +109,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
   const QgsGeometry featureGeometry = feature.geometry();
   if ( featureGeometry.isNull() )
   {
-    return Success;
+    return QgsKernelDensityEstimation::Result::Success;
   }
 
   // convert the geometry to multipoint
@@ -119,7 +119,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     const QgsPointXY p = featureGeometry.asPoint();
     // avoiding any empty points or out of extent points
     if ( !mBounds.contains( p ) )
-      return Success;
+      return QgsKernelDensityEstimation::Result::Success;
 
     multiPoints << p;
   }
@@ -145,7 +145,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     weight = feature.attribute( mWeightField ).toDouble();
   }
 
-  Result result = Success;
+  QgsKernelDensityEstimation::Result result = QgsKernelDensityEstimation::Result::Success;
 
   //loop through all points in multipoint
   for ( QgsMultiPointXY::const_iterator pointIt = multiPoints.constBegin(); pointIt != multiPoints.constEnd(); ++pointIt )
@@ -166,7 +166,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
     if ( GDALRasterIO( mRasterBandH, GF_Read, xPosition, yPositionIO, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
     {
-      result = RasterIoError;
+      result = QgsKernelDensityEstimation::Result::RasterIoError;
     }
 
     for ( int xp = 0; xp < blockSize; xp++ )
@@ -195,7 +195,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     }
     if ( GDALRasterIO( mRasterBandH, GF_Write, xPosition, yPositionIO, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 ) != CE_None )
     {
-      result = RasterIoError;
+      result = QgsKernelDensityEstimation::Result::RasterIoError;
     }
     CPLFree( dataBuffer );
   }
@@ -207,7 +207,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::finalise()
 {
   mDatasetH.reset();
   mRasterBandH = nullptr;
-  return Success;
+  return QgsKernelDensityEstimation::Result::Success;
 }
 
 int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
@@ -263,19 +263,19 @@ double QgsKernelDensityEstimation::calculateKernelValue( const double distance, 
 {
   switch ( shape )
   {
-    case KernelTriangular:
+    case QgsKernelDensityEstimation::KernelShape::Triangular:
       return triangularKernel( distance, bandwidth, outputType );
 
-    case KernelUniform:
+    case QgsKernelDensityEstimation::KernelShape::Uniform:
       return uniformKernel( distance, bandwidth, outputType );
 
-    case KernelQuartic:
+    case QgsKernelDensityEstimation::KernelShape::Quartic:
       return quarticKernel( distance, bandwidth, outputType );
 
-    case KernelTriweight:
+    case QgsKernelDensityEstimation::KernelShape::Triweight:
       return triweightKernel( distance, bandwidth, outputType );
 
-    case KernelEpanechnikov:
+    case QgsKernelDensityEstimation::KernelShape::Epanechnikov:
       return epanechnikovKernel( distance, bandwidth, outputType );
   }
   return 0; //no warnings
@@ -294,7 +294,7 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const d
   Q_UNUSED( distance )
   switch ( outputType )
   {
-    case OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 2. / ( M_PI * bandwidth );
@@ -302,7 +302,7 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const d
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 0.5 / bandwidth );
     }
-    case OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return 1.0;
   }
   return 0.0; // NO warnings!!!!!
@@ -312,7 +312,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
 {
   switch ( outputType )
   {
-    case OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 16. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
@@ -320,7 +320,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
     }
-    case OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
   }
   return 0.0; //no, seriously, I told you NO WARNINGS!
@@ -330,7 +330,7 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
 {
   switch ( outputType )
   {
-    case OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 128. / ( 35. * M_PI * std::pow( bandwidth, 2 ) );
@@ -338,7 +338,7 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 35. / 32. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
     }
-    case OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
   }
   return 0.0; // this is getting ridiculous... don't you ever listen to a word I say?
@@ -348,7 +348,7 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
 {
   switch ( outputType )
   {
-    case OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant
       const double k = 8. / ( 3. * M_PI * std::pow( bandwidth, 2 ) );
@@ -356,7 +356,7 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 3. / 4. ) * ( 1. - std::pow( distance / bandwidth, 2 ) );
     }
-    case OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return ( 1. - std::pow( distance / bandwidth, 2 ) );
   }
 
@@ -367,7 +367,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 {
   switch ( outputType )
   {
-    case OutputScaled:
+    case QgsKernelDensityEstimation::OutputValues::Scaled:
     {
       // Normalizing constant. In this case it's calculated a little different
       // due to the inclusion of the non-standard "decay" parameter
@@ -385,7 +385,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
         return ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
       }
     }
-    case OutputRaw:
+    case QgsKernelDensityEstimation::OutputValues::Raw:
       return ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );
   }
   return 0.0; // ....

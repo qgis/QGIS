@@ -23,7 +23,7 @@
 /**
  * \ingroup core
  * \class QgsMargins
- * \brief The QgsMargins class defines the four margins of a rectangle.
+ * \brief Defines the four margins of a rectangle.
  *
  * QgsMargins defines a set of four margins; left, top, right and bottom, that describe the size of the borders surrounding a rectangle.
  *

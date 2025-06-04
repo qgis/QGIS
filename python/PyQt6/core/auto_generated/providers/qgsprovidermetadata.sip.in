@@ -17,7 +17,7 @@
 class QgsMeshDriverMetadata
 {
 %Docstring(signature="appended")
-Holds metadata about mesh driver
+Holds metadata about mesh drivers.
 
 .. versionadded:: 3.12
 %End
@@ -74,8 +74,10 @@ Constructs driver metadata with selected capabilities
 :param description: short description of the driver
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
-:param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on file
-:param maxVerticesPerface: maximum vertices count per face supported by the driver
+:param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on
+                                   file
+:param maxVerticesPerface: maximum vertices count per face supported by
+                           the driver
 
 .. versionadded:: 3.22
 %End
@@ -122,19 +124,20 @@ QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetad
 class QgsProviderMetadata : QObject
 {
 %Docstring(signature="appended")
-Holds data provider key, description, and associated shared library file or function pointer information.
+Holds data provider key, description, and associated shared library file
+or function pointer information.
 
-Provider metadata refers either to providers which are loaded via libraries or
-which are native providers that are included in the core QGIS installation
-and accessed through function pointers.
+Provider metadata refers either to providers which are loaded via
+libraries or which are native providers that are included in the core
+QGIS installation and accessed through function pointers.
 
 For library based providers, the metadata class is used in a lazy load
-implementation in :py:class:`QgsProviderRegistry`.  To save memory, data providers
-are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
-iteratively loaded once to get their metadata information, and then
-unloaded when the :py:class:`QgsProviderRegistry` is created.)  :py:class:`QgsProviderMetadata`
-supplies enough information to be able to later load the associated shared
-library object.
+implementation in :py:class:`QgsProviderRegistry`. To save memory, data
+providers are only actually loaded via QLibrary calls if they're to be
+used. (Though they're all iteratively loaded once to get their metadata
+information, and then unloaded when the :py:class:`QgsProviderRegistry`
+is created.) :py:class:`QgsProviderMetadata` supplies enough information
+to be able to later load the associated shared library object.
 %End
 
 %TypeHeaderCode
@@ -168,7 +171,8 @@ Constructor for provider metadata
 
 :param key: provider key
 :param description: provider description
-:param library: plugin library file name (empty if the provider is not loaded from a library)
+:param library: plugin library file name (empty if the provider is not
+                loaded from a library)
 %End
 
 
@@ -178,7 +182,8 @@ Constructor for provider metadata
 %Docstring
 This returns the unique key associated with the provider
 
-This key string is used for the associative container in :py:class:`QgsProviderRegistry`
+This key string is used for the associative container in
+:py:class:`QgsProviderRegistry`
 %End
 
     QString description() const;
@@ -254,7 +259,8 @@ Returns a list of the map layer types supported by the provider.
 %Docstring
 This returns the library file name
 
-This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
+This is used to QLibrary calls to load the data provider (only for
+dynamically loaded libraries)
 
 .. deprecated:: 3.10
 
@@ -294,11 +300,11 @@ Builds the list of available mesh drivers metadata
 
     virtual int priorityForUri( const QString &uri ) const;
 %Docstring
-Returns an integer representing the priority which this provider should have when opening
-a dataset with the specified ``uri``.
+Returns an integer representing the priority which this provider should
+have when opening a dataset with the specified ``uri``.
 
-A larger priority means that the provider should be selected over others with a lower
-priority for the same URI.
+A larger priority means that the provider should be selected over others
+with a lower priority for the same URI.
 
 The default implementation returns 0 for all URIs.
 
@@ -313,8 +319,8 @@ The default implementation returns 0 for all URIs.
 
     virtual QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const;
 %Docstring
-Returns a list of valid layer types which the provider can be used with when
-opening the specified ``uri``.
+Returns a list of valid layer types which the provider can be used with
+when opening the specified ``uri``.
 
 .. warning::
 
@@ -327,12 +333,14 @@ opening the specified ``uri``.
 
     virtual bool uriIsBlocklisted( const QString &uri ) const;
 %Docstring
-Returns ``True`` if the specified ``uri`` is known by this provider to be something which should
-be blocklisted from the QGIS interface, e.g. an internal detail only.
+Returns ``True`` if the specified ``uri`` is known by this provider to
+be something which should be blocklisted from the QGIS interface, e.g.
+an internal detail only.
 
-Specifically, this method can be utilized by the browser panel to hide noisy internal details
-by returning ``True`` for URIs which are known to be sidecar files only, such as ".aux.xml" files
-or ".shp.xml" files, or the "ept-build.json" files which sit alongside Entwine "ept.json" point
+Specifically, this method can be utilized by the browser panel to hide
+noisy internal details by returning ``True`` for URIs which are known to
+be sidecar files only, such as ".aux.xml" files or ".shp.xml" files, or
+the "ept-build.json" files which sit alongside Entwine "ept.json" point
 cloud sources.
 
 The default method returns ``False`` for all URIs.
@@ -347,19 +355,21 @@ The default method returns ``False`` for all URIs.
 
     virtual QStringList sidecarFilesForUri( const QString &uri ) const;
 %Docstring
-Given a ``uri``, returns any sidecar files which are associated with the URI and this
-provider.
+Given a ``uri``, returns any sidecar files which are associated with the
+URI and this provider.
 
-In this context a sidecar file is defined as a file which shares the same base filename
-as a dataset, but which differs in file extension. It defines the list of additional
-files which must be renamed or deleted alongside the main file associated with the
-dataset in order to completely rename/delete the dataset.
+In this context a sidecar file is defined as a file which shares the
+same base filename as a dataset, but which differs in file extension. It
+defines the list of additional files which must be renamed or deleted
+alongside the main file associated with the dataset in order to
+completely rename/delete the dataset.
 
-For instance, the OGR provider would return the corresponding .dbf, .idx, etc files for a
-uri pointing at a .shp file.
+For instance, the OGR provider would return the corresponding .dbf,
+.idx, etc files for a uri pointing at a .shp file.
 
-Implementations should files any files which MAY exist for the URI, and it is up to the caller
-to filter these to only existing files if required.
+Implementations should files any files which MAY exist for the URI, and
+it is up to the caller to filter these to only existing files if
+required.
 
 .. note::
 
@@ -372,11 +382,14 @@ to filter these to only existing files if required.
 
     virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = 0 ) const;
 %Docstring
-Queries the specified ``uri`` and returns a list of any valid sublayers found in the dataset which can be handled by this provider.
+Queries the specified ``uri`` and returns a list of any valid sublayers
+found in the dataset which can be handled by this provider.
 
-The optional ``flags`` argument can be used to control the behavior of the query.
+The optional ``flags`` argument can be used to control the behavior of
+the query.
 
-The optional ``feedback`` argument can be used to provide cancellation support for long-running queries.
+The optional ``feedback`` argument can be used to provide cancellation
+support for long-running queries.
 
 .. note::
 
@@ -390,8 +403,8 @@ The optional ``feedback`` argument can be used to provide cancellation support f
 
     virtual QString suggestGroupNameForUri( const QString &uri ) const;
 %Docstring
-Returns a name that can be used as a group name for sublayers retrieved from
-the specified ``uri``.
+Returns a name that can be used as a group name for sublayers retrieved
+from the specified ``uri``.
 
 The default implementation returns an empty string.
 
@@ -402,7 +415,8 @@ The default implementation returns an empty string.
         const QgsDataProvider::ProviderOptions &options,
         Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /Factory/;
 %Docstring
-Class factory to return a pointer to a newly created :py:class:`QgsDataProvider` object
+Class factory to return a pointer to a newly created
+:py:class:`QgsDataProvider` object
 
 :param uri: the datasource uri
 :param options: creation options
@@ -413,16 +427,16 @@ Class factory to return a pointer to a newly created :py:class:`QgsDataProvider`
 
     static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
 %Docstring
-Sets the ``value`` into the ``uri`` ``parameter`` as a bool.
-eg. "yes" value will be saved as ``True``, 0 will be saved as ``False``
+Sets the ``value`` into the ``uri`` ``parameter`` as a bool. eg. "yes"
+value will be saved as ``True``, 0 will be saved as ``False``
 
 .. versionadded:: 3.14
 %End
 
     static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
 %Docstring
-Returns the ``parameter`` value in the ``uri`` as a bool.
-eg. "yes" value will be returned as ``True``, 0 will be returned as ``False``
+Returns the ``parameter`` value in the ``uri`` as a bool. eg. "yes"
+value will be returned as ``True``, 0 will be returned as ``False``
 
 .. versionadded:: 3.14
 %End
@@ -433,13 +447,16 @@ eg. "yes" value will be returned as ``True``, 0 will be returned as ``False``
 %Docstring
 Creates a new empty database at the specified ``uri``.
 
-This method can be used for supported providers to construct a new empty database. For instance, the OGR provider
-metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to create new empty GeoPackage or FileGeodatabase databases.
+This method can be used for supported providers to construct a new empty
+database. For instance, the OGR provider metadata
+:py:func:`~QgsProviderMetadata.createDatabase` method can be used to
+create new empty GeoPackage or FileGeodatabase databases.
 
 :param uri: destination URI for newly created database.
 
 :return: - ``True`` if the database was successfully created
-         - errorMessage: a descriptive error message if the database could not be successfully created.
+         - errorMessage: a descriptive error message if the database
+           could not be successfully created.
 
 .. note::
 
@@ -447,6 +464,7 @@ metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to cr
 
 .. versionadded:: 3.28
 %End
+
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
       const QString &uri,
@@ -471,8 +489,10 @@ Creates a new instance of the raster data provider.
       const QgsCoordinateReferenceSystem &crs,
       const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 %Docstring
-Creates mesh data source from a file name ``fileName`` and a driver ``driverName``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
-Since QGIS 3.38 the optional ``metadata`` argument can be used to pass metadata to the provider.
+Creates mesh data source from a file name ``fileName`` and a driver
+``driverName``, that is the mesh frame stored in file, memory or with
+other way (depending of the provider) Since QGIS 3.38 the optional
+``metadata`` argument can be used to pass metadata to the provider.
 
 .. versionadded:: 3.16
 %End
@@ -483,8 +503,10 @@ Since QGIS 3.38 the optional ``metadata`` argument can be used to pass metadata 
       const QgsCoordinateReferenceSystem &crs,
       const QMap<QString, QString> &metadata = QMap<QString, QString>() ) const;
 %Docstring
-Creates mesh data source from an ``uri``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
-Since QGIS 3.38 the optional ``metadata`` argument can be used to pass metadata to the provider.
+Creates mesh data source from an ``uri``, that is the mesh frame stored
+in file, memory or with other way (depending of the provider) Since QGIS
+3.38 the optional ``metadata`` argument can be used to pass metadata to
+the provider.
 
 .. versionadded:: 3.22
 %End
@@ -498,7 +520,8 @@ Returns pyramid resampling methods available for provider
 
     virtual QVariantMap decodeUri( const QString &uri ) const;
 %Docstring
-Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+Breaks a provider data source URI into its component paths (e.g. file
+path, layer name).
 
 :param uri: uri string
 
@@ -522,7 +545,8 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 
     virtual QString encodeUri( const QVariantMap &parts ) const;
 %Docstring
-Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+Reassembles a provider data source URI from its component paths (e.g.
+file path, layer name).
 
 :param parts: parts as returned by decodeUri
 
@@ -539,10 +563,11 @@ Reassembles a provider data source URI from its component paths (e.g. file path,
 
     virtual QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const;
 %Docstring
-Converts absolute path(s) to relative path(s) in the given provider-specific URI. and
-returns modified URI according to the context object's configuration.
-This is commonly used when writing project files.
-If a provider does not work with paths, unmodified URI will be returned.
+Converts absolute path(s) to relative path(s) in the given
+provider-specific URI. and returns modified URI according to the context
+object's configuration. This is commonly used when writing project
+files. If a provider does not work with paths, unmodified URI will be
+returned.
 
 :return: modified URI with relative path(s)
 
@@ -558,10 +583,11 @@ If a provider does not work with paths, unmodified URI will be returned.
 
     virtual QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const;
 %Docstring
-Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
-returns modified URI according to the context object's configuration.
-This is commonly used when reading project files.
-If a provider does not work with paths, unmodified URI will be returned.
+Converts relative path(s) to absolute path(s) in the given
+provider-specific URI. and returns modified URI according to the context
+object's configuration. This is commonly used when reading project
+files. If a provider does not work with paths, unmodified URI will be
+returned.
 
 :return: modified URI with absolute path(s)
 
@@ -577,14 +603,16 @@ If a provider does not work with paths, unmodified URI will be returned.
 
     virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
 %Docstring
-Cleans a layer ``uri``, e.g. to remove or hide sensitive information from the URI.
+Cleans a layer ``uri``, e.g. to remove or hide sensitive information
+from the URI.
 
 .. versionadded:: 3.42
 %End
 
     virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
 %Docstring
-Returns data item providers. Caller is responsible for ownership of the item providers
+Returns data item providers. Caller is responsible for ownership of the
+item providers
 
 .. seealso:: :py:func:`QgsProviderGuiMetadata.dataItemGuiProviders`
 
@@ -600,20 +628,23 @@ Returns data item providers. Caller is responsible for ownership of the item pro
 %Docstring
 Lists stored layer styles in the provider defined by ``uri``
 
-:return: -1 if not implemented by provider, otherwise number of styles stored
+:return: - 1 if not implemented by provider, otherwise number of styles
+           stored
 
 .. versionadded:: 3.10
 %End
 
     virtual bool styleExists( const QString &uri, const QString &styleId, QString &errorCause /Out/ );
 %Docstring
-Returns ``True`` if a layer style with the specified ``styleId`` exists in the provider defined by ``uri``.
+Returns ``True`` if a layer style with the specified ``styleId`` exists
+in the provider defined by ``uri``.
 
 :param uri: provider URI
 :param styleId: style ID to test for
 
 :return: - ``True`` if the layer style already exists
-         - errorCause: a descriptive error message, if an error occurs while checking if the style exists
+         - errorCause: a descriptive error message, if an error occurs
+           while checking if the style exists
 
 .. seealso:: :py:func:`getStyleById`
 
@@ -683,8 +714,9 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
 :return: - ``True`` if the metadata was successfully saved.
          - errorMessage: descriptive string of error if encountered
 
-:raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
-   specified ``uri``.
+:raises QgsNotSupportedException: if the provider does not support
+                                  saving layer metadata for the
+                                  specified ``uri``.
 
 .. versionadded:: 3.20
 %End
@@ -698,19 +730,21 @@ Creates database by the provider on the path
 
     virtual QgsTransaction *createTransaction( const QString &connString ) /Factory/;
 %Docstring
-Returns new instance of transaction. Ownership is transferred to the caller
+Returns new instance of transaction. Ownership is transferred to the
+caller
 
 .. versionadded:: 3.10
 %End
 
     virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true );
 %Docstring
-Returns a dictionary of stored provider connections,
-the dictionary key is the connection identifier.
-Ownership is not transferred.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+Returns a dictionary of stored provider connections, the dictionary key
+is the connection identifier. Ownership is not transferred. Raises a
+:py:class:`QgsProviderConnectionException` if any errors are
+encountered.
 
-:param cached: if ``False`` connections will be re-read from the settings
+:param cached: if ``False`` connections will be re-read from the
+               settings
 
 :raises QgsProviderConnectionException: 
 
@@ -719,12 +753,13 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
     QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true );
 %Docstring
-Returns a dictionary of database provider connections,
-the dictionary key is the connection identifier.
-Ownership is not transferred.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+Returns a dictionary of database provider connections, the dictionary
+key is the connection identifier. Ownership is not transferred. Raises a
+:py:class:`QgsProviderConnectionException` if any errors are
+encountered.
 
-:param cached: if ``False`` connections will be re-read from the settings
+:param cached: if ``False`` connections will be re-read from the
+               settings
 
 :raises QgsProviderConnectionException: 
 
@@ -733,12 +768,14 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
     QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true );
 %Docstring
-Searches and returns a (possibly ``None``) connection from the stored provider connections.
-Ownership is not transferred.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+Searches and returns a (possibly ``None``) connection from the stored
+provider connections. Ownership is not transferred. Raises a
+:py:class:`QgsProviderConnectionException` if any errors are
+encountered.
 
 :param name: the connection name
-:param cached: if ``False`` connections will be re-read from the settings
+:param cached: if ``False`` connections will be re-read from the
+               settings
 
 :raises QgsProviderConnectionException: 
 
@@ -748,10 +785,10 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
     virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration )  /Factory/;
 %Docstring
-Creates a new connection from ``uri`` and ``configuration``,
-the newly created connection is not automatically stored in the settings, call
-:py:func:`~QgsProviderMetadata.saveConnection` to save it.
-Ownership is transferred to the caller.
+Creates a new connection from ``uri`` and ``configuration``, the newly
+created connection is not automatically stored in the settings, call
+:py:func:`~QgsProviderMetadata.saveConnection` to save it. Ownership is
+transferred to the caller.
 
 :raises QgsProviderConnectionException: 
 
@@ -762,8 +799,8 @@ Ownership is transferred to the caller.
 
     virtual QgsAbstractProviderConnection *createConnection( const QString &name )  /Factory/;
 %Docstring
-Creates a new connection by loading the connection with the given ``name`` from the settings.
-Ownership is transferred to the caller.
+Creates a new connection by loading the connection with the given
+``name`` from the settings. Ownership is transferred to the caller.
 
 :raises QgsProviderConnectionException: 
 
@@ -772,8 +809,9 @@ Ownership is transferred to the caller.
 
     virtual void deleteConnection( const QString &name );
 %Docstring
-Removes the connection with the given ``name`` from the settings.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+Removes the connection with the given ``name`` from the settings. Raises
+a :py:class:`QgsProviderConnectionException` if any errors are
+encountered.
 
 :raises QgsProviderConnectionException: 
 
@@ -824,8 +862,8 @@ Emitted when the connection with the specified ``name`` was deleted.
 
     void connectionChanged( const QString &name );
 %Docstring
-Emitted when the connection with the specified ``name`` is changed, e.g. the settings
-relating to the connection have been updated.
+Emitted when the connection with the specified ``name`` is changed, e.g.
+the settings relating to the connection have been updated.
 
 .. note::
 

@@ -15,15 +15,13 @@
 class QgsServerInterface
 {
 %Docstring(signature="appended")
-:py:class:`QgsServerInterface`
-Class defining interfaces exposed by QGIS Server and
-made available to plugins.
+Defines interfaces exposed by QGIS Server and made available to plugins.
 
-This class provides methods to access the request handler and
-the capabilities cache. A method to read the environment
-variables set in the main FCGI loop is also available.
-Plugins can add listeners (instances of :py:class:`QgsServerFilter`) with
-a certain priority through the :py:func:`~registerFilter` method.
+This class provides methods to access the request handler and the
+capabilities cache. A method to read the environment variables set in
+the main FCGI loop is also available. Plugins can add listeners
+(instances of :py:class:`QgsServerFilter`) with a certain priority
+through the :py:func:`~registerFilter` method.
 %End
 
 %TypeHeaderCode
@@ -68,7 +66,8 @@ Set the filters map
 %Docstring
 Returns the list of current :py:class:`QgsServerFilter`
 
-:return: :py:class:`QgsServerFiltersMap` list of :py:class:`QgsServerFilter`
+:return: :py:class:`QgsServerFiltersMap` list of
+         :py:class:`QgsServerFilter`
 %End
 
     virtual void registerAccessControl( QgsAccessControlFilter *accessControl /Transfer/, int priority = 0 ) = 0;
@@ -103,21 +102,22 @@ Gets the registered server cache filters
 
     virtual QString getEnv( const QString &name ) const = 0;
 %Docstring
-Returns an enrironment variable, used to pass  environment variables to Python
+Returns an enrironment variable, used to pass environment variables to
+Python
 %End
 
     virtual QString configFilePath() = 0;
 %Docstring
 Returns the configuration file path
 
-:return: QString containing the configuration file path
+:return: string containing the configuration file path
 %End
 
     virtual void setConfigFilePath( const QString &configFilePath ) = 0;
 %Docstring
 Set the configuration file path
 
-:param configFilePath: QString with the configuration file path
+:param configFilePath: string with the configuration file path
 %End
 
     virtual void removeConfigCacheEntry( const QString &path ) = 0;

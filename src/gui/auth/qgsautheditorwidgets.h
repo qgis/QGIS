@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * \brief Dialog for viewing available authentication method plugins
+ * \brief Dialog for viewing available authentication method plugins.
  */
 class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMethodPlugins
 {
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
 
 /**
  * \ingroup gui
- * \brief Wrapper widget for available authentication editors
+ * \brief Wrapper widget for available authentication editors.
  */
 class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEditors
 {

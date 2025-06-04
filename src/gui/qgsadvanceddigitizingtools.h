@@ -111,7 +111,7 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
 
 /**
  * \ingroup gui
- * \brief A advanced digitizing tools to handle the selection of a point at the intersection
+ * \brief An advanced digitizing tool which handles the selection of a point at the intersection
  * of two circles.
  * \since QGIS 3.40
  */

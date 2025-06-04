@@ -38,6 +38,7 @@
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
 #include "qgsogrproviderutils.h"
+#include "qgsjsonutils.h"
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
 #include "qgsweakrelation.h"
@@ -59,6 +60,7 @@
 
 #include "ogr_srs_api.h"
 
+#include "nlohmann/json.hpp"
 
 void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source ) const
 {
@@ -541,24 +543,49 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   if ( ok )
     *ok = true;
 
+
+  auto getJsonValue = [&]() -> bool
+  {
+    const char *json = OGR_F_GetFieldAsString( ogrFet, attIndex );
+    QString jsonContent;
+    if ( encoding )
+      jsonContent = encoding->toUnicode( json ).toUtf8();
+    else
+      jsonContent = QString::fromUtf8( json ).toUtf8();
+
+    try
+    {
+      const nlohmann::json json_element = json::parse( jsonContent.toStdString() );
+      value = QgsJsonUtils::jsonToVariant( json_element );
+      return true;
+    }
+    catch ( const json::parse_error &e )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Error parsing JSON: %1" ).arg( e.what() ), 2 );
+      return false;
+    }
+  };
+
   if ( OGR_F_IsFieldSetAndNotNull( ogrFet, attIndex ) )
   {
     switch ( field.type() )
     {
       case QMetaType::Type::QString:
       {
-        if ( encoding )
-          value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
-        else
-          value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+        {
+          if ( encoding )
+            value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+          else
+            value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
 
 #ifdef Q_OS_WIN
-        // Fixes GH #41076 (empty strings shown as NULL), because we have checked before that it was NOT NULL
-        // Note:  QVariant( QString( ) ).isNull( ) is still true on windows so we really need string literal :(
-        if ( value.isNull() )
-          value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
+          // Fixes GH #41076 (empty strings shown as NULL), because we have checked before that it was NOT NULL
+          // Note:  QVariant( QString( ) ).isNull( ) is still true on windows so we really need string literal :(
+          if ( value.isNull() )
+            value = QVariant( QStringLiteral( "" ) ); // skip-keyword-check
 #endif
-
+        }
         break;
       }
       case QMetaType::Type::Int:
@@ -614,21 +641,24 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
       case QMetaType::Type::QStringList:
       {
-        QStringList list;
-        char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-        const int count = CSLCount( lst );
-        if ( count > 0 )
+        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
         {
-          list.reserve( count );
-          for ( int i = 0; i < count; i++ )
+          QStringList list;
+          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+          const int count = CSLCount( lst );
+          if ( count > 0 )
           {
-            if ( encoding )
-              list << encoding->toUnicode( lst[i] );
-            else
-              list << QString::fromUtf8( lst[i] );
+            list.reserve( count );
+            for ( int i = 0; i < count; i++ )
+            {
+              if ( encoding )
+                list << encoding->toUnicode( lst[i] );
+              else
+                list << QString::fromUtf8( lst[i] );
+            }
           }
+          value = list;
         }
-        value = list;
         break;
       }
 
@@ -638,72 +668,84 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         {
           case QMetaType::Type::QString:
           {
-            QStringList list;
-            char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-            const int count = CSLCount( lst );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QStringList list;
+              char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+              const int count = CSLCount( lst );
+              if ( count > 0 )
               {
-                if ( encoding )
-                  list << encoding->toUnicode( lst[i] );
-                else
-                  list << QString::fromUtf8( lst[i] );
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  if ( encoding )
+                    list << encoding->toUnicode( lst[i] );
+                  else
+                    list << QString::fromUtf8( lst[i] );
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
           case QMetaType::Type::Int:
           {
-            QVariantList list;
-            int count = 0;
-            const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QVariantList list;
+              int count = 0;
+              const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
+              if ( count > 0 )
               {
-                list << lst[i];
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  list << lst[i];
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
           case QMetaType::Type::Double:
           {
-            QVariantList list;
-            int count = 0;
-            const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QVariantList list;
+              int count = 0;
+              const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
+              if ( count > 0 )
               {
-                list << lst[i];
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  list << lst[i];
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
           case QMetaType::Type::LongLong:
           {
-            QVariantList list;
-            int count = 0;
-            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
-            if ( count > 0 )
+            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
             {
-              list.reserve( count );
-              for ( int i = 0; i < count; i++ )
+              QVariantList list;
+              int count = 0;
+              const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+              if ( count > 0 )
               {
-                list << lst[i];
+                list.reserve( count );
+                for ( int i = 0; i < count; i++ )
+                {
+                  list << lst[i];
+                }
               }
+              value = list;
             }
-            value = list;
             break;
           }
 
@@ -1833,7 +1875,6 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
       if ( ogrSubType == OFSTBoolean )
       {
         variantType = QMetaType::Type::Bool;
-        ogrSubType = OFSTBoolean;
       }
       else
         variantType = QMetaType::Type::Int;
@@ -1862,7 +1903,6 @@ void QgsOgrUtils::ogrFieldTypeToQVariantType( OGRFieldType ogrType, OGRFieldSubT
     case OFTWideString:
       if ( ogrSubType == OFSTJSON )
       {
-        ogrSubType = OFSTJSON;
         variantType = QMetaType::Type::QVariantMap;
         variantSubType = QMetaType::Type::QString;
       }
@@ -2297,6 +2337,14 @@ OGRFieldDomainH QgsOgrUtils::convertFieldDomain( const QgsFieldDomain *domain )
       break;
     case Qgis::FieldDomainMergePolicy::Sum:
       OGR_FldDomain_SetMergePolicy( res, OFDMP_SUM );
+      break;
+
+    case Qgis::FieldDomainMergePolicy::UnsetField:
+    case Qgis::FieldDomainMergePolicy::LargestGeometry:
+    case Qgis::FieldDomainMergePolicy::MinimumValue:
+    case Qgis::FieldDomainMergePolicy::MaximumValue:
+    case Qgis::FieldDomainMergePolicy::SetToNull:
+      // not supported
       break;
   }
 

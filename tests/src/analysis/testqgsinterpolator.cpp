@@ -325,7 +325,7 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 
   QgsInterpolator::LayerData layerdata;
   layerdata.source = mLayerPoint.get();
-  layerdata.valueSource = QgsInterpolator::ValueZ;
+  layerdata.valueSource = QgsInterpolator::ValueSource::Z;
   QList<QgsInterpolator::LayerData> layerDataList;
   layerDataList.append( layerdata );
 

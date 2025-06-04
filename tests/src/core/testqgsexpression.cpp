@@ -470,7 +470,7 @@ class TestQgsExpression : public QObject
       QTest::addColumn<QString>( "dump" );
       QTest::addColumn<QVariant>( "result" );
 
-      QTest::newRow( "toint alias" ) << "toint(3.2)" << false << "to_int(3.2)" << QVariant( 3 );
+      QTest::newRow( "toint alias" ) << "toint(3.2)" << false << "to_int(3.20000000000000018)" << QVariant( 3 );
       QTest::newRow( "int to double" ) << "toreal(3)" << false << "to_real(3)" << QVariant( 3. );
       QTest::newRow( "int to text" ) << "tostring(6)" << false << "to_string(6)" << QVariant( "6" );
     }
@@ -1242,7 +1242,6 @@ class TestQgsExpression : public QObject
       QTest::newRow( "end_point multipoint" ) << "geom_to_wkt(end_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point line" ) << "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (2 2)" );
       QTest::newRow( "end_point polygon" ) << "geom_to_wkt(end_point(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))')))" << false << QVariant( "Point (-1 -1)" );
-      QTest::newRow( "reverse not geom" ) << "reverse('g')" << true << QVariant();
       QTest::newRow( "reverse null" ) << "reverse(NULL)" << false << QVariant();
       QTest::newRow( "reverse point" ) << "reverse(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "reverse polygon" ) << "reverse(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant();
@@ -1684,6 +1683,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
       QTest::newRow( "upper" ) << "upper('HeLLo')" << false << QVariant( "HELLO" );
       QTest::newRow( "length" ) << "length('HeLLo')" << false << QVariant( 5 );
+      QTest::newRow( "repeat 0" ) << "repeat('HeLLo', 0)" << false << QVariant( "" );
+      QTest::newRow( "repeat 1" ) << "repeat('HeLLo', 1)" << false << QVariant( "HeLLo" );
+      QTest::newRow( "repeat 3" ) << "repeat('HeLLo', 3)" << false << QVariant( "HeLLoHeLLoHeLLo" );
+      QTest::newRow( "repeat -1" ) << "repeat('HeLLo', -1)" << false << QVariant( "" );
       QTest::newRow( "replace" ) << "replace('HeLLo', 'LL', 'xx')" << false << QVariant( "Hexxo" );
       QTest::newRow( "replace (array replaced by array)" ) << "replace('321', array('1','2','3'), array('7','8','9'))" << false << QVariant( "987" );
       QTest::newRow( "replace (array replaced by string)" ) << "replace('12345', array('2','4'), '')" << false << QVariant( "135" );
@@ -1696,6 +1699,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
       QTest::newRow( "regexp_replace cap group" ) << "regexp_replace('HeLLo','(eL)', 'x\\\\1x')" << false << QVariant( "HxeLxLo" );
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
+      QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
+      QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
@@ -6021,6 +6026,32 @@ class TestQgsExpression : public QObject
           }
         }
       }
+    }
+
+    void testDumpLiteralNode_data()
+    {
+      QTest::addColumn<QVariant>( "value" );
+      QTest::addColumn<QString>( "expected" );
+      QTest::newRow( "int 1" ) << QVariant( 1 ) << QStringLiteral( "1" );
+      QTest::newRow( "int 11231234" ) << QVariant( 11231234 ) << QStringLiteral( "11231234" );
+      QTest::newRow( "int -11231234" ) << QVariant( -11231234 ) << QStringLiteral( "-11231234" );
+      QTest::newRow( "double 11.5" ) << QVariant( 11.5 ) << QStringLiteral( "11.5" );
+      QTest::newRow( "double -11.5" ) << QVariant( -11.5 ) << QStringLiteral( "-11.5" );
+      QTest::newRow( "double 3972047.39999999990686774" ) << QVariant( 3972047.39999999990686774 ) << QStringLiteral( "3972047.39999999990686774" );
+      QTest::newRow( "string abc" ) << QVariant( QStringLiteral( "abc" ) ) << QStringLiteral( "'abc'" );
+      QTest::newRow( "bool TRUE" ) << QVariant( true ) << QStringLiteral( "TRUE" );
+      QTest::newRow( "bool FALSE" ) << QVariant( false ) << QStringLiteral( "FALSE" );
+      QTest::newRow( "date" ) << QVariant( QDate( 2020, 5, 12 ) ) << QStringLiteral( "'2020-05-12'" );
+      QTest::newRow( "time" ) << QVariant( QTime( 9, 5, 12 ) ) << QStringLiteral( "'09:05:12'" );
+      QTest::newRow( "datetime" ) << QVariant( QDateTime( QDate( 2020, 5, 12 ), QTime( 9, 5, 12 ), Qt::UTC ) ) << QStringLiteral( "'2020-05-12T09:05:12Z'" );
+    }
+
+    void testDumpLiteralNode()
+    {
+      QFETCH( QVariant, value );
+      QFETCH( QString, expected );
+
+      QCOMPARE( QgsExpressionNodeLiteral( value ).dump(), expected );
     }
 };
 

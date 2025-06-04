@@ -44,7 +44,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 ///@endcond
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Terrain generator that creates a simple square flat area.
  *
  */

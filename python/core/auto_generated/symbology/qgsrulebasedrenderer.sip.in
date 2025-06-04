@@ -43,7 +43,8 @@ the rules and draws features with symbols from rules that match.
 
         RenderJob( const QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 %Docstring
-Constructor for a render job, with the specified feature to render and symbol.
+Constructor for a render job, with the specified feature to render and
+symbol.
 
 .. note::
 
@@ -79,13 +80,13 @@ Constructor for a render job, with the specified feature to render and symbol.
     class Rule
 {
 %Docstring(signature="appended")
-This class keeps data about a rules for rule-based renderer.
+Represents an individual rule for a rule-based renderer.
 
-A rule consists of a symbol, filter expression and range of scales.
-If filter is empty, it matches all features.
-If scale range has both values zero, it matches all scales.
-If one of the min/max scale denominators is zero, there is no lower/upper bound for scales.
-A rule matches if both filter and scale range match.
+A rule consists of a symbol, filter expression and range of scales. If
+filter is empty, it matches all features. If scale range has both values
+zero, it matches all scales. If one of the min/max scale denominators is
+zero, there is no lower/upper bound for scales. A rule matches if both
+filter and scale range match.
 %End
 
 %TypeHeaderCode
@@ -111,7 +112,8 @@ Constructor takes ownership of the symbol
 %Docstring
 Dump for debug purpose
 
-:param indent: How many characters to indent. Will increase by two with every of the recursive calls
+:param indent: How many characters to indent. Will increase by two with
+               every of the recursive calls
 
 :return: A string representing this rule
 %End
@@ -125,15 +127,14 @@ Returns the attributes used to evaluate the expression of this rule
 
         bool needsGeometry() const;
 %Docstring
-Returns ``True`` if this rule or one of its children needs the geometry to be applied.
+Returns ``True`` if this rule or one of its children needs the geometry
+to be applied.
 %End
 
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 %Docstring
-
-.. note::
-
-   available in Python bindings as symbol2
+Returns a list of the symbols used by this rule and all children of this
+rule.
 %End
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
@@ -150,9 +151,9 @@ Check if a given feature shall be rendered by this rule
 
         bool isScaleOK( double scale ) const;
 %Docstring
-Check if this rule applies for a given ``scale``.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-If set to 0, it will always return ``True``.
+Check if this rule applies for a given ``scale``. The ``scale`` value
+indicates the scale denominator, e.g. 1000.0 for a 1:1000 map. If set to
+0, it will always return ``True``.
 
 :return: If the rule will be evaluated at this scale
 %End
@@ -163,9 +164,10 @@ If set to 0, it will always return ``True``.
 
         double maximumScale() const;
 %Docstring
-Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule will be active.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no maximum scale visibility.
+Returns the maximum map scale (i.e. most "zoomed in" scale) at which the
+rule will be active. The scale value indicates the scale denominator,
+e.g. 1000.0 for a 1:1000 map. A scale of 0 indicates no maximum scale
+visibility.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -174,9 +176,10 @@ A scale of 0 indicates no maximum scale visibility.
 
         double minimumScale() const;
 %Docstring
-Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule will be active.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no minimum scale visibility.
+Returns the minimum map scale (i.e. most "zoomed out" scale) at which
+the rule will be active. The scale value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map. A scale of 0 indicates no
+minimum scale visibility.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -218,7 +221,8 @@ Unique rule identifier (for identification of rule within renderer)
 
         void setRuleKey( const QString &key );
 %Docstring
-Override the assigned rule key (should be used just internally by rule-based renderer)
+Override the assigned rule key (should be used just internally by
+rule-based renderer)
 %End
 
         void setSymbol( QgsSymbol *sym /Transfer/ );
@@ -229,9 +233,10 @@ Sets a new symbol (or ``None``). Deletes old symbol.
 
         void setMinimumScale( double scale );
 %Docstring
-Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the rule will be active.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A ``scale`` of 0 indicates no minimum scale visibility.
+Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which
+the rule will be active. The ``scale`` value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map. A ``scale`` of 0 indicates no
+minimum scale visibility.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -240,9 +245,10 @@ A ``scale`` of 0 indicates no minimum scale visibility.
 
         void setMaximumScale( double scale );
 %Docstring
-Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the rule will be active.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A ``scale`` of 0 indicates no maximum scale visibility.
+Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which
+the rule will be active. The ``scale`` value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map. A ``scale`` of 0 indicates no
+maximum scale visibility.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -251,7 +257,8 @@ A ``scale`` of 0 indicates no maximum scale visibility.
 
         void setFilterExpression( const QString &filterExp );
 %Docstring
-Set the expression used to check if a given feature shall be rendered with this rule
+Set the expression used to check if a given feature shall be rendered
+with this rule
 
 :param filterExp: An expression
 %End
@@ -275,21 +282,34 @@ Sets if this rule is active
 clone this rule, return new instance
 %End
 
-        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-Saves the symbol layer as SLD
+Saves the symbol layer as SLD.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+        bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Saves the rule to SLD.
+
+.. versionadded:: 3.44
 %End
 
         static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
 %Docstring
-Create a rule from the SLD provided in element and for the specified geometry type.
+Create a rule from the SLD provided in element and for the specified
+geometry type.
 %End
 
         QDomElement save( QDomDocument &doc, QgsSymbolMap &symbolMap ) const;
 
         bool startRender( QgsRenderContext &context, const QgsFields &fields, QString &filter );
 %Docstring
-prepare the rule for rendering and its children (build active children array)
+prepare the rule for rendering and its children (build active children
+array)
 %End
 
         bool hasActiveChildren() const;
@@ -311,19 +331,22 @@ Gets all used z-levels from this rule and children
 
         QgsRuleBasedRenderer::Rule::RenderResult renderFeature( QgsRuleBasedRenderer::FeatureToRender &featToRender, QgsRenderContext &context, QgsRuleBasedRenderer::RenderQueue &renderQueue );
 %Docstring
-Render a given feature, will recursively call subclasses and only render if the constraints apply.
+Render a given feature, will recursively call subclasses and only render
+if the constraints apply.
 
 :param featToRender: The feature to render
 :param context: The rendering context
-:param renderQueue: The rendering queue to which the feature should be added
+:param renderQueue: The rendering queue to which the feature should be
+                    added
 
-:return: The result of the rendering. In explicit if the feature is added to the queue or
-         the reason for not rendering the feature.
+:return: The result of the rendering. In explicit if the feature is
+         added to the queue or the reason for not rendering the feature.
 %End
 
         bool willRenderFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );
 %Docstring
-only tell whether a feature will be rendered without actually rendering it
+only tell whether a feature will be rendered without actually rendering
+it
 %End
 
         QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext *context = 0 );
@@ -343,12 +366,14 @@ context.
 
 :param feature: The feature for which rules have to be find
 :param context: The rendering context
-:param onlyActive: ``True`` to search for active rules only, ``False`` otherwise
+:param onlyActive: ``True`` to search for active rules only, ``False``
+                   otherwise
 %End
 
         void stopRender( QgsRenderContext &context );
 %Docstring
-Stop a rendering process. Used to clean up the internal state of this rule
+Stop a rendering process. Used to clean up the internal state of this
+rule
 
 :param context: The rendering context
 %End
@@ -359,7 +384,10 @@ Create a rule from an XML definition
 
 :param ruleElem: The XML rule element
 :param symbolMap: Symbol map
-:param reuseId: set to ``True`` to create an exact copy of the original symbol or ``False`` to create a new rule with the same parameters as the original but a new unique :py:func:`~Rule.ruleKey`. (Since QGIS 3.30)
+:param reuseId: set to ``True`` to create an exact copy of the original
+                symbol or ``False`` to create a new rule with the same
+                parameters as the original but a new unique
+                :py:func:`~Rule.ruleKey`. (Since QGIS 3.30)
 
 :return: A new rule
 %End
@@ -373,7 +401,8 @@ Returns all children rules of this rule
 
         QgsRuleBasedRenderer::RuleList descendants() const;
 %Docstring
-Returns all children, grand-children, grand-grand-children, grand-gra... you get it
+Returns all children, grand-children, grand-grand-children, grand-gra...
+you get it
 
 :return: A list of descendant rules
 %End
@@ -436,11 +465,11 @@ Check if this rule is an ELSE rule
 
         bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified symbology ``visitor``, causing it to visit all child rules associated
-with the rule.
+Accepts the specified symbology ``visitor``, causing it to visit all
+child rules associated with the rule.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -464,7 +493,8 @@ Constructs the renderer from given tree of rules (takes ownership)
 %End
     QgsRuleBasedRenderer( QgsSymbol *defaultSymbol /Transfer/ );
 %Docstring
-Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
+Constructor for convenience. Creates a root rule and adds a default rule
+with symbol (takes ownership)
 %End
 
     ~QgsRuleBasedRenderer();
@@ -472,7 +502,8 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 %Docstring
-Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
+Returns symbol for current feature. Should not be used individually:
+there could be more symbols for a feature
 %End
 
     virtual Qgis::FeatureRendererFlags flags() const;
@@ -499,7 +530,9 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual QgsRuleBasedRenderer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
@@ -545,29 +578,35 @@ Creates a new rule based renderer from an SLD XML element.
 
     static void refineRuleCategories( QgsRuleBasedRenderer::Rule *initialRule, QgsCategorizedSymbolRenderer *r );
 %Docstring
-take a rule and create a list of new rules based on the categories from categorized symbol renderer
+take a rule and create a list of new rules based on the categories from
+categorized symbol renderer
 %End
     static void refineRuleRanges( QgsRuleBasedRenderer::Rule *initialRule, QgsGraduatedSymbolRenderer *r );
 %Docstring
-take a rule and create a list of new rules based on the ranges from graduated symbol renderer
+take a rule and create a list of new rules based on the ranges from
+graduated symbol renderer
 %End
     static void refineRuleScales( QgsRuleBasedRenderer::Rule *initialRule, QList<int> scales );
 %Docstring
-take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
+take a rule and create a list of new rules with intervals of scales
+given by the passed scale denominators
 %End
 
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
 %Docstring
 Creates a new QgsRuleBasedRenderer from an existing ``renderer``.
 
-Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
+Since QGIS 3.20, the optional ``layer`` parameter is required for
+conversions of some renderer types.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
     static void convertToDataDefinedSymbology( QgsSymbol *symbol, const QString &sizeScaleField, const QString &rotationField = QString() );
 %Docstring
-helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
+helper function to convert the size scale and rotation fields present in
+some other renderers to data defined symbology
 %End
 
   protected:

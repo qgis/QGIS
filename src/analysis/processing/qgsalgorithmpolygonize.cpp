@@ -32,6 +32,11 @@ QString QgsPolygonizeAlgorithm::displayName() const
 
 QString QgsPolygonizeAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm creates a polygon layer from the input lines layer." );
+}
+
+QString QgsPolygonizeAlgorithm::shortDescription() const
+{
   return QObject::tr( "Creates a polygon layer from the input lines layer." );
 }
 
@@ -115,17 +120,20 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
   if ( !polygons.isEmpty() )
   {
     const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( polygons.constGet() );
-    step = collection->numGeometries() > 0 ? 50.0 / collection->numGeometries() : 1;
-    for ( int part = 0; part < collection->numGeometries(); ++part )
+    const int numGeometries = collection ? collection->numGeometries() : 1;
+    step = numGeometries > 0 ? 50.0 / numGeometries : 1;
+
+    int part = 0;
+    for ( auto partIt = polygons.const_parts_begin(); partIt != polygons.const_parts_end(); ++partIt, ++part )
     {
       if ( feedback->isCanceled() )
         break;
 
       QgsFeature outFeat;
-      outFeat.setGeometry( QgsGeometry( collection->geometryN( part )->clone() ) );
+      outFeat.setGeometry( QgsGeometry( ( *partIt )->clone() ) );
       if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-      feedback->setProgress( 50 + i * step );
+      feedback->setProgress( 50 + part * step );
       polygonCount += 1;
     }
   }

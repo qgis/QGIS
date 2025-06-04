@@ -43,7 +43,7 @@ class QgsFeatureRenderer;
 
 /**
  * \ingroup gui
- * \brief A class for highlight features on the map.
+ * \brief Highlights features on the map.
  *
  * The QgsHighlight class provides a transparent overlay canvas item
  * for highlighting features or geometries on a map canvas.
@@ -144,20 +144,23 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     void setWidth( int width );
 
     /**
-     * Returns the buffer
+     * Returns the line/stroke buffer size (in millimeters)
+     *
+     * \see setBuffer()
+     *
      * \since QGIS 3.4
      */
     double buffer() const { return mBuffer; }
 
     /**
-     * Set line / stroke buffer in millimeters.
+     * Sets the line/stroke buffer size (in millimeters).
      *
+     * \see buffer()
      */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
     /**
-     * Set minimum line / stroke width in millimeters.
-     *
+     * Sets the minimum line/stroke width (in millimeters).
      */
     void setMinWidth( double width ) { mMinWidth = width; }
 
@@ -210,8 +213,8 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     QgsGeometry mGeometry;
     QPointer<QgsMapLayer> mLayer;
     QgsFeature mFeature;
-    double mBuffer = 0;   // line / stroke buffer in pixels
-    double mMinWidth = 0; // line / stroke minimum width in pixels
+    double mBuffer = 0;   // line / stroke buffer in millimeters
+    double mMinWidth = 0; // line / stroke minimum width in millimeters
     QgsRenderContext mRenderContext;
 
     // we don't want to make PointSymbol public for now, so just grant access selectively via a friend

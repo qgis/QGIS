@@ -47,8 +47,13 @@ QString QgsDxfExportAlgorithm::groupId() const
 
 QString QgsDxfExportAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports layers to DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
+  return QObject::tr( "Exports layers to a DXF file. For each layer, you can choose a field whose values are used to split features in generated destination layers in the DXF output.\n\n"
                       "If no field is chosen, you can still override the output layer name by directly entering a new output layer name in the Configure Layer panel or by preferring layer title (set in layer properties) to layer name." );
+}
+
+QString QgsDxfExportAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports layers to a DXF file." );
 }
 
 QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
@@ -88,6 +93,7 @@ bool QgsDxfExportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   {
     mMapThemeStyleOverrides = context.project()->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
   }
+  mScaleMethod = context.project()->scaleMethod();
   return true;
 }
 
@@ -96,6 +102,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   QgsMapSettings mapSettings;
   mapSettings.setTransformContext( context.transformContext() );
   mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
+  mapSettings.setScaleMethod( mScaleMethod );
 
   QList<QgsVectorLayer *> mapLayers;
 

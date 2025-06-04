@@ -13,22 +13,27 @@
 class QgsSnappingUtils : QObject
 {
 %Docstring(signature="appended")
-This class has all the configuration of snapping and can return answers to snapping queries.
+Contains configuration of snapping and can return answers to snapping
+queries.
 
-Internally, it keeps a cache of :py:class:`QgsPointLocator` instances for multiple layers.
+Internally, it keeps a cache of :py:class:`QgsPointLocator` instances
+for multiple layers.
 
 Currently it supports the following queries:
 
 - :py:func:`~snapToMap` - has multiple modes of operation
 - :py:func:`~snapToCurrentLayer`
 
-For more complex queries it is possible to use :py:func:`~locatorForLayer` method that returns
-point locator instance with layer's indexed data.
+For more complex queries it is possible to use
+:py:func:`~locatorForLayer` method that returns point locator instance
+with layer's indexed data.
 
-Indexing strategy determines how fast the queries will be and how much memory will be used.
+Indexing strategy determines how fast the queries will be and how much
+memory will be used.
 
-When working with map canvas, it may be useful to use derived class :py:class:`QgsMapCanvasSnappingUtils`
-which keeps the configuration in sync with map canvas (e.g. current view, active layer).
+When working with map canvas, it may be useful to use derived class
+:py:class:`QgsMapCanvasSnappingUtils` which keeps the configuration in
+sync with map canvas (e.g. current view, active layer).
 %End
 
 %TypeHeaderCode
@@ -41,14 +46,17 @@ which keeps the configuration in sync with map canvas (e.g. current view, active
 Constructor for QgsSnappingUtils
 
 :param parent: parent object
-:param enableSnappingForInvisibleFeature: ``True`` if we want to snap feature even if there are not visible
+:param enableSnappingForInvisibleFeature: ``True`` if we want to snap
+                                          feature even if there are not
+                                          visible
 %End
     ~QgsSnappingUtils();
 
 
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 %Docstring
-Gets a point locator for the given layer. If such locator does not exist, it will be created
+Gets a point locator for the given layer. If such locator does not
+exist, it will be created
 
 :param vl: the vector layer
 %End
@@ -59,7 +67,8 @@ Snap to map according to the current configuration.
 
 :param point: point in canvas coordinates
 :param filter: allows discarding unwanted matches.
-:param relaxed: ``True`` if this method is non blocking and the matching result can be invalid while indexing
+:param relaxed: ``True`` if this method is non blocking and the matching
+                result can be invalid while indexing
 %End
 
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
@@ -68,7 +77,8 @@ Snap to map according to the current configuration.
 
 :param pointMap: point in map coordinates
 :param filter: allows discarding unwanted matches.
-:param relaxed: ``True`` if this method is non blocking and the matching result can be invalid while indexing
+:param relaxed: ``True`` if this method is non blocking and the matching
+                result can be invalid while indexing
 %End
 
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = 0 );
@@ -79,13 +89,15 @@ Snap to current layer
 
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring
-Assign current map settings to the utils - used for conversion between screen coords to map coords
+Assign current map settings to the utils - used for conversion between
+screen coords to map coords
 %End
     QgsMapSettings mapSettings() const;
 
     void setCurrentLayer( QgsVectorLayer *layer );
 %Docstring
-Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
+Sets current layer so that if mode is SnapCurrentLayer we know which
+layer to use
 %End
     QgsVectorLayer *currentLayer() const;
 %Docstring
@@ -103,11 +115,13 @@ The current layer used if mode is SnapCurrentLayer
 
     void setIndexingStrategy( IndexingStrategy strategy );
 %Docstring
-Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+Sets a strategy for indexing geometry data - determines how fast and
+memory consuming the data structures will be
 %End
     IndexingStrategy indexingStrategy() const;
 %Docstring
-Find out which strategy is used for indexing - by default hybrid indexing is used
+Find out which strategy is used for indexing - by default hybrid
+indexing is used
 %End
 
     struct LayerConfig
@@ -167,9 +181,8 @@ Set if invisible features must be snapped or not.
 
     void addExtraSnapLayer( QgsVectorLayer *vl );
 %Docstring
-Supply an extra snapping layer (typically a memory layer).
-This can be used by map tools to provide additional
-snappings points.
+Supply an extra snapping layer (typically a memory layer). This can be
+used by map tools to provide additional snappings points.
 
 .. seealso:: :py:func:`removeExtraSnapLayer`
 
@@ -224,16 +237,19 @@ Emitted when the snapping settings object changes.
 
     virtual void prepareIndexStarting( int count );
 %Docstring
-Called when starting to index with snapToMap - can be overridden and e.g. progress dialog can be provided
+Called when starting to index with snapToMap - can be overridden and
+e.g. progress dialog can be provided
 %End
     virtual void prepareIndexProgress( int index );
 %Docstring
-Called when finished indexing a layer with snapToMap. When index == count the indexing is complete
+Called when finished indexing a layer with snapToMap. When index ==
+count the indexing is complete
 %End
 
     void clearAllLocators();
 %Docstring
-Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
+Deletes all existing locators (e.g. when destination CRS has changed and
+we need to reindex)
 %End
 
 };

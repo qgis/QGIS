@@ -56,6 +56,7 @@ my $dopoint;
 my $doltr = 0;
 my $dopremajor = 0;
 my $skipts = 0;
+my $ignoretsdrop = 0;
 
 my $result = GetOptions(
 		"major" => \$domajor,
@@ -67,6 +68,7 @@ my $result = GetOptions(
 		"dryrun" => \$dryrun,
 		"premajor" => \$dopremajor,
 		"skipts" => \$skipts,
+		"ignoretsdrop" => \$ignoretsdrop,
 	);
 
 pod2usage(1) if $help;
@@ -156,7 +158,8 @@ my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
 unless( $skipts ) {
 	print "Pulling transifex translations...\n";
-	run( "CONSIDER_TS_DROP_FATAL=1 scripts/pull_ts.sh", "pull_ts.sh failed" );
+	my $o = $ignoretsdrop ? "" : "CONSIDER_TS_DROP_FATAL=1";
+	run( "$o scripts/pull_ts.sh", "pull_ts.sh failed" );
 	run( "git add i18n/*.ts", "adding translations failed" );
 	run( "git commit -n -a -m \"translation update for $version from transifex\"", "could not commit translation updates" );
 } else {
@@ -273,6 +276,7 @@ release.pl {{-major|-minor [-premajor]} [-skipts] -releasename=releasename|-poin
     -ltr                new release is a long term release
     -dryrun             just echo but don't run any commands
     -skipts		skip transifex update
+    -ignoretsdrop	drop error out when a translation is dropped
     -premajor           branch off a second "master" branch before
 			a major release
 

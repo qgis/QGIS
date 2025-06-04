@@ -37,12 +37,17 @@ QString QgsPointsToPathsAlgorithm::displayName() const
 
 QString QgsPointsToPathsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a point layer and connects its features creating a new line layer.\n\n"
+  return QObject::tr( "This algorithm takes a point layer and connects its features to create a new line layer.\n\n"
                       "An attribute or expression may be specified to define the order the points should be connected. "
                       "If no order expression is specified, the feature ID is used.\n\n"
                       "A natural sort can be used when sorting by a string attribute "
                       "or expression (ie. place 'a9' before 'a10').\n\n"
                       "An attribute or expression can be selected to group points having the same value into the same resulting line." );
+}
+
+QString QgsPointsToPathsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Takes a point layer and connects its features to create a new line layer." );
 }
 
 QStringList QgsPointsToPathsAlgorithm::tags() const

@@ -28,20 +28,17 @@ Constructor
 
     QString type() const;
 %Docstring
-
-:return: the widget type to use
+Returns the widget type to use.
 %End
 
     QVariantMap config() const;
 %Docstring
-
-:return: the widget configuration to used
+Returns the widget configuration.
 %End
 
     bool isNull() const;
 %Docstring
-
-:return: ``True`` if there is no widget configured.
+Returns ``True`` if there is no widget configured.
 %End
 
     bool operator==( const QgsEditorWidgetSetup &other ) const;

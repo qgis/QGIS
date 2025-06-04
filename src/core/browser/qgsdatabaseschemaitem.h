@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * \brief A Collection that represents a database schema item
+ * \brief A browser item that represents a database schema item.
  * \since QGIS 3.16
 */
 class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem

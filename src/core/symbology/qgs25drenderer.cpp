@@ -144,7 +144,7 @@ QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadW
   const QDomNodeList symbols = element.elementsByTagName( QStringLiteral( "symbol" ) );
   if ( symbols.size() )
   {
-    renderer->mSymbol.reset( QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement(), context ) );
+    renderer->mSymbol = QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement(), context );
   }
 
   return renderer;

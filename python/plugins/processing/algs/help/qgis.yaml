@@ -7,36 +7,8 @@ qgis:barplot: >
 qgis:boxplot: >
   This algorithm creates a box plot from a category and a layer field.
 
-qgis:checkvalidity: >
-  This algorithm performs a validity check on the geometries of a vector layer.
-
-  The geometries are classified in three groups (valid, invalid and error), and a vector layer is generated with the features in each of these categories.
-
-  By default the algorithm uses the strict OGC definition of polygon validity, where a polygon is marked as invalid if a self-intersecting ring causes an interior hole. If the "Ignore ring self intersections" option is checked, then this rule will be ignored and a more lenient validity check will be performed.
-
-  The GEOS method is faster and performs better on larger geometries, but is limited to only returning the first error encountered in a geometry. The QGIS method will be slower but reports all errors encountered in the geometry, not just the first.
-
-qgis:climbalongline: >
-  This algorithm calculates the total climb and descent along line geometries.
-
-  Input layers must have Z values present. If Z values are not available, the "Drape" (set Z value from raster) algorithm may be used to add Z values from a DEM layer.
-
-  The output layer is a copy of the input layer with additional fields that contain the total climb, total descent, the minimum elevation and the maximum elevation for each line geometry. If the input layer contains fields with the same names as these added fields, they will be renamed (field names will be altered to "name_2", "name_3", etc, finding the first non-duplicate name).
-
 qgis:concavehull: >
   This algorithm computes the concave hull of the features in an input layer.
-
-qgis:convertgeometrytype: >
-  This algorithm generates a new layer based on an existing one, with a different type of geometry.
-
-  Not all conversions are possible. For instance, a line layer can be converted to a point layer, but a point layer cannot be converted to a line layer.
-
-  See the "Polygonize" or "Lines to polygons" algorithm for alternative options.
-
-qgis:definecurrentprojection: >
-  This algorithm sets an existing Shapefile's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
-
-  The .prj and .qpj files associated with the Shapefile will be overwritten - or created if missing - to match the provided CRS.
 
 qgis:distancematrix: >
   This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer.
@@ -61,18 +33,6 @@ qgis:executesql: >
   Input data sources are identified with input1, input2, ..., inputN and a simple query will look like: SELECT * FROM input1
 
   The result of the query will be added as a new layer.
-
-qgis:exportaddgeometrycolumns: >
-  This algorithm computes geometric properties of the features in a vector layer. It generates a new vector layer with the same content as the input one, but with additional attributes in its attributes table, containing geometric measurements.
-
-  Depending on the geometry type of the vector layer, the attributes added to the table will be different.
-
-qgis:findprojection: >
-  This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
-
-  The expected area which the layer should reside in must be specified via the target area parameter.
-
-  The algorithm operates by testing the layer's extent in every known reference system and listing any in which the bounds would fall near the target area if the layer was in this projection.
 
 qgis:generatepointspixelcentroidsalongline: >
   This algorithm generates a point vector layer from an input raster and line layer.

@@ -23,8 +23,7 @@ class QgsFileDownloader;
 
 /**
  * \ingroup gui
- * \brief QgsFileDownloaderDialog is a QProgressDialog subclass which
- * handles file downloads and user feedback.
+ * \brief A QProgressDialog subclass which handles file downloads and user feedback.
  *
  * Internally, it uses QgsFileDownloader to handle the download,
  * while showing progress via a progress dialog and supporting

@@ -201,7 +201,7 @@ void TestQgsFeature::copy()
 {
   QgsFeature original( 1000LL );
   original.setAttributes( mAttrs );
-  original.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ) );
+  original.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ).release() );
 
   QgsFeature copy( original );
   QVERIFY( copy.id() == original.id() );
@@ -223,7 +223,7 @@ void TestQgsFeature::assignment()
 {
   QgsFeature original( 1000LL );
   original.setAttributes( mAttrs );
-  original.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ) );
+  original.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ).release() );
 
   QgsFeature copy;
   copy = original;
@@ -253,7 +253,7 @@ void TestQgsFeature::gettersSetters()
   QCOMPARE( feature.isValid(), true );
 
   QVERIFY( !feature.embeddedSymbol() );
-  feature.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ) );
+  feature.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ).release() );
   QVERIFY( feature.embeddedSymbol() );
 }
 
@@ -468,9 +468,9 @@ void TestQgsFeature::equality()
   QVERIFY( feature != feature2 );
   feature2.setAttribute( 1, QStringLiteral( "attr2" ) );
   QVERIFY( feature == feature2 );
-  feature2.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ) );
+  feature2.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ).release() );
   QVERIFY( feature != feature2 );
-  feature.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ) );
+  feature.setEmbeddedSymbol( QgsLineSymbol::createSimple( QVariantMap() ).release() );
   QVERIFY( feature != feature2 );
   feature2.setEmbeddedSymbol( nullptr );
   QVERIFY( feature != feature2 );

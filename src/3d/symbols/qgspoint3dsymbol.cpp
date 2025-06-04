@@ -117,7 +117,7 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   const QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
-  setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) );
+  setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ).release() );
 }
 
 QList<Qgis::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const

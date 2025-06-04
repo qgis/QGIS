@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorexpressoin.cpp - An expression editor based on QScintilla
+    qgscodeeditorexpression.cpp - An expression editor based on QScintilla
      --------------------------------------
     Date                 : 8.9.2018
     Copyright            : (C) 2018 by Matthias Kuhn
@@ -34,6 +34,16 @@ QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
 Qgis::ScriptLanguage QgsCodeEditorExpression::language() const
 {
   return Qgis::ScriptLanguage::QgisExpression;
+}
+
+Qgis::ScriptLanguageCapabilities QgsCodeEditorExpression::languageCapabilities() const
+{
+  return Qgis::ScriptLanguageCapability::ToggleComment;
+}
+
+void QgsCodeEditorExpression::toggleComment()
+{
+  toggleLineComments( QStringLiteral( "--" ) );
 }
 
 void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &context )

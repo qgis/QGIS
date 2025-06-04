@@ -16,6 +16,7 @@
 #include "qgsvectorlayerchunkloader_p.h"
 #include "moc_qgsvectorlayerchunkloader_p.cpp"
 #include "qgs3dutils.h"
+#include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
@@ -169,6 +170,15 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   , mSymbol( symbol->clone() )
   , mLeafLevel( leafLevel )
 {
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    // TODO: add support for handling of vector layers
+    // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
+    QgsDebugError( QStringLiteral( "Vector layers in globe scenes are not supported yet!" ) );
+    setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, leafLevel );
+    return;
+  }
+
   QgsBox3D rootBox3D( context.extent(), zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
@@ -192,7 +202,7 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map,
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
   {
-    mTransform->setTranslation( QVector3D( 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ), 0.0f ) );
+    mTransform->setTranslation( QVector3D( 0.0f, 0.0f, static_cast<float>( map->terrainSettings()->elevationOffset() ) ) );
   }
   this->addComponent( mTransform );
 
@@ -255,7 +265,7 @@ void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
   {
     newOffset = 0.0;
   }
-  mTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+  mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
 QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
@@ -308,7 +318,12 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         QVector3D nodeIntPoint;
         int triangleIndex = -1;
 
-        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, transformMatrix, nodeIntPoint, triangleIndex ) )
+        // the node geometry has been translated by chunkOrigin
+        // This translation is stored in the QTransform component
+        // this needs to be taken into account to get the whole transformation
+        const QMatrix4x4 nodeTransformMatrix = node->entity()->findChild<QgsGeoTransform *>()->matrix();
+        const QMatrix4x4 fullTransformMatrix = transformMatrix * nodeTransformMatrix;
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, fullTransformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;

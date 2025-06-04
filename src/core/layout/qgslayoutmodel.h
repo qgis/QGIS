@@ -35,8 +35,9 @@ class QgsLayoutItem;
  * \class QgsLayoutModel
  * \ingroup core
  *
- * \brief A model for items attached to a layout. The model also maintains the z-order for the
- * layout, and must be notified whenever item stacking changes.
+ * \brief A model for items attached to a layout.
+ *
+ * The model also maintains the z-order for the layout, and must be notified whenever item stacking changes.
  *
  * Internally, QgsLayoutModel maintains two lists. One contains a complete list of all items for
  * the layout, ordered by their position within the z-order stack.

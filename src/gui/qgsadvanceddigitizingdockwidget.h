@@ -43,8 +43,8 @@ class QgsUserInputWidget;
 
 /**
  * \ingroup gui
- * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
- * used to handle the CAD tools on top of a selection of map tools.
+ * \brief A dockable widget used to handle the CAD tools on top of a selection of map tools.
+ *
  * It handles both the UI and the constraints. Constraints are applied
  * by implementing filters called from QgsMapToolAdvancedDigitizing.
  */
@@ -1175,6 +1175,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QMenu *mCommonAngleActionsMenu = nullptr;
     QMenu *mFloaterActionsMenu = nullptr;
+
+    /* Store whether the target layer supports Z and M, to avoid unnecessary checks
+     * when floater settings are changed */
+    bool mTargetLayerSupportsZ = false;
+    bool mTargetLayerSupportsM = false;
 
     static const QgsSettingsEntryBool *settingsCadSnappingPriorityPrioritizeFeature;
     static const QgsSettingsEntryBool *settingsCadRecordConstructionGuides;

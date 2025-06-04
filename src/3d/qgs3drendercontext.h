@@ -33,7 +33,7 @@ class Qgs3DMapSettings;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Rendering context for preparation of 3D entities.
  *
  * Contains a snapshot of properties from Qgs3DMapSettings, in a thread-safe, cheap-to-copy structure.

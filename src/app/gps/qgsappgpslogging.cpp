@@ -338,7 +338,8 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
         pointFields.append( QgsField( fieldName, fieldType ) );
       }
 
-      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, pointFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::PointZM : Qgis::WkbType::PointZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options );
+      QString createdLayerUri;
+      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, pointFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::PointZM : Qgis::WkbType::PointZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options, createdLayerUri );
       if ( result != Qgis::VectorExportResult::Success )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );
@@ -374,7 +375,8 @@ bool QgsAppGpsLogging::createOrUpdateLogDatabase()
         tracksFields.append( QgsField( fieldName, fieldType ) );
       }
 
-      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, tracksFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::LineStringZM : Qgis::WkbType::LineStringZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options );
+      QString createdLayerUri;
+      const Qgis::VectorExportResult result = ogrMetadata->createEmptyLayer( mGpkgLogFile, tracksFields, QgsGpsLogger::settingsGpsStoreAttributeInMValues->value() ? Qgis::WkbType::LineStringZM : Qgis::WkbType::LineStringZ, QgsCoordinateReferenceSystem( "EPSG:4326" ), false, unusedMap, error, &options, createdLayerUri );
       if ( result != Qgis::VectorExportResult::Success )
       {
         QgisApp::instance()->messageBar()->pushCritical( tr( "Create GPS Log" ), tr( "Database creation failed: %1" ).arg( error ) );

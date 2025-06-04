@@ -19,7 +19,8 @@
 class QgsGeometryRubberBand : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geometries).
+A rubberband class for :py:class:`QgsAbstractGeometry` (considering
+curved geometries).
 %End
 
 %TypeHeaderCode
@@ -50,13 +51,15 @@ A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geome
 
     QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType = Qgis::GeometryType::Line );
 %Docstring
-Constructor for QgsGeometryRubberBand of the given ``geomType``, shown in the specified ``mapCanvas``.
+Constructor for QgsGeometryRubberBand of the given ``geomType``, shown
+in the specified ``mapCanvas``.
 %End
     ~QgsGeometryRubberBand();
 
     virtual void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
 %Docstring
-Sets geometry (takes ownership). Geometry is expected to be in map coordinates
+Sets geometry (takes ownership). Geometry is expected to be in map
+coordinates
 %End
     const QgsAbstractGeometry *geometry();
 %Docstring

@@ -41,13 +41,17 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
 #endif
 
   const QgsSettings settings;
-  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
   connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
     mCurrentCrs.updateDefinition();
     mLayerCrs.updateDefinition();
     mProjectCrs.updateDefinition();
     mDefaultCrs.updateDefinition();
+  } );
+
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [=] {
+    mProjectCrs = QgsProject::instance()->crs();
   } );
 }
 
@@ -75,11 +79,11 @@ QVariant StandardCoordinateReferenceSystemsModel::data( const QModelIndex &index
       switch ( option )
       {
         case QgsProjectionSelectionWidget::ProjectCrs:
-          return tr( "Project CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Project CRS: %1" ).arg( mProjectCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::DefaultCrs:
-          return tr( "Default CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Default CRS: %1" ).arg( mDefaultCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::LayerCrs:
-          return tr( "Layer CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Layer CRS: %1" ).arg( mLayerCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::CrsNotSet:
           return mNotSetText;
         case QgsProjectionSelectionWidget::CurrentCrs:
@@ -770,7 +774,7 @@ void QgsProjectionSelectionWidget::updateWarning()
       if ( !ensemble.code().isEmpty() )
         id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
 
       if ( ensemble.accuracy() > 0 )
       {

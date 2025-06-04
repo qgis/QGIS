@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmessagelog.h"
 #include "qgslayoutitemmapgrid.h"
 #include "moc_qgslayoutitemmapgrid.cpp"
 #include "qgslayoututils.h"
@@ -25,7 +24,6 @@
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"
-#include "qgssymbol.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsfontutils.h"
@@ -221,7 +219,7 @@ void QgsLayoutItemMapGrid::createDefaultGridLineSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  mGridLineSymbol.reset( QgsLineSymbol::createSimple( properties ) );
+  mGridLineSymbol = QgsLineSymbol::createSimple( properties );
 }
 
 void QgsLayoutItemMapGrid::createDefaultGridMarkerSymbol()
@@ -230,7 +228,7 @@ void QgsLayoutItemMapGrid::createDefaultGridMarkerSymbol()
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "2.0" ) );
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  mGridMarkerSymbol.reset( QgsMarkerSymbol::createSimple( properties ) );
+  mGridMarkerSymbol = QgsMarkerSymbol::createSimple( properties );
 }
 
 void QgsLayoutItemMapGrid::setGridLineWidth( const double width )
@@ -371,13 +369,13 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
     const QDomElement symbolElem = lineStyleElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
-      mGridLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+      mGridLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context );
     }
   }
   else
   {
     //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
-    mGridLineSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
+    mGridLineSymbol = QgsLineSymbol::createSimple( QVariantMap() );
     mGridLineSymbol->setWidth( itemElem.attribute( QStringLiteral( "penWidth" ), QStringLiteral( "0" ) ).toDouble() );
     mGridLineSymbol->setColor( QColor( itemElem.attribute( QStringLiteral( "penColorRed" ), QStringLiteral( "0" ) ).toInt(),
                                        itemElem.attribute( QStringLiteral( "penColorGreen" ), QStringLiteral( "0" ) ).toInt(),
@@ -390,7 +388,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
     const QDomElement symbolElem = markerStyleElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
-      mGridMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) );
+      mGridMarkerSymbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
     }
   }
 
@@ -495,6 +493,8 @@ void QgsLayoutItemMapGrid::drawGridCrsTransform( QgsRenderContext &context, doub
       QList< GridLine >::const_iterator gridIt = mGridLines.constBegin();
       for ( ; gridIt != mGridLines.constEnd(); ++gridIt )
       {
+        context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), gridIt->coordinate );
+        context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), gridIt->coordinateType == QgsLayoutItemMapGrid::AnnotationCoordinate::Longitude ? "x" : "y" );
         drawGridLine( scalePolygon( gridIt->line, dotsPerMM ), context );
       }
     }
@@ -610,7 +610,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   p->save();
   p->setCompositionMode( mBlendMode );
-  p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
+  p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
 
   const QRectF thisPaintRect = QRectF( 0, 0, mMap->rect().width(), mMap->rect().height() );
   p->setClipRect( thisPaintRect );
@@ -627,7 +627,8 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, p );
-  context.setForceVectorOutput( true );
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
+    context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   const QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
@@ -715,6 +716,10 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
       if ( vIt->coordinateType != AnnotationCoordinate::Longitude )
         continue;
       line = QLineF( vIt->line.first() * dotsPerMM, vIt->line.last() * dotsPerMM );
+
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), vIt->coordinate );
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "x" );
+
       drawGridLine( line, context );
     }
 
@@ -723,6 +728,10 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
       if ( hIt->coordinateType != AnnotationCoordinate::Latitude )
         continue;
       line = QLineF( hIt->line.first() * dotsPerMM, hIt->line.last() * dotsPerMM );
+
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), hIt->coordinate );
+      context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "y" );
+
       drawGridLine( line, context );
     }
   }
@@ -808,7 +817,7 @@ void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, GridExtension *extension 
   if ( p )
   {
     p->save();
-    p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
+    p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
   }
 
 

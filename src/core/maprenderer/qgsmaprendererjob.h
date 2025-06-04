@@ -564,6 +564,19 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     bool prepareLabelCache() const SIP_SKIP;
 
     /**
+     * Returns TRUE if any component of the map labeling requires non-default composition modes.
+     *
+     * This method is pessimistic, in that it will return TRUE in cases where composition
+     * modes cannot be easily determined in advance (e.g. when data-defined overrides are
+     * in place for composition modes).
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    bool labelingHasNonDefaultCompositionModes() const;
+
+    /**
      * Creates a list of layer rendering jobs and prepares them for later render.
      *
      * The \a painter argument specifies the destination painter. If not set, the jobs will
@@ -697,7 +710,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
 /**
  * \ingroup core
- * \brief Intermediate base class adding functionality that allows client to query the rendered image.
+ * \brief Intermediate base class adding functionality that allows a client to query the rendered image.
  *
  * The image can be queried even while the rendering is still in progress to get intermediate result
  *

@@ -125,6 +125,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( Qgis::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
     Q_PROPERTY( QgsProjectDisplaySettings *displaySettings READ displaySettings CONSTANT )
     Q_PROPERTY( Qgis::TransactionMode transactionMode READ transactionMode WRITE setTransactionMode NOTIFY transactionModeChanged )
+    Q_PROPERTY( Qgis::ScaleCalculationMethod scaleMethod READ scaleMethod WRITE setScaleMethod NOTIFY scaleMethodChanged )
 
   public:
 
@@ -790,6 +791,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setAreaUnits( Qgis::AreaUnit unit );
 
     /**
+     * Returns the method to use for map scale calculations for the project.
+     *
+     * \see setScaleMethod()
+     * \see scaleMethodChanged()
+     * \since QGIS 3.44
+     */
+    Qgis::ScaleCalculationMethod scaleMethod() const { return mScaleMethod; }
+
+    /**
+     * Sets the \a method to use for map scale calculations for the project.
+     *
+     * \see scaleMethod()
+     * \see scaleMethodChanged()
+     * \since QGIS 3.44
+     */
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
+
+    /**
      * Returns the project's home path. This will either be a manually set home path
      * (see presetHomePath()) or the path containing the project file itself.
      *
@@ -981,7 +1000,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns pointer to the helper class that synchronizes map layer registry with layer tree
      */
-    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
+    QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge.get(); }
 
     /**
      * Returns pointer to the project's map theme collection.
@@ -1354,6 +1373,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
                               bool addToLegend = true,
                               bool takeOwnership SIP_PYARGREMOVE = true );
 
+#ifndef SIP_RUN
     /**
      * \brief
      * Remove a set of layers from the registry by layer ID.
@@ -1385,6 +1405,62 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeAllMapLayers()
      */
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
+#else
+
+    /**
+     * \brief
+     * Remove a set of layers from the registry.
+     *
+     * The specified layers will be removed from the registry. If the registry has ownership
+     * of any layers these layers will also be deleted.
+     *
+     * \param layers list of layers or list of layer IDs of the layers to remove
+     *
+     * \note As a side-effect the QgsProject instance is marked dirty.
+     * \see removeMapLayer()
+     * \see removeAllMapLayers()
+     */
+    void removeMapLayers( SIP_PYOBJECT layers SIP_TYPEHINT( Union[List[QgsVectorLayer], List[str]] ) );
+    % MethodCode
+    if ( !PyList_Check( a0 ) )
+    {
+      sipIsErr = 1;
+      PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
+    }
+    else if ( PyList_GET_SIZE( a0 ) )
+    {
+      PyObject *firstLayerPyObj = PyList_GetItem( a0, 0 );
+      if ( firstLayerPyObj )
+      {
+        int state;
+        if ( sipCanConvertToType( firstLayerPyObj, sipType_QgsMapLayer, SIP_NOT_NONE ) )
+        {
+          const sipTypeDef *qlist_type = sipFindType( "QList<QgsMapLayer *>" );
+          QList<QgsMapLayer *> *layersList = reinterpret_cast<QList<QgsMapLayer *> *>( sipConvertToType( a0, qlist_type, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sipCpp->removeMapLayers( *layersList );
+          }
+          sipReleaseType( layersList, qlist_type, state );
+        }
+        else if ( sipCanConvertToType( firstLayerPyObj, sipType_QString, SIP_NOT_NONE ) )
+        {
+          QStringList *layersId = reinterpret_cast<QStringList *>( sipConvertToType( a0, sipType_QStringList, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+          if ( !sipIsErr )
+          {
+            sipCpp->removeMapLayers( *layersId );
+          }
+          sipReleaseType( layersId, sipType_QStringList, state );
+        }
+        else
+        {
+          sipIsErr = 1;
+          PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
+        }
+      }
+    }
+    % End
+#endif
 
     /**
      * \brief
@@ -1922,6 +1998,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void areaUnitsChanged();
 
     /**
+     * Emitted when the project's scale method is changed.
+     *
+     * \see scaleMethod()
+     * \see setScaleMethod()
+     * \since QGIS 3.44
+     */
+    void scaleMethodChanged();
+
+    /**
      * Emitted when the project transformContext() is changed.
      *
      * \see transformContext()
@@ -2382,7 +2467,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QString mErrorMessage;
 
-    QgsProjectBadLayerHandler *mBadLayerHandler = nullptr;
+    std::unique_ptr<QgsProjectBadLayerHandler> mBadLayerHandler;
 
     /**
      * Embedded layers which are defined in other projects. Key: layer id,
@@ -2394,7 +2479,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsSnappingConfig mSnappingConfig;
     Qgis::AvoidIntersectionsMode mAvoidIntersectionsMode = Qgis::AvoidIntersectionsMode::AllowIntersections;
 
-    QgsRelationManager *mRelationManager = nullptr;
+    std::unique_ptr<QgsRelationManager> mRelationManager;
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
@@ -2416,9 +2501,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectGpsSettings *mGpsSettings = nullptr;
 
-    QgsLayerTree *mRootGroup = nullptr;
+    std::unique_ptr<QgsLayerTree> mRootGroup;
 
-    QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
+    std::unique_ptr<QgsLayerTreeRegistryBridge> mLayerTreeRegistryBridge;
 
     QgsAnnotationLayer *mMainAnnotationLayer = nullptr;
 
@@ -2458,6 +2543,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Meters;
     Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::SquareMeters;
+    Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing

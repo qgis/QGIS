@@ -15,7 +15,8 @@ class QgsLegendModel : QgsLayerTreeModel
 %Docstring(signature="appended")
 Item model implementation based on layer tree model for layout legend.
 
-Overrides some functionality of :py:class:`QgsLayerTreeModel` to better fit the needs of layout legends.
+Overrides some functionality of :py:class:`QgsLayerTreeModel` to better
+fit the needs of layout legends.
 %End
 
 %TypeHeaderCode
@@ -72,7 +73,8 @@ A layout item subclass for map legends.
 
     QgsLayoutItemLegend( QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutItemLegend, with the specified parent ``layout``.
+Constructor for QgsLayoutItemLegend, with the specified parent
+``layout``.
 %End
 
     static QgsLayoutItemLegend *create( QgsLayout *layout ) /Factory/;
@@ -104,15 +106,17 @@ Sets the legend's item bounds to fit the whole legend content.
 %Docstring
 Sets whether the legend should automatically resize to fit its contents.
 
-:param enabled: set to ``False`` to disable automatic resizing. The legend frame will not
-                be expanded to fit legend items, and items may be cropped from display.
+:param enabled: set to ``False`` to disable automatic resizing. The
+                legend frame will not be expanded to fit legend items,
+                and items may be cropped from display.
 
 .. seealso:: :py:func:`resizeToContents`
 %End
 
     bool resizeToContents() const;
 %Docstring
-Returns whether the legend should automatically resize to fit its contents.
+Returns whether the legend should automatically resize to fit its
+contents.
 
 .. seealso:: :py:func:`setResizeToContents`
 %End
@@ -125,45 +129,48 @@ Returns the legend model.
 
     void setAutoUpdateModel( bool autoUpdate );
 %Docstring
-Sets whether the legend content should auto update to reflect changes in the project's
-layer tree.
+Sets whether the legend content should auto update to reflect changes in
+the project's layer tree.
 
 .. seealso:: :py:func:`autoUpdateModel`
 %End
 
     bool autoUpdateModel() const;
 %Docstring
-Returns whether the legend content should auto update to reflect changes in the project's
-layer tree.
+Returns whether the legend content should auto update to reflect changes
+in the project's layer tree.
 
 .. seealso:: :py:func:`setAutoUpdateModel`
 %End
 
     void setLegendFilterByMapEnabled( bool enabled );
 %Docstring
-Set whether legend items should be filtered to show just the ones visible in the associated map.
+Set whether legend items should be filtered to show just the ones
+visible in the associated map.
 
 .. seealso:: :py:func:`legendFilterByMapEnabled`
 %End
 
     bool legendFilterByMapEnabled() const;
 %Docstring
-Find out whether legend items are filtered to show just the ones visible in the associated map
+Find out whether legend items are filtered to show just the ones visible
+in the associated map
 
 .. seealso:: :py:func:`setLegendFilterByMapEnabled`
 %End
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
-When set to ``True``, during an atlas rendering, it will filter out legend elements
-where features are outside the current atlas feature.
+When set to ``True``, during an atlas rendering, it will filter out
+legend elements where features are outside the current atlas feature.
 
 .. seealso:: :py:func:`legendFilterOutAtlas`
 %End
 
     bool legendFilterOutAtlas() const;
 %Docstring
-Returns whether to filter out legend elements outside of the current atlas feature.
+Returns whether to filter out legend elements outside of the current
+atlas feature.
 
 .. seealso:: :py:func:`setLegendFilterOutAtlas`
 %End
@@ -331,7 +338,8 @@ Sets the legend symbol ``width``.
 
     double maximumSymbolSize() const;
 %Docstring
-Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+Returns the maximum symbol size (in mm). 0.0 means there is no maximum
+set.
 
 .. seealso:: :py:func:`setMaximumSymbolSize`
 
@@ -351,7 +359,8 @@ A symbol size of 0.0 indicates no maximum is set.
 
     double minimumSymbolSize() const;
 %Docstring
-Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+Returns the minimum symbol size (in mm). A value 0.0 means there is no
+minimum set.
 
 .. seealso:: :py:func:`setMinimumSymbolSize`
 
@@ -463,16 +472,16 @@ Sets the legend column ``count``.
 
     bool splitLayer() const;
 %Docstring
-Returns whether the legend items from a single layer can be split
-over multiple columns.
+Returns whether the legend items from a single layer can be split over
+multiple columns.
 
 .. seealso:: :py:func:`setSplitLayer`
 %End
 
     void setSplitLayer( bool enabled );
 %Docstring
-Sets whether the legend items from a single layer can be split
-over multiple columns.
+Sets whether the legend items from a single layer can be split over
+multiple columns.
 
 .. seealso:: :py:func:`splitLayer`
 %End
@@ -517,8 +526,9 @@ Sets whether a stroke will be drawn around raster symbol items.
 
     QColor rasterStrokeColor() const;
 %Docstring
-Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
+Returns the stroke color for the stroke drawn around raster symbol
+items. The stroke is only drawn if
+:py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -529,8 +539,9 @@ only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
     void setRasterStrokeColor( const QColor &color );
 %Docstring
-Sets the stroke ``color`` for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
+Sets the stroke ``color`` for the stroke drawn around raster symbol
+items. The stroke is only drawn if
+:py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeColor`
 
@@ -541,8 +552,9 @@ only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
     double rasterStrokeWidth() const;
 %Docstring
-Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
+Returns the stroke width (in layout units) for the stroke drawn around
+raster symbol items. The stroke is only drawn if
+:py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -553,14 +565,39 @@ only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
     void setRasterStrokeWidth( double width );
 %Docstring
-Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
+Sets the stroke width for the stroke drawn around raster symbol items.
+The stroke is only drawn if
+:py:func:`~QgsLayoutItemLegend.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`rasterStrokeWidth`
 
 .. seealso:: :py:func:`setDrawRasterStroke`
 
 .. seealso:: :py:func:`setRasterStrokeColor`
+%End
+
+    double autoWrapLinesAfter() const;
+%Docstring
+Returns the maximum line length (in millimeters) allowed before lines of
+text in the legend will be automatically word wrapped.
+
+If the returned value is 0, then no automatic wrapping will occur.
+
+.. seealso:: :py:func:`setAutoWrapLinesAfter`
+
+.. versionadded:: 3.44
+%End
+
+    void setAutoWrapLinesAfter( double length );
+%Docstring
+Sets the maximum line ``length`` (in millimeters) allowed before lines
+of text in the legend will be automatically word wrapped.
+
+If ``length`` is 0, then no automatic wrapping will occur.
+
+.. seealso:: :py:func:`autoWrapLinesAfter`
+
+.. versionadded:: 3.44
 %End
 
     void setLinkedMap( QgsLayoutItemMap *map );
@@ -605,7 +642,8 @@ Returns the maps to use when filtering legend content by map extents.
 %Docstring
 Returns the name of the theme currently linked to the legend.
 
-This usually equates to the theme rendered in the :py:func:`~QgsLayoutItemLegend.linkedMap`.
+This usually equates to the theme rendered in the
+:py:func:`~QgsLayoutItemLegend.linkedMap`.
 
 .. versionadded:: 3.14
 %End

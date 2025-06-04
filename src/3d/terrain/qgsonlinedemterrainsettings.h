@@ -22,7 +22,7 @@
 #include "qgsrectangle.h"
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Terrain settings for a terrain generator that uses an online DEM to build terrain.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

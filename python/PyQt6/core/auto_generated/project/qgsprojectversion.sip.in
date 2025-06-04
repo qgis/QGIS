@@ -12,10 +12,10 @@
 class QgsProjectVersion
 {
 %Docstring(signature="appended")
-A class to describe the version of a project.
+Describes the version of a project.
 
-Used in places where you need to check if the current version
-of QGIS is greater than the one used to create a project file.
+Used in places where you need to check if the current version of QGIS is
+greater than the one used to create a project file.
 %End
 
 %TypeHeaderCode
@@ -30,12 +30,14 @@ Creates a new NULL version
 
     QgsProjectVersion( int major, int minor, int sub, const QString &name = QString() );
 %Docstring
-Constructor for QgsProjectVersion, with the specified ``major``, ``minor`` and ``sub`` version numbers.
+Constructor for QgsProjectVersion, with the specified ``major``,
+``minor`` and ``sub`` version numbers.
 %End
 
     QgsProjectVersion( const QString &string );
 %Docstring
-Constructor for QgsProjectVersion, which parses the version number from a ``string``.
+Constructor for QgsProjectVersion, which parses the version number from
+a ``string``.
 %End
 
     int majorVersion() const;

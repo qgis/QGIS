@@ -30,8 +30,7 @@ Returns the count of points in given class or -1 on error
 class QgsPointCloudStatistics
 {
 %Docstring(signature="appended")
-
-Class used to store statistics of a point cloud dataset.
+Used to store statistics of a point cloud dataset.
 
 .. versionadded:: 3.26
 %End
@@ -65,32 +64,33 @@ Returns the calculated statistics of attribute ``attribute``
 
     QList<int> classesOf( const QString &attribute ) const;
 %Docstring
-Returns a list of existing classes which are present for the specified ``attribute``
+Returns a list of existing classes which are present for the specified
+``attribute``
 %End
 
 
     double minimum( const QString &attribute ) const;
 %Docstring
-Returns the minimum value for the attribute ``attribute``
-If no matching statistic is available then NaN will be returned.
+Returns the minimum value for the attribute ``attribute`` If no matching
+statistic is available then NaN will be returned.
 %End
 
     double maximum( const QString &attribute ) const;
 %Docstring
-Returns the maximum value for the attribute ``attribute``
-If no matching statistic is available then NaN will be returned.
+Returns the maximum value for the attribute ``attribute`` If no matching
+statistic is available then NaN will be returned.
 %End
 
     double mean( const QString &attribute ) const;
 %Docstring
-Returns the mean value for the attribute ``attribute``
-If no matching statistic is available then NaN will be returned.
+Returns the mean value for the attribute ``attribute`` If no matching
+statistic is available then NaN will be returned.
 %End
 
     double stDev( const QString &attribute ) const;
 %Docstring
-Returns the standard deviation value for the attribute ``attribute``
-If no matching statistic is available then NaN will be returned.
+Returns the standard deviation value for the attribute ``attribute`` If
+no matching statistic is available then NaN will be returned.
 %End
 
     void combineWith( const QgsPointCloudStatistics &stats );

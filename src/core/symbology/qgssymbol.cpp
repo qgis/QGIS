@@ -60,6 +60,7 @@
 #include "qgsunittypes.h"
 #include "qgsgeometrypaintdevice.h"
 #include "qgspainting.h"
+#include "qgssldexportcontext.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -138,7 +139,7 @@ void QgsSymbolBufferSettings::readXml( const QDomElement &element, const QgsRead
   const QDomElement fillSymbolElem = symbolBufferElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !fillSymbolElem.isNull() )
   {
-    mFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context ) );
+    mFillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( fillSymbolElem, context );
   }
   else
   {
@@ -1090,8 +1091,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     screen.updateRenderContextForScreen( *context );
   }
 
-  const bool prevForceVector = context->forceVectorOutput();
-  context->setForceVectorOutput( true );
+  Qgis::RasterizedRenderingPolicy oldRasterizedRenderingPolicy = context->rasterizedRenderingPolicy();
+  context->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
 
   const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity * 100 ) * 0.01 : mOpacity;
 
@@ -1241,7 +1242,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     QgsPainting::drawPicture( context->painter(), QPointF( 0, 0 ), *pictureForDeferredRendering );
   }
 
-  context->setForceVectorOutput( prevForceVector );
+  context->setRasterizedRenderingPolicy( oldRasterizedRenderingPolicy );
 }
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )
@@ -1368,15 +1369,30 @@ QString QgsSymbol::dump() const
 
 void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap props = oldProps;
+  //TODO move these to proper getters/setters in QgsSldExportContext
   props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
   double scaleFactor = 1.0;
   props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
   props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QString() );
 
+  context.setExtraProperties( props );
+  bool result = true;
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    ( *it )->toSld( doc, element, props );
+    if ( !( *it )->toSld( doc, element, context ) )
+      result = false;
   }
+  context.setExtraProperties( oldProps );
+  return result;
 }
 
 QgsSymbolLayerList QgsSymbol::cloneLayers() const
@@ -1859,24 +1875,27 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   const bool usingBuffer = ( layer == -1 || layer == 0 ) && mBufferSettings && mBufferSettings->enabled() && mBufferSettings->fillSymbol();
 
   // step 2 - determine which layers to render
-  std::vector< int > allLayers;
-  allLayers.reserve( mLayers.count() );
-  for ( int i = 0; i < mLayers.count(); ++i )
-    allLayers.emplace_back( i );
-
   std::vector< int > layerToRender;
   if ( layer == -1 )
   {
-    layerToRender = allLayers;
+    layerToRender.reserve( mLayers.count() );
+    for ( int i = 0; i < mLayers.count(); ++i )
+      layerToRender.emplace_back( i );
   }
   else
   {
     // if we're rendering using a buffer, then we'll need to draw ALL symbol layers in order to calculate the
     // buffer shape, but then ultimately we'll ONLY draw the target layer on top.
     if ( usingBuffer )
-      layerToRender = allLayers;
+    {
+      layerToRender.reserve( mLayers.count() );
+      for ( int i = 0; i < mLayers.count(); ++i )
+        layerToRender.emplace_back( i );
+    }
     else
+    {
       layerToRender.emplace_back( layer );
+    }
   }
 
   // step 3 - render these geometries using the desired symbol layers.

@@ -62,6 +62,11 @@ QString QgsExtractSpecificVerticesAlgorithm::shortHelpString() const
                                                    "polygons), distance along the original geometry and bisector angle of vertex for the original geometry." );
 }
 
+QString QgsExtractSpecificVerticesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a point layer with points representing specific vertices in the input geometries." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractSpecificVerticesAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
@@ -84,19 +89,19 @@ Qgis::ProcessingSourceType QgsExtractSpecificVerticesAlgorithm::outputLayerType(
 
 QgsFields QgsExtractSpecificVerticesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields outputFields = inputFields;
-  outputFields.append( QgsField( QStringLiteral( "vertex_pos" ), QMetaType::Type::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QMetaType::Type::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QMetaType::Type::Int ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "vertex_pos" ), QMetaType::Type::Int ) );
+  newFields.append( QgsField( QStringLiteral( "vertex_index" ), QMetaType::Type::Int ) );
+  newFields.append( QgsField( QStringLiteral( "vertex_part" ), QMetaType::Type::Int ) );
   if ( mGeometryType == Qgis::GeometryType::Polygon )
   {
-    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QMetaType::Type::Int ) );
+    newFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QMetaType::Type::Int ) );
   }
-  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QMetaType::Type::Int ) );
-  outputFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
-  outputFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QMetaType::Type::Int ) );
+  newFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( QStringLiteral( "angle" ), QMetaType::Type::Double ) );
 
-  return outputFields;
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 Qgis::WkbType QgsExtractSpecificVerticesAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const

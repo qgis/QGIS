@@ -34,6 +34,7 @@
 #include "qgscolorutils.h"
 #include "qgsgeos.h"
 #include "qgspolygon.h"
+#include "qgssldexportcontext.h"
 #include <algorithm>
 #include <QPainter>
 #include <QDomDocument>
@@ -485,7 +486,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -578,16 +579,24 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
 
 void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  if ( mPenStyle == Qt::NoPen )
-    return;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
 
+bool QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  if ( mPenStyle == Qt::NoPen )
+    return true;
+
+  const QVariantMap props = context.extraProperties();
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
   if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
     symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
   // <Stroke>
   QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
@@ -596,7 +605,7 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
   double width = QgsSymbolLayerUtils::rescaleUom( mWidth, mWidthUnit, props );
   QVector<qreal> customDashVector = QgsSymbolLayerUtils::rescaleUom( mCustomDashVector, mCustomDashPatternUnit, props );
-  QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, width,
+  QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, context, width,
                                   &mPenJoinStyle, &mPenCapStyle, &customDashVector );
 
   // <se:PerpendicularOffset>
@@ -607,6 +616,7 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( offset ) ) );
     symbolizerElem.appendChild( perpOffsetElem );
   }
+  return true;
 }
 
 QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const
@@ -1703,7 +1713,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   }
 
   double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
-  if ( intervalUnit() == Qgis::RenderUnit::MetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( intervalUnit() == Qgis::RenderUnit::MetersInMapUnits && ( rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview || rc.flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- an interval in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1754,7 +1764,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     }
   }
 
-  if ( offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits && ( rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview || rc.flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -2499,6 +2509,14 @@ QgsMarkerLineSymbolLayer *QgsMarkerLineSymbolLayer::clone() const
 
 void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap props = context.extraProperties();
   for ( int i = 0; i < mMarker->symbolLayerCount(); i++ )
   {
     QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
@@ -2507,7 +2525,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     element.appendChild( symbolizerElem );
 
     // <Geometry>
-    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
     QString gap;
     if ( placements() & Qgis::MarkerLinePlacement::FirstVertex )
@@ -2544,21 +2562,21 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
     if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+      markerLayer->writeSldMarker( doc, graphicStrokeElem, context );
     }
     else if ( layer )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
+      QgsDebugError( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) );
     }
     else
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "Missing marker line symbol layer. Skip it." ) ) );
+      QgsDebugError( QStringLiteral( "Missing marker line symbol layer. Skip it." ) );
     }
 
     if ( !gap.isEmpty() )
     {
       QDomElement gapElem = doc.createElement( QStringLiteral( "se:Gap" ) );
-      QgsSymbolLayerUtils::createExpressionElement( doc, gapElem, gap );
+      QgsSymbolLayerUtils::createExpressionElement( doc, gapElem, gap, context );
       graphicStrokeElem.appendChild( gapElem );
     }
 
@@ -2570,6 +2588,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
       symbolizerElem.appendChild( perpOffsetElem );
     }
   }
+  return true;
 }
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
@@ -2610,11 +2629,11 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 
   std::unique_ptr< QgsMarkerSymbol > marker;
 
-  QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
+  std::unique_ptr< QgsSymbolLayer > l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
-    layers.append( l );
+    layers.append( l.release() );
     marker.reset( new QgsMarkerSymbol( layers ) );
   }
 
@@ -2626,7 +2645,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   if ( !gapElem.isNull() )
   {
     bool ok;
-    double d = gapElem.firstChild().nodeValue().toDouble( &ok );
+    double d = gapElem.firstChild().firstChild().nodeValue().toDouble( &ok );
     if ( ok )
       interval = d;
   }
@@ -3825,7 +3844,7 @@ QgsFilledLineSymbolLayer::QgsFilledLineSymbolLayer( double width, QgsFillSymbol 
   : QgsLineSymbolLayer()
 {
   mWidth = width;
-  mFill.reset( fillSymbol ? fillSymbol : static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
+  mFill = fillSymbol ? std::unique_ptr< QgsFillSymbol >( fillSymbol ) : QgsFillSymbol::createSimple( QVariantMap() );
 }
 
 QgsFilledLineSymbolLayer::~QgsFilledLineSymbolLayer() = default;
@@ -3850,7 +3869,7 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
     width = props[QStringLiteral( "width" )].toDouble();
   }
 
-  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ) );
+  auto l = std::make_unique< QgsFilledLineSymbolLayer >( width, QgsFillSymbol::createSimple( props ).release() );
 
   if ( props.contains( QStringLiteral( "line_width_unit" ) ) )
   {
@@ -3975,7 +3994,7 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     if ( !qgsDoubleNear( offset, 0 ) )
     {
       double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
       {
         // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
         // and clamp it to a reasonable range. It's the best we can do in this situation!

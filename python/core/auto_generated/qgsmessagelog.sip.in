@@ -14,15 +14,15 @@ class QgsMessageLog : QObject
 %Docstring(signature="appended")
 Interface for logging messages from QGIS in GUI independent way.
 
-This class provides abstraction of a tabbed window for showing messages to the user.
-By default :py:class:`QgsMessageLogOutput` will be used if not overridden with another
-message log creator function.
+This class provides abstraction of a tabbed window for showing messages
+to the user. By default :py:class:`QgsMessageLogOutput` will be used if
+not overridden with another message log creator function.
 
-QGIS application uses :py:class:`QgsMessageLog` class for logging messages in a dockable
-window for the user.
+QGIS application uses :py:class:`QgsMessageLog` class for logging
+messages in a dockable window for the user.
 
-:py:class:`QgsMessageLog` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.messageLog()`.
+:py:class:`QgsMessageLog` is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.messageLog()`.
 %End
 
 %TypeHeaderCode
@@ -32,8 +32,17 @@ window for the user.
 
     QgsMessageLog();
 
+
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
                             const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
+%Docstring
+Adds a ``message`` to the log instance (and creates it if necessary).
+
+If ``notifyUser`` is ``True``, then the message should be brought to the
+user's attention by various UI hints. If it is ``False``, the message
+should appear in logs silently. Note that log viewer implementations may
+only respect notification hints for certain message levels.
+%End
 
   signals:
 
@@ -41,18 +50,19 @@ window for the user.
 %Docstring
 Emitted whenever the log receives a ``message``.
 
-This signal is emitted for all messages received by the log, regardless of the ``notifyUser`` flag's
-value for the message.
+This signal is emitted for all messages received by the log, regardless
+of the ``notifyUser`` flag's value for the message.
 %End
 
 
     void messageReceived( bool received );
 %Docstring
-Emitted whenever the log receives a message which is not a :py:class:`Qgis`.MessageLevel.Info level message
-and which has the ``notifyUser`` flag as ``True``.
+Emitted whenever the log receives a message which is not a
+:py:class:`Qgis`.MessageLevel.Info level message and which has the
+``notifyUser`` flag as ``True``.
 
-If :py:class:`QgsMessageLogNotifyBlocker` objects have been created then this signal may be
-temporarily suppressed.
+If :py:class:`QgsMessageLogNotifyBlocker` objects have been created then
+this signal may be temporarily suppressed.
 
 .. seealso:: :py:class:`QgsMessageLogNotifyBlocker`
 %End
@@ -62,14 +72,16 @@ temporarily suppressed.
 class QgsMessageLogNotifyBlocker
 {
 %Docstring(signature="appended")
-Temporarily blocks the application :py:class:`QgsMessageLog` (see :py:func:`QgsApplication.messageLog()`) from emitting the messageReceived( bool )
-signal for the lifetime of the object.
+Temporarily blocks the application :py:class:`QgsMessageLog` (see
+:py:func:`QgsApplication.messageLog()`) from emitting the
+messageReceived( bool ) signal for the lifetime of the object.
 
-Using this blocker allows messages to be logged without causing user interface hints flagging message log
-errors to be created.
+Using this blocker allows messages to be logged without causing user
+interface hints flagging message log errors to be created.
 
-:py:class:`QgsMessageLogNotifyBlocker` supports "stacked" blocking, so two :py:class:`QgsMessageLogNotifyBlocker` created
-will both need to be destroyed before the messageReceived( bool ) signal is emitted again.
+:py:class:`QgsMessageLogNotifyBlocker` supports "stacked" blocking, so
+two :py:class:`QgsMessageLogNotifyBlocker` created will both need to be
+destroyed before the messageReceived( bool ) signal is emitted again.
 
 .. versionadded:: 3.2
 %End
@@ -83,7 +95,8 @@ will both need to be destroyed before the messageReceived( bool ) signal is emit
 %Docstring
 Constructor for QgsMessageLogNotifyBlocker.
 
-This will block the log from emitting the messageReceived( bool ) signal for the lifetime of this object.
+This will block the log from emitting the messageReceived( bool ) signal
+for the lifetime of this object.
 %End
 
 
@@ -96,10 +109,10 @@ This will block the log from emitting the messageReceived( bool ) signal for the
 class QgsMessageLogConsole : QObject
 {
 %Docstring(signature="appended")
-Default implementation of message logging interface
+Default implementation of message logging interface.
 
-This class outputs log messages to the standard error. Therefore it might
-be the right choice for applications without GUI.
+This class outputs log messages to the standard error. Therefore it
+might be the right choice for applications without GUI.
 %End
 
 %TypeHeaderCode

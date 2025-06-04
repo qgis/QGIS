@@ -28,7 +28,7 @@ class QgsTerrainGenerator;
 class Qgs3DRenderContext;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for all terrain settings classes.
  *
  * QgsAbstractTerrainSettings subclasses are responsible for storing the configuration

@@ -30,6 +30,9 @@ class QgsPostgresSharedData
   public:
     QgsPostgresSharedData() = default;
 
+    //! Creates a deep copy of this shared data
+    std::shared_ptr<QgsPostgresSharedData> clone() const;
+
     long long featuresCounted();
     void setFeaturesCounted( long long count );
     void addFeaturesCounted( long long diff );
@@ -48,7 +51,7 @@ class QgsPostgresSharedData
     void setFieldSupportsEnumValues( int index, bool isSupported );
 
   protected:
-    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+    mutable QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
     long long mFeaturesCounted = -1; //!< Number of features in the layer
 
@@ -97,6 +100,33 @@ class QgsPostgresUtils
     static bool columnExists( QgsPostgresConn *conn, const QString &table, const QString &column );
 
     static bool tableExists( QgsPostgresConn *conn, const QString &name );
+
+    /*
+    * Check if projects table exists in the specified schema
+    *
+    * \returns true if the table exists
+    * 
+    * \since QGIS 3.44
+    */
+    static bool projectsTableExists( QgsPostgresConn *conn, const QString &schemaName );
+
+    /*
+    * Creates projects table exists in the specified schema
+    *
+    * \returns true on success
+    * 
+    * \since QGIS 3.44
+    */
+    static bool createProjectsTable( QgsPostgresConn *conn, const QString &schemaName );
+
+    /*
+    * Deletes projects from project's table in the specified schema
+    *
+    * \returns true on success
+    * 
+    * \since QGIS 3.44
+    */
+    static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
 };
 
 #endif

@@ -38,6 +38,7 @@ class QTableView;
  * \ingroup gui
  * \class QgsOptionsDialogHighlightLabel
  * \brief A highlight widget for labels.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlightWidget
@@ -58,6 +59,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlig
  * \ingroup gui
  * \class QgsOptionsDialogHighlightCheckBox
  * \brief A highlight widget for checkboxes.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHighlightWidget
@@ -78,6 +80,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHigh
  * \ingroup gui
  * \class QgsOptionsDialogHighlightButton
  * \brief A highlight widget for buttons.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighlightWidget
@@ -98,6 +101,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighli
  * \ingroup gui
  * \class QgsOptionsDialogHighlightGroupBox
  * \brief A highlight widget for group boxes.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHighlightWidget
@@ -118,6 +122,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHigh
  * \ingroup gui
  * \class QgsOptionsDialogHighlightTree
  * \brief A highlight widget for trees.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * Highlighting is only available for tree widgets only while searching can be performed
  * in any tree view or inherited class.
@@ -142,6 +147,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightTree : public QgsOptionsDialogHighligh
  * \ingroup gui
  * \class QgsOptionsDialogHighlightTable
  * \brief A highlight widget for table widgets.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * \since QGIS 3.22
  */

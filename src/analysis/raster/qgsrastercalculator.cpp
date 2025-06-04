@@ -141,7 +141,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   if ( !calcNode )
   {
     //error
-    return ParserError;
+    return QgsRasterCalculator::Result::ParserError;
   }
 
   // Check input layers and bands
@@ -150,12 +150,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     if ( !entry.raster ) // no raster layer in entry
     {
       mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
-      return InputLayerError;
+      return QgsRasterCalculator::Result::InputLayerError;
     }
     if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
     {
       mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
-      return BandError;
+      return QgsRasterCalculator::Result::BandError;
     }
   }
 
@@ -177,22 +177,20 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   if ( !outputDriver )
   {
     mLastError = QObject::tr( "Could not obtain driver for %1" ).arg( mOutputFormat );
-    return CreateOutputError;
+    return QgsRasterCalculator::Result::CreateOutputError;
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
   if ( !outputDataset )
   {
     mLastError = QObject::tr( "Could not create output %1" ).arg( mOutputFile );
-    return CreateOutputError;
+    return QgsRasterCalculator::Result::CreateOutputError;
   }
 
   GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
-  float outputNodataValue = -FLT_MAX;
-  GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
-
+  GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
   // Take the fast route (process one line at a time) if we can
   if ( !requiresMatrix )
@@ -259,7 +257,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       }
 
       // 1 row X mNumOutputColumns matrix
-      QgsRasterMatrix resultMatrix( mNumOutputColumns, 1, nullptr, outputNodataValue );
+      QgsRasterMatrix resultMatrix( mNumOutputColumns, 1, nullptr, mNoDataValue );
 
       _rasterData.clear();
       for ( const auto &layerRef : inputBlocks )
@@ -279,7 +277,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       {
         //delete the dataset without closing (because it is faster)
         gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-        return CalculationError;
+        return QgsRasterCalculator::Result::CalculationError;
       }
     }
 
@@ -309,7 +307,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         if ( rasterBlockFeedback->isCanceled() )
         {
           qDeleteAll( inputBlocks );
-          return Canceled;
+          return QgsRasterCalculator::Result::Canceled;
         }
       }
       else
@@ -320,13 +318,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       {
         mLastError = QObject::tr( "Could not allocate required memory for %1" ).arg( it->ref );
         qDeleteAll( inputBlocks );
-        return MemoryError;
+        return QgsRasterCalculator::Result::MemoryError;
       }
       inputBlocks.insert( it->ref, block.release() );
     }
 
     QgsRasterMatrix resultMatrix;
-    resultMatrix.setNodataValue( outputNodataValue );
+    resultMatrix.setNodataValue( mNoDataValue );
 
     //read / write line by line
     for ( int i = 0; i < mNumOutputRows; ++i )
@@ -364,7 +362,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         qDeleteAll( inputBlocks );
         inputBlocks.clear();
         gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-        return CalculationError;
+        return QgsRasterCalculator::Result::CalculationError;
       }
     }
 
@@ -383,12 +381,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return Canceled;
+    return QgsRasterCalculator::Result::Canceled;
   }
 
   GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
 
-  return Success;
+  return QgsRasterCalculator::Result::Success;
 }
 
 #ifdef HAVE_OPENCL
@@ -476,7 +474,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       case Qgis::DataType::ARGB32:
       case Qgis::DataType::ARGB32_Premultiplied:
       case Qgis::DataType::UnknownDataType:
-        return BandError;
+        return QgsRasterCalculator::Result::BandError;
     }
     entry.bufferSize = entry.dataSize * mNumOutputColumns;
     entry.index = refCounter;
@@ -570,14 +568,14 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     if ( !outputDriver )
     {
       mLastError = QObject::tr( "Could not obtain driver for %1" ).arg( mOutputFormat );
-      return CreateOutputError;
+      return QgsRasterCalculator::Result::CreateOutputError;
     }
 
     gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
     if ( !outputDataset )
     {
       mLastError = QObject::tr( "Could not create output %1" ).arg( mOutputFile );
-      return CreateOutputError;
+      return QgsRasterCalculator::Result::CreateOutputError;
     }
 
     GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().data() );
@@ -585,10 +583,9 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
 
     GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
     if ( !outputRasterBand )
-      return BandError;
+      return QgsRasterCalculator::Result::BandError;
 
-    const float outputNodataValue = -FLT_MAX;
-    GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
+    GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
     // Input block (buffer)
     std::unique_ptr<QgsRasterBlock> block;
@@ -652,7 +649,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
 
       if ( GDALRasterIO( outputRasterBand, GF_Write, 0, line, mNumOutputColumns, 1, resultLine.get(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        return CreateOutputError;
+        return QgsRasterCalculator::Result::CreateOutputError;
       }
     }
 
@@ -660,7 +657,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     {
       //delete the dataset without closing (because it is faster)
       gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-      return Canceled;
+      return QgsRasterCalculator::Result::Canceled;
     }
 
     inputBuffers.clear();
@@ -670,10 +667,10 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
   catch ( cl::Error &e )
   {
     mLastError = e.what();
-    return CreateOutputError;
+    return QgsRasterCalculator::Result::CreateOutputError;
   }
 
-  return Success;
+  return QgsRasterCalculator::Result::Success;
 }
 #endif
 
@@ -698,8 +695,9 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
 gdal::dataset_unique_ptr QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
-  char **papszOptions = nullptr;
+  char **papszOptions = QgsGdalUtils::papszFromStringList( mCreationOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions ) );
+  CSLDestroy( papszOptions );
   if ( !outputDataset )
   {
     return nullptr;

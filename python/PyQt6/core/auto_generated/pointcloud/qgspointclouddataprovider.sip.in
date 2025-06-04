@@ -13,9 +13,10 @@
 class QgsPointCloudDataProvider: QgsDataProvider
 {
 %Docstring(signature="appended")
-Base class for providing data for :py:class:`QgsPointCloudLayer`
+Base class for providing data for :py:class:`QgsPointCloudLayer`.
 
-Responsible for reading native point cloud data and returning the indexed data.
+Responsible for reading native point cloud data and returning the
+indexed data.
 
 .. note::
 
@@ -62,9 +63,10 @@ Ctor
     SIP_PYLIST identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
 %Docstring
 Returns the list of points of the point cloud according to a zoom level
-defined by ``maxError`` (in layer coordinates), an extent ``geometry`` in the 2D plane
-and a range ``extentZRange`` for z values. The function will try to limit
-the number of points returned to ``pointsLimit`` points
+defined by ``maxError`` (in layer coordinates), an extent ``geometry``
+in the 2D plane and a range ``extentZRange`` for z values. The function
+will try to limit the number of points returned to ``pointsLimit``
+points
 
 .. note::
 
@@ -91,13 +93,15 @@ the number of points returned to ``pointsLimit`` points
 
     virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
 %Docstring
-Returns flags containing the supported capabilities for the data provider.
+Returns flags containing the supported capabilities for the data
+provider.
 %End
 
     virtual QgsPointCloudAttributeCollection attributes() const = 0;
 %Docstring
-Returns the attributes available from this data provider.
-May return empty collection until :py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
+Returns the attributes available from this data provider. May return
+empty collection until
+:py:func:`~QgsPointCloudDataProvider.pointCloudIndexLoaded` is emitted
 %End
 
     virtual void loadIndex( ) = 0;
@@ -143,43 +147,55 @@ Returns the total number of points available in the dataset.
 
     virtual QgsGeometry polygonBounds() const;
 %Docstring
-Returns the polygon bounds of the layer. The CRS of the returned geometry will match the provider's :py:func:`~QgsPointCloudDataProvider.crs`.
+Returns the polygon bounds of the layer. The CRS of the returned
+geometry will match the provider's
+:py:func:`~QgsPointCloudDataProvider.crs`.
 
-This method will return the best approximation for the actual bounds of points contained in the
-dataset available from the provider's metadata. This may match the bounding box rectangle returned
-by :py:func:`~QgsPointCloudDataProvider.extent`, or for some datasets a "convex hull" style polygon representing a more precise bounds
-will be returned.
+This method will return the best approximation for the actual bounds of
+points contained in the dataset available from the provider's metadata.
+This may match the bounding box rectangle returned by
+:py:func:`~QgsPointCloudDataProvider.extent`, or for some datasets a
+"convex hull" style polygon representing a more precise bounds will be
+returned.
 
-This method will not attempt to calculate the data bounds, rather it will return only whatever precomputed bounds
-are included in the data source's metadata.
+This method will not attempt to calculate the data bounds, rather it
+will return only whatever precomputed bounds are included in the data
+source's metadata.
 %End
 
     virtual QVariantMap originalMetadata() const;
 %Docstring
-Returns a representation of the original metadata included in a point cloud dataset.
+Returns a representation of the original metadata included in a point
+cloud dataset.
 
-This is a free-form dictionary of values, the contents and structure of which will vary by provider and
-dataset.
+This is a free-form dictionary of values, the contents and structure of
+which will vary by provider and dataset.
 %End
 
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
-Creates a new 2D point cloud renderer, using provider backend specific information.
+Creates a new 2D point cloud renderer, using provider backend specific
+information.
 
-The ``configuration`` map can be used to pass provider-specific configuration maps to the provider to
-allow customization of the returned renderer. Support and format of ``configuration`` varies by provider.
+The ``configuration`` map can be used to pass provider-specific
+configuration maps to the provider to allow customization of the
+returned renderer. Support and format of ``configuration`` varies by
+provider.
 
-When called with an empty ``configuration`` map the provider's default renderer will be returned.
+When called with an empty ``configuration`` map the provider's default
+renderer will be returned.
 
-This method returns a new renderer and the caller takes ownership of the returned object.
+This method returns a new renderer and the caller takes ownership of the
+returned object.
 
-Only providers which report the CreateRenderer capability will return a 2D renderer. Other
-providers will return ``None``.
+Only providers which report the CreateRenderer capability will return a
+2D renderer. Other providers will return ``None``.
 %End
 
     QgsPointCloudStatistics metadataStatistics();
 %Docstring
-Returns the object containing the statistics metadata extracted from the dataset
+Returns the object containing the statistics metadata extracted from the
+dataset
 
 .. versionadded:: 3.26
 %End
@@ -197,16 +213,16 @@ Returns the object containing the statistics metadata extracted from the dataset
 
     static QMap< int, QString > lasClassificationCodes();
 %Docstring
-Returns the map of LAS classification code to untranslated string value, corresponding to the ASPRS Standard
-Lidar Point Classes.
+Returns the map of LAS classification code to untranslated string value,
+corresponding to the ASPRS Standard Lidar Point Classes.
 
 .. seealso:: :py:func:`translatedLasClassificationCodes`
 %End
 
     static QMap< int, QString > translatedLasClassificationCodes();
 %Docstring
-Returns the map of LAS classification code to translated string value, corresponding to the ASPRS Standard
-Lidar Point Classes.
+Returns the map of LAS classification code to translated string value,
+corresponding to the ASPRS Standard Lidar Point Classes.
 
 .. seealso:: :py:func:`lasClassificationCodes`
 %End

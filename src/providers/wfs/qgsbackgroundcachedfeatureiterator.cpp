@@ -91,7 +91,8 @@ void QgsFeatureDownloaderProgressTask::setDownloaded( long long count )
 // -------------------------
 
 QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader )
-  : mSharedBase( shared ), mDownloader( downloader )
+  : mSharedBase( shared )
+  , mDownloader( downloader )
 {
   // Needed because used by a signal
   qRegisterMetaType<QVector<QgsFeatureUniqueIdPair>>( "QVector<QgsFeatureUniqueIdPair>" );
@@ -952,7 +953,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
 QgsBackgroundCachedFeatureSource::QgsBackgroundCachedFeatureSource(
   std::shared_ptr<QgsBackgroundCachedSharedData> shared
 )
-  : mShared( shared )
+  : mShared( std::move( shared ) )
 {
 }
 

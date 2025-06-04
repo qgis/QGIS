@@ -13,10 +13,13 @@
 class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
 {
 %Docstring(signature="appended")
-Implementation of GeometrySimplifier using the "MapToPixel" algorithm
+Implementation of a geometry simplifier using the "MapToPixel"
+algorithm.
 
-Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
-This class enables simplify the geometries to be rendered in a MapCanvas target to speed up the vector drawing.
+Simplifies a geometry removing points within of the maximum distance
+difference that defines the MapToPixel info of a RenderContext request.
+This class enables simplify the geometries to be rendered in a MapCanvas
+target to speed up the vector drawing.
 %End
 
 %TypeHeaderCode
@@ -42,7 +45,8 @@ Constructor
 
     static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
 %Docstring
-Returns the squared 2D-distance of the vector defined by the two points specified
+Returns the squared 2D-distance of the vector defined by the two points
+specified
 %End
 
     static bool equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY );
@@ -83,12 +87,14 @@ Sets the tolerance of the vector layer managed
 
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 %Docstring
-Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
+Returns whether the envelope can be replaced by its BBOX when is applied
+the specified map2pixel context
 %End
 
     bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const;
 %Docstring
-Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
+Returns whether the envelope can be replaced by its BBOX when is applied
+the specified map2pixel context
 %End
 };
 

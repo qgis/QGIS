@@ -15,12 +15,21 @@
 
 #include "qgstest.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 
 #include "qgsbox3d.h"
 #include "qgsray3d.h"
 
 #include "qgs3dexportobject.h"
+#include "qgs3dmapscene.h"
+#include "qgscameracontroller.h"
+#include "qgsflatterrainsettings.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgspolygon3dsymbol.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 #include <QSize>
 #include <QtMath>
@@ -33,6 +42,23 @@ static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps 
 static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, double eps )
 {
   return qgsDoubleNear( q1.x(), q2.x(), eps ) && qgsDoubleNear( q1.y(), q2.y(), eps ) && qgsDoubleNear( q1.z(), q2.z(), eps ) && qgsDoubleNear( q1.scalar(), q2.scalar(), eps );
+}
+
+static bool isPointInFrontOfPlane( const QgsVector3D &point, const QgsVector3D &planePoint, const QgsVector3D &planeNormal )
+{
+  return QgsVector3D::dotProduct( point - planePoint, planeNormal ) > 0;
+}
+
+static bool isPointOutsideClippingPlanes( const QgsVector3D &point, const QVector<QgsVector3D> &planePoints, const QList<QVector4D> &clippingPlanes )
+{
+  for ( int i = 0; i < clippingPlanes.size(); i++ )
+  {
+    if ( !isPointInFrontOfPlane( point, planePoints.at( i ), clippingPlanes.at( i ).toVector3D() ) )
+    {
+      return true;
+    };
+  }
+  return false;
 }
 
 /**
@@ -57,8 +83,14 @@ class TestQgs3DUtils : public QgsTest
     void testExportToObj();
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
+    void testScreenPointToMapCoordinates();
+    void testLineSegmentToClippingPlanes();
+    void testLineSegmentToCameraPose();
+    void test3DSceneRay3D();
 
   private:
+    QgsRasterLayer *mLayerRgb;
+    QgsVectorLayer *mLayerBuildings;
 };
 
 //runs before all tests
@@ -66,6 +98,13 @@ void TestQgs3DUtils::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  Qgs3D::initialize();
+
+  mLayerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  QVERIFY( mLayerRgb->isValid() );
+
+  mLayerBuildings = new QgsVectorLayer( testDataPath( "/3d/buildings.shp" ), "buildings", "ogr" );
+  QVERIFY( mLayerBuildings->isValid() );
 }
 
 //runs after all tests
@@ -493,6 +532,148 @@ void TestQgs3DUtils::testDecomposeTransformMatrix()
   QVERIFY( qgsVectorNear( s2, QVector3D( 1, 1, 1 ), 1e-6 ) );
   QVERIFY( qgsVectorNear( t2, QVector3D( 500, 600, 700 ), 1e-6 ) );
   QVERIFY( qgsQuaternionNear( r2, q2, 1e-6 ) );
+}
+
+void TestQgs3DUtils::testScreenPointToMapCoordinates()
+{
+  Qgs3DMapSettings map;
+  map.setCrs( mLayerRgb->crs() );
+  map.setExtent( mLayerRgb->extent() );
+  map.setLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  QgsOffscreen3DEngine engine;
+  const Qgs3DMapScene *scene = new Qgs3DMapScene( map, &engine );
+  const QgsPoint mapPoint = Qgs3DUtils::screenPointToMapCoordinates( QPoint( 50, 50 ), QSize( 100, 100 ), scene->cameraController(), &map );
+
+  // this placement is weird, but it fixes the clang-tidy warning
+  delete scene;
+  QGSCOMPARENEAR( mapPoint.x(), 321900, 2 );
+  QGSCOMPARENEAR( mapPoint.y(), 129901, 2 );
+  QGSCOMPARENEAR( mapPoint.z(), -252, 2 );
+}
+
+void TestQgs3DUtils::testLineSegmentToClippingPlanes()
+{
+  const QgsVector3D point1( 20, 20, 0 );
+  const QgsVector3D point2( 50, 50, 0 );
+  const QgsVector3D testPointInside( 35, 35, 0 );
+  const QgsVector3D testPointOutside( 0, 0, 0 );
+  QVector<QgsVector3D> planePoints( { point1, QgsVector3D( 13, 27, 0 ), point2, QgsVector3D( 27, 13, 0 ) } );
+
+  QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point1, point2, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+
+  //verify that it works in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point2, point1, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point2, QgsVector3D( 27, 13, 0 ), point1, QgsVector3D( 13, 27, 0 ) };
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+
+  // verify that it works for perpendicular line too
+  const QgsVector3D point3( 50, 20, 0 );
+  const QgsVector3D point4( 20, 50, 0 );
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point3, point4, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point3, QgsVector3D( 43, 13, 0 ), point4, QgsVector3D( 57, 27, 0 ) };
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+
+  // verify that it works for perpendicular line in reverse order too
+  clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes( point4, point3, 10, QgsVector3D( 0, 0, 0 ) );
+  QVERIFY( clippingPlanes.size() == 4 );
+  planePoints = { point4, QgsVector3D( 57, 27, 0 ), point3, QgsVector3D( 43, 13, 0 ) };
+  QVERIFY( !isPointOutsideClippingPlanes( testPointInside, planePoints, clippingPlanes ) );
+  QVERIFY( isPointOutsideClippingPlanes( testPointOutside, planePoints, clippingPlanes ) );
+}
+
+void TestQgs3DUtils::testLineSegmentToCameraPose()
+{
+  const QgsVector3D origin( 0, 0, 0 );
+  const QgsVector3D startPoint( 20, 20, 0 );
+  const QgsVector3D endPoint( 82, 82, 0 );
+  QgsDoubleRange elevationRange( 0, 20 );
+  constexpr float fieldOfView = 90;
+
+  // test 1: the distance between start point and end point is longer than elevation range
+  QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
+  QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 10 ) );
+  QCOMPARE( camPose.pitchAngle(), 90 );
+  QCOMPARE( camPose.headingAngle(), 45 );
+  QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 46, 0.2 );
+
+  // test 2: the distance between start point and end point is smaller than elevation range
+  elevationRange = QgsDoubleRange( 0, 100 );
+  camPose = Qgs3DUtils::lineSegmentToCameraPose( startPoint, endPoint, elevationRange, fieldOfView, origin );
+  QCOMPARE( camPose.centerPoint(), QgsVector3D( 51, 51, 50 ) );
+  QCOMPARE( camPose.pitchAngle(), 90 );
+  QCOMPARE( camPose.headingAngle(), 45 );
+  QGSCOMPARENEAR( camPose.distanceFromCenterPoint(), 52.5, 0.2 );
+}
+
+void TestQgs3DUtils::test3DSceneRay3D()
+{
+  // configure map Settings
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( mLayerRgb->crs() );
+  mapSettings.setExtent( mLayerRgb->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+
+  QgsFlatTerrainSettings *flatTerrainSettings = new QgsFlatTerrainSettings;
+  mapSettings.setTerrainSettings( flatTerrainSettings );
+
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  // create the 3d scene
+  const QSize winSize( 640, 480 ); // default window size
+  QgsOffscreen3DEngine engine;
+  engine.setSize( winSize );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, -280, 0 ), 50, 40.0, -10.0 );
+
+  // This is needed to ensure that the nodes of mLayerBuildings are loaded
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  // click on a building
+  // building and terrain are hit
+  // the distance to the building should be smaller than the distance to the terrain
+  Qt3DRender::QCamera *camera = scene->cameraController()->camera();
+  const QPoint clickedPoint1( 115, 374 );
+  const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( clickedPoint1, winSize, camera );
+  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits1 = Qgs3DUtils::castRay( scene, ray1, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  QCOMPARE( allHits1.size(), 2 );
+  QVERIFY( allHits1.contains( mLayerBuildings ) );
+  QVERIFY( allHits1.contains( nullptr ) );
+  QCOMPARE( allHits1[mLayerBuildings].size(), 1 );
+  QCOMPARE( allHits1[nullptr].size(), 1 );
+  const float buildingDistance1 = allHits1[mLayerBuildings][0].distance;
+  const float terrainDistance1 = allHits1[nullptr][0].distance;
+  QGSCOMPARENEAR( buildingDistance1, 33.59, 1.0 );
+  QGSCOMPARENEAR( terrainDistance1, 45.46, 1.0 );
+
+
+  // clicking on the terrain
+  // the building layer should not be hit
+  const QPoint clickedPoint2( 419, 326 );
+  const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera );
+  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits2 = Qgs3DUtils::castRay( scene, ray2, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  QCOMPARE( allHits2.size(), 1 );
+  QVERIFY( !allHits2.contains( mLayerBuildings ) );
+  QVERIFY( allHits2.contains( nullptr ) );
+  QCOMPARE( allHits2[nullptr].size(), 1 );
+  const float terrainDistance2 = allHits2[nullptr][0].distance;
+  QGSCOMPARENEAR( terrainDistance2, 45.59, 1.0 );
+
+  delete scene;
 }
 
 

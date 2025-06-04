@@ -40,7 +40,11 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget : public QgsRasterRender
     Q_OBJECT
 
   public:
-    //! Creates new raster renderer widget
+    /**
+     * Constructor for QgsSingleBandPseudoColorRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     //! Creates new raster renderer widget

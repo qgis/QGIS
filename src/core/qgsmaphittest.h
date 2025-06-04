@@ -35,9 +35,10 @@ class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
- * \brief Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
- * will be visible on the map - this is useful for content based legend.
+ * \brief Runs a hit test with given map settings.
  *
+ * Based on the hit test it returns which symbols will be visible
+ * on the map - this is useful for content based legend.
  */
 class CORE_EXPORT QgsMapHitTest
 {
@@ -46,6 +47,8 @@ class CORE_EXPORT QgsMapHitTest
     typedef QMap<QString, QString> LayerFilterExpression;
 
     /**
+     * Constructor for QgsMapHitTest.
+     *
      * \param settings Map settings used to evaluate symbols
      * \param polygon Polygon geometry to refine the hit test
      * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection

@@ -47,10 +47,17 @@ void QgsCellStatisticsAlgorithmBase::initAlgorithm( const QVariantMap & )
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( output_nodata_parameter.release() );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
 
@@ -125,16 +132,21 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
 
 QVariantMap QgsCellStatisticsAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
   mOutputRasterDataProvider.reset( writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
@@ -214,6 +226,11 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
                       "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
                       "input cell values are equal." );
+}
+
+QString QgsCellStatisticsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster whose cell values are computed from overlaid cell values of the input rasters." );
 }
 
 QgsCellStatisticsAlgorithm *QgsCellStatisticsAlgorithm::createInstance() const
@@ -369,7 +386,10 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }
@@ -394,8 +414,8 @@ QStringList QgsCellStatisticsPercentileAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentile algorithm returns the cell-wise percentile value of a stack of rasters "
-                      "and writes the results to an output raster. The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
+  return QObject::tr( "This algorithm generates a raster containing the cell-wise percentile value of a stack of input rasters. "
+                      "The percentile to return is determined by the percentile input value (ranges between 0 and 1). "
                       "At each cell location, the specified percentile is obtained using the respective value from "
                       "the stack of all overlaid and sorted cell values of the input rasters.\n\n"
                       "There are three methods for percentile calculation:"
@@ -411,6 +431,11 @@ QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will be set to the most complex data type present in the input datasets. " );
+}
+
+QString QgsCellStatisticsPercentileAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster containing the cell-wise percentile value of a stack of input rasters." );
 }
 
 QgsCellStatisticsPercentileAlgorithm *QgsCellStatisticsPercentileAlgorithm::createInstance() const
@@ -511,7 +536,10 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }
@@ -536,8 +564,7 @@ QStringList QgsCellStatisticsPercentRankFromValueAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentrank from value algorithm calculates the cell-wise percentrank value of a stack of rasters based on a single input value "
-                      "and writes them to an output raster.\n\n"
+  return QObject::tr( "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value.\n\n"
                       "At each cell location, the specified value is ranked among the respective values in the stack of all overlaid and sorted cell values from the input rasters. "
                       "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
@@ -551,6 +578,11 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will always be Float32." );
+}
+
+QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster containing the cell-wise percent rank value of a stack of input rasters based on a single input value." );
 }
 
 QgsCellStatisticsPercentRankFromValueAlgorithm *QgsCellStatisticsPercentRankFromValueAlgorithm::createInstance() const
@@ -645,7 +677,10 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }
@@ -671,8 +706,8 @@ QStringList QgsCellStatisticsPercentRankFromRasterAlgorithm::tags() const
 
 QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Cell stack percentrank from raster layer algorithm calculates the cell-wise percentrank value of a stack of rasters based on an input value raster "
-                      "and writes them to an output raster.\n\n"
+  return QObject::tr( "This algorithm generates a raster containing the cell-wise percent rank value of a stack of input rasters "
+                      "based on an input value raster.\n\n"
                       "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
                       "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
@@ -686,6 +721,11 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
                       "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
                       "The output raster data type will always be Float32." );
+}
+
+QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster containing the cell-wise percent rank value of a stack of input rasters based on an input value raster." );
 }
 
 QgsCellStatisticsPercentRankFromRasterAlgorithm *QgsCellStatisticsPercentRankFromRasterAlgorithm::createInstance() const
@@ -793,7 +833,10 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
         }
       }
     }
-    mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !mOutputRasterDataProvider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( mOutputRasterDataProvider->error().summary() ) );
+    }
   }
   mOutputRasterDataProvider->setEditable( false );
 }

@@ -15,14 +15,14 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
-
 Represents a raster layer.
 
-A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a data provider,
-such as "gdal" or "wms", and a url defining the specific data set to connect to.
-The raster layer constructor in turn instantiates a :py:class:`QgsRasterDataProvider` subclass
-corresponding to the provider type, and passes it the url. The data provider
-connects to the data source.
+A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a
+data provider, such as "gdal" or "wms", and a url defining the specific
+data set to connect to. The raster layer constructor in turn
+instantiates a :py:class:`QgsRasterDataProvider` subclass corresponding
+to the provider type, and passes it the url. The data provider connects
+to the data source.
 
 Sample usage of the :py:class:`QgsRasterLayer` class:
 
@@ -100,8 +100,8 @@ The main tasks carried out by the constructor are:
     virtual QgsRasterLayer *clone() const /Factory/;
 
 %Docstring
-Returns a new instance equivalent to this one. A new provider is
-created for the same data source and renderer is cloned too.
+Returns a new instance equivalent to this one. A new provider is created
+for the same data source and renderer is cloned too.
 
 :return: a new layer instance
 %End
@@ -112,9 +112,9 @@ created for the same data source and renderer is cloned too.
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
 %Docstring
 This helper checks to see whether the file name appears to be a valid
-raster file name.  If the file name looks like it could be valid,
-but some sort of error occurs in processing the file, the error is
-returned in ``retError``.
+raster file name. If the file name looks like it could be valid, but
+some sort of error occurs in processing the file, the error is returned
+in ``retError``.
 %End
 
     static bool isValidRasterFileName( const QString &fileNameQString );
@@ -137,7 +137,9 @@ Set the data provider.
 %Docstring
 Set the data provider.
 
-:param provider: provider key string, must match a valid :py:class:`QgsRasterDataProvider` key. E.g. "gdal", "wms", etc.
+:param provider: provider key string, must match a valid
+                 :py:class:`QgsRasterDataProvider` key. E.g. "gdal",
+                 "wms", etc.
 :param options: provider options
 :param flags: provider flags since QGIS 3.16
 
@@ -239,21 +241,26 @@ Returns the name of a band given its number.
 
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 %Docstring
-Returns the (possibly NULL) raster attribute table for the given band ``bandNumber``.
+Returns the (possibly NULL) raster attribute table for the given band
+``bandNumber``.
 
 .. versionadded:: 3.30
 %End
 
     int attributeTableCount( ) const;
 %Docstring
-Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
+Returns the number of attribute tables for the raster by counting the
+number of bands that have an associated attribute table.
 
 .. versionadded:: 3.30
 %End
 
     bool canCreateRasterAttributeTable( );
 %Docstring
-Returns ``True`` if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are :py:class:`QgsPalettedRasterRenderer` and :py:class:`QgsSingleBandPseudoColorRenderer`.
+Returns ``True`` if the raster renderer is suitable for creation of a
+raster attribute table. The supported renderers are
+:py:class:`QgsPalettedRasterRenderer` and
+:py:class:`QgsSingleBandPseudoColorRenderer`.
 
 .. versionadded:: 3.30
 %End
@@ -283,7 +290,9 @@ This will be ``None`` if the layer is invalid.
                QgsRasterViewPort *myRasterViewPort,
                const QgsMapToPixel *qgsMapToPixel = 0 );
 %Docstring
-This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function that is called by both :py:func:`~QgsRasterLayer.draw` and thumbnailAsPixmap
+This is an overloaded version of the :py:func:`~QgsRasterLayer.draw`
+function that is called by both :py:func:`~QgsRasterLayer.draw` and
+thumbnailAsPixmap
 %End
 
  QgsLegendColorList legendSymbologyItems() const /Deprecated="Since 3.40. Use QgsRasterRenderer.createLegendNodes() instead."/;
@@ -304,17 +313,19 @@ Returns a list with classification items (Text and color).
 
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 %Docstring
-Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+Returns a 100x100 pixmap of the color palette. If the layer has no
+palette a white pixmap will be returned
 
-:param bandNumber: the number of the band to use for generating a pixmap of the associated palette
+:param bandNumber: the number of the band to use for generating a pixmap
+                   of the associated palette
 %End
 
     double rasterUnitsPerPixelX() const;
 %Docstring
 Returns the number of raster units per each raster pixel in X axis.
 
-In a world file, this is normally the first row (without the sign). (E.g.
-the value reported by the GDAL geotransform[1]).
+In a world file, this is normally the first row (without the sign).
+(E.g. the value reported by the GDAL geotransform[1]).
 
 .. note::
 
@@ -353,8 +364,10 @@ Set contrast enhancement algorithm
 
 :param algorithm: Contrast enhancement algorithm
 :param limits: Limits
-:param extent: Extent used to calculate limits, if empty, use full layer extent
-:param sampleSize: Size of data sample to calculate limits, if 0, use full resolution
+:param extent: Extent used to calculate limits, if empty, use full layer
+               extent
+:param sampleSize: Size of data sample to calculate limits, if 0, use
+                   full resolution
 :param generateLookupTableFlag: Generate lookup table.
 %End
 
@@ -363,7 +376,8 @@ Set contrast enhancement algorithm
 %Docstring
 Returns the string (typically sql) used to define a subset of the layer.
 
-:return: The subset string or null QString if not implemented by the provider
+:return: The subset string or an empty string if not implemented by the
+         provider
 
 .. versionadded:: 3.12
 %End
@@ -372,11 +386,12 @@ Returns the string (typically sql) used to define a subset of the layer.
 %Docstring
 Sets the string (typically sql) used to define a subset of the layer
 
-:param subset: The subset string. This may be the where clause of a sql statement
-               or other definition string specific to the underlying dataprovider
-               and data store.
+:param subset: The subset string. This may be the where clause of a sql
+               statement or other definition string specific to the
+               underlying dataprovider and data store.
 
-:return: ``True``, when setting the subset string was successful, ``False`` otherwise
+:return: ``True``, when setting the subset string was successful,
+         ``False`` otherwise
 
 .. versionadded:: 3.12
 %End
@@ -407,7 +422,8 @@ Draws a preview of the rasterlayer into a QImage
 
     bool labelsEnabled() const;
 %Docstring
-Returns whether the layer contains labels which are enabled and should be drawn.
+Returns whether the layer contains labels which are enabled and should
+be drawn.
 
 :return: ``True`` if layer contains enabled labels
 
@@ -437,7 +453,8 @@ Sets whether labels should be ``enabled`` for the layer.
 
     QgsAbstractRasterLayerLabeling *labeling();
 %Docstring
-Access to labeling configuration. May be ``None`` if labeling is not used.
+Access to labeling configuration. May be ``None`` if labeling is not
+used.
 
 .. note::
 
@@ -459,26 +476,46 @@ Sets labeling configuration. Takes ownership of the object.
 .. versionadded:: 3.42
 %End
 
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
+ bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-Writes the symbology of the layer into the document provided in SLD 1.0.0 format
+Writes the symbology of the layer into the document provided in SLD
+1.0.0 format
 
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
-:param errorMessage: reference to string that will be updated with any error messages
-:param props: a open ended set of properties that can drive/inform the SLD encoding
+:param errorMessage: reference to string that will be updated with any
+                     error messages
+:param props: a open ended set of properties that can drive/inform the
+              SLD encoding
 
 :return: ``True`` in case of success
 
-.. versionadded:: 3.6
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const;
+%Docstring
+Writes the symbology of the layer into the document provided in SLD 1.1
+format
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param context: export context. Errors and warnings may be retrieved
+                from this context.
+
+:return: ``True`` in case of success
+
+.. versionadded:: 3.44
 %End
 
     bool ignoreExtents() const;
 %Docstring
 If the ignoreExtent flag is set, the layer will also render outside the
-bounding box reported by the data provider.
-To be used for example for WMS layers with labels or symbology that happens
-to be drawn outside the data extent.
+bounding box reported by the data provider. To be used for example for
+WMS layers with labels or symbology that happens to be drawn outside the
+data extent.
 
 .. versionadded:: 3.10
 %End

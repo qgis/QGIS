@@ -131,12 +131,11 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 }
 
 
-Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString *errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> *oldToNewAttrIdxMap, QString &createdLayerUri, QString *errorMessage, const QMap<QString, QVariant> *options )
 {
-  Q_UNUSED( options )
-
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
+  createdLayerUri = uri;
   QString sqlitePath = dsUri.database();
   QString tableName = dsUri.table();
 
@@ -4640,7 +4639,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             const auto jObj = QgsJsonUtils::jsonFromVariant( val );
             if ( !jObj.is_array() )
             {
-              throw json::parse_error::create( 0, 0, tr( "JSON value must be an array" ).toStdString() );
+              throw json::parse_error::create( 0, 0, tr( "JSON value must be an array" ).toStdString(), &jObj );
             }
             jRepr = QString::fromStdString( jObj.dump() );
             sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( jRepr ) );
@@ -5885,11 +5884,11 @@ QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::provide
 }
 
 
-Qgis::VectorExportResult QgsSpatiaLiteProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options )
+Qgis::VectorExportResult QgsSpatiaLiteProviderMetadata::createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsSpatiaLiteProvider::createEmptyLayer(
     uri, fields, wkbType, srs, overwrite,
-    &oldToNewAttrIdxMap, &errorMessage, options
+    &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
   );
 }
 

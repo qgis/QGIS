@@ -253,6 +253,26 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QVariantMap preprocessParameters( const QVariantMap &parameters );
 
     /**
+     * Returns a map of default auto-generated parameters to fill in, based on existing parameters.
+     *
+     * This method is used to automatically fill parameter values when a row is added or modified
+     * in the batch processing interface, or automatically update other parameter values when
+     * parameters are modified in the toolbox mode.
+     *
+     * \param existingParameters map of current parameter values
+     * \param changedParameter name of parameter which has just been changed, triggering the update of default parameter values
+     * \param mode current Processing mode. Allows different autogenerate behavior for batch mode, modeler or toolbox.
+     *
+     * \returns map of default parameter values to use for the algorithm. Any matching parameters included in the map will be automatically
+     * overridden with the value from the returned map. Parameter names not included in the returned map will remain unchanged.
+     *
+     * The default behavior is to return an empty map, indicating that no parameters should be automatically generated.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QVariantMap autogenerateParameterValues( const QVariantMap &existingParameters, const QString &changedParameter, Qgis::ProcessingMode mode ) const;
+
+    /**
      * Returns the provider to which this algorithm belongs.
      */
     QgsProcessingProvider *provider() const SIP_HOLDGIL;

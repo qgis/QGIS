@@ -14,7 +14,8 @@
 class QgsVectorTileBasicLabelingStyle
 {
 %Docstring(signature="appended")
-Configuration of a single style within :py:class:`QgsVectorTileBasicLabeling`
+Configuration of a single style within
+:py:class:`QgsVectorTileBasicLabeling`.
 
 .. versionadded:: 3.14
 %End
@@ -44,11 +45,13 @@ Returns human readable name of this style
 
     void setLayerName( const QString &name );
 %Docstring
-Sets name of the sub-layer to render (empty layer means that all layers match)
+Sets name of the sub-layer to render (empty layer means that all layers
+match)
 %End
     QString layerName() const;
 %Docstring
-Returns name of the sub-layer to render (empty layer means that all layers match)
+Returns name of the sub-layer to render (empty layer means that all
+layers match)
 %End
 
     void setGeometryType( Qgis::GeometryType geomType );
@@ -82,8 +85,8 @@ Returns whether this style is enabled (used for rendering)
 %Docstring
 Sets minimum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is greater than or equal
-to ``minZoom``.
+The style will be rendered if the zoom level is greater than or equal to
+``minZoom``.
 
 .. seealso:: :py:func:`minZoomLevel`
 
@@ -94,8 +97,8 @@ to ``minZoom``.
 %Docstring
 Returns the minimum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is greater than or equal
-to the this level.
+The style will be rendered if the zoom level is greater than or equal to
+the this level.
 
 .. seealso:: :py:func:`setMinZoomLevel`
 
@@ -106,8 +109,8 @@ to the this level.
 %Docstring
 Sets maximum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is less than or equal
-to ``maxZoom``.
+The style will be rendered if the zoom level is less than or equal to
+``maxZoom``.
 
 .. warning::
 
@@ -124,8 +127,8 @@ to ``maxZoom``.
 %Docstring
 Returns the maximum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is less than or equal
-to the maximum zoom.
+The style will be rendered if the zoom level is less than or equal to
+the maximum zoom.
 
 .. warning::
 
@@ -141,7 +144,8 @@ to the maximum zoom.
 
     bool isActive( int zoomLevel ) const;
 %Docstring
-Returns whether the style is active at given zoom level (also checks "enabled" flag)
+Returns whether the style is active at given zoom level (also checks
+"enabled" flag)
 %End
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -159,9 +163,11 @@ Reads object content from given DOM element
 class QgsVectorTileBasicLabeling : QgsVectorTileLabeling
 {
 %Docstring(signature="appended")
-Basic labeling configuration for vector tile layers. It contains a definition
-of a list of labeling styles, where each labeling style is a combination of
-sub-layer name, geometry type, filter expression, zoom range and label settings.
+Basic labeling configuration for vector tile layers.
+
+It contains a definition of a list of labeling styles, where each
+labeling style is a combination of sub-layer name, geometry type, filter
+expression, zoom range and label settings.
 
 .. versionadded:: 3.14
 %End
@@ -191,7 +197,8 @@ Returns list of styles of the renderer
 %End
     void setStyle( int index, const QgsVectorTileBasicLabelingStyle &style );
 %Docstring
-Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+Updates style definition at the paricular index of the list (the index
+must be in interval [0,N-1] otherwise this function does nothing)
 %End
     QgsVectorTileBasicLabelingStyle style( int index ) const;
 %Docstring

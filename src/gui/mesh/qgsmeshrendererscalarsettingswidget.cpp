@@ -99,11 +99,10 @@ void QgsMeshRendererScalarSettingsWidget::setActiveDatasetGroup( int groupIndex 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
 {
   QgsMeshRendererScalarSettings settings;
+  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataResamplingMethod( dataIntepolationMethod() );
-
-  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
 
   settings.setExtent( mMinMaxValueTypeComboBox->currentData().value<Qgis::MeshRangeExtent>() );
 
@@ -143,6 +142,17 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer()
 
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
+
+  if ( std::abs( max ) < 1e-2 )
+  {
+    mScalarMinSpinBox->setDecimals( 8 );
+    mScalarMaxSpinBox->setDecimals( 8 );
+  }
+  else
+  {
+    mScalarMinSpinBox->setDecimals( 2 );
+    mScalarMaxSpinBox->setDecimals( 2 );
+  }
 
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
@@ -220,6 +230,18 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   const double min = metadata.minimum();
   const double max = metadata.maximum();
+
+  if ( std::abs( max ) < 1e-2 )
+  {
+    mScalarMinSpinBox->setDecimals( 8 );
+    mScalarMaxSpinBox->setDecimals( 8 );
+  }
+  else
+  {
+    mScalarMinSpinBox->setDecimals( 2 );
+    mScalarMaxSpinBox->setDecimals( 2 );
+  }
+
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );

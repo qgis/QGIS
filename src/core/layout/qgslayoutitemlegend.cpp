@@ -124,9 +124,9 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     Q_NOWARN_DEPRECATED_PUSH
     // no longer required, but left set for api stability
-    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::UseAdvancedEffects );
     mSettings.setDpi( dpi );
-    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagSynchronousLegendGraphics );
+    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::SynchronousLegendGraphics );
     Q_NOWARN_DEPRECATED_POP
   }
   if ( mMap && mLayout )
@@ -157,6 +157,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter )
                                : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
     const QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
@@ -236,6 +237,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
                         : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
 
   rc.expressionContext().appendScopes( createExpressionContext().takeScopes() );
+  rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   const QgsScopedQPainterState painterState( painter );
 
@@ -281,6 +283,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
 
   QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
                              QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   QgsLegendRenderer legendRenderer = createRenderer();
   const QSizeF size = legendRenderer.minimumSize( &context );
@@ -635,6 +638,16 @@ void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
   mSettings.setRasterStrokeWidth( width );
 }
 
+double QgsLayoutItemLegend::autoWrapLinesAfter() const
+{
+  return mSettings.autoWrapLinesAfter();
+}
+
+void QgsLayoutItemLegend::setAutoWrapLinesAfter( double length )
+{
+  mSettings.setAutoWrapLinesAfter( length );
+}
+
 void QgsLayoutItemLegend::updateLegend()
 {
   adjustBoxSize();
@@ -666,6 +679,11 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
   legendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
   legendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsColorUtils::colorToString( mSettings.rasterStrokeColor() ) );
   legendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterStrokeWidth() ) );
+
+  if ( mSettings.autoWrapLinesAfter() > 0 )
+  {
+    legendElem.setAttribute( QStringLiteral( "autoWrapLinesAfter" ), mSettings.autoWrapLinesAfter() );
+  }
 
   legendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
@@ -806,6 +824,8 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   mSettings.setRasterStrokeColor( QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
   mSettings.setRasterStrokeWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mSettings.setAutoWrapLinesAfter( itemElem.attribute( QStringLiteral( "autoWrapLinesAfter" ), QStringLiteral( "0" ) ).toDouble() );
 
   mSettings.setWrapChar( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
 
@@ -1006,6 +1026,16 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
     if ( ok && cols >= 0 )
     {
       mSettings.setColumnCount( cols );
+      forceUpdate = true;
+    }
+  }
+  if ( property == QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  {
+    bool ok = false;
+    const double width = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth, context, mSettings.autoWrapLinesAfter(), &ok );
+    if ( ok && width >= 0 )
+    {
+      mSettings.setAutoWrapLinesAfter( width );
       forceUpdate = true;
     }
   }

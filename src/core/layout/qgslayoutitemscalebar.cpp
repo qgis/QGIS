@@ -651,6 +651,18 @@ double QgsLayoutItemScaleBar::mapWidth() const
         yValues << 0.5 * ( mapExtent.yMaximum() + mapExtent.yMinimum() );
         yValues << mapExtent.yMinimum();
         break;
+
+      case Qgis::ScaleCalculationMethod::AtEquator:
+        if ( mMap->crs().mapUnits() == Qgis::DistanceUnit::Degrees )
+        {
+          yValues << 0;
+        }
+        else
+        {
+          // this method is only for degree based systems, so just fallback to default if not degree based
+          yValues << 0.5 * ( mapExtent.yMaximum() + mapExtent.yMinimum() );
+        }
+        break;
     }
 
     double sumValidMeasures = 0;

@@ -12,8 +12,9 @@
 class QgsCodeEditorHTML : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A HTML editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A HTML editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. note::
 

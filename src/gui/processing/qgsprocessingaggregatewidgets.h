@@ -33,7 +33,7 @@ class QTableView;
 
 /**
  * \ingroup gui
- * \brief The QgsAggregateMappingModel holds mapping information for defining sets of aggregates of
+ * \brief Holds mapping information for defining sets of aggregates of
  * fields from a QgsFields object.
  *
  * \since QGIS 3.14
@@ -128,6 +128,8 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
 
   private:
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
+    static QString qgsFieldToTypeName( const QgsField &field );
+    static void setFieldTypeFromName( QgsField &field, const QString &name );
 
     QList<Aggregate> mMapping;
     QgsFields mSourceFields;
@@ -136,7 +138,7 @@ class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
 
 /**
  * \ingroup gui
- * \brief The QgsAggregateMappingWidget class creates a mapping for defining sets of aggregates of
+ * \brief A widget which creates a mapping for defining sets of aggregates of
  * fields from a QgsFields object.
  * \since QGIS 3.14
  */

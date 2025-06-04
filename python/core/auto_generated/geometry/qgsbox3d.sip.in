@@ -17,8 +17,8 @@ class QgsBox3D
 %Docstring(signature="appended")
 A 3-dimensional box composed of x, y, z coordinates.
 
-A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
-extent of a geometry or collection of geometries.
+A box composed of x/y/z minimum and maximum values. It is often used to
+return the 3D extent of a geometry or collection of geometries.
 
 .. note::
 
@@ -38,8 +38,9 @@ extent of a geometry or collection of geometries.
 
     QgsBox3D( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[QgsPoint, QgsVector3D, float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT x2 /TypeHint="Optional[Union[bool, float]]"/ = Py_None, SIP_PYOBJECT y2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z2 /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT n /TypeHint="Optional[bool]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
 %Docstring
-Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If ``normalize`` is ``False`` then
-the normalization step will not be applied automatically.
+Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
+If ``normalize`` is ``False`` then the normalization step will not be
+applied automatically.
 %End
 %MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
@@ -306,8 +307,8 @@ it has equal minimum and maximum z values.
     bool is3D() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the box can be considered a 3-dimensional box, i.e.
-it has valid minimum and maximum z values.
-If the box is not normalized, this returns ``False``.
+it has valid minimum and maximum z values. If the box is not normalized,
+this returns ``False``.
 
 .. versionadded:: 3.34
 %End
@@ -332,8 +333,8 @@ will be performed on the x/y extent of the box only.
 
     bool contains( double x, double y, double z ) const /HoldGIL/;
 %Docstring
-Returns ``True`` when box contains a point (``x``, ``y``, ``z``).
-A point on the border of the box will also return ``True``
+Returns ``True`` when box contains a point (``x``, ``y``, ``z``). A
+point on the border of the box will also return ``True``
 
 If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.
@@ -343,14 +344,16 @@ will be performed on the x/y extent of the box only.
 
     void combineWith( const QgsBox3D &box ) /HoldGIL/;
 %Docstring
-Expands the bbox so that it covers both the original rectangle and the given rectangle.
+Expands the bbox so that it covers both the original rectangle and the
+given rectangle.
 
 .. versionadded:: 3.34
 %End
 
     void combineWith( double x, double y, double z ) /HoldGIL/;
 %Docstring
-Expands the bbox so that it covers both the original rectangle and the given point.
+Expands the bbox so that it covers both the original rectangle and the
+given point.
 
 .. versionadded:: 3.34
 %End
@@ -386,7 +389,8 @@ Returns the smallest distance between the box and the point ``point``
 %Docstring
 Scale the rectangle around a ``center`` :py:class:`QgsPoint`.
 
-If no ``center`` point is specified then the current center of the box will be used.
+If no ``center`` point is specified then the current center of the box
+will be used.
 
 .. versionadded:: 3.26
 %End
@@ -418,10 +422,9 @@ A null box is also an empty box.
 
     bool isEmpty() const /HoldGIL/;
 %Docstring
-Returns ``True`` if the box is empty.
-An empty box may still be non-null if it contains valid
-spatial information (e.g. bounding box of a point or of a vertical
-or horizontal segment).
+Returns ``True`` if the box is empty. An empty box may still be non-null
+if it contains valid spatial information (e.g. bounding box of a point
+or of a vertical or horizontal segment).
 
 .. versionadded:: 3.34
 %End
@@ -429,8 +432,9 @@ or horizontal segment).
     QString toString( int precision = 16 ) const /HoldGIL/;
 %Docstring
 Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
-Coordinates will be truncated to the specified precision.
-If the specified precision is less than 0, a suitable minimum precision is used.
+Coordinates will be truncated to the specified precision. If the
+specified precision is less than 0, a suitable minimum precision is
+used.
 
 .. versionadded:: 3.34
 %End

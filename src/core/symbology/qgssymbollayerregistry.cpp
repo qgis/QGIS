@@ -55,7 +55,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SvgMarker" ), QObject::tr( "SVG Marker" ), Qgis::SymbolType::Marker,
                       QgsSvgMarkerSymbolLayer::create, QgsSvgMarkerSymbolLayer::createFromSld, QgsSvgMarkerSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterMarker" ), QObject::tr( "Raster Image Marker" ), Qgis::SymbolType::Marker,
-                      QgsRasterMarkerSymbolLayer::create, nullptr, QgsRasterFillSymbolLayer::resolvePaths ) );
+                      QgsRasterMarkerSymbolLayer::create, QgsRasterMarkerSymbolLayer::createFromSld, QgsRasterFillSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "AnimatedMarker" ), QObject::tr( "Animated Marker" ), Qgis::SymbolType::Marker,
                       QgsAnimatedMarkerSymbolLayer::create, nullptr, QgsAnimatedMarkerSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FontMarker" ), QObject::tr( "Font Marker" ), Qgis::SymbolType::Marker,
@@ -120,18 +120,18 @@ QgsSymbolLayerAbstractMetadata *QgsSymbolLayerRegistry::symbolLayerMetadata( con
   return mMetadata.value( name );
 }
 
-QgsSymbolLayer *QgsSymbolLayerRegistry::defaultSymbolLayer( Qgis::SymbolType type )
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerRegistry::defaultSymbolLayer( Qgis::SymbolType type )
 {
   switch ( type )
   {
     case Qgis::SymbolType::Marker:
-      return QgsSimpleMarkerSymbolLayer::create();
+      return std::unique_ptr< QgsSymbolLayer >( QgsSimpleMarkerSymbolLayer::create() );
 
     case Qgis::SymbolType::Line:
-      return QgsSimpleLineSymbolLayer::create();
+      return std::unique_ptr< QgsSymbolLayer >( QgsSimpleLineSymbolLayer::create() );
 
     case Qgis::SymbolType::Fill:
-      return QgsSimpleFillSymbolLayer::create();
+      return std::unique_ptr< QgsSymbolLayer >( QgsSimpleFillSymbolLayer::create() );
 
     case Qgis::SymbolType::Hybrid:
       return nullptr;
@@ -140,21 +140,20 @@ QgsSymbolLayer *QgsSymbolLayerRegistry::defaultSymbolLayer( Qgis::SymbolType typ
   return nullptr;
 }
 
-
-QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QVariantMap &properties ) const
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerRegistry::createSymbolLayer( const QString &name, const QVariantMap &properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
 
-  return mMetadata[name]->createSymbolLayer( properties );
+  return std::unique_ptr< QgsSymbolLayer>( mMetadata[name]->createSymbolLayer( properties ) );
 }
 
-QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString &name, QDomElement &element ) const
+std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString &name, QDomElement &element ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;
 
-  return mMetadata[name]->createSymbolLayerFromSld( element );
+  return std::unique_ptr< QgsSymbolLayer>( mMetadata[name]->createSymbolLayerFromSld( element ) );
 }
 
 void QgsSymbolLayerRegistry::resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const

@@ -26,7 +26,7 @@
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Basic shading material used for rendering simple lines as solid line components.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

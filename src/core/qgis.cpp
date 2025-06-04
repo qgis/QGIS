@@ -64,6 +64,14 @@ const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
 
 const Qgis::MapToolUnit Qgis::DEFAULT_SNAP_UNITS = Qgis::MapToolUnit::Pixels;
 
+const int Qgis::USER_CRS_START_ID = 100000;
+const double Qgis::DEFAULT_POINT_SIZE = 2.0;
+const double Qgis::DEFAULT_LINE_WIDTH = 0.26;
+const double Qgis::DEFAULT_SEGMENT_EPSILON = 1e-8;
+
+const int Qgis::PREVIEW_JOB_DELAY_MS = 250;
+const int Qgis::MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
+
 #ifdef Q_OS_WIN
 const double Qgis::UI_SCALE_FACTOR = 1.5;
 #else
@@ -118,38 +126,127 @@ void qgsFree( void *ptr )
   free( ptr );
 }
 
-bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs )
 {
   // invalid < NULL < any value
   if ( !lhs.isValid() )
-    return rhs.isValid();
+  {
+    return rhs.isValid() ? -1 : 0;
+  }
   else if ( lhs.isNull() )
-    return rhs.isValid() && !rhs.isNull();
+  {
+    if ( !rhs.isValid() )
+      return 1;
+    if ( rhs.isNull() )
+      return 0;
+    return -1;
+  }
   else if ( !rhs.isValid() || rhs.isNull() )
-    return false;
+  {
+    return 1;
+  }
 
+  // both valid
   switch ( lhs.userType() )
   {
     case QMetaType::Type::Int:
-      return lhs.toInt() < rhs.toInt();
+    case QMetaType::Type::Char:
+    case QMetaType::Type::Short:
+    {
+      const int lhsInt = lhs.toInt();
+      const int rhsInt = rhs.toInt();
+      return lhsInt < rhsInt ? -1 : ( lhsInt == rhsInt ? 0 : 1 );
+    }
     case QMetaType::Type::UInt:
-      return lhs.toUInt() < rhs.toUInt();
+    case QMetaType::Type::UChar:
+    case QMetaType::Type::UShort:
+    {
+      const uint lhsUInt = lhs.toUInt();
+      const uint rhsUInt = rhs.toUInt();
+      return lhsUInt < rhsUInt ? -1 : ( lhsUInt == rhsUInt ? 0 : 1 );
+    }
     case QMetaType::Type::LongLong:
-      return lhs.toLongLong() < rhs.toLongLong();
+    case QMetaType::Type::Long:
+    {
+      const qlonglong lhsLongLong = lhs.toLongLong();
+      const qlonglong rhsLongLong = rhs.toLongLong();
+      return lhsLongLong < rhsLongLong ? -1 : ( lhsLongLong == rhsLongLong ? 0 : 1 );
+    }
     case QMetaType::Type::ULongLong:
-      return lhs.toULongLong() < rhs.toULongLong();
+    case QMetaType::Type::ULong:
+    {
+      const qulonglong lhsULongLong = lhs.toULongLong();
+      const qulonglong rhsULongLong = rhs.toULongLong();
+      return lhsULongLong < rhsULongLong ? -1 : ( lhsULongLong == rhsULongLong ? 0 : 1 );
+    }
     case QMetaType::Type::Double:
-      return lhs.toDouble() < rhs.toDouble();
+    {
+      const double lhsDouble = lhs.toDouble();
+      const double rhsDouble = rhs.toDouble();
+
+      // consider NaN < any non-NaN
+      const bool lhsIsNan = std::isnan( lhsDouble );
+      const bool rhsIsNan = std::isnan( rhsDouble );
+      if ( lhsIsNan )
+      {
+        return rhsIsNan ? 0 : -1;
+      }
+      else if ( rhsIsNan )
+      {
+        return 1;
+      }
+
+      return lhsDouble < rhsDouble ? -1 : ( lhsDouble == rhsDouble ? 0 : 1 );
+    }
+    case QMetaType::Type::Float:
+    {
+      const float lhsFloat = lhs.toFloat();
+      const float rhsFloat = rhs.toFloat();
+
+      // consider NaN < any non-NaN
+      const bool lhsIsNan = std::isnan( lhsFloat );
+      const bool rhsIsNan = std::isnan( rhsFloat );
+      if ( lhsIsNan )
+      {
+        return rhsIsNan ? 0 : -1;
+      }
+      else if ( rhsIsNan )
+      {
+        return 1;
+      }
+
+      return lhsFloat < rhsFloat ? -1 : ( lhsFloat == rhsFloat ? 0 : 1 );
+    }
     case QMetaType::Type::QChar:
-      return lhs.toChar() < rhs.toChar();
+    {
+      const QChar lhsChar = lhs.toChar();
+      const QChar rhsChar = rhs.toChar();
+      return lhsChar < rhsChar ? -1 : ( lhsChar == rhsChar ? 0 : 1 );
+    }
     case QMetaType::Type::QDate:
-      return lhs.toDate() < rhs.toDate();
+    {
+      const QDate lhsDate = lhs.toDate();
+      const QDate rhsDate = rhs.toDate();
+      return lhsDate < rhsDate ? -1 : ( lhsDate == rhsDate ? 0 : 1 );
+    }
     case QMetaType::Type::QTime:
-      return lhs.toTime() < rhs.toTime();
+    {
+      const QTime lhsTime = lhs.toTime();
+      const QTime rhsTime = rhs.toTime();
+      return lhsTime < rhsTime ? -1 : ( lhsTime == rhsTime ? 0 : 1 );
+    }
     case QMetaType::Type::QDateTime:
-      return lhs.toDateTime() < rhs.toDateTime();
+    {
+      const QDateTime lhsTime = lhs.toDateTime();
+      const QDateTime rhsTime = rhs.toDateTime();
+      return lhsTime < rhsTime ? -1 : ( lhsTime == rhsTime ? 0 : 1 );
+    }
     case QMetaType::Type::Bool:
-      return lhs.toBool() < rhs.toBool();
+    {
+      const bool lhsBool = lhs.toBool();
+      const bool rhsBool = rhs.toBool();
+      return lhsBool == rhsBool ? 0 : ( lhsBool ? 1 : -1 );
+    }
 
     case QMetaType::Type::QVariantList:
     {
@@ -157,13 +254,13 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &rhsl = rhs.toList();
 
       int i, n = std::min( lhsl.size(), rhsl.size() );
-      for ( i = 0; i < n && lhsl[i].userType() == rhsl[i].userType() && qgsVariantEqual( lhsl[i], rhsl[i] ); i++ )
+      for ( i = 0; i < n && lhsl[i].userType() == rhsl[i].userType() && qgsVariantCompare( lhsl[i], rhsl[i] ) == 0; i++ )
         ;
 
       if ( i == n )
-        return lhsl.size() < rhsl.size();
+        return lhsl.size() < rhsl.size() ? -1 : ( lhsl.size() > rhsl.size() ? 1 : 0 );
       else
-        return qgsVariantLessThan( lhsl[i], rhsl[i] );
+        return qgsVariantCompare( lhsl[i], rhsl[i] );
     }
 
     case QMetaType::Type::QStringList:
@@ -176,20 +273,26 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
         ;
 
       if ( i == n )
-        return lhsl.size() < rhsl.size();
+        return lhsl.size() < rhsl.size() ? -1 : ( lhsl.size() > rhsl.size() ? 1 : 0 );
       else
-        return lhsl[i] < rhsl[i];
+        return lhsl[i] < rhsl[i] ? -1 : ( lhsl[i] == rhsl[i] ? 0 : 1 );
     }
 
     default:
-      return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
+      return std::clamp( QString::localeAwareCompare( lhs.toString(), rhs.toString() ), -1, 1 );
   }
+}
+
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
+{
+  return qgsVariantCompare( lhs, rhs ) < 0;
 }
 
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 {
-  return ! qgsVariantLessThan( lhs, rhs );
+  return qgsVariantCompare( lhs, rhs ) > 0;
 }
+
 
 QString qgsVsiPrefix( const QString &path )
 {

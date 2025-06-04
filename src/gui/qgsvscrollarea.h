@@ -23,7 +23,7 @@
 
 /**
  * \ingroup gui
- * \brief QgsVScrollArea is a QScrollArea subclass which only displays a vertical
+ * \brief A QScrollArea subclass which only displays a vertical
  * scrollbar and fits the width to the contents.
  *
  */

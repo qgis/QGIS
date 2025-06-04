@@ -113,7 +113,7 @@ bool QgsAnnotationPolygonItemWidget::setNewItem( QgsAnnotationItem *item )
   }
   else
   {
-    mSymbol.reset( QgsFillSymbol::createSimple( {} ) );
+    mSymbol = QgsFillSymbol::createSimple( {} );
   }
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );
@@ -203,7 +203,7 @@ bool QgsAnnotationLineItemWidget::setNewItem( QgsAnnotationItem *item )
   }
   else
   {
-    mSymbol.reset( QgsLineSymbol::createSimple( {} ) );
+    mSymbol = QgsLineSymbol::createSimple( {} );
   }
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );
@@ -293,7 +293,7 @@ bool QgsAnnotationMarkerItemWidget::setNewItem( QgsAnnotationItem *item )
   }
   else
   {
-    mSymbol.reset( QgsMarkerSymbol::createSimple( {} ) );
+    mSymbol = QgsMarkerSymbol::createSimple( {} );
   }
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );

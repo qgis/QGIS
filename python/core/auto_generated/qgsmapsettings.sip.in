@@ -14,7 +14,6 @@
 class QgsLabelBlockingRegion
 {
 %Docstring(signature="appended")
-
 Label blocking region (in map coordinates and CRS).
 
 .. versionadded:: 3.6
@@ -38,18 +37,19 @@ Constructor for a label blocking region
 class QgsMapSettings : QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
+Contains configuration for rendering maps.
 
-The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
+The rendering itself is done by :py:class:`QgsMapRendererJob`
+subclasses.
 
-In order to set up :py:class:`QgsMapSettings` instance, it is necessary to set at least
-few members: extent, output size and layers.
+In order to set up :py:class:`QgsMapSettings` instance, it is necessary
+to set at least few members: extent, output size and layers.
 
-Some systems use high DPI scaling that is an alternative to the traditional
-DPI scaling. The operating system provides Qt with a scaling ratio and it
-scales window, event, and desktop geometry. The Cocoa platform plugin sets
-the scaling ratio as QWindow.devicePixelRatio().
-To properly render the map on such systems, the map settings device pixel
+Some systems use high DPI scaling that is an alternative to the
+traditional DPI scaling. The operating system provides Qt with a scaling
+ratio and it scales window, event, and desktop geometry. The Cocoa
+platform plugin sets the scaling ratio as QWindow.devicePixelRatio(). To
+properly render the map on such systems, the map settings device pixel
 ratio shall be set accordingly.
 %End
 
@@ -61,7 +61,8 @@ ratio shall be set accordingly.
 
     QgsRectangle extent() const;
 %Docstring
-Returns geographical coordinates of the rectangle that should be rendered.
+Returns geographical coordinates of the rectangle that should be
+rendered.
 
 .. warning::
 
@@ -91,8 +92,9 @@ Sets the coordinates of the rectangle which should be rendered.
 
     double extentBuffer() const;
 %Docstring
-Returns the buffer in map units to use around the visible extent for rendering
-symbols whose corresponding geometries are outside the visible extent.
+Returns the buffer in map units to use around the visible extent for
+rendering symbols whose corresponding geometries are outside the visible
+extent.
 
 .. seealso:: :py:func:`setExtentBuffer`
 
@@ -101,9 +103,10 @@ symbols whose corresponding geometries are outside the visible extent.
 
     void setExtentBuffer( double buffer );
 %Docstring
-Sets the buffer in map units to use around the visible extent for rendering
-symbols whose corresponding geometries are outside the visible extent. This
-is useful when using tiles to avoid cut symbols at tile boundaries.
+Sets the buffer in map units to use around the visible extent for
+rendering symbols whose corresponding geometries are outside the visible
+extent. This is useful when using tiles to avoid cut symbols at tile
+boundaries.
 
 .. versionadded:: 3.10
 %End
@@ -128,7 +131,8 @@ Sets the ``size`` of the resulting map image, in pixels.
 %Docstring
 Returns the device pixel ratio.
 
-Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina"
+displays.
 
 .. versionadded:: 3.4
 %End
@@ -137,7 +141,8 @@ Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays
 %Docstring
 Sets the device pixel ratio.
 
-Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina"
+displays.
 
 .. versionadded:: 3.4
 %End
@@ -146,8 +151,8 @@ Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays
 %Docstring
 Returns the device output size of the map render.
 
-This is equivalent to the output size multiplicated
-by the device pixel ratio.
+This is equivalent to the output size multiplicated by the device pixel
+ratio.
 
 .. seealso:: :py:func:`outputSize`
 
@@ -174,7 +179,8 @@ Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
     double outputDpi() const;
 %Docstring
-Returns the DPI (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+Returns the DPI (dots per inch) used for conversion between real world
+units (e.g. mm) and pixels.
 
 The default value is 96 dpi.
 
@@ -183,14 +189,16 @@ The default value is 96 dpi.
 
     void setOutputDpi( double dpi );
 %Docstring
-Sets the ``dpi`` (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+Sets the ``dpi`` (dots per inch) used for conversion between real world
+units (e.g. mm) and pixels.
 
 .. seealso:: :py:func:`outputDpi`
 %End
 
     double dpiTarget() const;
 %Docstring
-Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+Returns the target DPI (dots per inch) to be taken into consideration
+when rendering.
 
 The default value is -1, which states no DPI target is provided.
 
@@ -201,7 +209,8 @@ The default value is -1, which states no DPI target is provided.
 
     void setDpiTarget( double dpi );
 %Docstring
-Sets the target ``dpi`` (dots per inch) to be taken into consideration when rendering.
+Sets the target ``dpi`` (dots per inch) to be taken into consideration
+when rendering.
 
 .. seealso:: :py:func:`dpiTarget`
 
@@ -229,10 +238,11 @@ Returns the magnification factor.
 %Docstring
 Returns the list of layer IDs which will be rendered in the map.
 
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top).
+The layers are stored in the reverse order of how they are rendered
+(layer with index 0 will be on top).
 
-Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
-all their child layers.
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then
+group layers will be converted to all their child layers.
 
 .. seealso:: :py:func:`layers`
 
@@ -243,10 +253,11 @@ all their child layers.
 %Docstring
 Returns the list of layers which will be rendered in the map.
 
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+The layers are stored in the reverse order of how they are rendered
+(layer with index 0 will be on top)
 
-Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then group layers will be converted to
-all their child layers.
+Since QGIS 3.24, if the ``expandGroupLayers`` option is ``True`` then
+group layers will be converted to all their child layers.
 
 .. seealso:: :py:func:`setLayers`
 
@@ -259,7 +270,8 @@ all their child layers.
 %Docstring
 Sets the list of ``layers`` to render in the map.
 
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+The layers are stored in the reverse order of how they are rendered
+(layer with index 0 will be on top)
 
 .. note::
 
@@ -272,21 +284,26 @@ The layers are stored in the reverse order of how they are rendered (layer with 
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
-Returns the map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
+Returns the map of map layer style overrides (key: layer ID, value:
+style name) where a different style should be used instead of the
+current one.
 
 .. seealso:: :py:func:`setLayerStyleOverrides`
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 %Docstring
-Sets the map of map layer style ``overrides`` (key: layer ID, value: style name) where a different style should be used instead of the current one.
+Sets the map of map layer style ``overrides`` (key: layer ID, value:
+style name) where a different style should be used instead of the
+current one.
 
 .. seealso:: :py:func:`layerStyleOverrides`
 %End
 
  QString customRenderFlags() const;
 %Docstring
-Returns custom rendering flags. Layers might honour these to alter their rendering.
+Returns custom rendering flags. Layers might honour these to alter their
+rendering.
 
 :return: custom flags strings, separated by ';'
 
@@ -299,7 +316,8 @@ Returns custom rendering flags. Layers might honour these to alter their renderi
 
  void setCustomRenderFlags( const QString &customRenderFlags );
 %Docstring
-Sets the custom rendering flags. Layers might honour these to alter their rendering.
+Sets the custom rendering flags. Layers might honour these to alter
+their rendering.
 
 :param customRenderFlags: custom flags strings, separated by ';'
 
@@ -312,7 +330,8 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
     QVariantMap customRenderingFlags() const;
 %Docstring
-Returns any custom rendering flags. Layers might honour these to alter their rendering.
+Returns any custom rendering flags. Layers might honour these to alter
+their rendering.
 
 :return: a map of custom flags
 
@@ -323,7 +342,8 @@ Returns any custom rendering flags. Layers might honour these to alter their ren
 
     void setCustomRenderingFlag( const QString &flag, const QVariant &value );
 %Docstring
-Sets a custom rendering ``flag``. Layers might honour these to alter their rendering.
+Sets a custom rendering ``flag``. Layers might honour these to alter
+their rendering.
 
 :param flag: the flag name
 :param value: the flag value
@@ -346,7 +366,8 @@ Clears the specified custom rendering ``flag``.
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Sets the destination ``crs`` (coordinate reference system) for the map render.
+Sets the destination ``crs`` (coordinate reference system) for the map
+render.
 
 .. seealso:: :py:func:`destinationCrs`
 %End
@@ -360,14 +381,33 @@ Returns the destination coordinate reference system for the map render.
 
     Qgis::DistanceUnit mapUnits() const;
 %Docstring
-Returns the units of the map's geographical coordinates - used for scale calculation.
+Returns the units of the map's geographical coordinates - used for scale
+calculation.
+%End
+
+    Qgis::ScaleCalculationMethod scaleMethod() const;
+%Docstring
+Returns the method to use for scale calculations for the map.
+
+.. seealso:: :py:func:`setScaleMethod`
+
+.. versionadded:: 3.44
+%End
+
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
+%Docstring
+Sets the ``method`` to use for scale calculations for the map.
+
+.. seealso:: :py:func:`scaleMethod`
+
+.. versionadded:: 3.44
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
 Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
-retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`.
-Calculations will only use the ellipsoid if a valid ellipsoid has been set.
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`. Calculations
+will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: ``True`` if ellipsoid was successfully set
 
@@ -376,8 +416,8 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
     QString ellipsoid() const;
 %Docstring
-Returns ellipsoid's acronym. Calculations will only use the
-ellipsoid if a valid ellipsoid has been set.
+Returns ellipsoid's acronym. Calculations will only use the ellipsoid if
+a valid ellipsoid has been set.
 
 .. seealso:: :py:func:`setEllipsoid`
 %End
@@ -429,7 +469,8 @@ Check whether a particular flag is enabled
 
     Qgis::TextRenderFormat textRenderFormat() const;
 %Docstring
-Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+Returns the text render format, which dictates how text is rendered
+(e.g. as paths or real text objects).
 
 .. seealso:: :py:func:`setTextRenderFormat`
 
@@ -438,7 +479,8 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 
     void setTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
-Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+Sets the text render ``format``, which dictates how text is rendered
+(e.g. as paths or real text objects).
 
 .. warning::
 
@@ -465,7 +507,8 @@ Check whether the map settings are valid and can be used for rendering
 %End
     QgsRectangle visibleExtent() const;
 %Docstring
-Returns the actual extent derived from requested extent that takes output image size into account
+Returns the actual extent derived from requested extent that takes
+output image size into account
 %End
 
     QPolygonF visiblePolygon() const;
@@ -475,7 +518,8 @@ Returns the visible area as a polygon (may be rotated)
 
     QPolygonF visiblePolygonWithBuffer() const;
 %Docstring
-Returns the visible area as a polygon (may be rotated) with extent buffer included
+Returns the visible area as a polygon (may be rotated) with extent
+buffer included
 
 .. seealso:: :py:func:`extentBuffer`
 
@@ -484,27 +528,28 @@ Returns the visible area as a polygon (may be rotated) with extent buffer includ
 
     double mapUnitsPerPixel() const;
 %Docstring
-Returns the distance in geographical coordinates that equals to one pixel in the map
+Returns the distance in geographical coordinates that equals to one
+pixel in the map
 %End
 
     double scale() const;
 %Docstring
-Returns the calculated map scale.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the calculated map scale. The scale value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression context. This context is used for all expression evaluation
-associated with this map settings.
+Sets the expression context. This context is used for all expression
+evaluation associated with this map settings.
 
 .. seealso:: :py:func:`expressionContext`
 %End
 
     const QgsExpressionContext &expressionContext() const;
 %Docstring
-Gets the expression context. This context should be used for all expression evaluation
-associated with this map settings.
+Gets the expression context. This context should be used for all
+expression evaluation associated with this map settings.
 
 .. seealso:: :py:func:`setExpressionContext`
 %End
@@ -512,8 +557,9 @@ associated with this map settings.
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
 Returns the coordinate transform context, which stores various
-information regarding which datum transforms should be used when transforming points
-from a source to destination coordinate reference system.
+information regarding which datum transforms should be used when
+transforming points from a source to destination coordinate reference
+system.
 
 .. seealso:: :py:func:`setTransformContext`
 %End
@@ -521,24 +567,27 @@ from a source to destination coordinate reference system.
     void setTransformContext( const QgsCoordinateTransformContext &context );
 %Docstring
 Sets the coordinate transform ``context``, which stores various
-information regarding which datum transforms should be used when transforming points
-from a source to destination coordinate reference system.
+information regarding which datum transforms should be used when
+transforming points from a source to destination coordinate reference
+system.
 
 .. seealso:: :py:func:`transformContext`
 %End
 
     const QgsPathResolver &pathResolver() const;
 %Docstring
-Returns the path resolver for conversion between relative and absolute paths
-during rendering operations, e.g. for resolving relative symbol paths.
+Returns the path resolver for conversion between relative and absolute
+paths during rendering operations, e.g. for resolving relative symbol
+paths.
 
 .. seealso:: :py:func:`setPathResolver`
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
 %Docstring
-Sets the path ``resolver`` for conversion between relative and absolute paths
-during rendering operations, e.g. for resolving relative symbol paths.
+Sets the path ``resolver`` for conversion between relative and absolute
+paths during rendering operations, e.g. for resolving relative symbol
+paths.
 
 .. seealso:: :py:func:`pathResolver`
 %End
@@ -547,10 +596,13 @@ during rendering operations, e.g. for resolving relative symbol paths.
 
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 %Docstring
-Computes an *estimated* conversion factor between layer and map units, where ``layerUnits × layerToMapUnits = mapUnits``
+Computes an *estimated* conversion factor between layer and map units,
+where ``layerUnits × layerToMapUnits = mapUnits``
 
 :param layer: The layer
-:param referenceExtent: A reference extent based on which to perform the computation. If not specified, the layer extent is used
+:param referenceExtent: A reference extent based on which to perform the
+                        computation. If not specified, the layer extent
+                        is used
 %End
 
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
@@ -559,7 +611,8 @@ transform bounding box from layer's CRS to output CRS
 
 .. seealso:: :py:func:`layerToMapCoordinates` const if you want to transform a rectangle
 
-:return: a bounding box (aligned rectangle) containing the transformed extent
+:return: a bounding box (aligned rectangle) containing the transformed
+         extent
 %End
 
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
@@ -568,7 +621,8 @@ transform bounding box from output CRS to layer's CRS
 
 .. seealso:: :py:func:`mapToLayerCoordinates` const if you want to transform a rectangle
 
-:return: a bounding box (aligned rectangle) containing the transformed extent
+:return: a bounding box (aligned rectangle) containing the transformed
+         extent
 %End
 
     QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
@@ -630,14 +684,15 @@ Returns the coordinate transform from layer's CRS to destination CRS
 
     QgsRectangle computeExtentForScale( const QgsPointXY &center, double scale ) const;
 %Docstring
-Compute the extent such that its ``center`` is at the specified
-position (mapped to the destinatonCrs) and the zoom factor corresponds
-to the specified ``scale``
+Compute the extent such that its ``center`` is at the specified position
+(mapped to the destinatonCrs) and the zoom factor corresponds to the
+specified ``scale``
 
 :param center: the center, in map coordinates
 :param scale: the desired zoom factor (the x part of 1:x)
 
-:return: an extent which can be passed to :py:class:`QgsMapCanvas`.setExtent
+:return: an extent which can be passed to
+         :py:class:`QgsMapCanvas`.setExtent
 
 .. seealso:: :py:func:`computeScaleForExtent`
 
@@ -648,7 +703,8 @@ to the specified ``scale``
 %Docstring
 Compute the scale that corresponds to the specified ``extent``
 
-:param extent: the extent, as passed to :py:func:`QgsMapCanvas.setExtent`
+:param extent: the extent, as passed to
+               :py:func:`QgsMapCanvas.setExtent`
 
 :return: the scale denominator
 
@@ -693,13 +749,15 @@ Gets the segmentation tolerance applied when rendering curved geometries
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
-Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+Sets segmentation tolerance type (maximum angle or maximum difference
+between curve and approximation)
 
 :param type: the segmentation tolerance typename
 %End
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 %Docstring
-Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+Gets segmentation tolerance type (maximum angle or maximum difference
+between curve and approximation)
 %End
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
@@ -723,11 +781,13 @@ Returns the global configuration of the labeling engine.
 
     QgsGeometry labelBoundaryGeometry() const;
 %Docstring
-Returns the label boundary geometry, which restricts where in the rendered map labels are permitted to be
-placed. By default this is a null geometry, which indicates that labels can be placed anywhere within
+Returns the label boundary geometry, which restricts where in the
+rendered map labels are permitted to be placed. By default this is a
+null geometry, which indicates that labels can be placed anywhere within
 the map's :py:func:`~QgsMapSettings.visiblePolygon`.
 
-The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationCrs`.
+The geometry is specified using the map's
+:py:func:`~QgsMapSettings.destinationCrs`.
 
 .. seealso:: :py:func:`setLabelBoundaryGeometry`
 
@@ -738,13 +798,15 @@ The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationC
 
     void setLabelBoundaryGeometry( const QgsGeometry &boundary );
 %Docstring
-Sets the label ``boundary`` geometry, which restricts where in the rendered map labels are permitted to be
-placed.
+Sets the label ``boundary`` geometry, which restricts where in the
+rendered map labels are permitted to be placed.
 
-A null ``boundary`` geometry (the default) indicates that labels can be placed anywhere within
-the map's :py:func:`~QgsMapSettings.visiblePolygon`.
+A null ``boundary`` geometry (the default) indicates that labels can be
+placed anywhere within the map's
+:py:func:`~QgsMapSettings.visiblePolygon`.
 
-The geometry is specified using the map's :py:func:`~QgsMapSettings.destinationCrs`.
+The geometry is specified using the map's
+:py:func:`~QgsMapSettings.destinationCrs`.
 
 .. seealso:: :py:func:`labelBoundaryGeometry`
 
@@ -812,14 +874,16 @@ Returns the list of clipping regions to apply to the map.
 %Docstring
 Sets the simplification setting to use when rendering vector layers.
 
-If the simplify ``method`` is enabled, it will override all other layer-specific simplification
-settings and will apply to all vector layers rendered for the map.
+If the simplify ``method`` is enabled, it will override all other
+layer-specific simplification settings and will apply to all vector
+layers rendered for the map.
 
-This can be used to specify global simplification methods to apply during map exports,
-e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
-during PDF exports.
+This can be used to specify global simplification methods to apply
+during map exports, e.g. to allow vector layers to be simplified to an
+appropriate maximum level of detail during PDF exports.
 
-The default is to use no global simplification, and fallback to individual layer's settings instead.
+The default is to use no global simplification, and fallback to
+individual layer's settings instead.
 
 .. seealso:: :py:func:`simplifyMethod`
 
@@ -833,7 +897,8 @@ Returns the simplification settings to use when rendering vector layers.
 If enabled, it will override all other layer-specific simplification
 settings and will apply to all vector layers rendered for the map.
 
-The default is to use no global simplification, and fallback to individual layer's settings instead.
+The default is to use no global simplification, and fallback to
+individual layer's settings instead.
 
 .. seealso:: :py:func:`setSimplifyMethod`
 
@@ -853,8 +918,8 @@ are drawn and behave during the map render.
 
     void setMaskSettings( const QgsMaskRenderSettings &settings );
 %Docstring
-Sets the mask render ``settings``, which control how masks
-are drawn and behave during the map render.
+Sets the mask render ``settings``, which control how masks are drawn and
+behave during the map render.
 
 .. seealso:: :py:func:`maskSettings`
 
@@ -863,10 +928,12 @@ are drawn and behave during the map render.
 
     void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
 %Docstring
-Adds a rendered feature ``handler`` to use while rendering the map settings.
+Adds a rendered feature ``handler`` to use while rendering the map
+settings.
 
-Ownership of ``handler`` is NOT transferred, and it is the caller's responsibility to ensure
-that the handler exists for the lifetime of the map render job.
+Ownership of ``handler`` is NOT transferred, and it is the caller's
+responsibility to ensure that the handler exists for the lifetime of the
+map render job.
 
 .. seealso:: :py:func:`renderedFeatureHandlers`
 
@@ -875,7 +942,8 @@ that the handler exists for the lifetime of the map render job.
 
     QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
 %Docstring
-Returns the list of rendered feature handlers to use while rendering the map settings.
+Returns the list of rendered feature handlers to use while rendering the
+map settings.
 
 .. seealso:: :py:func:`addRenderedFeatureHandler`
 
@@ -925,7 +993,8 @@ Sets the rendering usage
 
     double frameRate() const;
 %Docstring
-Returns the frame rate of the map (in frames per second), for maps which are part of an animation.
+Returns the frame rate of the map (in frames per second), for maps which
+are part of an animation.
 
 Returns -1 if the map is not associated with an animation.
 
@@ -936,7 +1005,8 @@ Returns -1 if the map is not associated with an animation.
 
     void setFrameRate( double rate );
 %Docstring
-Sets the frame ``rate`` of the map (in frames per second), for maps which are part of an animation.
+Sets the frame ``rate`` of the map (in frames per second), for maps
+which are part of an animation.
 
 Defaults to -1 if the map is not associated with an animation.
 
@@ -947,7 +1017,8 @@ Defaults to -1 if the map is not associated with an animation.
 
     long long currentFrame() const;
 %Docstring
-Returns the current frame number of the map, for maps which are part of an animation.
+Returns the current frame number of the map, for maps which are part of
+an animation.
 
 Returns -1 if the map is not associated with an animation.
 
@@ -958,7 +1029,8 @@ Returns -1 if the map is not associated with an animation.
 
     void setCurrentFrame( long long frame );
 %Docstring
-Sets the current ``frame`` of the map, for maps which are part of an animation.
+Sets the current ``frame`` of the map, for maps which are part of an
+animation.
 
 Defaults to -1 if the map is not associated with an animation.
 
@@ -985,8 +1057,27 @@ Sets the shading ``renderer`` used to render shading on the entire map
 .. versionadded:: 3.30
 %End
 
-  protected:
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+%Docstring
+Returns the policy controlling when rasterisation of content during
+renders is permitted.
 
+.. seealso:: :py:func:`setRasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+%Docstring
+Sets the ``policy`` controlling when rasterisation of content during
+renders is permitted.
+
+.. seealso:: :py:func:`rasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+  protected:
 
 
 

@@ -61,11 +61,11 @@ Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer( const QString
     bool overwrite,
     QMap<int, int> &oldToNewAttrIdxMap,
     QString &errorMessage,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> *options, QString &createdLayerUri )
 {
   return QgsOgrProvider::createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
-           &oldToNewAttrIdxMap, &errorMessage, options
+           &oldToNewAttrIdxMap, createdLayerUri, &errorMessage, options
          );
 }
 
@@ -702,7 +702,7 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
     return nullptr;
   }
 
-  return new QgsOgrTransaction( connString, ds );
+  return new QgsOgrTransaction( connString, std::move( ds ) );
 }
 
 QgsGeoPackageProjectStorage *gGeoPackageProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
@@ -790,7 +790,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   // Try to open using VSIFileHandler
   const QString vsiPrefix = QgsGdalUtils::vsiPrefixForPath( uriParts.value( QStringLiteral( "path" ) ).toString() );
-  if ( !vsiPrefix.isEmpty() && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+  if ( !vsiPrefix.isEmpty() && ( uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
+                                 || ( QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString() != vsiPrefix ) ) )
   {
     if ( !uri.startsWith( vsiPrefix ) )
     {

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1368</width>
-     <height>30</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -103,6 +103,7 @@
       <string>&amp;3D Map Views</string>
      </property>
      <addaction name="mActionNew3DMapCanvas"/>
+     <addaction name="mActionNew3DMapCanvasGlobe"/>
      <addaction name="mActionManage3DMapViews"/>
     </widget>
     <widget class="QMenu" name="mMenuMeasure">
@@ -417,6 +418,12 @@
     </property>
     <addaction name="mActionShowMeshCalculator"/>
    </widget>
+   <widget class="QMenu" name="mDatabaseMenu">
+    <property name="title">
+     <string>&amp;Database</string>
+    </property>
+    <addaction name="mActionQueryHistory"/>
+   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
@@ -425,6 +432,7 @@
    <addaction name="mPluginMenu"/>
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
+   <addaction name="mDatabaseMenu"/>
    <addaction name="mMeshMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
@@ -1604,7 +1612,7 @@ Note : Segment snapping must be enabled in the snapping Toolbar</string>
      <normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</normaloff>:/images/themes/default/mActionAddPostgisLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add PostGIS Layers…</string>
+    <string>Add PostgreSQL Layer…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
@@ -3379,6 +3387,30 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Add Layer from STAC Catalog…</string>
+   </property>
+  </action>
+  <action name="mActionNew3DMapCanvasGlobe">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNew3DMapGlobe.svg</normaloff>:/images/themes/default/mActionNew3DMapGlobe.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New 3D &amp;Globe View</string>
+   </property>
+  </action>
+  <action name="mActionQueryHistory">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconQueryHistory.svg</normaloff>:/images/themes/default/mIconQueryHistory.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Query History…</string>
+   </property>
+   <property name="toolTip">
+    <string>Database Query History</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

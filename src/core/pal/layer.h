@@ -51,7 +51,6 @@ namespace pal
   class FeaturePart;
 
   class Pal;
-  class LabelInfo;
 
   /**
    * \ingroup core

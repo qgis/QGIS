@@ -28,7 +28,7 @@
 /**
  * \ingroup core
  * \class QgsCircularString
- * \brief Circular string geometry type
+ * \brief Circular string geometry type.
  */
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {
@@ -302,12 +302,29 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Cast the \a geom to a QgsCircularString.
      * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString )
         return static_cast<const QgsCircularString *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsCircularString.
+     * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsCircularString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString )
+        return static_cast<QgsCircularString *>( geom );
       return nullptr;
     }
 #endif

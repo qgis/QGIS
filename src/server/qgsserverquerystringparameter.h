@@ -24,7 +24,7 @@
 #include <QObject>
 
 
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -35,7 +35,7 @@ class QgsServerApiBadRequestException;
 
 
 /**
- * The QgsServerQueryStringParameter class holds the information regarding
+ * Holds the information regarding
  * a query string input parameter and its validation.
  *
  * The class is extendable through custom validators (C++ only) and/or by

@@ -18,6 +18,8 @@
 #include "qgsbabelformatregistry.h"
 #include "qgsbabelformat.h"
 #include "qgsbabelgpsdevice.h"
+#include "qgsexception.h"
+#include "qgslogger.h"
 #include <QString>
 #include <QRegularExpression>
 
@@ -276,14 +278,21 @@ void QgsBabelFormatRegistry::reloadFromSettings()
                                  QStringLiteral( "%babel -t -i garmin -o gpx %in %out" ),
                                  QStringLiteral( "%babel -t -i gpx -o garmin %in %out" ) );
 
-  for ( const QString &device : sTreeBabelDevices->items() )
+  try
   {
-    // don't leak memory if there's already a device with this name...
-    delete mDevices.value( device );
+    for ( const QString &device : sTreeBabelDevices->items() )
+    {
+      // don't leak memory if there's already a device with this name...
+      delete mDevices.value( device );
 
-    mDevices[device] = new QgsBabelGpsDeviceFormat( settingsBabelWptDownload->value( device ), settingsBabelWptUpload->value( device ),
-        settingsBabelRteDownload->value( device ), settingsBabelRteUpload->value( device ),
-        settingsBabelTrkDownload->value( device ), settingsBabelTrkUpload->value( device ) );
+      mDevices[device] = new QgsBabelGpsDeviceFormat( settingsBabelWptDownload->value( device ), settingsBabelWptUpload->value( device ),
+          settingsBabelRteDownload->value( device ), settingsBabelRteUpload->value( device ),
+          settingsBabelTrkDownload->value( device ), settingsBabelTrkUpload->value( device ) );
+    }
+  }
+  catch ( QgsSettingsException &e )
+  {
+    QgsDebugError( e.what() );
   }
 }
 

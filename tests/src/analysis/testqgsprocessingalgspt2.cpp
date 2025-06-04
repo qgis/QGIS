@@ -111,7 +111,12 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void updateMetadata();
     void setMetadataFields();
 
+    void mergeVectors();
+
     void nativeAlgsRasterSize();
+
+    void defineProjection();
+    void checkValidity();
 
   private:
     QString mPointLayerPath;
@@ -1865,7 +1870,7 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ) );
+  dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ).release() );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:generateelevationprofileimage" ) ) );
   QVERIFY( alg != nullptr );
@@ -2156,6 +2161,71 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
+void TestQgsProcessingAlgsPt2::mergeVectors()
+{
+  auto baseLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,2)&field=test_length:string(8)" ), QStringLiteral( "base" ), QStringLiteral( "memory" ) );
+  QVERIFY( baseLayer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 << 1.25 << QStringLiteral( "01234567" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
+  baseLayer->dataProvider()->addFeature( f );
+
+  auto mergeLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,4)&field=test_length:string(10)" ), QStringLiteral( "to_merge" ), QStringLiteral( "memory" ) );
+  QVERIFY( mergeLayer->isValid() );
+
+  f.setAttributes( QgsAttributes() << 1 << 1.2515 << QStringLiteral( "0123456789" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (1 1)" ) ) );
+  mergeLayer->dataProvider()->addFeature( f );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:mergevectorlayers" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( baseLayer.get() ) << QVariant::fromValue( mergeLayer.get() ) );
+  parameters.insert( QStringLiteral( "ADD_SOURCE_FIELDS" ), false );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Point );
+  QCOMPARE( resultLayer->featureCount(), 2 );
+  QCOMPARE( resultLayer->fields().count(), 3 );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "id" ) );
+  QCOMPARE( resultLayer->fields().at( 0 ).length(), 10 );
+  QCOMPARE( resultLayer->fields().at( 0 ).precision(), 0 );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "test_precision" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).length(), 10 );
+  QCOMPARE( resultLayer->fields().at( 1 ).precision(), 4 );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "test_length" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).length(), 10 );
+  QCOMPARE( resultLayer->fields().at( 2 ).precision(), 0 );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "Point (0 0)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 1.2500 );
+  QCOMPARE( feat.attributes().at( 2 ).toString(), QStringLiteral( "01234567" ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "Point (1 1)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 1.2515 );
+  QCOMPARE( feat.attributes().at( 2 ).toString(), QStringLiteral( "0123456789" ) );
+}
+
 void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
 {
   auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:32633" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
@@ -2239,6 +2309,109 @@ void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
   QCOMPARE( densityRasterLayer->extent(), gdalRasterLayer->extent() );
   QCOMPARE( densityRasterLayer->height(), gdalRasterLayer->height() );
   QCOMPARE( densityRasterLayer->width(), gdalRasterLayer->width() );
+}
+
+void TestQgsProcessingAlgsPt2::defineProjection()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:definecurrentprojection" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QVERIFY( layer->crs().isValid() );
+  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3857" ) );
+
+  // check that .prj file is create and .qpj file is deleted
+  const QTemporaryDir tmpPath;
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
+  QFile::copy( dataDir + "/points.shx", tmpPath.filePath( QStringLiteral( "points.shx" ) ) );
+  QFile::copy( dataDir + "/points.dbf", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
+  QFile::copy( dataDir + "/points.qpj", tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
+
+  layer.reset( new QgsVectorLayer( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) ) );
+  QVERIFY( layer->isValid() );
+  QVERIFY( !layer->crs().isValid() );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QFile prjFile( tmpPath.filePath( QStringLiteral( "points.prj" ) ) );
+  QVERIFY( prjFile.exists() );
+  QFile qpjFile( tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
+  QVERIFY( !qpjFile.exists() );
+}
+
+void TestQgsProcessingAlgsPt2::checkValidity()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=int_f:int" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))" ) ) );
+  QVERIFY( f.isValid() );
+  layer->dataProvider()->addFeature( f );
+
+  f.setAttributes( QgsAttributes() << 2 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))" ) ) );
+  QVERIFY( f.isValid() );
+  layer->dataProvider()->addFeature( f );
+  QCOMPARE( layer->featureCount(), 2 );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkvalidity" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT_LAYER" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "VALID_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "INVALID_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "ERROR_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  // QGIS method
+  parameters.insert( QStringLiteral( "METHOD" ), 1 );
+
+  bool ok = false;
+  auto context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "INVALID_OUTPUT" ) ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), QStringLiteral( "_errors" ) );
+  QCOMPARE( invalidLayer->featureCount(), 1 );
+  QgsFeatureIterator it = invalidLayer->getFeatures();
+  it.nextFeature( f );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << QStringLiteral( "segments 0 and 2 of line 0 intersect at 1, 1" ) );
+
+  // GEOS method
+  parameters.insert( QStringLiteral( "METHOD" ), 2 );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "INVALID_OUTPUT" ) ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), QStringLiteral( "_errors" ) );
+  QCOMPARE( invalidLayer->featureCount(), 1 );
+  it = invalidLayer->getFeatures();
+  it.nextFeature( f );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << QStringLiteral( "Self-intersection" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

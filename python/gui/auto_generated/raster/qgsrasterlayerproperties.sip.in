@@ -9,12 +9,10 @@
 
 
 
-
-
 class QgsRasterLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
-Property sheet for a raster map layer
+A dialog for raster layer properties.
 
 .. versionadded:: 3.12
 %End

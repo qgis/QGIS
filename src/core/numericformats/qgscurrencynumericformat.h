@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief A numeric formatter which returns a text representation of a currency value.
+ * \brief A numeric formater which returns a text representation of a currency value.
  *
  * \since QGIS 3.12
  */

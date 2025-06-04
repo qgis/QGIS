@@ -60,18 +60,15 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
 {
   if ( mDock )
   {
-    mDockGeometry = mDock->geometry();
     if ( !mSettingKeyDockId.isEmpty() )
       sSettingsDockGeometry->setValue( mDock->saveGeometry(), mSettingKeyDockId );
-    mIsDockFloating = mDock->isFloating();
-    if ( mOwnerWindow )
-      mDockArea = mOwnerWindow->dockWidgetArea( mDock );
-
-    mDock->setWidget( nullptr );
 
     if ( mOwnerWindow )
       mOwnerWindow->removeDockWidget( mDock );
-    mDock->deleteLater();
+
+    mDock->setWidget( nullptr );
+    mWidget->setParent( nullptr );
+    delete mDock.data();
     mDock = nullptr;
   }
 
@@ -431,7 +428,7 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   QMetaObject::invokeMethod( mDock, [this] {
     if (mIsDockFloating && sSettingsDockGeometry->exists( mSettingKeyDockId ) )
         mDock->restoreGeometry( sSettingsDockGeometry->value( mSettingKeyDockId ).toByteArray() );
-    else
+    else if ( mIsDockFloating )
       mDock->setGeometry( mDockGeometry ); }, Qt::QueuedConnection );
 }
 

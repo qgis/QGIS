@@ -31,7 +31,12 @@
 
 QString QgsMeshSurfaceToPolygonAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm exports a polygon file containing mesh layer boundary. It may contain holes and it may be a multi-part polygon." );
+  return QObject::tr( "This algorithm exports a polygon layer containing a mesh layer's boundary. It may contain holes and it may be a multi-part polygon." );
+}
+
+QString QgsMeshSurfaceToPolygonAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a polygon layer containing a mesh layer's boundary." );
 }
 
 QString QgsMeshSurfaceToPolygonAlgorithm::name() const
@@ -223,7 +228,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
     // individula polygon - can be either polygon or hole in polygon
     QgsPolygon *polygon = new QgsPolygon();
-    polygon->setExteriorRing( qgsgeometry_cast<QgsLineString *>( *pit )->clone() );
+    polygon->setExteriorRing( qgsgeometry_cast<const QgsLineString *>( *pit )->clone() );
 
     // add first polygon, no need to check anything
     if ( polygons.empty() )

@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * \brief Encapsulates the results of running a child algorithm within a model
+ * \brief Encapsulates the results of running a child algorithm within a model.
  *
  * \since QGIS 3.38
 */
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 
 /**
  * \ingroup core
- * \brief Encapsulates the results of running a Processing model
+ * \brief Encapsulates the results of running a Processing model.
  *
  * \since QGIS 3.38
 */

@@ -11,7 +11,7 @@
 class QgsGmlFeatureClass
 {
 %Docstring(signature="appended")
-Description of feature class in GML
+Description of feature class in GML.
 %End
 
 %TypeHeaderCode
@@ -34,6 +34,9 @@ Description of feature class in GML
 
 class QgsGmlSchema : QObject
 {
+%Docstring(signature="appended")
+Represents a GML schema.
+%End
 
 %TypeHeaderCode
 #include "qgsgmlschema.h"
@@ -48,9 +51,9 @@ Gets fields info from XSD
 
     bool guessSchema( const QByteArray &data );
 %Docstring
-Guess GML schema from data if XSD does not exist.
-Currently only recognizes UMN Mapserver GetFeatureInfo GML response.
-Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
+Guess GML schema from data if XSD does not exist. Currently only
+recognizes UMN Mapserver GetFeatureInfo GML response. Supports only
+UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
 
 :param data: GML data
 
@@ -59,7 +62,8 @@ Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
 
     QStringList typeNames() const;
 %Docstring
-Gets list of dot separated paths to feature classes parsed from GML or XSD
+Gets list of dot separated paths to feature classes parsed from GML or
+XSD
 %End
 
     QList<QgsField> fields( const QString &typeName );
@@ -74,7 +78,8 @@ Gets list of geometry attributes for type/class name
 
     QgsError error() const;
 %Docstring
-Gets error if :py:func:`~QgsGmlSchema.parseXSD` or :py:func:`~QgsGmlSchema.guessSchema` failed
+Gets error if :py:func:`~QgsGmlSchema.parseXSD` or
+:py:func:`~QgsGmlSchema.guessSchema` failed
 %End
 
 };

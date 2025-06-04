@@ -1239,7 +1239,7 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
       if ( feedback && feedback->isCanceled() )
         return QVector< QgsPointXY >();
 
-      if ( QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i ) ) )
+      if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( ms->geometryN( i ) ) )
       {
         t.addPolygon( *poly, 0 );
       }
@@ -1513,7 +1513,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
   {
     // already curved, so just return a copy
     std::unique_ptr< QgsCircularString > out;
-    out.reset( qgsgeometry_cast< QgsCircularString * >( curve )->clone() );
+    out.reset( qgsgeometry_cast< const QgsCircularString * >( curve )->clone() );
     return out;
   }
   else if ( flatType == Qgis::WkbType::CompoundCurve )
@@ -1542,7 +1542,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
   }
   else if ( flatType == Qgis::WkbType::LineString )
   {
-    const QgsLineString *lineString = qgsgeometry_cast< QgsLineString * >( curve );
+    const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( curve );
 
     auto out = std::make_unique< QgsCompoundCurve >();
 

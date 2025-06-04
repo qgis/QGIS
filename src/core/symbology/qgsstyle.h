@@ -82,6 +82,7 @@ typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 /**
  * \ingroup core
  * \class QgsStyle
+ * \brief A database of saved style entities, including symbols, color ramps, text formats and others.
  */
 class CORE_EXPORT QgsStyle : public QObject
 {
@@ -683,7 +684,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \returns returns the success state of the save operation
      */
-    bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
+    bool saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags );
 
     /**
      * Adds the colorramp to the database.
@@ -694,7 +695,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \returns returns the success state of the save operation
      */
-    bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
+    bool saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 
     //! Removes color ramp from style (and delete it)
     bool removeColorRamp( const QString &name );
@@ -1053,7 +1054,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see rampAdded()
      * \see symbolChanged()
      */
-    void symbolSaved( const QString &name, QgsSymbol *symbol );
+    void symbolSaved( const QString &name, const QgsSymbol *symbol );
 
     /**
      * Emitted whenever a symbol's definition is changed. This does not include

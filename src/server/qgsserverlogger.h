@@ -29,7 +29,7 @@
 
 /**
  * \ingroup server
- * \brief Writes message log into server logfile
+ * \brief Writes message log into server log files.
  */
 class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 {

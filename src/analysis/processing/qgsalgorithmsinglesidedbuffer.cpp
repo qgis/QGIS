@@ -57,6 +57,11 @@ QString QgsSingleSidedBufferAlgorithm::shortHelpString() const
                       "distance from the buffer to use when creating a mitered join." );
 }
 
+QString QgsSingleSidedBufferAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Buffers lines by a specified distance on one side of the line only." );
+}
+
 QString QgsSingleSidedBufferAlgorithm::outputName() const
 {
   return QObject::tr( "Buffered" );

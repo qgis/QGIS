@@ -53,7 +53,12 @@ QString QgsRasterCalculatorAlgorithm::groupId() const
 
 QString QgsRasterCalculatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Performing algebraic operations using raster layers." );
+  return QObject::tr( "This algorithm performs algebraic operations using raster layers." );
+}
+
+QString QgsRasterCalculatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Performs algebraic operations using raster layers." );
 }
 
 QgsRasterCalculatorAlgorithm *QgsRasterCalculatorAlgorithm::createInstance() const
@@ -74,6 +79,12 @@ void QgsRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
   auto crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
   crsParam->setHelp( QObject::tr( "CRS of the output layer. If not specified, the CRS of the first input layer will be used" ) );
   addParameter( crsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Calculated" ) ) );
 }
 
@@ -96,7 +107,6 @@ bool QgsRasterCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
   return true;
 }
-
 
 QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
@@ -166,6 +176,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
     cellSize = minCellSize;
   }
 
+  const QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
   const QString expression = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
@@ -175,22 +186,23 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
   double height = std::round( ( bbox.yMaximum() - bbox.yMinimum() ) / cellSize );
 
   QgsRasterCalculator calc( expression, outputFile, outputFormat, bbox, crs, width, height, entries, context.transformContext() );
+  calc.setCreationOptions( creationOptions.split( '|', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
   QgsRasterCalculator::Result result = calc.processCalculation( feedback );
   qDeleteAll( mLayers );
   mLayers.clear();
   switch ( result )
   {
-    case QgsRasterCalculator::CreateOutputError:
+    case QgsRasterCalculator::Result::CreateOutputError:
       throw QgsProcessingException( QObject::tr( "Error creating output file." ) );
-    case QgsRasterCalculator::InputLayerError:
+    case QgsRasterCalculator::Result::InputLayerError:
       throw QgsProcessingException( QObject::tr( "Error reading input layer." ) );
-    case QgsRasterCalculator::ParserError:
+    case QgsRasterCalculator::Result::ParserError:
       throw QgsProcessingException( QObject::tr( "Error parsing formula." ) );
-    case QgsRasterCalculator::MemoryError:
+    case QgsRasterCalculator::Result::MemoryError:
       throw QgsProcessingException( QObject::tr( "Error allocating memory for result." ) );
-    case QgsRasterCalculator::BandError:
+    case QgsRasterCalculator::Result::BandError:
       throw QgsProcessingException( QObject::tr( "Invalid band number for input." ) );
-    case QgsRasterCalculator::CalculationError:
+    case QgsRasterCalculator::Result::CalculationError:
       throw QgsProcessingException( QObject::tr( "Error occurred while performing calculation." ) );
     default:
       break;
@@ -320,17 +332,17 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
   mLayers.clear();
   switch ( result )
   {
-    case QgsRasterCalculator::CreateOutputError:
+    case QgsRasterCalculator::Result::CreateOutputError:
       throw QgsProcessingException( QObject::tr( "Error creating output file." ) );
-    case QgsRasterCalculator::InputLayerError:
+    case QgsRasterCalculator::Result::InputLayerError:
       throw QgsProcessingException( QObject::tr( "Error reading input layer." ) );
-    case QgsRasterCalculator::ParserError:
+    case QgsRasterCalculator::Result::ParserError:
       throw QgsProcessingException( QObject::tr( "Error parsing formula." ) );
-    case QgsRasterCalculator::MemoryError:
+    case QgsRasterCalculator::Result::MemoryError:
       throw QgsProcessingException( QObject::tr( "Error allocating memory for result." ) );
-    case QgsRasterCalculator::BandError:
+    case QgsRasterCalculator::Result::BandError:
       throw QgsProcessingException( QObject::tr( "Invalid band number for input." ) );
-    case QgsRasterCalculator::CalculationError:
+    case QgsRasterCalculator::Result::CalculationError:
       throw QgsProcessingException( QObject::tr( "Error occurred while performing calculation." ) );
     default:
       break;

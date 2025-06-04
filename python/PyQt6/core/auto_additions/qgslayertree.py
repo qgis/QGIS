@@ -4,6 +4,7 @@ try:
     QgsLayerTree.isGroup = staticmethod(QgsLayerTree.isGroup)
     QgsLayerTree.isLayer = staticmethod(QgsLayerTree.isLayer)
     QgsLayerTree.readXml = staticmethod(QgsLayerTree.readXml)
+    QgsLayerTree.__overridden_methods__ = ['writeXml', 'clone']
     QgsLayerTree.__signal_arguments__ = {'hasCustomLayerOrderChanged': ['hasCustomLayerOrder: bool']}
     QgsLayerTree.__group__ = ['layertree']
 except (NameError, AttributeError):

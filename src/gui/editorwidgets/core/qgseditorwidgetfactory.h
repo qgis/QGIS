@@ -31,7 +31,7 @@ class QgsSearchWidgetWrapper;
 
 /**
  * \ingroup gui
- * \brief Every attribute editor widget needs a factory, which inherits this class
+ * \brief Every attribute editor widget needs a factory, which inherits this class.
  *
  * It provides metadata for the widgets such as the name (human readable), it serializes
  * the configuration to an xml structure and loads the configuration from there.
@@ -73,6 +73,12 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \returns a name
      */
     QString name() const;
+
+    /**
+     * Returns true if this widget is a read-only widget.
+     * \since QGIS 3.44
+     */
+    virtual bool isReadOnly() const { return false; }
 
     /**
      * Override this in your implementation.

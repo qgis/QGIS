@@ -179,7 +179,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
 
   // Add an edit action (similar to the one in QgsBookmarksItemGuiProvider)
   QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), &menu );
-  connect( actionEdit, &QAction::triggered, this, [bookmark, inProject] {
+  connect( actionEdit, &QAction::triggered, this, [bookmark = std::move( bookmark ), inProject] {
     QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, inProject, QgisApp::instance(), QgisApp::instance()->mapCanvas() );
     dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->show();

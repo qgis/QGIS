@@ -12,7 +12,8 @@
 class QgsGradientStop
 {
 %Docstring(signature="appended")
-Represents a color stop within a :py:class:`QgsGradientColorRamp` color ramp.
+Represents a color stop within a :py:class:`QgsGradientColorRamp` color
+ramp.
 %End
 
 %TypeHeaderCode
@@ -37,10 +38,11 @@ Constructor for QgsGradientStop
 
     QColor::Spec colorSpec() const;
 %Docstring
-Returns the color specification in which the color component interpolation will occur.
+Returns the color specification in which the color component
+interpolation will occur.
 
-For multi-stop gradients this color spec will be used for the portion of the color ramp
-leading into the current stop.
+For multi-stop gradients this color spec will be used for the portion of
+the color ramp leading into the current stop.
 
 .. seealso:: :py:func:`setColorSpec`
 
@@ -49,12 +51,14 @@ leading into the current stop.
 
     void setColorSpec( QColor::Spec spec );
 %Docstring
-Sets the color specification in which the color component interpolation will occur.
+Sets the color specification in which the color component interpolation
+will occur.
 
-Only QColor.Spec.Rgb, QColor.Spec.Hsv and QColor.Spec.Hsl are currently supported.
+Only QColor.Spec.Rgb, QColor.Spec.Hsv and QColor.Spec.Hsl are currently
+supported.
 
-For multi-stop gradients this color spec will be used for the portion of the color ramp
-leading into the current stop.
+For multi-stop gradients this color spec will be used for the portion of
+the color ramp leading into the current stop.
 
 .. seealso:: :py:func:`colorSpec`
 
@@ -63,11 +67,11 @@ leading into the current stop.
 
     Qgis::AngularDirection direction() const;
 %Docstring
-Returns the direction to traverse the color wheel using when interpolating hue-based color
-specifications.
+Returns the direction to traverse the color wheel using when
+interpolating hue-based color specifications.
 
-For multi-stop gradients this direction will be used for the portion of the color ramp
-leading into the current stop.
+For multi-stop gradients this direction will be used for the portion of
+the color ramp leading into the current stop.
 
 .. seealso:: :py:func:`setDirection`
 
@@ -76,11 +80,11 @@ leading into the current stop.
 
     void setDirection( Qgis::AngularDirection direction );
 %Docstring
-Sets the ``direction`` to traverse the color wheel using when interpolating hue-based color
-specifications.
+Sets the ``direction`` to traverse the color wheel using when
+interpolating hue-based color specifications.
 
-For multi-stop gradients this direction will be used for the portion of the color ramp
-leading into the current stop.
+For multi-stop gradients this direction will be used for the portion of
+the color ramp leading into the current stop.
 
 .. seealso:: :py:func:`direction`
 
@@ -95,8 +99,8 @@ typedef QList<QgsGradientStop> QgsGradientStopsList;
 class QgsGradientColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
-Gradient color ramp, which smoothly interpolates between two colors and also
-supports optional extra color stops.
+Gradient color ramp, which smoothly interpolates between two colors and
+also supports optional extra color stops.
 %End
 
 %TypeHeaderCode
@@ -113,8 +117,8 @@ Constructor for QgsGradientColorRamp
 
 :param color1: start color, corresponding to a position of 0.0
 :param color2: end color, corresponding to a position of 1.0
-:param discrete: set to ``True`` for discrete interpolation instead of smoothly
-                 interpolating between colors
+:param discrete: set to ``True`` for discrete interpolation instead of
+                 smoothly interpolating between colors
 :param stops: optional list of additional color stops
 %End
 
@@ -187,8 +191,8 @@ Sets the gradient end color.
 
     bool isDiscrete() const;
 %Docstring
-Returns ``True`` if the gradient is using discrete interpolation, rather than
-smoothly interpolating between colors.
+Returns ``True`` if the gradient is using discrete interpolation, rather
+than smoothly interpolating between colors.
 
 .. seealso:: :py:func:`setDiscrete`
 %End
@@ -210,8 +214,9 @@ smoothly interpolating between colors.
 Converts a gradient with existing color stops to or from discrete
 interpolation.
 
-:param discrete: set to ``True`` to convert the gradient stops to discrete,
-                 or ``False`` to convert them to smooth interpolation
+:param discrete: set to ``True`` to convert the gradient stops to
+                 discrete, or ``False`` to convert them to smooth
+                 interpolation
 
 .. seealso:: :py:func:`isDiscrete`
 %End
@@ -220,9 +225,9 @@ interpolation.
 %Docstring
 Sets the list of intermediate gradient stops for the ramp.
 
-:param stops: list of stops. Any existing color stops will be replaced. The stop
-              list will be automatically reordered so that stops are listed in ascending offset
-              order.
+:param stops: list of stops. Any existing color stops will be replaced.
+              The stop list will be automatically reordered so that
+              stops are listed in ascending offset order.
 
 .. seealso:: :py:func:`stops`
 %End
@@ -236,14 +241,16 @@ Returns the list of intermediate gradient stops for the ramp.
 
     QgsStringMap info() const;
 %Docstring
-Returns any additional info attached to the gradient ramp (e.g., authorship notes)
+Returns any additional info attached to the gradient ramp (e.g.,
+authorship notes)
 
 .. seealso:: :py:func:`setInfo`
 %End
 
     void setInfo( const QgsStringMap &info );
 %Docstring
-Sets additional info to attach to the gradient ramp (e.g., authorship notes)
+Sets additional info to attach to the gradient ramp (e.g., authorship
+notes)
 
 :param info: map of string info to attach
 
@@ -261,10 +268,12 @@ Copy color ramp stops to a QGradient
 
     QColor::Spec colorSpec() const;
 %Docstring
-Returns the color specification in which the color component interpolation will occur.
+Returns the color specification in which the color component
+interpolation will occur.
 
-For multi-stop gradients this color spec will be used for the portion of the color ramp
-leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+For multi-stop gradients this color spec will be used for the portion of
+the color ramp leading into the final stop (i.e.
+:py:func:`~QgsGradientColorRamp.color2`).
 
 .. seealso:: :py:func:`setColorSpec`
 
@@ -273,12 +282,15 @@ leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
 
     void setColorSpec( QColor::Spec spec );
 %Docstring
-Sets the color specification in which the color component interpolation will occur.
+Sets the color specification in which the color component interpolation
+will occur.
 
-Only QColor.Spec.Rgb, QColor.Spec.Hsv and QColor.Spec.Hsl are currently supported.
+Only QColor.Spec.Rgb, QColor.Spec.Hsv and QColor.Spec.Hsl are currently
+supported.
 
-For multi-stop gradients this color spec will be used for the portion of the color ramp
-leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+For multi-stop gradients this color spec will be used for the portion of
+the color ramp leading into the final stop (i.e.
+:py:func:`~QgsGradientColorRamp.color2`).
 
 .. seealso:: :py:func:`colorSpec`
 
@@ -287,11 +299,12 @@ leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
 
     Qgis::AngularDirection direction() const;
 %Docstring
-Returns the direction to traverse the color wheel using when interpolating hue-based color
-specifications.
+Returns the direction to traverse the color wheel using when
+interpolating hue-based color specifications.
 
-For multi-stop gradients this direction will be used for the portion of the color ramp
-leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+For multi-stop gradients this direction will be used for the portion of
+the color ramp leading into the final stop (i.e.
+:py:func:`~QgsGradientColorRamp.color2`).
 
 .. seealso:: :py:func:`setDirection`
 
@@ -300,11 +313,12 @@ leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
 
     void setDirection( Qgis::AngularDirection direction );
 %Docstring
-Sets the ``direction`` to traverse the color wheel using when interpolating hue-based color
-specifications.
+Sets the ``direction`` to traverse the color wheel using when
+interpolating hue-based color specifications.
 
-For multi-stop gradients this direction will be used for the portion of the color ramp
-leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
+For multi-stop gradients this direction will be used for the portion of
+the color ramp leading into the final stop (i.e.
+:py:func:`~QgsGradientColorRamp.color2`).
 
 .. seealso:: :py:func:`direction`
 
@@ -320,7 +334,8 @@ leading into the final stop (i.e. :py:func:`~QgsGradientColorRamp.color2`).
 class QgsLimitedRandomColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
-Constrained random color ramp, which returns random colors based on preset parameters.
+Constrained random color ramp, which returns random colors based on
+preset parameters.
 %End
 
 %TypeHeaderCode
@@ -346,8 +361,8 @@ Constructor for QgsLimitedRandomColorRamp
 
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
-map.
+Returns a new QgsLimitedRandomColorRamp color ramp created using the
+properties encoded in a string map.
 
 :param properties: color ramp properties
 
@@ -384,8 +399,8 @@ Gets a list of random colors
 
     void updateColors();
 %Docstring
-Must be called after changing the properties of the color ramp
-to regenerate the list of random colors.
+Must be called after changing the properties of the color ramp to
+regenerate the list of random colors.
 %End
 
     int hueMin() const;
@@ -483,8 +498,11 @@ Sets the maximum value for generated colors
 class QgsRandomColorRamp: QgsColorRamp
 {
 %Docstring(signature="appended")
-Totally random color ramp. Returns colors generated at random, but constrained
-to some hardcoded saturation and value ranges to prevent ugly color generation.
+A color ramp consisting of random colors, constrained within component
+ranges.
+
+Returns colors generated at random, but constrained to some hardcoded
+saturation and value ranges to prevent ugly color generation.
 %End
 
 %TypeHeaderCode
@@ -505,9 +523,10 @@ to some hardcoded saturation and value ranges to prevent ugly color generation.
 
     virtual void setTotalColorCount( int colorCount );
 %Docstring
-Sets the desired total number of unique colors for the resultant ramp. Calling
-this method pregenerates a set of visually distinct colors which are returned
-by subsequent calls to :py:func:`~QgsRandomColorRamp.color`.
+Sets the desired total number of unique colors for the resultant ramp.
+Calling this method pregenerates a set of visually distinct colors which
+are returned by subsequent calls to
+:py:func:`~QgsRandomColorRamp.color`.
 
 :param colorCount: number of unique colors
 %End
@@ -561,8 +580,8 @@ Constructor for :py:class:`QgsPresetColorRamp`.
 
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
-map.
+Returns a new QgsPresetSchemeColorRamp color ramp created using the
+properties encoded in a string map.
 
 :param properties: color ramp properties
 
@@ -641,8 +660,8 @@ Constructor for QgsColorBrewerColorRamp
 
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
-map.
+Returns a new QgsColorBrewerColorRamp color ramp created using the
+properties encoded in a string map.
 
 :param properties: color ramp properties
 
@@ -688,7 +707,8 @@ Returns the number of colors in the ramp.
 %Docstring
 Sets the name of the color brewer color scheme.
 
-:param schemeName: scheme name, must match a valid color brewer scheme name
+:param schemeName: scheme name, must match a valid color brewer scheme
+                   name
 
 .. seealso:: :py:func:`schemeName`
 
@@ -699,8 +719,9 @@ Sets the name of the color brewer color scheme.
 %Docstring
 Sets the number of colors in the ramp.
 
-:param colors: number of colors. Must match a valid value for the scheme,
-               which can be retrieved using :py:func:`~QgsColorBrewerColorRamp.listSchemeVariants`
+:param colors: number of colors. Must match a valid value for the
+               scheme, which can be retrieved using
+               :py:func:`~QgsColorBrewerColorRamp.listSchemeVariants`
 
 .. seealso:: :py:func:`colors`
 %End
@@ -736,7 +757,6 @@ Generates the scheme using the current name and number of colors
 class QgsCptCityColorRamp : QgsGradientColorRamp
 {
 %Docstring(signature="appended")
-
 A color ramp from the CPT City collection.
 %End
 

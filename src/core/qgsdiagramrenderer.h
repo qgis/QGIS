@@ -217,14 +217,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Returns the diagram renderer associated with the layer.
      * \see setRenderer()
      */
-    QgsDiagramRenderer *renderer() { return mRenderer; }
+    QgsDiagramRenderer *renderer() { return mRenderer.get(); }
 
     /**
      * Returns the diagram renderer associated with the layer.
      * \see setRenderer()
      * \note not available in Python bindings
      */
-    const QgsDiagramRenderer *renderer() const SIP_SKIP { return mRenderer; }
+    const QgsDiagramRenderer *renderer() const SIP_SKIP { return mRenderer.get(); }
 
     /**
      * Sets the diagram renderer associated with the layer.
@@ -335,7 +335,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     double mDistance = 0.0;
 
     //! Associated diagram renderer. Owned by this object.
-    QgsDiagramRenderer *mRenderer = nullptr;
+    std::unique_ptr<QgsDiagramRenderer> mRenderer;
 
     //! Whether to show all diagrams, including overlapping diagrams
     bool mShowAll = true;
@@ -869,7 +869,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
 /**
  * \ingroup core
- * \brief Renders the diagrams for all features with the same settings
+ * \brief Renders the diagrams for all features with the same settings.
 */
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
@@ -905,7 +905,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 /**
  * \ingroup core
  * \class QgsLinearlyInterpolatedDiagramRenderer
- * \brief Alters the size of rendered diagrams using a linear scaling.
+ * \brief Alters the size of rendered diagrams using linear scaling.
  */
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
@@ -986,14 +986,15 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsDiagramInterpolationSettings mInterpolationSettings;
 
     //! Stores more settings about how legend for varying size of symbols should be rendered
-    QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 };
 
 /**
  * \ingroup core
  * \class QgsStackedDiagramRenderer
- * Renders diagrams using mixed diagram render types. The size of
- * the rendered diagram is given by a combination of subrenderers.
+ * Renders diagrams using mixed diagram render types.
+ *
+ * The size of the rendered diagram is given by a combination of subrenderers.
  *
  * \since QGIS 3.40
  */

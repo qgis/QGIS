@@ -343,6 +343,12 @@ void QgsExpression::detach()
   }
 }
 
+void QgsExpression::initFunctionHelp()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, buildFunctionHelp );
+}
+
 void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
   detach();
@@ -432,7 +438,7 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   {
     // calculator IS required, so initialize it now...
     d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-    d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? geoNone() : d->mDaEllipsoid );
+    d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? Qgis::geoNone() : d->mDaEllipsoid );
     d->mCalc->setSourceCrs( *d->mDaCrs.get(), *d->mDaTransformContext.get() );
   }
 
@@ -719,9 +725,12 @@ QStringList QgsExpression::tags( const QString &name )
 
 void QgsExpression::initVariableHelp()
 {
-  if ( !sVariableHelpTexts()->isEmpty() )
-    return;
+  static std::once_flag initialized;
+  std::call_once( initialized, buildVariableHelp );
+}
 
+void QgsExpression::buildVariableHelp()
+{
   //global variables
   sVariableHelpTexts()->insert( QStringLiteral( "qgis_version" ), QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "qgis_version_no" ), QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
@@ -851,7 +860,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolate values between two integer zoom levels." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used for calculations within the attribute table the row number will respect the original order of features from the underlying data source." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used from the field calculator the row numbering starts at 1, otherwise (e.g. from Processing tools) the row numbering starts from 0." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
@@ -949,9 +958,9 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis." ) );
 }
 
-
 bool QgsExpression::addVariableHelpText( const QString name, const QString &description )
 {
+  QgsExpression::initVariableHelp();
   if ( sVariableHelpTexts()->contains( name ) )
   {
     return false;

@@ -13,8 +13,9 @@ class QgsRasterFileWriter
 %Docstring(signature="appended")
 The raster file writer which allows you to save a raster to a new file.
 
-The writer defaults to creating GeoTIFF outputs using GDAL. Alternative formats and
-data providers can be used by calling :py:func:`~setOutputFormat` and :py:func:`~setOutputProviderKey`.
+The writer defaults to creating GeoTIFF outputs using GDAL. Alternative
+formats and data providers can be used by calling
+:py:func:`~setOutputFormat` and :py:func:`~setOutputProviderKey`.
 %End
 
 %TypeHeaderCode
@@ -31,7 +32,8 @@ data providers can be used by calling :py:func:`~setOutputFormat` and :py:func:`
 
     QgsRasterFileWriter( const QString &outputUrl );
 %Docstring
-Constructor for QgsRasterFileWriter, writing to the specified output URL/filename.
+Constructor for QgsRasterFileWriter, writing to the specified output
+URL/filename.
 %End
 
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
@@ -40,10 +42,12 @@ Constructor for QgsRasterFileWriter, writing to the specified output URL/filenam
         const QgsCoordinateReferenceSystem &crs ) /Factory/;
 %Docstring
 Create a raster file with one band without initializing the pixel data.
-Returned provider may be used to initialize the raster using :py:func:`~QgsRasterFileWriter.writeBlock` calls.
-Ownership of the returned provider is passed to the caller.
+Returned provider may be used to initialize the raster using
+:py:func:`~QgsRasterFileWriter.writeBlock` calls. Ownership of the
+returned provider is passed to the caller.
 
-:return: Instance of data provider in editing mode (on success) or ``None`` on error.
+:return: Instance of data provider in editing mode (on success) or
+         ``None`` on error.
 
 .. note::
 
@@ -56,11 +60,13 @@ Ownership of the returned provider is passed to the caller.
         const QgsCoordinateReferenceSystem &crs,
         int nBands ) /Factory/;
 %Docstring
-Create a raster file with given number of bands without initializing the pixel data.
-Returned provider may be used to initialize the raster using :py:func:`~QgsRasterFileWriter.writeBlock` calls.
-Ownership of the returned provider is passed to the caller.
+Create a raster file with given number of bands without initializing the
+pixel data. Returned provider may be used to initialize the raster using
+:py:func:`~QgsRasterFileWriter.writeBlock` calls. Ownership of the
+returned provider is passed to the caller.
 
-:return: Instance of data provider in editing mode (on success) or ``None`` on error.
+:return: Instance of data provider in editing mode (on success) or
+         ``None`` on error.
 
 .. note::
 
@@ -75,7 +81,8 @@ Write raster file
 
 :param pipe: raster pipe
 :param nCols: number of output columns
-:param nRows: number of output rows (or -1 to automatically calculate row number to have square pixels)
+:param nRows: number of output rows (or -1 to automatically calculate
+              row number to have square pixels)
 :param outputExtent: extent to output
 :param crs: crs to reproject to
 :param feedback: optional feedback object for progress reports
@@ -94,7 +101,8 @@ Write raster file
 
 :param pipe: raster pipe
 :param nCols: number of output columns
-:param nRows: number of output rows (or -1 to automatically calculate row number to have square pixels)
+:param nRows: number of output rows (or -1 to automatically calculate
+              row number to have square pixels)
 :param outputExtent: extent to output
 :param crs: crs to reproject to
 :param transformContext: coordinate transform context
@@ -112,7 +120,8 @@ Returns the output URL (filename) for the raster.
 %Docstring
 Sets the output ``format``.
 
-For GDAL disk based outputs this should match the GDAL driver name, e.g. "GTiff" for GeoTiff exports.
+For GDAL disk based outputs this should match the GDAL driver name, e.g.
+"GTiff" for GeoTiff exports.
 
 .. seealso:: :py:func:`outputFormat`
 %End
@@ -121,7 +130,8 @@ For GDAL disk based outputs this should match the GDAL driver name, e.g. "GTiff"
 %Docstring
 Returns the output format.
 
-For GDAL disk based outputs this will match the GDAL driver name, e.g. "GTiff" for GeoTiff exports.
+For GDAL disk based outputs this will match the GDAL driver name, e.g.
+"GTiff" for GeoTiff exports.
 
 .. seealso:: :py:func:`setOutputFormat`
 %End
@@ -146,8 +156,8 @@ Returns the name of the data provider for the raster output.
 %Docstring
 Sets whether the output should be tiled.
 
-Tiled outputs will automatically split the raster into multiple parts, based on the
-:py:func:`~QgsRasterFileWriter.maxTileWidth` value.
+Tiled outputs will automatically split the raster into multiple parts,
+based on the :py:func:`~QgsRasterFileWriter.maxTileWidth` value.
 
 .. seealso:: :py:func:`tiledMode`
 %End
@@ -248,34 +258,64 @@ Returns the maximum tile height (in pixels) for tiled outputs.
 .. seealso:: :py:func:`tiledMode`
 %End
 
-    void setCreateOptions( const QStringList &list );
+
+ void setCreateOptions( const QStringList &list ) /Deprecated="Since 3.44. Use setCreationOptions() instead."/;
 %Docstring
-Sets a list of data source creation options to use when
-creating the output raster file.
+Sets a list of data source creation options to use when creating the
+output raster file.
 
 .. seealso:: :py:func:`createOptions`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRasterFileWriter.setCreationOptions` instead.
 %End
 
-    QStringList createOptions() const;
+ QStringList createOptions() const /Deprecated="Since 3.44. Use creationOptions() instead."/;
 %Docstring
 Returns the list of data source creation options which will be used when
 creating the output raster file.
 
 .. seealso:: :py:func:`setCreateOptions`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRasterFileWriter.creationOptions` instead.
 %End
+
+    QStringList creationOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when
+creating the output raster file.
+
+.. seealso:: :py:func:`setCreationOptions`
+
+.. versionadded:: 3.44
+%End
+
+    void setCreationOptions( const QStringList &options );
+%Docstring
+Sets a list of data source creation options to use when creating the
+output raster file.
+
+.. seealso:: :py:func:`creationOptions`
+
+.. versionadded:: 3.44
+%End
+
 
     void setPyramidsConfigOptions( const QStringList &list );
 %Docstring
-Sets a ``list`` of configuration options to use when
-creating the pyramids for the output raster file.
+Sets a ``list`` of configuration options to use when creating the
+pyramids for the output raster file.
 
 .. seealso:: :py:func:`pyramidsConfigOptions`
 %End
 
     QStringList pyramidsConfigOptions() const;
 %Docstring
-Returns the list of configuration options used when
-creating the pyramids for the output raster file.
+Returns the list of configuration options used when creating the
+pyramids for the output raster file.
 
 .. seealso:: :py:func:`setPyramidsConfigOptions`
 %End
@@ -294,11 +334,13 @@ Creates a filter for an GDAL driver key
 
     static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
 %Docstring
-Returns a list or pairs, with format filter string as first element and GDAL format key as second element.
-Relies on GDAL_DMD_EXTENSIONS metadata, if it is empty corresponding driver will be skipped even if supported.
+Returns a list or pairs, with format filter string as first element and
+GDAL format key as second element. Relies on GDAL_DMD_EXTENSIONS
+metadata, if it is empty corresponding driver will be skipped even if
+supported.
 
-The ``options`` argument can be used to control the sorting and filtering of
-returned formats.
+The ``options`` argument can be used to control the sorting and
+filtering of returned formats.
 
 .. seealso:: :py:func:`supportedFormatExtensions`
 %End
@@ -307,31 +349,33 @@ returned formats.
 %Docstring
 Returns a list of file extensions for supported formats.
 
-The ``options`` argument can be used to control the sorting and filtering of
-returned formats.
+The ``options`` argument can be used to control the sorting and
+filtering of returned formats.
 
 .. seealso:: :py:func:`supportedFiltersAndFormats`
 %End
 
     static QString driverForExtension( const QString &extension );
 %Docstring
-Returns the GDAL driver name for a specified file ``extension``. E.g. the
-driver name for the ".tif" extension is "GTiff".
-If no suitable drivers are found then an empty string is returned.
+Returns the GDAL driver name for a specified file ``extension``. E.g.
+the driver name for the ".tif" extension is "GTiff". If no suitable
+drivers are found then an empty string is returned.
 
-Note that this method works for all GDAL drivers, including those without create support
-(and which are not supported by QgsRasterFileWriter).
+Note that this method works for all GDAL drivers, including those
+without create support (and which are not supported by
+QgsRasterFileWriter).
 %End
 
     static QStringList extensionsForFormat( const QString &format );
 %Docstring
-Returns a list of known file extensions for the given GDAL driver ``format``.
-E.g. returns "tif", "tiff" for the format "GTiff".
+Returns a list of known file extensions for the given GDAL driver
+``format``. E.g. returns "tif", "tiff" for the format "GTiff".
 
 If no matching format driver is found an empty list will be returned.
 
-Note that this method works for all GDAL drivers, including those without create support
-(and which are not supported by QgsRasterFileWriter).
+Note that this method works for all GDAL drivers, including those
+without create support (and which are not supported by
+QgsRasterFileWriter).
 %End
 
 };

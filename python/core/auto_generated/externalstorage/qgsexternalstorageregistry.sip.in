@@ -13,9 +13,11 @@
 class QgsExternalStorageRegistry
 {
 %Docstring(signature="appended")
-Registry of external storage backends used by :py:class:`QgsExternalResourceWidget`
+Registry of external storage backends used by
+:py:class:`QgsExternalResourceWidget`.
 
-:py:class:`QgsExternalStorageRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsExternalStorageRegistry` is not usually directly created,
+but rather accessed through
 :py:func:`QgsApplication.projectStorageRegistry()`.
 
 .. versionadded:: 3.22
@@ -35,8 +37,8 @@ Constructor - creates a registry of external storage backends
 
     QgsExternalStorage *externalStorageFromType( const QString &type ) const;
 %Docstring
-Returns external storage implementation if the storage ``type`` matches one.
-Returns None otherwise
+Returns external storage implementation if the storage ``type`` matches
+one. Returns None otherwise
 %End
 
     QList<QgsExternalStorage *> externalStorages() const;

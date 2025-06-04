@@ -10,7 +10,7 @@
 class QgsInterpolatedLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-:py:class:`QgsInterpolatedLineSymbolLayerWidget`
+A widget for configuring a :py:class:`QgsInterpolatedLineSymbolLayer`.
 
 .. versionadded:: 3.20
 %End

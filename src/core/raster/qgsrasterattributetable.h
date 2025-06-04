@@ -33,7 +33,7 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
- * \brief The QgsRasterAttributeTable class represents a Raster Attribute Table (RAT).
+ * \brief Represents a Raster Attribute Table (RAT).
  *
  * This class is modeled after the GDAL Raster Attribute Table implementation, it adds some convenience
  * methods to handle data from QGIS and to import/export a Raster Attribute Table from/to a DBF VAT file.

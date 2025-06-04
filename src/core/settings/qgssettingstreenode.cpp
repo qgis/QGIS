@@ -144,6 +144,7 @@ void QgsSettingsTreeNode::init( QgsSettingsTreeNode *parent, const QString &key 
   mCompleteKey = QDir::cleanPath( QStringLiteral( "%1/%2" ).arg( parent->completeKey(), key ) ) + '/';
 }
 
+QgsSettingsTreeNamedListNode::QgsSettingsTreeNamedListNode() = default;
 
 void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOptions &options )
 {
@@ -151,7 +152,7 @@ void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOp
   if ( options.testFlag( Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting ) )
   {
     // this must be done before completing the key
-    mSelectedItemSetting = new QgsSettingsEntryString( QStringLiteral( "%1/selected" ).arg( mCompleteKey ), nullptr );
+    mSelectedItemSetting = std::make_unique<QgsSettingsEntryString>( QStringLiteral( "%1/selected" ).arg( mCompleteKey ), nullptr );
   }
 
   mNamedNodesCount = mParent->namedNodesCount() + 1;
@@ -161,7 +162,7 @@ void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOp
 
 QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
 {
-  delete mSelectedItemSetting;
+
 }
 
 

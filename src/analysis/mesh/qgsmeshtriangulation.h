@@ -35,7 +35,7 @@ class QgsFeedback;
  * \ingroup analysis
  * \class QgsMeshTriangulation
  *
- * \brief Class that handles mesh creation with Delaunay constrained triangulation
+ * \brief Handles mesh creation with Delaunay constrained triangulation.
  *
  * \since QGIS 3.16
  */
@@ -129,7 +129,7 @@ class QgsMeshZValueDataset : public QgsMeshDataset
  * \ingroup analysis
  * \class QgsMeshZValueDatasetGroup
  *
- * \brief Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
+ * \brief Convenience class that can be used to obtain a dataset group on vertices that represents the Z value of the mesh vertices.
  *
  * \since QGIS 3.16
  */
@@ -163,8 +163,8 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup : public QgsMeshDatasetGroup
  * \ingroup analysis
  * \class QgsMeshEditingDelaunayTriangulation
  *
- * \brief Class that can be used with QgsMeshEditor::advancedEdit() to add triangle faces to a mesh created by
- * a Delaunay triangulation on provided existing vertex.
+ * \brief Can be used with QgsMeshEditor::advancedEdit() to add triangle faces to a mesh created by
+ * a Delaunay triangulation on existing vertices.
  *
  * \since QGIS 3.22
  */

@@ -15,9 +15,8 @@ class QgsTileXYZ
 %Docstring(signature="appended")
 Stores coordinates of a tile in a tile matrix set.
 
-Tile matrix is identified
-by the :py:func:`~zoomLevel`, and the position within tile matrix is given by :py:func:`~column`
-and :py:func:`~row`.
+Tile matrix is identified by the :py:func:`~zoomLevel`, and the position
+within tile matrix is given by :py:func:`~column` and :py:func:`~row`.
 
 .. versionadded:: 3.14
 %End
@@ -28,7 +27,8 @@ and :py:func:`~row`.
   public:
     QgsTileXYZ( int tc = -1, int tr = -1, int tz = -1 );
 %Docstring
-Constructs a tile identifier from given column, row and zoom level indices
+Constructs a tile identifier from given column, row and zoom level
+indices
 %End
 
     int column() const;
@@ -65,8 +65,9 @@ Returns tile coordinates in a formatted string
 class QgsTileRange
 {
 %Docstring(signature="appended")
-Range of tiles in a tile matrix to be rendered. The selection is rectangular,
-given by start/end row and column numbers.
+A range of tiles in a tile matrix.
+
+The selection is rectangular, given by start/end row and column numbers.
 
 .. versionadded:: 3.14
 %End
@@ -81,7 +82,8 @@ Constructs a range of tiles from given span of columns and rows
 %End
     bool isValid() const;
 %Docstring
-Returns whether the range is valid (when all row/column numbers are not negative)
+Returns whether the range is valid (when all row/column numbers are not
+negative)
 %End
 
     int startColumn() const;
@@ -101,17 +103,25 @@ Returns index of the first row in the range
 Returns index of the last row in the range
 %End
 
+    int count() const;
+%Docstring
+Returns the total number of tiles in the range.
+
+.. versionadded:: 3.44
+%End
+
 };
 
 
 class QgsTileMatrix
 {
 %Docstring(signature="appended")
-Defines a matrix of tiles for a single zoom level: it is defined by its size (width * height)
-and map extent that it covers.
+Defines a matrix of tiles for a single zoom level: it is defined by its
+size (width * height) and map extent that it covers.
 
-Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile has [0,0] coordinate
-(which is different from TMS convention where bottom-left tile has [0,0] coordinate).
+Please note that we follow the XYZ convention of X/Y axes, i.e. top-left
+tile has [0,0] coordinate (which is different from TMS convention where
+bottom-left tile has [0,0] coordinate).
 
 .. versionadded:: 3.14
 %End
@@ -130,9 +140,11 @@ Returns a tile matrix for the usual web mercator
                                         const QgsPointXY &z0TopLeftPoint, double z0Dimension,
                                         int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
 %Docstring
-Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units.
+Returns a tile matrix for a specific CRS, top left point, zoom level 0
+dimension in CRS units.
 
-The ``z0Dimension`` argument must specify the dimension (width or height, in map units) of the root tiles in zoom level 0.
+The ``z0Dimension`` argument must specify the dimension (width or
+height, in map units) of the root tiles in zoom level 0.
 %End
 
     static QgsTileMatrix fromTileMatrix( int zoomLevel, const QgsTileMatrix &tileMatrix );
@@ -220,7 +232,8 @@ Returns tile range that fully covers the given extent
 
     QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;
 %Docstring
-Returns row/column coordinates (floating point number) from the given point in map coordinates
+Returns row/column coordinates (floating point number) from the given
+point in map coordinates
 %End
 
     bool isRootTileMatrix() const;
@@ -255,7 +268,8 @@ Returns ``True`` if the matrix set is empty.
 
     void addGoogleCrs84QuadTiles( int minimumZoom = 0, int maximumZoom = 14 );
 %Docstring
-Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad setup.
+Adds tile matrices corresponding to the standard web
+mercator/GoogleCRS84Quad setup.
 %End
 
     QgsTileMatrix tileMatrix( int zoom ) const;
@@ -281,7 +295,8 @@ Sets the root tile ``matrix`` (usually corresponding to zoom level 0).
 %Docstring
 Adds a ``matrix`` to the set.
 
-Any existing matrix with the same :py:func:`QgsTileMatrix.zoomLevel()` will be replaced.
+Any existing matrix with the same :py:func:`QgsTileMatrix.zoomLevel()`
+will be replaced.
 %End
 
     int minimumZoom() const;
@@ -300,8 +315,8 @@ Returns the maximum zoom level for tiles present in the set.
 
     void dropMatricesOutsideZoomRange( int minimumZoom, int maximumZoom );
 %Docstring
-Deletes any existing matrices which fall outside the zoom range specified
-by ``minimumZoom`` to ``maximumZoom``, inclusive.
+Deletes any existing matrices which fall outside the zoom range
+specified by ``minimumZoom`` to ``maximumZoom``, inclusive.
 %End
 
     Qgis::TileAvailability tileAvailability( QgsTileXYZ id ) const;
@@ -309,10 +324,12 @@ by ``minimumZoom`` to ``maximumZoom``, inclusive.
 Returns the availability of the given tile in this matrix.
 
 This method can be used to determine whether a particular tile actually
-exists within the matrix, or is not available (e.g. due to holes within the matrix).
+exists within the matrix, or is not available (e.g. due to holes within
+the matrix).
 
-This method returns :py:class:`Qgis`.TileAvailability.Available by default, unless specific
-tile availability is known for the given ``id``.
+This method returns :py:class:`Qgis`.TileAvailability.Available by
+default, unless specific tile availability is known for the given
+``id``.
 
 .. versionadded:: 3.32
 %End
@@ -329,21 +346,26 @@ this method will return the crs of the minimum zoom tile matrix.
 %Docstring
 Calculates a fractional zoom level given a map ``scale`` denominator.
 
-The zoom level will be linearly interpolated between zoom levels present in the set.
+The zoom level will be linearly interpolated between zoom levels present
+in the set.
 %End
 
     int scaleToZoomLevel( double scale, bool clamp = true ) const;
 %Docstring
-Finds the best fitting (integer) zoom level given a map ``scale`` denominator. An
-optional ``clamp`` parameter can be set to ``False`` to disable clamping zoom level
-to the tile matrix set's minimum and maximum zoom level.
+Finds the best fitting (integer) zoom level given a map ``scale``
+denominator. An optional ``clamp`` parameter can be set to ``False`` to
+disable clamping zoom level to the tile matrix set's minimum and maximum
+zoom level.
 
-Values are constrained to the zoom levels between :py:func:`~QgsTileMatrixSet.minimumZoom` and :py:func:`~QgsTileMatrixSet.maximumZoom`.
+Values are constrained to the zoom levels between
+:py:func:`~QgsTileMatrixSet.minimumZoom` and
+:py:func:`~QgsTileMatrixSet.maximumZoom`.
 %End
 
     double scaleForRenderContext( const QgsRenderContext &context ) const;
 %Docstring
-Calculates the correct scale to use for the tiles when rendered using the specified render ``context``.
+Calculates the correct scale to use for the tiles when rendered using
+the specified render ``context``.
 
 .. versionadded:: 3.26
 %End
@@ -355,7 +377,8 @@ Calculates the correct scale to use for the tiles when rendered using the specif
                                      const double mapDpi
                                    ) const;
 %Docstring
-Calculates the correct scale to use for the tiles when rendered using the specified map properties.
+Calculates the correct scale to use for the tiles when rendered using
+the specified map properties.
 
 .. versionadded:: 3.26
 %End

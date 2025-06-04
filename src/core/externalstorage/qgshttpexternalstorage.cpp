@@ -84,7 +84,7 @@ QString QgsHttpExternalStorageStoreTask::errorString() const
 
 void QgsHttpExternalStorageStoreTask::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
 {
-  mPrepareRequestHandler = handler;
+  mPrepareRequestHandler = std::move( handler );
 }
 
 QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg )
@@ -142,7 +142,7 @@ QString QgsHttpExternalStorageStoredContent::url() const
 
 void QgsHttpExternalStorageStoredContent::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
 {
-  mUploadTask->setPrepareRequestHandler( handler );
+  mUploadTask->setPrepareRequestHandler( std::move( handler ) );
 }
 
 

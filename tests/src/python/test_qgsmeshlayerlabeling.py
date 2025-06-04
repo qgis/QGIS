@@ -14,14 +14,17 @@ import os
 
 from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
-from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
+from qgis.PyQt.QtGui import QColor, QImage, QPolygonF, QPainter
 from qgis.core import (
     QgsAbstractMeshLayerLabeling,
     QgsCoordinateReferenceSystem,
     QgsFontUtils,
     QgsMapSettings,
     QgsMeshLayer,
+    QgsPalLayerSettings,
     QgsMeshLayerSimpleLabeling,
+    QgsTextFormat,
+    QgsProperty,
 )
 import unittest
 from utilities import unitTestDataPath
@@ -35,6 +38,50 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
     @classmethod
     def control_path_prefix(cls):
         return "mesh_labeling"
+
+    def testHasNonDefaultCompositionModeSimple(self):
+        settings = QgsPalLayerSettings()
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertFalse(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
+        settings.setFormat(t)
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        settings.setFormat(t)
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.FontBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.ShadowBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.BufferBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.ShapeBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
 
     def testSimpleLabelVertices(self):
         ml = QgsMeshLayer(

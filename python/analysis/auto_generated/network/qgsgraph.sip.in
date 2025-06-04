@@ -15,7 +15,7 @@
 class QgsGraphEdge
 {
 %Docstring(signature="appended")
-This class implements a graph edge
+Represents an edge in a graph.
 %End
 
 %TypeHeaderCode
@@ -58,7 +58,7 @@ typedef QList<int> QgsGraphEdgeIds;
 class QgsGraphVertex
 {
 %Docstring(signature="appended")
-This class implements a graph vertex
+Represents vertex in a graph.
 %End
 
 %TypeHeaderCode
@@ -70,7 +70,8 @@ This class implements a graph vertex
 
     QgsGraphVertex( const QgsPointXY &point );
 %Docstring
-This constructor initializes QgsGraphVertex object and associates a vertex with a point
+This constructor initializes QgsGraphVertex object and associates a
+vertex with a point
 %End
 
     QgsGraphEdgeIds incomingEdges() const;
@@ -98,7 +99,7 @@ Returns point associated with graph vertex.
 class QgsGraph
 {
 %Docstring(signature="appended")
-Mathematical graph representation
+Mathematical graph representation.
 %End
 
 %TypeHeaderCode
@@ -115,8 +116,8 @@ Add a vertex to the graph
 
     int addEdge( int fromVertexIdx, int toVertexIdx, const QVector<QVariant> &strategies );
 %Docstring
-Add an edge to the graph, going from the ``fromVertexIdx``
-to ``toVertexIdx``.
+Add an edge to the graph, going from the ``fromVertexIdx`` to
+``toVertexIdx``.
 %End
 
     int vertexCount() const;
@@ -148,7 +149,8 @@ Returns the vertex at the given index.
 %Docstring
 Removes the vertex at specified ``index``.
 
-All edges which are incoming or outgoing edges for the vertex will also be removed.
+All edges which are incoming or outgoing edges for the vertex will also
+be removed.
 
 :raises IndexError: if the vertex is not found.
 
@@ -196,8 +198,9 @@ Returns the edge at the given index.
 %Docstring
 Removes the edge at specified ``index``.
 
-The incoming and outgoing edges for all graph vertices will be updated accordingly. Vertices which
-no longer have any incoming or outgoing edges as a result will be removed from the graph automatically.
+The incoming and outgoing edges for all graph vertices will be updated
+accordingly. Vertices which no longer have any incoming or outgoing
+edges as a result will be removed from the graph automatically.
 
 :raises IndexError: if the vertex is not found.
 
@@ -225,15 +228,18 @@ Find vertex by associated point
 
     int findOppositeEdge( int index ) const;
 %Docstring
-Finds the first edge which is the opposite of the edge with the specified index.
+Finds the first edge which is the opposite of the edge with the
+specified index.
 
-This represents the edge which has the same vertices as the specified edge, but
-the opposite direction in the graph.(I.e. the edge which starts at the "from" vertex
-of the specified edge and ends at the "to" vertex.)
+This represents the edge which has the same vertices as the specified
+edge, but the opposite direction in the graph.(I.e. the edge which
+starts at the "from" vertex of the specified edge and ends at the "to"
+vertex.)
 
 Returns -1 if no opposite edge exists.
 
-:raises IndexError: if the edge with the specified ``index`` is not found.
+:raises IndexError: if the edge with the specified ``index`` is not
+                    found.
 
 .. versionadded:: 3.24
 %End

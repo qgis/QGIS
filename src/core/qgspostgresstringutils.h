@@ -28,7 +28,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsPostgresStringUtils provides functions to handle postgres array like formatted lists in strings.
+ * \brief Provides functions to handle postgres array-like formatted lists in strings.
  * \since QGIS 3.8
  */
 class CORE_EXPORT QgsPostgresStringUtils

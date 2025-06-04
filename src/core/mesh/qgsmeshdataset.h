@@ -42,8 +42,8 @@ struct QgsMesh;
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetIndex is index that identifies the dataset group (e.g. wind speed)
- * and a dataset in this group (e.g. magnitude of wind speed in particular time)
+ * \brief An index that identifies the dataset group (e.g. wind speed)
+ * and a dataset in this group (e.g. magnitude of wind speed in particular time).
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMeshDatasetIndex
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetValue represents single dataset value.
+ * \brief Represents a single mesh dataset value.
  *
  * Values may be scalar or vector. Nodata values are represented by NaNs.
  *
@@ -122,13 +122,15 @@ class CORE_EXPORT QgsMeshDatasetValue
 /**
  * \ingroup core
  *
- * \brief QgsMeshDataBlock is a block of integers/doubles that can be used
- * to retrieve:
- * active flags (e.g. face's active integer flag)
- * scalars (e.g. scalar dataset double values)
- * vectors (e.g. vector dataset doubles x,y values)
+ * \brief A block of integers/doubles from a mesh dataset.
  *
- * data are implicitly shared, so the class can be quickly copied
+ * QgsMeshDataBlock can be used to retrieve:
+ *
+ * - active flags (e.g. face's active integer flag)
+ * - scalars (e.g. scalar dataset double values)
+ * - vectors (e.g. vector dataset doubles x,y values)
+ *
+ * Data are implicitly shared, so the class can be quickly copied
  * std::numeric_limits<double>::quiet_NaN() represents NODATA value
  *
  * Data can be accessed all at once with values() (faster) or
@@ -235,7 +237,7 @@ class CORE_EXPORT QgsMeshDataBlock
 /**
  * \ingroup core
  *
- * \brief QgsMesh3DDataBlock is a block of 3d stacked mesh data related N
+ * \brief A block of 3d stacked mesh data related N
  * faces defined on base mesh frame.
  *
  * Data are implicitly shared, so the class can be quickly copied
@@ -344,8 +346,8 @@ class CORE_EXPORT QgsMesh3DDataBlock
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetGroupMetadata is a collection of dataset group metadata
- * such as whether the data is vector or scalar, name
+ * \brief A collection of dataset group metadata
+ * such as whether the data is vector or scalar, name.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -482,8 +484,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
 /**
  * \ingroup core
  *
- * \brief QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
- * as whether the data is valid or associated time for the dataset
+ * \brief Represents mesh dataset metadata, such as whether the data is valid or the associated time.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -550,7 +551,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 /**
  * \ingroup core
  *
- * \brief Abstract class that represents a dataset
+ * \brief Abstract class that represents a mesh dataset.
  *
  * \since QGIS 3.16
  */
@@ -584,7 +585,7 @@ class CORE_EXPORT QgsMeshDataset
 /**
  * \ingroup core
  *
- * \brief Abstract class that represents a dataset group
+ * \brief Abstract class that represents a dataset group.
  *
  * \since QGIS 3.16
  */
@@ -707,9 +708,9 @@ class CORE_EXPORT QgsMeshDatasetGroup
 /**
  * \ingroup core
  *
- * \brief Class to store memory dataset.
+ * \brief Stores mesh memory datasets.
  *
- * The QgsMeshDatasetValue objects and whether the faces are active are stored in QVector containers that are exposed for efficiency
+ * The QgsMeshDatasetValue objects and whether the faces are active are stored in QVector containers that are exposed for efficiency.
  *
  * \since QGIS 3.16
  */
@@ -740,9 +741,9 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 /**
  * \ingroup core
  *
- * \brief Class that represents a dataset group stored in memory.
+ * \brief Represents a mesh dataset group stored in memory.
  *
- * The QgsMeshMemoryDataset objects stores in a QVector container that are exposed for efficiency
+ * The QgsMeshMemoryDataset objects stores in a QVector container that are exposed for efficiency.
  *
  * \since QGIS 3.16
  */
@@ -781,7 +782,7 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 /**
  * \ingroup core
  *
- * \brief Class that represents a dataset with elevation value of the vertices of a existing mesh that can be edited
+ * \brief Represents a dataset with elevation value of the vertices of an existing mesh that can be edited.
  *
  * \since QGIS 3.22
  */
@@ -804,8 +805,9 @@ class QgsMeshVerticesElevationDataset: public QgsMeshDataset
 /**
  * \ingroup core
  *
- * \brief Class that represents a dataset group with elevation value of the vertices of a existing mesh that can be edited
- *        This dataset group contains only one dataset.
+ * \brief Represents a dataset group with elevation value of the vertices of an existing mesh that can be edited.
+ *
+ * This dataset group contains only one dataset.
  *
  * \since QGIS 3.22
  */
@@ -832,22 +834,25 @@ class CORE_EXPORT QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGr
  * \ingroup core
  *
  * \brief Tree item for display of the mesh dataset groups.
- * Dataset group is set of datasets with the same name,
+ *
+ * Dataset groups are sets of datasets with the same name,
  * but different control variable (e.g. time)
  *
  * Support for multiple levels, because groups can have
  * subgroups, for example
  *
- * Groups:
- *   Depth
- *     Minimum
- *     Maximum
- *   Velocity
- *   Wind speed
- *     Minimum
- *     Maximum
+ * ~~~
+ * + Groups:
+ *   + Depth
+ *     + Minimum
+ *     + Maximum
+ *   + Velocity
+ *   + Wind speed
+ *      + Minimum
+ *      + Maximum
+ * ~~~
  *
- * Tree items handle also the dependencies between dataset groups represented by these items
+ * Tree items handle also the dependencies between dataset groups represented by these items.
  *
  * \since QGIS 3.14 in core API
  */
@@ -983,17 +988,17 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QString providerName() const;
 
     /**
-     * \return whether the dataset group is vector
+     * Return TRUE if the dataset group is vector.
      */
     bool isVector() const;
 
     /**
-     * \return the dataset group index
+     * Returns the dataset group index.
      */
     int datasetGroupIndex() const;
 
     /**
-     * \return whether the item is enabled, that is if it is displayed in view
+     * Returns TRUE if the item is enabled, i.e. if it is displayed in view.
      */
     bool isEnabled() const;
 
@@ -1004,12 +1009,12 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     void setIsEnabled( bool isEnabled );
 
     /**
-     * \return the default name
+     * Returns the default name.
      */
     QString defaultName() const;
 
     /**
-     * \return the dataset group type
+     * Returns the dataset group type.
      *
      * \since QGIS 3.16
      */

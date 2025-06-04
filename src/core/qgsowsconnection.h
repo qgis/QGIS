@@ -85,7 +85,7 @@ class CORE_EXPORT QgsArcGisConnectionSettings SIP_SKIP
 
 /**
  * \ingroup core
- * \brief Connections management
+ * \brief Connections management for OWS connections.
  */
 class CORE_EXPORT QgsOwsConnection : public QObject
 {
@@ -109,6 +109,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsMaxNumFeatures;
     static const QgsSettingsEntryString *settingsPagesize;
     static const QgsSettingsEntryString *settingsPagingEnabled;
+    static const QgsSettingsEntryString *settingsWfsFeatureMode;
     static const QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11;
     static const QgsSettingsEntryBool *settingsIgnoreAxisOrientation;
     static const QgsSettingsEntryBool *settingsInvertAxisOrientation;
@@ -116,6 +117,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsPassword;
     static const QgsSettingsEntryString *settingsAuthCfg;
     static const QgsSettingsEntryInteger *settingsFeatureCount;
+    static const QgsSettingsEntryEnumFlag<Qgis::HttpMethod> *settingsPreferredHttpMethod;
 
 #endif
 

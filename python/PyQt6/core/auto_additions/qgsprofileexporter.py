@@ -19,10 +19,11 @@ QgsProfileExporterTask.ExportResult.__doc__ = """Results of exporting the profil
 # --
 QgsProfileExporterTask.ExportResult.baseClass = QgsProfileExporterTask
 try:
-    QgsProfileExporter.__group__ = ['elevation']
+    QgsProfileExporterTask.__overridden_methods__ = ['run', 'cancel']
+    QgsProfileExporterTask.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass
 try:
-    QgsProfileExporterTask.__group__ = ['elevation']
+    QgsProfileExporter.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass

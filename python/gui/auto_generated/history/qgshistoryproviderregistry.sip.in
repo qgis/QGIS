@@ -13,10 +13,11 @@
 class QgsHistoryProviderRegistry : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsHistoryProviderRegistry` is a registry for objects which track user history (i.e. operations performed through the GUI).
+A registry for objects which track user history (i.e. operations
+performed through the GUI).
 
-:py:class:`QgsHistoryProviderRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.historyProviderRegistry()`.
+:py:class:`QgsHistoryProviderRegistry` is not usually directly created,
+but rather accessed through :py:func:`QgsGui.historyProviderRegistry()`.
 
 .. versionadded:: 3.24
 %End
@@ -29,8 +30,8 @@ The :py:class:`QgsHistoryProviderRegistry` is a registry for objects which track
 %Docstring
 Creates a new empty history provider registry.
 
-QgsHistoryProviderRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.historyProviderRegistry()`.
+QgsHistoryProviderRegistry is not usually directly created, but rather
+accessed through :py:func:`QgsGui.historyProviderRegistry()`.
 %End
 
     ~QgsHistoryProviderRegistry();
@@ -90,8 +91,8 @@ Adds an ``entry`` to the history logs.
 
 The entry will be tagged with the current date/time as the timestamp.
 
-The ``providerId`` specifies the history provider responsible for this entry.
-Entry options are specified via the ``options`` argument.
+The ``providerId`` specifies the history provider responsible for this
+entry. Entry options are specified via the ``options`` argument.
 
 :param providerId: associated :py:func:`QgsAbstractHistoryProvider.id()`
 :param entry: entry to add
@@ -138,15 +139,18 @@ Returns the entry with matching ID, from the specified ``backend``.
 %Docstring
 Updates the existing entry with matching ``id``.
 
-This method allows the content of an entry to be updated, e.g. to add additional properties
-to the content. (Such as recording the results of after a long-running operation completes).
+This method allows the content of an entry to be updated, e.g. to add
+additional properties to the content. (Such as recording the results of
+after a long-running operation completes).
 %End
 
     QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
 %Docstring
-Queries history entries which occurred between the specified ``start`` and ``end`` times.
+Queries history entries which occurred between the specified ``start``
+and ``end`` times.
 
-The optional ``providerId`` and ``backends`` arguments can be used to filter entries.
+The optional ``providerId`` and ``backends`` arguments can be used to
+filter entries.
 %End
 
     static QString userHistoryDbPath();
@@ -181,8 +185,8 @@ Emitted when an ``entry`` is updated.
 %Docstring
 Emitted when the history is cleared for a ``backend``.
 
-If ``providerId`` is non-empty then the history has only been cleared for the
-specified provider.
+If ``providerId`` is non-empty then the history has only been cleared
+for the specified provider.
 
 .. versionadded:: 3.32
 %End

@@ -25,6 +25,7 @@ class QgsArrowSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsArrowSymbolLayerWidget
+ * \brief A widget for configuring a QgsArrowSymbolLayer.
  */
 class GUI_EXPORT QgsArrowSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
 {

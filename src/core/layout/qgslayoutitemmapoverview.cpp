@@ -47,7 +47,7 @@ void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,75" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
-  mFrameSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mFrameSymbol = QgsFillSymbol::createSimple( properties );
 
   mExtentLayer->setRenderer( new QgsSingleSymbolRenderer( mFrameSymbol->clone() ) );
 }
@@ -101,7 +101,8 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-  context.setForceVectorOutput( true );
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
+    context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -196,7 +197,7 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
   QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !frameStyleElem.isNull() )
   {
-    mFrameSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context ) );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context );
   }
   return ok;
 }

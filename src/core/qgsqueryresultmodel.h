@@ -72,7 +72,7 @@ class QgsQueryResultFetcher: public QObject
 
 
 /**
- * \brief The QgsQueryResultModel class is a model for QgsAbstractDatabaseProviderConnection::QueryResult
+ * \brief A model for QgsAbstractDatabaseProviderConnection::QueryResult.
  *
  * \ingroup core
  * \since QGIS 3.18

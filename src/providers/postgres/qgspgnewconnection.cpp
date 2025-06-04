@@ -39,6 +39,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  txtSchema->setShowClearButton( true );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsPgNewConnection::btnConnect_clicked );
   connect( cb_geometryColumnsOnly, &QCheckBox::clicked, this, &QgsPgNewConnection::cb_geometryColumnsOnly_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );
@@ -49,6 +51,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   connect( txtHost, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
   connect( txtPort, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
   connect( txtDatabase, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( cb_publicSchemaOnly, &QCheckBox::toggled, txtSchema, &QgsFilterLineEdit::setDisabled );
 
   cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
   cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceUri::SslAllow );
@@ -119,6 +122,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     QString authcfg = settings.value( key + "/authcfg" ).toString();
     mAuthSettings->setConfigId( authcfg );
 
+    txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
+
     txtName->setText( connName );
   }
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]*" ), txtName ) );
@@ -179,6 +184,10 @@ void QgsPgNewConnection::accept()
   configuration.insert( "metadataInDatabase", cb_metadataInDatabase->isChecked() );
   configuration.insert( "session_role", txtSessionRole->text() );
   configuration.insert( "allowRasterOverviewTables", cb_allowRasterOverviewTables->isChecked() );
+  if ( !cb_publicSchemaOnly->isChecked() && !txtSchema->text().trimmed().isEmpty() )
+  {
+    configuration.insert( "schema", txtSchema->text().trimmed() );
+  }
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   std::unique_ptr<QgsPostgresProviderConnection> providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );

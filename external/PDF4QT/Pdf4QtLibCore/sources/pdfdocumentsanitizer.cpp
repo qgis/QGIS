@@ -161,7 +161,7 @@ void PDFDocumentSanitizer::performSanitizeMetadata()
 
     PDFExecutionPolicy::execute(PDFExecutionPolicy::Scope::Unknown, objects.begin(), objects.end(), processEntry);
     m_storage.setObjects(qMove(objects));
-    Q_EMIT sanitizationProgress(tr("Metadata streams removed: %1").arg(counter));
+    Q_EMIT sanitizationProgress(tr("Metadata streams removed: %1").arg(counter.load()));
 }
 
 void PDFDocumentSanitizer::performSanitizeOutline()

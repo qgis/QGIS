@@ -64,7 +64,7 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsWfsProviderMetadata::capabi
   return QuerySublayers;
 }
 
-QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Capabilities &caps, const QString &geometryElement, const QString &function )
+QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities &caps, const QString &geometryElement, const QString &function )
 {
   /* Generate something like:
   <fes:Filter xmlns="http://www.opengis.net/fes/2.0">
@@ -133,7 +133,7 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
   return doc.toString();
 }
 
-QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities::Capabilities &caps, const QString &geometryElement )
+QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities &caps, const QString &geometryElement )
 {
   /* Generate something like:
    <fes:Filter xmlns="http://www.opengis.net/fes/2.0">
@@ -158,7 +158,7 @@ QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities::Cap
   return doc.toString();
 }
 
-QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities::Capabilities &caps, const QString &geometryElement )
+QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities &caps, const QString &geometryElement )
 {
   QDomDocument doc;
   QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
@@ -221,12 +221,16 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   if ( !wfsUri.isValid() )
     return res;
 
-  QgsWfsCapabilities::Capabilities caps = QgsWFSProvider::getCachedCapabilities( uri );
+  QgsWfsCapabilities caps = QgsWFSProvider::getCachedCapabilities( uri );
   if ( caps.version.isEmpty() )
     return res;
 
+  QgsDataSourceUri dsUri( uri );
+  dsUri.removeParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE );
+  dsUri.setParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE, QStringLiteral( "true" ) );
+
   QgsWFSProvider provider(
-    uri + " " + QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE + "='true'",
+    dsUri.uri( false ),
     QgsDataProvider::ProviderOptions(), caps
   );
   if ( provider.metadataRetrievalCanceled() )

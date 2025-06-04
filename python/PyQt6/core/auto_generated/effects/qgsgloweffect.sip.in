@@ -14,7 +14,7 @@
 class QgsGlowEffect : QgsPaintEffect
 {
 %Docstring(signature="appended")
-Base class for paint effect which draw a glow inside or outside a
+Base class for paint effects which draw a glow inside or outside a
 picture.
 %End
 
@@ -42,7 +42,8 @@ picture.
 %Docstring
 Sets the spread distance for drawing the glow effect.
 
-:param spread: spread distance. Units are specified via :py:func:`~QgsGlowEffect.setSpreadUnit`
+:param spread: spread distance. Units are specified via
+               :py:func:`~QgsGlowEffect.setSpreadUnit`
 
 .. seealso:: :py:func:`spread`
 
@@ -55,7 +56,8 @@ Sets the spread distance for drawing the glow effect.
 %Docstring
 Returns the spread distance used for drawing the glow effect.
 
-:return: spread distance. Units are retrieved via :py:func:`~QgsGlowEffect.spreadUnit`
+:return: spread distance. Units are retrieved via
+         :py:func:`~QgsGlowEffect.spreadUnit`
 
 .. seealso:: :py:func:`setSpread`
 
@@ -207,8 +209,8 @@ Returns the map unit scale used for the glow blur strength (radius).
 %Docstring
 Sets the ``opacity`` for the effect.
 
-:param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
-                and 1 is fully opaque
+:param opacity: double between 0 and 1 inclusive, where 0 is fully
+                transparent and 1 is fully opaque
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -217,17 +219,18 @@ Sets the ``opacity`` for the effect.
 %Docstring
 Returns the opacity for the effect.
 
-:return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-         and 1 is fully opaque
+:return: opacity value between 0 and 1 inclusive, where 0 is fully
+         transparent and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity`
 %End
 
     void setColor( const QColor &color );
 %Docstring
-Sets the color for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
-is set to SingleColor. The glow will fade between the specified color and
-a totally transparent version of the color.
+Sets the color for the glow. This only applies if the
+:py:func:`~QgsGlowEffect.colorType` is set to SingleColor. The glow will
+fade between the specified color and a totally transparent version of
+the color.
 
 :param color: glow color
 
@@ -238,9 +241,10 @@ a totally transparent version of the color.
 
     QColor color() const;
 %Docstring
-Returns the color for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
-is set to SingleColor. The glow will fade between the specified color and
-a totally transparent version of the color.
+Returns the color for the glow. This only applies if the
+:py:func:`~QgsGlowEffect.colorType` is set to SingleColor. The glow will
+fade between the specified color and a totally transparent version of
+the color.
 
 :return: glow color
 
@@ -251,10 +255,12 @@ a totally transparent version of the color.
 
     void setRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ramp for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
-is set to ColorRamp. The glow will utilize colors from the ramp.
+Sets the color ramp for the glow. This only applies if the
+:py:func:`~QgsGlowEffect.colorType` is set to ColorRamp. The glow will
+utilize colors from the ramp.
 
-:param ramp: color ramp for glow. Ownership of the ramp is transferred to the effect.
+:param ramp: color ramp for glow. Ownership of the ramp is transferred
+             to the effect.
 
 .. seealso:: :py:func:`ramp`
 
@@ -263,8 +269,9 @@ is set to ColorRamp. The glow will utilize colors from the ramp.
 
     QgsColorRamp *ramp() const;
 %Docstring
-Returns the color ramp used for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
-is set to ColorRamp. The glow will utilize colors from the ramp.
+Returns the color ramp used for the glow. This only applies if the
+:py:func:`~QgsGlowEffect.colorType` is set to ColorRamp. The glow will
+utilize colors from the ramp.
 
 :return: color ramp for glow
 
@@ -295,9 +302,10 @@ Returns the blend mode for the effect
 
     void setColorType( GlowColorType colorType );
 %Docstring
-Sets the color mode to use for the glow. The glow can either be drawn using a :py:class:`QgsColorRamp`
-color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
-for the glow.
+Sets the color mode to use for the glow. The glow can either be drawn
+using a :py:class:`QgsColorRamp` color ramp or by simply specificing a
+single color. setColorType is used to specify which mode to use for the
+glow.
 
 :param colorType: color type to use for glow
 
@@ -310,8 +318,9 @@ for the glow.
 
     GlowColorType colorType() const;
 %Docstring
-Returns the color mode used for the glow. The glow can either be drawn using a :py:class:`QgsColorRamp`
-color ramp or by specificing a single color.
+Returns the color mode used for the glow. The glow can either be drawn
+using a :py:class:`QgsColorRamp` color ramp or by specificing a single
+color.
 
 :return: current color mode used for the glow
 
@@ -332,11 +341,11 @@ color ramp or by specificing a single color.
 
     virtual bool shadeExterior() const = 0;
 %Docstring
-Specifies whether the glow is drawn outside the picture or within
-the picture.
+Specifies whether the glow is drawn outside the picture or within the
+picture.
 
-:return: ``True`` if glow is to be drawn outside the picture, or ``False``
-         to draw glow within the picture
+:return: ``True`` if glow is to be drawn outside the picture, or
+         ``False`` to draw glow within the picture
 %End
 
 

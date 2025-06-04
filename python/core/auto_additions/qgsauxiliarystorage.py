@@ -4,6 +4,7 @@ try:
     QgsAuxiliaryLayer.createAuxiliaryField = staticmethod(QgsAuxiliaryLayer.createAuxiliaryField)
     QgsAuxiliaryLayer.nameFromProperty = staticmethod(QgsAuxiliaryLayer.nameFromProperty)
     QgsAuxiliaryLayer.propertyDefinitionFromField = staticmethod(QgsAuxiliaryLayer.propertyDefinitionFromField)
+    QgsAuxiliaryLayer.__overridden_methods__ = ['deleteAttribute']
 except (NameError, AttributeError):
     pass
 try:

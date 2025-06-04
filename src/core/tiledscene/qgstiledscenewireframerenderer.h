@@ -60,7 +60,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setFillSymbol()
      */
-    static QgsFillSymbol *createDefaultFillSymbol() SIP_FACTORY;
+    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol();
 
     /**
      * Returns the fill symbol used to render triangles in the wireframe.
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setLineSymbol()
      */
-    static QgsLineSymbol *createDefaultLineSymbol() SIP_FACTORY;
+    static std::unique_ptr< QgsLineSymbol > createDefaultLineSymbol();
 
     /**
      * Returns the line symbol used to render lines in the wireframe.

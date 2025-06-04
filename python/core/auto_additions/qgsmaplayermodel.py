@@ -47,5 +47,6 @@ QgsMapLayerModel.CustomRole.__doc__ = """Custom model roles.
 QgsMapLayerModel.CustomRole.baseClass = QgsMapLayerModel
 try:
     QgsMapLayerModel.iconForLayer = staticmethod(QgsMapLayerModel.iconForLayer)
+    QgsMapLayerModel.__overridden_methods__ = ['index', 'parent', 'rowCount', 'columnCount', 'data', 'setData', 'flags', 'insertRows', 'removeRows', 'mimeTypes', 'canDropMimeData', 'mimeData', 'dropMimeData', 'supportedDropActions']
 except (NameError, AttributeError):
     pass

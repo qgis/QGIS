@@ -14,8 +14,10 @@
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
-Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
-leaves the actual drawing of the symbols to subclasses.
+Abstract base class for simple marker symbol layers.
+
+Handles creation of the symbol shapes but leaves the actual drawing of
+the symbols to subclasses.
 %End
 
 %TypeHeaderCode
@@ -34,7 +36,8 @@ Returns ``True`` if a symbol shape has a fill.
 
 :param shape: shape to test
 
-:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines only
+:return: ``True`` if shape uses a fill, or ``False`` if shape uses lines
+         only
 %End
 
     QgsSimpleMarkerSymbolLayerBase( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
@@ -70,11 +73,12 @@ Sets the rendered marker shape.
 
     static Qgis::MarkerShape decodeShape( const QString &name, bool *ok = 0 );
 %Docstring
-Attempts to decode a string representation of a shape name to the corresponding
-shape.
+Attempts to decode a string representation of a shape name to the
+corresponding shape.
 
 :param name: encoded shape name
-:param ok: if specified, will be set to ``True`` if shape was successfully decoded
+:param ok: if specified, will be set to ``True`` if shape was
+           successfully decoded
 
 :return: decoded name
 
@@ -110,7 +114,8 @@ Prepares the layer for drawing the specified shape (QPolygonF version)
 
     bool prepareMarkerPath( Qgis::MarkerShape symbol );
 %Docstring
-Prepares the layer for drawing the specified shape (QPainterPath version)
+Prepares the layer for drawing the specified shape (QPainterPath
+version)
 %End
 
     bool shapeToPolygon( Qgis::MarkerShape shape, QPolygonF &polygon ) const;
@@ -125,10 +130,12 @@ Creates a polygon representing the specified shape.
 
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 %Docstring
-Calculates the desired size of the marker, considering data defined size overrides.
+Calculates the desired size of the marker, considering data defined size
+overrides.
 
 :param context: symbol render context
-:param hasDataDefinedSize: will be set to ``True`` if marker uses data defined sizes
+:param hasDataDefinedSize: will be set to ``True`` if marker uses data
+                           defined sizes
 
 :return: marker size, in original size units
 %End
@@ -139,8 +146,10 @@ Calculates the marker offset and rotation.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
-:param hasDataDefinedRotation: will be set to ``True`` if marker has data defined rotation
-:param offset: will be set to calculated marker offset (in painter units)
+:param hasDataDefinedRotation: will be set to ``True`` if marker has
+                               data defined rotation
+:param offset: will be set to calculated marker offset (in painter
+               units)
 :param angle: will be set to calculated marker angle
 %End
 
@@ -150,12 +159,15 @@ Calculates the marker offset and rotation.
   private:
     virtual void draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
 %Docstring
-Derived classes must implement :py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` to handle drawing the generated shape onto the painter surface.
+Derived classes must implement
+:py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` to handle drawing the
+generated shape onto the painter surface.
 
 :param context: symbol render context
 :param shape: shape to draw
-:param polygon: polygon representing transformed marker shape. May be empty, in which case the shape will be specified
-                in the path argument.
+:param polygon: polygon representing transformed marker shape. May be
+                empty, in which case the shape will be specified in the
+                path argument.
 :param path: transformed painter path representing shape to draw
 %End
 };
@@ -163,7 +175,8 @@ Derived classes must implement :py:func:`~QgsSimpleMarkerSymbolLayerBase.draw` t
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring(signature="appended")
-Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+Simple marker symbol layer, consisting of a rendered shape with solid
+fill color and a stroke.
 %End
 
 %TypeHeaderCode
@@ -197,7 +210,8 @@ Constructor for QgsSimpleMarkerSymbolLayer.
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer.
 
-:param properties: a property map containing symbol properties (see :py:func:`~QgsSimpleMarkerSymbolLayer.properties`)
+:param properties: a property map containing symbol properties (see
+                   :py:func:`~QgsSimpleMarkerSymbolLayer.properties`)
 
 :return: new QgsSimpleMarkerSymbolLayer
 %End
@@ -224,7 +238,14 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual QgsSimpleMarkerSymbolLayer *clone() const /Factory/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -371,7 +392,9 @@ Returns the width of the marker's stroke.
 %Docstring
 Sets the width of the marker's stroke.
 
-:param w: stroke width. See :py:func:`~QgsSimpleMarkerSymbolLayer.strokeWidthUnit` for units.
+:param w: stroke width. See
+          :py:func:`~QgsSimpleMarkerSymbolLayer.strokeWidthUnit` for
+          units.
 
 .. seealso:: :py:func:`strokeWidth`
 
@@ -446,7 +469,8 @@ Draws the marker shape in the specified painter.
 %Docstring
 Prepares cache image
 
-:return: ``True`` in case of success, ``False`` if cache image size too large
+:return: ``True`` in case of success, ``False`` if cache image size too
+         large
 %End
 
 
@@ -461,8 +485,9 @@ Prepares cache image
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring(signature="appended")
-Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
-the symbol to support advanced styling of the interior and stroke of the shape.
+Filled marker symbol layer, consisting of a shape which is rendered
+using a :py:class:`QgsFillSymbol`. This allows the symbol to support
+advanced styling of the interior and stroke of the shape.
 %End
 
 %TypeHeaderCode
@@ -489,7 +514,8 @@ Constructor for QgsFilledMarkerSymbolLayer.
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayer.
 
-:param properties: a property map containing symbol properties (see :py:func:`~QgsFilledMarkerSymbolLayer.properties`)
+:param properties: a property map containing symbol properties (see
+                   :py:func:`~QgsFilledMarkerSymbolLayer.properties`)
 
 :return: new QgsFilledMarkerSymbolLayer
 %End
@@ -537,6 +563,9 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
 class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
+%Docstring(signature="appended")
+A marker symbol layer which renders an SVG graphic.
+%End
 
 %TypeHeaderCode
 #include "qgsmarkersymbollayer.h"
@@ -547,7 +576,8 @@ class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
                              double angle = DEFAULT_SVGMARKER_ANGLE,
                              Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
-Constructs SVG marker symbol layer with picture from given absolute path to a SVG file
+Constructs SVG marker symbol layer with picture from given absolute path
+to a SVG file
 %End
 
     ~QgsSvgMarkerSymbolLayer();
@@ -561,8 +591,8 @@ Creates the symbol
 
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
-Turns relative paths in properties map to absolute when reading and vice versa when writing.
-Used internally when reading/writing symbols.
+Turns relative paths in properties map to absolute when reading and vice
+versa when writing. Used internally when reading/writing symbols.
 %End
 
 
@@ -582,7 +612,13 @@ Used internally when reading/writing symbols.
 
     virtual QgsSvgMarkerSymbolLayer *clone() const /Factory/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     QString path() const;
@@ -603,7 +639,8 @@ Set the marker SVG path.
 
     double defaultAspectRatio() const;
 %Docstring
-Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
+Returns the default marker aspect ratio between width and height, 0 if
+not yet calculated.
 
 .. seealso:: :py:func:`updateDefaultAspectRatio`
 %End
@@ -619,7 +656,8 @@ Calculates the default marker aspect ratio between width and height.
 
     bool preservedAspectRatio() const;
 %Docstring
-Returns the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0.
+Returns the preserved aspect ratio value, ``True`` if fixed aspect ratio
+has been lower or equal to 0.
 
 .. seealso:: :py:func:`setPreservedAspectRatio`
 %End
@@ -630,15 +668,17 @@ Set preserved the marker aspect ratio between width and height.
 
 :param par: Preserved Aspect Ratio
 
-:return: the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0
+:return: the preserved aspect ratio value, ``True`` if fixed aspect
+         ratio has been lower or equal to 0
 
 .. seealso:: :py:func:`preservedAspectRatio`
 %End
 
     double fixedAspectRatio() const;
 %Docstring
-Returns the marker aspect ratio between width and height to be used in rendering,
-if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+Returns the marker aspect ratio between width and height to be used in
+rendering, if the value set is lower or equal to 0 the aspect ratio will
+be preserved in rendering
 
 .. seealso:: :py:func:`setFixedAspectRatio`
 
@@ -647,8 +687,9 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 
     void setFixedAspectRatio( double ratio );
 %Docstring
-Set the marker aspect ratio between width and height to be used in rendering,
-if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+Set the marker aspect ratio between width and height to be used in
+rendering, if the value set is lower or equal to 0 the aspect ratio will
+be preserved in rendering
 
 :param ratio: Fixed Aspect Ratio
 
@@ -729,7 +770,8 @@ Calculates the marker aspect ratio between width and height.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
-:param hasDataDefinedAspectRatio: will be set to ``True`` if marker has data defined aspectRatio
+:param hasDataDefinedAspectRatio: will be set to ``True`` if marker has
+                                  data defined aspectRatio
 %End
 
 
@@ -757,7 +799,8 @@ Raster marker symbol layer class.
                                 double angle = DEFAULT_SVGMARKER_ANGLE,
                                 Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
-Constructs raster marker symbol layer with picture from given absolute path to a raster image file
+Constructs raster marker symbol layer with picture from given absolute
+path to a raster image file
 %End
 
     ~QgsRasterMarkerSymbolLayer();
@@ -770,10 +813,21 @@ Creates a raster marker symbol layer from a string map of properties.
 :param properties: QVariantMap properties object
 %End
 
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsRasterMarkerSymbolLayer from an SLD XML element.
+
+:param element: XML element containing SLD definition of symbol
+
+:return: new QgsRasterMarkerSymbolLayer
+
+.. versionadded:: 3.44
+%End
+
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
-Turns relative paths in properties map to absolute when reading and vice versa when writing.
-Used internally when reading/writing symbols.
+Turns relative paths in properties map to absolute when reading and vice
+versa when writing. Used internally when reading/writing symbols.
 %End
 
 
@@ -791,6 +845,10 @@ Used internally when reading/writing symbols.
 
     virtual QColor color() const;
 
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 %Docstring
@@ -798,7 +856,8 @@ Calculates the marker aspect ratio between width and height.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
-:param hasDataDefinedAspectRatio: will be set to ``True`` if marker has data defined aspectRatio
+:param hasDataDefinedAspectRatio: will be set to ``True`` if marker has
+                                  data defined aspectRatio
 %End
 
     QString path() const;
@@ -821,7 +880,8 @@ Set the marker raster image path.
 %Docstring
 Returns the marker opacity.
 
-:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:return: opacity value between 0 (fully transparent) and 1 (fully
+         opaque)
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -830,14 +890,16 @@ Returns the marker opacity.
 %Docstring
 Set the marker opacity.
 
-:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully
+                opaque)
 
 .. seealso:: :py:func:`opacity`
 %End
 
     double defaultAspectRatio() const;
 %Docstring
-Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
+Returns the default marker aspect ratio between width and height, 0 if
+not yet calculated.
 
 .. seealso:: :py:func:`updateDefaultAspectRatio`
 %End
@@ -853,7 +915,8 @@ Calculates the default marker aspect ratio between width and height.
 
     bool preservedAspectRatio() const;
 %Docstring
-Returns the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0.
+Returns the preserved aspect ratio value, ``True`` if fixed aspect ratio
+has been lower or equal to 0.
 
 .. seealso:: :py:func:`setPreservedAspectRatio`
 %End
@@ -864,15 +927,17 @@ Set preserved the marker aspect ratio between width and height.
 
 :param par: Preserved Aspect Ratio
 
-:return: the preserved aspect ratio value, ``True`` if fixed aspect ratio has been lower or equal to 0
+:return: the preserved aspect ratio value, ``True`` if fixed aspect
+         ratio has been lower or equal to 0
 
 .. seealso:: :py:func:`preservedAspectRatio`
 %End
 
     double fixedAspectRatio() const;
 %Docstring
-Returns the marker aspect ratio between width and height to be used in rendering,
-if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+Returns the marker aspect ratio between width and height to be used in
+rendering, if the value set is lower or equal to 0 the aspect ratio will
+be preserved in rendering
 
 .. seealso:: :py:func:`setFixedAspectRatio`
 
@@ -881,8 +946,9 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 
     void setFixedAspectRatio( double ratio );
 %Docstring
-Set the marker aspect ratio between width and height to be used in rendering,
-if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+Set the marker aspect ratio between width and height to be used in
+rendering, if the value set is lower or equal to 0 the aspect ratio will
+be preserved in rendering
 
 :param ratio: Fixed Aspect Ratio
 
@@ -925,6 +991,9 @@ Copies common properties to another layer.
 
 class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
+%Docstring(signature="appended")
+A marker symbol layer which displays characters rendered using a font.
+%End
 
 %TypeHeaderCode
 #include "qgsmarkersymbollayer.h"
@@ -945,7 +1014,8 @@ Constructs a font marker symbol layer.
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates a new QgsFontMarkerSymbolLayer from a property map (see :py:func:`~QgsFontMarkerSymbolLayer.properties`)
+Creates a new QgsFontMarkerSymbolLayer from a property map (see
+:py:func:`~QgsFontMarkerSymbolLayer.properties`)
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -955,8 +1025,9 @@ Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
 
     static void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
 %Docstring
-Resolves fonts from a ``properties`` map, raising warnings in the specified ``context`` if the
-required fonts are not available on the system.
+Resolves fonts from a ``properties`` map, raising warnings in the
+specified ``context`` if the required fonts are not available on the
+system.
 
 .. versionadded:: 3.20
 %End
@@ -981,8 +1052,13 @@ required fonts are not available on the system.
 
     virtual QgsFontMarkerSymbolLayer *clone() const /Factory/;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
 
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool usesMapUnits() const;
 
@@ -992,21 +1068,24 @@ required fonts are not available on the system.
 
     QString fontFamily() const;
 %Docstring
-Returns the font family name for the associated font which will be used to render the point.
+Returns the font family name for the associated font which will be used
+to render the point.
 
 .. seealso:: :py:func:`setFontFamily`
 %End
 
     void setFontFamily( const QString &family );
 %Docstring
-Sets the font ``family`` for the font which will be used to render the point.
+Sets the font ``family`` for the font which will be used to render the
+point.
 
 .. seealso:: :py:func:`fontFamily`
 %End
 
     QString fontStyle() const;
 %Docstring
-Returns the font style for the associated font which will be used to render the point.
+Returns the font style for the associated font which will be used to
+render the point.
 
 .. seealso:: :py:func:`setFontStyle`
 
@@ -1015,7 +1094,8 @@ Returns the font style for the associated font which will be used to render the 
 
     void setFontStyle( const QString &style );
 %Docstring
-Sets the font ``style`` for the font which will be used to render the point.
+Sets the font ``style`` for the font which will be used to render the
+point.
 
 .. seealso:: :py:func:`fontStyle`
 
@@ -1041,7 +1121,8 @@ Sets the character(s) used when rendering points.
 
     double strokeWidth() const;
 %Docstring
-Returns the marker's stroke width. Units are retrieved by :py:func:`~QgsFontMarkerSymbolLayer.strokeWidthUnit`
+Returns the marker's stroke width. Units are retrieved by
+:py:func:`~QgsFontMarkerSymbolLayer.strokeWidthUnit`
 
 .. seealso:: :py:func:`setStrokeWidth`
 
@@ -1052,7 +1133,8 @@ Returns the marker's stroke width. Units are retrieved by :py:func:`~QgsFontMark
 
     void setStrokeWidth( double width );
 %Docstring
-Set's the marker's stroke ``width``. Units are set by :py:func:`~QgsFontMarkerSymbolLayer.setStrokeWidthUnit`.
+Set's the marker's stroke ``width``. Units are set by
+:py:func:`~QgsFontMarkerSymbolLayer.setStrokeWidthUnit`.
 
 .. seealso:: :py:func:`strokeWidth`
 
@@ -1130,8 +1212,9 @@ class QgsAnimatedMarkerSymbolLayer : QgsRasterMarkerSymbolLayer
 %Docstring(signature="appended")
 Animated marker symbol layer class.
 
-The :py:class:`QgsAnimatedMarkerSymbolLayer` class renders frames from an animated raster image source (e.g.
-an animated GIF) during temporal animations or map exports.
+The :py:class:`QgsAnimatedMarkerSymbolLayer` class renders frames from
+an animated raster image source (e.g. an animated GIF) during temporal
+animations or map exports.
 
 .. versionadded:: 3.26
 %End
@@ -1145,7 +1228,8 @@ an animated GIF) during temporal animations or map exports.
                                   double size = DEFAULT_RASTERMARKER_SIZE,
                                   double angle = DEFAULT_RASTERMARKER_ANGLE );
 %Docstring
-Constructor for animated marker symbol layer using the specified source image ``path``.
+Constructor for animated marker symbol layer using the specified source
+image ``path``.
 %End
 
     ~QgsAnimatedMarkerSymbolLayer();
@@ -1153,7 +1237,8 @@ Constructor for animated marker symbol layer using the specified source image ``
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
-Creates an animated marker symbol layer from a string map of ``properties``.
+Creates an animated marker symbol layer from a string map of
+``properties``.
 %End
 
 

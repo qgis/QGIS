@@ -343,6 +343,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap &childInputs = context.modelResult().rawChildInputs();
   QVariantMap &childResults = context.modelResult().rawChildOutputs();
   QSet< QString > &executed = context.modelResult().executedChildIds();
+  QMap< QString, QgsProcessingModelChildAlgorithmResult > &contextChildResults = context.modelResult().childResults();
 
   // start with initial configuration from the context's model configuration (allowing us to
   // resume execution using a previous state)
@@ -455,6 +456,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QElapsedTimer childTime;
       childTime.start();
 
+      QVariantMap outerScopeChildInputs = childInputs;
+      QVariantMap outerScopePrevChildResults = childResults;
+      QSet< QString > outerScopeExecuted = executed;
+      QMap< QString, QgsProcessingModelChildAlgorithmResult > outerScopeContextChildResult = contextChildResults;
+      if ( dynamic_cast< QgsProcessingModelAlgorithm * >( childAlg.get() ) )
+      {
+        // don't allow results from outer models to "leak" into child models
+        childInputs.clear();
+        childResults.clear();
+        executed.clear();
+        contextChildResults.clear();
+      }
+
       bool ok = false;
 
       QThread *modelThread = QThread::currentThread();
@@ -550,6 +564,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       if ( !ppRes.isEmpty() )
         results = ppRes;
+
+      if ( dynamic_cast< QgsProcessingModelAlgorithm * >( childAlg.get() ) )
+      {
+        childInputs = outerScopeChildInputs;
+        childResults = outerScopePrevChildResults;
+        executed = outerScopeExecuted;
+        contextChildResults = outerScopeContextChildResult;
+      }
 
       childResults.insert( childId, results );
       childResult.setOutputs( results );
@@ -1320,6 +1342,14 @@ QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextS
     scope->addVariable( QgsExpressionContextScope::StaticVariable( varIt.key(), varIt->value, true, false, varIt->description ) );
   }
   return scope.release();
+}
+
+QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const
+{
+  const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( param->type() );
+  if ( !paramType )
+    return QgsProcessingModelChildParameterSources();
+  return availableSourcesForChild( childId, paramType->acceptedParameterTypes(), paramType->acceptedOutputTypes(), paramType->acceptedDataTypes( param ) );
 }
 
 QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QStringList &parameterTypes, const QStringList &outputTypes, const QList<int> &dataTypes ) const

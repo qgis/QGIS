@@ -16,8 +16,9 @@
 class QgsExpressionBuilderWidget : QWidget
 {
 %Docstring(signature="appended")
-A reusable widget that can be used to build a expression string.
-See :py:class:`QgsExpressionBuilderDialog` for example of usage.
+A reusable widget that can be used to build an expression string.
+
+.. seealso:: :py:class:`QgsExpressionBuilderDialog` for example of usage.
 %End
 
 %TypeHeaderCode
@@ -78,7 +79,6 @@ Returns the current layer or a None.
 
  void loadFieldNames() /Deprecated="Since 3.14. This is now done automatically."/;
 %Docstring
-
 .. deprecated:: 3.14
 
    This is now done automatically.
@@ -86,7 +86,6 @@ Returns the current layer or a None.
 
  void loadFieldNames( const QgsFields &fields ) /Deprecated="Since 3.14. Use expressionTree()->loadFieldNames() instead."/;
 %Docstring
-
 .. deprecated:: 3.14
 
    Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadFieldNames` instead.
@@ -120,16 +119,16 @@ Sets the expression string for the widget
 
     QString expectedOutputFormat();
 %Docstring
-The set expected format string. This is pure text format and no expression validation
-is done against it.
+The set expected format string. This is pure text format and no
+expression validation is done against it.
 
 :return: The expected value format.
 %End
 
     void setExpectedOutputFormat( const QString &expected );
 %Docstring
-The set expected format string. This is pure text format and no expression validation
-is done against it.
+The set expected format string. This is pure text format and no
+expression validation is done against it.
 
 :param expected: The expected value format for the expression.
 
@@ -140,16 +139,18 @@ is done against it.
 
     QgsExpressionContext expressionContext() const;
 %Docstring
-Returns the expression context for the widget. The context is used for the expression
-preview result and for populating the list of available functions and variables.
+Returns the expression context for the widget. The context is used for
+the expression preview result and for populating the list of available
+functions and variables.
 
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression context for the widget. The context is used for the expression
-preview result and to populate the list of available functions and variables.
+Sets the expression context for the widget. The context is used for the
+expression preview result and to populate the list of available
+functions and variables.
 
 :param context: expression context
 
@@ -166,13 +167,23 @@ Returns if the expression is valid
 %Docstring
 Sets the widget to run using a custom preview generator.
 
-In this mode, the widget will call a callback function to generate a new :py:class:`QgsExpressionContext`
-as the previewed object changes. This can be used to provide custom preview values for different
-objects (i.e. for objects which aren't vector layer features).
+In this mode, the widget will call a callback function to generate a new
+:py:class:`QgsExpressionContext` as the previewed object changes. This
+can be used to provide custom preview values for different objects (i.e.
+for objects which aren't vector layer features).
 
-:param label: The label to display for the combo box presenting choices of objects. This should be a representative name, eg "Band" if the widget is showing choices of raster layer bands
-:param choices: A list of choices to present to the user. Each choice is a pair of a human-readable label and a QVariant representing the object to preview.
-:param previewContextGenerator: A function which takes a QVariant representing the object to preview, and returns a :py:class:`QgsExpressionContext` to use for previewing the object.
+:param label: The label to display for the combo box presenting choices
+              of objects. This should be a representative name, eg
+              "Band" if the widget is showing choices of raster layer
+              bands
+:param choices: A list of choices to present to the user. Each choice is
+                a pair of a human-readable label and a QVariant
+                representing the object to preview.
+:param previewContextGenerator: A function which takes a QVariant
+                                representing the object to preview, and
+                                returns a
+                                :py:class:`QgsExpressionContext` to use
+                                for previewing the object.
 
 .. versionadded:: 3.38
 %End
@@ -201,8 +212,8 @@ objects (i.e. for objects which aren't vector layer features).
 
  void saveToRecent( const QString &collection = "generic" ) /Deprecated="Since 3.14. Use expressionTree()->saveRecent() instead."/;
 %Docstring
-Adds the current expression to the given ``collection``.
-By default it is saved to the collection "generic".
+Adds the current expression to the given ``collection``. By default it
+is saved to the collection "generic".
 
 .. deprecated:: 3.14
 
@@ -211,8 +222,8 @@ By default it is saved to the collection "generic".
 
  void loadRecent( const QString &collection = QStringLiteral( "generic" ) ) /Deprecated="Since 3.14. Use expressionTree()->loadRecent() instead."/;
 %Docstring
-Loads the recent expressions from the given ``collection``.
-By default it is loaded from the collection "generic".
+Loads the recent expressions from the given ``collection``. By default
+it is loaded from the collection "generic".
 
 .. deprecated:: 3.14
 
@@ -297,8 +308,9 @@ Saves the current function editor text to a project entry.
 
  QStandardItemModel *model() /Deprecated="Since 3.14. "/;
 %Docstring
-Returns a pointer to the dialog's function item model.
-This method is exposed for testing purposes only - it should not be used to modify the model.
+Returns a pointer to the dialog's function item model. This method is
+exposed for testing purposes only - it should not be used to modify the
+model.
 
 .. deprecated:: 3.14
 %End
@@ -312,22 +324,23 @@ Returns the project currently associated with the widget.
 
     void setProject( QgsProject *project );
 %Docstring
-Sets the ``project`` currently associated with the widget. This
-controls which layers and relations and other project-specific items are shown in the widget.
+Sets the ``project`` currently associated with the widget. This controls
+which layers and relations and other project-specific items are shown in
+the widget.
 
 .. seealso:: :py:func:`project`
 %End
 
     bool evalError() const;
 %Docstring
-Will be set to ``True`` if the current expression text reported an eval error
-with the context.
+Will be set to ``True`` if the current expression text reported an eval
+error with the context.
 %End
 
     bool parserError() const;
 %Docstring
-Will be set to ``True`` if the current expression text reports a parser error
-with the context.
+Will be set to ``True`` if the current expression text reports a parser
+error with the context.
 %End
 
     void setExpressionPreviewVisible( bool isVisible );
@@ -341,32 +354,31 @@ Sets whether the expression preview is visible.
 
     void loadSampleValues();
 %Docstring
-Load sample values into the sample value area.
-Including available values, in case the formatter can
-provide them (eg. RelationReference).
+Load sample values into the sample value area. Including available
+values, in case the formatter can provide them (eg. RelationReference).
 %End
 
     void loadAllValues();
 %Docstring
 Load all unique values from the set layer into the sample area.
-Including all available values, in case the formatter can
-provide them (eg. RelationReference).
+Including all available values, in case the formatter can provide them
+(eg. RelationReference).
 %End
 
     void loadSampleUsedValues();
 %Docstring
-Load used sample values into the sample value area.
-Only the used ones. Without available values, even if the
-formatter can provide them (eg. RelationReference).
+Load used sample values into the sample value area. Only the used ones.
+Without available values, even if the formatter can provide them (eg.
+RelationReference).
 
 .. versionadded:: 3.12
 %End
 
     void loadAllUsedValues();
 %Docstring
-Load all unique values from the set layer into the sample area.
-Only the used ones. Without available values, even if the
-formatter can provide them (eg. RelationReference).
+Load all unique values from the set layer into the sample area. Only the
+used ones. Without available values, even if the formatter can provide
+them (eg. RelationReference).
 
 .. versionadded:: 3.12
 %End
@@ -378,8 +390,8 @@ Auto save the current Python function code.
 
     void setAutoSave( bool enabled );
 %Docstring
-Enabled or disable auto saving. When enabled Python scripts will be auto saved
-when text changes.
+Enabled or disable auto saving. When enabled Python scripts will be auto
+saved when text changes.
 
 :param enabled: ``True`` to enable auto saving.
 %End
@@ -393,16 +405,16 @@ Adds the current expressions to the stored user expressions.
 
     void removeSelectedUserExpression();
 %Docstring
-Removes the selected expression from the stored user expressions,
-the selected expression must be a user stored expression.
+Removes the selected expression from the stored user expressions, the
+selected expression must be a user stored expression.
 
 .. versionadded:: 3.12
 %End
 
     void editSelectedUserExpression();
 %Docstring
-Edits the selected expression from the stored user expressions,
-the selected expression must be a user stored expression.
+Edits the selected expression from the stored user expressions, the
+selected expression must be a user stored expression.
 
 .. versionadded:: 3.14
 %End
@@ -423,23 +435,24 @@ Returns the list of expression items matching a ``label``.
 
     void expressionParsed( bool isValid );
 %Docstring
-Emitted when the user changes the expression in the widget.
-Users of this widget should connect to this signal to decide if to let the user
+Emitted when the user changes the expression in the widget. Users of
+this widget should connect to this signal to decide if to let the user
 continue.
 
-:param isValid: Is ``True`` if the expression the user has typed is valid.
+:param isValid: Is ``True`` if the expression the user has typed is
+                valid.
 %End
 
     void evalErrorChanged();
 %Docstring
-Will be set to ``True`` if the current expression text reported an eval error
-with the context.
+Will be set to ``True`` if the current expression text reported an eval
+error with the context.
 %End
 
     void parserErrorChanged();
 %Docstring
-Will be set to ``True`` if the current expression text reported a parser error
-with the context.
+Will be set to ``True`` if the current expression text reported a parser
+error with the context.
 %End
 
   protected:

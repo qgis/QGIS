@@ -12,7 +12,8 @@
 class QgsLayoutItemRenderContext
 {
 %Docstring(signature="appended")
-Contains settings and helpers relating to a render of a :py:class:`QgsLayoutItem`.
+Contains settings and helpers relating to a render of a
+:py:class:`QgsLayoutItem`.
 %End
 
 %TypeHeaderCode
@@ -24,12 +25,12 @@ Contains settings and helpers relating to a render of a :py:class:`QgsLayoutItem
 %Docstring
 Constructor for QgsLayoutItemRenderContext.
 
-The ``renderContext`` parameter specifies a :py:class:`QgsRenderContext` for use within
-the QgsLayoutItemRenderContext.
+The ``renderContext`` parameter specifies a :py:class:`QgsRenderContext`
+for use within the QgsLayoutItemRenderContext.
 
-The ``viewScaleFactor`` gives the current view zoom (scale factor). It can be
-used to scale render graphics so that they always appear a constant size,
-regardless of the current view zoom.
+The ``viewScaleFactor`` gives the current view zoom (scale factor). It
+can be used to scale render graphics so that they always appear a
+constant size, regardless of the current view zoom.
 %End
 
 
@@ -37,21 +38,23 @@ regardless of the current view zoom.
 %Docstring
 Returns a reference to the context's render context.
 
-Note that the context's painter has been scaled so that painter units are pixels.
-Use the :py:class:`QgsRenderContext` methods to convert from millimeters or other units to the painter's units.
+Note that the context's painter has been scaled so that painter units
+are pixels. Use the :py:class:`QgsRenderContext` methods to convert from
+millimeters or other units to the painter's units.
 %End
 
 
     double viewScaleFactor() const;
 %Docstring
-Returns the current view zoom (scale factor). It can be
-used to scale render graphics so that they always appear a constant size,
-regardless of the current view zoom.
+Returns the current view zoom (scale factor). It can be used to scale
+render graphics so that they always appear a constant size, regardless
+of the current view zoom.
 
-E.g. a value of 0.5 indicates that the view is zoomed out to 50% size, so rendered
-items must be scaled by 200% in order to have a constant visible size. A value
-of 2.0 indicates that the view is zoomed in 200%, so rendered items must be
-scaled by 50% in order to have a constant visible size.
+E.g. a value of 0.5 indicates that the view is zoomed out to 50% size,
+so rendered items must be scaled by 200% in order to have a constant
+visible size. A value of 2.0 indicates that the view is zoomed in 200%,
+so rendered items must be scaled by 50% in order to have a constant
+visible size.
 %End
 
   private:
@@ -232,6 +235,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoLegendGroupFont,
       UndoLegendLayerFont,
       UndoLegendItemFont,
+      UndoLegendAutoWrapAfter,
       UndoScaleBarLineWidth,
       UndoScaleBarSegmentSize,
       UndoScaleBarSegmentsLeft,
@@ -268,6 +272,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoElevationProfileMaximumDistance,
       UndoElevationProfileMinimumElevation,
       UndoElevationProfileMaximumElevation,
+      UndoElevationProfileSubsectionLines,
 
       UndoCustomCommand,
     };
@@ -285,16 +290,16 @@ Base class for graphical items within a :py:class:`QgsLayout`.
 %Docstring
 Constructor for QgsLayoutItem, with the specified parent ``layout``.
 
-If ``manageZValue`` is ``True``, the z-Value of this item will be managed by the layout.
-Generally this is the desired behavior.
+If ``manageZValue`` is ``True``, the z-Value of this item will be
+managed by the layout. Generally this is the desired behavior.
 %End
 
     ~QgsLayoutItem();
 
     virtual void cleanup();
 %Docstring
-Called just before a batch of items are deleted, allowing them to run cleanup
-tasks.
+Called just before a batch of items are deleted, allowing them to run
+cleanup tasks.
 %End
 
     virtual int type() const;
@@ -302,7 +307,8 @@ tasks.
 %Docstring
 Returns a unique graphics item type identifier.
 
-Plugin based subclasses should return an identifier greater than :py:class:`QgsLayoutItemRegistry`.PluginItem.
+Plugin based subclasses should return an identifier greater than
+:py:class:`QgsLayoutItemRegistry`.PluginItem.
 %End
 
     virtual QIcon icon() const;
@@ -312,8 +318,8 @@ Returns the item's icon.
 
     virtual QString uuid() const;
 %Docstring
-Returns the item identification string. This is a unique random string set for the item
-upon creation.
+Returns the item identification string. This is a unique random string
+set for the item upon creation.
 
 .. note::
 
@@ -333,8 +339,8 @@ Returns the item's flags, which indicate how the item behaves.
 
     QString id() const;
 %Docstring
-Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
-for a layout.
+Returns the item's ID name. This is not necessarily unique, and
+duplicate ID names may exist for a layout.
 
 .. seealso:: :py:func:`setId`
 
@@ -343,8 +349,8 @@ for a layout.
 
     virtual void setId( const QString &id );
 %Docstring
-Set the item's ``id`` name. This is not necessarily unique, and duplicate ID names may exist
-for a layout.
+Set the item's ``id`` name. This is not necessarily unique, and
+duplicate ID names may exist for a layout.
 
 .. seealso:: :py:func:`id`
 
@@ -353,8 +359,8 @@ for a layout.
 
     virtual QString displayName() const;
 %Docstring
-Gets item display name. This is the item's id if set, and if
-not, a user-friendly string identifying item type.
+Gets item display name. This is the item's id if set, and if not, a
+user-friendly string identifying item type.
 
 .. seealso:: :py:func:`id`
 
@@ -379,7 +385,8 @@ Sets whether the item is ``visible``.
 
     void setLocked( bool locked );
 %Docstring
-Sets whether the item is ``locked``, preventing mouse interactions with the item.
+Sets whether the item is ``locked``, preventing mouse interactions with
+the item.
 
 .. seealso:: :py:func:`isLocked`
 
@@ -388,7 +395,8 @@ Sets whether the item is ``locked``, preventing mouse interactions with the item
 
     bool isLocked() const;
 %Docstring
-Returns ``True`` if the item is locked, and cannot be interacted with using the mouse.
+Returns ``True`` if the item is locked, and cannot be interacted with
+using the mouse.
 
 .. seealso:: :py:func:`setLocked`
 
@@ -397,7 +405,8 @@ Returns ``True`` if the item is locked, and cannot be interacted with using the 
 
     bool isGroupMember() const;
 %Docstring
-Returns ``True`` if the item is part of a :py:class:`QgsLayoutItemGroup` group.
+Returns ``True`` if the item is part of a :py:class:`QgsLayoutItemGroup`
+group.
 
 .. seealso:: :py:func:`parentGroup`
 
@@ -406,7 +415,8 @@ Returns ``True`` if the item is part of a :py:class:`QgsLayoutItemGroup` group.
 
     QgsLayoutItemGroup *parentGroup() const;
 %Docstring
-Returns the item's parent group, if the item is part of a :py:class:`QgsLayoutItemGroup` group.
+Returns the item's parent group, if the item is part of a
+:py:class:`QgsLayoutItemGroup` group.
 
 .. seealso:: :py:func:`isGroupMember`
 
@@ -432,7 +442,8 @@ Sets the item's parent ``group``.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 %Docstring
-Returns the behavior of this item during exporting to layered exports (e.g. SVG or geospatial PDF).
+Returns the behavior of this item during exporting to layered exports
+(e.g. SVG or geospatial PDF).
 
 .. seealso:: :py:func:`numberExportLayers`
 
@@ -443,12 +454,14 @@ Returns the behavior of this item during exporting to layered exports (e.g. SVG 
 
  virtual int numberExportLayers() const /Deprecated="Since 3.40. Use nextExportPart() and exportLayerBehavior() instead."/;
 %Docstring
-Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
-Returns 0 if this item is to be placed on the same layer as the previous item,
-1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
+Returns the number of layers that this item requires for exporting
+during layered exports (e.g. SVG). Returns 0 if this item is to be
+placed on the same layer as the previous item, 1 if it should be placed
+on its own layer, and >1 if it requires multiple export layers.
 
-Items which require multiply layers should check :py:func:`QgsLayoutContext.currentExportLayer()` during
-their rendering to determine which layer should be drawn.
+Items which require multiply layers should check
+:py:func:`QgsLayoutContext.currentExportLayer()` during their rendering
+to determine which layer should be drawn.
 
 .. seealso:: :py:func:`exportLayerBehavior`
 
@@ -483,7 +496,8 @@ Stops a multi-layer export operation.
 
     virtual bool nextExportPart();
 %Docstring
-Moves to the next export part for a multi-layered export item, during a multi-layered export.
+Moves to the next export part for a multi-layered export item, during a
+multi-layered export.
 
 .. seealso:: :py:func:`startLayeredExport`
 
@@ -511,7 +525,8 @@ Moves to the next export part for a multi-layered export item, during a multi-la
 %Docstring
 Returns the details for the specified current export layer.
 
-Only valid between calls to :py:func:`~QgsLayoutItem.startLayeredExport` and :py:func:`~QgsLayoutItem.stopLayeredExport`
+Only valid between calls to :py:func:`~QgsLayoutItem.startLayeredExport`
+and :py:func:`~QgsLayoutItem.stopLayeredExport`
 
 .. versionadded:: 3.10
 %End
@@ -519,33 +534,35 @@ Only valid between calls to :py:func:`~QgsLayoutItem.startLayeredExport` and :py
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring
-Handles preparing a paint surface for the layout item and painting the item's
-content. Derived classes must not override this method, but instead implement
-the pure virtual method QgsLayoutItem.draw.
+Handles preparing a paint surface for the layout item and painting the
+item's content. Derived classes must not override this method, but
+instead implement the pure virtual method QgsLayoutItem.draw.
 %End
 
     void setReferencePoint( ReferencePoint point );
 %Docstring
-Sets the reference ``point`` for positioning of the layout item. This point is also
-fixed during resizing of the item, and any size changes will be performed
-so that the position of the reference point within the layout remains unchanged.
+Sets the reference ``point`` for positioning of the layout item. This
+point is also fixed during resizing of the item, and any size changes
+will be performed so that the position of the reference point within the
+layout remains unchanged.
 
 .. seealso:: :py:func:`referencePoint`
 %End
 
     ReferencePoint referencePoint() const;
 %Docstring
-Returns the reference point for positioning of the layout item. This point is also
-fixed during resizing of the item, and any size changes will be performed
-so that the position of the reference point within the layout remains unchanged.
+Returns the reference point for positioning of the layout item. This
+point is also fixed during resizing of the item, and any size changes
+will be performed so that the position of the reference point within the
+layout remains unchanged.
 
 .. seealso:: :py:func:`setReferencePoint`
 %End
 
     virtual QgsLayoutSize fixedSize() const;
 %Docstring
-Returns the fixed size of the item, if applicable, or an empty size if item can be freely
-resized.
+Returns the fixed size of the item, if applicable, or an empty size if
+item can be freely resized.
 
 .. seealso:: :py:func:`setFixedSize`
 
@@ -554,8 +571,8 @@ resized.
 
     virtual QgsLayoutSize minimumSize() const;
 %Docstring
-Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely
-resized.
+Returns the minimum allowed size of the item, if applicable, or an empty
+size if item can be freely resized.
 
 .. seealso:: :py:func:`setMinimumSize`
 
@@ -564,13 +581,14 @@ resized.
 
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 %Docstring
-Attempts to resize the item to a specified target ``size``. Note that the final size of the
-item may not match the specified target size, as items with a fixed or minimum
-size will place restrictions on the allowed item size. Data defined item size overrides
-will also override the specified target size.
+Attempts to resize the item to a specified target ``size``. Note that
+the final size of the item may not match the specified target size, as
+items with a fixed or minimum size will place restrictions on the
+allowed item size. Data defined item size overrides will also override
+the specified target size.
 
-If ``includesFrame`` is ``True``, then the size specified by ``size`` includes the
-item's frame.
+If ``includesFrame`` is ``True``, then the size specified by ``size``
+includes the item's frame.
 
 .. seealso:: :py:func:`minimumSize`
 
@@ -585,22 +603,25 @@ item's frame.
 %Docstring
 Attempts to move the item to a specified ``point``.
 
-If ``useReferencePoint`` is ``True``, this method will respect the item's
-reference point, in that the item will be moved so that its current reference
-point is placed at the specified target point.
+If ``useReferencePoint`` is ``True``, this method will respect the
+item's reference point, in that the item will be moved so that its
+current reference point is placed at the specified target point.
 
-If ``useReferencePoint`` is ``False``, the item will be moved so that ``point``
-falls at the top-left corner of the item.
+If ``useReferencePoint`` is ``False``, the item will be moved so that
+``point`` falls at the top-left corner of the item.
 
-If ``includesFrame`` is ``True``, then the position specified by ``point`` represents the
-point at which to place the outside of the item's frame.
+If ``includesFrame`` is ``True``, then the position specified by
+``point`` represents the point at which to place the outside of the
+item's frame.
 
-If ``page`` is not left at the default -1 value, then the position specified by ``point``
-refers to the relative position on the corresponding layout ``page`` (where a ``page``
-of 0 represents the first page).
+If ``page`` is not left at the default -1 value, then the position
+specified by ``point`` refers to the relative position on the
+corresponding layout ``page`` (where a ``page`` of 0 represents the
+first page).
 
-Note that the final position of the item may not match the specified target position,
-as data defined item position may override the specified value.
+Note that the final position of the item may not match the specified
+target position, as data defined item position may override the
+specified value.
 
 .. seealso:: :py:func:`attemptMoveBy`
 
@@ -613,14 +634,16 @@ as data defined item position may override the specified value.
 
     void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
 %Docstring
-Attempts to update the item's position and size to match the passed ``rect`` in layout
-coordinates.
+Attempts to update the item's position and size to match the passed
+``rect`` in layout coordinates.
 
-If ``includesFrame`` is ``True``, then the position and size specified by ``rect`` represents the
-position and size at for the outside of the item's frame.
+If ``includesFrame`` is ``True``, then the position and size specified
+by ``rect`` represents the position and size at for the outside of the
+item's frame.
 
-Note that the final position and size of the item may not match the specified target rect,
-as data defined item position and size may override the specified value.
+Note that the final position and size of the item may not match the
+specified target rect, as data defined item position and size may
+override the specified value.
 
 .. seealso:: :py:func:`attemptResize`
 
@@ -633,11 +656,12 @@ as data defined item position and size may override the specified value.
 
     void attemptMoveBy( double deltaX, double deltaY );
 %Docstring
-Attempts to shift the item's position by a specified ``deltaX`` and ``deltaY``, in layout
-units.
+Attempts to shift the item's position by a specified ``deltaX`` and
+``deltaY``, in layout units.
 
-Note that the final position of the item may not match the specified offsets,
-as data defined item position and size may override the specified value.
+Note that the final position of the item may not match the specified
+offsets, as data defined item position and size may override the
+specified value.
 
 .. seealso:: :py:func:`attemptResize`
 
@@ -650,9 +674,9 @@ as data defined item position and size may override the specified value.
 
     QgsLayoutPoint positionWithUnits() const;
 %Docstring
-Returns the item's current position, including units. The position returned
-is the position of the item's reference point, which may not necessarily be the top
-left corner of the item.
+Returns the item's current position, including units. The position
+returned is the position of the item's reference point, which may not
+necessarily be the top left corner of the item.
 
 .. seealso:: :py:func:`attemptMove`
 
@@ -663,14 +687,16 @@ left corner of the item.
 
     int page() const;
 %Docstring
-Returns the page the item is currently on, with the first page returning 0.
+Returns the page the item is currently on, with the first page returning
+0.
 
 .. seealso:: :py:func:`pagePos`
 %End
 
     QPointF pagePos() const;
 %Docstring
-Returns the item's position (in layout units) relative to the top left corner of its current page.
+Returns the item's position (in layout units) relative to the top left
+corner of its current page.
 
 .. seealso:: :py:func:`page`
 
@@ -679,7 +705,8 @@ Returns the item's position (in layout units) relative to the top left corner of
 
     QgsLayoutPoint pagePositionWithUnits() const;
 %Docstring
-Returns the item's position (in item units) relative to the top left corner of its current page.
+Returns the item's position (in item units) relative to the top left
+corner of its current page.
 
 .. seealso:: :py:func:`page`
 
@@ -699,10 +726,10 @@ Returns the item's current size, including units.
 %Docstring
 Returns the current rotation for the item, in degrees clockwise.
 
-Note that this method will always return the user-set rotation for the item,
-which may differ from the current item rotation (if data defined rotation
-settings are present). Use QGraphicsItem.rotation() to obtain the current
-item rotation.
+Note that this method will always return the user-set rotation for the
+item, which may differ from the current item rotation (if data defined
+rotation settings are present). Use QGraphicsItem.rotation() to obtain
+the current item rotation.
 
 .. seealso:: :py:func:`setItemRotation`
 %End
@@ -722,15 +749,18 @@ Stores the item state in a DOM element.
 %Docstring
 Sets the item state from a DOM element.
 
-:param itemElement: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+:param itemElement: is the DOM node corresponding to item (e.g.
+                    'LayoutItem' element)
 :param document: DOM document
 :param context: read write context
 
-Note that item subclasses should not rely on all other items being present in the
-layout at the time this method is called. Instead, any connections and links to
-other items must be made in the :py:func:`~QgsLayoutItem.finalizeRestoreFromXml` method. E.g. when restoring
-a scalebar, the connection to the linked map's signals should be implemented
-in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutItem.readXml`.
+Note that item subclasses should not rely on all other items being
+present in the layout at the time this method is called. Instead, any
+connections and links to other items must be made in the
+:py:func:`~QgsLayoutItem.finalizeRestoreFromXml` method. E.g. when
+restoring a scalebar, the connection to the linked map's signals should
+be implemented in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not
+:py:func:`~QgsLayoutItem.readXml`.
 
 .. seealso:: :py:func:`writeXml`
 
@@ -739,11 +769,12 @@ in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutIte
 
     virtual void finalizeRestoreFromXml();
 %Docstring
-Called after all pending items have been restored from XML. Items can use
-this method to run steps which must take place after all items have been restored to the layout,
-such as connecting to signals emitted by other items, which may not have existed in the layout
-at the time :py:func:`~QgsLayoutItem.readXml` was called. E.g. a scalebar can use this to connect to its linked
-map item after restoration from XML.
+Called after all pending items have been restored from XML. Items can
+use this method to run steps which must take place after all items have
+been restored to the layout, such as connecting to signals emitted by
+other items, which may not have existed in the layout at the time
+:py:func:`~QgsLayoutItem.readXml` was called. E.g. a scalebar can use
+this to connect to its linked map item after restoration from XML.
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -792,7 +823,8 @@ Sets the frame stroke ``color``.
 
     QColor frameStrokeColor() const;
 %Docstring
-Returns the frame's stroke color. This is only used if :py:func:`~QgsLayoutItem.frameEnabled` returns ``True``.
+Returns the frame's stroke color. This is only used if
+:py:func:`~QgsLayoutItem.frameEnabled` returns ``True``.
 
 .. seealso:: :py:func:`frameEnabled`
 
@@ -818,7 +850,8 @@ Sets the frame stroke ``width``.
 
     QgsLayoutMeasurement frameStrokeWidth() const;
 %Docstring
-Returns the frame's stroke width. This is only used if :py:func:`~QgsLayoutItem.frameEnabled` returns ``True``.
+Returns the frame's stroke width. This is only used if
+:py:func:`~QgsLayoutItem.frameEnabled` returns ``True``.
 
 .. seealso:: :py:func:`frameEnabled`
 
@@ -875,10 +908,11 @@ Sets whether this item has a background drawn under it or not.
 
     QColor backgroundColor( bool useDataDefined = true ) const;
 %Docstring
-Returns the background color for this item. This is only used if :py:func:`~QgsLayoutItem.hasBackground`
-returns ``True``.
+Returns the background color for this item. This is only used if
+:py:func:`~QgsLayoutItem.hasBackground` returns ``True``.
 
-:param useDataDefined: If true, then returns the data defined override for the background color
+:param useDataDefined: If true, then returns the data defined override
+                       for the background color
 
 .. seealso:: :py:func:`setBackgroundColor`
 
@@ -911,8 +945,7 @@ Sets the item's composition blending ``mode``.
     double itemOpacity() const;
 %Docstring
 Returns the item's opacity. This method should be used instead of
-QGraphicsItem.opacity() as any data defined overrides will be
-respected.
+QGraphicsItem.opacity() as any data defined overrides will be respected.
 
 :return: opacity as double between 1.0 (opaque) and 0 (transparent).
 
@@ -932,7 +965,8 @@ respected.
 
     bool excludeFromExports() const;
 %Docstring
-Returns whether the item should be excluded from layout exports and prints.
+Returns whether the item should be excluded from layout exports and
+prints.
 
 .. seealso:: :py:func:`setExcludeFromExports`
 %End
@@ -946,19 +980,19 @@ Sets whether the item should be excluded from layout exports and prints.
 
     virtual bool containsAdvancedEffects() const;
 %Docstring
-Returns ``True`` if the item contains contents with blend modes or transparency
-effects which can only be reproduced by rastering the item.
+Returns ``True`` if the item contains contents with blend modes or
+transparency effects which can only be reproduced by rastering the item.
 
-Subclasses should ensure that implemented overrides of this method
-also check the base class result.
+Subclasses should ensure that implemented overrides of this method also
+check the base class result.
 
 .. seealso:: :py:func:`requiresRasterization`
 %End
 
     virtual bool requiresRasterization() const;
 %Docstring
-Returns ``True`` if the item is drawn in such a way that forces the whole layout
-to be rasterized when exporting to vector formats.
+Returns ``True`` if the item is drawn in such a way that forces the
+whole layout to be rasterized when exporting to vector formats.
 
 .. seealso:: :py:func:`containsAdvancedEffects`
 %End
@@ -977,19 +1011,21 @@ Returned values are in layout units.
 
     virtual QRectF rectWithFrame() const;
 %Docstring
-Returns the item's rectangular bounds, including any bleed caused by the item's frame.
-The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
-more details about QGraphicsItem coordinate systems). The results differ from Qt's :py:func:`~QgsLayoutItem.rect`
-function, as :py:func:`~QgsLayoutItem.rect` makes no allowances for the portion of outlines which are drawn
-outside of the item.
+Returns the item's rectangular bounds, including any bleed caused by the
+item's frame. The bounds are returned in the item's coordinate system
+(see Qt's QGraphicsItem docs for more details about QGraphicsItem
+coordinate systems). The results differ from Qt's
+:py:func:`~QgsLayoutItem.rect` function, as
+:py:func:`~QgsLayoutItem.rect` makes no allowances for the portion of
+outlines which are drawn outside of the item.
 
 .. seealso:: :py:func:`estimatedFrameBleed`
 %End
 
     virtual void moveContent( double dx, double dy );
 %Docstring
-Moves the content of the item, by a specified ``dx`` and ``dy`` in layout units.
-The default implementation has no effect.
+Moves the content of the item, by a specified ``dx`` and ``dy`` in
+layout units. The default implementation has no effect.
 
 .. seealso:: :py:func:`setMoveContentPreviewOffset`
 
@@ -998,9 +1034,10 @@ The default implementation has no effect.
 
     virtual void setMoveContentPreviewOffset( double dx, double dy );
 %Docstring
-Sets temporary offset for the item, by a specified ``dx`` and ``dy`` in layout units.
-This is useful for live updates when moving item content in a :py:class:`QgsLayoutView`.
-The default implementation has no effect.
+Sets temporary offset for the item, by a specified ``dx`` and ``dy`` in
+layout units. This is useful for live updates when moving item content
+in a :py:class:`QgsLayoutView`. The default implementation has no
+effect.
 
 .. seealso:: :py:func:`moveContent`
 %End
@@ -1009,7 +1046,8 @@ The default implementation has no effect.
 %Docstring
 Zooms content of item. Does nothing by default.
 
-:param factor: zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+:param factor: zoom factor, where > 1 results in a zoom in and < 1
+               results in a zoom out
 :param point: item point for zoom center
 
 .. seealso:: :py:func:`moveContent`
@@ -1017,10 +1055,11 @@ Zooms content of item. Does nothing by default.
 
     void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
 %Docstring
-Starts new undo command for this item.
-The ``commandText`` should be a capitalized, imperative tense description (e.g. "Add Map Item").
-If specified, multiple consecutive commands for this item with the same ``command`` will
-be collapsed into a single undo command in the layout history.
+Starts new undo command for this item. The ``commandText`` should be a
+capitalized, imperative tense description (e.g. "Add Map Item"). If
+specified, multiple consecutive commands for this item with the same
+``command`` will be collapsed into a single undo command in the layout
+history.
 
 .. seealso:: :py:func:`endCommand`
 
@@ -1029,7 +1068,8 @@ be collapsed into a single undo command in the layout history.
 
     void endCommand();
 %Docstring
-Completes the current item command and push it onto the layout's undo stack.
+Completes the current item command and push it onto the layout's undo
+stack.
 
 .. seealso:: :py:func:`beginCommand`
 
@@ -1055,11 +1095,11 @@ Returns whether the item should be drawn in the current context.
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
-with the layout item.
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated with the layout item.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -1078,7 +1118,8 @@ Returns the clipping path generated by this item, in layout coordinates.
 
     virtual bool isRefreshing() const;
 %Docstring
-Returns ``True`` if the item is currently refreshing content in the background.
+Returns ``True`` if the item is currently refreshing content in the
+background.
 
 .. versionadded:: 3.32
 %End
@@ -1088,8 +1129,8 @@ Returns ``True`` if the item is currently refreshing content in the background.
     virtual void refresh();
 
 %Docstring
-Refreshes the item, causing a recalculation of any property overrides and
-recalculation of its position and size.
+Refreshes the item, causing a recalculation of any property overrides
+and recalculation of its position and size.
 %End
 
     virtual void invalidateCache();
@@ -1104,18 +1145,19 @@ Triggers a redraw (update) of the item.
 
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::DataDefinedProperty::AllProperties );
 %Docstring
-Refreshes a data defined ``property`` for the item by reevaluating the property's value
-and redrawing the item with this new value. If ``property`` is set to
-:py:class:`QgsLayoutObject`.AllProperties then all data defined properties for the item will be
-refreshed.
+Refreshes a data defined ``property`` for the item by reevaluating the
+property's value and redrawing the item with this new value. If
+``property`` is set to :py:class:`QgsLayoutObject`.AllProperties then
+all data defined properties for the item will be refreshed.
 %End
 
     virtual void setItemRotation( double rotation, bool adjustPosition = true );
 %Docstring
 Sets the layout item's ``rotation``, in degrees clockwise.
 
-If ``adjustPosition`` is ``True``, then this rotation occurs around the center of the item.
-If ``adjustPosition`` is ``False``, rotation occurs around the item origin.
+If ``adjustPosition`` is ``True``, then this rotation occurs around the
+center of the item. If ``adjustPosition`` is ``False``, rotation occurs
+around the item origin.
 
 .. seealso:: :py:func:`itemRotation`
 
@@ -1124,7 +1166,8 @@ If ``adjustPosition`` is ``False``, rotation occurs around the item origin.
 
     virtual void rotateItem( double angle, QPointF transformOrigin );
 %Docstring
-Rotates the item by a specified ``angle`` in degrees clockwise around a specified reference point.
+Rotates the item by a specified ``angle`` in degrees clockwise around a
+specified reference point.
 
 .. seealso:: :py:func:`setItemRotation`
 
@@ -1159,7 +1202,8 @@ Emitted when the item's size or position changes.
 
     void backgroundTaskCountChanged( int count );
 %Docstring
-Emitted whenever the number of background tasks an item is executing changes.
+Emitted whenever the number of background tasks an item is executing
+changes.
 
 .. versionadded:: 3.10
 %End
@@ -1177,8 +1221,8 @@ Emitted when the item's clipping path has changed.
 
     virtual void drawDebugRect( QPainter *painter );
 %Docstring
-Draws a debugging rectangle of the item's current bounds within the specified
-painter.
+Draws a debugging rectangle of the item's current bounds within the
+specified painter.
 
 :param painter: destination QPainter
 %End
@@ -1187,8 +1231,9 @@ painter.
 %Docstring
 Draws the item's contents using the specified item render ``context``.
 
-Note that the context's painter has been scaled so that painter units are pixels.
-Use the :py:class:`QgsRenderContext` methods to convert from millimeters or other units to the painter's units.
+Note that the context's painter has been scaled so that painter units
+are pixels. Use the :py:class:`QgsRenderContext` methods to convert from
+millimeters or other units to the painter's units.
 %End
 
     virtual QPainterPath framePath() const;
@@ -1225,8 +1270,8 @@ Draws a "refreshing" overlay icon on the item.
 
     virtual void setFixedSize( const QgsLayoutSize &size );
 %Docstring
-Sets a fixed ``size`` for the layout item, which prevents it from being freely
-resized. Set an empty size if item can be freely resized.
+Sets a fixed ``size`` for the layout item, which prevents it from being
+freely resized. Set an empty size if item can be freely resized.
 
 .. seealso:: :py:func:`fixedSize`
 
@@ -1235,8 +1280,8 @@ resized. Set an empty size if item can be freely resized.
 
     virtual void setMinimumSize( const QgsLayoutSize &size );
 %Docstring
-Sets the minimum allowed ``size`` for the layout item. Set an empty size if item can be freely
-resized.
+Sets the minimum allowed ``size`` for the layout item. Set an empty size
+if item can be freely resized.
 
 .. seealso:: :py:func:`minimumSize`
 
@@ -1245,10 +1290,12 @@ resized.
 
     virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 %Docstring
-Applies any item-specific size constraint handling to a given ``targetSize`` in layout units.
-Subclasses can override this method if they need to apply advanced logic regarding item
-sizes, which cannot be covered by :py:func:`~QgsLayoutItem.setFixedSize` or :py:func:`~QgsLayoutItem.setMinimumSize`.
-Item size constraints are applied after fixed, minimum and data defined size constraints.
+Applies any item-specific size constraint handling to a given
+``targetSize`` in layout units. Subclasses can override this method if
+they need to apply advanced logic regarding item sizes, which cannot be
+covered by :py:func:`~QgsLayoutItem.setFixedSize` or
+:py:func:`~QgsLayoutItem.setMinimumSize`. Item size constraints are
+applied after fixed, minimum and data defined size constraints.
 
 .. seealso:: :py:func:`setFixedSize`
 
@@ -1257,8 +1304,8 @@ Item size constraints are applied after fixed, minimum and data defined size con
 
     void refreshItemSize();
 %Docstring
-Refreshes an item's size by rechecking it against any possible item fixed
-or minimum sizes.
+Refreshes an item's size by rechecking it against any possible item
+fixed or minimum sizes.
 
 .. seealso:: :py:func:`setFixedSize`
 
@@ -1269,16 +1316,16 @@ or minimum sizes.
 
     void refreshItemPosition();
 %Docstring
-Refreshes an item's position by rechecking it against any possible overrides
-such as data defined positioning.
+Refreshes an item's position by rechecking it against any possible
+overrides such as data defined positioning.
 
 .. seealso:: :py:func:`refreshItemSize`
 %End
 
     void refreshItemRotation( QPointF *origin = 0 );
 %Docstring
-Refreshes an item's rotation by rechecking it against any possible overrides
-such as data defined rotation.
+Refreshes an item's rotation by rechecking it against any possible
+overrides such as data defined rotation.
 
 The optional ``origin`` point specifies the origin (in item coordinates)
 around which the rotation should be applied.
@@ -1290,23 +1337,26 @@ around which the rotation should be applied.
 
     void refreshOpacity( bool updateItem = true );
 %Docstring
-Refresh item's opacity, considering data defined opacity.
-If ``updateItem`` is set to ``False`` the item will not be automatically
-updated after the opacity is set and a later call to :py:func:`~QgsLayoutItem.update` must be made.
+Refresh item's opacity, considering data defined opacity. If
+``updateItem`` is set to ``False`` the item will not be automatically
+updated after the opacity is set and a later call to
+:py:func:`~QgsLayoutItem.update` must be made.
 %End
 
     void refreshFrame( bool updateItem = true );
 %Docstring
-Refresh item's frame, considering data defined colors and frame size.
-If ``updateItem`` is set to ``False``, the item will not be automatically updated
-after the frame is set and a later call to :py:func:`~QgsLayoutItem.update` must be made.
+Refresh item's frame, considering data defined colors and frame size. If
+``updateItem`` is set to ``False``, the item will not be automatically
+updated after the frame is set and a later call to
+:py:func:`~QgsLayoutItem.update` must be made.
 %End
 
     void refreshBackgroundColor( bool updateItem = true );
 %Docstring
-Refresh item's background color, considering data defined colors.
-If ``updateItem`` is set to ``False``, the item will not be automatically updated
-after the frame color is set and a later call to :py:func:`~QgsLayoutItem.update` must be made.
+Refresh item's background color, considering data defined colors. If
+``updateItem`` is set to ``False``, the item will not be automatically
+updated after the frame color is set and a later call to
+:py:func:`~QgsLayoutItem.update` must be made.
 %End
 
     void refreshBlendMode();
@@ -1316,19 +1366,21 @@ Refresh item's blend mode, considering data defined blend mode.
 
     QPointF adjustPointForReferencePosition( QPointF point, QSizeF size, ReferencePoint reference ) const;
 %Docstring
-Adjusts the specified ``point`` at which a ``reference`` position of the item
-sits and returns the top left corner of the item, if reference point were placed at the specified position.
+Adjusts the specified ``point`` at which a ``reference`` position of the
+item sits and returns the top left corner of the item, if reference
+point were placed at the specified position.
 %End
 
     QPointF positionAtReferencePoint( ReferencePoint reference ) const;
 %Docstring
-Returns the current position (in layout units) of a ``reference`` point for the item.
+Returns the current position (in layout units) of a ``reference`` point
+for the item.
 %End
 
     QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
 %Docstring
-Returns the position for the reference point of the item, if the top-left of the item
-was placed at the specified ``point``.
+Returns the position for the reference point of the item, if the
+top-left of the item was placed at the specified ``point``.
 %End
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -1352,11 +1404,13 @@ Sets item state from a DOM element.
 :param document: DOM document
 :param context: read write context
 
-Note that item subclasses should not rely on all other items being present in the
-layout at the time this method is called. Instead, any connections and links to
-other items must be made in the :py:func:`~QgsLayoutItem.finalizeRestoreFromXml` method. E.g. when restoring
-a scalebar, the connection to the linked map's signals should be implemented
-in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutItem.readPropertiesFromElement`.
+Note that item subclasses should not rely on all other items being
+present in the layout at the time this method is called. Instead, any
+connections and links to other items must be made in the
+:py:func:`~QgsLayoutItem.finalizeRestoreFromXml` method. E.g. when
+restoring a scalebar, the connection to the linked map's signals should
+be implemented in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not
+:py:func:`~QgsLayoutItem.readPropertiesFromElement`.
 
 .. seealso:: :py:func:`writePropertiesToElement`
 
@@ -1365,15 +1419,13 @@ in :py:func:`~QgsLayoutItem.finalizeRestoreFromXml`, not :py:func:`~QgsLayoutIte
 
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
 %Docstring
-Applies any present data defined size overrides to the specified layout ``size``.
+Applies any present data defined size overrides to the specified layout
+``size``.
 %End
 
 };
 
 QFlags<QgsLayoutItem::Flag> operator|(QgsLayoutItem::Flag f1, QFlags<QgsLayoutItem::Flag> f2);
-
-
-
 
 
 /************************************************************************

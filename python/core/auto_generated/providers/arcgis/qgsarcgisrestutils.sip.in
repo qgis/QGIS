@@ -86,7 +86,8 @@ Converts an ESRI REST geometry ``type`` to a WKB type.
 
     static QgsAbstractGeometry *convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs /Out/ = 0 ) /Factory/;
 %Docstring
-Converts an ESRI REST ``geometry`` JSON definition to a :py:class:`QgsAbstractGeometry`.
+Converts an ESRI REST ``geometry`` JSON definition to a
+:py:class:`QgsAbstractGeometry`.
 
 Caller takes ownership of the returned object.
 
@@ -101,7 +102,8 @@ Caller takes ownership of the returned object.
 
     static QgsCoordinateReferenceSystem convertSpatialReference( const QVariantMap &spatialReferenceMap );
 %Docstring
-Converts a spatial reference JSON definition to a :py:class:`QgsCoordinateReferenceSystem` value.
+Converts a spatial reference JSON definition to a
+:py:class:`QgsCoordinateReferenceSystem` value.
 %End
 
     static QgsSymbol *convertSymbol( const QVariantMap &definition ) /Factory/;
@@ -113,7 +115,8 @@ Caller takes ownership of the returned symbol.
 
     static QgsFeatureRenderer *convertRenderer( const QVariantMap &rendererData ) /Factory/;
 %Docstring
-Converts renderer JSON ``data`` to an equivalent :py:class:`QgsFeatureRenderer`.
+Converts renderer JSON ``data`` to an equivalent
+:py:class:`QgsFeatureRenderer`.
 
 Caller takes ownership of the returned renderer.
 %End
@@ -181,6 +184,7 @@ Returns a null rectangle if the value cannot be converted.
     {
       IncludeGeometry,
       IncludeNonObjectIdAttributes,
+      SkipUnsetAttributes,
     };
 
     typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;

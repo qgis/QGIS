@@ -47,7 +47,7 @@ class QgsAbstractPointCloudIndex;
 /**
  * \ingroup core
  *
- * \brief Represents a indexed point cloud node's position in octree
+ * \brief Represents an indexed point cloud node's position in octree.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -150,7 +150,7 @@ uint qHash( const QgsPointCloudCacheKey &key );
 /**
  * \ingroup core
  *
- * \brief Keeps metadata for indexed point cloud node
+ * \brief Keeps metadata for an indexed point cloud node.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsPointCloudNode
 /**
  * \ingroup core
  *
- * \brief Represents a indexed point clouds data in octree
+ * \brief Represents an indexed point clouds data in octree
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
 
     /**
      * Returns the string used to define a subset of the point cloud.
-     * \returns The subset string or null QString if not implemented by the provider
+     * \returns The subset string or empty QString if not implemented by the provider
      *
      * \since QGIS 3.26
      */
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
 
 /**
  * \ingroup core
- * \brief Smart pointer for QgsAbstractPointCloudIndex
+ * \brief Smart pointer for QgsAbstractPointCloudIndex.
  *
  * This is a wrapper for QgsAbstractPointCloudIndex, an index for point cloud
  * layers. It contains a shared_pointer, ensuring that concurrent access to the
@@ -590,8 +590,8 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     /**
      * Returns the number of points in one direction in a single node.
-    *
-    * \see QgsAbstractPointCloudIndex::span
+     *
+     * \see QgsAbstractPointCloudIndex::span
      */
     int span() const;
 
@@ -599,17 +599,16 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      * Sets the string used to define a subset of the point cloud.
      * \param subset The subset string to be used in a \a QgsPointCloudExpression
      * \returns true if the expression is parsed with no errors, false otherwise
-    *
-    * \see QgsAbstractPointCloudIndex::setSubsetString
+     *
+     * \see QgsAbstractPointCloudIndex::setSubsetString
      */
     bool setSubsetString( const QString &subset );
 
     /**
      * Returns the string used to define a subset of the point cloud.
-     * \returns The subset string or null QString if not implemented by the provider
+     * \returns The subset string or empty QString if not implemented by the provider
      *
-    *
-    * \see QgsAbstractPointCloudIndex::subsetString
+     * \see QgsAbstractPointCloudIndex::subsetString
      */
     QString subsetString() const;
 
@@ -617,15 +616,15 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      * Fetches the requested node data from the cache for the specified \a node and \a request.
      * If not found in the cache, nullptr is returned.
      * Caller takes ownership of the returned object.
-    *
-    * \see QgsAbstractPointCloudIndex::getNodeDataFromCache
+     *
+     * \see QgsAbstractPointCloudIndex::getNodeDataFromCache
      */
     QgsPointCloudBlock *getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) SIP_SKIP;
 
     /**
      * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
-    *
-    * \see QgsAbstractPointCloudIndex::storeNodeDataToCache
+     *
+     * \see QgsAbstractPointCloudIndex::storeNodeDataToCache
      */
     void storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) SIP_SKIP;
 

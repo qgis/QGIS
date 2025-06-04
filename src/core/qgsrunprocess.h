@@ -36,7 +36,7 @@ class QgsMessageOutput;
 
 /**
  * \ingroup core
- * \brief A class that executes an external program/script.
+ * \brief Executes an external program/script.
  *
  * It can optionally capture the standard output and error from the
  * process and displays them in a dialog box.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
     // Deletes the instance of the class
     void die();
 
-    QProcess *mProcess = nullptr;
+    std::unique_ptr<QProcess> mProcess;
     QgsMessageOutput *mOutput = nullptr;
     QString mCommand;
 

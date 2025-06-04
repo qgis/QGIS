@@ -14,7 +14,8 @@
 class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
+3D symbol that draws polygon geometries as planar polygons, optionally
+extruded (with added walls).
 
 .. warning::
 
@@ -51,16 +52,19 @@ Caller takes ownership of the returned symbol.
 
     Qgis::AltitudeClamping altitudeClamping() const;
 %Docstring
-Returns method that determines altitude (whether to clamp to feature to terrain)
+Returns method that determines altitude (whether to clamp to feature to
+terrain)
 %End
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 %Docstring
-Sets method that determines altitude (whether to clamp to feature to terrain)
+Sets method that determines altitude (whether to clamp to feature to
+terrain)
 %End
 
     Qgis::AltitudeBinding altitudeBinding() const;
 %Docstring
-Returns method that determines how altitude is bound to individual vertices
+Returns method that determines how altitude is bound to individual
+vertices
 %End
     void setAltitudeBinding( Qgis::AltitudeBinding altBinding );
 %Docstring
@@ -131,23 +135,27 @@ Sets front/back culling mode
 
     bool invertNormals() const;
 %Docstring
-Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+Returns whether the normals of triangles will be inverted (useful for
+fixing clockwise / counter-clockwise face vertex orders)
 %End
     void setInvertNormals( bool invert );
 %Docstring
-Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+Sets whether the normals of triangles will be inverted (useful for
+fixing clockwise / counter-clockwise face vertex orders)
 %End
 
     bool addBackFaces() const;
 %Docstring
-Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+Returns whether also triangles facing the other side will be created.
+Useful if input data have inconsistent order of vertices
 
 .. versionadded:: 3.2
 %End
 
     void setAddBackFaces( bool add );
 %Docstring
-Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+Sets whether also triangles facing the other side will be created.
+Useful if input data have inconsistent order of vertices
 
 .. versionadded:: 3.2
 %End
@@ -196,14 +204,16 @@ Sets edge lines color
 
     void setRenderedFacade( int side );
 %Docstring
-Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+Sets which facade of the buildings is rendered (0 for None, 1 for Walls,
+2 for Roofs, 3 for WallsAndRoofs)
 
 .. versionadded:: 3.16
 %End
 
     int renderedFacade() const;
 %Docstring
-Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+Returns which facade of the buildings is rendered (0 for None, 1 for
+Walls, 2 for Roofs, 3 for WallsAndRoofs)
 
 .. versionadded:: 3.16
 %End

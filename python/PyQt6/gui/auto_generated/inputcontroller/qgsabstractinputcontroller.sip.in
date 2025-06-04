@@ -33,7 +33,8 @@ Abstract base class for all input controllers.
   public:
     QgsAbstractInputController( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAbstractInputController, with the specified ``parent`` object.
+Constructor for QgsAbstractInputController, with the specified
+``parent`` object.
 %End
 
     virtual QgsAbstractInputController *clone() const = 0 /Factory/;

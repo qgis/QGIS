@@ -15,14 +15,19 @@
 class QgsAccessControlFilter
 {
 %Docstring(signature="appended")
-Class defining access control interface for QGIS Server plugins.
+Defines access control interface for QGIS Server plugins.
 
 Security can define any (or none) of the following method:
 
-- :py:func:`~layerFilterExpression` - To set an additional QGIS expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
-- :py:func:`~layerFilterSubsetString` - To set an additional SQL subset string filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
-- :py:func:`~layerPermissions` - To set the general layer permissins (read / update / insert / delete)
-- :py:func:`~authorizedLayerAttributes` - To filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+- :py:func:`~layerFilterExpression` - To set an additional QGIS
+  expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
+- :py:func:`~layerFilterSubsetString` - To set an additional SQL subset
+  string filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for
+  layer that support SQL
+- :py:func:`~layerPermissions` - To set the general layer permissins
+  (read / update / insert / delete)
+- :py:func:`~authorizedLayerAttributes` - To filter the attributes
+  (WMS/GetFeatureInfo, WFS/GetFeature)
 - :py:func:`~allowToEdit` - (all WFS-T requests)
 - :py:func:`~cacheKey`
 %End
@@ -33,9 +38,8 @@ Security can define any (or none) of the following method:
   public:
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 %Docstring
-Constructor
-:py:class:`QgsServerInterface` passed to plugins constructors
-and must be passed to QgsAccessControlFilter instances.
+Constructor :py:class:`QgsServerInterface` passed to plugins
+constructors and must be passed to QgsAccessControlFilter instances.
 %End
 
     virtual ~QgsAccessControlFilter();

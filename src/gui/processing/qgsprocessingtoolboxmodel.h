@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsprocessingparametertype.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QPointer>
@@ -54,10 +55,14 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
         sipType = sipType_QgsProcessingToolboxModelGroupNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm )
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Parameter )
+        sipType = sipType_QgsProcessingToolboxModelParameterNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Recent )
         sipType = sipType_QgsProcessingToolboxModelRecentNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite )
         sipType = sipType_QgsProcessingToolboxModelFavoriteNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeType::ParameterGroup )
+        sipType = sipType_QgsProcessingToolboxModelParameterGroupNode;
     }
     else
       sipType = 0;
@@ -74,7 +79,9 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
       Group SIP_MONKEYPATCH_COMPAT_NAME( NodeGroup ),           //!< Group node
       Algorithm SIP_MONKEYPATCH_COMPAT_NAME( NodeAlgorithm ),   //!< Algorithm node
       Recent SIP_MONKEYPATCH_COMPAT_NAME( NodeRecent ),         //!< Recent algorithms node
-      Favorite,                                                 //!< Favorites algorithms node, since QGIS 3.40
+      Parameter,                                                //!< Parameter node, \since QGIS 3.44
+      ParameterGroup,                                           //!< Parameter group node \since QGIS 3.44
+      Favorite,                                                 //!< Favorites algorithms node, \since QGIS 3.40
     };
     Q_ENUM( NodeType )
     // *INDENT-ON*
@@ -135,7 +142,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 };
 
 /**
- * \brief Processing toolbox model node corresponding to the recent algorithms group
+ * \brief Processing toolbox model node corresponding to the recent algorithms group.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.4
@@ -151,7 +158,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
 };
 
 /**
- * \brief Processing toolbox model node corresponding to the favorite algorithms group
+ * \brief Processing toolbox model node corresponding to the favorite algorithms group.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.40
@@ -164,6 +171,22 @@ class GUI_EXPORT QgsProcessingToolboxModelFavoriteNode : public QgsProcessingToo
     QgsProcessingToolboxModelFavoriteNode() = default;
 
     NodeType nodeType() const override { return NodeType::Favorite; }
+};
+
+/**
+ * \brief Processing toolbox model node corresponding to the parameter group.
+ * \ingroup gui
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsProcessingToolboxModelParameterGroupNode : public QgsProcessingToolboxModelNode
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingToolboxModelParameterGroupNode() = default;
+
+    NodeType nodeType() const override { return NodeType::ParameterGroup; }
 };
 
 /**
@@ -270,6 +293,35 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
     const QgsProcessingAlgorithm *mAlgorithm = nullptr;
 };
 
+
+/**
+ * \brief Processing toolbox model node corresponding to a parameter.
+ * \ingroup gui
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsProcessingToolboxModelParameterNode : public QgsProcessingToolboxModelNode
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsProcessingToolboxModelParameterNode, associated
+     * with the specified \a paramType.
+     */
+    QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType );
+
+    NodeType nodeType() const override { return NodeType::Parameter; }
+
+    /**
+     * Returns the parameter type associated with this node.
+     */
+    const QgsProcessingParameterType *parameterType() const;
+
+  private:
+    const QgsProcessingParameterType *mParamType = nullptr;
+};
+
 ///@endcond
 
 /**
@@ -303,6 +355,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
       AlgorithmShortDescription SIP_MONKEYPATCH_COMPAT_NAME( RoleAlgorithmShortDescription ), //!< Short algorithm description, for algorithm nodes
       AlgorithmTags SIP_MONKEYPATCH_COMPAT_NAME( RoleAlgorithmTags ),                         //!< List of algorithm tags, for algorithm nodes
       ProviderFlags SIP_MONKEYPATCH_COMPAT_NAME( RoleProviderFlags ),                         //!< Returns the node's provider flags
+      ParameterTypeId,                                                                        //!< Untranslated parameter type unique identifier for parameter nodes \since QGIS 3.44
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -378,6 +431,24 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     bool isAlgorithm( const QModelIndex &index ) const;
 
     /**
+     * Returns the algorithm which corresponds to a given \a index, or
+     * NULLPTR if the index does not represent an algorithm.
+     *
+     * \see isParameter()
+     * \see providerForIndex()
+     * \since QGIS 3.44  
+     */
+    const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns TRUE if \a index corresponds to a parameter.
+     * 
+     * \see parameterTypeForIndex()
+     * \since QGIS 3.44
+     */
+    bool isParameter( const QModelIndex &index ) const;
+
+    /**
      * Returns the index corresponding to the specified \a providerId.
      * \see providerForIndex()
      */
@@ -405,8 +476,6 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     void rebuild();
     void repopulateRecentAlgorithms( bool resetting = false );
     void repopulateFavoriteAlgorithms( bool resetting = false );
-    void providerAdded( const QString &id );
-    void providerRemoved( const QString &id );
 
   private:
     QPointer<QgsProcessingRegistry> mRegistry;
@@ -433,8 +502,9 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
 
 /**
- * \brief A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
- * which automatically sorts the toolbox in a logical fashion and supports filtering
+ * \brief A proxy model for providers and algorithms shown within the Processing toolbox.
+ *
+ * The model automatically sorts the toolbox in a logical fashion and supports filtering
  * the results.
  *
  * \ingroup gui

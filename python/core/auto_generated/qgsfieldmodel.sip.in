@@ -14,11 +14,12 @@
 class QgsFieldModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsFieldModel` class is a model to display the list of fields in widgets
-(optionally associated with a vector layer).
+A model which displays the list of fields in widgets (optionally
+associated with a vector layer).
 
-If allowed, expressions might be added to the end of the model.
-It can be associated with a :py:class:`QgsMapLayerModel` to dynamically display a layer and its fields.
+If allowed, expressions might be added to the end of the model. It can
+be associated with a :py:class:`QgsMapLayerModel` to dynamically display
+a layer and its fields.
 %End
 
 %TypeHeaderCode
@@ -44,7 +45,8 @@ It can be associated with a :py:class:`QgsMapLayerModel` to dynamically display 
 
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsFieldModel - creates a model to display the fields of a given layer.
+Constructor for QgsFieldModel - creates a model to display the fields of
+a given layer.
 %End
 
     QModelIndex indexFromName( const QString &fieldName );
@@ -63,14 +65,16 @@ Sets whether custom expressions are accepted and displayed in the model.
 
     bool allowExpression();
 %Docstring
-Returns ``True`` if the model allows custom expressions to be created and displayed.
+Returns ``True`` if the model allows custom expressions to be created
+and displayed.
 
 .. seealso:: :py:func:`setAllowExpression`
 %End
 
     void setAllowEmptyFieldName( bool allowEmpty );
 %Docstring
-Sets whether an optional empty field ("not set") option is present in the model.
+Sets whether an optional empty field ("not set") option is present in
+the model.
 
 .. seealso:: :py:func:`allowEmptyFieldName`
 %End
@@ -84,13 +88,14 @@ Returns ``True`` if the model allows the empty field ("not set") choice.
 
     bool isField( const QString &expression ) const;
 %Docstring
-Returns ``True`` if a string represents a field reference, or ``False`` if it is an
-expression consisting of more than direct field reference.
+Returns ``True`` if a string represents a field reference, or ``False``
+if it is an expression consisting of more than direct field reference.
 %End
 
     void setExpression( const QString &expression );
 %Docstring
-Sets a single expression to be added after the fields at the end of the model.
+Sets a single expression to be added after the fields at the end of the
+model.
 
 .. seealso:: :py:func:`setAllowExpression`
 
@@ -128,14 +133,14 @@ Returns the layer associated with the model.
 
     static QString fieldToolTip( const QgsField &field );
 %Docstring
-Returns a HTML formatted tooltip string for a ``field``, containing details
-like the field name, alias and type.
+Returns a HTML formatted tooltip string for a ``field``, containing
+details like the field name, alias and type.
 %End
 
     static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
 %Docstring
-Returns a HTML formatted tooltip string for a ``field``, containing details
-like the field name, alias, type and expression.
+Returns a HTML formatted tooltip string for a ``field``, containing
+details like the field name, alias, type and expression.
 
 .. versionadded:: 3.14
 %End
@@ -144,9 +149,11 @@ like the field name, alias, type and expression.
 %Docstring
 Manually sets the ``fields`` to use for the model.
 
-This method should only be used when the model ISN'T associated with a :py:func:`~QgsFieldModel.layer`
-and needs to show the fields from an arbitrary field collection instead. Calling
-:py:func:`~QgsFieldModel.setFields` will automatically clear any existing :py:func:`~QgsFieldModel.layer`.
+This method should only be used when the model ISN'T associated with a
+:py:func:`~QgsFieldModel.layer` and needs to show the fields from an
+arbitrary field collection instead. Calling
+:py:func:`~QgsFieldModel.setFields` will automatically clear any
+existing :py:func:`~QgsFieldModel.layer`.
 
 .. seealso:: :py:func:`fields`
 
@@ -157,8 +164,9 @@ and needs to show the fields from an arbitrary field collection instead. Calling
 %Docstring
 Returns the fields currently shown in the model.
 
-This will either be fields from the associated :py:func:`~QgsFieldModel.layer` or the fields
-manually set by a call to :py:func:`~QgsFieldModel.setFields`.
+This will either be fields from the associated
+:py:func:`~QgsFieldModel.layer` or the fields manually set by a call to
+:py:func:`~QgsFieldModel.setFields`.
 
 .. versionadded:: 3.14
 %End

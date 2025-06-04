@@ -14,7 +14,7 @@
 class QgsAnalysis
 {
 %Docstring(signature="appended")
-:py:class:`QgsAnalysis` is a singleton class containing various registry and other global members
+A singleton class containing various registry and other global members
 related to analysis classes.
 
 .. versionadded:: 3.4
@@ -32,7 +32,8 @@ Returns a pointer to the singleton instance.
 
     static QgsGeometryCheckRegistry *geometryCheckRegistry() /KeepReference/;
 %Docstring
-Returns the global geometry checker registry, used for managing all geometry check factories.
+Returns the global geometry checker registry, used for managing all
+geometry check factories.
 %End
 
   private:

@@ -92,5 +92,7 @@ QgsFieldModel.CustomRole.baseClass = QgsFieldModel
 try:
     QgsFieldModel.fieldToolTip = staticmethod(QgsFieldModel.fieldToolTip)
     QgsFieldModel.fieldToolTipExtended = staticmethod(QgsFieldModel.fieldToolTipExtended)
+    QgsFieldModel.__virtual_methods__ = ['updateModel']
+    QgsFieldModel.__overridden_methods__ = ['index', 'parent', 'rowCount', 'columnCount', 'data']
 except (NameError, AttributeError):
     pass

@@ -149,7 +149,7 @@ class QgsMeshIteratorDataStream : public IDataStream
                                         QgsFeedback *feedback = nullptr )
       : mMesh( mesh )
       , mFeaturesCount( featuresCount )
-      , mFeatureToRegionFunction( featureToRegionFunction )
+      , mFeatureToRegionFunction( std::move( featureToRegionFunction ) )
       , mFeedback( feedback )
     {
       readNextEntry();

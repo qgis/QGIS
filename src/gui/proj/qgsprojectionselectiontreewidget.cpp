@@ -481,7 +481,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   QgsRectangle rect = currentCrs.bounds();
   QString extentString = tr( "Extent not known" );
   mAreaCanvas->setPreviewRect( rect );
-  if ( !qgsDoubleNear( rect.area(), 0.0 ) )
+  if ( !rect.isNull() && !rect.isEmpty() )
   {
     extentString = QStringLiteral( "%1, %2, %3, %4" )
                      .arg( rect.xMinimum(), 0, 'f', 2 )
@@ -520,7 +520,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
       if ( !ensemble.code().isEmpty() )
         id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
       if ( ensemble.accuracy() > 0 )
       {
         properties << tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );

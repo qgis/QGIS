@@ -50,18 +50,18 @@ class QgsAbstract3DRenderer;
 class QgsMapLayer;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
+class QgsGlobeEntity;
 class QgsChunkedEntity;
 class QgsSkyboxEntity;
 class QgsSkyboxSettings;
 class Qgs3DMapExportSettings;
-class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
 class Qgs3DMapSceneEntity;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  */
 #ifndef SIP_RUN
@@ -81,10 +81,19 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QgsCameraController *cameraController() const { return mCameraController; }
 
     /**
-     * Returns terrain entity (may be temporarily NULLPTR)
+     * Returns terrain entity (may be NULLPTR if using globe scene,
+     * terrain rendering is disabled or when terrain is being rebuilt)
      * \note Not available in Python bindings
      */
     QgsTerrainEntity *terrainEntity() SIP_SKIP { return mTerrain; }
+
+    /**
+     * Returns globe entity (may be NULLPTR if not using globe scene,
+     * terrain rendering is disabled or when globe is being rebuilt)
+     * \note Not available in Python bindings
+     * \since QGIS 3.44
+     */
+    QgsGlobeEntity *globeEntity() SIP_SKIP { return mGlobe; }
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
@@ -102,9 +111,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \since QGIS 3.26
      */
     QVector<QgsPointXY> viewFrustum2DExtent() const;
-
-    //! Returns number of pending jobs of the terrain entity
-    int terrainPendingJobsCount() const;
 
     /**
      * Returns number of pending jobs for all chunked entities
@@ -164,11 +170,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     /**
      * Returns the scene's elevation range
-     * \note Only some layer types are considered by this method (eg terrain, point cloud and mesh layers)
-     *
+     * \note Only some layer types are considered by this method (e.g. terrain, point cloud and mesh layers)
+     * \param ignoreTerrain indicates whether the calculation will ignore terrain
      * \since QGIS 3.30
      */
-    QgsDoubleRange elevationRange() const;
+    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 
     /**
      * Returns the 3D axis object
@@ -210,6 +216,33 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void setSceneUpdatesEnabled( bool enabled ) { mSceneUpdatesEnabled = enabled; }
 
     /**
+     * Returns whether the 3D scene is allowed to automatically move the scene's
+     * origin. This is necessary in large scenes (e.g. more than 50km across)
+     * to avoid issues with numerical precision (due to the use of 32-bit floats
+     * in rendering), that may cause jitter in camera position or object location.
+     * When 3D scene moves the origin (because the camera is far from it), user
+     * should not see any change - transforms of 3D entities should be updated
+     * accordingly.
+     *
+     * Normally, origin shifts are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable origin shifts.
+     *
+     * \since QGIS 3.44
+     */
+    bool hasSceneOriginShiftEnabled() const { return mSceneOriginShiftEnabled; }
+
+    /**
+     * Returns whether the 3D scene is allowed to automatically move the scene's
+     * origin. See hasSceneOriginShiftEnabled() for more details.
+     *
+     * Normally, origin shifts are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable origin shifts.
+     *
+     * \since QGIS 3.44
+     */
+    void setSceneOriginShiftEnabled( bool enabled ) { mSceneOriginShiftEnabled = enabled; }
+
+    /**
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.
@@ -248,6 +281,29 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     void disableClipping();
 
+    /**
+     * Adds a 3D map scene entity to the scene. The 3D entity will get parented
+     * to the scene and the scene takes ownership of the entity.
+     * \see removeSceneEntity()
+     * \since QGIS 3.44
+     */
+    void addSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+
+    /**
+     * Removes a 3D scene entity for the scene. The 3D entity will get deleted.
+     * \see addSceneEntity()
+     * \since QGIS 3.44
+     */
+    void removeSceneEntity( Qgs3DMapSceneEntity *entity ) SIP_SKIP;
+
+    /**
+     * Returns list of clipping planes if clipping is enabled, otherwise an
+     * empty list.
+     *
+     * \since QGIS 3.44
+     */
+    QList<QVector4D> clipPlaneEquations() const { return mClipPlanesEquations; };
+
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
     static std::function<QMap<QString, Qgs3DMapScene *>()> sOpenScenesFunction;
@@ -256,8 +312,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
-    //! Emitted when the number of terrain's pending jobs changes
-    void terrainPendingJobsCountChanged();
 
     /**
      * Emitted when the total number of pending jobs changes
@@ -342,6 +396,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
+    QgsGlobeEntity *mGlobe = nullptr;
     QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
@@ -360,6 +415,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DAxis *m3DAxis = nullptr;
 
     bool mSceneUpdatesEnabled = true;
+    bool mSceneOriginShiftEnabled = true;
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;

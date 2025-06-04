@@ -13,8 +13,8 @@
 class QgsExternalStorageFileWidget : QgsFileWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsExternalStorageFileWidget` class creates a widget for selecting a file or a folder
-and stores it to a given external storage backend if defined
+A widget for selecting a file or a folder and optionally storing it to
+an external storage backend.
 
 .. versionadded:: 3.22
 %End
@@ -31,14 +31,16 @@ and stores it to a given external storage backend if defined
   public:
     explicit QgsExternalStorageFileWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
+QgsExternalStorageFileWidget creates a widget for selecting a file or a
+folder.
 %End
 
     void setStorageType( const QString &storageType );
 %Docstring
-Set ``storageType`` storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry` or
-null QString if there is no storage defined.
-If no external storage has been defined, QgsExternalStorageFileWidget will only update file path according to
+Set ``storageType`` storage type unique identifier as defined in
+:py:class:`QgsExternalStorageRegistry` or an empty string if there is no
+storage defined. If no external storage has been defined,
+QgsExternalStorageFileWidget will only update file path according to
 selected files.
 
 .. seealso:: :py:func:`storageType`
@@ -48,8 +50,9 @@ selected files.
 
     QString storageType() const;
 %Docstring
-Returns storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry`.
-Returns null QString if there is no storage defined, only file selection.
+Returns storage type unique identifier as defined in
+:py:class:`QgsExternalStorageRegistry`. Returns an empty string if there
+is no storage defined, only file selection.
 
 .. seealso:: :py:func:`setStorageType`
 
@@ -58,8 +61,9 @@ Returns null QString if there is no storage defined, only file selection.
 
     QgsExternalStorage *externalStorage() const;
 %Docstring
-Returns external storage used to store selected file names, None if none have been defined.
-If no external storage has been defined, QgsExternalStorageFileWidget will only update file path according to
+Returns external storage used to store selected file names, None if none
+have been defined. If no external storage has been defined,
+QgsExternalStorageFileWidget will only update file path according to
 selected files.
 
 .. seealso:: :py:func:`setStorageType`
@@ -69,23 +73,25 @@ selected files.
 
     void setStorageAuthConfigId( const QString &authCfg );
 %Docstring
-Sets the authentication configuration ID to be used for the current external storage (if
-defined)
+Sets the authentication configuration ID to be used for the current
+external storage (if defined)
 
 .. versionadded:: 3.22
 %End
 
     const QString &storageAuthConfigId() const;
 %Docstring
-Returns the authentication configuration ID used for the current external storage (if defined)
+Returns the authentication configuration ID used for the current
+external storage (if defined)
 
 .. versionadded:: 3.22
 %End
 
     void setStorageUrlExpression( const QString &urlExpression );
 %Docstring
-Set ``urlExpression`` expression, which once evaluated, provide the URL used to store selected
-documents. This is used only if an external storage has been defined
+Set ``urlExpression`` expression, which once evaluated, provide the URL
+used to store selected documents. This is used only if an external
+storage has been defined
 
 .. seealso:: :py:func:`setStorageType`
 
@@ -96,9 +102,10 @@ documents. This is used only if an external storage has been defined
 
     QString storageUrlExpressionString() const;
 %Docstring
-Returns the original, unmodified expression string, which once evaluated, provide the
-URL used to store selected documents. This is used only if an external storage has been defined.
-Returns null if no expression has been set.
+Returns the original, unmodified expression string, which once
+evaluated, provide the URL used to store selected documents. This is
+used only if an external storage has been defined. Returns null if no
+expression has been set.
 
 .. seealso:: :py:func:`setStorageUrlExpression`
 
@@ -107,9 +114,9 @@ Returns null if no expression has been set.
 
     QgsExpression *storageUrlExpression() const;
 %Docstring
-Returns expression, which once evaluated, provide the URL used to store selected
-documents. This is used only if an external storage has been defined.
-Returns null if no expression has been set.
+Returns expression, which once evaluated, provide the URL used to store
+selected documents. This is used only if an external storage has been
+defined. Returns null if no expression has been set.
 
 .. seealso:: :py:func:`setStorageUrlExpression`
 
@@ -118,7 +125,8 @@ Returns null if no expression has been set.
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Set expression context to be used when for storage URL expression evaluation
+Set expression context to be used when for storage URL expression
+evaluation
 
 .. seealso:: :py:func:`setStorageUrlExpression`
 
@@ -150,8 +158,9 @@ Returns message bar used to report messages
 
     static QgsExpressionContextScope *createFileWidgetScope();
 %Docstring
-Creates and Returns an expression context scope specific to QgsExternalStorageFileWidget
-It defines the variable containing the user selected file name
+Creates and Returns an expression context scope specific to
+QgsExternalStorageFileWidget It defines the variable containing the user
+selected file name
 
 .. versionadded:: 3.22
 %End

@@ -398,7 +398,11 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode 
   QList<QgsLayoutItem *> pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return {};
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
@@ -439,7 +443,11 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
   QList<QgsLayoutItem *> pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return {};
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
@@ -458,7 +466,11 @@ bool QgsLayoutView::hasItemsInClipboard() const
 {
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return false;
+
+  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
   {
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
@@ -937,7 +949,7 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MiddleButton )
+    if ( event->button() == Qt::MiddleButton && mTool != mSpacePanTool && mTool != mSpaceZoomTool )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -1064,7 +1076,7 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() && mTool != mMidMouseButtonPanTool )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {

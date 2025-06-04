@@ -15,6 +15,8 @@
 
 #include "qgsstacdataitemguiprovider.h"
 #include "moc_qgsstacdataitemguiprovider.cpp"
+
+#include "qgsapplication.h"
 #include "qgsstaccontroller.h"
 #include "qgsstacdataitems.h"
 #include "qgsstacconnection.h"
@@ -128,7 +130,7 @@ void QgsStacDataItemGuiProvider::refreshConnection( QgsDataItem *item )
 
 void QgsStacDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsStacConnectionDialog dlg;
+  QgsStacConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 

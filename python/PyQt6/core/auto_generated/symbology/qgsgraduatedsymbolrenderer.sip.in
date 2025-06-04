@@ -11,7 +11,8 @@
 class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-A vector feature renderer which uses numeric attributes to classify features into different ranges.
+A vector feature renderer which uses numeric attributes to classify
+features into different ranges.
 %End
 
 %TypeHeaderCode
@@ -41,7 +42,9 @@ A vector feature renderer which uses numeric attributes to classify features int
 
     virtual QgsGraduatedSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
@@ -75,19 +78,19 @@ Returns a list of all ranges used in the classification.
     bool updateRangeRenderState( int rangeIndex, bool render );
 
     void addClass( QgsSymbol *symbol );
+%Docstring
+Adds a class to the renderer, with the specified ``symbol``.
+%End
+
     void addClass( const QgsRendererRange &range ) /PyName=addClassRange/;
 %Docstring
-
-.. note::
-
-   available in Python bindings as addClassRange
+Adds a class to the renderer, with the specified ``range``.
 %End
+
     void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
 %Docstring
-
-.. note::
-
-   available in Python bindings as addClassLowerUpper
+Adds a class to the renderer, with the specified ``lower`` and ``upper``
+bounds.
 %End
 
     void addBreak( double breakValue, bool updateSymbols = true );
@@ -110,14 +113,16 @@ Moves the category at index position from to index position to.
 
     bool rangesOverlap() const;
 %Docstring
-Tests whether classes assigned to the renderer have ranges which overlap.
+Tests whether classes assigned to the renderer have ranges which
+overlap.
 
 :return: ``True`` if ranges overlap
 %End
 
     bool rangesHaveGaps() const;
 %Docstring
-Tests whether classes assigned to the renderer have gaps between the ranges.
+Tests whether classes assigned to the renderer have gaps between the
+ranges.
 
 :return: ``True`` if ranges have gaps
 %End
@@ -134,8 +139,7 @@ Returns the classification method
 
     void setClassificationMethod( QgsClassificationMethod *method /Transfer/ );
 %Docstring
-Defines the classification method
-This will take ownership of the method
+Defines the classification method This will take ownership of the method
 
 .. versionadded:: 3.10
 %End
@@ -153,14 +157,12 @@ This will take ownership of the method
 
  Mode mode() const /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
-
 .. deprecated:: 3.10
 
    Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
  void setMode( Mode mode ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
-
 .. deprecated:: 3.10
 
    Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
@@ -235,12 +237,14 @@ Set if we want a central class astride the pivot value
 
  static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride ) /Deprecated="Since 3.10. Use QgsClassificationMethod.makeBreaksSymmetric instead."/;
 %Docstring
-Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
-Does not put a break on the symmetryPoint. This is done before.
+Remove the breaks that are above the existing opposite sign classes to
+keep colors symmetrically balanced around symmetryPoint Does not put a
+break on the symmetryPoint. This is done before.
 
 :param breaks: The breaks of an already-done classification
 :param symmetryPoint: The point around which we want a symmetry
-:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param astride: A bool indicating if the symmetry is made astride the
+                symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 .. versionadded:: 3.4
 
@@ -256,9 +260,11 @@ Compute the equal interval classification
 :param minimum: The minimum value of the distribution
 :param maximum: The maximum value of the distribution
 :param classes: The number of classes desired
-:param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+:param useSymmetricMode: A bool indicating if we want to have classes
+                         and hence colors ramp symmetric around a value
 :param symmetryPoint: The point around which we want a symmetry
-:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param astride: A bool indicating if the symmetry is made astride the
+                symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 .. deprecated:: 3.10
 
@@ -269,12 +275,17 @@ Compute the equal interval classification
 %Docstring
 Recalculate classes for a layer
 
-:param vlayer: The layer being rendered (from which data values are calculated)
+:param vlayer: The layer being rendered (from which data values are
+               calculated)
 :param mode: The calculation mode
-:param nclasses: The number of classes to calculate (approximate for some modes)
-:param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
-:param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
-:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param nclasses: The number of classes to calculate (approximate for
+                 some modes)
+:param useSymmetricMode: A bool indicating if we want to have classes
+                         and hence colors ramp symmetric around a value
+:param symmetryPoint: The value around which the classes will be
+                      symmetric if useSymmetricMode is checked
+:param astride: A bool indicating if the symmetry is made astride the
+                symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 .. deprecated:: 3.10
 %End
@@ -283,7 +294,8 @@ Recalculate classes for a layer
 %Docstring
 Recalculate classes for a layer
 
-:param vl: The layer being rendered (from which data values are calculated)
+:param vl: The layer being rendered (from which data values are
+           calculated)
 :param nclasses: the number of classes
 
 :return: Optional parameter for error reporting
@@ -304,7 +316,8 @@ Returns the label format used to generate default classification labels
 Set the label format used to generate default classification labels
 
 :param labelFormat: The string appended to classification labels
-:param updateRanges: If ``True`` then ranges ending with the old unit string are updated to the new.
+:param updateRanges: If ``True`` then ranges ending with the old unit
+                     string are updated to the new.
 
 .. deprecated:: 3.10
 
@@ -314,9 +327,11 @@ Set the label format used to generate default classification labels
 
     void calculateLabelPrecision( bool updateRanges = true );
 %Docstring
-Reset the label decimal places to a numberbased on the minimum class interval
+Reset the label decimal places to a numberbased on the minimum class
+interval
 
-:param updateRanges: if ``True`` then ranges currently using the default label will be updated
+:param updateRanges: if ``True`` then ranges currently using the default
+                     label will be updated
 %End
 
 
@@ -340,11 +355,15 @@ Creates a new graduated renderer.
 :param mode: classification mode
 :param symbol: base symbol
 :param ramp: color ramp for classes
-:param legendFormat:
-:param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
-:param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
-:param listForCboPrettyBreaks: The list of potential pivot values for symmetric mode with prettybreaks mode
-:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+:param legendFormat: 
+:param useSymmetricMode: A bool indicating if we want to have classes
+                         and hence colors ramp symmetric around a value
+:param symmetryPoint: The value around which the classes will be
+                      symmetric if useSymmetricMode is checked
+:param listForCboPrettyBreaks: The list of potential pivot values for
+                               symmetric mode with prettybreaks mode
+:param astride: A bool indicating if the symmetry is made astride the
+                symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
 :return: new QgsGraduatedSymbolRenderer object
 
@@ -367,8 +386,8 @@ create renderer from XML element
 
     QgsSymbol *sourceSymbol();
 %Docstring
-Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
-the classes' color.
+Returns the renderer's source symbol, which is the base symbol used for
+the each classes' symbol before applying the classes' color.
 
 .. seealso:: :py:func:`setSourceSymbol`
 
@@ -378,8 +397,8 @@ the classes' color.
 
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
-Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
-the classes' color.
+Sets the source symbol for the renderer, which is the base symbol used
+for the each classes' symbol before applying the classes' color.
 
 :param sym: source symbol, ownership is transferred to the renderer
 
@@ -390,7 +409,8 @@ the classes' color.
 
     QgsColorRamp *sourceColorRamp();
 %Docstring
-Returns the source color ramp, from which each classes' color is derived.
+Returns the source color ramp, from which each classes' color is
+derived.
 
 .. seealso:: :py:func:`setSourceColorRamp`
 
@@ -407,18 +427,19 @@ Sets the source color ramp.
 
     void updateColorRamp( QgsColorRamp *ramp /Transfer/ = 0 );
 %Docstring
-Update the color ramp used. Also updates all symbols colors.
-Doesn't alter current breaks.
+Update the color ramp used. Also updates all symbols colors. Doesn't
+alter current breaks.
 
 :param ramp: color ramp. Ownership is transferred to the renderer
 %End
 
     void updateSymbols( QgsSymbol *sym );
 %Docstring
-Update all the symbols but leave breaks and colors. This method also sets the source
-symbol for the renderer.
+Update all the symbols but leave breaks and colors. This method also
+sets the source symbol for the renderer.
 
-:param sym: source symbol to use for classes. Ownership is not transferred.
+:param sym: source symbol to use for classes. Ownership is not
+            transferred.
 
 .. seealso:: :py:func:`setSourceSymbol`
 %End
@@ -470,24 +491,29 @@ Set the ``method`` used for graduation (either size or color).
 %Docstring
 creates a QgsGraduatedSymbolRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
-Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
-This allows configuring for which values (symbol sizes) should be shown in the legend, whether to display
-different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+Configures appearance of legend when renderer is configured to use
+data-defined size for marker symbols. This allows configuring for which
+values (symbol sizes) should be shown in the legend, whether to display
+different symbol sizes collapsed in one legend node or separated across
+multiple legend nodes etc.
 
-When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-Takes ownership of the passed settings objects. ``None`` is a valid input that disables data-defined
+When renderer does not use data-defined size or does not use marker
+symbols, these settings will be ignored. Takes ownership of the passed
+settings objects. ``None`` is a valid input that disables data-defined
 size legend.
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
-Returns configuration of appearance of legend when using data-defined size for marker symbols.
-Will return ``None`` if the functionality is disabled.
+Returns configuration of appearance of legend when using data-defined
+size for marker symbols. Will return ``None`` if the functionality is
+disabled.
 %End
 
     void updateRangeLabels();
@@ -499,8 +525,8 @@ Updates the labels of the ranges
 
     const QgsRendererRange *rangeForValue( double value ) const;
 %Docstring
-Returns the renderer range matching the provided ``value``, or ``None`` if no
-range matches the value.
+Returns the renderer range matching the provided ``value``, or ``None``
+if no range matches the value.
 
 .. versionadded:: 3.10.1
 %End

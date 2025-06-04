@@ -38,7 +38,7 @@ class QgsGraphVertex;
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
- * \brief This class implements a graph edge
+ * \brief Represents an edge in a graph.
  */
 class ANALYSIS_EXPORT QgsGraphEdge
 {
@@ -83,7 +83,7 @@ typedef QList<int> QgsGraphEdgeIds;
 /**
  * \ingroup analysis
  * \class QgsGraphVertex
- * \brief This class implements a graph vertex
+ * \brief Represents vertex in a graph.
  */
 class ANALYSIS_EXPORT QgsGraphVertex
 {
@@ -124,7 +124,7 @@ class ANALYSIS_EXPORT QgsGraphVertex
 /**
  * \ingroup analysis
  * \class QgsGraph
- * \brief Mathematical graph representation
+ * \brief Mathematical graph representation.
  */
 
 class ANALYSIS_EXPORT QgsGraph

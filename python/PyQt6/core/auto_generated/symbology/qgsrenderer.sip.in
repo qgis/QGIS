@@ -19,6 +19,9 @@ typedef QList<QgsSymbol *> QgsSymbolList;
 
 class QgsSymbolLevelItem
 {
+%Docstring(signature="appended")
+Represents a symbol level during vector rendering operations.
+%End
 
 %TypeHeaderCode
 #include "qgsrenderer.h"
@@ -110,7 +113,8 @@ Returns a new renderer - used by default in vector layers
 %Docstring
 To be overridden
 
-Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
+Must be called between :py:func:`~QgsFeatureRenderer.startRender` and
+:py:func:`~QgsFeatureRenderer.stopRender` calls.
 
 :param feature: feature
 :param context: render context
@@ -120,9 +124,11 @@ Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Returns symbol for feature. The difference compared to :py:func:`~QgsFeatureRenderer.symbolForFeature` is that it returns original
-symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
-of a symbol for use in rendering.
+Returns symbol for feature. The difference compared to
+:py:func:`~QgsFeatureRenderer.symbolForFeature` is that it returns
+original symbol which can be used as an identifier for renderer's rule -
+the former may return a temporary replacement of a symbol for use in
+rendering.
 %End
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
@@ -132,10 +138,13 @@ Returns legend keys matching a specified feature.
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 %Docstring
-Must be called when a new render cycle is started. A call to :py:func:`~QgsFeatureRenderer.startRender` must always
-be followed by a corresponding call to :py:func:`~QgsFeatureRenderer.stopRender` after all features have been rendered.
+Must be called when a new render cycle is started. A call to
+:py:func:`~QgsFeatureRenderer.startRender` must always be followed by a
+corresponding call to :py:func:`~QgsFeatureRenderer.stopRender` after
+all features have been rendered.
 
-:param context: Additional information passed to the renderer about the job which will be rendered
+:param context: Additional information passed to the renderer about the
+                job which will be rendered
 :param fields: The fields available for rendering
 
 .. seealso:: :py:func:`stopRender`
@@ -148,9 +157,11 @@ be followed by a corresponding call to :py:func:`~QgsFeatureRenderer.stopRender`
 
     virtual void stopRender( QgsRenderContext &context );
 %Docstring
-Must be called when a render cycle has finished, to allow the renderer to clean up.
+Must be called when a render cycle has finished, to allow the renderer
+to clean up.
 
-Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be preceded by a call to :py:func:`~QgsFeatureRenderer.startRender`.
+Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be
+preceded by a call to :py:func:`~QgsFeatureRenderer.startRender`.
 
 .. warning::
 
@@ -162,8 +173,8 @@ Calls to :py:func:`~QgsFeatureRenderer.stopRender` must always be preceded by a 
 
     virtual bool canSkipRender();
 %Docstring
-Returns ``True`` if the renderer can be entirely skipped, i.e. if it is known in advance
-that no features will be rendered.
+Returns ``True`` if the renderer can be entirely skipped, i.e. if it is
+known in advance that no features will be rendered.
 
 .. warning::
 
@@ -174,58 +185,62 @@ that no features will be rendered.
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
 %Docstring
-If a renderer does not require all the features this method may be overridden
-and return an expression used as where clause.
-This will be called once after :py:func:`~QgsFeatureRenderer.startRender` and before the first call
-to :py:func:`~QgsFeatureRenderer.renderFeature`.
-By default this returns a null string and all features will be requested.
-You do not need to specify the extent in here, this is taken care of separately and
-will be combined with a filter returned from this method.
+If a renderer does not require all the features this method may be
+overridden and return an expression used as where clause. This will be
+called once after :py:func:`~QgsFeatureRenderer.startRender` and before
+the first call to :py:func:`~QgsFeatureRenderer.renderFeature`. By
+default this returns a null string and all features will be requested.
+You do not need to specify the extent in here, this is taken care of
+separately and will be combined with a filter returned from this method.
 
 :return: An expression used as where clause
 %End
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 %Docstring
-Returns a list of attributes required by this renderer. Attributes not listed in here may
-not have been requested from the provider at rendering time.
+Returns a list of attributes required by this renderer. Attributes not
+listed in here may not have been requested from the provider at
+rendering time.
 
 :return: A set of attributes
 %End
 
     virtual bool usesEmbeddedSymbols() const;
 %Docstring
-Returns ``True`` if the renderer uses embedded symbols for features.
-The default implementation returns ``False``.
+Returns ``True`` if the renderer uses embedded symbols for features. The
+default implementation returns ``False``.
 
 .. versionadded:: 3.20
 %End
 
     virtual bool filterNeedsGeometry() const;
 %Docstring
-Returns ``True`` if this renderer requires the geometry to apply the filter.
+Returns ``True`` if this renderer requires the geometry to apply the
+filter.
 %End
 
     virtual ~QgsFeatureRenderer();
 
     virtual QgsFeatureRenderer *clone() const = 0 /Factory/;
 %Docstring
-Create a deep copy of this renderer. Should be implemented by all subclasses
-and generate a proper subclass.
+Create a deep copy of this renderer. Should be implemented by all
+subclasses and generate a proper subclass.
 
 :return: A copy of this renderer
 %End
 
     virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 %Docstring
-Render a feature using this renderer in the given context.
-Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
-Default implementation renders a symbol as determined by :py:func:`~QgsFeatureRenderer.symbolForFeature` call.
-Returns ``True`` if the feature has been returned (this is used for example
-to determine whether the feature may be labelled).
+Render a feature using this renderer in the given context. Must be
+called between :py:func:`~QgsFeatureRenderer.startRender` and
+:py:func:`~QgsFeatureRenderer.stopRender` calls. Default implementation
+renders a symbol as determined by
+:py:func:`~QgsFeatureRenderer.symbolForFeature` call. Returns ``True``
+if the feature has been returned (this is used for example to determine
+whether the feature may be labelled).
 
-If layer is not -1, the renderer should draw only a particular layer from symbols
-(in order to support symbol level rendering).
+If layer is not -1, the renderer should draw only a particular layer
+from symbols (in order to support symbol level rendering).
 
 .. seealso:: :py:func:`startRender`
 
@@ -288,33 +303,50 @@ create a renderer from XML element
 %Docstring
 Stores renderer properties to an XML element.
 
-Subclasses which override this method should call :py:func:`~QgsFeatureRenderer.saveRendererData` as part of their
-implementation in order to store all common base class properties in the returned DOM element.
+Subclasses which override this method should call
+:py:func:`~QgsFeatureRenderer.saveRendererData` as part of their
+implementation in order to store all common base class properties in the
+returned DOM element.
 %End
 
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
-create the SLD UserStyle element following the SLD v1.1 specs with the given name
+create the SLD UserStyle element following the SLD v1.1 specs with the
+given name
 %End
 
     static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) /Factory/;
 %Docstring
-Create a new renderer according to the information contained in
-the UserStyle element of a SLD style document
+Create a new renderer according to the information contained in the
+UserStyle element of a SLD style document
 
-:param node: the node in the SLD document whose the UserStyle element
-             is a child
+:param node: the node in the SLD document whose the UserStyle element is
+             a child
 :param geomType: the geometry type of the features, used to convert
                  Symbolizer elements
-:param errorMessage: it will contain the error message if something
-                     went wrong
+:param errorMessage: it will contain the error message if something went
+                     wrong
 
 :return: the renderer
 %End
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
-used from subclasses to create SLD Rule elements following SLD v1.1 specs
+Used from subclasses to create SLD Rule elements following SLD v1.1
+specs
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
+%Docstring
+Exports the renderer to SLD Rule elements following the SLD v1.1 specs.
+
+Returns ``True`` if the renderer was exported to SLD successfully.
+
+.. versionadded:: 3.44
 %End
 
     QSet< QString > legendKeys() const;
@@ -333,7 +365,8 @@ Returns ``True`` if symbology items in legend are checkable.
 
     virtual bool legendSymbolItemChecked( const QString &key );
 %Docstring
-Returns ``True`` if the legend symbology item with the specified ``key`` is checked.
+Returns ``True`` if the legend symbology item with the specified ``key``
+is checked.
 
 .. seealso:: :py:func:`checkLegendSymbolItem`
 
@@ -342,7 +375,8 @@ Returns ``True`` if the legend symbology item with the specified ``key`` is chec
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 %Docstring
-Sets whether the legend symbology item with the specified ``ley`` should be checked.
+Sets whether the legend symbology item with the specified ``ley`` should
+be checked.
 
 .. seealso:: :py:func:`legendSymbolItemChecked`
 
@@ -354,21 +388,24 @@ Sets whether the legend symbology item with the specified ``ley`` should be chec
 Sets the symbol to be used for a legend symbol item.
 
 :param key: rule key for legend symbol
-:param symbol: new symbol for legend item. Ownership is transferred to renderer.
+:param symbol: new symbol for legend item. Ownership is transferred to
+               renderer.
 
 .. seealso:: :py:func:`legendKeys`
 %End
 
     virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok /Out/ ) const;
 %Docstring
-Attempts to convert the specified legend rule ``key`` to a QGIS expression matching
-the features displayed using that key.
+Attempts to convert the specified legend rule ``key`` to a QGIS
+expression matching the features displayed using that key.
 
 :param key: legend key
 :param layer: associated vector layer
 
-:return: - QGIS expression string for matching features with the specified key
-         - ok: ``True`` if legend key was successfully converted to a filter expression
+:return: - QGIS expression string for matching features with the
+           specified key
+         - ok: ``True`` if legend key was successfully converted to a
+           filter expression
 
 .. seealso:: :py:func:`legendKeys`
 
@@ -386,11 +423,13 @@ Returns a list of symbology items for the legend
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 %Docstring
-Returns a list of legend nodes to be used for the legend for the renderer.
+Returns a list of legend nodes to be used for the legend for the
+renderer.
 
 Ownership is transferred to the caller.
 
-The default implementation creates a legend node for each symbol item returned by :py:func:`~QgsFeatureRenderer.legendSymbolItems`
+The default implementation creates a legend node for each symbol item
+returned by :py:func:`~QgsFeatureRenderer.legendSymbolItems`
 
 .. seealso:: :py:func:`legendSymbolItems`
 
@@ -399,7 +438,8 @@ The default implementation creates a legend node for each symbol item returned b
 
     virtual QString legendClassificationAttribute() const;
 %Docstring
-If supported by the renderer, return classification attribute for the use in legend
+If supported by the renderer, return classification attribute for the
+use in legend
 %End
 
     void setVertexMarkerAppearance( Qgis::VertexMarkerType type, double size );
@@ -409,30 +449,33 @@ Sets type and size of editing vertex markers for subsequent rendering
 
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Returns whether the renderer will render a feature or not.
-Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
-Default implementation uses :py:func:`~QgsFeatureRenderer.symbolForFeature`.
+Returns whether the renderer will render a feature or not. Must be
+called between :py:func:`~QgsFeatureRenderer.startRender` and
+:py:func:`~QgsFeatureRenderer.stopRender` calls. Default implementation
+uses :py:func:`~QgsFeatureRenderer.symbolForFeature`.
 %End
 
     virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Returns list of symbols used for rendering the feature.
-For renderers that do not support MoreSymbolsPerFeature it is more efficient
-to use :py:func:`~QgsFeatureRenderer.symbolForFeature`
+Returns list of symbols used for rendering the feature. For renderers
+that do not support MoreSymbolsPerFeature it is more efficient to use
+:py:func:`~QgsFeatureRenderer.symbolForFeature`
 %End
 
     virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Equivalent of :py:func:`~QgsFeatureRenderer.originalSymbolsForFeature` call
-extended to support renderers that may use more symbols per feature - similar to :py:func:`~QgsFeatureRenderer.symbolsForFeature`
+Equivalent of :py:func:`~QgsFeatureRenderer.originalSymbolsForFeature`
+call extended to support renderers that may use more symbols per feature
+- similar to :py:func:`~QgsFeatureRenderer.symbolsForFeature`
 %End
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
 %Docstring
-Allows for a renderer to modify the extent of a feature request prior to rendering
+Allows for a renderer to modify the extent of a feature request prior to
+rendering
 
-:param extent: reference to request's filter extent. Modify extent to change the
-               extent of feature request
+:param extent: reference to request's filter extent. Modify extent to
+               change the extent of feature request
 :param context: render context
 %End
 
@@ -465,17 +508,18 @@ Returns whether the renderer must render as a raster.
 %Docstring
 Sets whether the renderer should be rendered to a raster destination.
 
-:param forceRaster: set to ``True`` if renderer must be drawn on a raster surface.
-                    This may be desirable for highly detailed layers where rendering as a vector
-                    would result in a large, complex vector output.
+:param forceRaster: set to ``True`` if renderer must be drawn on a
+                    raster surface. This may be desirable for highly
+                    detailed layers where rendering as a vector would
+                    result in a large, complex vector output.
 
 .. seealso:: :py:func:`forceRasterRender`
 %End
 
     void setDataDefinedProperty( Property key, const QgsProperty &property );
 %Docstring
-Sets a data defined property for the renderer. Any existing property with the same key
-will be overwritten.
+Sets a data defined property for the renderer. Any existing property
+with the same key will be overwritten.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
@@ -486,7 +530,8 @@ will be overwritten.
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
-Returns a reference to the renderer's property collection, used for data defined overrides.
+Returns a reference to the renderer's property collection, used for data
+defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 
@@ -498,9 +543,11 @@ Returns a reference to the renderer's property collection, used for data defined
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
-Sets the renderer's property collection, used for data defined overrides.
+Sets the renderer's property collection, used for data defined
+overrides.
 
-:param collection: property collection. Existing properties will be replaced.
+:param collection: property collection. Existing properties will be
+                   replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
@@ -511,13 +558,16 @@ Sets the renderer's property collection, used for data defined overrides.
 %Docstring
 Returns the symbology reference scale.
 
-This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
-A value of -1 indicates that symbology scaling by reference scale is disabled.
+This represents the desired scale denominator for the rendered map, eg
+1000.0 for a 1:1000 map render. A value of -1 indicates that symbology
+scaling by reference scale is disabled.
 
-The symbology reference scale is an optional property which specifies the reference
-scale at which symbology in paper units (such a millimeters or points) is fixed
-to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
-exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+The symbology reference scale is an optional property which specifies
+the reference scale at which symbology in paper units (such a
+millimeters or points) is fixed to. For instance, if the scale is 1000
+then a 2mm thick line will be rendered at exactly 2mm thick when a map
+is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm
+thick at 1:500.
 
 .. seealso:: :py:func:`setReferenceScale`
 
@@ -528,13 +578,16 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 %Docstring
 Sets the symbology reference ``scale``.
 
-This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
-Set to -1 to disable symbology scaling by reference scale.
+This should match the desired scale denominator for the rendered map, eg
+1000.0 for a 1:1000 map render. Set to -1 to disable symbology scaling
+by reference scale.
 
-The symbology reference scale is an optional property which specifies the reference
-scale at which symbology in paper units (such a millimeters or points) is fixed
-to. For instance, if ``scale`` is set to 1000 then a 2mm thick line will be rendered at
-exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+The symbology reference scale is an optional property which specifies
+the reference scale at which symbology in paper units (such a
+millimeters or points) is fixed to. For instance, if ``scale`` is set to
+1000 then a 2mm thick line will be rendered at exactly 2mm thick when a
+map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm
+thick at 1:500.
 
 .. seealso:: :py:func:`referenceScale`
 
@@ -565,7 +618,8 @@ Define the order in which features shall be processed by this renderer.
 
     bool orderByEnabled() const;
 %Docstring
-Returns whether custom ordering will be applied before features are processed by this renderer.
+Returns whether custom ordering will be applied before features are
+processed by this renderer.
 
 .. seealso:: :py:func:`orderBy`
 
@@ -574,7 +628,8 @@ Returns whether custom ordering will be applied before features are processed by
 
     void setOrderByEnabled( bool enabled );
 %Docstring
-Sets whether custom ordering should be applied before features are processed by this renderer.
+Sets whether custom ordering should be applied before features are
+processed by this renderer.
 
 :param enabled: set to ``True`` to enable custom feature ordering
 
@@ -585,29 +640,32 @@ Sets whether custom ordering should be applied before features are processed by 
 
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
 %Docstring
-Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
-does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
+Sets an embedded renderer (subrenderer) for this feature renderer. The
+base class implementation does nothing with subrenderers, but individual
+derived classes can use these to modify their behavior.
 
-:param subRenderer: the embedded renderer. Ownership will be transferred.
+:param subRenderer: the embedded renderer. Ownership will be
+                    transferred.
 
 .. seealso:: :py:func:`embeddedRenderer`
 %End
 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
 %Docstring
-Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
-implementation does not use subrenderers and will always return ``None``.
+Returns the current embedded renderer (subrenderer) for this feature
+renderer. The base class implementation does not use subrenderers and
+will always return ``None``.
 
 .. seealso:: :py:func:`setEmbeddedRenderer`
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
-with the renderer.
+Accepts the specified symbology ``visitor``, causing it to visit all
+symbols associated with the renderer.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
@@ -646,10 +704,10 @@ Returns the maximum extent buffer found in this renderer's symbols.
 
     void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker );
 %Docstring
-Render the ``feature`` with the ``symbol`` using ``context``.
-Use ``layer`` to specify the symbol layer, ``selected`` to
-specify if it should be rendered as selected and ``drawVertexMarker``
-to specify if vertex markers should be rendered.
+Render the ``feature`` with the ``symbol`` using ``context``. Use
+``layer`` to specify the symbol layer, ``selected`` to specify if it
+should be rendered as selected and ``drawVertexMarker`` to specify if
+vertex markers should be rendered.
 %End
 
     void renderVertexMarker( QPointF pt, QgsRenderContext &context );
@@ -675,8 +733,9 @@ coordinates
 %Docstring
 Saves generic renderer data into the specified ``element``.
 
-This method should be called in a subclass' :py:func:`~QgsFeatureRenderer.save` implementation in order
-to store all common base class properties in the DOM ``element``.
+This method should be called in a subclass'
+:py:func:`~QgsFeatureRenderer.save` implementation in order to store all
+common base class properties in the DOM ``element``.
 
 .. versionadded:: 3.22
 %End
@@ -690,20 +749,12 @@ to store all common base class properties in the DOM ``element``.
 
     static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 %Docstring
-
-.. note::
-
-   this function is used to convert old sizeScale expressions to symbol
-   level DataDefined size
+Converts old sizeScale expressions to symbol level data defined sizes.
 %End
 
     static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
 %Docstring
-
-.. note::
-
-   this function is used to convert old rotations expressions to symbol
-   level DataDefined angle
+Converts old rotation expressions to symbol level data defined angles.
 %End
 
 

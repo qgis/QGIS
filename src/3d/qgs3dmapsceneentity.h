@@ -40,7 +40,7 @@ class Qgs3DMapSettings;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Abstract entity that all entities rendered in a Qgs3DMapScene inherit
  * \since QGIS 3.32
  */

@@ -30,7 +30,9 @@ class QTextCodec;
 /**
  * \class QgsNetworkContentFetcher
  * \ingroup core
- * \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
+ * \brief HTTP network content fetcher.
+ *
+ * A simple method for fetching remote HTTP content
  * and converting the content to standard formats.
  *
  * URL redirects are automatically handled.
@@ -119,7 +121,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
   private:
 
     QString mAuthCfg;
-    QNetworkReply *mReply = nullptr;
+    std::unique_ptr<QNetworkReply> mReply;
 
     bool mContentLoaded = false;
 

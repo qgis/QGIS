@@ -13,7 +13,7 @@
 class QgsRasterFormatSaveOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget to select format-specific raster saving options
+A widget to select format-specific raster saving options.
 %End
 
 %TypeHeaderCode
@@ -33,14 +33,13 @@ A widget to select format-specific raster saving options
 
     void setFormat( const QString &format );
 %Docstring
-Set output raster format, it is used to determine list
-of available options
+Set output raster format, it is used to determine list of available
+options
 %End
 
     void setProvider( const QString &provider );
 %Docstring
-Set provider key, , it is used to determine list
-of available options
+Set provider key, , it is used to determine list of available options
 %End
 
     void setRasterLayer( QgsRasterLayer *rasterLayer );
@@ -84,8 +83,8 @@ Set pyramids format to use
 
     void helpOptions();
 %Docstring
-Opens window with options description for given provider
-and output format
+Opens window with options description for given provider and output
+format
 %End
 
     QString validateOptions( bool gui = true, bool reportOk = true );
@@ -124,11 +123,11 @@ Emitted when the options configured in the widget are changed.
   private:
     QString settingsKey( QString profile ) const;
     QString currentProfileKey() const;
-    QString createOptions( const QString &profile ) const;
-    void deleteCreateOptions( const QString &profile );
-    void setCreateOptions();
-    void setCreateOptions( const QString &profile, const QString &options );
-    void setCreateOptions( const QString &profile, const QStringList &list );
+    QString creationOptions( const QString &profile ) const;
+    void deleteCreationOptions( const QString &profile );
+    void setCreationOptions();
+    void setCreationOptions( const QString &profile, const QString &options );
+    void setCreationOptions( const QString &profile, const QStringList &options );
     QStringList profiles() const;
     virtual bool eventFilter( QObject *obj, QEvent *event );
 

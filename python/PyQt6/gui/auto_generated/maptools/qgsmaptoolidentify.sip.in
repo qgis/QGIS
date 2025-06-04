@@ -13,9 +13,10 @@
 class QgsMapToolIdentify : QgsMapTool
 {
 %Docstring(signature="appended")
-Map tool for identifying features in layers
+Map tool for identifying features in layers.
 
-after selecting a point, performs the identification:
+After the tool is used to select a point, this map tool performs the
+identification:
 
 - for raster layers shows value of underlying pixel
 - for vector layers shows feature attributes within search radius
@@ -94,8 +95,11 @@ Performs the identification.
 
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
-:param layerList: Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-:param mode: Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
+:param layerList: Performs the identification within the given list of
+                  layers. Default value is an empty list, i.e. uses all
+                  the layers.
+:param mode: Identification mode. Can use QGIS default settings or a
+             defined mode. Default mode is DefaultQgsSetting.
 :param identifyContext: Identify context object.
 
 :return: a list of IdentifyResult
@@ -103,14 +107,17 @@ Performs the identification.
 
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
-Performs the identification.
-To avoid being forced to specify IdentifyMode with a list of layers
-this has been made private and two publics methods are offered
+Performs the identification. To avoid being forced to specify
+IdentifyMode with a list of layers this has been made private and two
+publics methods are offered
 
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
-:param mode: Identification mode. Can use QGIS default settings or a defined mode.
-:param layerType: Only performs identification in a certain type of layers (raster, vector, mesh). Default value is AllLayers.
+:param mode: Identification mode. Can use QGIS default settings or a
+             defined mode.
+:param layerType: Only performs identification in a certain type of
+                  layers (raster, vector, mesh). Default value is
+                  AllLayers.
 :param identifyContext: Identify context object.
 
 :return: a list of IdentifyResult
@@ -128,8 +135,8 @@ Performs identification based on a geometry (in map coordinates)
 
     QgsIdentifyMenu *identifyMenu();
 %Docstring
-Returns a pointer to the identify menu which will be used in layer selection mode
-this menu can also be customized
+Returns a pointer to the identify menu which will be used in layer
+selection mode this menu can also be customized
 %End
 
 
@@ -156,21 +163,25 @@ Emitted when the identify operation needs to show a user-facing message
 
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 %Docstring
-Emitted when the format of raster ``results`` is changed and need to be updated in user-facing displays.
+Emitted when the format of raster ``results`` is changed and need to be
+updated in user-facing displays.
 %End
 
   protected:
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
-Performs the identification.
-To avoid being forced to specify IdentifyMode with a list of layers
-this has been made private and two publics methods are offered
+Performs the identification. To avoid being forced to specify
+IdentifyMode with a list of layers this has been made private and two
+publics methods are offered
 
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
-:param mode: Identification mode. Can use QGIS default settings or a defined mode.
-:param layerList: Performs the identification within the given list of layers.
-:param layerType: Only performs identification in a certain type of layers (raster, vector, mesh).
+:param mode: Identification mode. Can use QGIS default settings or a
+             defined mode.
+:param layerList: Performs the identification within the given list of
+                  layers.
+:param layerType: Only performs identification in a certain type of
+                  layers (raster, vector, mesh).
 :param identifyContext: Identify context object.
 
 :return: a list of IdentifyResult
@@ -206,7 +217,8 @@ Performs the identification against a given vector layer.
 
     bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
-Identifies data from active scalar and vector dataset from the mesh layer
+Identifies data from active scalar and vector dataset from the mesh
+layer
 
 Works only if layer was already rendered (triangular mesh is created)
 
@@ -215,17 +227,20 @@ Works only if layer was already rendered (triangular mesh is created)
 
     QMap<QString, QString> derivedAttributesForPoint( const QgsPoint &point );
 %Docstring
-Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
+Returns derived attributes map for a clicked point in map coordinates.
+May be 2D or 3D point.
 %End
 
  void setCanvasPropertiesOverrides( double searchRadiusMapUnits ) /Deprecated="Since 3.42. Use setPropertiesOverrides() instead."/;
 %Docstring
-Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+Overrides some map canvas properties inside the map tool for the
+upcoming identify requests.
 
-This is useful when the identification is triggered by some other piece of GUI like a 3D map view
-and some properties like search radius need to be adjusted so that identification returns correct
-results.
-When the custom identification has finished, :py:func:`~QgsMapToolIdentify.restoreCanvasPropertiesOverrides` should
+This is useful when the identification is triggered by some other piece
+of GUI like a 3D map view and some properties like search radius need to
+be adjusted so that identification returns correct results. When the
+custom identification has finished,
+:py:func:`~QgsMapToolIdentify.restoreCanvasPropertiesOverrides` should
 be called to erase any overrides.
 
 :param searchRadiusMapUnits: The overridden search radius in map units
@@ -241,7 +256,8 @@ be called to erase any overrides.
 
  void restoreCanvasPropertiesOverrides() /Deprecated="Since 3.42. Use restorePropertiesOverrides() instead."/;
 %Docstring
-Clears canvas properties overrides previously set with :py:func:`~QgsMapToolIdentify.setCanvasPropertiesOverrides`
+Clears canvas properties overrides previously set with
+:py:func:`~QgsMapToolIdentify.setCanvasPropertiesOverrides`
 
 .. seealso:: :py:func:`setCanvasPropertiesOverrides`
 
@@ -254,13 +270,15 @@ Clears canvas properties overrides previously set with :py:func:`~QgsMapToolIden
 
     void setPropertiesOverrides( IdentifyProperties overrides );
 %Docstring
-Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+Overrides some map canvas properties inside the map tool for the
+upcoming identify requests.
 
-This is useful when the identification is triggered by some other piece of GUI like a 3D map view
-and some properties like search radius need to be adjusted so that identification returns correct
-results.
-When the custom identification has finished, :py:func:`~QgsMapToolIdentify.restorePropertiesOverrides` should
-be called to erase any overrides.
+This is useful when the identification is triggered by some other piece
+of GUI like a 3D map view and some properties like search radius need to
+be adjusted so that identification returns correct results. When the
+custom identification has finished,
+:py:func:`~QgsMapToolIdentify.restorePropertiesOverrides` should be
+called to erase any overrides.
 
 :param overrides: The identify tool properties that will be overridden
 
@@ -269,7 +287,8 @@ be called to erase any overrides.
 
     void restorePropertiesOverrides();
 %Docstring
-Clears canvas properties overrides previously set with :py:func:`~QgsMapToolIdentify.setPropertiesOverrides`
+Clears canvas properties overrides previously set with
+:py:func:`~QgsMapToolIdentify.setPropertiesOverrides`
 
 .. seealso:: :py:func:`setPropertiesOverrides`
 

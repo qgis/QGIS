@@ -15,7 +15,23 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
+#define SIP_NO_FILE
 
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3danimationsettings.h"
+#include "qgs3dtypes.h"
+#include "qgsaabb.h"
+#include "qgsray3d.h"
+#include "qgsraycastingutils.h"
+
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCullFace>
+
+#include <memory>
+
+
+class QgsCameraPose;
 class QgsLineString;
 class QgsPolygon;
 class QgsFeedback;
@@ -32,26 +48,10 @@ namespace Qt3DExtras
 }
 
 class QSurface;
-
-#include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
-#include "qgs3dtypes.h"
-#include "qgsaabb.h"
-#include "qgsray3d.h"
-#include "qgsraycastingutils.h"
-
-#include <QSize>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCullFace>
-
-#include <memory>
-
-#define SIP_NO_FILE
-
 class Qgs3DRenderContext;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  */
@@ -64,6 +64,12 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.4
      */
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
+     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates
+     * \since QGIS 3.42
+     */
+    static void waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
@@ -348,6 +354,47 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.42
      */
     static QQuaternion rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle );
+
+    /**
+     * Transform the given screen point to \a QgsPoint in map coordinates
+     * \note This transformation is not unique as we pick point halfway between near and far plane on the ray from the camera.
+     * \param size size of canvas
+     * \param screenPoint point in screen coordinates
+     * \param cameraController camera controller attached to the scene
+     * \param mapSettings 3D map settings of the scene
+     * \since QGIS 3.44
+     */
+    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+
+    /**
+     * Computes the portion of the Y=y plane the camera is looking at
+     * \since QGIS 3.44
+     */
+    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
+
+    /**
+     * Returns a list of 4 planes derived from a line extending from \a startPoint to \a endPoint.
+     * The parameter \a distance defines the distance between the parallel clipping planes and the line.
+     * Each clipping plane is represented as a 4D vector, where the first three components correspond to
+     * the normalized normal of the plane, and the fourth component represents its distance from the origin of the scene.
+     * \note \a distance is expected to be positive
+     * \since QGIS 3.44
+     */
+    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double distance, const QgsVector3D &origin );
+
+    /**
+     * Returns the camera pose for a camera looking at mid-point between \a startPoint and \a endPoint.
+     * The camera is angled to provide a profile view and the heading angle is calculated to look from the right side of the line.
+     * The middle of \a elevationRange sets the z attribute of mid-point.
+     * \since QGIS 3.44
+     */
+    static QgsCameraPose lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, float fieldOfView, const QgsVector3D &worldOrigin );
+
+    /**
+     * Returns new camera object with copied properties.
+     * \since QGIS 3.44
+     */
+    static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
 };
 
 #endif // QGS3DUTILS_H

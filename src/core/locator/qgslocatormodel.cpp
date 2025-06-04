@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QFont>
+#include <QPalette>
 
 #include "qgslocatormodel.h"
 #include "moc_qgslocatormodel.cpp"
@@ -115,10 +116,12 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     }
 
     case Qt::FontRole:
-      if ( index.column() == Name && !entry.groupTitle.isEmpty() )
+    {
+      if ( index.column() == Name )
       {
         QFont font;
-        font.setItalic( true );
+        font.setBold( entry.type == EntryType::Filter );
+        font.setItalic( entry.type == EntryType::Group );
         return font;
       }
       else
@@ -126,6 +129,18 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return QVariant();
       }
       break;
+    }
+
+    case Qt::BackgroundRole:
+    {
+      return entry.type == EntryType::Result ? QPalette().base() : QPalette().alternateBase();
+    }
+
+    case Qt::ForegroundRole:
+    {
+      return QPalette().text();
+    }
+
 
     case Qt::DecorationRole:
       switch ( static_cast<Column>( index.column() ) )
@@ -155,7 +170,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       return static_cast<int>( entry.type );
 
     case static_cast< int >( CustomRole::ResultScore ):
-      if ( entry.filter )
+      if ( !entry.filter )
         return 0;
       else
         return ( entry.result.score );

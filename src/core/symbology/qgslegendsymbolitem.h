@@ -27,8 +27,8 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * \brief The class stores information about one class/rule of a vector layer renderer in a unified way
- * that can be used by legend model for rendering of legend.
+ * \brief Stores information about one class/rule of a vector layer renderer in a unified way
+ * that can be used by the legend model for rendering of legend.
  *
  * \see QgsSymbolLegendNode
  */
@@ -36,7 +36,7 @@ class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
 
-    QgsLegendSymbolItem() = default;
+    QgsLegendSymbolItem();
 
     /**
      * Construct item. Does not take ownership of symbol (makes internal clone)
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
     //! Returns associated symbol. May be NULLPTR.
-    QgsSymbol *symbol() const { return mSymbol; }
+    QgsSymbol *symbol() const { return mSymbol.get(); }
     //! Returns text label
     QString label() const { return mLabel; }
     //! Returns unique identifier of the rule for identification of the item within renderer
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsLegendSymbolItem
 
   private:
     //! Legend symbol -- may be NULLPTR.
-    QgsSymbol *mSymbol = nullptr;
+    std::unique_ptr<QgsSymbol> mSymbol;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
     //! unique identifier of the symbol item (within renderer)
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLegendSymbolItem
      * optional pointer to data-defined legend size settings - if set, the output legend
      * node should be QgsDataDefinedSizeLegendNode rather than ordinary QgsSymbolLegendNode
      */
-    QgsDataDefinedSizeLegend *mDataDefinedSizeLegendSettings = nullptr;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegendSettings;
 
     // additional data that may be used for filtering
 

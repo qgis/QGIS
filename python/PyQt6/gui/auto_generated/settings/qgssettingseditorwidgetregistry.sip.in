@@ -13,7 +13,7 @@
 class QgsSettingsEditorWidgetRegistry
 {
 %Docstring(signature="appended")
-This class manages editor widgets for settings
+A registry that manages editor widgets for settings.
 
 .. versionadded:: 3.32
 %End
@@ -30,8 +30,9 @@ Constructor
 
     bool addWrapper( QgsSettingsEditorWidgetWrapper *wrapper /Transfer/ );
 %Docstring
-Adds an editor widget ``wrapper`` to the registry
-If an editor widget with same id already exists, the wrapper is deleted and ``False`` is returned.
+Adds an editor widget ``wrapper`` to the registry If an editor widget
+with same id already exists, the wrapper is deleted and ``False`` is
+returned.
 %End
 
     void addWrapperForSetting( QgsSettingsEditorWidgetWrapper *wrapper /Transfer/, const QgsSettingsEntryBase *setting /KeepReference/ );
@@ -48,7 +49,8 @@ Returns a new instance of the editor widget for the given ``id``
 
     QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent = 0 ) const /TransferBack/;
 %Docstring
-Creates an editor widget for the given ``setting`` using the corresponding registered wrapper
+Creates an editor widget for the given ``setting`` using the
+corresponding registered wrapper
 %End
 
 };

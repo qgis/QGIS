@@ -42,6 +42,7 @@ class QgsExpression;
 class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
+class QgsSldExportContext;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -50,6 +51,7 @@ typedef QMap<QString, QString> QgsStringMap;
 /**
  * \ingroup core
  * \class QgsSymbolLayer
+ * \brief Abstract base class for symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayer
 {
@@ -422,9 +424,21 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
-    //! Saves the symbol layer as SLD
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
-    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    /**
+     * Saves the symbol layer as SLD.
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+     */
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const SIP_DEPRECATED;
+
+    /**
+     * Saves the symbol layer as SLD.
+     *
+     * Returns TRUE if the symbol layer was successfully exported to SLD.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ) Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
@@ -765,22 +779,6 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 {
   public:
 
-    //! Symbol horizontal anchor points
-    enum HorizontalAnchorPoint
-    {
-      Left, //!< Align to left side of symbol
-      HCenter, //!< Align to horizontal center of symbol
-      Right, //!< Align to right side of symbol
-    };
-
-    //! Symbol vertical anchor points
-    enum VerticalAnchorPoint
-    {
-      Top, //!< Align to top of symbol
-      VCenter, //!< Align to vertical center of symbol
-      Bottom, //!< Align to bottom of symbol
-    };
-
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -945,7 +943,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see horizontalAnchorPoint()
      * \see setVerticalAnchorPoint()
      */
-    void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
+    void setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
 
     /**
      * Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
@@ -953,7 +951,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setHorizontalAnchorPoint()
      * \see verticalAnchorPoint()
      */
-    HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
+    Qgis::HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
 
     /**
      * Sets the vertical anchor point for positioning the symbol.
@@ -962,7 +960,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see verticalAnchorPoint()
      * \see setHorizontalAnchorPoint()
      */
-    void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
+    void setVerticalAnchorPoint( Qgis::VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
 
     /**
      * Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
@@ -970,18 +968,27 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setVerticalAnchorPoint()
      * \see horizontalAnchorPoint()
      */
-    VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
+    Qgis::VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Writes the symbol layer definition as a SLD XML element.
      * \param doc XML document
      * \param element parent XML element
      * \param props symbol layer definition (see properties())
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
-    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
+    Q_DECL_DEPRECATED virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const SIP_DEPRECATED;
+
+    /**
+     * Writes the symbol layer definition as a SLD XML element.
+     * \param doc XML document
+     * \param element parent XML element
+     * \param context export context
+     * \since QGIS 3.44
+     */
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
@@ -1028,7 +1035,19 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const SIP_PYNAME( markerOffsetWithWidthAndHeight );
 
-    //! \note available in Python bindings as markerOffset2
+    /**
+     * Calculates the required marker offset, including both the symbol offset
+     * and any displacement required to align with the marker's anchor point.
+     * \param context symbol render context
+     * \param width marker width
+     * \param height marker height
+     * \param widthUnit unit for marker width
+     * \param heightUnit unit for marker height
+     * \param offsetX will be set to required horizontal offset (in painter units)
+     * \param offsetY will be set to required vertical offset (in painter units)
+     * \param widthMapUnitScale map unit scale for marker width
+     * \param heightMapUnitScale map unit scale for marker height
+     */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,
@@ -1061,13 +1080,13 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Marker size scaling method
     Qgis::ScaleMethod mScaleMethod = Qgis::ScaleMethod::ScaleDiameter;
     //! Horizontal anchor point
-    HorizontalAnchorPoint mHorizontalAnchorPoint = HCenter;
+    Qgis::HorizontalAnchorPoint mHorizontalAnchorPoint = Qgis::HorizontalAnchorPoint::Center;
     //! Vertical anchor point
-    VerticalAnchorPoint mVerticalAnchorPoint = VCenter;
+    Qgis::VerticalAnchorPoint mVerticalAnchorPoint = Qgis::VerticalAnchorPoint::Center;
 
   private:
-    static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
-    static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
+    static Qgis::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
+    static Qgis::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
 
 #ifdef SIP_RUN
     QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );

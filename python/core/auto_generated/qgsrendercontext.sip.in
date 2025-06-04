@@ -17,9 +17,9 @@ class QgsRenderContext : QgsTemporalRangeObject
 %Docstring(signature="appended")
 Contains information about the context of a rendering operation.
 
-The context of a rendering operation defines properties such as
-the conversion ratio between screen and map units, the extents
-to be rendered etc.
+The context of a rendering operation defines properties such as the
+conversion ratio between screen and map units, the extents to be
+rendered etc.
 %End
 
 %TypeHeaderCode
@@ -53,14 +53,15 @@ Check whether a particular flag is enabled.
 
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
-create initialized QgsRenderContext instance from given :py:class:`QgsMapSettings`
+create initialized QgsRenderContext instance from given
+:py:class:`QgsMapSettings`
 %End
 
     static QgsRenderContext fromQPainter( QPainter *painter );
 %Docstring
-Creates a default render context given a pixel based QPainter destination.
-If no painter is specified or the painter has no device, then a default
-DPI of 88 will be assumed.
+Creates a default render context given a pixel based QPainter
+destination. If no painter is specified or the painter has no device,
+then a default DPI of 88 will be assumed.
 %End
 
 
@@ -74,9 +75,11 @@ Returns the destination QPainter for the render operation.
 
     QPainter *previewRenderPainter();
 %Docstring
-Returns the const destination QPainter for temporary in-progress preview renders.
+Returns the const destination QPainter for temporary in-progress preview
+renders.
 
-May be ``None`` if temporary in-progress preview renders are not required.
+May be ``None`` if temporary in-progress preview renders are not
+required.
 
 .. seealso:: :py:func:`setPreviewRenderPainter`
 
@@ -86,21 +89,21 @@ May be ``None`` if temporary in-progress preview renders are not required.
 
     void setPainterFlagsUsingContext( QPainter *painter = 0 ) const;
 %Docstring
-Sets relevant flags on a destination ``painter``, using the flags and settings
-currently defined for the render context.
+Sets relevant flags on a destination ``painter``, using the flags and
+settings currently defined for the render context.
 
-If no ``painter`` is specified, then the flags will be applied to the render
-context's :py:func:`~QgsRenderContext.painter`.
+If no ``painter`` is specified, then the flags will be applied to the
+render context's :py:func:`~QgsRenderContext.painter`.
 
 .. versionadded:: 3.16
 %End
 
     QPainter *maskPainter( int id = 0 );
 %Docstring
-Returns a mask QPainter for the render operation.
-Multiple mask painters can be defined, each with a unique identifier.
-None is returned if a mask painter with the given identifier does not exist.
-This is currently used to implement selective masking.
+Returns a mask QPainter for the render operation. Multiple mask painters
+can be defined, each with a unique identifier. None is returned if a
+mask painter with the given identifier does not exist. This is currently
+used to implement selective masking.
 
 .. seealso:: :py:func:`setMaskPainter`
 
@@ -179,7 +182,8 @@ Returns the list of disabled symbol layer ids.
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.
 
-Checks whether a given symbol layer has been disabled for the current pass.
+Checks whether a given symbol layer has been disabled for the current
+pass.
 
 .. seealso:: :py:func:`setDisabledSymbolLayers`
 
@@ -193,48 +197,54 @@ Checks whether a given symbol layer has been disabled for the current pass.
 Returns the current coordinate transform for the context.
 
 This represents the coordinate transform required to transform a layer
-which is being rendered back to the CRS of the rendered map. If no coordinate
-transformation is required, or the render context is not associated with
-a map layer render, then an invalid coordinate transformation is returned.
+which is being rendered back to the CRS of the rendered map. If no
+coordinate transformation is required, or the render context is not
+associated with a map layer render, then an invalid coordinate
+transformation is returned.
 
 .. seealso:: :py:func:`setCoordinateTransform`
 %End
 
     const QgsDistanceArea &distanceArea() const;
 %Docstring
-A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+A general purpose distance and area calculator, capable of performing
+ellipsoid based calculations.
 %End
 
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
 Returns the context's coordinate transform context, which stores various
-information regarding which datum transforms should be used when transforming points
-from a source to destination coordinate reference system.
+information regarding which datum transforms should be used when
+transforming points from a source to destination coordinate reference
+system.
 
 .. seealso:: :py:func:`setTransformContext`
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
 %Docstring
-Sets the context's coordinate transform ``context``, which stores various
-information regarding which datum transforms should be used when transforming points
-from a source to destination coordinate reference system.
+Sets the context's coordinate transform ``context``, which stores
+various information regarding which datum transforms should be used when
+transforming points from a source to destination coordinate reference
+system.
 
 .. seealso:: :py:func:`transformContext`
 %End
 
     const QgsPathResolver &pathResolver() const;
 %Docstring
-Returns the path resolver for conversion between relative and absolute paths
-during rendering operations, e.g. for resolving relative symbol paths.
+Returns the path resolver for conversion between relative and absolute
+paths during rendering operations, e.g. for resolving relative symbol
+paths.
 
 .. seealso:: :py:func:`setPathResolver`
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
 %Docstring
-Sets the path ``resolver`` for conversion between relative and absolute paths
-during rendering operations, e.g. for resolving relative symbol paths.
+Sets the path ``resolver`` for conversion between relative and absolute
+paths during rendering operations, e.g. for resolving relative symbol
+paths.
 
 .. seealso:: :py:func:`pathResolver`
 %End
@@ -244,9 +254,9 @@ during rendering operations, e.g. for resolving relative symbol paths.
 When rendering a map layer, calling this method returns the "clipping"
 extent for the layer (in the layer's CRS).
 
-This extent is a "worst-case" scenario, which is guaranteed to cover the complete
-visible portion of the layer when it is rendered to a map. It is often larger
-than the actual visible portion of that layer.
+This extent is a "worst-case" scenario, which is guaranteed to cover the
+complete visible portion of the layer when it is rendered to a map. It
+is often larger than the actual visible portion of that layer.
 
 .. warning::
 
@@ -263,8 +273,9 @@ than the actual visible portion of that layer.
 %Docstring
 Returns the original extent of the map being rendered.
 
-Unlike :py:func:`~QgsRenderContext.extent`, this extent is always in the final destination CRS for the map
-render and represents the exact bounds of the map being rendered.
+Unlike :py:func:`~QgsRenderContext.extent`, this extent is always in the
+final destination CRS for the map render and represents the exact bounds
+of the map being rendered.
 
 .. seealso:: :py:func:`extent`
 
@@ -275,16 +286,17 @@ render and represents the exact bounds of the map being rendered.
 
     const QgsMapToPixel &mapToPixel() const;
 %Docstring
-Returns the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+Returns the context's map to pixel transform, which transforms between
+map coordinates and device coordinates.
 
 .. seealso:: :py:func:`setMapToPixel`
 %End
 
     double scaleFactor() const;
 %Docstring
-Returns the scaling factor for the render to convert painter units
-to physical sizes. This is usually equal to the number of pixels
-per millimeter.
+Returns the scaling factor for the render to convert painter units to
+physical sizes. This is usually equal to the number of pixels per
+millimeter.
 
 .. seealso:: :py:func:`setScaleFactor`
 %End
@@ -300,8 +312,8 @@ Returns the targeted DPI for rendering.
 
     bool renderingStopped() const;
 %Docstring
-Returns ``True`` if the rendering operation has been stopped and any ongoing
-rendering should be canceled immediately.
+Returns ``True`` if the rendering operation has been stopped and any
+ongoing rendering should be canceled immediately.
 
 .. note::
 
@@ -314,11 +326,11 @@ rendering should be canceled immediately.
 
     void setFeedback( QgsFeedback *feedback );
 %Docstring
-Attach a ``feedback`` object that can be queried regularly during rendering to check
-if rendering should be canceled.
+Attach a ``feedback`` object that can be queried regularly during
+rendering to check if rendering should be canceled.
 
-Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
-for the lifetime of the render context.
+Ownership of ``feedback`` is NOT transferred, and the caller must take
+care that it exists for the lifetime of the render context.
 
 .. seealso:: :py:func:`feedback`
 
@@ -327,47 +339,61 @@ for the lifetime of the render context.
 
     QgsFeedback *feedback() const;
 %Docstring
-Returns the feedback object that can be queried regularly during rendering to check
-if rendering should be canceled, if set. Maybe be ``None``.
+Returns the feedback object that can be queried regularly during
+rendering to check if rendering should be canceled, if set. Maybe be
+``None``.
 
 .. seealso:: :py:func:`setFeedback`
 
 .. versionadded:: 3.22
 %End
 
-    bool forceVectorOutput() const;
+ bool forceVectorOutput() const /Deprecated="Since 3.44. Use rasterizedRenderingPolicy() instead."/;
 %Docstring
-Returns ``True`` if rendering operations should use vector operations instead
-of any faster raster shortcuts.
+Returns ``True`` if rendering operations should use vector operations
+instead of any faster raster shortcuts.
 
 .. seealso:: :py:func:`setForceVectorOutput`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.rasterizedRenderingPolicy` instead.
 %End
 
-    bool useAdvancedEffects() const;
+ bool useAdvancedEffects() const /Deprecated="Since 3.44. Use rasterizedRenderingPolicy() instead."/;
 %Docstring
 Returns ``True`` if advanced effects such as blend modes such be used
 
 .. seealso:: :py:func:`setUseAdvancedEffects`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.rasterizedRenderingPolicy` instead.
 %End
 
-    void setUseAdvancedEffects( bool enabled );
+ void setUseAdvancedEffects( bool enabled ) /Deprecated="Since 3.44. Use setRasterizedRenderingPolicy() instead."/;
 %Docstring
 Used to enable or disable advanced effects such as blend modes
 
 .. seealso:: :py:func:`useAdvancedEffects`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.setRasterizedRenderingPolicy` instead.
 %End
 
     bool drawEditingInformation() const;
 %Docstring
-Returns ``True`` if edit markers should be drawn during the render operation.
+Returns ``True`` if edit markers should be drawn during the render
+operation.
 
 .. seealso:: :py:func:`setDrawEditingInformation`
 %End
 
     double rendererScale() const;
 %Docstring
-Returns the renderer map scale. This will match the desired scale denominator
-for the rendered map, eg 1000.0 for a 1:1000 map render.
+Returns the renderer map scale. This will match the desired scale
+denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 .. seealso:: :py:func:`setRendererScale`
 %End
@@ -377,13 +403,16 @@ for the rendered map, eg 1000.0 for a 1:1000 map render.
 %Docstring
 Returns the symbology reference scale.
 
-This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
-A value of -1 indicates that symbology scaling by reference scale is disabled.
+This represents the desired scale denominator for the rendered map, eg
+1000.0 for a 1:1000 map render. A value of -1 indicates that symbology
+scaling by reference scale is disabled.
 
-The symbology reference scale is an optional property which specifies the reference
-scale at which symbology in paper units (such a millimeters or points) is fixed
-to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
-exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+The symbology reference scale is an optional property which specifies
+the reference scale at which symbology in paper units (such a
+millimeters or points) is fixed to. For instance, if the scale is 1000
+then a 2mm thick line will be rendered at exactly 2mm thick when a map
+is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm
+thick at 1:500.
 
 .. seealso:: :py:func:`setSymbologyReferenceScale`
 
@@ -403,7 +432,8 @@ Returns the color to use when rendering selected features.
 
     bool showSelection() const;
 %Docstring
-Returns ``True`` if vector selections should be shown in the rendered map
+Returns ``True`` if vector selections should be shown in the rendered
+map
 
 :return: ``True`` if selections should be shown
 
@@ -422,14 +452,16 @@ Sets the current coordinate transform for the context.
 This represents the coordinate transform required to transform the layer
 which is being rendered back to the CRS of the rendered map.
 
-Set to an invalid :py:class:`QgsCoordinateTransform` to indicate that no transformation is required.
+Set to an invalid :py:class:`QgsCoordinateTransform` to indicate that no
+transformation is required.
 
 .. seealso:: :py:func:`coordinateTransform`
 %End
 
     void setMapToPixel( const QgsMapToPixel &mtp );
 %Docstring
-Sets the context's map to pixel transform, which transforms between map coordinates and device coordinates.
+Sets the context's map to pixel transform, which transforms between map
+coordinates and device coordinates.
 
 .. seealso:: :py:func:`mapToPixel`
 %End
@@ -440,9 +472,9 @@ When rendering a map layer, calling this method sets the "clipping"
 extent for the layer (in the layer's CRS).
 
 This extent should be a "worst-case" scenario, which is guaranteed to
-completely cover the entire visible portion of the layer when it is rendered
-to the map. It may be larger than the actual visible area, but MUST contain at least the
-entire visible area.
+completely cover the entire visible portion of the layer when it is
+rendered to the map. It may be larger than the actual visible area, but
+MUST contain at least the entire visible area.
 
 .. seealso:: :py:func:`setExtent`
 
@@ -453,8 +485,9 @@ entire visible area.
 %Docstring
 Sets the original ``extent`` of the map being rendered.
 
-Unlike :py:func:`~QgsRenderContext.setExtent`, this extent is always in the final destination CRS for the map
-render and represents the exact bounds of the map being rendered.
+Unlike :py:func:`~QgsRenderContext.setExtent`, this extent is always in
+the final destination CRS for the map render and represents the exact
+bounds of the map being rendered.
 
 .. seealso:: :py:func:`mapExtent`
 
@@ -472,8 +505,8 @@ Sets whether edit markers should be drawn during the render operation.
 
     void setRenderingStopped( bool stopped );
 %Docstring
-Sets whether the rendering operation has been ``stopped`` and any ongoing
-rendering should be canceled immediately.
+Sets whether the rendering operation has been ``stopped`` and any
+ongoing rendering should be canceled immediately.
 
 .. note::
 
@@ -488,15 +521,17 @@ rendering should be canceled immediately.
 
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
-A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-Will be used to convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
+A general purpose distance and area calculator, capable of performing
+ellipsoid based calculations. Will be used to convert meter distances to
+active MapUnit values for
+:py:class:`QgsUnitTypes`.RenderMetersInMapUnits
 %End
 
     void setScaleFactor( double factor );
 %Docstring
-Sets the scaling factor for the render to convert painter units
-to physical sizes. This should usually be equal to the number of pixels
-per millimeter.
+Sets the scaling factor for the render to convert painter units to
+physical sizes. This should usually be equal to the number of pixels per
+millimeter.
 
 .. seealso:: :py:func:`scaleFactor`
 %End
@@ -512,8 +547,8 @@ Sets the targeted ``dpi`` for rendering.
 
     void setRendererScale( double scale );
 %Docstring
-Sets the renderer map scale. This should match the desired scale denominator
-for the rendered map, eg 1000.0 for a 1:1000 map render.
+Sets the renderer map scale. This should match the desired scale
+denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 .. seealso:: :py:func:`rendererScale`
 %End
@@ -522,13 +557,16 @@ for the rendered map, eg 1000.0 for a 1:1000 map render.
 %Docstring
 Sets the symbology reference ``scale``.
 
-This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
-Set to -1 to disable symbology scaling by reference scale.
+This should match the desired scale denominator for the rendered map, eg
+1000.0 for a 1:1000 map render. Set to -1 to disable symbology scaling
+by reference scale.
 
-The symbology reference scale is an optional property which specifies the reference
-scale at which symbology in paper units (such a millimeters or points) is fixed
-to. For instance, if ``scale`` is set to 1000 then a 2mm thick line will be rendered at
-exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+The symbology reference scale is an optional property which specifies
+the reference scale at which symbology in paper units (such a
+millimeters or points) is fixed to. For instance, if ``scale`` is set to
+1000 then a 2mm thick line will be rendered at exactly 2mm thick when a
+map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm
+thick at 1:500.
 
 .. seealso:: :py:func:`symbologyReferenceScale`
 
@@ -539,20 +577,22 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 
     void setPainter( QPainter *p );
 %Docstring
-Sets the destination QPainter for the render operation. Ownership of the painter
-is not transferred and the QPainter destination must stay alive for the duration
-of any rendering operations.
+Sets the destination QPainter for the render operation. Ownership of the
+painter is not transferred and the QPainter destination must stay alive
+for the duration of any rendering operations.
 
 .. seealso:: :py:func:`painter`
 %End
 
     void setPreviewRenderPainter( QPainter *painter );
 %Docstring
-Sets the destination ``painter`` for temporary in-progress preview renders.
-Ownership of ``painter`` is not transferred and the QPainter destination must
-stay alive for the duration of any rendering operations.
+Sets the destination ``painter`` for temporary in-progress preview
+renders. Ownership of ``painter`` is not transferred and the QPainter
+destination must stay alive for the duration of any rendering
+operations.
 
-``painter`` may be ``None`` if temporary in-progress preview renders are not required.
+``painter`` may be ``None`` if temporary in-progress preview renders are
+not required.
 
 .. seealso:: :py:func:`previewRenderPainter`
 
@@ -562,19 +602,23 @@ stay alive for the duration of any rendering operations.
     void setMaskPainter( QPainter *p, int id = 0 );
 %Docstring
 Sets a mask QPainter for the render operation. Ownership of the painter
-is not transferred and the QPainter must stay alive for the duration
-of any rendering operations.
-Multiple mask painters can be defined and the second parameter gives a unique identifier to each one.
+is not transferred and the QPainter must stay alive for the duration of
+any rendering operations. Multiple mask painters can be defined and the
+second parameter gives a unique identifier to each one.
 
 .. seealso:: :py:func:`maskPainter`
 %End
 
-    void setForceVectorOutput( bool force );
+ void setForceVectorOutput( bool force ) /Deprecated="Since 3.44. Use setRasterizedRenderingPolicy() instead."/;
 %Docstring
 Sets whether rendering operations should use vector operations instead
 of any faster raster shortcuts.
 
 .. seealso:: :py:func:`forceVectorOutput`
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRenderContext.setRasterizedRenderingPolicy` instead.
 %End
 
 
@@ -601,14 +645,16 @@ Sets whether vector selections should be shown in the rendered map
 
     bool useRenderingOptimization() const;
 %Docstring
-Returns ``True`` if the rendering optimization (geometry simplification) can be executed
+Returns ``True`` if the rendering optimization (geometry simplification)
+can be executed
 
 .. seealso:: :py:func:`setUseRenderingOptimization`
 %End
 
     void setUseRenderingOptimization( bool enabled );
 %Docstring
-Sets whether the rendering optimization (geometry simplification) should be executed
+Sets whether the rendering optimization (geometry simplification) should
+be executed
 
 .. seealso:: :py:func:`useRenderingOptimization`
 %End
@@ -627,9 +673,10 @@ The default is to use no simplification.
 %Docstring
 Sets the simplification setting to use when rendering vector layers.
 
-This can be used to specify simplification methods to apply during map exports and renders,
-e.g. to allow vector layers to be simplified to an appropriate maximum level of detail
-during PDF exports or to speed up layer rendering
+This can be used to specify simplification methods to apply during map
+exports and renders, e.g. to allow vector layers to be simplified to an
+appropriate maximum level of detail during PDF exports or to speed up
+layer rendering
 
 The default is to use no simplification.
 
@@ -638,16 +685,16 @@ The default is to use no simplification.
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
-Sets the expression context. This context is used for all expression evaluation
-associated with this render context.
+Sets the expression context. This context is used for all expression
+evaluation associated with this render context.
 
 .. seealso:: :py:func:`expressionContext`
 %End
 
     QgsExpressionContext &expressionContext();
 %Docstring
-Gets the expression context. This context should be used for all expression evaluation
-associated with this render context.
+Gets the expression context. This context should be used for all
+expression evaluation associated with this render context.
 
 .. seealso:: :py:func:`setExpressionContext`
 %End
@@ -664,7 +711,8 @@ Sets pointer to original (unsegmentized) geometry
 
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 %Docstring
-Set a filter feature provider used for additional filtering of rendered features.
+Set a filter feature provider used for additional filtering of rendered
+features.
 
 :param ffp: the filter feature provider
 
@@ -673,7 +721,8 @@ Set a filter feature provider used for additional filtering of rendered features
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-Gets the filter feature provider used for additional filtering of rendered features.
+Gets the filter feature provider used for additional filtering of
+rendered features.
 
 :return: the filter feature provider
 
@@ -700,7 +749,8 @@ Gets the segmentation tolerance applied when rendering curved geometries
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
-Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+Sets segmentation tolerance type (maximum angle or maximum difference
+between curve and approximation)
 
 :param type: the segmentation tolerance typename
 
@@ -711,7 +761,8 @@ Sets segmentation tolerance type (maximum angle or maximum difference between cu
 
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 %Docstring
-Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+Gets segmentation tolerance type (maximum angle or maximum difference
+between curve and approximation)
 
 .. seealso:: :py:func:`setSegmentationToleranceType`
 %End
@@ -719,12 +770,16 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 
     double convertToPainterUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::RenderSubcomponentProperty property = Qgis::RenderSubcomponentProperty::Generic ) const;
 %Docstring
-Converts a size from the specified units to painter units (pixels). The conversion respects the limits
-specified by the optional scale parameter.
+Converts a size from the specified units to painter units (pixels). The
+conversion respects the limits specified by the optional scale
+parameter.
 
-Since QGIS 3.22 the optional ``property`` argument can be used to specify the associated property. This
-is used in some contexts to refine the converted size. For example, a :py:class:`Qgis`.RenderSubcomponentProperty.BlurSize
-property will be limited to a suitably fast range when the render context has the :py:class:`Qgis`.RenderContextFlag.RenderSymbolPreview set.
+Since QGIS 3.22 the optional ``property`` argument can be used to
+specify the associated property. This is used in some contexts to refine
+the converted size. For example, a
+:py:class:`Qgis`.RenderSubcomponentProperty.BlurSize property will be
+limited to a suitably fast range when the render context has the
+:py:class:`Qgis`.RenderContextFlag.RenderSymbolPreview set.
 
 .. seealso:: :py:func:`convertFromPainterUnits`
 
@@ -733,7 +788,8 @@ property will be limited to a suitably fast range when the render context has th
 
     double convertFromPainterUnits( double size, Qgis::RenderUnit unit ) const;
 %Docstring
-Converts a size from painter units (pixels) to the specified render unit.
+Converts a size from painter units (pixels) to the specified render
+unit.
 
 .. seealso:: :py:func:`convertToPainterUnits`
 
@@ -744,8 +800,8 @@ Converts a size from painter units (pixels) to the specified render unit.
 
     double convertToMapUnits( double size, Qgis::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 %Docstring
-Converts a size from the specified units to map units. The conversion respects the limits
-specified by the optional scale parameter.
+Converts a size from the specified units to map units. The conversion
+respects the limits specified by the optional scale parameter.
 
 .. seealso:: :py:func:`convertToPainterUnits`
 %End
@@ -759,7 +815,8 @@ Converts a size from map units to the specified units.
 
     double convertMetersToMapUnits( double meters ) const;
 %Docstring
-Convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
+Convert meter distances to active MapUnit values for
+:py:class:`QgsUnitTypes`.RenderMetersInMapUnits
 
 .. note::
 
@@ -768,7 +825,8 @@ Convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.Re
 
     Qgis::TextRenderFormat textRenderFormat() const;
 %Docstring
-Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
+Returns the text render format, which dictates how text is rendered
+(e.g. as paths or real text objects).
 
 .. seealso:: :py:func:`setTextRenderFormat`
 
@@ -777,7 +835,8 @@ Returns the text render format, which dictates how text is rendered (e.g. as pat
 
     void setTextRenderFormat( Qgis::TextRenderFormat format );
 %Docstring
-Sets the text render ``format``, which dictates how text is rendered (e.g. as paths or real text objects).
+Sets the text render ``format``, which dictates how text is rendered
+(e.g. as paths or real text objects).
 
 .. seealso:: :py:func:`textRenderFormat`
 
@@ -786,7 +845,8 @@ Sets the text render ``format``, which dictates how text is rendered (e.g. as pa
 
     QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
 %Docstring
-Returns the list of rendered feature handlers to use while rendering map layers.
+Returns the list of rendered feature handlers to use while rendering map
+layers.
 
 .. seealso:: :py:func:`hasRenderedFeatureHandlers`
 
@@ -804,8 +864,9 @@ Returns ``True`` if the context has any rendered feature handlers.
 
     void setMaskIdProvider( QgsMaskIdProvider *provider );
 %Docstring
-Attaches a mask id provider to the context. It will allow some rendering operations to set the current mask id
-based on the context (label layer names and label rules for instance).
+Attaches a mask id provider to the context. It will allow some rendering
+operations to set the current mask id based on the context (label layer
+names and label rules for instance).
 
 .. seealso:: :py:class:`QgsMaskIdProvider`
 
@@ -836,7 +897,8 @@ Stores a mask id as the "current" one.
 
     int currentMaskId() const;
 %Docstring
-Returns the current mask id, which can be used with :py:func:`~QgsRenderContext.maskPainter`
+Returns the current mask id, which can be used with
+:py:func:`~QgsRenderContext.maskPainter`
 
 .. seealso:: :py:func:`setCurrentMaskId`
 
@@ -847,11 +909,11 @@ Returns the current mask id, which can be used with :py:func:`~QgsRenderContext.
 
     void setIsGuiPreview( bool preview );
 %Docstring
-Sets GUI preview mode.
-GUI preview mode is used to change the behavior of some renderings when
-they are done to preview of symbology in the GUI.
-This is especially used to display mask symbol layers rather than painting them
-in a mask painter, which is not meant to be visible, by definition.
+Sets GUI preview mode. GUI preview mode is used to change the behavior
+of some renderings when they are done to preview of symbology in the
+GUI. This is especially used to display mask symbol layers rather than
+painting them in a mask painter, which is not meant to be visible, by
+definition.
 
 .. seealso:: :py:func:`isGuiPreview`
 
@@ -860,11 +922,11 @@ in a mask painter, which is not meant to be visible, by definition.
 
     bool isGuiPreview() const;
 %Docstring
-Returns the Gui preview mode.
-GUI preview mode is used to change the behavior of some renderings when
-they are done to preview of symbology in the GUI.
-This is especially used to display mask symbol layers rather than painting them
-in a mask painter, which is not meant to be visible, by definition.
+Returns the Gui preview mode. GUI preview mode is used to change the
+behavior of some renderings when they are done to preview of symbology
+in the GUI. This is especially used to display mask symbol layers rather
+than painting them in a mask painter, which is not meant to be visible,
+by definition.
 
 .. seealso:: :py:func:`isGuiPreview`
 
@@ -875,7 +937,8 @@ in a mask painter, which is not meant to be visible, by definition.
 
  QVariantMap customRenderingFlags() const /Deprecated="Since 3.40. Use customProperties() instead."/;
 %Docstring
-Gets custom rendering flags. Layers might honour these to alter their rendering.
+Gets custom rendering flags. Layers might honour these to alter their
+rendering.
 
 :return: a map of custom flags
 
@@ -899,7 +962,8 @@ Objects might honour these to alter their rendering.
 
  void setCustomRenderingFlag( const QString &flag, const QVariant &value ) /Deprecated="Since 3.40. Use setCustomProperty() instead."/;
 %Docstring
-Sets a custom rendering flag. Layers might honour these to alter their rendering.
+Sets a custom rendering flag. Layers might honour these to alter their
+rendering.
 
 :param flag: the flag name
 :param value: the flag value
@@ -957,7 +1021,8 @@ These regions are always in the final destination CRS for the map.
 %Docstring
 Returns the geometry to use to clip features at render time.
 
-When vector features are rendered, they should be clipped to this geometry.
+When vector features are rendered, they should be clipped to this
+geometry.
 
 .. warning::
 
@@ -987,8 +1052,8 @@ Sets a ``geometry`` to use to clip features at render time.
 
     QPointF textureOrigin() const;
 %Docstring
-Returns the texture origin, which should be used as a brush transform when
-rendering using QBrush objects.
+Returns the texture origin, which should be used as a brush transform
+when rendering using QBrush objects.
 
 .. seealso:: :py:func:`setTextureOrigin`
 
@@ -997,8 +1062,8 @@ rendering using QBrush objects.
 
     void setTextureOrigin( const QPointF &origin );
 %Docstring
-Sets the texture ``origin``, which should be used as a brush transform when
-rendering using QBrush objects.
+Sets the texture ``origin``, which should be used as a brush transform
+when rendering using QBrush objects.
 
 .. seealso:: :py:func:`textureOrigin`
 
@@ -1018,8 +1083,8 @@ are drawn and behave during render operations.
 
     void setMaskSettings( const QgsMaskRenderSettings &settings );
 %Docstring
-Sets the mask render ``settings``, which control how masks
-are drawn and behave during render operations.
+Sets the mask render ``settings``, which control how masks are drawn and
+behave during render operations.
 
 .. seealso:: :py:func:`maskSettings`
 
@@ -1028,7 +1093,8 @@ are drawn and behave during render operations.
 
  void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path ) /Deprecated="Since 3.38. Use addSymbolLayerClipGeometry() instead."/;
 %Docstring
-Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
+Add a clip ``path`` to be applied to the ``symbolLayer`` before
+rendering
 
 .. seealso:: :py:func:`addSymbolLayerClipGeometry`
 
@@ -1050,7 +1116,8 @@ Returns clip paths to be applied to the ``symbolLayer`` before rendering
 
     void addSymbolLayerClipGeometry( const QString &symbolLayerId, const QgsGeometry &geometry );
 %Docstring
-Add a clip ``geometry`` to be applied to the ``symbolLayer`` before rendering.
+Add a clip ``geometry`` to be applied to the ``symbolLayer`` before
+rendering.
 
 .. seealso:: :py:func:`symbolLayerClipGeometries`
 
@@ -1059,7 +1126,8 @@ Add a clip ``geometry`` to be applied to the ``symbolLayer`` before rendering.
 
     bool symbolLayerHasClipGeometries( const QString &symbolLayerId ) const;
 %Docstring
-Returns ``True`` if the symbol layer with matching ID has any associated clip geometries.
+Returns ``True`` if the symbol layer with matching ID has any associated
+clip geometries.
 
 .. seealso:: :py:func:`symbolLayerClipGeometries`
 
@@ -1068,7 +1136,8 @@ Returns ``True`` if the symbol layer with matching ID has any associated clip ge
 
     QVector<QgsGeometry> symbolLayerClipGeometries( const QString &symbolLayerId ) const;
 %Docstring
-Returns clipping geometries to be applied to the ``symbolLayer`` before rendering
+Returns clipping geometries to be applied to the ``symbolLayer`` before
+rendering
 
 .. seealso:: :py:func:`symbolLayerHasClipGeometries`
 
@@ -1119,7 +1188,8 @@ Sets the ``size`` of the resulting rendered image, in pixels.
 %Docstring
 Returns the device pixel ratio.
 
-Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina"
+displays.
 
 .. seealso:: :py:func:`setDevicePixelRatio`
 
@@ -1130,7 +1200,8 @@ Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays
 %Docstring
 Sets the device pixel ``ratio``.
 
-Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+Common values are 1 for normal-dpi displays and 2 for high-dpi "retina"
+displays.
 
 .. seealso:: :py:func:`devicePixelRatio`
 
@@ -1141,7 +1212,8 @@ Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays
 %Docstring
 Returns the device output size of the render.
 
-This is equivalent to the output size multiplicated by the device pixel ratio.
+This is equivalent to the output size multiplicated by the device pixel
+ratio.
 
 .. seealso:: :py:func:`outputSize`
 
@@ -1154,8 +1226,8 @@ This is equivalent to the output size multiplicated by the device pixel ratio.
 
     void setImageFormat( QImage::Format format );
 %Docstring
-Sets QImage ``format`` which should be used for QImages created
-during rendering.
+Sets QImage ``format`` which should be used for QImages created during
+rendering.
 
 .. seealso:: :py:func:`imageFormat`
 
@@ -1170,6 +1242,26 @@ during rendering.
 .. seealso:: :py:func:`setImageFormat`
 
 .. versionadded:: 3.22
+%End
+
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+%Docstring
+Returns the policy controlling when rasterisation of content during
+renders is permitted.
+
+.. seealso:: :py:func:`setRasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+%Docstring
+Sets the ``policy`` controlling when rasterisation of content during
+renders is permitted.
+
+.. seealso:: :py:func:`rasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
 %End
 
     Qgis::RendererUsage rendererUsage() const;
@@ -1197,7 +1289,8 @@ Sets the renderer usage
 
     double frameRate() const;
 %Docstring
-Returns the frame rate of the map, for maps which are part of an animation.
+Returns the frame rate of the map, for maps which are part of an
+animation.
 
 Returns -1 if the map is not associated with an animation.
 
@@ -1208,7 +1301,8 @@ Returns -1 if the map is not associated with an animation.
 
     void setFrameRate( double rate );
 %Docstring
-Sets the frame ``rate`` of the map (in frames per second), for maps which are part of an animation.
+Sets the frame ``rate`` of the map (in frames per second), for maps
+which are part of an animation.
 
 Defaults to -1 if the map is not associated with an animation.
 
@@ -1219,7 +1313,8 @@ Defaults to -1 if the map is not associated with an animation.
 
     long long currentFrame() const;
 %Docstring
-Returns the current frame number of the map (in frames per second), for maps which are part of an animation.
+Returns the current frame number of the map (in frames per second), for
+maps which are part of an animation.
 
 Returns -1 if the map is not associated with an animation.
 
@@ -1230,7 +1325,8 @@ Returns -1 if the map is not associated with an animation.
 
     void setCurrentFrame( long long frame );
 %Docstring
-Sets the current ``frame`` of the map, for maps which are part of an animation.
+Sets the current ``frame`` of the map, for maps which are part of an
+animation.
 
 Defaults to -1 if the map is not associated with an animation.
 
@@ -1251,8 +1347,9 @@ Returns the destination elevation map for the render operation.
 
     void setElevationMap( QgsElevationMap *map );
 %Docstring
-Sets the destination elevation ``map`` for the render operation. Ownership of the elevation map
-is not transferred and the :py:class:`QgsElevationMap` destination must stay alive for the duration
+Sets the destination elevation ``map`` for the render operation.
+Ownership of the elevation map is not transferred and the
+:py:class:`QgsElevationMap` destination must stay alive for the duration
 of any rendering operations.
 
 .. seealso:: :py:func:`elevationMap`

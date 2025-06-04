@@ -45,6 +45,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   auto writer = std::make_unique<QgsRasterFileWriter>( mOutputFilePath );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
+  writer->setCreationOptions( mCreationOptions );
 
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( Qgis::DataType::Float32, mNumColumns, mNumRows, mInterpolationExtent, crs ) );
   if ( !provider )
@@ -58,7 +59,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
     return 2;
   }
 
-  provider->setNoDataValue( 1, -9999 );
+  provider->setNoDataValue( 1, mNoDataValue );
 
   double currentYValue = mInterpolationExtent.yMaximum() - mCellSizeY / 2.0; //calculate value in the center of the cell
   double currentXValue;
@@ -84,12 +85,15 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
       }
       else
       {
-        float32Row[col] = -9999;
+        float32Row[col] = mNoDataValue;
       }
       currentXValue += mCellSizeX;
     }
     block.setData( QByteArray( reinterpret_cast<const char *>( float32Row.data() ), QgsRasterBlock::typeSize( Qgis::DataType::Float32 ) * mNumColumns ) );
-    provider->writeBlock( &block, 1, 0, row );
+    if ( !provider->writeBlock( &block, 1, 0, row ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
     currentYValue -= mCellSizeY;
     if ( feedback )
     {

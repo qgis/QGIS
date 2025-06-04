@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! Returns the raster shader
     QgsRasterShader *shader() { return mShader.get(); }
 
-    //! \note available in Python as constShader
+    //! Returns the raster shader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
     bool canCreateRasterAttributeTable( ) const override;
@@ -81,7 +81,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
     QList<int> usesBands() const override;
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**

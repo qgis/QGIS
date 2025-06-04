@@ -70,18 +70,6 @@ class DBManagerPlugin:
         if self.dlg is not None:
             self.dlg.close()
 
-    def onUpdateSqlLayer(self):
-        # Be able to update every Db layer from Postgres, Spatialite and Oracle
-        l = self.iface.activeLayer()
-        if l.dataProvider().name() in ["postgres", "spatialite", "oracle"]:
-            self.run()
-            self.dlg.runSqlLayerWindow(l)
-        # virtual has QUrl source
-        # url = QUrl(QUrl.fromPercentEncoding(l.source()))
-        # url.queryItemValue('query')
-        # url.queryItemValue('uid')
-        # url.queryItemValue('geometry')
-
     def run(self):
         # keep opened only one instance
         if self.dlg is None:

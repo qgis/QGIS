@@ -532,6 +532,26 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
+     * Test if the rectangle is the maximal possible rectangle.
+     *
+     * A rectangle is considered maximal if all boundaries
+     * are either at their maximum possible values or are infinite values.
+     *
+     * \see isFinite()
+     * \see isNull()
+     * \see isEmpty()
+     *
+     * \since QGIS 3.44
+     */
+    bool isMaximal() const
+    {
+      return ( std::isinf( mXmin ) || mXmin == std::numeric_limits<double>::lowest() )
+             && ( std::isinf( mYmin ) || mYmin == std::numeric_limits<double>::lowest() )
+             && ( std::isinf( mXmax ) || mXmax == std::numeric_limits<double>::max() )
+             && ( std::isinf( mYmax ) || mYmax == std::numeric_limits<double>::max() );
+    }
+
+    /**
      * Returns a string representation of the rectangle in WKT format.
      */
     Q_INVOKABLE QString asWktCoordinates() const;
@@ -592,6 +612,10 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE if the rectangle has finite boundaries. Will
      * return FALSE if any of the rectangle boundaries are NaN or Inf.
+     *
+     * \see isMaximal()
+     * \see isNull()
+     * \see isEmpty()
      */
     bool isFinite() const
     {

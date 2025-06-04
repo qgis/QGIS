@@ -27,19 +27,24 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: 🔨 Uninstall system cmake
+        shell: bash
+        run: |
+          choco uninstall cmake.install
+
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@ea004816823209b8d1211e47b216185caee12cc5
         with:
-          cmakeVersion: 3.29.6
+          cmakeVersion: 3.31.6
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
 
       - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
-        uses: robinraju/release-downloader@v1.11
+        uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 #v1.12
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'
@@ -47,7 +52,7 @@ jobs:
           extract: true
 
       - name: 🛍️ Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@63069e3931dedbf3b63792097479563182fe70d1 #v1.2
         with:
           max-size: 1G
           key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}

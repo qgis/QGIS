@@ -72,7 +72,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
 
 /**
  * \ingroup gui
- * \brief View style which shows drop indicator line between items
+ * \brief View style which shows a drop indicator line between items
  */
 class QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
 {
@@ -110,6 +110,7 @@ class QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
 /**
  * \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
+ * \brief A widget for configuring a QgsCategorizedSymbolRenderer.
  */
 class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget
 {

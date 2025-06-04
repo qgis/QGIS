@@ -32,7 +32,9 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief This class allows including a set of layers in a database-side transaction,
+ * \brief Allows creation of a multi-layer database-side transaction.
+ *
+ * This class allows including a set of layers in a database-side transaction,
  * provided the layer data providers support transactions and are compatible
  * with each other.
  *

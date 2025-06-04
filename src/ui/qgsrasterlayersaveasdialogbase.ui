@@ -22,7 +22,7 @@
         <bool>true</bool>
        </property>
        <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
+        <enum>Qt::FocusPolicy::StrongFocus</enum>
        </property>
       </widget>
      </item>
@@ -64,7 +64,7 @@
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -89,7 +89,7 @@
      <item row="4" column="1">
       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
        <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
+        <enum>Qt::FocusPolicy::StrongFocus</enum>
        </property>
       </widget>
      </item>
@@ -168,9 +168,9 @@ datasets with maximum width and height specified below.</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>541</width>
-        <height>597</height>
+        <y>-157</y>
+        <width>538</width>
+        <height>602</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -189,7 +189,7 @@ datasets with maximum width and height specified below.</string>
           <string>Extent</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -284,7 +284,7 @@ datasets with maximum width and height specified below.</string>
                <string>Vertical</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -379,7 +379,7 @@ datasets with maximum width and height specified below.</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreateOptionsWidget" native="true"/>
+           <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreationOptionsWidget" native="true"/>
           </item>
          </layout>
         </widget>
@@ -414,7 +414,7 @@ datasets with maximum width and height specified below.</string>
           <item row="2" column="0">
            <widget class="Line" name="line">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -430,10 +430,10 @@ datasets with maximum width and height specified below.</string>
             <item>
              <spacer name="horizontalSpacer_5">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeType">
-               <enum>QSizePolicy::Fixed</enum>
+               <enum>QSizePolicy::Policy::Fixed</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -560,11 +560,11 @@ datasets with maximum width and height specified below.</string>
                 <height>0</height>
                </size>
               </property>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>250</number>
-              </attribute>
               <attribute name="horizontalHeaderMinimumSectionSize">
                <number>200</number>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>250</number>
               </attribute>
              </widget>
             </item>
@@ -616,10 +616,10 @@ datasets with maximum width and height specified below.</string>
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
+          <enum>QSizePolicy::Policy::Expanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -638,17 +638,17 @@ datasets with maximum width and height specified below.</string>
      <item>
       <widget class="QDialogButtonBox" name="mHelpButtonBox">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Help</set>
+        <set>QDialogButtonBox::StandardButton::Help</set>
        </property>
       </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer1">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -671,10 +671,10 @@ datasets with maximum width and height specified below.</string>
      <item>
       <widget class="QDialogButtonBox" name="mButtonBox">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
        </property>
       </widget>
      </item>

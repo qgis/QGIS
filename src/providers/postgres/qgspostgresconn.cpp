@@ -263,37 +263,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
 
 QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction, bool allowRequestCredentials )
 {
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction, allowRequestCredentials );
-  if ( !conn )
-  {
-    return conn;
-  }
-
-  const QString sessionRoleKey = QStringLiteral( "session_role" );
-  if ( uri.hasParam( sessionRoleKey ) )
-  {
-    const QString sessionRole = uri.param( sessionRoleKey );
-    if ( !sessionRole.isEmpty() )
-    {
-      if ( !conn->setSessionRole( sessionRole ) )
-      {
-        QgsDebugMsgLevel(
-          QStringLiteral(
-            "Set session role failed for ROLE %1"
-          )
-            .arg( quotedValue( sessionRole ) ),
-          2
-        );
-        conn->unref();
-        return nullptr;
-      }
-    }
-  }
-  else
-  {
-    conn->resetSessionRole();
-  }
-  return conn;
+  return QgsPostgresConn::connectDb( QgsPostgresConn::connectionInfo( uri, false ), readonly, shared, transaction, allowRequestCredentials );
 }
 
 static void noticeProcessor( void *arg, const char *message )
@@ -411,8 +381,8 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
       if ( !password.isEmpty() )
         mUri.setPassword( password );
 
-      QgsDebugMsgLevel( "Connecting to " + mUri.connectionInfo( false ), 2 );
-      QString connectString = mUri.connectionInfo();
+      QgsDebugMsgLevel( "Connecting to " + QgsPostgresConn::connectionInfo( mUri, false ), 2 );
+      QString connectString = QgsPostgresConn::connectionInfo( mUri );
       addDefaultTimeoutAndClientEncoding( connectString );
       // use conninfo for log, connectString - can contain clear text username & password
       logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "libpq::PQconnectdb()" ), conninfo, QStringLiteral( "postgres" ), QStringLiteral( "QgsPostgresConn" ), QGS_QUERY_LOG_ORIGIN_PG_CON );
@@ -433,6 +403,28 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     QgsMessageLog::logMessage( tr( "Connection to database failed" ) + '\n' + errorMsg, tr( "PostGIS" ) );
     mRef = 0;
     return;
+  }
+
+  const QString sessionRoleKey = QStringLiteral( "session_role" );
+  if ( mUri.hasParam( sessionRoleKey ) )
+  {
+    const QString sessionRole = mUri.param( sessionRoleKey );
+    if ( !sessionRole.isEmpty() )
+    {
+      if ( !setSessionRole( sessionRole ) )
+      {
+        QgsDebugMsgLevel(
+          QStringLiteral(
+            "Set session role failed for ROLE %1"
+          )
+            .arg( quotedValue( sessionRole ) ),
+          2
+        );
+
+        mRef = 0;
+        return;
+      }
+    }
   }
 
   logWrapper = nullptr;
@@ -594,7 +586,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, co
   }
 }
 
-bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables, const QString &schema, const QString &name )
+bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables, const QString &schema, const QString &name )
 {
   QMutexLocker locker( &mLock );
   int nColumns = 0;
@@ -700,9 +692,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
             .arg( i )
             .arg( supportedSpatialTypes().join( ',' ) )
             .arg( mPostgresqlVersion >= 90000 ? "array_agg(a.attname ORDER BY a.attnum)" : "(SELECT array_agg(attname) FROM (SELECT unnest(array_agg(a.attname)) AS attname ORDER BY unnest(array_agg(a.attnum))) AS attname)" );
-
-    if ( searchPublicOnly )
-      sql += QLatin1String( " AND n.nspname='public'" );
 
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND %1=%2" ).arg( schemaName, quotedString( schema ) );
@@ -845,9 +834,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                     .arg( supportedSpatialTypes().join( ',' ) );
 
     // user has select privilege
-    if ( searchPublicOnly )
-      sql += QLatin1String( " AND n.nspname='public'" );
-
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND n.nspname=%1" ).arg( quotedString( schema ) );
 
@@ -981,9 +967,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                     .arg( mPostgresqlVersion >= 90000 ? "array_agg(a.attname ORDER BY a.attnum)" : "(SELECT array_agg(attname) FROM (SELECT unnest(array_agg(a.attname)) AS attname ORDER BY unnest(array_agg(a.attnum))) AS attname)" );
 
     // user has select privilege
-    if ( searchPublicOnly )
-      sql += QLatin1String( " AND pg_namespace.nspname='public'" );
-
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND pg_namespace.nspname=%1" ).arg( quotedString( schema ) );
 
@@ -1119,14 +1102,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return true;
 }
 
-bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables, const QString &schema, const QString &table )
+bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables, const QString &schema, const QString &table )
 {
   QMutexLocker locker( &mLock );
 
   mLayersSupported.clear();
 
   // Get the list of supported tables
-  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, allowRasterOverviewTables, schema, table ) )
+  if ( !getTableInfo( searchGeometryColumnsOnly, allowGeometrylessTables, allowRasterOverviewTables, schema, table ) )
   {
     QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "PostGIS" ) );
     return false;
@@ -1137,12 +1120,24 @@ bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> 
   return true;
 }
 
-bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
+bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas, const QStringList &restrictToSchemas )
 {
   schemas.clear();
   QgsPostgresResult result;
 
-  QString sql = QStringLiteral( "SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' ORDER BY nspname" );
+  QString additionalFilter;
+  if ( !restrictToSchemas.empty() )
+  {
+    QStringList schemaIn;
+    schemaIn.reserve( restrictToSchemas.size() );
+    for ( const QString &schema : restrictToSchemas )
+    {
+      schemaIn.append( quotedString( schema ) );
+    }
+    additionalFilter = QStringLiteral( "nspname IN (%1)" ).arg( schemaIn.join( ',' ) );
+  }
+
+  const QString sql = QStringLiteral( "SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' %1ORDER BY nspname" ).arg( !additionalFilter.isEmpty() ? QStringLiteral( "AND (%1) " ).arg( additionalFilter ) : QString() );
 
   result = LoggedPQexec( QStringLiteral( "QgsPostgresConn" ), sql );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -1151,7 +1146,9 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
     return false;
   }
 
-  for ( int idx = 0; idx < result.PQntuples(); idx++ )
+  const int resultSize = result.PQntuples();
+  schemas.reserve( resultSize );
+  for ( int idx = 0; idx < resultSize; idx++ )
   {
     QgsPostgresSchemaProperty schema;
     schema.name = result.PQgetvalue( idx, 0 );
@@ -1330,49 +1327,9 @@ QString QgsPostgresConn::postgisVersion() const
   return mPostgisVersionInfo;
 }
 
-/* Functions for determining available features in postGIS */
 bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
 {
-  if ( sessionRole.isEmpty() )
-    return resetSessionRole();
-  else
-  {
-    if ( sessionRole == mCurrentSessionRole )
-    {
-      return true;
-    }
-    else
-    {
-      if ( !LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) ) )
-      {
-        return false;
-      }
-      else
-      {
-        mCurrentSessionRole = sessionRole;
-        return true;
-      }
-    }
-  }
-}
-bool QgsPostgresConn::resetSessionRole()
-{
-  if ( mCurrentSessionRole.isEmpty() )
-  {
-    return true;
-  }
-  else
-  {
-    if ( !LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "RESET ROLE" ) ) )
-    {
-      return false;
-    }
-    else
-    {
-      mCurrentSessionRole.clear();
-      return true;
-    }
-  }
+  return LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) );
 }
 
 QString QgsPostgresConn::quotedIdentifier( const QString &ident )
@@ -1515,15 +1472,15 @@ Qgis::PostgresRelKind QgsPostgresConn::relKindFromValue( const QString &value )
   return Qgis::PostgresRelKind::Unknown;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables, const QString &schema )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool allowGeometrylessTables, bool allowRasterOverviewTables, const QString &schema )
 {
-  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, allowRasterOverviewTables, schema );
+  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, allowGeometrylessTables, allowRasterOverviewTables, schema );
 }
 
 bool QgsPostgresConn::supportedLayer( QgsPostgresLayerProperty &layerProperty, const QString &schema, const QString &table )
 {
   QVector<QgsPostgresLayerProperty> layers;
-  if ( !supportedLayersPrivate( layers, false, false, true /* allowGeometrylessTables */, false, schema, table ) || layers.empty() )
+  if ( !supportedLayersPrivate( layers, false, true /* allowGeometrylessTables */, false, schema, table ) || layers.empty() )
   {
     return false;
   }
@@ -2029,8 +1986,8 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresConn::nativeTypes()
     << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), QStringLiteral( "double precision" ), QMetaType::Type::Double, -1, -1, -1, -1 )
 
     // string types
-    << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255, -1, -1 )
     << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QMetaType::Type::QString, 1, 255, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QMetaType::Type::QString, 1, 255, -1, -1 )
     << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QMetaType::Type::QString, -1, -1, -1, -1 )
     << QgsVectorDataProvider::NativeType( tr( "Text, case-insensitive unlimited length (citext)" ), QStringLiteral( "citext" ), QMetaType::Type::QString, -1, -1, -1, -1 )
 
@@ -2751,6 +2708,12 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
   }
   uri.setUseEstimatedMetadata( estimatedMetadata );
 
+  const QString sessionRole = QgsPostgresConn::sessionRole( connName );
+  if ( !sessionRole.isEmpty() )
+  {
+    uri.setParam( "session_role", sessionRole );
+  }
+
   return uri;
 }
 
@@ -2781,7 +2744,6 @@ bool QgsPostgresConn::useEstimatedMetadata( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/estimatedMetadata", false ).toBool();
 }
 
-
 bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
 {
   QgsSettings settings;
@@ -2798,6 +2760,18 @@ bool QgsPostgresConn::allowRasterOverviewTables( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowRasterOverviewTables", true ).toBool();
+}
+
+QString QgsPostgresConn::schemaToRestrict( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "/PostgreSQL/connections/" ) + connName + QStringLiteral( "/schema" ) ).toString();
+}
+
+QString QgsPostgresConn::sessionRole( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/session_role" ).toString();
 }
 
 void QgsPostgresConn::deleteConnection( const QString &connName )
@@ -2825,6 +2799,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/dontResolveType" );
   settings.remove( key + "/session_role" );
   settings.remove( key + "/allowRasterOverviewTables" );
+  settings.remove( key + "/schema" );
   settings.remove( key );
 }
 
@@ -2853,7 +2828,7 @@ void QgsPostgresConn::duplicateConnection( const QString &src, const QString &ds
   settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/allowRasterOverviewTables" ), settings.value( key + QStringLiteral( "/allowRasterOverviewTables" ) ).toString() );
-
+  settings.setValue( newKey + QStringLiteral( "/schema" ), settings.value( key + QStringLiteral( "/schema" ) ).toString() );
   settings.sync();
 }
 
@@ -2962,4 +2937,15 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
   }
 
   return -1;
+}
+
+QString QgsPostgresConn::connectionInfo( const QgsDataSourceUri &uri, const bool expandAuthCfg )
+{
+  QString strUri = uri.connectionInfo( expandAuthCfg );
+  if ( uri.hasParam( "session_role" ) )
+  {
+    strUri += " session_role=" + uri.param( "session_role" );
+  }
+
+  return strUri;
 }

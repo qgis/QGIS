@@ -13,7 +13,7 @@
 class QgsRasterResampler
 {
 %Docstring(signature="appended")
-Interface for resampling rasters (e.g. to have a smoother appearance)
+Interface for resampling rasters (e.g. to have a smoother appearance).
 %End
 
 %TypeHeaderCode
@@ -36,8 +36,8 @@ Interface for resampling rasters (e.g. to have a smoother appearance)
 %Docstring
 Resamples a source image to a destination image.
 
-The size of the passed destination image should be respected during the resampling
-process.
+The size of the passed destination image should be respected during the
+resampling process.
 
 .. deprecated:: 3.10.1
 
@@ -46,22 +46,22 @@ process.
 
     virtual QString type() const = 0;
 %Docstring
-Gets a descriptive type identifier for this raster resampler.
-Needs to be implemented by subclasses.
+Gets a descriptive type identifier for this raster resampler. Needs to
+be implemented by subclasses.
 %End
 
     virtual QgsRasterResampler *clone() const = 0 /Factory/;
 %Docstring
-Gets a deep copy of this object.
-Needs to be reimplemented by subclasses.
-Ownership is transferred to the caller.
+Gets a deep copy of this object. Needs to be reimplemented by
+subclasses. Ownership is transferred to the caller.
 %End
 
     virtual int tileBufferPixels() const;
 %Docstring
-Returns the optional tile buffer size in pixels. This represents
-the size to buffer individual resampled tile requests prior to resampling,
-in order to avoid rendering artifacts at the edges of raster tile boundaries.
+Returns the optional tile buffer size in pixels. This represents the
+size to buffer individual resampled tile requests prior to resampling,
+in order to avoid rendering artifacts at the edges of raster tile
+boundaries.
 
 .. versionadded:: 3.10.1
 %End
@@ -71,8 +71,9 @@ in order to avoid rendering artifacts at the edges of raster tile boundaries.
 class QgsRasterResamplerV2 : QgsRasterResampler
 {
 %Docstring(signature="appended")
-Interface for resampling rasters (V2) (e.g. to have a smoother appearance),
-which provides a more efficient interface vs :py:class:`QgsRasterResampler`.
+Interface for resampling rasters (V2) (e.g. to have a smoother
+appearance), which provides a more efficient interface vs
+:py:class:`QgsRasterResampler`.
 
 .. versionadded:: 3.10.1
 %End

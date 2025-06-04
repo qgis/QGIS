@@ -37,5 +37,6 @@
         <file>shaders/default.vert</file>
         <file>shaders/texture.frag</file>
         <file>shaders/texture.vert</file>
+        <file>shaders/globe.frag</file>
     </qresource>
 </RCC>

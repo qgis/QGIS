@@ -13,7 +13,8 @@
 class QgsPointCloudExtentRenderer : QgsPointCloudRenderer
 {
 %Docstring(signature="appended")
-A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
+A renderer for 2d visualisation of point clouds which shows the
+dataset's extents using a fill symbol.
 
 .. versionadded:: 3.18
 %End
@@ -27,8 +28,9 @@ A renderer for 2d visualisation of point clouds which shows the dataset's extent
 %Docstring
 Constructor for QgsPointCloudExtentRenderer.
 
-Optionally the ``symbol`` to use for showing the extent can be specified. If specified, ownership is
-transferred to the renderer. If no ``symbol`` is specified a default one will be created instead.
+Optionally the ``symbol`` to use for showing the extent can be
+specified. If specified, ownership is transferred to the renderer. If no
+``symbol`` is specified a default one will be created instead.
 %End
     ~QgsPointCloudExtentRenderer();
 
@@ -55,12 +57,14 @@ Creates an extent renderer from an XML ``element``.
 
     void renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context );
 %Docstring
-Renders a polygon ``extent`` geometry to the specified render ``context``.
+Renders a polygon ``extent`` geometry to the specified render
+``context``.
 %End
 
     static QgsFillSymbol *defaultFillSymbol() /Factory/;
 %Docstring
-Returns a new instance of the default fill symbol to use for showing point cloud extents.
+Returns a new instance of the default fill symbol to use for showing
+point cloud extents.
 %End
 
     QgsFillSymbol *fillSymbol() const;
@@ -83,10 +87,12 @@ Ownership of ``symbol`` is transferred to the renderer.
 %Docstring
 Renders a label inside the specified extent rectangle.
 
-The label will be rendered centered horizontally and vertically inside ``extent``. If the label is too large to fit
-inside this rectangle, it will not be rendered.
+The label will be rendered centered horizontally and vertically inside
+``extent``. If the label is too large to fit inside this rectangle, it
+will not be rendered.
 
-:param extent: rectangle (in painter coordinates) inside which the label will be rendered
+:param extent: rectangle (in painter coordinates) inside which the label
+               will be rendered
 :param text: label text to render
 :param context: point cloud rendering context
 

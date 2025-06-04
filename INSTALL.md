@@ -119,6 +119,7 @@ Required build dependencies:
 * QCA
 * qtkeychain (>= 0.5)
 * libzip
+* protobuf
 
 Optional dependencies:
 
@@ -921,7 +922,7 @@ For example install Homebrew
 and these development/build tools
 
 ```bash
-brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc
+brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc draco
 ```
 
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to
@@ -1301,7 +1302,7 @@ If you are interested in seeing embedded debug output, change the following
 CMake option:
 
 ```bash
--D CMAKE_BUILD_TYPE=DEBUG  # (or RELWITHDEBINFO)
+-D CMAKE_BUILD_TYPE=Debug  # (or RelWithDebInfo)
 ```
 
 This will flood your terminal or system log with lots of useful output from

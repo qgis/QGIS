@@ -22,6 +22,7 @@
 #include "qgscolorramplegendnodesettings.h"
 #include "qgsreadwritecontext.h"
 #include "qgscolorrampimpl.h"
+#include "qgssldexportcontext.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -299,13 +300,20 @@ QList<int> QgsSingleBandGrayRenderer::usesBands() const
 
 void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
   // create base structure
-  QgsRasterRenderer::toSld( doc, element, props );
+  QgsRasterRenderer::toSld( doc, element, context );
 
   // look for RasterSymbolizer tag
   QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
   if ( elements.size() == 0 )
-    return;
+    return false;
 
   // there SHOULD be only one
   QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
@@ -445,6 +453,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       lowColorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( it->second.alpha() ) );
     }
   }
+  return true;
 }
 
 const QgsColorRampLegendNodeSettings *QgsSingleBandGrayRenderer::legendSettings() const

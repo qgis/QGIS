@@ -211,7 +211,7 @@ class GUI_EXPORT QgsPropertyOverrideButton : public QToolButton
      */
     void setSymbol( std::shared_ptr<QgsSymbol> symbol ) SIP_SKIP
     {
-      mSymbol = symbol;
+      mSymbol = std::move( symbol );
     }
 
   public slots:

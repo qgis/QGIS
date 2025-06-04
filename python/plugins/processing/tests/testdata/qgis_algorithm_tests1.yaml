@@ -2242,7 +2242,7 @@ tests:
         name: expected/smoothed_lines_max_angle.gml
         type: vector
 
-  - algorithm: qgis:exportaddgeometrycolumns
+  - algorithm: native:exportaddgeometrycolumns
     name: Add Geometry PointZ
     params:
       CALC_METHOD: '0'
@@ -2254,7 +2254,7 @@ tests:
         name: expected/add_geometry_pointz.gml
         type: vector
 
-  - algorithm: qgis:exportaddgeometrycolumns
+  - algorithm: native:exportaddgeometrycolumns
     name: Export line info
     params:
       CALC_METHOD: 0
@@ -2266,7 +2266,7 @@ tests:
         name: expected/export_line_info.gml
         type: vector
 
-  - algorithm: qgis:exportaddgeometrycolumns
+  - algorithm: native:exportaddgeometrycolumns
     name: Export multiline info
     params:
       CALC_METHOD: 0
@@ -2278,7 +2278,7 @@ tests:
         name: expected/export_multiline_info.gml
         type: vector
 
-  - algorithm: qgis:exportaddgeometrycolumns
+  - algorithm: native:exportaddgeometrycolumns
     name: Export multipoint info (GEOS < 3.9)
     condition:
       geos:
@@ -2293,7 +2293,7 @@ tests:
         name: expected/add_geometry_info_multipoint.gml
         type: vector
 
-  - algorithm: qgis:exportaddgeometrycolumns
+  - algorithm: native:exportaddgeometrycolumns
     name: Export multipoint info (GEOS >= 3.9)
     condition:
       geos:
@@ -2636,7 +2636,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:climbalongline
+  - algorithm: native:climbalongline
     name: Climb line layer with DTM
     params:
       INPUT:

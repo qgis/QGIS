@@ -27,15 +27,9 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from .BarPlot import BarPlot
 from .BoxPlot import BoxPlot
-from .CheckValidity import CheckValidity
-from .Climb import Climb
-from .DefineProjection import DefineProjection
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
-from .ExportGeometryInfo import ExportGeometryInfo
 from .FieldPyculator import FieldsPyculator
-from .FindProjection import FindProjection
-from .GeometryConvert import GeometryConvert
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
@@ -92,15 +86,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         algs = [
             BarPlot(),
             BoxPlot(),
-            CheckValidity(),
-            Climb(),
-            DefineProjection(),
             EliminateSelection(),
             ExecuteSQL(),
-            ExportGeometryInfo(),
             FieldsPyculator(),
-            FindProjection(),
-            GeometryConvert(),
             Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),

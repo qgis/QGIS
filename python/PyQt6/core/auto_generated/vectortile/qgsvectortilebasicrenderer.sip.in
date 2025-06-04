@@ -14,18 +14,22 @@
 class QgsVectorTileBasicRendererStyle
 {
 %Docstring(signature="appended")
-Definition of map rendering of a subset of vector tile data. The subset of data is defined by:
+Definition of map rendering of a subset of vector tile data.
+
+The subset of data is defined by:
 
 - sub-layer name
 - geometry type (a single sub-layer may have multiple geometry types)
 - filter expression
 
-Rendering is determined by the associated symbol (:py:class:`QgsSymbol`). Symbol has to be of the same
-type as the chosen :py:func:`~geometryType` - i.e. :py:class:`QgsMarkerSymbol` for points, :py:class:`QgsLineSymbol` for linestrings
-and :py:class:`QgsFillSymbol` for polygons.
+Rendering is determined by the associated symbol
+(:py:class:`QgsSymbol`). Symbol has to be of the same type as the chosen
+:py:func:`~geometryType` - i.e. :py:class:`QgsMarkerSymbol` for points,
+:py:class:`QgsLineSymbol` for linestrings and :py:class:`QgsFillSymbol`
+for polygons.
 
-It is possible to further constrain when this style is applied by setting a range of allowed
-zoom levels, or by disabling it.
+It is possible to further constrain when this style is applied by
+setting a range of allowed zoom levels, or by disabling it.
 
 .. versionadded:: 3.14
 %End
@@ -53,11 +57,13 @@ Returns human readable name of this style
 
     void setLayerName( const QString &name );
 %Docstring
-Sets name of the sub-layer to render (empty layer means that all layers match)
+Sets name of the sub-layer to render (empty layer means that all layers
+match)
 %End
     QString layerName() const;
 %Docstring
-Returns name of the sub-layer to render (empty layer means that all layers match)
+Returns name of the sub-layer to render (empty layer means that all
+layers match)
 %End
 
     void setGeometryType( Qgis::GeometryType geomType );
@@ -100,8 +106,8 @@ Returns whether this style is enabled (used for rendering)
 %Docstring
 Sets minimum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is greater than or equal
-to ``minZoom``.
+The style will be rendered if the zoom level is greater than or equal to
+``minZoom``.
 
 .. seealso:: :py:func:`minZoomLevel`
 
@@ -112,8 +118,8 @@ to ``minZoom``.
 %Docstring
 Returns the minimum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is greater than or equal
-to the this level.
+The style will be rendered if the zoom level is greater than or equal to
+the this level.
 
 .. seealso:: :py:func:`setMinZoomLevel`
 
@@ -124,8 +130,8 @@ to the this level.
 %Docstring
 Sets maximum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is less than or equal
-to ``maxZoom``.
+The style will be rendered if the zoom level is less than or equal to
+``maxZoom``.
 
 .. warning::
 
@@ -142,8 +148,8 @@ to ``maxZoom``.
 %Docstring
 Returns the maximum zoom level index (negative number means no limit).
 
-The style will be rendered if the zoom level is less than or equal
-to the maximum zoom.
+The style will be rendered if the zoom level is less than or equal to
+the maximum zoom.
 
 .. warning::
 
@@ -158,7 +164,8 @@ to the maximum zoom.
 
     bool isActive( int zoomLevel ) const;
 %Docstring
-Returns whether the style is active at given zoom level (also checks "enabled" flag)
+Returns whether the style is active at given zoom level (also checks
+"enabled" flag)
 %End
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -176,8 +183,9 @@ Reads object content from given DOM element
 class QgsVectorTileBasicRenderer : QgsVectorTileRenderer
 {
 %Docstring(signature="appended")
-The default vector tile renderer implementation. It has an ordered list of "styles",
-each defines a rendering rule.
+The default vector tile renderer implementation.
+
+It has an ordered list of "styles", each defines a rendering rule.
 
 .. versionadded:: 3.14
 %End
@@ -224,7 +232,8 @@ Returns list of styles of the renderer
 %End
     void setStyle( int index, const QgsVectorTileBasicRendererStyle &style );
 %Docstring
-Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+Updates style definition at the paricular index of the list (the index
+must be in interval [0,N-1] otherwise this function does nothing)
 %End
     QgsVectorTileBasicRendererStyle style( int index ) const;
 %Docstring
@@ -236,7 +245,8 @@ Returns style definition at the particular index
       const QColor &lineStrokeColor, double lineStrokeWidth,
       const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize );
 %Docstring
-Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
+Returns a list of styles to render all layers with the given fill/stroke
+colors, stroke widths and marker sizes
 %End
 
     static QList<QgsVectorTileBasicRendererStyle> simpleStyleWithRandomColors();

@@ -35,7 +35,7 @@ class QgsProcessingModelGroupBox;
 
 
 /**
- * A widget which allow users to specify the properties of a model group box.
+ * A widget which allows users to specify the properties of a model group box.
  *
  * \ingroup gui
  * \note Not available in Python bindings.

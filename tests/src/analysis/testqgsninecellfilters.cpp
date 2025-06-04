@@ -21,6 +21,7 @@
 #include "qgsruggednessfilter.h"
 #include "qgstotalcurvaturefilter.h"
 #include "qgsapplication.h"
+#include "qgsrasterlayer.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -58,6 +59,9 @@ class TestNineCellFilters : public QgsTest
     void testAspectCl();
     void testRuggednessCl();
 #endif
+
+    void testCreationOptions();
+    void testNoDataValue();
 
   private:
     void _rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAlignRaster::RasterInfo &ref );
@@ -108,8 +112,7 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 #endif
   const QString refFile( referenceFile( name ) );
   T ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
-  const int res = ninecellFilter.processRaster();
-  QVERIFY( res == 0 );
+  QCOMPARE( static_cast<int>( ninecellFilter.processRaster() ), 0 );
 
   // Produced file
   QgsAlignRaster::RasterInfo out( tmpFile );
@@ -127,7 +130,6 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 
   // Reference
   QgsAlignRaster::RasterInfo ref( refFile );
-  //qDebug() << "Comparing " << tmpFile << refFile;
   _rasterCompare( out, ref );
 }
 
@@ -211,8 +213,6 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAl
     const double outVal = out.identify( x, y );
     const double refVal = ref.identify( x, y );
     const double diff( qAbs( outVal - refVal ) );
-    //qDebug() << outVal << refVal;
-    //qDebug() << "Identify " <<  x << "," << y << " diff " << diff << " check: < " << tolerance;
     QVERIFY( diff <= tolerance );
   }
 }
@@ -222,6 +222,35 @@ void TestNineCellFilters::testTotalCurvature()
   _testAlg<QgsTotalCurvatureFilter>( QStringLiteral( "totalcurvature" ) );
 }
 
+void TestNineCellFilters::testCreationOptions()
+{
+  QString tmpFile( tempFile( QStringLiteral( "createopts" ) ) );
+
+  QString worldFileName = tmpFile.replace( QStringLiteral( ".tif" ), QStringLiteral( ".tfw" ) );
+  QFile worldFile( worldFileName );
+  QVERIFY( !worldFile.exists() );
+
+  QgsAspectFilter ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
+  ninecellFilter.setCreationOptions( QStringList() << "TFW=YES" );
+  QCOMPARE( static_cast<int>( ninecellFilter.processRaster() ), 0 );
+
+  QVERIFY( worldFile.exists() );
+  worldFile.remove();
+}
+
+void TestNineCellFilters::testNoDataValue()
+{
+  QString tmpFile( tempFile( QStringLiteral( "nodata" ) ) );
+
+  QgsAspectFilter ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
+  ninecellFilter.setOutputNodataValue( -5555.0 );
+  QCOMPARE( static_cast<int>( ninecellFilter.processRaster() ), 0 );
+
+  //open output file and check results
+  const std::unique_ptr<QgsRasterLayer> result = std::make_unique<QgsRasterLayer>( tmpFile, QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
+  QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -5555.0 );
+}
 
 QGSTEST_MAIN( TestNineCellFilters )
 

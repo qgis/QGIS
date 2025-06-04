@@ -14,7 +14,6 @@
 class QgsRelation
 {
 %Docstring(signature="appended")
-
 Represents a relationship between two vector layers.
 %End
 
@@ -40,15 +39,15 @@ Constructor with context. Creates an invalid relation.
 
     QgsRelation( const QgsRelation &other );
 %Docstring
-Copies a relation.
-This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
-changed.
+Copies a relation. This makes a shallow copy, relations are implicitly
+shared and only duplicated when the copy is changed.
 %End
 
 
     static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
 %Docstring
-Creates a relation from an XML structure. Used for reading .qgs projects.
+Creates a relation from an XML structure. Used for reading .qgs
+projects.
 
 :param node: The dom node containing the relation information
 :param context: to pass project translator
@@ -82,29 +81,33 @@ Set a strength for this relation
 
     void setReferencingLayer( const QString &id );
 %Docstring
-Set the referencing (child) layer id. This layer will be searched in the registry.
+Set the referencing (child) layer id. This layer will be searched in the
+registry.
 %End
 
     void setReferencedLayer( const QString &id );
 %Docstring
-Set the referenced (parent) layer id. This layer will be searched in the registry.
+Set the referenced (parent) layer id. This layer will be searched in the
+registry.
 %End
 
     void addFieldPair( const QString &referencingField, const QString &referencedField );
 %Docstring
-Add a field pair which is part of this relation
-The first element of each pair are the field names of the foreign key.
-The second element of each pair are the field names of the matching primary key.
+Add a field pair which is part of this relation The first element of
+each pair are the field names of the foreign key. The second element of
+each pair are the field names of the matching primary key.
 
-:param referencingField: The field name on the referencing (child) layer (FK)
-:param referencedField: The field name on the referenced (parent) layer  (PK)
+:param referencingField: The field name on the referencing (child) layer
+                         (FK)
+:param referencedField: The field name on the referenced (parent) layer
+                        (PK)
 %End
 
 
     QgsFeatureIterator getRelatedFeatures( const QgsFeature &feature ) const;
 %Docstring
-Creates an iterator which returns all the features on the referencing (child) layer
-which have a foreign key pointing to the provided feature.
+Creates an iterator which returns all the features on the referencing
+(child) layer which have a foreign key pointing to the provided feature.
 
 :param feature: A feature from the referenced (parent) layer
 
@@ -117,8 +120,8 @@ which have a foreign key pointing to the provided feature.
 
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
 %Docstring
-Creates a request to return all the features on the referencing (child) layer
-which have a foreign key pointing to the provided feature.
+Creates a request to return all the features on the referencing (child)
+layer which have a foreign key pointing to the provided feature.
 
 :param feature: A feature from the referenced (parent) layer
 
@@ -131,8 +134,9 @@ which have a foreign key pointing to the provided feature.
 
     QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 %Docstring
-Returns a filter expression which returns all the features on the referencing (child) layer
-which have a foreign key pointing to the provided feature.
+Returns a filter expression which returns all the features on the
+referencing (child) layer which have a foreign key pointing to the
+provided feature.
 
 :param feature: A feature from the referenced (parent) layer
 
@@ -170,13 +174,14 @@ which is referenced by the provided feature.
 
 :param feature: A feature from the referencing (child) layer
 
-:return: The referenced (parent) feature, or an invalid feature if no matching feature
-         was found
+:return: The referenced (parent) feature, or an invalid feature if no
+         matching feature was found
 %End
 
     QString name() const;
 %Docstring
-Returns a human readable name for this relation. Mostly used as title for the children.
+Returns a human readable name for this relation. Mostly used as title
+for the children.
 
 .. seealso:: :py:func:`id`
 
@@ -204,16 +209,16 @@ Generate a (project-wide) unique id for this relation
 
     QString referencingLayerId() const;
 %Docstring
-Access the referencing (child) layer's id
-This is the layer which has the field(s) which point to another layer
+Access the referencing (child) layer's id This is the layer which has
+the field(s) which point to another layer
 
 :return: The id of the referencing layer
 %End
 
     QgsVectorLayer *referencingLayer() const;
 %Docstring
-Access the referencing (child) layer
-This is the layer which has the field(s) which point to another layer
+Access the referencing (child) layer This is the layer which has the
+field(s) which point to another layer
 
 :return: The referencing layer
 %End
@@ -234,9 +239,9 @@ Access the referenced (parent) layer
 
     QMap< QString, QString > fieldPairs() const;
 %Docstring
-Returns the field pairs which form this relation
-The first element of each pair are the field names of the foreign key.
-The second element of each pair are the field names of the matching primary key.
+Returns the field pairs which form this relation The first element of
+each pair are the field names of the foreign key. The second element of
+each pair are the field names of the matching primary key.
 
 :return: The fields forming the relation
 %End
@@ -251,8 +256,8 @@ The second element of each pair are the field names of the matching primary key.
 
     QgsAttributeList referencedFields() const;
 %Docstring
-Returns a list of attributes used to form the referenced fields
-(most likely primary key) on the referenced (parent) layer.
+Returns a list of attributes used to form the referenced fields (most
+likely primary key) on the referenced (parent) layer.
 
 :return: A list of attributes
 %End
@@ -267,15 +272,17 @@ Returns a list of attributes used to form the referencing fields
 
     bool referencingFieldsAllowNull() const;
 %Docstring
-Returns ``True`` if none of the referencing fields has a NOT NULL constraint.
+Returns ``True`` if none of the referencing fields has a NOT NULL
+constraint.
 
 .. versionadded:: 3.28
 %End
 
     bool isValid() const;
 %Docstring
-Returns the validity of this relation. Don't use the information if it's not valid.
-A relation is considered valid if both referenced and referencig layers are valid.
+Returns the validity of this relation. Don't use the information if it's
+not valid. A relation is considered valid if both referenced and
+referencig layers are valid.
 
 :return: ``True`` if the relation is valid
 
@@ -286,7 +293,8 @@ A relation is considered valid if both referenced and referencig layers are vali
 %Docstring
 Returns a user-friendly explanation for why the relationship is invalid.
 
-Returns an empty string if the relationship :py:func:`~QgsRelation.isValid`.
+Returns an empty string if the relationship
+:py:func:`~QgsRelation.isValid`.
 
 .. seealso:: :py:func:`isValid`
 
@@ -314,8 +322,8 @@ Gets the referencing field counterpart given a referenced field.
 
     void updateRelationStatus();
 %Docstring
-Updates the validity status of this relation.
-Will be called internally whenever a member is changed.
+Updates the validity status of this relation. Will be called internally
+whenever a member is changed.
 
 .. versionadded:: 3.6
 %End
@@ -329,14 +337,16 @@ Sets the parent polymorphic relation id.
 
     QString polymorphicRelationId() const;
 %Docstring
-Returns the parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
+Returns the parent polymorphic relation id. If the relation is a normal
+relation, a null string is returned.
 
 .. versionadded:: 3.18
 %End
 
     QgsPolymorphicRelation polymorphicRelation() const;
 %Docstring
-Returns the parent polymorphic relation. If the relation is a normal relation, an invalid polymorphic relation is returned.
+Returns the parent polymorphic relation. If the relation is a normal
+relation, an invalid polymorphic relation is returned.
 
 .. versionadded:: 3.18
 %End
@@ -350,14 +360,16 @@ Returns the type of the relation
 
     static QString cardinalityToDisplayString( Qgis::RelationshipCardinality cardinality );
 %Docstring
-Returns a user-friendly translated string representing a relationship ``cardinality``.
+Returns a user-friendly translated string representing a relationship
+``cardinality``.
 
 .. versionadded:: 3.28
 %End
 
     static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
 %Docstring
-Returns a user-friendly translated string representing a relationship ``strength``.
+Returns a user-friendly translated string representing a relationship
+``strength``.
 
 .. versionadded:: 3.28
 %End

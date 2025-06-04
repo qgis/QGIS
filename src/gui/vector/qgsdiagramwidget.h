@@ -29,7 +29,7 @@
 /**
  * \ingroup gui
  * \class QgsDiagramWidget
- *
+ * \brief A widget for configuring layer diagrams.
  * \since QGIS 3.40
  */
 class GUI_EXPORT QgsDiagramWidget : public QgsMapLayerConfigWidget, private Ui::QgsDiagramWidget

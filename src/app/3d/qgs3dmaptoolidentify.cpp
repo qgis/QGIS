@@ -151,28 +151,28 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
 
     const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
-    const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
 
-    // transform the point and search radius to CRS of the map canvas (if they are different)
-    QgsPointXY mapPointCanvas2D = mapPoint;
-    double searchRadiusCanvas2D = searchRadiusMapUnits;
     try
     {
-      mapPointCanvas2D = ct.transform( mapPoint );
-      const QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
-      const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
-      searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+      const QgsVector3D mapCoordsCanvas2D = ct.transform( mapCoords );
+      const QgsVector3D mapCoordsSearchRadiusX = ct.transform( QgsVector3D( mapCoords.x() + searchRadiusMapUnits, mapCoords.y(), mapCoords.z() ) );
+      const QgsVector3D mapCoordsSearchRadiusY = ct.transform( QgsVector3D( mapCoords.x(), mapCoords.y() + searchRadiusMapUnits, mapCoords.z() ) );
+      const QgsVector3D mapCoordsSearchRadiusZ = ct.transform( QgsVector3D( mapCoords.x(), mapCoords.y(), mapCoords.z() + searchRadiusMapUnits ) );
+      const double searchRadiusX = mapCoordsCanvas2D.distance( mapCoordsSearchRadiusX );
+      const double searchRadiusY = mapCoordsCanvas2D.distance( mapCoordsSearchRadiusY );
+      const double searchRadiusZ = mapCoordsCanvas2D.distance( mapCoordsSearchRadiusZ );
+      const double searchRadiusCanvas2D = std::max( searchRadiusX, std::max( searchRadiusY, searchRadiusZ ) );
+
+      QgsMapToolIdentify::IdentifyProperties props;
+      props.searchRadiusMapUnits = searchRadiusCanvas2D;
+      props.skip3DLayers = true;
+      identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( QgsPointXY( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y() ) ), props );
     }
     catch ( QgsCsException &e )
     {
       Q_UNUSED( e )
       QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
     }
-
-    QgsMapToolIdentify::IdentifyProperties props;
-    props.searchRadiusMapUnits = searchRadiusCanvas2D;
-    props.skip3DLayers = true;
-    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), props );
   }
 
   // We need to show other layer type results AFTER terrain results so they don't get overwritten

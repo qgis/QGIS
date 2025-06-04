@@ -1580,7 +1580,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
         }
       }
     }
-    renderer.reset( pseudoColorRenderer.release() );
+    renderer = std::move( pseudoColorRenderer );
   }
 
   return renderer.release();

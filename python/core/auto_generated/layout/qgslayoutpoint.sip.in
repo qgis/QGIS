@@ -12,8 +12,10 @@
 class QgsLayoutPoint
 {
 %Docstring(signature="appended")
-This class provides a method of storing points, consisting of an x and y coordinate,
-for use in QGIS layouts. Measurement units are stored alongside the position.
+Provides a method of storing points, consisting of an x and y
+coordinate, for use in QGIS layouts.
+
+Measurement units are stored alongside the position.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 
@@ -112,16 +114,16 @@ ie. no conversion is done.
 
     bool isNull() const;
 %Docstring
-Tests whether the position is null, ie both its x and y coordinates
-are zero.
+Tests whether the position is null, ie both its x and y coordinates are
+zero.
 
 :return: ``True`` if point is null
 %End
 
     QPointF toQPointF() const;
 %Docstring
-Converts the layout point to a QPointF. The unit information is discarded
-during this operation.
+Converts the layout point to a QPointF. The unit information is
+discarded during this operation.
 
 :return: QPointF with same x and y coordinates as layout point
 %End

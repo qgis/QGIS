@@ -466,6 +466,14 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
   defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterialSettings( materialSettings.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs(), map->transformContext() );
   map->setTerrainGenerator( flatTerrain );
@@ -476,20 +484,47 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                         << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 205.0 );
-  scene->enableClipping( clipPlanesEquations );
-
+  // First, without clipping
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_clipping", "polygon3d_extrusion_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
+                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
+                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
+                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_clipping", "polygon3d_extrusion_clipping", img_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping
+  scene->disableClipping();
+  QImage img_no_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping a second time
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_clipping", "polygon3d_extrusion_clipping", img_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping again
+  scene->disableClipping();
+  QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete map;
+  delete scene;
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping_final, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testPhongShading()
@@ -692,22 +727,45 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                         << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 205.0 );
-  scene->enableClipping( clipPlanesEquations );
-
+  // First, without clipping
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
+  // Enable clipping
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
+                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
+                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
+                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  scene->enableClipping( clipPlanesEquations );
+  QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong_clipping", "polygon3d_extrusion_data_defined_phong_clipping", img_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping
+  scene->disableClipping();
+
+  QImage img_no_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img_no_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping a second time
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong_clipping", "polygon3d_extrusion_data_defined_phong_clipping", img_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping again
+  scene->disableClipping();
+
+  QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
   delete map;
-  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong_clipping", "polygon3d_extrusion_data_defined_phong_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_phong", "polygon3d_extrusion_data_defined_phong", img_no_clipping_final, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGooch()
@@ -811,22 +869,46 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 150.0 )
-                                         << QVector4D( -0.866025, 0.5, 0, 150.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 305.0 )
-                                         << QVector4D( -0.5, -0.866025, 0, 205.0 );
-  scene->enableClipping( clipPlanesEquations );
-
+  // First, without clipping
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                               << QVector4D( 0.866025, -0.5, 0, 150.0 )
+                                               << QVector4D( -0.866025, 0.5, 0, 150.0 )
+                                               << QVector4D( 0.5, 0.866025, 0, 305.0 )
+                                               << QVector4D( -0.5, -0.866025, 0, 205.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch_clipping", "polygon3d_extrusion_data_defined_gooch_clipping", img_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping
+  scene->disableClipping();
+  QImage img_no_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img_no_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping a second time
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch_clipping", "polygon3d_extrusion_data_defined_gooch_clipping", img_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping again
+  scene->disableClipping();
+  QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
 
   delete scene;
   delete mapSettings;
-  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch_clipping", "polygon3d_extrusion_data_defined_gooch_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_data_defined_gooch", "polygon3d_extrusion_data_defined_gooch", img_no_clipping_final, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
@@ -1072,18 +1154,44 @@ void TestQgs3DRendering::testLineRenderingClipping()
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( 0.866025, -0.5, 0, 300.0 )
-                                         << QVector4D( -0.866025, 0.5, 0, 300.0 );
-  scene->enableClipping( clipPlanesEquations );
-
+  // First, without clipping
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "line_rendering_1", "line_rendering_1", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "line_rendering_clipping", "line_rendering_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+  // Enable clipping
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                               << QVector4D( 0.866025, -0.5, 0, 300.0 )
+                                               << QVector4D( -0.866025, 0.5, 0, 300.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "line_rendering_clipping", "line_rendering_clipping", img_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping
+  scene->disableClipping();
+  QImage img_no_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "line_rendering_1", "line_rendering_1", img_no_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping a second time
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "line_rendering_clipping", "line_rendering_clipping", img_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping again
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+  QGSVERIFYIMAGECHECK( "line_rendering_1", "line_rendering_1", img_no_clipping_final, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testLineRenderingCurved()
@@ -1280,25 +1388,43 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 300, -250, 0 ), 500, 45, 0 );
 
-  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
-                                         << QVector4D( -0.866025, 0.5, 0, 432.0 )
-                                         << QVector4D( 0.5, 0.866025, 0, 125.0 );
-
-  scene->enableClipping( clipPlanesEquations );
-
+  // First, without clipping
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img_no_clipping, QString(), 40, QSize( 0, 0 ), 2 );
 
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "buffered_lines_clipping", "buffered_lines_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+  // Enable clipping
+  const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                               << QVector4D( -0.866025, 0.5, 0, 432.0 )
+                                               << QVector4D( 0.5, 0.866025, 0, 125.0 );
 
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines_clipping", "buffered_lines_clipping", img_clipping, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping
   scene->disableClipping();
 
   Qgs3DUtils::captureSceneImage( engine, scene );
-  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img2, QString(), 40, QSize( 0, 0 ), 2 );
+  QImage img_no_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img_no_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Enable clipping a second time
+  scene->enableClipping( clipPlanesEquations );
+
+  QImage img_clipping_again = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines_clipping", "buffered_lines_clipping", img_clipping_again, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // Disable clipping again
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "buffered_lines", "buffered_lines", img_no_clipping_final, QString(), 40, QSize( 0, 0 ), 2 );
 
   delete scene;
   delete map;
@@ -1811,13 +1937,16 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   map->setCrs( p.crs() );
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
+  map->setTerrainRenderingEnabled( false );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
   // look from the top
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 0, 0 );
+  scene->cameraController()->resetGlobe( 8'625'000, 90, 270 );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
@@ -1828,7 +1957,8 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QGSVERIFYIMAGECHECK( "4978_line_rendering_1", "4978_line_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
 
   // more perspective look
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 45, 45 );
+  scene->cameraController()->globeUpdateHeadingAngle( 45 );
+  scene->cameraController()->globeUpdatePitchAngle( 45 );
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
@@ -2027,6 +2157,7 @@ void TestQgs3DRendering::testAmbientOcclusion()
   // =========== set camera position
   scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 400, 50, 10 );
 
+  // =========== set AO to OFF
   QgsAmbientOcclusionSettings aoSettings = mapSettings.ambientOcclusionSettings();
   aoSettings.setEnabled( false );
   mapSettings.setAmbientOcclusionSettings( aoSettings );
@@ -2036,6 +2167,7 @@ void TestQgs3DRendering::testAmbientOcclusion()
   QGSCOMPARELONGSTR( "ambient_occlusion_1", "framegraph.txt", actualFG.toUtf8() );
   QGSVERIFYIMAGECHECK( "ambient_occlusion_1", "ambient_occlusion_1", img, QString(), 40, QSize( 0, 0 ), 15 );
 
+  // =========== set AO to ON
   aoSettings.setEnabled( true );
   mapSettings.setAmbientOcclusionSettings( aoSettings );
 
@@ -2110,7 +2242,7 @@ void TestQgs3DRendering::testDepthBuffer()
   // Check first wheel action
   QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 120 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
@@ -2118,16 +2250,17 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_1", "depth_wheel_action_1", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.7, -185.5, 224.6 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -6.8, -38.6, 46.7 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1187.5, 1.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -6.5, -37.1, 44.9 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1200, 1.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking second wheel action
   QWheelEvent wheelEvent2( midPos, midPos, QPoint(), QPoint( 0, 120 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent2 ) );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent2.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent2.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
@@ -2135,16 +2268,17 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_2", "depth_wheel_action_2", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.5, -184.7, 223.5 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -12.1, -69.0, 83.5 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 940.1, 1.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -11.7, -66.6, 80.6 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 960, 1.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking third wheel action
   QWheelEvent wheelEvent3( midPos, midPos, QPoint(), QPoint( 0, 480 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent3 ) );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent3.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent3.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
@@ -2152,16 +2286,17 @@ void TestQgs3DRendering::testDepthBuffer()
   QGSVERIFYIMAGECHECK( "depth_wheel_action_3", "depth_wheel_action_3", grayImage, QString(), 5, QSize( 0, 0 ), 2 );
 
   scene->cameraController()->depthBufferCaptured( depthImage );
+  Qgs3DUtils::waitForFrame( engine, scene );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.4, -184.1, 222.8 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -29.0, -164.9, 199.6 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 156.6, 0.1 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -24.0, -136.0, 164.6 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 393.216, 0.1 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking fourth wheel action
   QWheelEvent wheelEvent4( midPos, midPos, QPoint(), QPoint( 0, 120 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent4 ) );
-  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent4.angleDelta().y() * 5 );
+  QCOMPARE( scene->cameraController()->mCumulatedWheelY, wheelEvent4.angleDelta().y() / 120.0 );
   QCOMPARE( scene->cameraController()->mCameraBefore->viewCenter(), scene->cameraController()->cameraPose().centerPoint().toVector3D() );
 
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
@@ -2171,13 +2306,13 @@ void TestQgs3DRendering::testDepthBuffer()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -32.3, -183.2, 221.7 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -29.7, -168.7, 204.2 ), 1.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 124.0, 0.1 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -25.7, -145.6, 176.2 ), 1.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 314.6, 0.1 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
 
   // Checking camera position
   QVector3D diff = scene->cameraController()->camera()->position() - startPos;
-  QGSCOMPARENEARVECTOR3D( diff, QVector3D( 125, 700, -850 ), 3.0 );
+  QGSCOMPARENEARVECTOR3D( diff, QVector3D( 106, 605, -732 ), 3.0 );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -2441,7 +2576,6 @@ void TestQgs3DRendering::test3DSceneExporterBig()
   delete scene;
   mapSettings.setLayers( {} );
 }
-
 
 QGSTEST_MAIN( TestQgs3DRendering )
 #include "testqgs3drendering.moc"

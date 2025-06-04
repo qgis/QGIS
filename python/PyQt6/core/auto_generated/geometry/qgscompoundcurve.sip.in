@@ -12,7 +12,7 @@
 class QgsCompoundCurve: QgsCurve
 {
 %Docstring(signature="appended")
-Compound curve geometry type
+Compound curve geometry type.
 %End
 
 %TypeHeaderCode
@@ -74,11 +74,12 @@ Compound curve geometry type
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
 %Docstring
-Returns a new line string geometry corresponding to a segmentized approximation
-of the curve.
+Returns a new line string geometry corresponding to a segmentized
+approximation of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
+:param toleranceType: maximum segmentation angle or maximum difference
+                      between approximation and curve
 %End
 
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const /Factory/;
@@ -106,11 +107,13 @@ Returns the curve at the specified index.
 %Docstring
 Adds a curve to the geometry (takes ownership).
 
-Since QGIS 3.20, if ``extendPrevious`` is ``True``, then adding a LineString when the last existing curve
-in the compound curve is also a LineString will cause the existing linestring to be
-extended with the newly added LineString vertices instead of appending a whole new
-LineString curve to the compound curve. This can result in simplified compound curves with lesser number
-of component curves while still being topologically identical to the desired result.
+Since QGIS 3.20, if ``extendPrevious`` is ``True``, then adding a
+LineString when the last existing curve in the compound curve is also a
+LineString will cause the existing linestring to be extended with the
+newly added LineString vertices instead of appending a whole new
+LineString curve to the compound curve. This can result in simplified
+compound curves with lesser number of component curves while still being
+topologically identical to the desired result.
 %End
 
     void removeCurve( int i );
@@ -127,8 +130,9 @@ Adds a vertex to the end of the geometry.
 
     void condenseCurves();
 %Docstring
-Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
-and combining adjacent circularstrings to a single continuous circularstring.
+Condenses the curves in this geometry by combining adjacent linestrings
+a to a single continuous linestring, and combining adjacent
+circularstrings to a single continuous circularstring.
 
 .. versionadded:: 3.20
 %End
@@ -137,9 +141,10 @@ and combining adjacent circularstrings to a single continuous circularstring.
 %Docstring
 Converts the vertex at the given position from/to circular
 
-:return: ``False`` if atVertex does not correspond to a valid vertex
-         on this geometry (including if this geometry is a Point),
-         or if the specified vertex can't be converted (e.g. start/end points).
+:return: ``False`` if atVertex does not correspond to a valid vertex on
+         this geometry (including if this geometry is a Point), or if
+         the specified vertex can't be converted (e.g. start/end
+         points).
 
 .. versionadded:: 3.20
 %End

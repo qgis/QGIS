@@ -12,8 +12,10 @@
 class QgsMapHitTest
 {
 %Docstring(signature="appended")
-Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
-will be visible on the map - this is useful for content based legend.
+Runs a hit test with given map settings.
+
+Based on the hit test it returns which symbols will be visible on the
+map - this is useful for content based legend.
 %End
 
 %TypeHeaderCode
@@ -24,15 +26,19 @@ will be visible on the map - this is useful for content based legend.
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring
+Constructor for QgsMapHitTest.
 
 :param settings: Map settings used to evaluate symbols
 :param polygon: Polygon geometry to refine the hit test
-:param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
+:param layerFilterExpression: Expression string for each layer id to
+                              evaluate in order to refine the symbol
+                              selection
 %End
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
 %Docstring
-Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
+Constructor version used with only expressions to filter symbols (no
+extent or polygon intersection)
 %End
 
     QgsMapHitTest( const QgsLayerTreeFilterSettings &settings );
@@ -51,8 +57,8 @@ Runs the map hit test
 
     QMap<QString, QList<QString>> resultsPy() const /PyName=results/;
 %Docstring
-Returns the hit test results, which are a map of layer ID to
-visible symbol legend keys.
+Returns the hit test results, which are a map of layer ID to visible
+symbol legend keys.
 
 .. versionadded:: 3.32
 %End
@@ -95,15 +101,16 @@ Executes a :py:class:`QgsMapHitTest` in a background thread.
 
     QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings );
 %Docstring
-Constructor for QgsMapHitTestTask, using the specified filter ``settings``.
+Constructor for QgsMapHitTestTask, using the specified filter
+``settings``.
 %End
 
 
 
     QMap<QString, QList<QString>> resultsPy() const /PyName=results/;
 %Docstring
-Returns the hit test results, which are a map of layer ID to
-visible symbol legend keys.
+Returns the hit test results, which are a map of layer ID to visible
+symbol legend keys.
 %End
 
     virtual void cancel();

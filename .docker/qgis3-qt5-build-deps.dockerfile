@@ -1,12 +1,15 @@
 
 ARG DISTRO_VERSION=24.04
+ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
-FROM      ubuntu:${DISTRO_VERSION} as binary-for-oracle
-MAINTAINER Denis Rouzaud <denis@opengis.ch>
+FROM      ubuntu:${DISTRO_VERSION} AS binary-for-oracle
+LABEL org.opencontainers.image.authors="Denis Rouzaud <denis@opengis.ch>"
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
+
+ARG PDAL_VERSION
 
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -14,7 +17,6 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
-  && add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     apt-transport-https \
@@ -57,7 +59,6 @@ RUN  apt-get update \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
     locales \
-    pdal \
     poppler-utils \
     python3-future \
     python3-gdal \
@@ -111,6 +112,7 @@ RUN  apt-get update \
     requests \
     six \
     hdbcli \
+    shapely  \
   && apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
@@ -131,7 +133,7 @@ RUN unzip -n instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
 RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
 ENV PATH="/instantclient_21_16:${PATH}"
-ENV LD_LIBRARY_PATH="/instantclient_21_16:${LD_LIBRARY_PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_21_16"
 # workaround noble libaio SONAME issue -- see https://bugs.launchpad.net/ubuntu/+source/libaio/+bug/2067501
 RUN if [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ] ; then ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 ; fi
 
@@ -142,7 +144,26 @@ RUN locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
-FROM binary-for-oracle as binary-only
+# PDAL is not available in ubuntu 24.04
+# Install it from source
+# PDAL dependencies
+RUN  apt-get update \
+     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+     ninja-build \
+     libgdal-dev \
+     libproj-dev
+# download PDAL and compile it
+RUN curl -L https://github.com/PDAL/PDAL/releases/download/${PDAL_VERSION}/PDAL-${PDAL_VERSION}-src.tar.gz --output PDAL-${PDAL_VERSION}-src.tar.gz \
+    && mkdir pdal \
+    && tar zxf PDAL-${PDAL_VERSION}-src.tar.gz -C pdal --strip-components=1 \
+    && rm -f PDAL-${PDAL_VERSION}-src.tar.gz \
+    && mkdir -p pdal/build \
+    && cd pdal/build \
+    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_TESTS=OFF .. \
+    && ninja \
+    && ninja install
+
+FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -186,12 +207,9 @@ RUN  apt-get update \
     libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \
-    libgdal-dev \
     libgeos-dev \
     libgsl-dev \
-    libpdal-dev \
     libpq-dev \
-    libproj-dev \
     libprotobuf-dev \
     libqca-qt5-2-dev \
     libqt5opengl5-dev \
@@ -206,7 +224,6 @@ RUN  apt-get update \
     libsqlite3-mod-spatialite \
     libzip-dev \
     libzstd-dev \
-    ninja-build \
     protobuf-compiler \
     pyqt5-dev \
     pyqt5-dev-tools \

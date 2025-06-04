@@ -171,7 +171,7 @@ class CORE_EXPORT QgsGdalUtils
      * Validates creation options for a given format, regardless of layer.
      * \since QGIS 3.10
      */
-    static QString validateCreationOptionsFormat( const QStringList &createOptions, const QString &format );
+    static QString validateCreationOptionsFormat( const QStringList &creationOptions, const QString &format );
 
     /**
      * Helper function
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsGdalUtils
 
     /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
-     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF.
+     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_DEFAULT (and fallbacks to HEIGHT_OFF).
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
      * the image would not be shown in the correct location.
      *
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsGdalUtils
 
     /**
      * This is a wrapper around GDALCreateGenImgProjTransformer2() that takes into account RPC
-     * georeferencing (it sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF).
+     * georeferencing. It sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_DEFAULT (and fallbacks to HEIGHT_OFF).
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
      * the image would not be shown in the correct location.
      *

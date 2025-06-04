@@ -6,6 +6,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRuleBasedLabeling.create = staticmethod(QgsRuleBasedLabeling.create)
+    QgsRuleBasedLabeling.__overridden_methods__ = ['type', 'clone', 'save', 'subProviders', 'settings', 'accept', 'setSettings', 'requiresAdvancedEffects', 'hasNonDefaultCompositionMode', 'toSld', 'multiplyOpacity']
     QgsRuleBasedLabeling.__group__ = ['labeling']
 except (NameError, AttributeError):
     pass

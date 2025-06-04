@@ -11,8 +11,9 @@
 class QgsProjectViewSettings : QObject
 {
 %Docstring(signature="appended")
-Contains settings and properties relating to how a :py:class:`QgsProject` should be displayed inside
-map canvas, e.g. map scales and default view extent for the project.
+Contains settings and properties relating to how a
+:py:class:`QgsProject` should be displayed inside map canvas, e.g. map
+scales and default view extent for the project.
 
 .. versionadded:: 3.10.1
 %End
@@ -36,8 +37,8 @@ Resets the settings to a default state.
 
     QgsReferencedRectangle defaultViewExtent() const;
 %Docstring
-Returns the default view extent, which should be used as the initial map extent
-when this project is opened.
+Returns the default view extent, which should be used as the initial map
+extent when this project is opened.
 
 .. warning::
 
@@ -52,8 +53,8 @@ when this project is opened.
 
     void setDefaultViewExtent( const QgsReferencedRectangle &extent );
 %Docstring
-Sets the default view ``extent``, which should be used as the initial map extent
-when this project is opened.
+Sets the default view ``extent``, which should be used as the initial
+map extent when this project is opened.
 
 .. warning::
 
@@ -70,8 +71,9 @@ when this project is opened.
 %Docstring
 Returns the project's preset full extent.
 
-This extent represents the maximal limits of the project. The full extent defaults to a null rectangle,
-which indicates that the maximal extent should be calculated based on the layers in the project.
+This extent represents the maximal limits of the project. The full
+extent defaults to a null rectangle, which indicates that the maximal
+extent should be calculated based on the layers in the project.
 
 .. seealso:: :py:func:`setPresetFullExtent`
 
@@ -84,8 +86,9 @@ which indicates that the maximal extent should be calculated based on the layers
 %Docstring
 Sets the project's preset full ``extent``.
 
-This extent represents the maximal limits of the project. Setting the full ``extent`` to a null rectangle
-indicates that the maximal extent should be calculated based on the layers in the project.
+This extent represents the maximal limits of the project. Setting the
+full ``extent`` to a null rectangle indicates that the maximal extent
+should be calculated based on the layers in the project.
 
 .. seealso:: :py:func:`setPresetFullExtent`
 
@@ -96,13 +99,14 @@ indicates that the maximal extent should be calculated based on the layers in th
 
     QgsReferencedRectangle fullExtent() const;
 %Docstring
-Returns the full extent of the project, which represents the maximal limits of the project.
+Returns the full extent of the project, which represents the maximal
+limits of the project.
 
 The returned extent will be in the project's CRS.
 
-If the :py:func:`~QgsProjectViewSettings.presetFullExtent` is non null, this will be returned as the full extent.
-Otherwise the full extent will be calculated based on the extent of all layers
-in the project.
+If the :py:func:`~QgsProjectViewSettings.presetFullExtent` is non null,
+this will be returned as the full extent. Otherwise the full extent will
+be calculated based on the extent of all layers in the project.
 
 .. seealso:: :py:func:`presetFullExtent`
 
@@ -135,10 +139,11 @@ The scales list consists of a list of scale denominator values, e.g.
 
     void setUseProjectScales( bool enabled );
 %Docstring
-Sets whether project :py:func:`~QgsProjectViewSettings.mapScales` are ``enabled``.
+Sets whether project :py:func:`~QgsProjectViewSettings.mapScales` are
+``enabled``.
 
-When project map scales are enabled these scales will replace the default QGIS map scales list
-while working with this project.
+When project map scales are enabled these scales will replace the
+default QGIS map scales list while working with this project.
 
 .. seealso:: :py:func:`useProjectScales`
 
@@ -147,10 +152,11 @@ while working with this project.
 
     bool useProjectScales() const;
 %Docstring
-Returns ``True`` if project :py:func:`~QgsProjectViewSettings.mapScales` are enabled.
+Returns ``True`` if project :py:func:`~QgsProjectViewSettings.mapScales`
+are enabled.
 
-When project map scales are enabled these scales will replace the default QGIS map scales list
-while working with this project.
+When project map scales are enabled these scales will replace the
+default QGIS map scales list while working with this project.
 
 .. seealso:: :py:func:`setUseProjectScales`
 
@@ -159,7 +165,8 @@ while working with this project.
 
     double defaultRotation() const;
 %Docstring
-Returns the default map rotation (in clockwise degrees) for maps in the project.
+Returns the default map rotation (in clockwise degrees) for maps in the
+project.
 
 .. warning::
 
@@ -177,7 +184,8 @@ Returns the default map rotation (in clockwise degrees) for maps in the project.
 
     void setDefaultRotation( double rotation );
 %Docstring
-Set the default ``rotation`` of maps in the project, in clockwise degrees.
+Set the default ``rotation`` of maps in the project, in clockwise
+degrees.
 
 .. warning::
 
@@ -220,7 +228,8 @@ Emitted when the list of custom project map scales changes.
 
     void presetFullExtentChanged();
 %Docstring
-Emitted whenever the :py:func:`~QgsProjectViewSettings.presetFullExtent` is changed.
+Emitted whenever the :py:func:`~QgsProjectViewSettings.presetFullExtent`
+is changed.
 
 .. versionadded:: 3.18
 %End

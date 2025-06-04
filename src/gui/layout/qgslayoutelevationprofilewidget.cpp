@@ -33,6 +33,7 @@
 #include "qgscurve.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsprofilerenderer.h"
 #include "qgsgui.h"
 #include <QMenu>
 
@@ -97,6 +98,34 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
     mProfile->beginCommand( tr( "Change Profile Atlas Control" ) );
     mProfile->setAtlasDriven( mCheckControlledByAtlas->isChecked() );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+
+  // subsections indicator
+  mSubsectionsSymbolButton->setSymbolType( Qgis::SymbolType::Line );
+  connect( mSubsectionsSymbolButton, &QgsSymbolButton::changed, this, [=] {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    mProfile->beginCommand( tr( "Change Profile Subsection Indicator" ), QgsLayoutItem::UndoElevationProfileSubsectionLines );
+    mProfile->setSubsectionsSymbol( mSubsectionsSymbolButton->clonedSymbol<QgsLineSymbol>() );
+    mProfile->invalidateCache();
+    mProfile->update();
+    mProfile->endCommand();
+  } );
+  mSubsectionsSymbolButton->setDefaultSymbol( QgsProfilePlotRenderer::defaultSubSectionsSymbol().release() );
+
+  connect( mSubsectionsActivateCheck, &QGroupBox::toggled, this, [=] {
+    if ( !mProfile || mBlockChanges )
+      return;
+
+    const bool subsectionsActivated = mSubsectionsActivateCheck->isChecked();
+    mProfile->beginCommand( tr( "Change Profile Subsection Indicator" ), QgsLayoutItem::UndoElevationProfileSubsectionLines );
+    std::unique_ptr<QgsLineSymbol> subSectionsSymbol( subsectionsActivated ? mSubsectionsSymbolButton->clonedSymbol<QgsLineSymbol>() : nullptr );
+    mProfile->setSubsectionsSymbol( subSectionsSymbol.release() );
+
     mProfile->invalidateCache();
     mProfile->update();
     mProfile->endCommand();
@@ -492,6 +521,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   setGuiElementValues();
 
+  mSubsectionsSymbolButton->registerExpressionContextGenerator( mProfile );
   mDistanceAxisMajorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
   mDistanceAxisMinorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
   mElevationAxisMajorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
@@ -501,6 +531,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceAxisLabelFontButton->registerExpressionContextGenerator( mProfile );
   mElevationAxisLabelFontButton->registerExpressionContextGenerator( mProfile );
 
+  mSubsectionsSymbolButton->setLayer( coverageLayer() );
   mDistanceAxisMajorLinesSymbolButton->setLayer( coverageLayer() );
   mDistanceAxisMinorLinesSymbolButton->setLayer( coverageLayer() );
   mElevationAxisMajorLinesSymbolButton->setLayer( coverageLayer() );
@@ -513,6 +544,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   if ( mProfile->layout() )
   {
     connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [=]( QgsVectorLayer *layer ) {
+      mSubsectionsSymbolButton->setLayer( layer );
       mDistanceAxisMajorLinesSymbolButton->setLayer( layer );
       mDistanceAxisMinorLinesSymbolButton->setLayer( layer );
       mElevationAxisMajorLinesSymbolButton->setLayer( layer );
@@ -615,6 +647,15 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mElevationAxisLabelIntervalSpin->setClearValue( canvas->plot().yAxis().labelInterval() );
   mProfile->plot()->yAxis().setLabelInterval( canvas->plot().yAxis().labelInterval() );
 
+  const QgsLineSymbol *subSectionsSymbol = canvas->subsectionsSymbol() ? canvas->subsectionsSymbol() : nullptr;
+  const bool subSectionsEnabled = static_cast< bool >( subSectionsSymbol );
+  mSubsectionsActivateCheck->setChecked( subSectionsEnabled );
+  if ( subSectionsSymbol )
+  {
+    mSubsectionsSymbolButton->setSymbol( subSectionsSymbol->clone() );
+    mProfile->setSubsectionsSymbol( subSectionsSymbol->clone() );
+  }
+
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
   // canvas layers are in opposite direction to what the layout item requires
   std::reverse( canvasLayers.begin(), canvasLayers.end() );
@@ -647,6 +688,7 @@ bool QgsLayoutElevationProfileWidget::setNewItem( QgsLayoutItem *item )
   if ( mProfile )
   {
     connect( mProfile, &QgsLayoutObject::changed, this, &QgsLayoutElevationProfileWidget::setGuiElementValues );
+    mSubsectionsSymbolButton->registerExpressionContextGenerator( mProfile );
     mDistanceAxisMajorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
     mDistanceAxisMinorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
     mElevationAxisMajorLinesSymbolButton->registerExpressionContextGenerator( mProfile );
@@ -673,6 +715,12 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mSpinMaxDistance->setValue( mProfile->plot()->xMaximum() );
   mSpinMinElevation->setValue( mProfile->plot()->yMinimum() );
   mSpinMaxElevation->setValue( mProfile->plot()->yMaximum() );
+
+  mSubsectionsActivateCheck->setChecked( mProfile->subsectionsSymbol() );
+  if ( mProfile->subsectionsSymbol() )
+  {
+    mSubsectionsSymbolButton->setSymbol( mProfile->subsectionsSymbol()->clone() );
+  }
 
   if ( mProfile->plot()->xAxis().gridMajorSymbol() )
     mDistanceAxisMajorLinesSymbolButton->setSymbol( mProfile->plot()->xAxis().gridMajorSymbol()->clone() );

@@ -533,6 +533,30 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setRasterStrokeWidth( double width );
 
     /**
+     * Returns the maximum line length (in millimeters) allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * If the returned value is 0, then no automatic wrapping will occur.
+     *
+     * \see setAutoWrapLinesAfter()
+     *
+     * \since QGIS 3.44
+     */
+    double autoWrapLinesAfter() const;
+
+    /**
+     * Sets the maximum line \a length (in millimeters) allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * If \a length is 0, then no automatic wrapping will occur.
+     *
+     * \see autoWrapLinesAfter()
+     *
+     * \since QGIS 3.44
+     */
+    void setAutoWrapLinesAfter( double length );
+
+    /**
      * Sets the \a map to associate with the legend.
      * \see linkedMap()
      * \see setFilterByMapItems()

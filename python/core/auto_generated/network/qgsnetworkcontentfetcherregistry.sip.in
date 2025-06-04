@@ -13,7 +13,7 @@
 class QgsFetchedContent : QObject
 {
 %Docstring(signature="appended")
-FetchedContent holds useful information about a network content being fetched
+Holds information about fetched network content.
 
 .. seealso:: :py:class:`QgsNetworkContentFetcherRegistry`
 
@@ -32,10 +32,11 @@ FetchedContent holds useful information about a network content being fetched
       Failed
     };
 
-    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = 0, ContentStatus status = NotStarted,
+    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file /Transfer/ = 0, ContentStatus status = NotStarted,
                                 const QString &authConfig = QString() );
 %Docstring
-Constructs a FetchedContent with pointer to the downloaded file and status of the download
+Constructs a FetchedContent with pointer to the downloaded file and
+status of the download
 %End
 
     ~QgsFetchedContent();
@@ -44,7 +45,8 @@ Constructs a FetchedContent with pointer to the downloaded file and status of th
 
     const QString filePath() const;
 %Docstring
-Returns the path to the local file, an empty string if the file is not accessible yet.
+Returns the path to the local file, an empty string if the file is not
+accessible yet.
 %End
 
     ContentStatus status() const;
@@ -68,7 +70,8 @@ Returns the authentication configuration id use for this fetched content
 %Docstring
 Start the download
 
-:param redownload: if set to ``True``, it will restart any achieved or pending download.
+:param redownload: if set to ``True``, it will restart any achieved or
+                   pending download.
 %End
 
     void cancel();
@@ -84,8 +87,8 @@ Emitted when the file is fetched and accessible
 
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 %Docstring
-Emitted when an error with ``code`` error occurred while processing the request
-``errorMsg`` is a textual description of the error
+Emitted when an error with ``code`` error occurred while processing the
+request ``errorMsg`` is a textual description of the error
 
 .. versionadded:: 3.22
 %End
@@ -95,10 +98,10 @@ Emitted when an error with ``code`` error occurred while processing the request
 class QgsNetworkContentFetcherRegistry : QObject
 {
 %Docstring(signature="appended")
-Registry for temporary fetched files
+Registry for temporary fetched files.
 
-This provides a simple way of downloading and accessing
-remote files during QGIS application running.
+This provides a simple way of downloading and accessing remote files
+during QGIS application running.
 
 .. seealso:: :py:class:`QgsFetchedContent`
 
@@ -122,8 +125,10 @@ Create the registry for temporary downloaded files
 Initialize a download for the given URL
 
 :param url: the URL to be fetched
-:param fetchingMode: defines if the download will start immediately or shall be manually triggered
-:param authConfig: authentication configuration id to be used while fetching
+:param fetchingMode: defines if the download will start immediately or
+                     shall be manually triggered
+:param authConfig: authentication configuration id to be used while
+                   fetching
 
 .. note::
 
@@ -133,9 +138,11 @@ Initialize a download for the given URL
 
     QString localPath( const QString &filePathOrUrl );
 %Docstring
-Returns the path to a local file or to a temporary file previously fetched by the registry
+Returns the path to a local file or to a temporary file previously
+fetched by the registry
 
-:param filePathOrUrl: can either be a local file path or a remote content which has previously been fetched
+:param filePathOrUrl: can either be a local file path or a remote
+                      content which has previously been fetched
 %End
 
 };

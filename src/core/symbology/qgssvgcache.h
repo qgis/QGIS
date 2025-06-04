@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
 
 /**
  * \ingroup core
- * \brief A cache for images / pictures derived from SVG files
+ * \brief A cache for images / pictures derived from SVG files.
  *
  * This class supports parameter replacement in SVG files according to the SVG params specification
  * (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/).

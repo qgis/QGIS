@@ -307,8 +307,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>673</width>
-                <height>852</height>
+                <width>671</width>
+                <height>794</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -591,13 +591,13 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
-                  <item row="2" column="1" colspan="4">
-                   <widget class="QComboBox" name="mDistanceUnitsCombo"/>
+                  <item row="1" column="4">
+                   <widget class="QLineEdit" name="leSemiMinor"/>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_28">
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_41">
                     <property name="text">
-                     <string>Units for distance measurement</string>
+                     <string>Semi-major</string>
                     </property>
                    </widget>
                   </item>
@@ -611,26 +611,22 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QLineEdit" name="leSemiMajor"/>
+                  <item row="2" column="1" colspan="4">
+                   <widget class="QComboBox" name="mDistanceUnitsCombo"/>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QLabel" name="label_41">
-                    <property name="text">
-                     <string>Semi-major</string>
-                    </property>
-                   </widget>
+                  <item row="3" column="1" colspan="4">
+                   <widget class="QComboBox" name="mAreaUnitsCombo"/>
                   </item>
                   <item row="0" column="1" colspan="4">
                    <widget class="QComboBox" name="cmbEllipsoid"/>
                   </item>
-                  <item row="1" column="4">
-                   <widget class="QLineEdit" name="leSemiMinor"/>
+                  <item row="1" column="2">
+                   <widget class="QLineEdit" name="leSemiMajor"/>
                   </item>
-                  <item row="1" column="3">
-                   <widget class="QLabel" name="label_42">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_28">
                     <property name="text">
-                     <string>Semi-minor</string>
+                     <string>Units for distance measurement</string>
                     </property>
                    </widget>
                   </item>
@@ -641,8 +637,26 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="1" colspan="4">
-                   <widget class="QComboBox" name="mAreaUnitsCombo"/>
+                  <item row="1" column="3">
+                   <widget class="QLabel" name="label_42">
+                    <property name="text">
+                     <string>Semi-minor</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_32">
+                    <property name="text">
+                     <string>Scale calculation method</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1" colspan="4">
+                   <widget class="QgsScaleMethodWidget" name="mScaleMethodWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1053,8 +1067,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>789</height>
+                <width>289</width>
+                <height>55</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1118,8 +1132,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>789</height>
+                <width>528</width>
+                <height>85</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1190,8 +1204,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>791</height>
+                <width>276</width>
+                <height>448</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1">
@@ -1952,8 +1966,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>791</height>
+                <width>158</width>
+                <height>39</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2035,7 +2049,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
+                <width>627</width>
                 <height>1396</height>
                </rect>
               </property>
@@ -3643,6 +3657,12 @@
    <extends>QWidget</extends>
    <header>qsvgwidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleMethodWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalemethodwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -3663,6 +3683,7 @@
   <tabstop>leSemiMinor</tabstop>
   <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mAreaUnitsCombo</tabstop>
+  <tabstop>mScaleMethodWidget</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>mCustomizeCoordinateFormatButton</tabstop>
   <tabstop>radAutomatic</tabstop>

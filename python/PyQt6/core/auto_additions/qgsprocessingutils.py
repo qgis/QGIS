@@ -65,6 +65,7 @@ try:
     QgsProcessingUtils.tempFolder = staticmethod(QgsProcessingUtils.tempFolder)
     QgsProcessingUtils.generateTempFilename = staticmethod(QgsProcessingUtils.generateTempFilename)
     QgsProcessingUtils.formatHelpMapAsHtml = staticmethod(QgsProcessingUtils.formatHelpMapAsHtml)
+    QgsProcessingUtils.outputDefinitionIndex = staticmethod(QgsProcessingUtils.outputDefinitionIndex)
     QgsProcessingUtils.convertToCompatibleFormat = staticmethod(QgsProcessingUtils.convertToCompatibleFormat)
     QgsProcessingUtils.convertToCompatibleFormatAndLayerName = staticmethod(QgsProcessingUtils.convertToCompatibleFormatAndLayerName)
     QgsProcessingUtils.combineFields = staticmethod(QgsProcessingUtils.combineFields)
@@ -81,6 +82,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingFeatureSource.__overridden_methods__ = ['hasFeatures', 'getFeatures', 'sourceCrs', 'fields', 'wkbType', 'featureCount', 'sourceName', 'uniqueValues', 'minimumValue', 'maximumValue', 'sourceExtent', 'allFeatureIds', 'hasSpatialIndex']
     QgsProcessingFeatureSource.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

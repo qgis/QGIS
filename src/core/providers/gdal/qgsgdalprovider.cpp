@@ -723,7 +723,9 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   CPLErr err = gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, gdalDataType, 0, 0 );
   if ( err != CPLE_None )
   {
-    QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    const QString error = QStringLiteral( "RasterIO error: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    setError( QgsError( error, QStringLiteral( "readBlock" ) ) );
+    QgsLogger::warning( error );
     return false;
   }
   return true;
@@ -1068,7 +1070,6 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
     }
     CPLErrorReset();
 
-
     CPLErr err = gdalRasterIO( gdalBand, GF_Read,
                                srcLeft, srcTop, srcWidth, srcHeight,
                                static_cast<void *>( tmpBlock ),
@@ -1077,7 +1078,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     if ( err != CPLE_None )
     {
-      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+      const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() );
+      setError( QgsError( lastError, QStringLiteral( "readBlock" ) ) );
       if ( feedback )
         feedback->appendError( lastError );
 
@@ -1107,21 +1109,25 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
     sExtraArg.eResampleAlg = getGDALResamplingAlg( mZoomedOutResamplingMethod );
 
-    CPLErr eErr = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
-                                  GF_Read,
-                                  0, 0, tmpWidth, tmpHeight,
-                                  static_cast<char *>( data ) +
-                                  ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
-                                  tgtWidth,
-                                  tgtHeight,
-                                  type,
-                                  dataSize,
-                                  dataSize * bufferWidthPix,
-                                  &sExtraArg );
+    err = GDALRasterIOEx( GDALGetRasterBand( hSrcDS.get(), 1 ),
+                          GF_Read,
+                          0, 0, tmpWidth, tmpHeight,
+                          static_cast<char *>( data ) +
+                          ( tgtTopOri * bufferWidthPix + tgtLeftOri ) * dataSize,
+                          tgtWidth,
+                          tgtHeight,
+                          type,
+                          dataSize,
+                          dataSize * bufferWidthPix,
+                          &sExtraArg );
+    if ( err != CPLE_None )
+    {
+      setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "readBlock" ) ) );
+    }
 
     qgsFree( tmpBlock );
 
-    return eErr == CE_None;
+    return err == CE_None;
   }
 
   const int tgtTop = tgtTopOri;
@@ -1184,7 +1190,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 
   if ( err != CPLE_None )
   {
-    const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
+    const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() );
+    setError( QgsError( lastError, QStringLiteral( "readBlock" ) ) );
     if ( feedback )
       feedback->appendError( lastError );
 
@@ -1546,6 +1553,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
       value = static_cast<double>( tempVal );
       break;
     }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_Float16:
+#endif
     case GDT_Float32:
     {
       float tempVal{0};
@@ -1597,6 +1607,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
 #endif
     case GDT_CInt16:
     case GDT_CInt32:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_CFloat16:
+#endif
     case GDT_CFloat32:
     case GDT_CFloat64:
       QgsDebugError( QStringLiteral( "Raster complex data type is not supported!" ) );
@@ -1609,7 +1622,10 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
       break;
   }
   if ( err != CE_None )
+  {
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "sample" ) ) );
     return std::numeric_limits<double>::quiet_NaN();
+  }
 
   if ( ( sourceHasNoDataValue( band ) && useSourceNoDataValue( band ) &&
          ( std::isnan( value ) || qgsDoubleNear( static_cast< double >( value ), sourceNoDataValue( band ) ) ) ) ||
@@ -1957,6 +1973,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   // if there was any error/warning assume the histogram is not valid or non-existent
   if ( myError != CE_None )
   {
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "hasHistogram" ) ) );
     QgsDebugMsgLevel( QStringLiteral( "Cannot get default GDAL histogram" ), 2 );
     return false;
   }
@@ -2111,6 +2128,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   if ( myError != CE_None || ( feedback && feedback->isCanceled() ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Cannot get histogram" ), 2 );
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "histogram" ) ) );
     delete [] myHistogramArray;
     return myHistogram;
   }
@@ -2943,7 +2961,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   QgsDebugMsgLevel( "Raster filter list built: " + fileFiltersString, 2 );
   QgsDebugMsgLevel( "Raster extension list built: " + extensions.join( ' ' ), 2 );
-}                               // buildSupportedRasterFileFilter_()
+}
 
 bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QString &retErrMsg )
 {
@@ -3485,7 +3503,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           // Did that work?
           if ( changed && ratCopy->isValid( ) )
           {
-            rat.reset( ratCopy.release() );
+            rat = std::move( ratCopy );
           }
         }
 
@@ -3922,6 +3940,9 @@ void QgsGdalProvider::initBaseDataset()
         case GDT_Int16:
         case GDT_UInt32:
         case GDT_Int32:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+        case GDT_Float16:
+#endif
         case GDT_Float32:
         case GDT_CInt16:
           myGdalDataType = GDT_Float32;
@@ -3935,6 +3956,10 @@ void QgsGdalProvider::initBaseDataset()
 #endif
           myGdalDataType = GDT_Float64;
           break;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+        case GDT_CFloat16:
+          break;
+#endif
         case GDT_CFloat64:
           break;
       }
@@ -3970,7 +3995,7 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
   int width, int height,
   double *geoTransform,
   const QgsCoordinateReferenceSystem &crs,
-  const QStringList &createOptions )
+  const QStringList &creationOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
@@ -3980,11 +4005,11 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
     return new QgsGdalProvider( uri, error );
   }
 
-  QgsDebugMsgLevel( "create options: " + createOptions.join( " " ), 2 );
+  QgsDebugMsgLevel( "creation options: " + creationOptions.join( " " ), 2 );
 
   //create dataset
   CPLErrorReset();
-  char **papszOptions = QgsGdalUtils::papszFromStringList( createOptions );
+  char **papszOptions = QgsGdalUtils::papszFromStringList( creationOptions );
   gdal::dataset_unique_ptr dataset( GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions ) );
   CSLDestroy( papszOptions );
   if ( !dataset )
@@ -4022,7 +4047,15 @@ bool QgsGdalProvider::write( const void *data, int band, int width, int height, 
     gdalDataType = GDT_Float64;
 #endif
 
-  return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None;
+  if ( gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None )
+  {
+    return true;
+  }
+  else
+  {
+    setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "write" ) ) );
+    return false;
+  }
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
@@ -4081,6 +4114,7 @@ bool QgsGdalProvider::remove()
     CPLErr err = GDALDeleteDataset( driver, dataSourceUri( true ).toUtf8().constData() );
     if ( err != CPLE_None )
     {
+      setError( QgsError( QString::fromUtf8( CPLGetLastErrorMsg() ), QStringLiteral( "remove" ) ) );
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       QgsDebugError( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       return false;
@@ -4124,12 +4158,12 @@ QString QgsGdalProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptions, const QString &format )
+QString QgsGdalProvider::validateCreationOptions( const QStringList &creationOptions, const QString &format )
 {
   QString message;
 
   // first validate basic syntax with GDALValidateCreationOptions
-  message = QgsGdalUtils::validateCreationOptionsFormat( createOptions, format );
+  message = QgsGdalUtils::validateCreationOptionsFormat( creationOptions, format );
   if ( !message.isNull() )
     return message;
 
@@ -4142,8 +4176,8 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptio
 
   // prepare a map for easier lookup
   QMap< QString, QString > optionsMap;
-  const auto constCreateOptions = createOptions;
-  for ( const QString &option : constCreateOptions )
+  const auto constCreationOptions = creationOptions;
+  for ( const QString &option : constCreationOptions )
   {
     QStringList opt = option.split( '=' );
     optionsMap[ opt[0].toUpper()] = opt[1];
@@ -4395,12 +4429,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
     // get supported extensions
     static std::once_flag initialized;
-    std::call_once( initialized, [ = ]
-    {
-      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-      QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
-      QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
-    } );
+    std::call_once( initialized, buildSupportedRasterFileFilterAndExtensions, sFilterString, sExtensions, sWildcards );
 
     const QString suffix = uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
                            ? pathInfo.suffix().toLower()

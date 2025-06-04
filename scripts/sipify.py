@@ -24,6 +24,7 @@ class CodeSnippetType(Enum):
     NotCodeSnippet = auto()
     NotSpecified = auto()
     Cpp = auto()
+    Literal = auto()
 
 
 class PrependType(Enum):
@@ -121,12 +122,25 @@ class Context:
         self.doxy_inside_sip_run: int = 0
         self.has_pushed_force_int: bool = False
         self.attribute_docstrings = defaultdict(dict)
+        self.attribute_typehints = defaultdict(dict)
         self.struct_docstrings = defaultdict(dict)
         self.current_method_name: str = ""
         self.static_methods = defaultdict(dict)
+        self.virtual_methods = defaultdict(dict)
+        self.abstract_methods = defaultdict(dict)
+        self.overridden_methods = defaultdict(dict)
         self.current_signal_args = []
         self.signal_arguments = defaultdict(dict)
         self.deprecated_message = None
+        self.method_py_name: Optional[str] = None
+
+    def reset_method_state(self):
+        """
+        Should be called immediately after processing (or skipping) a method
+        """
+        self.comment = ""
+        self.deprecated_message = ""
+        self.return_type = ""
 
     def current_fully_qualified_class_name(self) -> str:
         return ".".join(
@@ -420,6 +434,7 @@ ALLOWED_NON_CLASS_ENUMS = [
     "QgsNewHttpConnection::ConnectionType",
     "QgsNewHttpConnection::Flag",
     "QgsNewHttpConnection::WfsVersionIndex",
+    "QgsNineCellFilter::Result",
     "QgsOfflineEditing::ContainerType",
     "QgsOfflineEditing::ProgressMode",
     "QgsOgcUtils::FilterVersion",
@@ -783,6 +798,17 @@ def process_doxygen_line(line: str) -> str:
             else f"\n.. code-block::{codelang}\n\n"
         )
 
+    literal_block_match = re.match(r"\s*~~~.*", line)
+    if literal_block_match:
+        if CONTEXT.comment_code_snippet == CodeSnippetType.Literal:
+            # end of literal block
+            CONTEXT.comment_code_snippet = CodeSnippetType.NotCodeSnippet
+            return "\n"
+        else:
+            # start of literal block
+            CONTEXT.comment_code_snippet = CodeSnippetType.Literal
+            return f"\n::\n\n"
+
     if re.search(r"\\endcode", line):
         CONTEXT.comment_code_snippet = CodeSnippetType.NotCodeSnippet
         return "\n"
@@ -796,13 +822,15 @@ def process_doxygen_line(line: str) -> str:
     # Remove prepending spaces and apply various replacements
     line = re.sub(r"^\s+", "", line)
     line = re.sub(r"\\a (.+?)\b", r"``\1``", line)
+    line = re.sub(r" \\ref\b", "", line)
+    line = re.sub(r"\bqstring\b(?!:)", "string", line, flags=re.IGNORECASE)
     line = line.replace("::", ".")
     line = re.sub(r"\bnullptr\b", "None", line)
 
     # Handle section and subsection
     section_match = re.match(r"^\\(?P<SUB>sub)?section", line)
     if section_match:
-        sep = "^" if section_match.group("SUB") else "-"
+        sep = "-" if section_match.group("SUB") else "="
         line = re.sub(r"^\\(sub)?section \w+ ", "", line)
         sep_line = re.sub(r"[\w ()]", sep, line)
         line += f"\n{sep_line}"
@@ -984,6 +1012,28 @@ def process_doxygen_line(line: str) -> str:
     return f"{line}\n"
 
 
+def validate_docstring(docstring: str):
+    """
+    Validates a docstring, raising a fatal error if it fails
+    """
+    if docstring.strip().startswith(".. note::"):
+        exit_with_error(
+            "Documentation must not start with a \\note directive. Add at least a brief description before any \\note."
+        )
+    if docstring.strip().startswith(".. warning::"):
+        exit_with_error(
+            "Documentation must not start with a \\warning directive. Add at least a brief description before any \\warning."
+        )
+    if docstring.strip().startswith(":return:"):
+        exit_with_error(
+            "Documentation must not start with a \\returns directive. Add at least a brief description before \\returns."
+        )
+    if docstring.strip().startswith(":param"):
+        exit_with_error(
+            "Documentation must not start with a \\param directive. Add at least a brief description before \\param."
+        )
+
+
 def detect_and_remove_following_body_or_initializerlist():
     global CONTEXT
 
@@ -1018,6 +1068,155 @@ def detect_and_remove_following_body_or_initializerlist():
         CONTEXT.current_line = newline
 
     return signature
+
+
+def split_to_paragraphs(text: str) -> list[list[str]]:
+    """
+    Splits docstring text to paragraphs, return a list of lines
+    for each paragraph.
+    """
+    if not text:
+        return []
+
+    # discard empty lines from start
+    comment_lines = text.split("\n")
+    while not comment_lines[0].strip():
+        del comment_lines[0]
+        if not comment_lines:
+            return []
+
+    current_paragraph = []
+    paragraphs = []
+    for line in comment_lines:
+        if line:
+            current_paragraph.append(line)
+        else:
+            paragraphs.append(current_paragraph[:])
+            current_paragraph = []
+    if current_paragraph:
+        paragraphs.append(current_paragraph[:])
+
+    return paragraphs
+
+
+def wrap_docstring_list_paragraph(
+    paragraph: list[str], prefix: str = "-", max_width: int = 72
+) -> str:
+    # list
+    list_entries = []
+    current_entry = []
+    for line in paragraph:
+        if line.strip().startswith(prefix):
+            if current_entry:
+                list_entries.append(current_entry[:])
+            current_entry = [re.match(rf"\s*{prefix}\s*(.*)$", line).group(1)]
+        else:
+            current_entry.append(re.match(r"\s*(.*?)$", line).group(1))
+    if current_entry:
+        list_entries.append(current_entry)
+
+    res = ""
+    for entry in list_entries:
+        this_entry_prefix = prefix
+        if prefix.startswith(":"):
+            suffix = re.match(rf"^\s*(.*?:).*", entry[0]).group(1)
+            if suffix != ":":
+                this_entry_prefix = prefix + " " + suffix
+            else:
+                this_entry_prefix = prefix + ":"
+            indentation = len(this_entry_prefix) + 1
+            entry[0] = entry[0][len(suffix) + 1 :]
+            if entry[0] and entry[0][0] == "-":
+                current_entry = wrap_docstring_list_paragraph(
+                    entry, max_width=max_width - indentation
+                )
+            else:
+                current_entry = wrap_text(
+                    " ".join(entry), width=max_width - indentation
+                )
+        else:
+            indentation = len(this_entry_prefix) + 1
+            current_entry = wrap_text(" ".join(entry), width=max_width - indentation)
+
+        for line_idx, line in enumerate(current_entry.split("\n")):
+            if res:
+                res += "\n"
+            res += (
+                f"{this_entry_prefix} " if line_idx == 0 else " " * indentation
+            ) + line
+    return res
+
+
+def wrap_docstring_paragraph(paragraph: list[str]) -> str:
+    """
+    Wraps a docstring paragraph, correctly handling lists and
+    other complex formatting
+    """
+    if not paragraph:
+        return ""
+
+    if len(paragraph) == 2 and paragraph[1][0] in ("-", "=", "^"):
+        # headings, no wrapping
+        return "\n".join(paragraph)
+    elif paragraph[0].startswith("-"):
+        # list
+        return wrap_docstring_list_paragraph(paragraph)
+    elif paragraph[0].startswith(":param"):
+        return wrap_docstring_list_paragraph(paragraph, prefix=":param")
+    elif paragraph[0].startswith(":return"):
+        return wrap_docstring_list_paragraph(paragraph, prefix=":return")
+    elif paragraph[0].startswith(":raises"):
+        return wrap_docstring_list_paragraph(paragraph, prefix=":raises")
+    elif (
+        paragraph[0].startswith(".")
+        or (paragraph[0].startswith(":") and not paragraph[0].startswith(":py:"))
+        or paragraph[0].startswith("  ")
+        or paragraph[0].startswith("1.")
+    ):
+        # don't try to wrap complex paragraphs (for now)
+        return "\n".join(paragraph)
+    else:
+        return wrap_text(" ".join(paragraph)).strip()
+
+
+def wrap_text(text: str, width=72):
+    """
+    Reformat a paragraph of text so that lines are wrapped at a specified width.
+
+    Args:
+        text (str): The input text to be reformatted
+        width (int, optional): The maximum line width. Defaults to 80.
+
+    Returns:
+        str: The reformatted text with lines wrapped at the specified width
+    """
+    # Remove any existing line breaks and extra spaces
+    text = " ".join(text.split())
+
+    result = []
+    current_line = []
+    current_length = 0
+
+    for word in text.split():
+        # If adding this word would exceed the width
+        if current_length + len(word) + (1 if current_length > 0 else 0) > width:
+            # Add the current line to the result
+            result.append(" ".join(current_line))
+            # Start a new line with the current word
+            current_line = [word]
+            current_length = len(word)
+        else:
+            # Add the word to the current line
+            if current_length > 0:
+                current_length += 1  # Account for the space
+            current_line.append(word)
+            current_length += len(word)
+
+    # Add the last line
+    if current_line:
+        result.append(" ".join(current_line))
+
+    return "\n".join(result)
 
 
 def remove_following_body_or_initializerlist():
@@ -1155,6 +1354,8 @@ def remove_sip_pyargremove(input_string: str) -> str:
 def fix_annotations(line):
     global CONTEXT
 
+    CONTEXT.method_py_name = None
+
     # Get removed params to be able to drop them out of the API doc
     removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE", line)
     if CONTEXT.is_qt6:
@@ -1167,6 +1368,10 @@ def fix_annotations(line):
     for param in _out_params:
         CONTEXT.skipped_params_out.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_out[-1]}")
+
+    py_name_match = re.match(r"^.*SIP_PYNAME\(\s*(.+?)\s*\)\s*;$", line)
+    if py_name_match:
+        CONTEXT.method_py_name = py_name_match.group(1)
 
     # Printed annotations
     replacements = {
@@ -1325,15 +1530,22 @@ def convert_type(cpp_type: str) -> str:
         "QString": "str",
         "void": "None",
         "qint64": "int",
+        "quint64": "int",
+        "qreal": "float",
         "unsigned long long": "int",
         "long long": "int",
         "qlonglong": "int",
+        "qgssize": "int",
         "long": "int",
         "QStringList": "List[str]",
         "QVariantList": "List[object]",
         "QVariantMap": "Dict[str, object]",
         "QVariant": "object",
     }
+
+    cpp_type = cpp_type.replace("static ", "")
+    cpp_type = cpp_type.replace("const ", "")
+    cpp_type = cpp_type.replace(" *", "")
 
     # Handle templates
     template_match = re.match(r"(\w+)\s*<\s*(.+)\s*>", cpp_type)
@@ -1528,7 +1740,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"%{re.match(r'^ *[/]*% *(.*)$', CONTEXT.current_line).group(1)}"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         dbg_info("do not process SIP code")
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
@@ -1560,7 +1772,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         write_output("COD", CONTEXT.current_line + "\n")
         continue
 
@@ -1569,7 +1781,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% (.*)$', CONTEXT.current_line).group(1)}"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         write_output("COD", CONTEXT.current_line)
         continue
 
@@ -1587,7 +1799,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 elif nesting_index == 0 and re.match(
                     r"^\s*#(endif|else)", CONTEXT.current_line
                 ):
-                    CONTEXT.comment = ""
+                    CONTEXT.reset_method_state()
                     break
                 elif nesting_index != 0 and re.match(
                     r"^\s*#endif", CONTEXT.current_line
@@ -1626,7 +1838,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         CONTEXT.ifdef_nesting_idx += 1
                     elif re.match(r"^\s*#endif", CONTEXT.current_line):
                         if CONTEXT.ifdef_nesting_idx == 0:
-                            CONTEXT.comment = ""
+                            CONTEXT.reset_method_state()
                             CONTEXT.sip_run = False
                             break
                         else:
@@ -1679,7 +1891,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         if match.group("external"):
             dbg_info("do not skip external forward declaration")
-            CONTEXT.comment = ""
+            CONTEXT.reset_method_state()
         else:
             dbg_info("skipping forward declaration")
             continue
@@ -1738,9 +1950,30 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     exit_with_error("could not reach opening definition")
             dbg_info("removed multiline definition of SIP_SKIP method")
             CONTEXT.multiline_definition = MultiLineType.NotMultiline
-            del CONTEXT.static_methods[CONTEXT.current_fully_qualified_class_name()][
-                CONTEXT.current_method_name
-            ]
+            try:
+                del CONTEXT.static_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
+            try:
+                del CONTEXT.virtual_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
+            try:
+                del CONTEXT.abstract_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
+            try:
+                del CONTEXT.overridden_methods[
+                    CONTEXT.current_fully_qualified_class_name()
+                ][CONTEXT.current_method_name]
+            except KeyError:
+                pass
 
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist()
@@ -1763,7 +1996,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             if args.python_output:
                 CONTEXT.output_python.append(f"{pyop}\n")
 
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         continue
 
     # Detect comment block
@@ -1876,8 +2109,29 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         CONTEXT.current_line += "\n{\n"
         if CONTEXT.comment.strip():
+            validate_docstring(CONTEXT.comment)
+            # find out how long the first paragraph in the class docstring is.
+            paragraphs = split_to_paragraphs(CONTEXT.comment)
+
+            first_paragraph = wrap_docstring_paragraph(paragraphs[0])
+            if re.search(
+                r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
+                first_paragraph,
+            ):
+                exit_with_error(
+                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                )
+            if first_paragraph.strip()[-1] != ".":
+                exit_with_error(
+                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
+                )
+
+            docstring = first_paragraph
+            for paragraph in paragraphs[1:]:
+                docstring += "\n\n" + wrap_docstring_paragraph(paragraph)
+
             CONTEXT.current_line += (
-                '%Docstring(signature="appended")\n' + CONTEXT.comment + "\n%End\n"
+                '%Docstring(signature="appended")\n' + docstring + "\n%End\n"
             )
 
         CONTEXT.current_line += (
@@ -1931,7 +2185,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             exit_with_error("expecting { after class definition")
         CONTEXT.bracket_nesting_idx[-1] += 1
 
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         CONTEXT.header_code = True
         CONTEXT.access[-1] = Visibility.Private
         continue
@@ -1971,8 +2225,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         Visibility.Public
                     )  # Top level should stay public
 
-                CONTEXT.comment = ""
-                CONTEXT.return_type = ""
+                CONTEXT.reset_method_state()
                 CONTEXT.private_section_line = ""
 
             dbg_info(f"new bracket balance: {CONTEXT.bracket_nesting_idx}")
@@ -1982,7 +2235,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.access[-1] = Visibility.Private
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.private_section_line = CONTEXT.current_line
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         dbg_info("going private")
         continue
 
@@ -1990,19 +2243,19 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info("going public")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Public
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
 
     elif re.match(r"^\s*signals:.*$", CONTEXT.current_line):
         dbg_info("going public for signals")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Signals
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
 
     elif re.match(r"^\s*(protected)( slots)?:.*$", CONTEXT.current_line):
         dbg_info("going protected")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Protected
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
 
     elif (
         CONTEXT.access[-1] == Visibility.Private and "SIP_FORCE" in CONTEXT.current_line
@@ -2013,7 +2266,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.private_section_line = ""
 
     elif any(x == Visibility.Private for x in CONTEXT.access) and not CONTEXT.sip_run:
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         continue
 
     # Skip operators
@@ -2021,6 +2274,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"operator(=|<<|>>|->)\s*\(", CONTEXT.current_line
     ):
         dbg_info("skip operator")
+        CONTEXT.reset_method_state()
         detect_and_remove_following_body_or_initializerlist()
         continue
 
@@ -2036,7 +2290,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.comment = process_doxygen_line(match.group(1))
                 CONTEXT.comment = CONTEXT.comment.rstrip()
             elif not re.search(r"\*/", CONTEXT.input_lines[CONTEXT.line_idx - 1]):
-                CONTEXT.comment = ""
+                CONTEXT.reset_method_state()
             continue
 
     # Handle Q_DECLARE_FLAGS in Qt6
@@ -2385,6 +2639,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"\1\2,\3,\4\5",
         CONTEXT.current_line,
     )
+    is_override = re.search(r"\b(?:override|final)\b", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
@@ -2432,7 +2687,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         CONTEXT.current_line = f"{match.group('staticconst')};"
         if match.group("static") is None:
-            CONTEXT.comment = ""
+            CONTEXT.reset_method_state()
 
         if match.group("endingchar") == "|":
             dbg_info("multiline const static assignment")
@@ -2638,6 +2893,17 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_method_name = match.group(3)
         return_type_candidate = match.group(2)
         is_static = bool(match.group(1) and "static" in match.group(1))
+        is_virtual = bool(match.group(1) and "virtual" in match.group(1))
+        is_abstract = bool(
+            is_virtual
+            and match.group(4)
+            and re.match(
+                r".*\s*=\s*0\s*(?:\s*SIP[A-Za-z_() ]*\s*)*\s*;", match.group(4)
+            )
+        )
+        if is_abstract or is_override:
+            is_virtual = False  # assumed!
+
         class_name = CONTEXT.current_fully_qualified_class_name()
         if CONTEXT.current_method_name in CONTEXT.static_methods[class_name]:
             if (
@@ -2647,6 +2913,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.static_methods[class_name][CONTEXT.current_method_name] = False
         else:
             CONTEXT.static_methods[class_name][CONTEXT.current_method_name] = is_static
+
+        if CONTEXT.current_method_name in CONTEXT.virtual_methods[class_name]:
+            if (
+                CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name]
+                != is_virtual
+            ):
+                CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name] = False
+        else:
+            CONTEXT.virtual_methods[class_name][
+                CONTEXT.current_method_name
+            ] = is_virtual
+
+        if is_abstract:
+            CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
+
+        if CONTEXT.multiline_definition != MultiLineType.Method:
+            if is_override:
+                CONTEXT.overridden_methods[class_name][
+                    CONTEXT.current_method_name
+                ] = True
 
         if CONTEXT.access[-1] == Visibility.Signals:
             CONTEXT.current_signal_args = []
@@ -2723,19 +3009,38 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 + " "
                 + str(CONTEXT.current_signal_args)
             )
+    elif CONTEXT.multiline_definition == MultiLineType.Method:
+        is_abstract = bool(
+            re.match(
+                r".*\s*=\s*0\s*(?:\s*SIP[A-Za-z_() ]*\s*)*\s*;",
+                CONTEXT.current_line.strip(),
+            )
+        )
+        class_name = CONTEXT.current_fully_qualified_struct_name()
+        if is_abstract:
+            CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
+
+        if is_override:
+            CONTEXT.overridden_methods[class_name][CONTEXT.current_method_name] = True
 
     # deleted functions
     if re.match(
         r"^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$",
         CONTEXT.current_line,
     ):
-        CONTEXT.comment = ""
+        dbg_info(f"removing deleted function {CONTEXT.current_line}")
+        CONTEXT.reset_method_state()
         continue
 
     # remove export macro from struct definition
     CONTEXT.current_line = re.sub(
         r"^(\s*struct )\w+_EXPORT (.+)$", r"\1\2", CONTEXT.current_line
     )
+
+    if re.search(r"\bnamespace\b", CONTEXT.current_line):
+        exit_with_error(
+            "Use classes with public static methods instead of namespaces when methods are exposed to PyQGIS"
+        )
 
     # Skip comments
     if re.match(
@@ -2765,15 +3070,31 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             and CONTEXT.comment
         ):
             attribute_name_match = re.match(
-                r"^.*?\s[*&]*(\w+);.*$", CONTEXT.current_line
+                r"^\s*(.*?)\s[*&]*(\w+);.*$", CONTEXT.current_line
+            )
+            dbg_info(
+                f"got member {attribute_name_match.group(2)} of type {attribute_name_match.group(1)}"
             )
             class_name = CONTEXT.current_fully_qualified_struct_name()
             dbg_info(
-                f"storing attribute docstring for {class_name} : {attribute_name_match.group(1)}"
+                f"storing attribute docstring for {class_name} : {attribute_name_match.group(2)}"
             )
             CONTEXT.attribute_docstrings[class_name][
-                attribute_name_match.group(1)
+                attribute_name_match.group(2)
             ] = CONTEXT.comment
+
+            try:
+                typehint = convert_type(attribute_name_match.group(1))
+            except AssertionError:
+                exit_with_error(
+                    f"Cannot convert c++ type {attribute_name_match.group(1)} to Python type for member {attribute_name_match.group(2)}. Ensure fully qualified class name is used"
+                )
+            dbg_info(
+                f"storing attribute typehint {typehint} for {class_name} (was {attribute_name_match.group(1)})"
+            )
+            CONTEXT.attribute_typehints[class_name][
+                attribute_name_match.group(2)
+            ] = typehint
         elif (
             CONTEXT.current_fully_qualified_struct_name()
             and re.search(r"\s*struct ", CONTEXT.current_line)
@@ -2819,7 +3140,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"{CONTEXT.indent}const QgsSettingsEntryEnumFlag_{var_name} {var_name};"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         write_output("ENF", f"{prep_line}\n", "prepend")
 
     write_output("NOR", f"{CONTEXT.current_line}\n")
@@ -2893,6 +3214,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         else:
             dbg_info("writing comment")
             if CONTEXT.comment.strip():
+                validate_docstring(CONTEXT.comment)
                 dbg_info("comment non-empty")
                 doc_prepend = (
                     "@DOCSTRINGSTEMPLATE@" if CONTEXT.comment_template_docstring else ""
@@ -2909,6 +3231,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 while comment_line_idx < len(comment_lines):
                     comment_line = comment_lines[comment_line_idx]
                     comment_line_idx += 1
+
+                    if ".. note::" in comment_line and CONTEXT.method_py_name:
+                        is_pyname_note = False
+                        seek_forward = comment_line_idx + 1
+                        while seek_forward < len(comment_lines):
+                            seek_forward_line = comment_lines[seek_forward]
+                            if not seek_forward_line:
+                                break
+                            if (
+                                CONTEXT.method_py_name in seek_forward_line
+                                and "python" in seek_forward_line.lower()
+                            ):
+                                is_pyname_note = True
+                            seek_forward += 1
+
+                        if is_pyname_note:
+                            # skip it, we don't need it in the PyQGIS docs!
+                            comment_line_idx = seek_forward
+                            continue
+
                     if (
                         "versionadded:" in comment_line or "deprecated:" in comment_line
                     ) and out_params:
@@ -3033,6 +3375,15 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                                 doc_string += f"{doc_prepend}         - {out_param}\n"
 
                 dbg_info(f"doc_string is {doc_string}")
+
+                doc_string_paragraphs = split_to_paragraphs(doc_string)
+                doc_string = ""
+                for paragraph in doc_string_paragraphs:
+                    doc_string += (
+                        "\n\n" if doc_string else ""
+                    ) + wrap_docstring_paragraph(paragraph)
+                doc_string += "\n"
+
                 write_output("DS", doc_string)
                 if CONTEXT.access[-1] == Visibility.Signals and doc_string:
                     dbg_info("storing signal docstring")
@@ -3042,8 +3393,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     ] = doc_string
                 write_output("CM4", f"{doc_prepend}%End\n")
 
-        CONTEXT.comment = ""
-        CONTEXT.return_type = ""
+        CONTEXT.reset_method_state()
         if CONTEXT.is_override_or_make_private == PrependType.MakePrivate:
             write_output("MKP", CONTEXT.last_access_section_line)
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
@@ -3070,6 +3420,26 @@ class_additions = defaultdict(list)
 for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
     class_additions[class_name].append(
         f"{class_name}.__attribute_docs__ = {str(attribute_docstrings)}"
+    )
+
+for class_name, attribute_typehints in CONTEXT.attribute_typehints.items():
+    if not attribute_typehints:
+        continue
+
+    annotations_str = "{"
+    for attribute_name, typehint in attribute_typehints.items():
+        annotations_str += f"'{attribute_name}': "
+        annotations_str += {
+            "int": "int",
+            "float": "float",
+            "str": "str",
+            "bool": "bool",
+        }.get(typehint, f"'{typehint}'")
+        annotations_str += ", "
+    annotations_str = annotations_str[:-2] + "}"
+
+    class_additions[class_name].append(
+        f"{class_name}.__annotations__ = {annotations_str}"
     )
 
 for class_name, static_methods in CONTEXT.static_methods.items():
@@ -3103,6 +3473,42 @@ for class_name, static_methods in CONTEXT.static_methods.items():
 
         class_additions[class_name].append(
             f"{class_name}.{method_name} = staticmethod({class_name}.{method_name})"
+        )
+
+for class_name, virtual_methods in CONTEXT.virtual_methods.items():
+    virtual_method_names = []
+    for method_name, is_virtual in virtual_methods.items():
+        if not is_virtual:
+            continue
+
+        virtual_method_names.append(method_name)
+    if virtual_method_names:
+        class_additions[class_name].append(
+            f"{class_name}.__virtual_methods__ = {str(virtual_method_names)}"
+        )
+
+for class_name, abstract_methods in CONTEXT.abstract_methods.items():
+    abstract_method_names = []
+    for method_name, is_abstract in abstract_methods.items():
+        if not is_abstract:
+            continue
+
+        abstract_method_names.append(method_name)
+    if abstract_method_names:
+        class_additions[class_name].append(
+            f"{class_name}.__abstract_methods__ = {str(abstract_method_names)}"
+        )
+
+for class_name, overridden_methods in CONTEXT.overridden_methods.items():
+    overridden_method_names = []
+    for method_name, is_override in overridden_methods.items():
+        if not is_override:
+            continue
+
+        overridden_method_names.append(method_name)
+    if overridden_method_names:
+        class_additions[class_name].append(
+            f"{class_name}.__overridden_methods__ = {str(overridden_method_names)}"
         )
 
 for class_name, signal_arguments in CONTEXT.signal_arguments.items():

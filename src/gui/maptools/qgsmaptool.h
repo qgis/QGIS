@@ -63,6 +63,7 @@ class QMenu;
 /**
  * \ingroup gui
  * \brief Abstract base class for all map tools.
+ *
  * Map tools are user interactive tools for manipulating the
  * map canvas. For example map pan and zoom features are
  * implemented as map tools.
@@ -265,19 +266,40 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsPointXY toMapCoordinates( QPoint point );
 
   signals:
-    //! emit a message
-    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 
-    //! emit signal to clear previous message
+    /**
+     * Emitted when a \a message should be shown to the user in the application message bar.
+     *
+     * \see messageDiscarded()
+     */
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
+    /**
+     * Emitted when the previous message from the tool should be cleared from the application message bar.
+     *
+     * \see messageEmitted()
+     */
     void messageDiscarded();
 
-    //! signal emitted once the map tool is activated
+    /**
+     * Emitted when the map tool is activated.
+     *
+     * \see deactivated()
+     */
     void activated();
 
-    //! signal emitted once the map tool is deactivated
+    /**
+     * Emitted when the map tool is deactivated.
+     *
+     * \see activated()
+     */
     void deactivated();
 
-    //! \since QGIS 3.32 signal emitted when the map tool is activated while it is already active
+    /**
+     * Emitted when the map tool is activated, while it is already active.
+     *
+     * \since QGIS 3.32
+     */
     void reactivated();
 
   private slots:

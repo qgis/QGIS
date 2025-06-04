@@ -167,6 +167,32 @@ bool QgsRasterBlock::typeIsNumeric( Qgis::DataType dataType )
   return false;
 }
 
+bool QgsRasterBlock::typeIsComplex( Qgis::DataType type )
+{
+  switch ( type )
+  {
+    case Qgis::DataType::UnknownDataType:
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::Int8:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::UInt32:
+    case Qgis::DataType::Int32:
+    case Qgis::DataType::Float32:
+    case Qgis::DataType::Float64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+      return false;
+
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+      return true;
+  }
+  return false;
+}
+
 bool QgsRasterBlock::typeIsColor( Qgis::DataType dataType )
 {
   switch ( dataType )
@@ -250,29 +276,9 @@ bool QgsRasterBlock::setIsNoData()
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( typeIsNumeric( mDataType ) )
   {
-    const size_t dataTypeSize = typeSize( mDataType );
     if ( mHasNoDataValue )
     {
-      if ( !mData )
-      {
-        QgsDebugError( QStringLiteral( "Data block not allocated" ) );
-        return false;
-      }
-
-      QgsDebugMsgLevel( QStringLiteral( "set mData to mNoDataValue" ), 4 );
-      QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
-      if ( mNoDataValue == 0 )
-      {
-        memset( mData, 0, dataTypeSize * mWidth * mHeight );
-      }
-      else
-      {
-        const char *nodata = noDataByteArray.data();
-        for ( qgssize i = 0; i < static_cast< qgssize >( mWidth )*mHeight; i++ )
-        {
-          memcpy( reinterpret_cast< char * >( mData ) + i * dataTypeSize, nodata, dataTypeSize );
-        }
-      }
+      return fill( mNoDataValue );
     }
     else
     {
@@ -286,6 +292,7 @@ bool QgsRasterBlock::setIsNoData()
       }
       QgsDebugMsgLevel( QStringLiteral( "set mNoDataBitmap to 1" ), 4 );
       memset( mNoDataBitmap, 0xff, mNoDataBitmapSize );
+      const size_t dataTypeSize = typeSize( mDataType );
       if ( mData )
       {
         memset( mData, 0, dataTypeSize * mWidth * mHeight );
@@ -470,6 +477,81 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     delete [] nodataRow;
     return true;
   }
+}
+
+template <typename T>
+void fillTypedData( double value, void *data, std::size_t count )
+{
+  std::fill_n( static_cast<T *>( data ), count, static_cast<T>( value ) );
+};
+
+bool QgsRasterBlock::fill( double value )
+{
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  if ( !typeIsNumeric( mDataType ) )
+  {
+    QgsDebugError( QStringLiteral( "Cannot fill image block" ) );
+    return false;
+  }
+
+  if ( !mData )
+  {
+    QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+    return false;
+  }
+
+  const std::size_t dataTypeSize = typeSize( mDataType );
+  const std::size_t valueCount = static_cast<size_t>( mWidth ) * mHeight;
+  const std::size_t totalSize = valueCount * dataTypeSize;
+
+  QgsDebugMsgLevel( QStringLiteral( "set mData to %1" ).arg( value ), 4 );
+
+  // special fast case for zero values
+  if ( value == 0 )
+  {
+    memset( mData, 0, totalSize );
+    return true;
+  }
+
+  switch ( mDataType )
+  {
+    case Qgis::DataType::Byte:
+      fillTypedData<quint8>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::Int8:
+      fillTypedData<qint8>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::UInt16:
+      fillTypedData<quint16>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::Int16:
+      fillTypedData<qint16>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::UInt32:
+      fillTypedData<quint32>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::Int32:
+      fillTypedData<qint32>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::Float32:
+      fillTypedData<float>( value, mData, valueCount );
+      break;
+    case Qgis::DataType::Float64:
+      fillTypedData<double>( value, mData, valueCount );
+      break;
+
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    case Qgis::DataType::UnknownDataType:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+      // not supported
+      return false;
+  }
+
+  return true;
 }
 
 QByteArray QgsRasterBlock::data() const

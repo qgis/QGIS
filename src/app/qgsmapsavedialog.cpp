@@ -64,6 +64,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mDpi = ms.outputDpi();
   mSize = ms.outputSize();
   mDevicePixelRatio = ms.devicePixelRatio();
+  mLockAspectRatio->setLocked( true );
 
   mResolutionSpinBox->setValue( static_cast<int>( std::round( mDpi ) ) );
 
@@ -149,7 +150,6 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     }
   }
 
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::onAccepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
@@ -261,6 +261,7 @@ void QgsMapSaveDialog::updateScale( double scale )
   QgsScaleCalculator calculator;
   calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
   calculator.setDpi( mDpi );
+  calculator.setMethod( QgsProject::instance()->scaleMethod() );
 
   const double oldScale = calculator.calculate( mExtent, mSize.width() );
   const double scaleRatio = scale / oldScale;
@@ -340,7 +341,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
       break;
   }
 
-  mapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  mapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector ); // prefer vector output (no caching of marker images etc.)
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, true );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );
@@ -447,13 +448,20 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsApplication::taskManager()->addTask( mapRendererTask );
 }
 
+void QgsMapSaveDialog::accept()
+{
+  // prevent the dialog from closing before saving the image/pdf
+  QgsMapSaveDialog::onAccepted();
+  QDialog::accept();
+}
+
 void QgsMapSaveDialog::onAccepted()
 {
   switch ( mDialogType )
   {
     case Image:
     {
-      const QPair<QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
+      const QPair<QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
       if ( !fileNameAndFilter.first.isEmpty() )
       {
         QgsMapSettings ms = QgsMapSettings();
@@ -501,7 +509,7 @@ void QgsMapSaveDialog::onAccepted()
     {
       QgsSettings settings;
       const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-      QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
       // return dialog focus on Mac
       activateWindow();
       raise();

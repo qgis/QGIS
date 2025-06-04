@@ -146,6 +146,8 @@ void QgsPointCloudLayerProperties::apply()
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
+  mLayer->setSubsetString( txtSubsetSQL->text() );
+
   mBackupCrs = mLayer->crs();
 
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )

@@ -29,7 +29,7 @@ class QgsExpressionContext;
 
 /**
  * \ingroup core
- * \brief The QgsLegendSettings class stores the appearance and layout settings
+ * \brief Stores the appearance and layout settings
  * for legend drawing with QgsLegendRenderer.
  *
  * The content of the legend is driven by the QgsLegendModel class.
@@ -78,21 +78,21 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \note Not available in Python bindings.
      */
-    SIP_SKIP QgsLegendStyle &rstyle( Qgis::LegendComponent s ) SIP_SKIP { return mStyleMap[s]; }
+    SIP_SKIP QgsLegendStyle &rstyle( Qgis::LegendComponent s ) SIP_SKIP { return mStyleMap[static_cast< int >( s )]; }
 
     /**
      * Returns the style for a legend component.
      *
      * \see setStyle()
      */
-    QgsLegendStyle style( Qgis::LegendComponent s ) const { return mStyleMap.value( s ); }
+    QgsLegendStyle style( Qgis::LegendComponent s ) const { return mStyleMap[ static_cast< int >( s ) ]; }
 
     /**
      * Sets the \a style for a legend component.
      *
      * \see style()
      */
-    void setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }
+    void setStyle( Qgis::LegendComponent s, const QgsLegendStyle &style ) { mStyleMap[ static_cast< int >( s ) ] = style; }
 
     /**
      * Returns the legend box space (in millimeters), which is the empty margin around the inside of the legend's
@@ -528,10 +528,34 @@ class CORE_EXPORT QgsLegendSettings
     Qgis::LegendJsonRenderFlags jsonRenderFlags() const;
 
     /**
-     * Sets the  the JSON export flags to \a jsonRenderFlags.
+     * Sets the JSON export flags to \a jsonRenderFlags.
      * \since QGIS 3.36
      */
     void setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags );
+
+    /**
+     * Returns the maximum line length (in millimeters) allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * If the returned value is 0, then no automatic wrapping will occur.
+     *
+     * \see setAutoWrapLinesAfter()
+     *
+     * \since QGIS 3.44
+     */
+    double autoWrapLinesAfter() const { return mAutoWrapLinesAfter; }
+
+    /**
+     * Sets the maximum line \a length (in millimeters) allowed before lines of text in the legend
+     * will be automatically word wrapped.
+     *
+     * If \a length is 0, then no automatic wrapping will occur.
+     *
+     * \see autoWrapLinesAfter()
+     *
+     * \since QGIS 3.44
+     */
+    void setAutoWrapLinesAfter( double length ) { mAutoWrapLinesAfter = length; }
 
   private:
 
@@ -541,6 +565,8 @@ class CORE_EXPORT QgsLegendSettings
     Qt::AlignmentFlag mTitleAlignment = Qt::AlignLeft;
 
     QString mWrapChar;
+
+    double mAutoWrapLinesAfter = 0;
 
     //! Space between item box and contents
     qreal mBoxSpace = 2;
@@ -579,7 +605,7 @@ class CORE_EXPORT QgsLegendSettings
     QColor mRasterStrokeColor;
     double mRasterStrokeWidth = 0.0;
 
-    QMap<Qgis::LegendComponent, QgsLegendStyle> mStyleMap;
+    QVector<QgsLegendStyle> mStyleMap;
 
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit = 1;

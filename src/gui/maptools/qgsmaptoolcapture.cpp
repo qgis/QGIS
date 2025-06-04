@@ -160,7 +160,6 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   else
   {
     setCursor( QCursor( Qt::ArrowCursor ) );
-    mCanvas->mapTool()->clean();
   }
 
   switch ( vlayer->geometryType() )
@@ -352,7 +351,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
       }
       else
       {
-        mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+        mCaptureCurve = *qgsgeometry_cast<const QgsCompoundCurve *>( curved.constGet() );
       }
     }
 
@@ -597,11 +596,14 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   {
     try
     {
-      const QgsPointXY mapP( mapPoint.x(), mapPoint.y() );         //#spellok
-      layerPoint = QgsPoint( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
-      if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
+      QgsPointXY mapP( mapPoint.x(), mapPoint.y() ); //#spellok
+      const bool is3D = layerPoint.is3D();
+      const bool isMeasure = layerPoint.isMeasure();
+      mapP = toLayerCoordinates( vlayer, mapP );                                                         //transform snapped point back to layer crs  //#spellok
+      layerPoint = QgsPoint( layerPoint.wkbType(), mapP.x(), mapP.y(), layerPoint.z(), layerPoint.m() ); //#spellok
+      if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !is3D )
         layerPoint.addZValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPointV2().z() : defaultZValue() );
-      if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
+      if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !isMeasure )
         layerPoint.addMValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPointV2().m() : defaultMValue() );
     }
     catch ( QgsCsException & )
@@ -642,6 +644,11 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   {
     if ( ( match.hasVertex() || match.hasLineEndpoint() ) )
     {
+      if ( sourceLayer->crs() != vlayer->crs() )
+      {
+        layerPoint = match.interpolatedPoint();
+        return 1;
+      }
       QgsFeature f;
       QgsFeatureRequest request;
       request.setFilterFid( match.featureId() );
@@ -653,7 +660,6 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         {
           return 2;
         }
-
         layerPoint = f.geometry().constGet()->vertexAt( vId );
         if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
           layerPoint.addZValue( defaultZValue() );
@@ -671,10 +677,6 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
           layerPoint.dropMValue();
         }
 
-        if ( sourceLayer->crs() != vlayer->crs() )
-        {
-          layerPoint = toLayerCoordinates( vlayer, layerPoint );
-        }
         return 0;
       }
       return 2;
@@ -922,7 +924,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     else
     {
       const int curvesBefore = mCaptureCurve.nCurves();
-      const bool lastCurveIsLineString = qgsgeometry_cast<QgsLineString *>( mCaptureCurve.curveAt( curvesBefore - 1 ) );
+      const bool lastCurveIsLineString = qgsgeometry_cast<const QgsLineString *>( mCaptureCurve.curveAt( curvesBefore - 1 ) );
 
       const int pointsCountBefore = mCaptureCurve.numPoints();
       mCaptureCurve.deleteVertex( vertexToRemove );

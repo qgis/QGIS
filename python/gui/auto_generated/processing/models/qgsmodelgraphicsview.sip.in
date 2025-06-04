@@ -28,7 +28,8 @@ QGraphicsView subclass representing the model designer.
   public:
     QgsModelGraphicsView( QWidget *parent = 0 );
 %Docstring
-Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
+Constructor for QgsModelGraphicsView, with the specified ``parent``
+widget.
 %End
     ~QgsModelGraphicsView();
 
@@ -79,6 +80,16 @@ Starts a macro command, containing a group of interactions in the view.
 Ends a macro command, containing a group of interactions in the view.
 %End
 
+    void beginCommand( const QString &text );
+%Docstring
+Starts a single undo command
+%End
+
+    void endCommand();
+%Docstring
+Ends a single undo command
+%End
+
 
     enum ClipboardOperation
     {
@@ -88,7 +99,8 @@ Ends a macro command, containing a group of interactions in the view.
 
     void copySelectedItems( ClipboardOperation operation );
 %Docstring
-Cuts or copies the selected items, respecting the specified ``operation``.
+Cuts or copies the selected items, respecting the specified
+``operation``.
 
 .. seealso:: :py:func:`copyItems`
 
@@ -97,7 +109,8 @@ Cuts or copies the selected items, respecting the specified ``operation``.
 
     void copyItems( const QList<QgsModelComponentGraphicItem *> &items, ClipboardOperation operation );
 %Docstring
-Cuts or copies the a list of ``items``, respecting the specified ``operation``.
+Cuts or copies the a list of ``items``, respecting the specified
+``operation``.
 
 .. seealso:: :py:func:`copySelectedItems`
 
@@ -142,32 +155,35 @@ Emitted when an input parameter is dropped onto the view.
 
     void itemFocused( QgsModelComponentGraphicItem *item );
 %Docstring
-Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
-item and should have its properties displayed in any designer windows.
+Emitted when an ``item`` is "focused" in the view, i.e. it becomes the
+active item and should have its properties displayed in any designer
+windows.
 %End
 
     void willBeDeleted();
 %Docstring
-Emitted in the destructor when the view is about to be deleted,
-but is still in a perfectly valid state.
+Emitted in the destructor when the view is about to be deleted, but is
+still in a perfectly valid state.
 %End
 
     void macroCommandStarted( const QString &text );
 %Docstring
-Emitted when a macro command containing a group of interactions is started in the view.
+Emitted when a macro command containing a group of interactions is
+started in the view.
 %End
 
     void macroCommandEnded();
 %Docstring
-Emitted when a macro command containing a group of interactions in the view has ended.
+Emitted when a macro command containing a group of interactions in the
+view has ended.
 %End
 
-    void beginCommand( const QString &text );
+    void commandBegun( const QString &text );
 %Docstring
 Emitted when an undo command is started in the view.
 %End
 
-    void endCommand();
+    void commandEnded();
 %Docstring
 Emitted when an undo command in the view has ended.
 %End

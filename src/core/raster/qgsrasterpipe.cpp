@@ -454,9 +454,6 @@ void QgsRasterPipe::initPropertyDefinitions()
 QgsPropertiesDefinition QgsRasterPipe::propertyDefinitions()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-    initPropertyDefinitions();
-  } );
+  std::call_once( initialized, initPropertyDefinitions );
   return sPropertyDefinitions;
 }

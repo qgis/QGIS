@@ -708,7 +708,7 @@ void QgsGrassNewMapset::setSelectedRegion()
   // Convert to currently selected coordinate system
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->crs().srsid() != GEOCRS_ID )
+  if ( mProjectionSelector->crs().srsid() != 3452 )
   {
     const QgsCoordinateReferenceSystem source( QStringLiteral( "EPSG:4326" ) );
     if ( !source.isValid() )
@@ -866,7 +866,7 @@ void QgsGrassNewMapset::drawRegion()
   points << points[0]; // close polygon
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->crs().srsid() != GEOCRS_ID )
+  if ( mProjectionSelector->crs().srsid() != 3452 )
   {
     QgsCoordinateReferenceSystem source = mProjectionSelector->crs();
 
@@ -876,7 +876,7 @@ void QgsGrassNewMapset::drawRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest = QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID );
+    QgsCoordinateReferenceSystem dest = QgsCoordinateReferenceSystem::fromSrsId( 3452 );
 
     if ( !dest.isValid() )
     {

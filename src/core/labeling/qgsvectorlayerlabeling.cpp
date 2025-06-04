@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsmarkersymbol.h"
+#include "qgssldexportcontext.h"
 
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -39,6 +40,19 @@ QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QD
   {
     return nullptr;
   }
+}
+
+void QgsAbstractVectorLayerLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( parent, context );
+}
+
+bool QgsAbstractVectorLayerLabeling::toSld( QDomNode &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "%1 labeling cannot be exported to SLD" ).arg( type() ) );
+  return false;
 }
 
 bool QgsAbstractVectorLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const
@@ -121,6 +135,15 @@ bool QgsVectorLayerSimpleLabeling::accept( QgsStyleEntityVisitorInterface *visit
 bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
 {
   return mSettings->containsAdvancedEffects();
+}
+
+bool QgsVectorLayerSimpleLabeling::hasNonDefaultCompositionMode() const
+{
+  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+         || mSettings->format().hasNonDefaultCompositionMode();
 }
 
 QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
@@ -277,6 +300,13 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
 
 void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeTextSymbolizer( parent, settings, context );
+}
+
+bool QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, QgsSldExportContext &context ) const
+{
   QDomDocument doc = parent.ownerDocument();
 
   // text symbolizer
@@ -290,7 +320,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   textSymbolizerElement.appendChild( labelElement );
   if ( settings.isExpression )
   {
-    labelElement.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( settings.getLabelExpression()->dump() ) ) );
+    context.pushError( QObject::tr( "Cannot export label expression %1 to SLD" ).arg( settings.getLabelExpression()->dump() ) );
     labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
   }
   else
@@ -322,6 +352,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   QDomElement fontElement = doc.createElement( QStringLiteral( "se:Font" ) );
   textSymbolizerElement.appendChild( fontElement );
   fontElement.appendChild( QgsSymbolLayerUtils::createSvgParameterElement( doc, QStringLiteral( "font-family" ), font.family() ) );
+  const QVariantMap props = context.extraProperties();
   const double fontSize = QgsSymbolLayerUtils::rescaleUom( format.size(), format.sizeUnit(), props );
   fontElement.appendChild( QgsSymbolLayerUtils::createSvgParameterElement( doc, QStringLiteral( "font-size" ), QString::number( fontSize ) ) );
   if ( format.font().italic() )
@@ -466,7 +497,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   if ( background.enabled() )
   {
     std::unique_ptr<QgsMarkerSymbolLayer> layer = backgroundToMarkerLayer( background );
-    layer->writeSldMarker( doc, textSymbolizerElement, props );
+    layer->writeSldMarker( doc, textSymbolizerElement, context );
   }
 
   // priority and zIndex, the default values are 0 and 5 in qgis (and between 0 and 10),
@@ -605,12 +636,18 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
         break;
     }
   }
+  return true;
 }
-
 
 void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( parent, context );
+}
 
+bool QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, QgsSldExportContext &context ) const
+{
   if ( mSettings->drawLabels )
   {
     QDomDocument doc = parent.ownerDocument();
@@ -629,9 +666,9 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &p
       QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElement, scaleProps );
     }
 
-    writeTextSymbolizer( ruleElement, *mSettings, props );
+    writeTextSymbolizer( ruleElement, *mSettings, context );
   }
-
+  return true;
 }
 
 void QgsVectorLayerSimpleLabeling::multiplyOpacity( double opacityFactor )

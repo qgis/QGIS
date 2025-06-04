@@ -14,29 +14,30 @@
 class QgsKernelDensityEstimation
 {
 %Docstring(signature="appended")
-Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
+Performs Kernel Density Estimation ("heatmap") calculations on a vector
+layer.
 %End
 
 %TypeHeaderCode
 #include "qgskde.h"
 %End
   public:
-    enum KernelShape
+    enum class KernelShape
     {
-      KernelQuartic,
-      KernelTriangular,
-      KernelUniform,
-      KernelTriweight,
-      KernelEpanechnikov,
+      Quartic,
+      Triangular,
+      Uniform,
+      Triweight,
+      Epanechnikov,
     };
 
-    enum OutputValues
+    enum class OutputValues
     {
-      OutputRaw,
-      OutputScaled,
+      Raw,
+      Scaled,
     };
 
-    enum Result
+    enum class Result
     {
       Success,
       DriverError,
@@ -66,21 +67,26 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
 %Docstring
-Constructor for QgsKernelDensityEstimation. Requires a Parameters object specifying the options to use
-to generate the surface. The output path and file format are also required.
+Constructor for QgsKernelDensityEstimation. Requires a Parameters object
+specifying the options to use to generate the surface. The output path
+and file format are also required.
 %End
 
 
     Result run();
 %Docstring
-Runs the KDE calculation across the whole layer at once. Either call this method, or manually
-call :py:func:`~QgsKernelDensityEstimation.run`, :py:func:`~QgsKernelDensityEstimation.addFeature` and :py:func:`~QgsKernelDensityEstimation.finalise` separately.
+Runs the KDE calculation across the whole layer at once. Either call
+this method, or manually call
+:py:func:`~QgsKernelDensityEstimation.run`,
+:py:func:`~QgsKernelDensityEstimation.addFeature` and
+:py:func:`~QgsKernelDensityEstimation.finalise` separately.
 %End
 
     Result prepare();
 %Docstring
-Prepares the output file for writing and setups up the surface calculation. This must be called
-before adding features via :py:func:`~QgsKernelDensityEstimation.addFeature`.
+Prepares the output file for writing and setups up the surface
+calculation. This must be called before adding features via
+:py:func:`~QgsKernelDensityEstimation.addFeature`.
 
 .. seealso:: :py:func:`addFeature`
 
@@ -89,7 +95,9 @@ before adding features via :py:func:`~QgsKernelDensityEstimation.addFeature`.
 
     Result addFeature( const QgsFeature &feature );
 %Docstring
-Adds a single feature to the KDE surface. :py:func:`~QgsKernelDensityEstimation.prepare` must be called before adding features.
+Adds a single feature to the KDE surface.
+:py:func:`~QgsKernelDensityEstimation.prepare` must be called before
+adding features.
 
 .. seealso:: :py:func:`prepare`
 
@@ -98,7 +106,8 @@ Adds a single feature to the KDE surface. :py:func:`~QgsKernelDensityEstimation.
 
     Result finalise();
 %Docstring
-Finalises the output file. Must be called after adding all features via :py:func:`~QgsKernelDensityEstimation.addFeature`.
+Finalises the output file. Must be called after adding all features via
+:py:func:`~QgsKernelDensityEstimation.addFeature`.
 
 .. seealso:: :py:func:`prepare`
 
@@ -108,7 +117,6 @@ Finalises the output file. Must be called after adding all features via :py:func
   private:
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

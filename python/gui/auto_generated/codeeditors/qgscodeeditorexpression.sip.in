@@ -13,9 +13,9 @@
 class QgsCodeEditorExpression : QgsCodeEditor
 {
 %Docstring(signature="appended")
+A QGIS expression editor based on QScintilla2.
 
-A QGIS expression editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+Adds syntax highlighting and code autocompletion.
 
 .. versionadded:: 3.4
 %End
@@ -31,18 +31,22 @@ Constructor for QgsCodeEditorExpression
 
     virtual Qgis::ScriptLanguage language() const;
 
+    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Variables and functions from this expression context will be added to
-the API.
-Will also reload all globally registered functions.
+the API. Will also reload all globally registered functions.
 %End
 
     void setFields( const QgsFields &fields );
 %Docstring
 Field names will be added to the API.
 %End
+
+    virtual void toggleComment();
+
 
   protected:
     virtual void initializeLexer();

@@ -256,6 +256,11 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::AllowDegradedPlacement ), QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handing" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::MaximumDistance ), QgsPropertyDefinition( "MaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+
+    { static_cast< int >( QgsPalLayerSettings::Property::LabelMarginDistance ), QgsPropertyDefinition( "LabelMarginDistance", QObject::tr( "Minimum distance to other labels" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::RemoveDuplicateLabels ), QgsPropertyDefinition( "RemoveDuplicates", QObject::tr( "Remove duplicate labels" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::RemoveDuplicateLabelDistance ), QgsPropertyDefinition( "RemoveDuplicateDistance", QObject::tr( "Minimum distance to duplicate labels" ), QgsPropertyDefinition::DoublePositive, origin ) },
+
   };
 }
 
@@ -596,10 +601,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
   {
     qWarning( "stopRender was not called on QgsPalLayerSettings object!" );
   }
-
-  // pal layer is deleted internally in PAL
-
-  delete expression;
 }
 
 
@@ -613,9 +614,9 @@ QgsExpression *QgsPalLayerSettings::getLabelExpression()
 {
   if ( !expression )
   {
-    expression = new QgsExpression( fieldName );
+    expression = std::make_unique<QgsExpression>( fieldName );
   }
-  return expression;
+  return expression.get();
 }
 
 Qgis::AngleUnit QgsPalLayerSettings::rotationUnit() const
@@ -1187,6 +1188,16 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble() );
   mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt() );
   mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt() );
+
+  mThinningSettings.setLabelMarginDistance( placementElem.attribute( QStringLiteral( "labelMarginDistance" ), QStringLiteral( "0" ) ).toDouble() );
+  mThinningSettings.setLabelMarginDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "labelMarginDistanceUnit" ) ) ) );
+  mThinningSettings.setLabelMarginDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "labelMarginDistanceMapUnitScale" ) ) ) );
+
+  mThinningSettings.setMinimumDistanceToDuplicate( placementElem.attribute( QStringLiteral( "minDistanceToDuplicates" ), QString::number( QgsLabelThinningSettings::DEFAULT_MINIMUM_DISTANCE_TO_DUPLICATE ) ).toDouble() );
+  mThinningSettings.setMinimumDistanceToDuplicateUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "minDistanceToDuplicatesUnit" ) ) ) );
+  mThinningSettings.setMinimumDistanceToDuplicateMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "minDistanceToDuplicateMapUnitScale" ) ) ) );
+  mThinningSettings.setAllowDuplicateRemoval( placementElem.attribute( QStringLiteral( "allowDuplicateRemoval" ), QStringLiteral( "0" ) ).toInt() );
+
   mObstacleSettings.setIsObstacle( renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt() );
   mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
   mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
@@ -1352,6 +1363,37 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), mThinningSettings.minimumFeatureSize() );
   renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), mThinningSettings.limitNumberOfLabelsEnabled() );
   renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), mThinningSettings.maximumNumberLabels() );
+
+  if ( mThinningSettings.labelMarginDistance() > 0 )
+  {
+    placementElem.setAttribute( QStringLiteral( "labelMarginDistance" ), mThinningSettings.labelMarginDistance() );
+  }
+  if ( mThinningSettings.labelMarginDistanceUnit() != Qgis::RenderUnit::Millimeters )
+  {
+    placementElem.setAttribute( QStringLiteral( "labelMarginDistanceUnit" ), QgsUnitTypes::encodeUnit( mThinningSettings.labelMarginDistanceUnit() ) );
+  }
+  if ( !mThinningSettings.labelMarginDistanceMapUnitScale().isNull() )
+  {
+    placementElem.setAttribute( QStringLiteral( "labelMarginDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.labelMarginDistanceMapUnitScale() ) );
+  }
+
+  if ( mThinningSettings.minimumDistanceToDuplicate() != QgsLabelThinningSettings::DEFAULT_MINIMUM_DISTANCE_TO_DUPLICATE )
+  {
+    placementElem.setAttribute( QStringLiteral( "minDistanceToDuplicates" ), mThinningSettings.minimumDistanceToDuplicate() );
+  }
+  if ( mThinningSettings.minimumDistanceToDuplicateUnit() != Qgis::RenderUnit::Millimeters )
+  {
+    placementElem.setAttribute( QStringLiteral( "minDistanceToDuplicatesUnit" ), QgsUnitTypes::encodeUnit( mThinningSettings.minimumDistanceToDuplicateUnit() ) );
+  }
+  if ( !mThinningSettings.minimumDistanceToDuplicateMapUnitScale().isNull() )
+  {
+    placementElem.setAttribute( QStringLiteral( "minDistanceToDuplicateMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.minimumDistanceToDuplicateMapUnitScale() ) );
+  }
+  if ( mThinningSettings.allowDuplicateRemoval() )
+  {
+    placementElem.setAttribute( QStringLiteral( "allowDuplicateRemoval" ), QStringLiteral( "1" ) );
+  }
+
   renderingElem.setAttribute( QStringLiteral( "obstacle" ), mObstacleSettings.isObstacle() );
   renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), mObstacleSettings.factor() );
   renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( mObstacleSettings.type() ) );
@@ -1452,7 +1494,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     }
   }
 
-  context.setUseAdvancedEffects( true );
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   context.setPainter( &painter );
 
   // slightly inset text to account for buffer/background
@@ -2968,6 +3010,21 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     labelFeature->setOuterBounds( outerBounds );
   }
 
+  QgsLabelFeatureThinningSettings thinning;
+  if ( featureThinningSettings.labelMarginDistance() > 0 )
+  {
+    thinning.setLabelMarginDistance( context.convertToMapUnits( featureThinningSettings.labelMarginDistance(),
+                                     featureThinningSettings.labelMarginDistanceUnit(),
+                                     featureThinningSettings.labelMarginDistanceMapUnitScale() ) );
+  }
+  if ( featureThinningSettings.allowDuplicateRemoval() )
+  {
+    thinning.setNoRepeatDistance( context.convertToMapUnits( featureThinningSettings.minimumDistanceToDuplicate(),
+                                  featureThinningSettings.minimumDistanceToDuplicateUnit(),
+                                  featureThinningSettings.minimumDistanceToDuplicateMapUnitScale() ) );
+  }
+  ( *labelFeature ).setThinningSettings( thinning );
+
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
   //this makes labels align to the font's baseline or highest character
   double topMargin = std::max( 0.25 * labelFontMetrics.ascent(), 0.0 );
@@ -4113,7 +4170,9 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case Qgis::LayerType::Vector:
     {
       const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer );
-      return vl->labelsEnabled() || vl->diagramsEnabled() || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) );
+      return ( vl->labelsEnabled() && vl->labeling() )
+             || ( vl->diagramsEnabled() && vl->diagramRenderer() )
+             || ( vl->renderer() && vl->renderer()->flags().testFlag( Qgis::FeatureRendererFlag::AffectsLabeling ) );
     }
 
     case Qgis::LayerType::VectorTile:

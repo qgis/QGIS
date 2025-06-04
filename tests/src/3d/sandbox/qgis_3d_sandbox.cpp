@@ -30,7 +30,7 @@
 #include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapsettings.h"
+#include "qgsmapviewsmanager.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
@@ -42,65 +42,111 @@
 #include <QPushButton>
 #include <QScreen>
 #include <QToolBar>
+#include <QCommandLineParser>
 
-void initCanvas3D( Qgs3DMapCanvas *canvas )
+/**
+ * \param viewIdxStr empty for blank 3D view, number or string for loading from project by index/name
+ * \param isGlobe true for globe, false for standard plane
+ */
+void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
 {
-  QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
-  const QList<QgsMapLayer *> visibleLayers = root->checkedLayers();
-
-  QgsCoordinateReferenceSystem crs = QgsProject::instance()->crs();
-  if ( crs.isGeographic() )
-  {
-    // we can't deal with non-projected CRS, so let's just pick something
-    QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
-  }
-
-  QgsMapSettings ms;
-  ms.setDestinationCrs( QgsProject::instance()->crs() );
-  ms.setLayers( visibleLayers );
-  QgsRectangle fullExtent = QgsProject::instance()->viewSettings()->fullExtent();
-
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( QgsProject::instance()->crs() );
-  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( visibleLayers );
 
-  map->setExtent( fullExtent );
+  if ( viewIdxStr.isEmpty() ) // Create a new blank 3D map view
+  {
+    QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
+    const QList<QgsMapLayer *> visibleLayers = root->checkedLayers();
 
-  Qgs3DAxisSettings axis;
-  axis.setMode( Qgs3DAxisSettings::Mode::Off );
-  map->set3DAxisSettings( axis );
+    QgsCoordinateReferenceSystem crs = QgsProject::instance()->crs();
+    if ( crs.isGeographic() )
+    {
+      // we can't deal with non-projected CRS, so let's just pick something
+      QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+    }
 
-  map->setTransformContext( QgsProject::instance()->transformContext() );
-  map->setPathResolver( QgsProject::instance()->pathResolver() );
-  map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
-  QObject::connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] {
+    map->setCrs( isGlobe ? QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ) : QgsProject::instance()->crs() );
+    map->setLayers( visibleLayers );
+
+    if ( map->sceneMode() == Qgis::SceneMode::Local )
+    {
+      map->setExtent( QgsProject::instance()->viewSettings()->fullExtent() );
+    }
+
+    Qgs3DAxisSettings axis;
+    axis.setMode( Qgs3DAxisSettings::Mode::Off );
+    map->set3DAxisSettings( axis );
+
     map->setTransformContext( QgsProject::instance()->transformContext() );
-  } );
+    map->setPathResolver( QgsProject::instance()->pathResolver() );
+    map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
+    QObject::connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] {
+      map->setTransformContext( QgsProject::instance()->transformContext() );
+    } );
 
-  QgsFlatTerrainSettings *flatTerrain = new QgsFlatTerrainSettings();
-  flatTerrain->setElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
-  map->setTerrainSettings( flatTerrain );
+    QgsFlatTerrainSettings *flatTerrain = new QgsFlatTerrainSettings();
+    flatTerrain->setElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
+    map->setTerrainSettings( flatTerrain );
 
-  QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
-  defaultPointLight.setConstantAttenuation( 0 );
-  map->setLightSources( { defaultPointLight.clone() } );
-  if ( QScreen *screen = QGuiApplication::primaryScreen() )
-  {
-    map->setOutputDpi( screen->physicalDotsPerInch() );
+    QgsPointLightSettings defaultPointLight;
+    defaultPointLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+    defaultPointLight.setConstantAttenuation( 0 );
+    map->setLightSources( { defaultPointLight.clone() } );
+    if ( QScreen *screen = QGuiApplication::primaryScreen() )
+    {
+      map->setOutputDpi( screen->physicalDotsPerInch() );
+    }
+    else
+    {
+      map->setOutputDpi( 96 );
+    }
+
+    canvas->setMapSettings( map );
+
+    canvas->resetView();
   }
-  else
+  else // Load view from project based on viewIdxStr
   {
-    map->setOutputDpi( 96 );
+    QDomElement viewXml;
+    bool isViewIdx;
+    int viewIdx = viewIdxStr.toInt( &isViewIdx );
+    if ( isViewIdx )
+    {
+      QList<QDomElement> viewsXml = QgsProject::instance()->viewsManager()->get3DViews();
+      if ( viewsXml.size() >= viewIdx )
+        viewXml = viewsXml[viewIdx];
+    }
+    else
+    {
+      viewXml = QgsProject::instance()->viewsManager()->get3DViewSettings( viewIdxStr );
+    }
+
+    if ( viewXml.isNull() )
+    {
+      qDebug() << "3D map view" << viewIdx << "does not exist!";
+      exit( 2 );
+    }
+
+
+    // See QgisApp::read3DMapViewSettings for necessary steps
+    QgsReadWriteContext readWriteContext;
+    readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    Qgs3DMapSettings *map = new Qgs3DMapSettings;
+    map->readXml( viewXml.firstChildElement( QStringLiteral( "qgis3d" ) ), readWriteContext );
+    map->resolveReferences( *QgsProject::instance() );
+
+    map->setTransformContext( QgsProject::instance()->transformContext() );
+    map->setPathResolver( QgsProject::instance()->pathResolver() );
+    map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
+    map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+
+    canvas->setMapSettings( map );
+
+    QDomElement elemCamera = viewXml.firstChildElement( QStringLiteral( "camera" ) );
+    if ( !elemCamera.isNull() )
+    {
+      canvas->cameraController()->readXml( elemCamera );
+    }
   }
-
-  canvas->setMapSettings( map );
-
-  QgsRectangle extent = fullExtent;
-  extent.scale( 1.3 );
-  const float dist = static_cast<float>( std::max( extent.width(), extent.height() ) );
-  canvas->setViewFromTop( extent.center(), dist * 2, 0 );
 
   QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] {
     qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
@@ -174,13 +220,30 @@ int main( int argc, char *argv[] )
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  if ( argc < 2 )
+  QCommandLineParser argParser;
+  argParser.setApplicationDescription( "3D map view sandbox" );
+  QCommandLineOption helpOption = argParser.addHelpOption();
+  argParser.addPositionalArgument( "project", "Project file path" );
+  QCommandLineOption viewOption( { "v", "view" }, "Load 3D map view from project", "name/index" );
+  QCommandLineOption globeOption( { "g", "globe" }, "Create new 3D view as globe" );
+  argParser.addOptions( { viewOption, globeOption } );
+
+  if ( !argParser.parse( myApp.arguments() ) )
   {
-    qDebug() << "need QGIS project file";
+    qDebug() << argParser.errorText();
     return 1;
   }
+  if ( argParser.isSet( helpOption ) )
+    argParser.showHelp();
+  if ( argParser.positionalArguments().count() != 1 )
+  {
+    qDebug() << "need exactly one QGIS project file";
+    return 1;
+  }
+  const QString projectFile = argParser.positionalArguments().at( 0 );
+  QString viewIdx = argParser.isSet( viewOption ) ? argParser.value( viewOption ) : "";
+  bool isGlobe = argParser.isSet( globeOption );
 
-  const QString projectFile = argv[1];
   const bool res = QgsProject::instance()->read( projectFile );
   if ( !res )
   {
@@ -189,7 +252,7 @@ int main( int argc, char *argv[] )
   }
 
   Qgs3DMapCanvas *canvas = new Qgs3DMapCanvas;
-  initCanvas3D( canvas );
+  initCanvas3D( canvas, isGlobe, viewIdx );
 
   // set up the UI
   QWidget *windowWidget = new QWidget;

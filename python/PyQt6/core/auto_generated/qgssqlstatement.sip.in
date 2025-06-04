@@ -9,10 +9,11 @@
 
 
 
+
 class QgsSQLStatement
 {
 %Docstring(signature="appended")
-Class for parsing SQL statements.
+Parses SQL statements.
 %End
 
 %TypeHeaderCode
@@ -40,30 +41,30 @@ Returns parser error
 
     bool doBasicValidationChecks( QString &errorMsgOut /Out/ ) const;
 %Docstring
-Performs basic validity checks. Basically checking that columns referencing
-a table, references a specified table. Returns ``True`` if the validation is
-successful
+Performs basic validity checks. Basically checking that columns
+referencing a table, references a specified table. Returns ``True`` if
+the validation is successful
 %End
 
 
     const QgsSQLStatement::Node *rootNode() const;
 %Docstring
-Returns the root node of the statement.
-The root node is ``None`` if parsing has failed.
+Returns the root node of the statement. The root node is ``None`` if
+parsing has failed.
 %End
 
     QString statement() const;
 %Docstring
-Returns the original, unmodified statement string.
-If there was none supplied because it was constructed by sole
-API calls, :py:func:`~QgsSQLStatement.dump` will be used to create one instead.
+Returns the original, unmodified statement string. If there was none
+supplied because it was constructed by sole API calls,
+:py:func:`~QgsSQLStatement.dump` will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
-Returns the statement string, constructed from the internal
-abstract syntax tree. This does not contain any nice whitespace
-formatting or comments. In general it is preferable to use
+Returns the statement string, constructed from the internal abstract
+syntax tree. This does not contain any nice whitespace formatting or
+comments. In general it is preferable to use
 :py:func:`~QgsSQLStatement.statement` instead.
 %End
 
@@ -185,7 +186,7 @@ Returns a quoted version of a string (in single quotes)
     class Node
 {
 %Docstring(signature="appended")
-Abstract node class
+Abstract node class for SQL statement nodes.
 %End
 
 %TypeHeaderCode
@@ -229,9 +230,8 @@ Abstract virtual dump method
 
         virtual QgsSQLStatement::Node *clone() const = 0 /Factory/;
 %Docstring
-Generate a clone of this node.
-Make sure that the clone does not contain any information which is
-generated in prepare and context related.
+Generate a clone of this node. Make sure that the clone does not contain
+any information which is generated in prepare and context related.
 Ownership is transferred to the caller.
 
 :return: a deep copy of this node.
@@ -301,7 +301,7 @@ Dump list
     class NodeUnaryOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Unary logicial/arithmetical operator ( NOT, - )
+Unary logical/arithmetical operator ( NOT, - ).
 %End
 
 %TypeHeaderCode
@@ -312,7 +312,6 @@ Unary logicial/arithmetical operator ( NOT, - )
 %Docstring
 Constructor
 %End
-        ~NodeUnaryOperator();
 
         QgsSQLStatement::UnaryOperator op() const;
 %Docstring
@@ -332,13 +331,15 @@ Operand
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeUnaryOperator( const NodeUnaryOperator &other );
       protected:
     };
 
     class NodeBinaryOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Binary logical/arithmetical operator (AND, OR, =, +, ...)
+Binary logical/arithmetical operator (AND, OR, =, +, ...).
 %End
 
 %TypeHeaderCode
@@ -349,7 +350,6 @@ Binary logical/arithmetical operator (AND, OR, =, +, ...)
 %Docstring
 Constructor
 %End
-        ~NodeBinaryOperator();
 
         QgsSQLStatement::BinaryOperator op() const;
 %Docstring
@@ -384,6 +384,8 @@ Precedence
 Is left associative ?
 %End
 
+      private:
+        NodeBinaryOperator( const NodeBinaryOperator &other );
       protected:
 
     };
@@ -391,7 +393,7 @@ Is left associative ?
     class NodeInOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-'x IN (y, z)' operator
+An 'x IN (y, z)' operator.
 %End
 
 %TypeHeaderCode
@@ -402,7 +404,6 @@ Is left associative ?
 %Docstring
 Constructor
 %End
-        ~NodeInOperator();
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -427,13 +428,15 @@ Values list
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeInOperator( const NodeInOperator &other );
       protected:
     };
 
     class NodeBetweenOperator : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-'X BETWEEN y and z' operator
+An 'X BETWEEN y and z' operator.
 %End
 
 %TypeHeaderCode
@@ -444,7 +447,6 @@ Values list
 %Docstring
 Constructor
 %End
-
         QgsSQLStatement::Node *node() const;
 %Docstring
 Variable at the left of BETWEEN
@@ -473,13 +475,15 @@ Maximum bound
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeBetweenOperator( const NodeBetweenOperator &other );
       protected:
     };
 
     class NodeFunction : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Function with a name and arguments node
+Function with a name and arguments node.
 %End
 
 %TypeHeaderCode
@@ -490,7 +494,6 @@ Function with a name and arguments node
 %Docstring
 Constructor
 %End
-        ~NodeFunction();
 
         QString name() const;
 %Docstring
@@ -510,6 +513,8 @@ Returns arguments
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeFunction( const NodeFunction &other );
       protected:
 
     };
@@ -517,7 +522,7 @@ Returns arguments
     class NodeLiteral : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Literal value (integer, integer64, double, string)
+Literal value (integer, integer64, double, string).
 %End
 
 %TypeHeaderCode
@@ -548,7 +553,7 @@ The value of the literal.
     class NodeColumnRef : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Reference to a column
+Reference to a column.
 %End
 
 %TypeHeaderCode
@@ -607,7 +612,7 @@ Clone with same type return
     class NodeSelectedColumn : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Selected column
+Selected column.
 %End
 
 %TypeHeaderCode
@@ -618,7 +623,6 @@ Selected column
 %Docstring
 Constructor
 %End
-        ~NodeSelectedColumn();
 
         void setAlias( const QString &alias );
 %Docstring
@@ -647,13 +651,15 @@ Alias name
 Clone with same type return
 %End
 
+      private:
+        NodeSelectedColumn( const NodeSelectedColumn &other );
       protected:
     };
 
     class NodeCast : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-CAST operator
+CAST operator.
 %End
 
 %TypeHeaderCode
@@ -664,7 +670,6 @@ CAST operator
 %Docstring
 Constructor
 %End
-        ~NodeCast();
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -684,13 +689,15 @@ Type
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeCast( const NodeCast &other );
       protected:
     };
 
     class NodeTableDef : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Table definition
+Table definition.
 %End
 
 %TypeHeaderCode
@@ -748,7 +755,7 @@ Clone with same type return
     class NodeJoin : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Join definition
+Join definition.
 %End
 
 %TypeHeaderCode
@@ -763,7 +770,6 @@ Constructor with table definition, ON expression
 %Docstring
 Constructor with table definition and USING columns
 %End
-        ~NodeJoin();
 
         QgsSQLStatement::NodeTableDef *tableDef() const;
 %Docstring
@@ -772,7 +778,8 @@ Table definition
 
         QgsSQLStatement::Node *onExpr() const;
 %Docstring
-On expression. Will be ``None`` if :py:func:`~NodeJoin.usingColumns` is not empty
+On expression. Will be ``None`` if :py:func:`~NodeJoin.usingColumns` is
+not empty
 %End
 
         QList<QString> usingColumns() const;
@@ -797,13 +804,15 @@ Join type
 Clone with same type return
 %End
 
+      private:
+        NodeJoin( const NodeJoin &other );
       protected:
     };
 
     class NodeColumnSorted : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-Column in a ORDER BY
+Column in a ORDER BY.
 %End
 
 %TypeHeaderCode
@@ -814,7 +823,6 @@ Column in a ORDER BY
 %Docstring
 Constructor
 %End
-        ~NodeColumnSorted();
 
         QgsSQLStatement::NodeColumnRef *column() const;
 %Docstring
@@ -838,13 +846,15 @@ Whether the column is sorted in ascending order
 Clone with same type return
 %End
 
+      private:
+        NodeColumnSorted( const NodeColumnSorted &other );
       protected:
     };
 
     class NodeSelect : QgsSQLStatement::Node
 {
 %Docstring(signature="appended")
-SELECT node
+SELECT node.
 %End
 
 %TypeHeaderCode
@@ -907,6 +917,8 @@ Returns the list of order by columns
         virtual QgsSQLStatement::Node *clone() const /Factory/;
 
 
+      private:
+        NodeSelect( const NodeSelect &other );
       protected:
     };
 
@@ -914,8 +926,8 @@ Returns the list of order by columns
     class Visitor
 {
 %Docstring(signature="appended")
-Support for visitor pattern - algorithms dealing with the statement
-may be implemented without modifying the Node classes
+Support for visitor pattern - algorithms dealing with the statement may
+be implemented without modifying the Node classes.
 %End
 
 %TypeHeaderCode
@@ -980,7 +992,7 @@ Visit NodeCast
     class RecursiveVisitor: QgsSQLStatement::Visitor
 {
 %Docstring(signature="appended")
-A visitor that recursively explores all children
+A visitor that recursively explores all children.
 %End
 
 %TypeHeaderCode
@@ -1018,8 +1030,8 @@ Entry function for the visitor pattern
 %Docstring
 Constructor for QgsSQLStatement, with the specified ``statement``.
 
-If ``allowFragments`` is ``True`` then the parser will allow SQL fragments,
-such as a expression or filter where clause alone.
+If ``allowFragments`` is ``True`` then the parser will allow SQL
+fragments, such as a expression or filter where clause alone.
 
 .. versionadded:: 3.16
 %End
@@ -1029,7 +1041,8 @@ such as a expression or filter where clause alone.
 class QgsSQLStatementFragment : QgsSQLStatement
 {
 %Docstring(signature="appended")
-Class for parsing fragments of SQL statements, such as an expression or where clause.
+Parses fragments of SQL statements, such as an expression or where
+clause.
 
 .. versionadded:: 3.16
 %End

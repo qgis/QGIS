@@ -11,7 +11,6 @@
 
 
 
-
 class QgsVectorLayerUtils
 {
 %Docstring(signature="appended")
@@ -26,7 +25,8 @@ Contains utility methods for working with :py:class:`QgsVectorLayers`.
     class QgsDuplicateFeatureContext
 {
 %Docstring(signature="appended")
-Contains mainly the QMap with :py:class:`QgsVectorLayer` and :py:class:`QgsFeatureIds` do list all the duplicated features
+Contains mainly the QMap with :py:class:`QgsVectorLayer` and
+:py:class:`QgsFeatureIds` which list all the duplicated features.
 %End
 
 %TypeHeaderCode
@@ -52,7 +52,8 @@ Returns the duplicated features in the given layer
     class QgsFeatureData
 {
 %Docstring(signature="appended")
-Encapsulate geometry and attributes for new features, to be passed to createFeatures
+Encapsulate geometry and attributes for new features, to be passed to
+createFeatures.
 
 .. seealso:: :py:func:`createFeatures`
 
@@ -66,7 +67,8 @@ Encapsulate geometry and attributes for new features, to be passed to createFeat
 
         QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
 %Docstring
-Constructs a new QgsFeatureData with given ``geometry`` and ``attributes``
+Constructs a new QgsFeatureData with given ``geometry`` and
+``attributes``
 %End
 
         QgsGeometry geometry() const;
@@ -89,8 +91,10 @@ Create a feature iterator for a specified field name or expression.
 
 :param layer: vector layer to retrieve values from
 :param fieldOrExpression: field name or an expression string
-:param ok: will be set to ``False`` if field or expression is invalid, otherwise ``True``
-:param selectedOnly: set to ``True`` to get values from selected features only
+:param ok: will be set to ``False`` if field or expression is invalid,
+           otherwise ``True``
+:param selectedOnly: set to ``True`` to get values from selected
+                     features only
 
 :return: feature iterator
 %End
@@ -101,8 +105,10 @@ Fetches all values from a specified field name or expression.
 
 :param layer: vector layer to retrieve values from
 :param fieldOrExpression: field name or an expression string
-:param ok: will be set to ``False`` if field or expression is invalid, otherwise ``True``
-:param selectedOnly: set to ``True`` to get values from selected features only
+:param ok: will be set to ``False`` if field or expression is invalid,
+           otherwise ``True``
+:param selectedOnly: set to ``True`` to get values from selected
+                     features only
 :param feedback: optional feedback object to allow cancellation
 
 :return: list of fetched values
@@ -112,14 +118,18 @@ Fetches all values from a specified field name or expression.
 
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 );
 %Docstring
-Fetches all double values from a specified field name or expression. Null values or
-invalid expression results are skipped.
+Fetches all double values from a specified field name or expression.
+Null values or invalid expression results are skipped.
 
 :param layer: vector layer to retrieve values from
-:param fieldOrExpression: field name or an expression string evaluating to a double value
-:param ok: will be set to ``False`` if field or expression is invalid, otherwise ``True``
-:param selectedOnly: set to ``True`` to get values from selected features only
-:param nullCount: optional pointer to integer to store number of null values encountered in
+:param fieldOrExpression: field name or an expression string evaluating
+                          to a double value
+:param ok: will be set to ``False`` if field or expression is invalid,
+           otherwise ``True``
+:param selectedOnly: set to ``True`` to get values from selected
+                     features only
+:param nullCount: optional pointer to integer to store number of null
+                  values encountered in
 :param feedback: optional feedback object to allow cancellation
 
 :return: list of fetched values
@@ -129,26 +139,29 @@ invalid expression results are skipped.
 
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 %Docstring
-Returns ``True`` if the specified value already exists within a field. This method can be used to test for uniqueness
-of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
-with IDs within this list are ignored when testing for existence of the value.
+Returns ``True`` if the specified value already exists within a field.
+This method can be used to test for uniqueness of values inside a
+layer's attributes. An optional list of ignored feature IDs can be
+provided, if so, any features with IDs within this list are ignored when
+testing for existence of the value.
 
 .. seealso:: :py:func:`createUniqueValue`
 %End
 
     static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 %Docstring
-Returns a new attribute value for the specified field index which is guaranteed to be unique. The optional seed
-value can be used as a basis for generated values.
+Returns a new attribute value for the specified field index which is
+guaranteed to be unique. The optional seed value can be used as a basis
+for generated values.
 
 .. seealso:: :py:func:`valueExists`
 %End
 
     static QVariant createUniqueValueFromCache( const QgsVectorLayer *layer, int fieldIndex, const QSet<QVariant> &existingValues, const QVariant &seed = QVariant() );
 %Docstring
-Returns a new attribute value for the specified field index which is guaranteed to
-be unique within regard to ``existingValues``.
-The optional seed value can be used as a basis for generated values.
+Returns a new attribute value for the specified field index which is
+guaranteed to be unique within regard to ``existingValues``. The
+optional seed value can be used as a basis for generated values.
 
 .. versionadded:: 3.6
 %End
@@ -157,7 +170,8 @@ The optional seed value can be used as a basis for generated values.
 %Docstring
 Returns ``True`` if a feature attribute has active constraints.
 
-:param layer: the vector layer from which field constraints will be checked for
+:param layer: the vector layer from which field constraints will be
+              checked for
 :param attributeIndex: the attribute index
 
 .. versionadded:: 3.30
@@ -167,9 +181,12 @@ Returns ``True`` if a feature attribute has active constraints.
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 %Docstring
-Tests a feature attribute value to check whether it passes all constraints which are present on the corresponding field.
-Returns ``True`` if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
-If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
+Tests a feature attribute value to check whether it passes all
+constraints which are present on the corresponding field. Returns
+``True`` if the attribute value is valid for the field. Any constraint
+failures will be reported in the errors argument. If the strength or
+origin parameter is set then only constraints with a matching
+strength/origin will be checked.
 %End
 
     static QgsFeature createFeature( const QgsVectorLayer *layer,
@@ -177,11 +194,12 @@ If the strength or origin parameter is set then only constraints with a matching
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = 0 );
 %Docstring
-Creates a new feature ready for insertion into a layer. Default values and constraints
-(e.g., unique constraints) will automatically be handled. An optional attribute map can be
-passed for the new feature to copy as many attribute values as possible from the map,
-assuming that they respect the layer's constraints. Note that the created feature is not
-automatically inserted into the layer.
+Creates a new feature ready for insertion into a layer. Default values
+and constraints (e.g., unique constraints) will automatically be
+handled. An optional attribute map can be passed for the new feature to
+copy as many attribute values as possible from the map, assuming that
+they respect the layer's constraints. Note that the created feature is
+not automatically inserted into the layer.
 
 .. seealso:: :py:func:`createFeatures`
 %End
@@ -190,9 +208,10 @@ automatically inserted into the layer.
                                           const QgsFeaturesDataList &featuresData,
                                           QgsExpressionContext *context = 0 );
 %Docstring
-Creates a set of new features ready for insertion into a layer. Default values and constraints
-(e.g., unique constraints) will automatically be handled. Note that the created features are not
-automatically inserted into the layer.
+Creates a set of new features ready for insertion into a layer. Default
+values and constraints (e.g., unique constraints) will automatically be
+handled. Note that the created features are not automatically inserted
+into the layer.
 
 .. seealso:: :py:func:`createFeature`
 
@@ -201,13 +220,16 @@ automatically inserted into the layer.
 
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext /Out/, const int maxDepth = 0 );
 %Docstring
-Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
-default values and constraints (e.g., unique constraints) will automatically be handled.
-The duplicated feature will be automatically inserted into the layer.
-``duplicateFeatureContext`` stores all the layers and the featureids of the duplicated features (incl. children)
-``maxDepth`` the maximum depth to duplicate children in relations, 0 is unlimited depth (in any case, limited to 100)
-``depth`` the current depth, not exposed in Python
-``referencedLayersBranch`` the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
+Duplicates a feature and it's children (one level deep). It calls
+CreateFeature, so default values and constraints (e.g., unique
+constraints) will automatically be handled. The duplicated feature will
+be automatically inserted into the layer. ``duplicateFeatureContext``
+stores all the layers and the featureids of the duplicated features
+(incl. children) ``maxDepth`` the maximum depth to duplicate children in
+relations, 0 is unlimited depth (in any case, limited to 100) ``depth``
+the current depth, not exposed in Python ``referencedLayersBranch`` the
+current branch of layers across the relations, not exposed in Python,
+taken by copy not reference, used to avoid infinite loop
 %End
 
 
@@ -216,19 +238,22 @@ The duplicated feature will be automatically inserted into the layer.
 %Docstring
 Matches the attributes in ``feature`` to the specified ``fields``.
 
-This causes the attributes contained within the given ``feature`` to be rearranged (or in
-some cases dropped) in order to match the fields and order indicated by ``fields``.
+This causes the attributes contained within the given ``feature`` to be
+rearranged (or in some cases dropped) in order to match the fields and
+order indicated by ``fields``.
 
-The exact behavior depends on whether or not ``feature`` has a valid fields container
-set (see :py:func:`QgsFeature.fields()`). If a fields container is set, then the names of the
-feature's fields are matched to ``fields``. In this case attributes from ``feature``
-will be rearranged or dropped in order to match the field names from ``fields``.
+The exact behavior depends on whether or not ``feature`` has a valid
+fields container set (see :py:func:`QgsFeature.fields()`). If a fields
+container is set, then the names of the feature's fields are matched to
+``fields``. In this case attributes from ``feature`` will be rearranged
+or dropped in order to match the field names from ``fields``.
 
-If the ``feature`` does not have a valid fields container set, then the feature's attributes
-are simply truncated to match the number of fields present in ``fields`` (or if
-less attributes are present in ``feature`` than in ``fields``, the feature's attributes
-are padded with NULL values to match the required length).
-Finally, the feature's fields are set to ``fields``.
+If the ``feature`` does not have a valid fields container set, then the
+feature's attributes are simply truncated to match the number of fields
+present in ``fields`` (or if less attributes are present in ``feature``
+than in ``fields``, the feature's attributes are padded with NULL values
+to match the required length). Finally, the feature's fields are set to
+``fields``.
 
 .. versionadded:: 3.4
 %End
@@ -237,11 +262,12 @@ Finally, the feature's fields are set to ``fields``.
 %Docstring
 Converts input ``feature`` to be compatible with the given ``layer``.
 
-This function returns a new list of transformed features compatible with the input
-layer, note that the number of features returned might be greater than one when
-converting a multi part geometry to single part
+This function returns a new list of transformed features compatible with
+the input layer, note that the number of features returned might be
+greater than one when converting a multi part geometry to single part
 
-The following operations will be performed to convert the input features:
+The following operations will be performed to convert the input
+features:
 
 - convert single geometries to multi part
 - drop additional attributes
@@ -251,7 +277,8 @@ The following operations will be performed to convert the input features:
 - drop Z/M
 - convert multi part geometries to single part
 
-Optionally, ``sinkFlags`` can be specified to further refine the compatibility logic.
+Optionally, ``sinkFlags`` can be specified to further refine the
+compatibility logic.
 
 .. versionadded:: 3.4
 %End
@@ -260,11 +287,12 @@ Optionally, ``sinkFlags`` can be specified to further refine the compatibility l
 %Docstring
 Converts input ``features`` to be compatible with the given ``layer``.
 
-This function returns a new list of transformed features compatible with the input
-layer, note that the number of features returned might be greater than the number
-of input features.
+This function returns a new list of transformed features compatible with
+the input layer, note that the number of features returned might be
+greater than the number of input features.
 
-The following operations will be performed to convert the input features:
+The following operations will be performed to convert the input
+features:
 
 - convert single geometries to multi part
 - drop additional attributes
@@ -274,7 +302,8 @@ The following operations will be performed to convert the input features:
 - drop Z/M
 - convert multi part geometries to single part
 
-Optionally, ``sinkFlags`` can be specified to further refine the compatibility logic.
+Optionally, ``sinkFlags`` can be specified to further refine the
+compatibility logic.
 
 .. versionadded:: 3.4
 %End
@@ -283,31 +312,33 @@ Optionally, ``sinkFlags`` can be specified to further refine the compatibility l
 %Docstring
 Tests whether a field is editable for a particular ``feature``.
 
-:return: ``True`` if the field at index ``fieldIndex`` from ``layer``
-         is editable, ``False`` if the field is read only.
+:return: ``True`` if the field at index ``fieldIndex`` from ``layer`` is
+         editable, ``False`` if the field is read only.
 
 .. versionadded:: 3.10
 %End
 
     static bool fieldIsReadOnly( const QgsVectorLayer *layer, int fieldIndex );
 %Docstring
+Returns ``True`` if the field at index ``fieldIndex`` from ``layer`` is
+editable, ``False`` if the field is read only.
 
-:return: ``True`` if the field at index ``fieldIndex`` from ``layer``
-         is editable, ``False`` if the field is read only.
-
-If this function returns ``True`` then the editability of the field may still vary feature by
-feature. See :py:func:`~QgsVectorLayerUtils.fieldIsEditable` to determine this on a feature by feature basis.
+If this function returns ``True`` then the editability of the field may
+still vary feature by feature. See
+:py:func:`~QgsVectorLayerUtils.fieldIsEditable` to determine this on a
+feature by feature basis.
 
 .. versionadded:: 3.18
 %End
 
     static bool fieldEditabilityDependsOnFeature( const QgsVectorLayer *layer, int fieldIndex );
 %Docstring
-Returns ``True`` if the editability of the field at index ``fieldIndex`` from ``layer`` may vary
-feature by feature.
+Returns ``True`` if the editability of the field at index ``fieldIndex``
+from ``layer`` may vary feature by feature.
 
-I.e. if the field is taken from a joined layer, the value may or may not be editable for any individual
-feature depending on the join's "upsert on edit" capabilities.
+I.e. if the field is taken from a joined layer, the value may or may not
+be editable for any individual feature depending on the join's "upsert
+on edit" capabilities.
 
 .. versionadded:: 3.18
 %End
@@ -316,9 +347,11 @@ feature depending on the join's "upsert on edit" capabilities.
 
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 %Docstring
+Returns a descriptive string for a ``feature``, suitable for displaying
+to the user.
 
-:return: a descriptive string for a ``feature``, suitable for displaying to the user.
-         The definition is taken from the ``displayExpression`` property of ``layer``.
+The definition is taken from the ``displayExpression`` property of
+``layer``.
 
 .. versionadded:: 3.12
 %End
@@ -332,10 +365,11 @@ feature depending on the join's "upsert on edit" capabilities.
 
     static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 %Docstring
+Returns ``True`` if at least one feature of the ``fids`` on ``layer`` is
+connected as parent in at least one composition relation of the
+``project`` or contains joins, where cascade delete is set.
 
-:return: ``True`` if at least one feature of the ``fids`` on ``layer`` is connected as parent in at
-         least one composition relation of the ``project`` or contains joins, where cascade delete is set.
-         Details about cascading effects will be written to ``context``.
+Details about cascading effects will be written to ``context``.
 
 .. versionadded:: 3.14
 %End
@@ -343,13 +377,15 @@ feature depending on the join's "upsert on edit" capabilities.
 
     static QString guessFriendlyIdentifierField( const QgsFields &fields, bool *foundFriendly /Out/ = 0 ) /PyName=guessFriendlyIdentifierFieldV2/;
 %Docstring
-Given a set of fields, attempts to pick the "most useful" field
-for user-friendly identification of features.
+Given a set of fields, attempts to pick the "most useful" field for
+user-friendly identification of features.
 
-For instance, if a field called "name" is present, this will be returned.
+For instance, if a field called "name" is present, this will be
+returned.
 
-Assumes that the user has organized the data with the more "interesting" field
-names first. As such, "name" would be selected before "oldname", "othername", etc.
+Assumes that the user has organized the data with the more "interesting"
+field names first. As such, "name" would be selected before "oldname",
+"othername", etc.
 
 If no friendly identifier is found, the function will fallback to the
 first available.
@@ -357,7 +393,8 @@ first available.
 :param fields: list of fields to pick a friendly identifier from
 
 :return: - field name
-         - foundFriendly: set to ``True`` if the returned field name is a friendly identifier
+         - foundFriendly: set to ``True`` if the returned field name is
+           a friendly identifier
 
 .. versionadded:: 3.22
 %End
@@ -365,13 +402,15 @@ first available.
 
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
 %Docstring
-Given a set of fields, attempts to pick the "most useful" field
-for user-friendly identification of features.
+Given a set of fields, attempts to pick the "most useful" field for
+user-friendly identification of features.
 
-For instance, if a field called "name" is present, this will be returned.
+For instance, if a field called "name" is present, this will be
+returned.
 
-Assumes that the user has organized the data with the more "interesting" field
-names first. As such, "name" would be selected before "oldname", "othername", etc.
+Assumes that the user has organized the data with the more "interesting"
+field names first. As such, "name" would be selected before "oldname",
+"othername", etc.
 
 If no friendly identifier is found, the function will fallback to the
 first available.

@@ -86,11 +86,13 @@ Sets culling mode
 
     Qgis::AltitudeClamping altitudeClamping() const;
 %Docstring
-Returns method that determines altitude (whether to clamp to feature to terrain)
+Returns method that determines altitude (whether to clamp to feature to
+terrain)
 %End
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping );
 %Docstring
-Sets method that determines altitude (whether to clamp to feature to terrain)
+Sets method that determines altitude (whether to clamp to feature to
+terrain)
 %End
 
     float height() const;
@@ -116,12 +118,14 @@ Ownership of ``material`` is transferred to the symbol.
 
     bool addBackFaces() const;
 %Docstring
-Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+Returns whether also triangles facing the other side will be created.
+Useful if input data have inconsistent order of vertices
 %End
 
     void setAddBackFaces( bool add );
 %Docstring
-Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
+Sets whether also triangles facing the other side will be created.
+Useful if input data have inconsistent order of vertices
 %End
 
     bool smoothedTriangles() const;
@@ -238,28 +242,32 @@ Sets the rendering style
 
     int verticalDatasetGroupIndex() const;
 %Docstring
-Returns the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
+Returns the index of the dataset group that will be used to render the
+vertical component of the 3D mesh geometry
 
 .. versionadded:: 3.14
 %End
 
     void setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex );
 %Docstring
-Sets the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
+Sets the index of the dataset group that will be used to render the
+vertical component of the 3D mesh geometry
 
 .. versionadded:: 3.14
 %End
 
     bool isVerticalMagnitudeRelative() const;
 %Docstring
-Returns if the vertical component of the mesh is relative to the mesh vertices Z value
+Returns if the vertical component of the mesh is relative to the mesh
+vertices Z value
 
 .. versionadded:: 3.14
 %End
 
     void setIsVerticalMagnitudeRelative( bool isVerticalMagnitudeRelative );
 %Docstring
-Sets if the vertical component of the mesh is relative to the mesh vertices Z value
+Sets if the vertical component of the mesh is relative to the mesh
+vertices Z value
 
 .. versionadded:: 3.14
 %End
@@ -294,18 +302,18 @@ Sets the arrow spacing
 
     int maximumTextureSize() const;
 %Docstring
-Returns the maximum texture size supported by the hardware
-Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
-before creating the entity
+Returns the maximum texture size supported by the hardware Used to store
+the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine before
+creating the entity
 
 .. versionadded:: 3.14
 %End
 
     void setMaximumTextureSize( int maximumTextureSize );
 %Docstring
-Sets the maximum texture size supported by the hardware
-Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
-before creating the entity
+Sets the maximum texture size supported by the hardware Used to store
+the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine before
+creating the entity
 
 .. versionadded:: 3.14
 %End
@@ -326,7 +334,9 @@ Sets if the arrow size is fixed
 
     int levelOfDetailIndex() const;
 %Docstring
-Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
+Returns the index of the level of detail of the mesh that is the
+position of the simplified mesh that will be rendered (0 is the original
+mesh)
 
 .. seealso:: :py:class:`QgsMeshSimplificationSettings`
 
@@ -335,7 +345,9 @@ Returns the index of the level of detail of the mesh that is the position of the
 
     void setLevelOfDetailIndex( int lod );
 %Docstring
-Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
+Returns the index of the level of detail of the mesh that is the
+position of the simplified mesh that will be rendered (0 is the original
+mesh)
 
 .. seealso:: :py:class:`QgsMeshSimplificationSettings`
 

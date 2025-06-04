@@ -10,6 +10,9 @@
 
 class QgsGroupWmsDataDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring a WMS group.
+%End
 
 %TypeHeaderCode
 #include "qgsgroupwmsdatadialog.h"
@@ -18,39 +21,113 @@ class QgsGroupWmsDataDialog : QDialog
     QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
+
+:param parent: parent widget
+:param fl: dialog window flags
 %End
 
-    QString groupTitle();
+    QgsGroupWmsDataDialog( const QgsMapLayerServerProperties &serverProperties, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+
+:param serverProperties: used to initialize the dialog
+:param parent: parent widget
+:param fl: dialog window flags
+%End
+
+    ~QgsGroupWmsDataDialog();
+
+ QString groupTitle() const;
 %Docstring
 Returns group WMS title
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.title` instead.
 %End
 
-    QString groupShortName();
+ QString groupShortName() const;
 %Docstring
 Returns group WMS short name
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.shortName` instead.
 %End
 
-    QString groupAbstract();
+ QString groupAbstract() const;
 %Docstring
 Returns group WMS abstract
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.abstract` instead.
 %End
 
-
-  public slots:
-    void setGroupTitle( const QString &title );
+ void setGroupTitle( const QString &title ) /Deprecated="Since 3.44. Use serverProperties()->setTitle() instead."/;
 %Docstring
 Sets group WMS title
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.setTitle` instead.
 %End
 
-    void setGroupShortName( const QString &shortName );
+ void setGroupShortName( const QString &shortName ) /Deprecated="Since 3.44. Use serverProperties()->setShortName() instead."/;
 %Docstring
 Sets group WMS short name
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.setShortName` instead.
 %End
 
-    void setGroupAbstract( const QString &abstract );
+ void setGroupAbstract( const QString &abstract ) /Deprecated="Since 3.44. Use serverProperties()->setAbstract() instead."/;
 %Docstring
 Sets group WMS abstract
+
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.setAbstract` instead.
 %End
+
+    void setHasTimeDimension( bool hasTimeDimension );
+%Docstring
+Sets whether the time dimension should be computed for this group or not
+
+:param hasTimeDimension: if ``True``, when a GetCapabilities request is
+                         sent, QGIS server would return a TIME dimension
+                         computed as an union of all time dimensions of
+                         its children recursively. Else, no TIME
+                         dimension will be returned.
+
+.. seealso:: :py:func:`hasTimeDimension`
+
+.. versionadded:: 3.44
+%End
+
+    bool hasTimeDimension() const;
+%Docstring
+Returns whether the time dimension should be computed for this group or
+not. if ``True``, when a GetCapabilities request is sent, QGIS server
+would return a TIME dimension computed as an union of all time
+dimensions of its children recursively. Else, no TIME dimension will be
+returned.
+
+.. seealso:: :py:func:`setHasTimeDimension`
+
+.. versionadded:: 3.44
+%End
+
+    QgsMapLayerServerProperties *serverProperties();
+%Docstring
+Returns QGIS Server Properties for the layer tree group
+
+.. versionadded:: 3.44
+%End
+
+
+    virtual void accept();
 
 
 };

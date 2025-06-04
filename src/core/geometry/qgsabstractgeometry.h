@@ -65,7 +65,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 /**
  * \ingroup core
  * \class QgsAbstractGeometry
- * \brief Abstract base class for all geometries
+ * \brief Abstract base class for all geometries.
  *
  * \note QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
  * of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
@@ -95,6 +95,12 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
+    else if ( qgsgeometry_cast<QgsTriangulatedSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsTriangulatedSurface;
+    else if ( qgsgeometry_cast<QgsPolyhedralSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolyhedralSurface;
+    else if ( qgsgeometry_cast<QgsSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsSurface;
     else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
@@ -833,7 +839,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * \brief The part_iterator class provides STL-style iterator for geometry parts.
+     * \brief The part_iterator class provides an STL-style iterator for geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT part_iterator
@@ -903,7 +909,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * \brief The part_iterator class provides STL-style iterator for const references to geometry parts.
+     * \brief The part_iterator class provides an STL-style iterator for const references to geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT const_part_iterator
@@ -963,7 +969,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * \brief The vertex_iterator class provides STL-style iterator for vertices.
+     * \brief The vertex_iterator class provides an STL-style iterator for vertices.
      */
     class CORE_EXPORT vertex_iterator
     {
@@ -1185,9 +1191,15 @@ class CORE_EXPORT QgsAbstractGeometry
 #ifndef SIP_RUN
 
 template <class T>
+inline T qgsgeometry_cast( QgsAbstractGeometry *geom )
+{
+  return std::remove_pointer<T>::type::cast( geom );
+}
+
+template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
-  return const_cast<T>( std::remove_pointer<T>::type::cast( geom ) );
+  return std::remove_pointer<T>::type::cast( geom );
 }
 
 #endif
@@ -1196,7 +1208,7 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 
 /**
  * \ingroup core
- * \brief Java-style iterator for traversal of vertices of a geometry
+ * \brief Java-style iterator for traversal of vertices of a geometry.
  */
 class CORE_EXPORT QgsVertexIterator
 {
@@ -1244,7 +1256,7 @@ class CORE_EXPORT QgsVertexIterator
 
 /**
  * \ingroup core
- * \brief Java-style iterator for traversal of parts of a geometry
+ * \brief Java-style iterator for traversal of parts of a geometry.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsGeometryPartIterator
@@ -1294,7 +1306,7 @@ class CORE_EXPORT QgsGeometryPartIterator
 
 /**
  * \ingroup core
- * \brief Java-style iterator for const traversal of parts of a geometry
+ * \brief Java-style iterator for const traversal of parts of a geometry.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsGeometryConstPartIterator

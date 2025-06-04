@@ -12,7 +12,7 @@
 class QgsServerParameterDefinition
 {
 %Docstring(signature="appended")
-Definition of a parameter with basic conversion methods
+Definition of a parameter with basic conversion methods.
 
 .. versionadded:: 3.4
 %End
@@ -56,8 +56,8 @@ Returns ``True`` if the parameter is valid, ``False`` otherwise.
 
     QString toString( bool defaultValue = false ) const;
 %Docstring
-Converts the parameter into a string. If ``defaultValue`` is true
-and current value is empty, then the default value is returned.
+Converts the parameter into a string. If ``defaultValue`` is true and
+current value is empty, then the default value is returned.
 %End
 
     QStringList toStringList( char delimiter = ',', bool skipEmptyParts = true ) const;
@@ -74,7 +74,8 @@ Converts the parameter into a list of strings
 %Docstring
 Converts the parameter into a list of integers.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 :param delimiter: The character used for delimiting
 :param skipEmptyParts: for splitting
 
@@ -85,7 +86,8 @@ Converts the parameter into a list of integers.
 %Docstring
 Converts the parameter into a list of doubles.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 :param delimiter: The character used for delimiting
 :param skipEmptyParts: for splitting
 
@@ -96,7 +98,8 @@ Converts the parameter into a list of doubles.
 %Docstring
 Converts the parameter into a list of colors.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 :param delimiter: The character used for delimiting
 :param skipEmptyParts: for splitting
 
@@ -107,7 +110,8 @@ Converts the parameter into a list of colors.
 %Docstring
 Converts the parameter into a list of geometries.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 :param delimiter: The character used for delimiting
 :param skipEmptyParts: for splitting
 
@@ -136,7 +140,8 @@ Converts the parameter into a list of QGIS expressions.
 %Docstring
 Converts the parameter into a rectangle.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 
 :return: A rectangle
 %End
@@ -145,7 +150,8 @@ Converts the parameter into a rectangle.
 %Docstring
 Converts the parameter into an integer.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 
 :return: An integer
 %End
@@ -154,7 +160,8 @@ Converts the parameter into an integer.
 %Docstring
 Converts the parameter into a double.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 
 :return: A double
 %End
@@ -170,7 +177,8 @@ Converts the parameter into a boolean.
 %Docstring
 Converts the parameter into a color.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 
 :return: A color
 %End
@@ -179,7 +187,8 @@ Converts the parameter into a color.
 %Docstring
 Converts the parameter into an url.
 
-:param ok: ``True`` if there's no error during the conversion, ``False`` otherwise
+:param ok: ``True`` if there's no error during the conversion, ``False``
+           otherwise
 
 :return: An url
 
@@ -190,7 +199,8 @@ Converts the parameter into an url.
 %Docstring
 Loads the data associated to the parameter converted into an url.
 
-:param ok: ``True`` if there's no error during the load, ``False`` otherwise
+:param ok: ``True`` if there's no error during the load, ``False``
+           otherwise
 
 :return: The content loaded
 
@@ -214,7 +224,7 @@ Raises an exception in case of an invalid parameters.
 class QgsServerParameter : QgsServerParameterDefinition
 {
 %Docstring(signature="appended")
-Parameter common to all services (WMS, WFS, ...)
+Parameter common to all services (WMS, WFS, ...).
 
 .. versionadded:: 3.4
 %End
@@ -272,8 +282,8 @@ Converts a parameter's name into its string representation.
 
     static QgsServerParameter::Name name( const QString &name );
 %Docstring
-Converts a string into a parameter's name (UNKNOWN in case of an
-invalid string).
+Converts a string into a parameter's name (UNKNOWN in case of an invalid
+string).
 %End
 
     QgsServerParameter::Name mName;
@@ -282,7 +292,8 @@ invalid string).
 class QgsServerParameters
 {
 %Docstring(signature="appended")
-:py:class:`QgsServerParameters` provides an interface to retrieve and manipulate global parameters received from the client.
+Provides an interface to retrieve and manipulate global parameters
+received from the client.
 
 .. versionadded:: 3.4
 %End
@@ -361,31 +372,28 @@ Returns all parameters in a map.
 
     QString service() const;
 %Docstring
-Returns SERVICE parameter as a string or an empty string if not
-defined.
+Returns SERVICE parameter as a string or an empty string if not defined.
 
 :return: service
 %End
 
     virtual QString request() const;
 %Docstring
-Returns REQUEST parameter as a string or an empty string if not
-defined.
+Returns REQUEST parameter as a string or an empty string if not defined.
 
 :return: request
 %End
 
     QString map() const;
 %Docstring
-Returns MAP parameter as a string or an empty string if not
-defined.
+Returns MAP parameter as a string or an empty string if not defined.
 
 :return: map
 %End
 
     QString fileName() const;
 %Docstring
-Returns  FILE_NAME parameter as a string or an empty string if not
+Returns FILE_NAME parameter as a string or an empty string if not
 defined.
 
 :return: filename
@@ -393,8 +401,7 @@ defined.
 
     virtual QString version() const;
 %Docstring
-Returns VERSION parameter as a string or an empty string if not
-defined.
+Returns VERSION parameter as a string or an empty string if not defined.
 
 :return: version
 %End

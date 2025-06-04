@@ -30,9 +30,11 @@ Utilities for map settings.
 
     static QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags = QgsMapSettingsUtils::EffectsCheckFlags() );
 %Docstring
-Checks whether any of the layers attached to a map settings object contain advanced effects.
+Checks whether any of the layers attached to a map settings object
+contain advanced effects.
 
-The optional ``flags`` argument can be used to fine-tune the check behavior.
+The optional ``flags`` argument can be used to fine-tune the check
+behavior.
 %End
 
     static void worldFileParameters( const QgsMapSettings &mapSettings, double &a /Out/, double &b /Out/, double &c /Out/, double &d /Out/, double &e /Out/, double &f /Out/ );

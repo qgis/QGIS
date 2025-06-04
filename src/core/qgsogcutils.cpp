@@ -1125,12 +1125,12 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode &envelopeNode
   return rect;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision )
+QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, int precision )
 {
   return rectangleToGMLBox( box, doc, QString(), false, precision );
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
+QDomElement QgsOgcUtils::rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc,
     const QString &srsName,
     bool invertAxisOrientation,
     int precision )
@@ -1165,12 +1165,12 @@ QDomElement QgsOgcUtils::rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc
   return boxElem;
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision )
+QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, int precision )
 {
   return rectangleToGMLEnvelope( env, doc, QString(), false, precision );
 }
 
-QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
+QDomElement QgsOgcUtils::rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc,
     const QString &srsName,
     bool invertAxisOrientation,
     int precision )
@@ -2444,13 +2444,15 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
 
       QDomDocument geomDoc;
       const QString gml = static_cast<const QgsExpressionNodeLiteral *>( firstFnArg )->value().toString();
-      if ( !geomDoc.setContent( gml, true ) )
+      // wrap the string into a root tag to have "gml" namespace
+      const QString xml = QStringLiteral( "<tmp xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE, gml );
+      if ( !geomDoc.setContent( xml, true ) )
       {
         mErrorMessage = QObject::tr( "geom_from_gml: unable to parse XML" );
         return QDomElement();
       }
 
-      const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
+      const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement().firstChildElement(), true );
       otherGeomElem = geomNode.toElement();
     }
     else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().userType() == qMetaTypeId< QgsGeometry>() )
@@ -3070,13 +3072,15 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 
     QDomDocument geomDoc;
     const QString gml = static_cast<const QgsSQLStatement::NodeLiteral *>( firstFnArg )->value().toString();
-    if ( !geomDoc.setContent( gml, true ) )
+    // wrap the string into a root tag to have "gml" namespace
+    const QString xml = QStringLiteral( "<tmp xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE, gml );
+    if ( !geomDoc.setContent( xml, true ) )
     {
       mErrorMessage = QObject::tr( "ST_GeomFromGML: unable to parse XML" );
       return QDomElement();
     }
 
-    const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
+    const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement().firstChildElement(), true );
     mGMLUsed = true;
     return geomNode.toElement();
   }

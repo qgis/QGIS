@@ -62,6 +62,7 @@ class GdalConnectionDetails:
     open_options: Optional[list[str]] = None
     layer_name: Optional[str] = None
     credential_options: Optional[dict] = None
+    geometry_column_name: Optional[str] = None
 
     def open_options_as_arguments(self) -> list[str]:
         """
@@ -189,6 +190,15 @@ class GdalUtils:
         proc.setStdErrHandler(on_stderr)
 
         res = proc.run(feedback)
+
+        # Ensure to flush the buffers if they are not empty.
+        # For example, this can happen on stdout if the
+        # output did not end with a new line.
+        if on_stdout.buffer:
+            loglines.append(on_stdout.buffer.rstrip())
+        if on_stderr.buffer:
+            loglines.append(on_stderr.buffer.rstrip())
+
         if feedback.isCanceled() and res != 0:
             feedback.pushInfo(GdalUtils.tr("Process was canceled and did not complete"))
         elif (
@@ -508,13 +518,9 @@ class GdalUtils:
         return GdalConnectionDetails(connection_string=ogrstr, format=f'"{format}"')
 
     @staticmethod
-    def ogrOutputLayerName(uri):
-        uri = uri.strip('"')
-        return os.path.basename(os.path.splitext(uri)[0])
-
-    @staticmethod
     def ogrLayerName(uri):
-        uri = uri.strip('"')
+        if uri.startswith('"') and uri.endswith('"'):
+            uri = uri.strip('"')
         if " table=" in uri:
             # table="schema"."table"
             re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')

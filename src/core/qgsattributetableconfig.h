@@ -28,10 +28,10 @@ class QgsFields;
 
 /**
  * \ingroup core
- * \brief This is a container for configuration of the attribute table.
+ * \brief A container for configuration of the attribute table.
+ *
  * The configuration is specific for one vector layer.
  */
-
 class CORE_EXPORT QgsAttributeTableConfig
 {
   public:

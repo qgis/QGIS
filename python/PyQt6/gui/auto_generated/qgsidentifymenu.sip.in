@@ -13,10 +13,17 @@
 class QgsIdentifyMenu : QMenu
 {
 %Docstring(signature="appended")
-The QgsIdentifyMenu class builds a menu to be used with identify results (:py:class:`QgsMapToolIdentify`).
-It is customizable and can display attribute actions (:py:class:`QgsAction`) as well as map layer actions (:py:class:`QgsMapLayerAction`).
-It can also embed custom map layer actions, defined for this menu exclusively.
-If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsMapToolIdentify.identifyMenu()` and can be customized in the map tool sub-class.
+Builds a menu to be used with identify results.
+
+It is customizable and can display attribute actions
+(:py:class:`QgsAction`) as well as map layer actions
+(:py:class:`QgsMapLayerAction`). It can also embed custom map layer
+actions, defined for this menu exclusively. If used in a
+:py:class:`QgsMapToolIdentify`, it is accessible via
+:py:func:`QgsMapToolIdentify.identifyMenu()` and can be customized in
+the map tool sub-class.
+
+.. seealso:: :py:class:`QgsMapToolIdentify`
 %End
 
 %TypeHeaderCode
@@ -48,7 +55,8 @@ If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsM
 
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 %Docstring
-QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool.IdentifyReults
+QgsIdentifyMenu is a menu to be used to choose within a list of
+QgsMapTool.IdentifyReults
 %End
 
     ~QgsIdentifyMenu();
@@ -56,19 +64,21 @@ QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool.Ident
 
     static QList<QgsMapToolIdentify::IdentifyResult> findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<Qgis::GeometryType> &geometryTypes );
 %Docstring
-Searches for features on the map ``canvas``, which are located at the specified ``event`` point.
+Searches for features on the map ``canvas``, which are located at the
+specified ``event`` point.
 
 The ``geometryTypes`` argument lists acceptable geometry types.
 
-This method searches through all layers on the canvas, attempting to find matching features at the event
-point.
+This method searches through all layers on the canvas, attempting to
+find matching features at the event point.
 
 .. versionadded:: 3.26
 %End
 
     void setAllowMultipleReturn( bool multipleReturn );
 %Docstring
-define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
+define if the menu executed can return multiple results (e.g. all
+results or all identified features of a vector layer)
 %End
     bool allowMultipleReturn();
 
@@ -90,7 +100,8 @@ Returns an expression context scope used to resolve underlying actions.
 
     void setShowFeatureActions( bool showFeatureActions );
 %Docstring
-define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
+define if attribute actions(1) and map layer actions(2) can be listed
+and run from the menu
 
 .. note::
 
@@ -108,7 +119,8 @@ define if attribute actions(1) and map layer actions(2) can be listed and run fr
 
     void setResultsIfExternalAction( bool resultsIfExternalAction );
 %Docstring
-setResultsIfExternalAction if set to ``False`` (default) the menu will not return any results if an external action has been triggered
+setResultsIfExternalAction if set to ``False`` (default) the menu will
+not return any results if an external action has been triggered
 
 .. note::
 
@@ -118,7 +130,8 @@ setResultsIfExternalAction if set to ``False`` (default) the menu will not retur
 
     void setMaxLayerDisplay( int maxLayerDisplay );
 %Docstring
-Defines the maximum number of layers displayed in the menu (default is 10).
+Defines the maximum number of layers displayed in the menu (default is
+10).
 
 .. note::
 
@@ -128,7 +141,8 @@ Defines the maximum number of layers displayed in the menu (default is 10).
 
     void setMaxFeatureDisplay( int maxFeatureDisplay );
 %Docstring
-Defines the maximum number of features displayed in the menu for vector layers (default is 10).
+Defines the maximum number of features displayed in the menu for vector
+layers (default is 10).
 
 .. note::
 

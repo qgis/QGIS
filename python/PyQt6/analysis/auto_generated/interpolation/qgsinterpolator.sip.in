@@ -19,8 +19,8 @@ struct QgsInterpolatorVertexData
 {
     QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
-Constructor for QgsInterpolatorVertexData with the specified
-``x``, ``y``, and ``z`` coordinate.
+Constructor for QgsInterpolatorVertexData with the specified ``x``,
+``y``, and ``z`` coordinate.
 %End
 
     QgsInterpolatorVertexData();
@@ -35,30 +35,29 @@ class QgsInterpolator
 %Docstring(signature="appended")
 Interface class for interpolations.
 
-Interpolators take
-the vertices of a vector layer as base data. The z-Value
-can be an attribute or the z-coordinates in case of 3D types.
+Interpolators take the vertices of a vector layer as base data. The
+z-Value can be an attribute or the z-coordinates in case of 3D types.
 %End
 
 %TypeHeaderCode
 #include "qgsinterpolator.h"
 %End
   public:
-    enum SourceType /BaseType=IntEnum/
+    enum class SourceType /BaseType=IntEnum/
     {
-      SourcePoints,
-      SourceStructureLines,
-      SourceBreakLines,
+      Points,
+      StructureLines,
+      BreakLines,
     };
 
-    enum ValueSource /BaseType=IntEnum/
+    enum class ValueSource /BaseType=IntEnum/
     {
-      ValueAttribute,
-      ValueZ,
-      ValueM,
+      Attribute,
+      Z,
+      M,
     };
 
-    enum Result /BaseType=IntEnum/
+    enum class Result /BaseType=IntEnum/
     {
       Success,
       Canceled,
@@ -86,7 +85,8 @@ Calculates interpolation value for map coordinates x, y
 
 :param x: x-coordinate (in map units)
 :param y: y-coordinate (in map units)
-:param feedback: optional feedback object for progress and cancellation support
+:param feedback: optional feedback object for progress and cancellation
+                 support
 
 :return: - 0 in case of success
          - result: interpolation result
@@ -99,8 +99,8 @@ Calculates interpolation value for map coordinates x, y
 Caches the vertex and value data from the provider. All the vertex data
 will be held in virtual memory.
 
-An optional ``feedback`` argument may be specified to allow cancellation and
-progress reports from the cache operation.
+An optional ``feedback`` argument may be specified to allow cancellation
+and progress reports from the cache operation.
 
 :return: Success in case of success
 %End

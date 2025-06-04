@@ -11,10 +11,10 @@
 class QgsFieldDomain
 {
 %Docstring(signature="appended")
-
 Base class for field domains.
 
-A field domain is a set of constraints that apply to one or several fields.
+A field domain is a set of constraints that apply to one or several
+fields.
 
 .. versionadded:: 3.26
 %End
@@ -46,14 +46,16 @@ A field domain is a set of constraints that apply to one or several fields.
                     const QString &description,
                     QMetaType::Type fieldType );
 %Docstring
-Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+Constructor for QgsFieldDomain, with the specified ``name``,
+``description`` and ``fieldType``.
 %End
 
  QgsFieldDomain( const QString &name,
                                       const QString &description,
                                       QVariant::Type fieldType ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+Constructor for QgsFieldDomain, with the specified ``name``,
+``description`` and ``fieldType``.
 
 .. deprecated:: 3.38
 
@@ -179,22 +181,23 @@ Associates a code and a value.
 
     QgsCodedValue( const QVariant &code, const QString &value );
 %Docstring
-Constructor for QgsCodedValue, with the associated ``code`` and ``value``.
+Constructor for QgsCodedValue, with the associated ``code`` and
+``value``.
 
-The ``code`` is the underlying value stored in feature attributes, while the
-``value`` is the user-facing string representation.
+The ``code`` is the underlying value stored in feature attributes, while
+the ``value`` is the user-facing string representation.
 %End
 
     QVariant code() const;
 %Docstring
-Returns the associated code, which is the underlying
-value stored in fields.
+Returns the associated code, which is the underlying value stored in
+fields.
 %End
 
     QString value() const;
 %Docstring
-Returns the associated value, which is the user-friendly
-string representation.
+Returns the associated value, which is the user-friendly string
+representation.
 %End
 
     SIP_PYOBJECT __repr__();
@@ -215,8 +218,8 @@ class QgsCodedFieldDomain : QgsFieldDomain
 Definition of a coded / enumerated field domain.
 
 A code field domain is a domain for which only a limited set of codes,
-associated with their expanded value, are allowed.
-The type of the code should be the one of the field domain.
+associated with their expanded value, are allowed. The type of the code
+should be the one of the field domain.
 
 .. versionadded:: 3.26
 %End
@@ -231,10 +234,12 @@ The type of the code should be the one of the field domain.
                          QMetaType::Type fieldType,
                          const QList<QgsCodedValue> &values );
 %Docstring
-Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
+Constructor for QgsCodedFieldDomain, with the associated ``name``,
+``description`` and ``fieldType``.
 
-The ``values`` list details the coded field values as :py:class:`QgsCodedValue` objects. Each code should
-appear only once, but it is the responsibility of the user to check this.
+The ``values`` list details the coded field values as
+:py:class:`QgsCodedValue` objects. Each code should appear only once,
+but it is the responsibility of the user to check this.
 %End
 
  QgsCodedFieldDomain( const QString &name,
@@ -242,10 +247,12 @@ appear only once, but it is the responsibility of the user to check this.
                                            QVariant::Type fieldType,
                                            const QList<QgsCodedValue> &values ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
+Constructor for QgsCodedFieldDomain, with the associated ``name``,
+``description`` and ``fieldType``.
 
-The ``values`` list details the coded field values as :py:class:`QgsCodedValue` objects. Each code should
-appear only once, but it is the responsibility of the user to check this.
+The ``values`` list details the coded field values as
+:py:class:`QgsCodedValue` objects. Each code should appear only once,
+but it is the responsibility of the user to check this.
 
 .. deprecated:: 3.38
 
@@ -288,7 +295,8 @@ Sets the enumeration as :py:class:`QgsCodedValue` ``values``.
 class QgsRangeFieldDomain : QgsFieldDomain
 {
 %Docstring(signature="appended")
-Definition of a numeric field domain with a range of validity for values.
+Definition of a numeric field domain with a range of validity for
+values.
 
 .. versionadded:: 3.26
 %End
@@ -306,9 +314,11 @@ Definition of a numeric field domain with a range of validity for values.
                          const QVariant &maximum,
                          bool maximumIsInclusive );
 %Docstring
-Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+Constructor for QgsRangeFieldDomain, with the specified ``name``,
+``description`` and ``fieldType``.
 
-Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimum or maximum value is desired.
+Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if
+no minimum or maximum value is desired.
 %End
 
  QgsRangeFieldDomain( const QString &name,
@@ -319,9 +329,11 @@ Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimu
                                            const QVariant &maximum,
                                            bool maximumIsInclusive ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+Constructor for QgsRangeFieldDomain, with the specified ``name``,
+``description`` and ``fieldType``.
 
-Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimum or maximum value is desired.
+Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if
+no minimum or maximum value is desired.
 
 .. deprecated:: 3.38
 
@@ -452,9 +464,11 @@ Globs are matching expression like ``*[a-z][0-1]?``
                         QMetaType::Type fieldType,
                         const QString &glob );
 %Docstring
-Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+Constructor for QgsGlobFieldDomain, with the specified ``name``,
+``description`` and ``fieldType``.
 
-The ``glob`` argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
+The ``glob`` argument specifies the content validation glob, e.g.
+``*[a-z][0-1]?``.
 %End
 
  QgsGlobFieldDomain( const QString &name,
@@ -462,9 +476,11 @@ The ``glob`` argument specifies the content validation glob, e.g. ``*[a-z][0-1]?
                                           QVariant::Type fieldType,
                                           const QString &glob ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
+Constructor for QgsGlobFieldDomain, with the specified ``name``,
+``description`` and ``fieldType``.
 
-The ``glob`` argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
+The ``glob`` argument specifies the content validation glob, e.g.
+``*[a-z][0-1]?``.
 
 .. deprecated:: 3.38
 

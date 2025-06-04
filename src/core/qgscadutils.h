@@ -27,7 +27,7 @@ class QgsSnappingUtils;
 
 /**
  * \ingroup core
- * \brief The QgsCadUtils class provides routines for CAD editing.
+ * \brief Provides routines for CAD editing.
  *
  */
 class CORE_EXPORT QgsCadUtils
@@ -35,7 +35,7 @@ class CORE_EXPORT QgsCadUtils
   public:
 
     /**
-     * \brief Structure with details of one constraint
+     * \brief Structure with details of one constraint.
      * \ingroup core
      */
     class AlignMapPointConstraint
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCadUtils
     };
 
     /**
-     * \brief Structure returned from alignMapPoint() method
+     * \brief Structure returned from alignMapPoint() method.
      * \ingroup core
      */
     class AlignMapPointOutput

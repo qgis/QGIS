@@ -11,7 +11,7 @@
 class QgsPanelWidget : QWidget
 {
 %Docstring(signature="appended")
-Base class for any widget that can be shown as a inline panel
+Base class for any widget that can be shown as an inline panel.
 %End
 
 %TypeHeaderCode
@@ -20,7 +20,7 @@ Base class for any widget that can be shown as a inline panel
   public:
     QgsPanelWidget( QWidget *parent = 0 );
 %Docstring
-Base class for any widget that can be shown as a inline panel
+Base class for any widget that can be shown as an inline panel
 
 :param parent: Parent widget.
 %End
@@ -41,36 +41,39 @@ The title of the panel.
 
     void connectChildPanels( const QList<QgsPanelWidget *> &panels );
 %Docstring
-Connect the given sub panel widgets showPanel signals to this current panels
-main showPanel event to bubble up to the user.
+Connect the given sub panel widgets showPanel signals to this current
+panels main showPanel event to bubble up to the user.
 
-Use this method if you have children widgets that need to show a panel to the user.
+Use this method if you have children widgets that need to show a panel
+to the user.
 
 :param panels: A list of panel widgets to connect.
 %End
 
     void connectChildPanel( QgsPanelWidget *panel );
 %Docstring
-Connect the given sub panel widgets showPanel signals to this current panels
-main showPanel event to bubble up to the user.
+Connect the given sub panel widgets showPanel signals to this current
+panels main showPanel event to bubble up to the user.
 
-Use this method if you have children widgets that need to show a panel to the user.
+Use this method if you have children widgets that need to show a panel
+to the user.
 
 :param panel: The panel to connect.
 %End
 
     virtual void setDockMode( bool dockMode );
 %Docstring
-Set the widget in dock mode which tells the widget to emit panel
-widgets and not open dialogs
+Set the widget in dock mode which tells the widget to emit panel widgets
+and not open dialogs
 
 :param dockMode: ``True`` to enable dock mode.
 %End
 
     virtual bool applySizeConstraintsToStack() const;
 %Docstring
-Returns ``True`` if the size constraints and hints for the panel widget should be
-applied to the parent :py:class:`QgsPanelWidgetStack` which this panel is shown in.
+Returns ``True`` if the size constraints and hints for the panel widget
+should be applied to the parent :py:class:`QgsPanelWidgetStack` which
+this panel is shown in.
 
 The default behavior is to return ``False``.
 
@@ -81,33 +84,33 @@ The default behavior is to return ``False``.
 %Docstring
 Returns the dock mode state.
 
-:return: ``True`` if in dock mode.  If in dock mode the widget
-         will emit the showPanel signal to handle panel opening
-         If ``False`` it will open dialogs when openPanel is called.
+:return: ``True`` if in dock mode. If in dock mode the widget will emit
+         the showPanel signal to handle panel opening If ``False`` it
+         will open dialogs when openPanel is called.
 %End
 
     void setAutoDelete( bool autoDelete );
 %Docstring
-The the auto delete property on the widget. ``True`` by default.
-When auto delete is enabled when a panel is removed from the stack
-it will be deleted.
+The the auto delete property on the widget. ``True`` by default. When
+auto delete is enabled when a panel is removed from the stack it will be
+deleted.
 
 :param autoDelete: Enable or disable auto delete on the panel.
 %End
 
     bool autoDelete();
 %Docstring
-The the auto delete property on the widget. ``True`` by default.
-When auto delete is enabled when a panel is removed from the stack
-it will be deleted.
+The the auto delete property on the widget. ``True`` by default. When
+auto delete is enabled when a panel is removed from the stack it will be
+deleted.
 
 :return: The auto delete value for the widget.
 %End
 
     static QgsPanelWidget *findParentPanel( QWidget *widget );
 %Docstring
-Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
-widget.
+Traces through the parents of a widget to find if it is contained within
+a QgsPanelWidget widget.
 
 :param widget: widget which may be contained within a panel widget
 
@@ -116,17 +119,19 @@ widget.
 
     virtual QString menuButtonTooltip() const;
 %Docstring
-Returns the (translated) tooltip text to use for the menu button for this panel.
+Returns the (translated) tooltip text to use for the menu button for
+this panel.
 
-This is only used when the panel returns a :py:func:`~QgsPanelWidget.menuButtonMenu`.
+This is only used when the panel returns a
+:py:func:`~QgsPanelWidget.menuButtonMenu`.
 
 .. versionadded:: 3.12
 %End
 
     virtual QMenu *menuButtonMenu();
 %Docstring
-Returns the menu to use for the menu button for this panel, or ``None`` if
-no menu button is required.
+Returns the menu to use for the menu button for this panel, or ``None``
+if no menu button is required.
 
 .. versionadded:: 3.12
 %End
@@ -165,30 +170,31 @@ Emit when you require a panel to be show in the interface.
 
     void widgetChanged();
 %Docstring
-Emitted when the widget state changes.
-Connect to this to pull any changes off the widget when needed.
-As panels are non blocking "dialogs" you should listen to this signal
-to give the user feedback when something changes.
+Emitted when the widget state changes. Connect to this to pull any
+changes off the widget when needed. As panels are non blocking "dialogs"
+you should listen to this signal to give the user feedback when
+something changes.
 %End
 
   public slots:
 
     void openPanel( QgsPanelWidget *panel );
 %Docstring
-Open a panel or dialog depending on dock mode setting
-If dock mode is ``True`` this method will emit the showPanel signal
-for connected slots to handle the open event.
+Open a panel or dialog depending on dock mode setting If dock mode is
+``True`` this method will emit the showPanel signal for connected slots
+to handle the open event.
 
-If dock mode is ``False`` this method will open a dialog
-and block the user.
+If dock mode is ``False`` this method will open a dialog and block the
+user.
 
 :param panel: The panel widget to open.
 %End
 
     void acceptPanel();
 %Docstring
-Accept the panel. Causes panelAccepted to be emitted.
-Widgets are normally removed form the interface using the panel manager or the caller.
+Accept the panel. Causes panelAccepted to be emitted. Widgets are
+normally removed form the interface using the panel manager or the
+caller.
 %End
 
   protected:
@@ -206,8 +212,8 @@ Overridden key press event to handle the esc event on the widget.
 class QgsPanelWidgetWrapper : QgsPanelWidget
 {
 %Docstring(signature="appended")
-Wrapper widget for existing widgets which can't have
-the inheritance tree changed, e.g dialogs.
+Wrapper widget for existing widgets which can't have the inheritance
+tree changed, e.g dialogs.
 
 .. note::
 
@@ -221,8 +227,8 @@ the inheritance tree changed, e.g dialogs.
   public:
     QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = 0 );
 %Docstring
-Wrapper widget for existing widgets which can't have
-the inheritance tree changed, e.g dialogs.
+Wrapper widget for existing widgets which can't have the inheritance
+tree changed, e.g dialogs.
 
 :param widget: The widget to wrap.
 :param parent: The parent widget.

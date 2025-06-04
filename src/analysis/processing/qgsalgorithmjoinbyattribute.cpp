@@ -85,6 +85,12 @@ QString QgsJoinByAttributeAlgorithm::shortHelpString() const
                       "in each of them to define the join criteria." );
 }
 
+QString QgsJoinByAttributeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that is an extended version of the input one, "
+                      "with additional attributes taken from a second vector layer." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsJoinByAttributeAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
@@ -191,12 +197,9 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
     // only keep selected attributes
     QgsAttributes attributes;
-    const int attributeCount = feat.attributeCount();
-    for ( int j = 0; j < attributeCount; ++j )
+    for ( int field2Index : fields2Indices )
     {
-      if ( !fields2Indices.contains( j ) )
-        continue;
-      attributes << feat.attribute( j );
+      attributes << feat.attribute( field2Index );
     }
 
     input2AttributeCache.insert( feat.attribute( joinField2Index ), attributes );

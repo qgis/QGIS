@@ -61,10 +61,12 @@ class TestQgsMapSettings : public QObject
     void testRenderedFeatureHandlers();
     void testCustomRenderingFlags();
     void testClippingRegions();
+    void testScale();
     void testComputeExtentForScale();
     void testComputeScaleForExtent();
     void testLayersWithGroupLayers();
     void testMaskRenderSettings();
+    void testDeprecatedFlagsRasterizePolicy();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -690,6 +692,40 @@ void TestQgsMapSettings::testClippingRegions()
   QCOMPARE( settings.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))" ) );
 }
 
+void TestQgsMapSettings::testScale()
+{
+  QgsMapSettings settings;
+  settings.setOutputSize( QSize( 1000, 1000 ) );
+  settings.setOutputDpi( 96 );
+
+  // projected CRS
+  settings.setExtent( QgsRectangle( 10346011, -5940976, 19905957, -578962 ) );
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
+  // method should not impact calculations, we are using a projected CRS
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalTop );
+  QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalBottom );
+  QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::AtEquator );
+  QGSCOMPARENEAR( settings.scale(), 36132079, 10000 );
+
+  // geographic CRS
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  settings.setExtent( QgsRectangle( -49.42, 102.1, -4.44, 161.56 ) );
+
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalMiddle );
+  QGSCOMPARENEAR( settings.scale(), 11614145, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalTop );
+  QGSCOMPARENEAR( settings.scale(), 19779538, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalBottom );
+  QGSCOMPARENEAR( settings.scale(), 3372951, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::HorizontalAverage );
+  QGSCOMPARENEAR( settings.scale(), 11588878, 10000 );
+  settings.setScaleMethod( Qgis::ScaleCalculationMethod::AtEquator );
+  QGSCOMPARENEAR( settings.scale(), 24851905, 10000 );
+}
+
 void TestQgsMapSettings::testComputeExtentForScale()
 {
   QgsMapSettings settings;
@@ -772,6 +808,33 @@ void TestQgsMapSettings::testMaskRenderSettings()
 
   QgsMapSettings settings3( settings );
   QCOMPARE( settings3.maskSettings().simplifyTolerance(), 11 );
+}
+
+void TestQgsMapSettings::testDeprecatedFlagsRasterizePolicy()
+{
+  QgsMapSettings settings;
+
+  // test translation of rasterize policies to flags
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  QVERIFY( !settings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+  QVERIFY( !settings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+
+  settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::PreferVector );
+  settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::Default );
+
+  settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  settings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
+  QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

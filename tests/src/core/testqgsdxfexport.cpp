@@ -84,6 +84,7 @@ class TestQgsDxfExport : public QObject
     void testExtentWithSelection();
     void testOutputLayerNamePrecedence();
     void testMinimumLineWidthExport();
+    void testWritingCodepage();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -1956,6 +1957,35 @@ void TestQgsDxfExport::testMinimumLineWidthExport()
   dxfFile.close();
 
   QVERIFY( !fileContainsText( file, QStringLiteral( " 43\n7.0" ) ) );
+}
+
+void TestQgsDxfExport::testWritingCodepage()
+{
+  QgsDxfExport d;
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayer ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayer->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayer->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+
+  const QString file1 = getTempFileName( "CP1252UpperCase_dxf" );
+  QFile dxfFile1( file1 );
+  QCOMPARE( d.writeToFile( &dxfFile1, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile1.close();
+  QVERIFY( fileContainsText( file1, QStringLiteral( "ANSI_1252" ) ) );
+
+  const QString file2 = getTempFileName( "cp1252lowercase_dxf" );
+  QFile dxfFile2( file2 );
+  QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "cp1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile2.close();
+  QVERIFY( fileContainsText( file2, QStringLiteral( "ANSI_1252" ) ) );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const

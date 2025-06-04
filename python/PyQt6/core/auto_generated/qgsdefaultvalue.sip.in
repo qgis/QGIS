@@ -12,23 +12,23 @@
 class QgsDefaultValue
 {
 %Docstring(signature="appended")
+Provides a container for managing client side default values for fields.
 
-The :py:class:`QgsDefaultValue` class provides a container for managing client
-side default values for fields.
-
-A :py:class:`QgsDefaultValue` consists of an expression string that will be evaluated
-on the client when a default field value needs to be generated.
+A :py:class:`QgsDefaultValue` consists of an expression string that will
+be evaluated on the client when a default field value needs to be
+generated.
 
 Usual values for such an expression are
 
 - :py:func:`~now` for a timestamp for a record
-- `@some_variable` to insert a project or application level variable like
-  the username of the one digitizing a feature
+- `@some_variable` to insert a project or application level variable
+  like the username of the one digitizing a feature
 - `$length` to insert a derived attribute of a geometry
 
-:py:class:`QgsDefaultValue` also has a `applyOnUpdate` flag which will indicate that a
-default value should also be applied when a feature is updated. If this is
-not set, the default value will only be used when a feature is created.
+:py:class:`QgsDefaultValue` also has a `applyOnUpdate` flag which will
+indicate that a default value should also be applied when a feature is
+updated. If this is not set, the default value will only be used when a
+feature is created.
 %End
 
 %TypeHeaderCode
@@ -38,7 +38,8 @@ not set, the default value will only be used when a feature is created.
 
     explicit QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
 %Docstring
-Create a new default value with the given ``expression`` and ``applyOnUpdate`` flag.
+Create a new default value with the given ``expression`` and
+``applyOnUpdate`` flag.
 
 .. seealso:: :py:func:`QgsVectorLayer.setDefaultValueDefinition`
 %End
@@ -56,14 +57,14 @@ Create a new default value with the given ``expression`` and ``applyOnUpdate`` f
 
     QString expression() const;
 %Docstring
-The expression will be evaluated whenever a default value needs
-to be calculated for a field.
+The expression will be evaluated whenever a default value needs to be
+calculated for a field.
 %End
 
     void setExpression( const QString &expression );
 %Docstring
-The expression will be evaluated whenever a default value needs
-to be calculated for a field.
+The expression will be evaluated whenever a default value needs to be
+calculated for a field.
 %End
 
     bool applyOnUpdate() const;

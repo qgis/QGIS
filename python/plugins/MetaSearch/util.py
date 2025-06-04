@@ -36,7 +36,7 @@ with warnings.catch_warnings():
     from jinja2 import Environment, FileSystemLoader
 
 from qgis.core import Qgis, QgsMessageLog, QgsSettings
-from qgis.PyQt.QtCore import QUrl, QUrlQuery
+from qgis.PyQt.QtCore import QUrl, QUrlQuery, QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
@@ -80,16 +80,26 @@ def get_connections_from_file(parent, filename):
         doc = etree.parse(filename).getroot()
         if doc.tag != "qgsCSWConnections":
             error = 1
-            msg = parent.tr("Invalid Catalog connections XML.")
+            msg = QCoreApplication.translate(
+                "MetaSearchDialog", "Invalid Catalog connections XML."
+            )
     except etree.ParseError as err:
         error = 1
-        msg = parent.tr("Cannot parse XML file: {0}").format(err)
+        msg = QCoreApplication.translate(
+            "MetaSearchDialog", "Cannot parse XML file: {0}"
+        ).format(err)
     except OSError as err:
         error = 1
-        msg = parent.tr("Cannot open file: {0}").format(err)
+        msg = QCoreApplication.translate(
+            "MetaSearchDialog", "Cannot open file: {0}"
+        ).format(err)
 
     if error == 1:
-        QMessageBox.information(parent, parent.tr("Loading Connections"), msg)
+        QMessageBox.information(
+            parent,
+            QCoreApplication.translate("MetaSearchDialog", "Loading Connections"),
+            msg,
+        )
         return
     return doc
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>573</height>
+    <width>880</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New PostGIS Connection</string>
+   <string>Create a New PostgreSQL Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -25,188 +25,300 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
-    <widget class="QgsMessageBar" name="bar" native="true"/>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="GroupBox1">
-     <property name="title">
-      <string>Connection Information</string>
+  <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <item row="1" column="0" colspan="2">
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="txtService"/>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLineEdit" name="txtPort">
-          <property name="text">
-           <string>5432</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="TextLabel3_3">
-          <property name="text">
-           <string>SSL &amp;mode</string>
-          </property>
-          <property name="buddy">
-           <cstring>cbxSSLmode</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="txtName">
-          <property name="toolTip">
-           <string>Name of the new connection</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="txtHost"/>
-        </item>
-        <item row="4" column="1">
-         <widget class="QLineEdit" name="txtDatabase"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="TextLabel2">
-          <property name="text">
-           <string>&amp;Database</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtDatabase</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="TextLabel1_2">
-          <property name="text">
-           <string>&amp;Name</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtName</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="TextLabel1">
-          <property name="text">
-           <string>Hos&amp;t</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtHost</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QComboBox" name="cbxSSLmode"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Service</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtService</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="TextLabel2_2">
-          <property name="text">
-           <string>Port</string>
-          </property>
-          <property name="buddy">
-           <cstring>txtPort</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QLineEdit" name="txtSessionRole"/>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Session ROLE</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="mAuthGroupBox">
-        <property name="title">
-         <string>Authentication</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>6</number>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>936</width>
+        <height>630</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="GroupBox1">
+         <property name="title">
+          <string>Connection Details</string>
          </property>
-         <property name="topMargin">
-          <number>6</number>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="txtService"/>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="txtPort">
+              <property name="text">
+               <string>5432</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="TextLabel3_3">
+              <property name="text">
+               <string>SSL &amp;mode</string>
+              </property>
+              <property name="buddy">
+               <cstring>cbxSSLmode</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="txtName">
+              <property name="toolTip">
+               <string>Name of the new connection</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="txtHost"/>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="txtDatabase"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="TextLabel2">
+              <property name="text">
+               <string>&amp;Database</string>
+              </property>
+              <property name="buddy">
+               <cstring>txtDatabase</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="TextLabel1_2">
+              <property name="text">
+               <string>&amp;Name</string>
+              </property>
+              <property name="buddy">
+               <cstring>txtName</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="TextLabel1">
+              <property name="text">
+               <string>Hos&amp;t</string>
+              </property>
+              <property name="buddy">
+               <cstring>txtHost</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="cbxSSLmode"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Service</string>
+              </property>
+              <property name="buddy">
+               <cstring>txtService</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="TextLabel2_2">
+              <property name="text">
+               <string>Port</string>
+              </property>
+              <property name="buddy">
+               <cstring>txtPort</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QLineEdit" name="txtSessionRole"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Session ROLE</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="mAuthGroupBox">
+            <property name="title">
+             <string>Authentication</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true">
+               <property name="focusPolicy">
+                <enum>Qt::StrongFocus</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnConnect">
+            <property name="text">
+             <string>&amp;Test Connection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="rightMargin">
-          <number>6</number>
+         <property name="title">
+          <string>Database Details</string>
          </property>
-         <property name="bottomMargin">
-          <number>6</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnConnect">
-        <property name="text">
-         <string>&amp;Test Connection</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
-        <property name="toolTip">
-         <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
-        </property>
-        <property name="text">
-         <string>Only show layers in the layer registries</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_dontResolveType">
-        <property name="text">
-         <string>Don't resolve type of unrestricted columns (GEOMETRY)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_publicSchemaOnly">
-        <property name="toolTip">
-         <string>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</string>
-        </property>
-        <property name="text">
-         <string>Only look in the 'public' schema</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
-        <property name="text">
-         <string>Also list tables with no geometry</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_useEstimatedMetadata">
-        <property name="toolTip">
-         <string>&lt;html&gt;
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_allowGeometrylessTables">
+            <property name="text">
+             <string>Also list tables with no geometry</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_projectsInDatabase">
+            <property name="text">
+             <string>Allow saving/loading QGIS projects in the database</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_geometryColumnsOnly">
+            <property name="toolTip">
+             <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
+            </property>
+            <property name="text">
+             <string>Only show layers in the layer registries</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_dontResolveType">
+            <property name="text">
+             <string>Don't resolve type of unrestricted columns (GEOMETRY)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_metadataInDatabase">
+            <property name="text">
+             <string>Allow saving/loading QGIS layer metadata in the database</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="TextLabel3_5">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Schema</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QgsFilterLineEdit" name="txtSchema">
+            <property name="toolTip">
+             <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Normal</enum>
+            </property>
+            <property name="placeholderText">
+             <string>Limit to tables from specific schema</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_allowRasterOverviewTables">
+            <property name="text">
+             <string>Also list raster overview tables</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_useEstimatedMetadata">
+            <property name="toolTip">
+             <string>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;&lt;b&gt;Use estimated table statistics for the layer metadata.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;When the layer is setup various metadata is required for the PostGIS table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;
@@ -216,55 +328,38 @@
 &lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Use estimated table metadata</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_projectsInDatabase">
-        <property name="text">
-         <string>Allow saving/loading QGIS projects in the database</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_metadataInDatabase">
-        <property name="text">
-         <string>Allow saving/loading QGIS layer metadata in the database</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_allowRasterOverviewTables">
-        <property name="text">
-         <string>Also list raster overview tables</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>0</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
+            </property>
+            <property name="text">
+             <string>Use estimated table metadata</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0" colspan="2">
+           <widget class="QCheckBox" name="cb_publicSchemaOnly">
+            <property name="toolTip">
+             <string>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</string>
+            </property>
+            <property name="text">
+             <string>Only look in the 'public' schema</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QgsMessageBar" name="bar" native="true"/>
    </item>
   </layout>
  </widget>
@@ -277,10 +372,21 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -290,13 +396,18 @@
   <tabstop>txtPort</tabstop>
   <tabstop>txtDatabase</tabstop>
   <tabstop>cbxSSLmode</tabstop>
+  <tabstop>txtSessionRole</tabstop>
+  <tabstop>mAuthSettings</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_dontResolveType</tabstop>
-  <tabstop>cb_publicSchemaOnly</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>cb_projectsInDatabase</tabstop>
+  <tabstop>cb_metadataInDatabase</tabstop>
+  <tabstop>cb_allowRasterOverviewTables</tabstop>
+  <tabstop>cb_publicSchemaOnly</tabstop>
+  <tabstop>txtSchema</tabstop>
  </tabstops>
  <resources/>
  <connections>

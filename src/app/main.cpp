@@ -142,6 +142,7 @@ void usage( const QString &appName )
     << QStringLiteral( "\t[-n, --nologo]\thide splash screen\n" )
     << QStringLiteral( "\t[-V, --noversioncheck]\tdon't check for new version of QGIS at startup\n" )
     << QStringLiteral( "\t[-P, --noplugins]\tdon't restore plugins on startup\n" )
+    << QStringLiteral( "\t[--nopython]\tdisable Python support\n" )
     << QStringLiteral( "\t[-B, --skipbadlayers]\tdon't prompt for missing layers\n" )
     << QStringLiteral( "\t[-C, --nocustomization]\tdon't apply GUI customization\n" )
     << QStringLiteral( "\t[-z, --customizationfile path]\tuse the given ini file as GUI customization\n" )
@@ -407,6 +408,9 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            // warnings triggered from KDE libraries, not related to QGIS
            msg.contains( QLatin1String( "This plugin supports grabbing the mouse only for popup windows" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "KServiceTypeTrader" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "No node found for item that was just removed" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "Audio notification requested" ), Qt::CaseInsensitive ) ||
 
+           // something from deep within Qt6 (looks like a malformed SVG in a platform theme), not related to us
+           msg.contains( QLatin1String( "The requested buffer size is too big, ignoring" ) ) ||
+
            // coming from WebEngine:
            msg.contains( QLatin1String( "An OpenGL Core Profile was requested, but it is not supported on the current platform" ), Qt::CaseInsensitive ) )
         break;
@@ -570,7 +574,6 @@ int main( int argc, char *argv[] )
 
   bool myHideSplash = false;
   bool settingsMigrationForce = false;
-  bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined( ANDROID )
   QgsDebugMsgLevel( QStringLiteral( "Android: Splash hidden" ), 2 );
@@ -578,8 +581,6 @@ int main( int argc, char *argv[] )
 #endif
 
   bool myRestoreDefaultWindowState = false;
-  bool myRestorePlugins = true;
-  bool mySkipBadLayers = false;
   bool myCustomization = true;
 
   QString dxfOutputFile;
@@ -628,6 +629,7 @@ int main( int argc, char *argv[] )
 #endif
 
   QStringList args;
+  QgisApp::AppOptions qgisAppOptions = QgisApp::AppOption::RestorePlugins | QgisApp::AppOption::EnablePython;
 
   {
     QCoreApplication coreApp( argc, argv );
@@ -663,16 +665,20 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
         {
-          mySkipVersionCheck = true;
+          qgisAppOptions |= QgisApp::AppOption::SkipVersionCheck;
         }
         else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
         {
-          myRestorePlugins = false;
+          qgisAppOptions &= ~QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins );
+        }
+        else if ( arg == QLatin1String( "--nopython" ) )
+        {
+          qgisAppOptions &= ~QgisApp::AppOptions( QgisApp::AppOption::EnablePython );
         }
         else if ( arg == QLatin1String( "--skipbadlayers" ) || arg == QLatin1String( "-B" ) )
         {
           QgsDebugMsgLevel( QStringLiteral( "Skipping bad layers" ), 2 );
-          mySkipBadLayers = true;
+          qgisAppOptions |= QgisApp::AppOption::SkipBadLayers;
         }
         else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
         {
@@ -1540,7 +1546,32 @@ int main( int argc, char *argv[] )
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
-  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipBadLayers, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QFont defaultFont = QApplication::font();
+  bool defaultFontCustomized = false;
+  const double fontSize = settings.value( QStringLiteral( "/app/fontPointSize" ), defaultFont.pointSizeF() ).toDouble();
+  if ( fontSize != defaultFont.pointSizeF() )
+  {
+    defaultFont.setPointSizeF( fontSize );
+    defaultFontCustomized = true;
+  }
+
+  QString fontFamily = settings.value( QStringLiteral( "/app/fontFamily" ), defaultFont.family() ).toString();
+  if ( fontFamily != defaultFont.family() )
+  {
+    const QFont tempFont( fontFamily );
+    if ( tempFont.family() == fontFamily )
+    {
+      // font exists on system, proceed
+      defaultFont.setFamily( fontFamily );
+      defaultFontCustomized = true;
+    }
+  }
+  if ( defaultFontCustomized )
+  {
+    QApplication::setFont( defaultFont );
+  }
+
+  QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   QgsApplication::connect(
@@ -1634,23 +1665,14 @@ int main( int argc, char *argv[] )
   {
     if ( !pythonfile.isEmpty() )
     {
-#ifdef Q_OS_WIN
-      //replace backslashes with forward slashes
-      pythonfile.replace( '\\', '/' );
-#endif
       pythonArgs.prepend( pythonfile );
     }
-
-    QgsPythonRunner::run( QStringLiteral( "sys.argv = ['%1']" ).arg( pythonArgs.replaceInStrings( QChar( '\'' ), QStringLiteral( "\\'" ) ).join( "','" ) ) );
+    QgsPythonRunner::setArgv( pythonArgs );
   }
 
   if ( !pythonfile.isEmpty() )
   {
-#ifdef Q_OS_WIN
-    //replace backslashes with forward slashes
-    pythonfile.replace( '\\', '/' );
-#endif
-    QgsPythonRunner::run( QStringLiteral( "with open('%1','r') as f: exec(f.read())" ).arg( pythonfile ) );
+    QgsPythonRunner::runFile( pythonfile );
   }
 
   /////////////////////////////////`////////////////////////////////////

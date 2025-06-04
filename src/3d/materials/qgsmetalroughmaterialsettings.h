@@ -24,7 +24,7 @@
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief A PBR metal rough shading material used for rendering.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is

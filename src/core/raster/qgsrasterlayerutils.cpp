@@ -63,6 +63,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   {
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
     case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::FixedDateTime:
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     case Qgis::RasterTemporalMode::FixedRangePerBand:
     {

@@ -30,7 +30,7 @@
 /**
  * \ingroup core
  * \class QgsLayoutMeasurementConverter
- * \brief This class provides a method of converting QgsLayoutMeasurements from
+ * \brief Provides a method of converting QgsLayoutMeasurements from
  * one unit to another.
  *
  * Conversion to or from pixel units utilizes a specified

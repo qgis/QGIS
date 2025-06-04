@@ -177,7 +177,7 @@ QString QgsExportMeshVerticesAlgorithm::shortHelpString() const
 
 QString QgsExportMeshVerticesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh vertices to a point vector layer" );
+  return QObject::tr( "Exports mesh vertices to a point vector layer." );
 }
 
 QString QgsExportMeshVerticesAlgorithm::name() const
@@ -403,7 +403,7 @@ QString QgsExportMeshFacesAlgorithm::shortHelpString() const
 
 QString QgsExportMeshFacesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh faces to a polygon vector layer" );
+  return QObject::tr( "Exports mesh faces to a polygon vector layer." );
 }
 
 QString QgsExportMeshFacesAlgorithm::name() const
@@ -439,7 +439,7 @@ QString QgsExportMeshEdgesAlgorithm::shortHelpString() const
 
 QString QgsExportMeshEdgesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh edges to a line vector layer" );
+  return QObject::tr( "Exports mesh edges to a line vector layer." );
 }
 
 QString QgsExportMeshEdgesAlgorithm::name() const
@@ -484,7 +484,7 @@ QString QgsExportMeshOnGridAlgorithm::shortHelpString() const
 
 QString QgsExportMeshOnGridAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports mesh dataset values to a gridded point vector layer" );
+  return QObject::tr( "Exports mesh dataset values to a gridded point vector layer." );
 }
 
 QgsProcessingAlgorithm *QgsExportMeshOnGridAlgorithm::createInstance() const
@@ -741,7 +741,7 @@ QString QgsMeshRasterizeAlgorithm::shortHelpString() const
 
 QString QgsMeshRasterizeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a raster layer from a mesh dataset" );
+  return QObject::tr( "Creates a raster layer from a mesh dataset." );
 }
 
 QgsProcessingAlgorithm *QgsMeshRasterizeAlgorithm::createInstance() const
@@ -774,10 +774,17 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 1, QStringLiteral( "INPUT" ), false ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster layer" ) ) );
 }
@@ -848,15 +855,20 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   int width = extent.width() / pixelSize;
   int height = extent.height() / pixelSize;
 
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString fileName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fileInfo( fileName );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fileInfo.suffix() );
   QgsRasterFileWriter rasterFileWriter( fileName );
   rasterFileWriter.setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    rasterFileWriter.setCreateOptions( createOptions.split( '|' ) );
+    rasterFileWriter.setCreationOptions( creationOptions.split( '|' ) );
   }
   rasterFileWriter.setOutputFormat( outputFormat );
 
@@ -885,7 +897,10 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
         &rasterBlockFeedBack
       ) );
 
-      rasterDataProvider->writeBlock( block.get(), i + 1 );
+      if ( !rasterDataProvider->writeBlock( block.get(), i + 1 ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( rasterDataProvider->error().summary() ) );
+      }
       rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
     }
     else
@@ -946,7 +961,7 @@ QString QgsMeshContoursAlgorithm::shortHelpString() const
 
 QString QgsMeshContoursAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates contours as vector layer from mesh scalar dataset" );
+  return QObject::tr( "Creates contours as vector layer from mesh scalar dataset." );
 }
 
 QgsProcessingAlgorithm *QgsMeshContoursAlgorithm::createInstance() const
@@ -1248,7 +1263,7 @@ QString QgsMeshExportCrossSection::shortHelpString() const
 
 QString QgsMeshExportCrossSection::shortDescription() const
 {
-  return QObject::tr( "Extracts a mesh dataset's values from lines contained in a vector layer" );
+  return QObject::tr( "Extracts a mesh dataset's values from lines contained in a vector layer." );
 }
 
 QgsProcessingAlgorithm *QgsMeshExportCrossSection::createInstance() const
@@ -1471,7 +1486,7 @@ QString QgsMeshExportTimeSeries::shortHelpString() const
 
 QString QgsMeshExportTimeSeries::shortDescription() const
 {
-  return QObject::tr( "Extracts a mesh dataset's time series values from points contained in a vector layer" );
+  return QObject::tr( "Extracts a mesh dataset's time series values from points contained in a vector layer." );
 }
 
 QgsProcessingAlgorithm *QgsMeshExportTimeSeries::createInstance() const

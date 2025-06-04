@@ -145,7 +145,7 @@ QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
 QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // Note: MAP_THEME and LAYERS are handled and cloned in prepareAlgorithm
-  const QgsRectangle extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, context.project()->crs() ) };
+  const QgsRectangle extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs ) };
   const int tileSize { parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context ) };
   const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
   const double mapUnitsPerPixel { parameterAsDouble( parameters, QStringLiteral( "MAP_UNITS_PER_PIXEL" ), context ) };
@@ -173,7 +173,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
 
         if ( totalTiles == 0 )
         {
-          const QgsCoordinateTransform ct( context.project()->crs(), rasterLayer->crs(), context.transformContext() );
+          const QgsCoordinateTransform ct( mCrs, rasterLayer->crs(), context.transformContext() );
           QgsRectangle extentLayer;
           try
           {
@@ -236,7 +236,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     throw QgsProcessingException( QObject::tr( "Error creating GDAL output layer" ) );
   }
 
-  GDALSetProjection( hOutputDataset.get(), context.project()->crs().toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLatin1().constData() );
+  GDALSetProjection( hOutputDataset.get(), mCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLatin1().constData() );
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = mapUnitsPerPixel;
@@ -246,30 +246,14 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   geoTransform[5] = -mapUnitsPerPixel;
   GDALSetGeoTransform( hOutputDataset.get(), geoTransform );
 
-  int red = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorRedPart", 255 );
-  int green = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorGreenPart", 255 );
-  int blue = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorBluePart", 255 );
-
-  QColor bgColor;
-  if ( transparent )
-  {
-    bgColor = QColor( red, green, blue, 0 );
-  }
-  else
-  {
-    bgColor = QColor( red, green, blue );
-  }
-
-  QgsMapSettings mapSettings;
-  mapSettings.setOutputImageFormat( QImage::Format_ARGB32 );
-  mapSettings.setDestinationCrs( context.project()->crs() );
-  mapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );
-  mapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true );
-  mapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
-  mapSettings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, true );
-  mapSettings.setTransformContext( context.transformContext() );
-  mapSettings.setExtentBuffer( extentBuffer );
-  mapSettings.setBackgroundColor( bgColor );
+  mMapSettings.setOutputImageFormat( QImage::Format_ARGB32 );
+  mMapSettings.setDestinationCrs( mCrs );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true );
+  mMapSettings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
+  mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+  mMapSettings.setTransformContext( context.transformContext() );
+  mMapSettings.setExtentBuffer( extentBuffer );
 
   // Set layers cloned in prepareAlgorithm
   QList<QgsMapLayer *> layers;
@@ -277,8 +261,8 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   {
     layers.push_back( lptr.get() );
   }
-  mapSettings.setLayers( layers );
-  mapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
+  mMapSettings.setLayers( layers );
+  mMapSettings.setLayerStyleOverrides( mMapThemeStyleOverrides );
 
   // Start rendering
   const double extentRatio { mapUnitsPerPixel * tileSize };
@@ -305,7 +289,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     {
       return;
     }
-    image.fill( transparent ? bgColor.rgba() : bgColor.rgb() );
+    image.fill( transparent ? mapSettings.backgroundColor().rgba() : mapSettings.backgroundColor().rgb() );
     mapSettings.setExtent( QgsRectangle(
       extent.xMinimum() + x * extentRatio,
       extent.yMaximum() - ( y + 1 ) * extentRatio,
@@ -356,7 +340,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
       {
         return {};
       }
-      futures.push_back( QtConcurrent::run( renderJob, x, y, mapSettings ) );
+      futures.push_back( QtConcurrent::run( renderJob, x, y, mMapSettings ) );
     }
   }
 
@@ -408,6 +392,27 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
       mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone() ) );
     }
   }
+
+  mCrs = context.project()->crs();
+
+  int red = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorRedPart", 255 );
+  int green = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorGreenPart", 255 );
+  int blue = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorBluePart", 255 );
+
+  const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
+  QColor bgColor;
+  if ( transparent )
+  {
+    bgColor = QColor( red, green, blue, 0 );
+  }
+  else
+  {
+    bgColor = QColor( red, green, blue );
+  }
+  mMapSettings.setBackgroundColor( bgColor );
+
+  mMapSettings.setScaleMethod( context.project()->scaleMethod() );
+
   return mMapLayers.size() > 0;
 }
 

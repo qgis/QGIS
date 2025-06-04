@@ -10,6 +10,9 @@
 
 class QgsFeatureListViewDelegate : QItemDelegate
 {
+%Docstring(signature="appended")
+Custom item delegate for feature list views.
+%End
 
 %TypeHeaderCode
 #include "qgsfeaturelistviewdelegate.h"
@@ -37,7 +40,8 @@ class QgsFeatureListViewDelegate : QItemDelegate
 
     void editButtonClicked( QModelIndex &index );
 %Docstring
-Emitted when the edit button is clicked for the feature with matching ``index``.
+Emitted when the edit button is clicked for the feature with matching
+``index``.
 %End
 
   protected:

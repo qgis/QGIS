@@ -39,3 +39,8 @@ unsigned int QgsUuidWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
   const QMetaType::Type type = vl->fields().field( fieldIdx ).type();
   return type == QMetaType::Type::QString ? 5 : 0;
 }
+
+bool QgsUuidWidgetFactory::isReadOnly() const
+{
+  return true;
+}

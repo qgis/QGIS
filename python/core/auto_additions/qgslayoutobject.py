@@ -192,6 +192,9 @@ QgsLayoutObject.LegendTitle.__doc__ = "Legend title"
 QgsLayoutObject.LegendColumnCount = QgsLayoutObject.DataDefinedProperty.LegendColumnCount
 QgsLayoutObject.LegendColumnCount.is_monkey_patched = True
 QgsLayoutObject.LegendColumnCount.__doc__ = "Legend column count"
+QgsLayoutObject.LegendAutoWrapWidth = QgsLayoutObject.DataDefinedProperty.LegendAutoWrapWidth
+QgsLayoutObject.LegendAutoWrapWidth.is_monkey_patched = True
+QgsLayoutObject.LegendAutoWrapWidth.__doc__ = "Legend text automatic wrapping width \n.. versionadded:: 3.44"
 QgsLayoutObject.ScalebarLeftSegments = QgsLayoutObject.DataDefinedProperty.ScalebarLeftSegments
 QgsLayoutObject.ScalebarLeftSegments.is_monkey_patched = True
 QgsLayoutObject.ScalebarLeftSegments.__doc__ = "Number of segments on the left of 0 \n.. versionadded:: 3.26"
@@ -348,6 +351,10 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 * ``SourceUrl``: Html source url
 * ``LegendTitle``: Legend title
 * ``LegendColumnCount``: Legend column count
+* ``LegendAutoWrapWidth``: Legend text automatic wrapping width
+
+  .. versionadded:: 3.44
+
 * ``ScalebarLeftSegments``: Number of segments on the left of 0
 
   .. versionadded:: 3.26
@@ -435,6 +442,8 @@ QgsLayoutObject.DataDefinedProperty.__doc__ = """Data defined properties for dif
 try:
     QgsLayoutObject.__attribute_docs__ = {'changed': "Emitted when the object's properties change.\n"}
     QgsLayoutObject.propertyAssociatesWithParentMultiframe = staticmethod(QgsLayoutObject.propertyAssociatesWithParentMultiframe)
+    QgsLayoutObject.__virtual_methods__ = ['refresh']
+    QgsLayoutObject.__overridden_methods__ = ['createExpressionContext']
     QgsLayoutObject.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

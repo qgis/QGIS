@@ -88,6 +88,19 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
     virtual bool requiresAdvancedEffects() const = 0;
 
     /**
+     * Returns TRUE the labeling requires a non-default composition mode.
+     *
+     * This method is pessimistic, in that it will return TRUE in cases where composition
+     * modes cannot be easily determined in advance (e.g. when data-defined overrides are
+     * in place for composition modes).
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+
+    /**
      * Multiply opacity by \a opacityFactor.
      *
      * This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
@@ -137,7 +150,7 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
 
 /**
  * \ingroup core
- * \brief Basic implementation of the labeling interface for mesh layer.
+ * \brief Basic implementation of the labeling interface for mesh layers.
  *
  * \since QGIS 3.36
  */
@@ -168,6 +181,7 @@ class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeli
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
 
     bool requiresAdvancedEffects() const override;
+    bool hasNonDefaultCompositionMode() const override;
     void multiplyOpacity( double opacityFactor ) override;
     //! Create the instance from a DOM element with saved configuration
     static QgsMeshLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ); // cppcheck-suppress duplInheritedMember

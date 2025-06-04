@@ -28,6 +28,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
 #include "qgsgeos.h"
+#include "qgssldexportcontext.h"
 
 #include <QSize>
 #include <QPainter>
@@ -629,8 +630,8 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   offsetX = context.renderContext().convertToPainterUnits( offsetX, mOffsetUnit, mOffsetMapUnitScale );
   offsetY = context.renderContext().convertToPainterUnits( offsetY, mOffsetUnit, mOffsetMapUnitScale );
 
-  HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
-  VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
+  Qgis::HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
+  Qgis::VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::HorizontalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::HorizontalAnchor, context.renderContext().expressionContext() );
@@ -649,13 +650,13 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   //correct horizontal position according to anchor point
-  if ( horizontalAnchorPoint == HCenter && verticalAnchorPoint == VCenter )
+  if ( horizontalAnchorPoint == Qgis::HorizontalAnchorPoint::Center && verticalAnchorPoint == Qgis::VerticalAnchorPoint::Center )
   {
     return;
   }
 
   double anchorPointCorrectionX = context.renderContext().convertToPainterUnits( width, widthUnit, widthMapUnitScale ) / 2.0;
-  if ( widthUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( widthUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -663,30 +664,37 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionY = context.renderContext().convertToPainterUnits( height, heightUnit, heightMapUnitScale ) / 2.0;
-  if ( heightUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( heightUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
     anchorPointCorrectionY = std::min( std::max( context.renderContext().convertToPainterUnits( height, Qgis::RenderUnit::Millimeters ), 3.0 ), 100.0 ) / 2.0;
   }
 
-  if ( horizontalAnchorPoint == Left )
+  switch ( horizontalAnchorPoint )
   {
-    offsetX += anchorPointCorrectionX;
-  }
-  else if ( horizontalAnchorPoint == Right )
-  {
-    offsetX -= anchorPointCorrectionX;
+    case Qgis::HorizontalAnchorPoint::Left:
+      offsetX += anchorPointCorrectionX;
+      break;
+    case Qgis::HorizontalAnchorPoint::Right:
+      offsetX -= anchorPointCorrectionX;
+      break;
+    case Qgis::HorizontalAnchorPoint::Center:
+      break;
   }
 
-//correct vertical position according to anchor point
-  if ( verticalAnchorPoint == Top )
+  //correct vertical position according to anchor point
+  switch ( verticalAnchorPoint )
   {
-    offsetY += anchorPointCorrectionY;
-  }
-  else if ( verticalAnchorPoint == Bottom )
-  {
-    offsetY -= anchorPointCorrectionY;
+    case Qgis::VerticalAnchorPoint::Top:
+      offsetY += anchorPointCorrectionY;
+      break;
+    case Qgis::VerticalAnchorPoint::Bottom:
+    case Qgis::VerticalAnchorPoint::Baseline:
+      offsetY -= anchorPointCorrectionY;
+      break;
+    case Qgis::VerticalAnchorPoint::Center:
+      break;
   }
 }
 
@@ -697,35 +705,35 @@ QPointF QgsMarkerSymbolLayer::_rotatedOffset( QPointF offset, double angle )
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 
-QgsMarkerSymbolLayer::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizontalAnchorPoint( const QString &str )
+Qgis::HorizontalAnchorPoint QgsMarkerSymbolLayer::decodeHorizontalAnchorPoint( const QString &str )
 {
   if ( str.compare( QLatin1String( "left" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Left;
+    return Qgis::HorizontalAnchorPoint::Left;
   }
   else if ( str.compare( QLatin1String( "right" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Right;
+    return Qgis::HorizontalAnchorPoint::Right;
   }
   else
   {
-    return QgsMarkerSymbolLayer::HCenter;
+    return Qgis::HorizontalAnchorPoint::Center;
   }
 }
 
-QgsMarkerSymbolLayer::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAnchorPoint( const QString &str )
+Qgis::VerticalAnchorPoint QgsMarkerSymbolLayer::decodeVerticalAnchorPoint( const QString &str )
 {
   if ( str.compare( QLatin1String( "top" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Top;
+    return Qgis::VerticalAnchorPoint::Top;
   }
   else if ( str.compare( QLatin1String( "bottom" ), Qt::CaseInsensitive ) == 0 )
   {
-    return QgsMarkerSymbolLayer::Bottom;
+    return Qgis::VerticalAnchorPoint::Bottom;
   }
   else
   {
-    return QgsMarkerSymbolLayer::VCenter;
+    return Qgis::VerticalAnchorPoint::Center;
   }
 }
 
@@ -935,17 +943,31 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
   }
 }
 
-void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+bool QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
 {
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
+  const QVariantMap props = context.extraProperties();
   if ( !props.value( QStringLiteral( "uom" ), QString() ).toString().isEmpty() )
     symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ).toString() );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString() );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ).toString(), context );
 
-  writeSldMarker( doc, symbolizerElem, props );
+  return writeSldMarker( doc, symbolizerElem, context );
+}
+
+void QgsMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsMarkerSymbolLayer::writeSldMarker( QDomDocument &, QDomElement &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Marker symbol layer %1 cannot be converted to SLD" ).arg( layerType() ) );
+  return false;
 }
 
 QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
@@ -1099,4 +1121,17 @@ void QgsSymbolLayer::setId( const QString &id )
 QString QgsSymbolLayer::id() const
 {
   return mId;
+}
+
+void QgsSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSymbolLayer::toSld( QDomDocument &, QDomElement &, QgsSldExportContext &context ) const
+{
+  context.pushError( QObject::tr( "Symbol layer %1 cannot be converted to SLD" ).arg( layerType() ) );
+  return false;
 }

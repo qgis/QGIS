@@ -41,15 +41,17 @@ QgsProjectStyleDatabaseProxyModel.Filter.baseClass = QgsProjectStyleDatabaseProx
 QgsProjectStyleDatabaseProxyModel.Filters.baseClass = QgsProjectStyleDatabaseProxyModel
 Filters = QgsProjectStyleDatabaseProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
-    QgsProjectStyleSettings.__attribute_docs__ = {'styleDatabasesChanged': 'Emitted whenever the set of style databases associated with the project is changed.\n'}
+    QgsProjectStyleSettings.__attribute_docs__ = {'styleDatabasesChanged': 'Emitted whenever the set of style databases associated with the project\nis changed.\n'}
     QgsProjectStyleSettings.__group__ = ['project']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProjectStyleDatabaseModel.__overridden_methods__ = ['rowCount', 'data']
     QgsProjectStyleDatabaseModel.__group__ = ['project']
 except (NameError, AttributeError):
     pass
 try:
+    QgsProjectStyleDatabaseProxyModel.__overridden_methods__ = ['filterAcceptsRow']
     QgsProjectStyleDatabaseProxyModel.__group__ = ['project']
 except (NameError, AttributeError):
     pass

@@ -27,11 +27,12 @@
 class QgsModelGraphicsView;
 class QGraphicsRectItem;
 class QGraphicsEllipseItem;
+class QGraphicsPathItem;
 class QGraphicsPolygonItem;
 
 /**
  * \ingroup gui
- * \brief QgsModelViewRubberBand is an abstract base class for temporary rubber band items
+ * \brief An abstract base class for temporary rubber band items
  * in various shapes, for use within QgsModelGraphicsView widgets.
  * \since QGIS 3.14
  */
@@ -133,7 +134,7 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
 
 /**
  * \ingroup gui
- * \brief QgsModelViewRectangularRubberBand is rectangular rubber band for use within QgsModelGraphicsView widgets.
+ * \brief A rectangular rubber band for use within QgsModelGraphicsView widgets.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBand
@@ -160,5 +161,36 @@ class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBa
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 };
+
+/**
+ * \ingroup gui
+ * \brief A bezier curve rubber band for use within QgsModelGraphicsView widgets.
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsModelViewBezierRubberBand : public QgsModelViewRubberBand
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsModelViewRectangularRubberBand.
+     */
+    QgsModelViewBezierRubberBand( QgsModelGraphicsView *view = nullptr );
+    QgsModelViewBezierRubberBand *create( QgsModelGraphicsView *view ) const override SIP_FACTORY;
+
+    ~QgsModelViewBezierRubberBand() override;
+
+    void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() ) override;
+
+  private:
+    //! Rubber band item
+    QGraphicsPathItem *mRubberBandItem = nullptr;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+};
+
 
 #endif // QGSMODELVIEWRUBBERBAND_H

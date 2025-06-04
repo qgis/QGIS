@@ -43,52 +43,48 @@ void QgsSettings::init()
 {
   if ( ! sGlobalSettingsPath()->isEmpty() )
   {
-    mGlobalSettings = new QSettings( *sGlobalSettingsPath(), QSettings::IniFormat );
+    mGlobalSettings = std::make_unique<QSettings>( *sGlobalSettingsPath(), QSettings::IniFormat );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     mGlobalSettings->setIniCodec( "UTF-8" );
 #endif
   }
 }
 
-
 QgsSettings::QgsSettings( const QString &organization, const QString &application, QObject *parent )
 {
-  mUserSettings = new QSettings( organization, application, parent );
+  mUserSettings = std::make_unique<QSettings>( organization, application, parent );
   init();
 }
 
 QgsSettings::QgsSettings( QSettings::Scope scope, const QString &organization,
                           const QString &application, QObject *parent )
 {
-  mUserSettings = new QSettings( scope, organization, application, parent );
+  mUserSettings = std::make_unique<QSettings>( scope, organization, application, parent );
   init();
 }
 
 QgsSettings::QgsSettings( QSettings::Format format, QSettings::Scope scope,
                           const QString &organization, const QString &application, QObject *parent )
 {
-  mUserSettings = new QSettings( format, scope, organization, application, parent );
+  mUserSettings = std::make_unique<QSettings>( format, scope, organization, application, parent );
   init();
 }
 
 QgsSettings::QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent )
 {
-  mUserSettings = new QSettings( fileName, format, parent );
+  mUserSettings = std::make_unique<QSettings>( fileName, format, parent );
   init();
 }
 
 QgsSettings::QgsSettings( QObject *parent )
 {
-  mUserSettings = new QSettings( parent );
+  mUserSettings = std::make_unique<QSettings>( parent );
   init();
 }
 
 QgsSettings::~QgsSettings()
 {
-  delete mUserSettings;
-  delete mGlobalSettings;
 }
-
 
 void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
@@ -124,7 +120,6 @@ QStringList QgsSettings::allKeys() const
   }
   return keys;
 }
-
 
 QStringList QgsSettings::childKeys() const
 {
@@ -250,7 +245,6 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   return prefix  + "/" + sanitizeKey( key );
 }
 
-
 int QgsSettings::beginReadArray( const QString &prefix )
 {
   int size = mUserSettings->beginReadArray( sanitizeKey( prefix ) );
@@ -271,7 +265,7 @@ void QgsSettings::beginWriteArray( const QString &prefix, int size )
 void QgsSettings::endArray()
 {
   mUserSettings->endArray();
-  if ( mGlobalSettings )
+  if ( mGlobalSettings && mUsingGlobalArray )
   {
     mGlobalSettings->endArray();
   }
@@ -334,7 +328,6 @@ void QgsSettings::clear()
 {
   mUserSettings->clear();
 }
-
 
 void QgsSettings::holdFlush()
 {

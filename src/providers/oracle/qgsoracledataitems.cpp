@@ -12,8 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsoracledataitems.h"
 #include "moc_qgsoracledataitems.cpp"
+
+#include "qgsapplication.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoraclecolumntypetask.h"
 #include "qgsoracleprovider.h"
@@ -188,7 +191,7 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 
   if ( !mColumnTypeTask )
   {
-    mColumnTypeTask = new QgsOracleColumnTypeTask( mName, QgsOracleConn::restrictToSchema( mName ),
+    mColumnTypeTask = new QgsOracleColumnTypeTask( mName, QgsOracleConn::schemaToRestrict( mName ),
                                                    /* useEstimatedMetadata */ true, QgsOracleConn::allowGeometrylessTables( mName ) );
 
     connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType, this, &QgsOracleConnectionItem::setLayerType );
@@ -576,7 +579,7 @@ void QgsOracleRootItem::connectionsChanged()
 
 void QgsOracleRootItem::newConnection()
 {
-  QgsOracleNewConnection nc( nullptr );
+  QgsOracleNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     refreshConnections();

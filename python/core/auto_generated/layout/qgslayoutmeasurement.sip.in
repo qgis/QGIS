@@ -12,8 +12,8 @@
 class QgsLayoutMeasurement
 {
 %Docstring(signature="appended")
-This class provides a method of storing measurements for use in QGIS layouts
-using a variety of different measurement units.
+Provides a method of storing measurements for use in QGIS layouts using
+a variety of different measurement units.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 %End
@@ -54,8 +54,8 @@ Returns the units for the measurement.
 
     void setUnits( const Qgis::LayoutUnit units );
 %Docstring
-Sets the ``units`` for the measurement. Does not alter the stored length,
-ie. no length conversion is done.
+Sets the ``units`` for the measurement. Does not alter the stored
+length, ie. no length conversion is done.
 
 .. seealso:: :py:func:`units`
 %End

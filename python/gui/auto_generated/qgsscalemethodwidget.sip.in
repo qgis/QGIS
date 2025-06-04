@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsscalemethodwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsScaleMethodWidget : QWidget
+{
+%Docstring(signature="appended")
+A widget which lets the user select from scale calculation methods.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsscalemethodwidget.h"
+%End
+  public:
+
+    QgsScaleMethodWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsScaleMethodWidget, with the specified ``parent``
+widget
+%End
+
+    Qgis::ScaleCalculationMethod scaleMethod() const;
+%Docstring
+Returns the selected scale method.
+
+.. seealso:: :py:func:`setScaleMethod`
+
+.. seealso:: :py:func:`methodChanged`
+%End
+
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
+%Docstring
+Sets the selected blend mode.
+
+.. seealso:: :py:func:`scaleMethod`
+
+.. seealso:: :py:func:`methodChanged`
+%End
+
+  signals:
+
+    void methodChanged();
+%Docstring
+Emitted when the selected method is changed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsscalemethodwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

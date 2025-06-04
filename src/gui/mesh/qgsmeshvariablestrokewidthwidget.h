@@ -27,7 +27,7 @@ SIP_NO_FILE
  * \ingroup gui
  * \class QgsMeshVariableStrokeWidthButton
  *
- * \brief A widget push button that store variable stroke width and call a widget to set parameters
+ * \brief A widget push button that stores variable stroke width and calls a widget to set parameters.
  */
 class QgsMeshVariableStrokeWidthButton : public QPushButton
 {

@@ -55,7 +55,7 @@ class QPrinter;
 
 /**
  * \ingroup core
- * \brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
+ * \brief A collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *
  * If QGIS is compiled WITH_QTWEBKIT This will simply be a subclass of QWebView. If it is compiled with

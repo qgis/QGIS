@@ -12,7 +12,8 @@
 class QgsHistoryWidgetContext
 {
 %Docstring(signature="appended")
-Contains settings which reflect the context in which a history widget is shown, e.g., an associated message bar.
+Contains settings which reflect the context in which a history widget is
+shown, e.g., an associated message bar.
 
 .. versionadded:: 3.32
 %End
@@ -25,8 +26,8 @@ Contains settings which reflect the context in which a history widget is shown, 
 
     void setMessageBar( QgsMessageBar *bar );
 %Docstring
-Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
-to the appropriate message bar.
+Sets the message ``bar`` associated with the widget. This allows the
+widget to push feedback messages to the appropriate message bar.
 
 .. seealso:: :py:func:`messageBar`
 %End
@@ -36,6 +37,24 @@ to the appropriate message bar.
 Returns the message bar associated with the widget.
 
 .. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setHistoryWidget( QgsHistoryWidget *widget );
+%Docstring
+Sets the parent history ``widget``.
+
+.. seealso:: :py:func:`historyWidget`
+
+.. versionadded:: 3.44
+%End
+
+    QgsHistoryWidget *historyWidget() const;
+%Docstring
+Returns the parent history widget.
+
+.. seealso:: :py:func:`setHistoryWidget`
+
+.. versionadded:: 3.44
 %End
 
 };

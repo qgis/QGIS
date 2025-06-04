@@ -15,8 +15,11 @@
 class QgsExpression
 {
 %Docstring(signature="appended")
-Class for parsing and evaluation of expressions (formerly called "search strings").
-The expressions try to follow both syntax and semantics of SQL expressions.
+Handles parsing and evaluation of expressions (formerly called "search
+strings").
+
+The expressions try to follow both syntax and semantics of SQL
+expressions.
 
 Usage:
 
@@ -33,43 +36,47 @@ Usage:
            # examine the result
 
 Three Value Logic
------------------
+=================
 
-Similarly to SQL, this class supports three-value logic: true/false/unknown.
-Unknown value may be a result of operations with missing data (NULL). Please note
-that NULL is different value than zero or an empty string. For example
-3 > NULL returns unknown.
+Similarly to SQL, this class supports three-value logic:
+true/false/unknown. Unknown value may be a result of operations with
+missing data (NULL). Please note that NULL is different value than zero
+or an empty string. For example 3 > NULL returns unknown.
 
-There is no special (three-value) 'boolean' type: true/false is represented as
-1/0 integer, unknown value is represented the same way as NULL values: NULL QVariant.
+There is no special (three-value) 'boolean' type: true/false is
+represented as 1/0 integer, unknown value is represented the same way as
+NULL values: NULL QVariant.
 
 Performance
------------
+===========
 
-For better performance with many evaluations you may first call prepare(fields) function
-to find out indices of columns and then repeatedly call evaluate(feature).
+For better performance with many evaluations you may first call
+prepare(fields) function to find out indices of columns and then
+repeatedly call evaluate(feature).
 
 Type conversion
----------------
+===============
 
-Operators and functions that expect arguments to be of a particular
-type automatically convert the arguments to that type, e.g. sin('2.1') will convert
-the argument to a double, length(123) will first convert the number to a string.
-Explicit conversion can be achieved with to_int, to_real, to_string functions.
-If implicit or explicit conversion is invalid, the evaluation returns an error.
-Comparison operators do numeric comparison in case both operators are numeric (int/double)
-or they can be converted to numeric types.
+Operators and functions that expect arguments to be of a particular type
+automatically convert the arguments to that type, e.g. sin('2.1') will
+convert the argument to a double, length(123) will first convert the
+number to a string. Explicit conversion can be achieved with to_int,
+to_real, to_string functions. If implicit or explicit conversion is
+invalid, the evaluation returns an error. Comparison operators do
+numeric comparison in case both operators are numeric (int/double) or
+they can be converted to numeric types.
 
 Implicit sharing
-----------------
+================
 
-This class is implicitly shared, copying has a very low overhead.
-It is normally preferable to call `QgsExpression( otherExpression )` instead of
-`QgsExpression( otherExpression.expression() )`. A deep copy will only be made
-when :py:func:`~prepare` is called. For usage this means mainly, that you should
-normally keep an unprepared master copy of a :py:class:`QgsExpression` and whenever using it
-with a particular :py:class:`QgsFeatureIterator` copy it just before and prepare it using the
-same context as the iterator.
+This class is implicitly shared, copying has a very low overhead. It is
+normally preferable to call `QgsExpression( otherExpression )` instead
+of `QgsExpression( otherExpression.expression() )`. A deep copy will
+only be made when :py:func:`~prepare` is called. For usage this means
+mainly, that you should normally keep an unprepared master copy of a
+:py:class:`QgsExpression` and whenever using it with a particular
+:py:class:`QgsFeatureIterator` copy it just before and prepare it using
+the same context as the iterator.
 
 Implicit sharing was added in 2.14
 %End
@@ -90,7 +97,10 @@ Implicit sharing was added in 2.14
         FunctionNamedArgsError
       };
 
-      ParserErrorType errorType;
+      QgsExpression::ParserError::ParserErrorType errorType;
+%Docstring
+The type of parser error that was found.
+%End
 
       QString errorMsg;
 
@@ -105,17 +115,16 @@ Implicit sharing was added in 2.14
 
     QgsExpression( const QString &expr );
 %Docstring
-Creates a new expression based on the provided string.
-The string will immediately be parsed. For optimization
+Creates a new expression based on the provided string. The string will
+immediately be parsed. For optimization
 :py:func:`~QgsExpression.prepare` should always be called before every
 loop in which this expression is used.
 %End
 
     QgsExpression( const QgsExpression &other );
 %Docstring
-Create a copy of this expression. This is preferred
-over recreating an expression from a string since
-it does not need to be re-parsed.
+Create a copy of this expression. This is preferred over recreating an
+expression from a string since it does not need to be re-parsed.
 %End
 
 
@@ -131,8 +140,8 @@ Create an empty expression.
 
     bool isValid() const;
 %Docstring
-Checks if this expression is valid.
-A valid expression could be parsed but does not necessarily evaluate properly.
+Checks if this expression is valid. A valid expression could be parsed
+but does not necessarily evaluate properly.
 %End
 
     bool hasParserError() const;
@@ -188,9 +197,9 @@ Gets list of columns referenced by the expression.
 
     QSet<QString> referencedVariables() const;
 %Docstring
-Returns a list of all variables which are used in this expression.
-If the list contains a NULL QString, there is a variable name used
-which is determined at runtime.
+Returns a list of all variables which are used in this expression. If
+the list contains an empty string, there is a variable name used which
+is determined at runtime.
 
 .. note::
 
@@ -201,7 +210,8 @@ which is determined at runtime.
 
     QSet<QString> referencedFunctions() const;
 %Docstring
-Returns a list of the names of all functions which are used in this expression.
+Returns a list of the names of all functions which are used in this
+expression.
 
 .. note::
 
@@ -230,7 +240,8 @@ Returns a list of field name indexes obtained from the provided fields.
 
     bool needsGeometry() const;
 %Docstring
-Returns ``True`` if the expression uses feature geometry for some computation
+Returns ``True`` if the expression uses feature geometry for some
+computation
 %End
 
 
@@ -245,7 +256,8 @@ Evaluate the feature and return the result.
 
     QVariant evaluate( const QgsExpressionContext *context );
 %Docstring
-Evaluate the expression against the specified context and return the result.
+Evaluate the expression against the specified context and return the
+result.
 
 :param context: context for evaluating expression
 
@@ -276,13 +288,16 @@ Checks whether an expression consists only of a single field reference
 
     static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
 %Docstring
-Attempts to resolve an expression to a field index from the given ``layer``.
+Attempts to resolve an expression to a field index from the given
+``layer``.
 
-Given a string which may either directly match a field name from a layer, OR may
-be an expression which consists only of a single field reference for that layer, this
-method will return the corresponding field index.
+Given a string which may either directly match a field name from a
+layer, OR may be an expression which consists only of a single field
+reference for that layer, this method will return the corresponding
+field index.
 
-:return: field index if found, or -1 if ``expression`` does not represent a field from the layer.
+:return: field index if found, or -1 if ``expression`` does not
+         represent a field from the layer.
 
 .. seealso:: :py:func:`isField`
 
@@ -291,13 +306,15 @@ method will return the corresponding field index.
 
     static QString quoteFieldExpression( const QString &expression, const QgsVectorLayer *layer );
 %Docstring
-Validate if the expression is a field in the ``layer`` and ensure it is quoted.
+Validate if the expression is a field in the ``layer`` and ensure it is
+quoted.
 
-Given a string which may either directly match a field name from a layer, OR may
-be an expression which consists only of a single field reference for that layer, this
-method will return the quoted field.
+Given a string which may either directly match a field name from a
+layer, OR may be an expression which consists only of a single field
+reference for that layer, this method will return the quoted field.
 
-:return: the ``expression`` if not a field or quotes are not required, otherwise returns a quoted field.
+:return: the ``expression`` if not a field or quotes are not required,
+         otherwise returns a quoted field.
 
 .. seealso:: :py:func:`expressionToLayerFieldIndex`
 
@@ -312,7 +329,8 @@ Tests whether a string is a valid expression.
 :param context: optional expression context
 
 :return: - ``True`` if string is a valid expression
-         - errorMessage: will be filled with any error message from the validation
+         - errorMessage: will be filled with any error message from the
+           validation
 %End
 
     void setExpression( const QString &expression );
@@ -322,23 +340,23 @@ Set the expression string, will reset the whole internal structure.
 
     QString expression() const;
 %Docstring
-Returns the original, unmodified expression string.
-If there was none supplied because it was constructed by sole
-API calls, :py:func:`~QgsExpression.dump` will be used to create one instead.
+Returns the original, unmodified expression string. If there was none
+supplied because it was constructed by sole API calls,
+:py:func:`~QgsExpression.dump` will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
-Returns an expression string, constructed from the internal
-abstract syntax tree. This does not contain any nice whitespace
-formatting or comments. In general it is preferable to use
+Returns an expression string, constructed from the internal abstract
+syntax tree. This does not contain any nice whitespace formatting or
+comments. In general it is preferable to use
 :py:func:`~QgsExpression.expression` instead.
 %End
 
     QgsDistanceArea *geomCalculator();
 %Docstring
-Returns calculator used for distance and area calculations
-(used by $length, $area and $perimeter functions only)
+Returns calculator used for distance and area calculations (used by
+$length, $area and $perimeter functions only)
 
 .. seealso:: :py:func:`setGeomCalculator`
 
@@ -349,24 +367,27 @@ Returns calculator used for distance and area calculations
 
     void setGeomCalculator( const QgsDistanceArea *calc );
 %Docstring
-Sets the geometry calculator used for distance and area calculations in expressions.
-(used by $length, $area and $perimeter functions only).
-If the geometry calculator is set to ``None`` (default), :py:func:`~QgsExpression.prepare` will read variables
-from the expression context ("project_ellipsoid", "_project_transform_context" and
-"_layer_crs") to build a geometry calculator.
-If these variables does not exist and if :py:func:`~QgsExpression.setGeomCalculator` is not called,
-all distance and area calculations are performed using simple
+Sets the geometry calculator used for distance and area calculations in
+expressions. (used by $length, $area and $perimeter functions only). If
+the geometry calculator is set to ``None`` (default),
+:py:func:`~QgsExpression.prepare` will read variables from the
+expression context ("project_ellipsoid", "_project_transform_context"
+and "_layer_crs") to build a geometry calculator. If these variables
+does not exist and if :py:func:`~QgsExpression.setGeomCalculator` is not
+called, all distance and area calculations are performed using simple
 Cartesian methods (ie no ellipsoidal calculations).
 
-:param calc: geometry calculator. Ownership is not transferred. Set to ``None`` to force
-             Cartesian calculations.
+:param calc: geometry calculator. Ownership is not transferred. Set to
+             ``None`` to force Cartesian calculations.
 
 .. seealso:: :py:func:`geomCalculator`
 %End
 
     Qgis::DistanceUnit distanceUnits() const;
 %Docstring
-Returns the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
+Returns the desired distance units for calculations involving
+:py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and
+"$perimeter".
 
 .. note::
 
@@ -379,9 +400,13 @@ Returns the desired distance units for calculations involving :py:func:`~QgsExpr
 
     void setDistanceUnits( Qgis::DistanceUnit unit );
 %Docstring
-Sets the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
-If distance units are set to :py:class:`QgsUnitTypes`.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
-variables from the expression context ("project_distance_units") to determine distance units.
+Sets the desired distance units for calculations involving
+:py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and
+"$perimeter". If distance units are set to
+:py:class:`QgsUnitTypes`.DistanceUnknownUnit (default),
+:py:func:`~QgsExpression.prepare` will read variables from the
+expression context ("project_distance_units") to determine distance
+units.
 
 .. note::
 
@@ -394,7 +419,8 @@ variables from the expression context ("project_distance_units") to determine di
 
     Qgis::AreaUnit areaUnits() const;
 %Docstring
-Returns the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
+Returns the desired areal units for calculations involving
+:py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
 
 .. note::
 
@@ -407,9 +433,12 @@ Returns the desired areal units for calculations involving :py:func:`~QgsExpress
 
     void setAreaUnits( Qgis::AreaUnit unit );
 %Docstring
-Sets the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
-If distance units are set to :py:class:`QgsUnitTypes`.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
-variables from the expression context ("project_distance_units") to determine distance units.
+Sets the desired areal units for calculations involving
+:py:func:`~QgsExpression.geomCalculator`, e.g., "$area". If distance
+units are set to :py:class:`QgsUnitTypes`.AreaUnknownUnit (default),
+:py:func:`~QgsExpression.prepare` will read variables from the
+expression context ("project_distance_units") to determine distance
+units.
 
 .. note::
 
@@ -423,15 +452,18 @@ variables from the expression context ("project_distance_units") to determine di
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
                                           const QgsDistanceArea *distanceArea = 0 );
 %Docstring
-This function replaces each expression between [% and %]
-in the string with the result of its evaluation with the specified context
+This function replaces each expression between [% and %] in the string
+with the result of its evaluation with the specified context
 
-Additional substitutions can be passed through the substitutionMap parameter
+Additional substitutions can be passed through the substitutionMap
+parameter
 
-:param action: The source string in which placeholders should be replaced.
+:param action: The source string in which placeholders should be
+               replaced.
 :param context: Expression context
-:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the :py:class:`QgsDistanceArea` is used for distance
-                     and area conversion
+:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified,
+                     the :py:class:`QgsDistanceArea` is used for
+                     distance and area conversion
 %End
 
     static QSet<QString> referencedVariables( const QString &text );
@@ -445,11 +477,12 @@ This function returns variables in each expression between [% and %].
 
     static double evaluateToDouble( const QString &text, double fallbackValue );
 %Docstring
-Attempts to evaluate a text string as an expression to a resultant double
-value.
+Attempts to evaluate a text string as an expression to a resultant
+double value.
 
 :param text: text to evaluate as expression
-:param fallbackValue: value to return if text can not be evaluated as a double
+:param fallbackValue: value to return if text can not be evaluated as a
+                      double
 
 :return: evaluated double value, or fallback value
 
@@ -478,10 +511,12 @@ value.
 
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
 %Docstring
-Registers a function to the expression engine. This is required to allow expressions to utilize the function.
+Registers a function to the expression engine. This is required to allow
+expressions to utilize the function.
 
 :param function: function to register
-:param transferOwnership: set to ``True`` to transfer ownership of function to expression engine
+:param transferOwnership: set to ``True`` to transfer ownership of
+                          function to expression engine
 
 :return: ``True`` on successful registration
 
@@ -490,7 +525,8 @@ Registers a function to the expression engine. This is required to allow express
 
     static bool unregisterFunction( const QString &name );
 %Docstring
-Unregisters a function from the expression engine. The function will no longer be usable in expressions.
+Unregisters a function from the expression engine. The function will no
+longer be usable in expressions.
 
 :param name: function name
 
@@ -499,7 +535,8 @@ Unregisters a function from the expression engine. The function will no longer b
 
     static void cleanRegisteredFunctions();
 %Docstring
-Deletes all registered functions whose ownership have been transferred to the expression engine.
+Deletes all registered functions whose ownership have been transferred
+to the expression engine.
 %End
 
     static bool isFunctionName( const QString &name );
@@ -539,8 +576,8 @@ Returns a quoted version of a string (in single quotes)
 
     static QString quotedValue( const QVariant &value );
 %Docstring
-Returns a string representation of a literal value, including appropriate
-quotations where required.
+Returns a string representation of a literal value, including
+appropriate quotations where required.
 
 :param value: value to convert to a string representation
 
@@ -551,8 +588,8 @@ quotations where required.
 
     static QString quotedValue( const QVariant &value, QMetaType::Type type );
 %Docstring
-Returns a string representation of a literal value, including appropriate
-quotations where required.
+Returns a string representation of a literal value, including
+appropriate quotations where required.
 
 :param value: value to convert to a string representation
 :param type: value type
@@ -564,8 +601,8 @@ quotations where required.
 
  static QString quotedValue( const QVariant &value, QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
-Returns a string representation of a literal value, including appropriate
-quotations where required.
+Returns a string representation of a literal value, including
+appropriate quotations where required.
 
 :param value: value to convert to a string representation
 :param type: value type
@@ -605,11 +642,13 @@ Returns a string list of search tags for a specified function.
 %Docstring
 Adds a help string for a custom variable.
 
-The specified variable ``name`` should not have an existing help string set. If a help string is already present then
-``False`` will be returned and no changes will occur.
+The specified variable ``name`` should not have an existing help string
+set. If a help string is already present then ``False`` will be returned
+and no changes will occur.
 
 :param name: variable name
-:param description: the help string to add. This is user visible, and should be a translated string.
+:param description: the help string to add. This is user visible, and
+                    should be a translated string.
 
 :return: ``True`` if the help string was successfully added
 
@@ -634,7 +673,8 @@ Returns the help text for a specified variable.
 Returns formatted help text for a variable.
 
 :param description: translated description of variable
-:param showValue: set to ``True`` to include current value of variable in help text
+:param showValue: set to ``True`` to include current value of variable
+                  in help text
 :param value: current value of variable to show in help text
 
 .. seealso:: :py:func:`helpText`
@@ -651,14 +691,18 @@ Returns the translated name for a function group.
 
     static QString formatPreviewString( const QVariant &value, bool htmlOutput = true, int maximumPreviewLength = 60 );
 %Docstring
-Formats an expression result for friendly display to the user. Truncates the result to a sensible
-length, and presents text representations of non numeric/text types (e.g., geometries and features).
+Formats an expression result for friendly display to the user. Truncates
+the result to a sensible length, and presents text representations of
+non numeric/text types (e.g., geometries and features).
 
 :param value: expression result to format
-:param htmlOutput: set to ``True`` to allow HTML formatting, or ``False`` for plain text output
-:param maximumPreviewLength: define the maximum character length of the preview
+:param htmlOutput: set to ``True`` to allow HTML formatting, or
+                   ``False`` for plain text output
+:param maximumPreviewLength: define the maximum character length of the
+                             preview
 
-:return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is ``True``
+:return: formatted string, may contain HTML formatting characters if
+         ``htmlOutput`` is ``True``
 %End
 
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QMetaType::Type fieldType = QMetaType::Type::UnknownType );
@@ -668,7 +712,9 @@ value. The value may be null.
 
 :param fieldName: the name of the field
 :param value: the value of the field
-:param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
+:param fieldType: the type of the field on the left side used to quote
+                  the value. If not given, the value type is used
+                  instead
 
 :return: the expression to evaluate field equality
 %End
@@ -680,7 +726,9 @@ value. The value may be null.
 
 :param fieldName: the name of the field
 :param value: the value of the field
-:param fieldType: the type of the field on the left side used to quote the value. If not given, the value type is used instead
+:param fieldType: the type of the field on the left side used to quote
+                  the value. If not given, the value type is used
+                  instead
 
 :return: the expression to evaluate field equality
 
@@ -691,30 +739,38 @@ value. The value may be null.
 
     static bool isFieldEqualityExpression( const QString &expression, QString &field /Out/, QVariant &value /Out/ );
 %Docstring
-Returns ``True`` if the given ``expression`` is a simple "field=value" type expression.
+Returns ``True`` if the given ``expression`` is a simple "field=value"
+type expression.
 
 :param expression: expression to test
 
 :return: - ``True`` if the expression is a field equality expression
-         - field: the field name if the expression is a field equality expression
-         - value: the value if the expression is a field equality expression
+         - field: the field name if the expression is a field equality
+           expression
+         - value: the value if the expression is a field equality
+           expression
 
 .. versionadded:: 3.18
 %End
 
     static bool attemptReduceToInClause( const QStringList &expressions, QString &result /Out/ );
 %Docstring
-Attempts to reduce a list of expressions to a single "field IN (val1, val2, ... )" type expression.
+Attempts to reduce a list of expressions to a single "field IN (val1,
+val2, ... )" type expression.
 
-This will only be possible if all the input expressions form simple "field=value" OR "field IN (value1, value2)" expressions, and all
+This will only be possible if all the input expressions form simple
+"field=value" OR "field IN (value1, value2)" expressions, and all
 reference the same field name.
 
-Returns ``True`` if the given ``expressions`` could be converted to an IN type expression.
+Returns ``True`` if the given ``expressions`` could be converted to an
+IN type expression.
 
 :param expressions: expressions to test
 
-:return: - ``True`` if the expression was converted to a field IN type expression
-         - result: the calculated "field IN (...)" expression, wherever possible
+:return: - ``True`` if the expression was converted to a field IN type
+           expression
+         - result: the calculated "field IN (...)" expression, wherever
+           possible
 
 .. versionadded:: 3.18
 %End

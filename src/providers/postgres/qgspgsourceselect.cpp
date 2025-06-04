@@ -215,7 +215,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   }
   else
   {
-    setWindowTitle( tr( "Add PostGIS Table(s)" ) );
+    setWindowTitle( tr( "Add PostgreSQL Table(s)" ) );
   }
 
   populateConnectionList();
@@ -287,7 +287,7 @@ void QgsPgSourceSelect::btnLoad_clicked()
 void QgsPgSourceSelect::btnEdit_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
-  nc->setWindowTitle( tr( "Edit PostGIS Connection" ) );
+  nc->setWindowTitle( tr( "Edit PostgreSQL Connection" ) );
   if ( nc->exec() )
   {
     populateConnectionList();
@@ -431,7 +431,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
   // populate the table list
   QgsDataSourceUri uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
-  QgsDebugMsgLevel( "Connection info: " + uri.connectionInfo( false ), 2 );
+  QgsDebugMsgLevel( "Connection info: " + QgsPostgresConn::connectionInfo( uri, false ), 2 );
 
   mDataSrcUri = uri;
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
@@ -484,7 +484,7 @@ QStringList QgsPgSourceSelect::selectedTables()
 
 QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
 {
-  return mDataSrcUri.connectionInfo( expandAuthCfg );
+  return QgsPostgresConn::connectionInfo( mDataSrcUri, expandAuthCfg );
 }
 
 QgsDataSourceUri QgsPgSourceSelect::dataSourceUri()

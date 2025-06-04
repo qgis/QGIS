@@ -40,7 +40,14 @@ QStringList QgsShortestPathLayerToPointAlgorithm::tags() const
 
 QString QgsShortestPathLayerToPointAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route from multiple start points defined by vector layer and given end point." );
+  return QObject::tr( "This algorithm computes optimal (shortest or fastest) routes "
+                      "from multiple start points defined by a vector layer and a given end point." );
+}
+
+QString QgsShortestPathLayerToPointAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes optimal (shortest or fastest) routes "
+                      "from multiple start points defined by a vector layer and a given end point." );
 }
 
 QgsShortestPathLayerToPointAlgorithm *QgsShortestPathLayerToPointAlgorithm::createInstance() const
@@ -77,10 +84,11 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
   if ( !startPoints )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
 
-  QgsFields fields = startPoints->fields();
-  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
+  QgsFields fields = QgsProcessingUtils::combineFields( startPoints->fields(), newFields );
 
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs() ) );
@@ -95,7 +103,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
   QVector<QgsPointXY> points;
   points.push_front( endPoint );
   QHash<int, QgsAttributes> sourceAttributes;
-  loadPoints( startPoints.get(), points, sourceAttributes, context, feedback );
+  loadPoints( startPoints.get(), &points, &sourceAttributes, context, feedback, nullptr );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
   QVector<QgsPointXY> snappedPoints;

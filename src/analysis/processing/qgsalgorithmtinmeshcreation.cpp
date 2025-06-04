@@ -38,12 +38,17 @@ QString QgsTinMeshCreationAlgorithm::groupId() const
 
 QString QgsTinMeshCreationAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a TIN mesh layer from vector layers" );
+  return QObject::tr( "Creates a TIN mesh layer from vector layers." );
 }
 
 QString QgsTinMeshCreationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a TIN mesh layer from vector layers." );
+}
+
+QStringList QgsTinMeshCreationAlgorithm::tags() const
+{
+  return QObject::tr( "tin,mesh,vector,triangulation,irregular,network" ).split( ',' );
 }
 
 QString QgsTinMeshCreationAlgorithm::name() const

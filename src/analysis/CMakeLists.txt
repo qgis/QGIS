@@ -61,25 +61,53 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
+  processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmfixgeometryduplicatenodes.cpp
+  processing/qgsalgorithmfixgeometrymultipart.cpp
+  processing/qgsalgorithmfixgeometryoverlap.cpp
+  processing/qgsalgorithmfixgeometrydeletefeatures.cpp
   processing/qgsalgorithmfixgeometryangle.cpp
+  processing/qgsalgorithmfixgeometryselfintersection.cpp
+  processing/qgsalgorithmfixgeometrygap.cpp
   processing/qgsalgorithmcheckgeometryhole.cpp
   processing/qgsalgorithmfixgeometryhole.cpp
   processing/qgsalgorithmcheckgeometrymissingvertex.cpp
   processing/qgsalgorithmfixgeometrymissingvertex.cpp
   processing/qgsalgorithmcheckgeometryarea.cpp
   processing/qgsalgorithmfixgeometryarea.cpp
+  processing/qgsalgorithmcheckgeometrylineintersection.cpp
+  processing/qgsalgorithmcheckgeometrylinelayerintersection.cpp
+  processing/qgsalgorithmcheckgeometrypointcoveredbyline.cpp
+  processing/qgsalgorithmcheckgeometrypointinpolygon.cpp
+  processing/qgsalgorithmcheckgeometrygap.cpp
+  processing/qgsalgorithmcheckgeometrysliverpolygon.cpp
+  processing/qgsalgorithmcheckgeometryselfcontact.cpp
+  processing/qgsalgorithmcheckgeometryoverlap.cpp
+  processing/qgsalgorithmcheckgeometryfollowboundaries.cpp
+  processing/qgsalgorithmcheckgeometryduplicatenodes.cpp
+  processing/qgsalgorithmcheckgeometrydangle.cpp
+  processing/qgsalgorithmcheckgeometryduplicate.cpp
+  processing/qgsalgorithmcheckgeometryselfintersection.cpp
+  processing/qgsalgorithmcheckgeometrymultipart.cpp
+  processing/qgsalgorithmcheckgeometrydegeneratepolygon.cpp
+  processing/qgsalgorithmcheckgeometrycontained.cpp
+  processing/qgsalgorithmclimb.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
+  processing/qgsalgorithmconcavehullbyfeature.cpp
   processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconverttocurves.cpp
+  processing/qgsalgorithmconvertgeometrytype.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmcoveragesimplify.cpp
   processing/qgsalgorithmcoverageunion.cpp
   processing/qgsalgorithmcoveragevalidate.cpp
   processing/qgsalgorithmcreatedirectory.cpp
   processing/qgsalgorithmdbscanclustering.cpp
+  processing/qgsalgorithmdefineprojection.cpp
   processing/qgsalgorithmdelaunaytriangulation.cpp
   processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
@@ -99,6 +127,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexecutespatialitequeryregistered.cpp
   processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmexplodehstore.cpp
+  processing/qgsalgorithmexportgeometryattributes.cpp
   processing/qgsalgorithmexportlayersinformation.cpp
   processing/qgsalgorithmexportmesh.cpp
   processing/qgsalgorithmexporttopostgresql.cpp
@@ -119,9 +148,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfieldcalculator.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfillnodata.cpp
+  processing/qgsalgorithmfillsinkswangliu.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfilterbygeometry.cpp
   processing/qgsalgorithmfiltervertices.cpp
+  processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
   processing/qgsalgorithmforcerhr.cpp
@@ -193,6 +224,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterminmax.cpp
   processing/qgsalgorithmrasterize.cpp
+  processing/qgsalgorithmrasterrank.cpp
   processing/qgsalgorithmrastersampling.cpp
   processing/qgsalgorithmrasterstackposition.cpp
   processing/qgsalgorithmrasterstatistics.cpp
@@ -556,13 +588,10 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external/tinygltf
-
   ${CMAKE_BINARY_DIR}/src/analysis
-
-  if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
-     ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
-  endif()
+  ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
 )
+
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis

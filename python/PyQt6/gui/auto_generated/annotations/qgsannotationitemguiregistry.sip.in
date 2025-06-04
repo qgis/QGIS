@@ -13,8 +13,9 @@ class QgsAnnotationItemAbstractGuiMetadata
 %Docstring(signature="appended")
 Stores GUI metadata about one annotation item class.
 
-This is a companion to :py:class:`QgsAnnotationItemAbstractMetadata`, storing only
-the components related to the GUI behavior of an annotation item.
+This is a companion to :py:class:`QgsAnnotationItemAbstractMetadata`,
+storing only the components related to the GUI behavior of an annotation
+item.
 
 .. note::
 
@@ -29,11 +30,15 @@ the components related to the GUI behavior of an annotation item.
   public:
     QgsAnnotationItemAbstractGuiMetadata( const QString &type, const QString &visibleName, const QString &groupId = QString(), Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags() );
 %Docstring
-Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified class ``type``.
+Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified
+class ``type``.
 
-``visibleName`` should be set to a translated, user visible name identifying the corresponding annotation item.
+``visibleName`` should be set to a translated, user visible name
+identifying the corresponding annotation item.
 
-An optional ``groupId`` can be set, which allows grouping of related annotation item classes. See :py:class:`QgsAnnotationItemGuiMetadata` for details.
+An optional ``groupId`` can be set, which allows grouping of related
+annotation item classes. See :py:class:`QgsAnnotationItemGuiMetadata`
+for details.
 %End
 
     virtual ~QgsAnnotationItemAbstractGuiMetadata();
@@ -55,7 +60,8 @@ Returns the item group ID, if set.
 
     QString visibleName() const;
 %Docstring
-Returns a translated, user visible name identifying the corresponding annotation item.
+Returns a translated, user visible name identifying the corresponding
+annotation item.
 %End
 
     virtual QIcon creationIcon() const;
@@ -66,7 +72,8 @@ Returns an icon representing creation of the annotation item type.
 
     virtual QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) /TransferBack/;
 %Docstring
-Creates a configuration widget for an ``item`` of this type. Can return ``None`` if no configuration GUI is required.
+Creates a configuration widget for an ``item`` of this type. Can return
+``None`` if no configuration GUI is required.
 %End
 
     virtual QgsCreateAnnotationItemMapToolInterface *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) /TransferBack/;
@@ -83,10 +90,11 @@ Creates an instance of the corresponding item type.
 
     virtual void newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer );
 %Docstring
-Called when a newly created item of the associated type has been added to a ``layer``.
+Called when a newly created item of the associated type has been added
+to a ``layer``.
 
-This is only called for additions which result from GUI operations - i.e. it is not
-called for items added programmatically.
+This is only called for additions which result from GUI operations -
+i.e. it is not called for items added programmatically.
 %End
 
 };
@@ -100,11 +108,13 @@ class QgsAnnotationItemGuiGroup
 %Docstring(signature="appended")
 Stores GUI metadata about a group of annotation item classes.
 
-:py:class:`QgsAnnotationItemGuiGroup` stores settings about groups of related annotation item classes
-which should be presented to users grouped together.
+:py:class:`QgsAnnotationItemGuiGroup` stores settings about groups of
+related annotation item classes which should be presented to users
+grouped together.
 
-For instance, the various basic shape creation tools would use :py:class:`QgsAnnotationItemGuiGroup`
-to display grouped within toolbars.
+For instance, the various basic shape creation tools would use
+:py:class:`QgsAnnotationItemGuiGroup` to display grouped within
+toolbars.
 
 .. versionadded:: 3.22
 %End
@@ -131,11 +141,13 @@ class QgsAnnotationItemGuiRegistry : QObject
 %Docstring(signature="appended")
 Registry of available annotation item GUI behavior.
 
-:py:class:`QgsAnnotationItemGuiRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsAnnotationItemGuiRegistry` is not usually directly
+created, but rather accessed through
 :py:func:`QgsGui.annotationItemGuiRegistry()`.
 
-This acts as a companion to :py:class:`QgsAnnotationItemRegistry`, handling only
-the components related to the GUI behavior of annotation items.
+This acts as a companion to :py:class:`QgsAnnotationItemRegistry`,
+handling only the components related to the GUI behavior of annotation
+items.
 
 .. versionadded:: 3.22
 %End
@@ -148,8 +160,8 @@ the components related to the GUI behavior of annotation items.
 %Docstring
 Creates a new empty item GUI registry.
 
-QgsAnnotationItemGuiRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.annotationItemGuiRegistry()`.
+QgsAnnotationItemGuiRegistry is not usually directly created, but rather
+accessed through :py:func:`QgsGui.annotationItemGuiRegistry()`.
 %End
 
     ~QgsAnnotationItemGuiRegistry();
@@ -157,32 +169,38 @@ QgsAnnotationItemGuiRegistry is not usually directly created, but rather accesse
 
     QgsAnnotationItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 %Docstring
-Returns the metadata for the specified item ``metadataId``. Returns ``None`` if
-a corresponding ``metadataId`` was not found in the registry.
+Returns the metadata for the specified item ``metadataId``. Returns
+``None`` if a corresponding ``metadataId`` was not found in the
+registry.
 %End
 
     int metadataIdForItemType( const QString &type ) const;
 %Docstring
-Returns the GUI item metadata ID which corresponds to the specified annotation item ``type``.
+Returns the GUI item metadata ID which corresponds to the specified
+annotation item ``type``.
 
-In the case that multiple GUI metadata classes exist for a single annotation item ``type`` then
-only the first encountered GUI metadata ID will be returned.
+In the case that multiple GUI metadata classes exist for a single
+annotation item ``type`` then only the first encountered GUI metadata ID
+will be returned.
 
 Returns -1 if no matching metadata is found in the GUI registry.
 %End
 
     bool addAnnotationItemGuiMetadata( QgsAnnotationItemAbstractGuiMetadata *metadata /Transfer/ );
 %Docstring
-Registers the gui metadata for a new annotation item type. Takes ownership of the metadata instance.
+Registers the gui metadata for a new annotation item type. Takes
+ownership of the metadata instance.
 %End
 
     bool addItemGroup( const QgsAnnotationItemGuiGroup &group );
 %Docstring
-Registers a new item group with the registry. This must be done before calling
-:py:func:`~QgsAnnotationItemGuiRegistry.addAnnotationItemGuiMetadata` for any item types associated with the group.
+Registers a new item group with the registry. This must be done before
+calling
+:py:func:`~QgsAnnotationItemGuiRegistry.addAnnotationItemGuiMetadata`
+for any item types associated with the group.
 
-Returns ``True`` if group was added, or ``False`` if group could not be added (e.g. due to
-duplicate id value).
+Returns ``True`` if group was added, or ``False`` if group could not be
+added (e.g. due to duplicate id value).
 
 .. seealso:: :py:func:`itemGroup`
 %End
@@ -197,21 +215,24 @@ Returns a reference to the item group with matching ``id``.
 
     QgsAnnotationItem *createItem( int metadataId ) const /TransferBack/;
 %Docstring
-Creates a new instance of an annotation item given the item metadata ``metadataId``.
+Creates a new instance of an annotation item given the item metadata
+``metadataId``.
 %End
 
     void newItemAddedToLayer( int metadataId, QgsAnnotationItem *item, QgsAnnotationLayer *layer );
 %Docstring
-Called when a newly created item of the associated metadata ``metadataId`` has been added to a ``layer``.
+Called when a newly created item of the associated metadata
+``metadataId`` has been added to a ``layer``.
 
-This is only called for additions which result from GUI operations - i.e. it is not
-called for items added programmatically.
+This is only called for additions which result from GUI operations -
+i.e. it is not called for items added programmatically.
 %End
 
 
     QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) const /TransferBack/;
 %Docstring
-Creates a new instance of an annotation item configuration widget for the specified ``item``.
+Creates a new instance of an annotation item configuration widget for
+the specified ``item``.
 %End
 
     QList<int> itemMetadataIds() const;
@@ -228,8 +249,8 @@ Populates the registry with default items.
 
     void typeAdded( int metadataId );
 %Docstring
-Emitted whenever a new item type is added to the registry, with the specified
-``metadataId``.
+Emitted whenever a new item type is added to the registry, with the
+specified ``metadataId``.
 %End
 
   private:

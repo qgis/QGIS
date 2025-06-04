@@ -21,7 +21,7 @@
 /**
  * \ingroup core
  * \class QgsSettingsTree
- * \brief QgsSettingsTree holds the tree structure for the settings in QGIS core
+ * \brief Holds the tree structure for the settings in QGIS core.
  *
  * \see QgsSettingsEntryBase
  *
@@ -67,6 +67,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeAttributeTable = treeRoot()->createChildNode( QStringLiteral( "attribute-table" ) );
     static inline QgsSettingsTreeNode *sTreeWindowState = sTreeGui->createChildNode( QStringLiteral( "window-state" ) );
     static inline QgsSettingsTreeNode *sTreeAuthentication = treeRoot()->createChildNode( QStringLiteral( "authentication" ) );
+    static inline QgsSettingsTreeNode *sTreeDatabase = treeRoot()->createChildNode( QStringLiteral( "database" ) );
 
 #endif
 

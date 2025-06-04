@@ -26,6 +26,7 @@ class QgsHeatmapRenderer;
 /**
  * \ingroup gui
  * \class QgsHeatmapRendererWidget
+ * \brief A widget for configuring a QgsHeatmapRenderer.
  */
 class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui::QgsHeatmapRendererWidgetBase
 {

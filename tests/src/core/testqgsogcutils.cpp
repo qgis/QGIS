@@ -18,10 +18,11 @@
 #include <memory>
 
 //qgis includes...
-#include <qgsgeometry.h>
-#include <qgsogcutils.h>
+#include "qgsgeometry.h"
+#include "qgsogcutils.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgstestutils.h"
 
 #include <QRegularExpression>
 
@@ -109,107 +110,6 @@ void TestQgsOgcUtils::testGeometryFromGML()
   QVERIFY( geomBox.wkbType() == Qgis::WkbType::Polygon );
 }
 
-static bool compareElements( QDomElement &element1, QDomElement &element2 )
-{
-  QString tag1 = element1.tagName();
-  tag1.replace( QRegularExpression( ".*:" ), QString() );
-  QString tag2 = element2.tagName();
-  tag2.replace( QRegularExpression( ".*:" ), QString() );
-  if ( tag1 != tag2 )
-  {
-    qDebug( "Different tag names: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
-    return false;
-  }
-
-  if ( element1.hasAttributes() != element2.hasAttributes() )
-  {
-    qDebug( "Different hasAttributes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
-    return false;
-  }
-
-  if ( element1.hasAttributes() )
-  {
-    const QDomNamedNodeMap attrs1 = element1.attributes();
-    const QDomNamedNodeMap attrs2 = element2.attributes();
-
-    if ( attrs1.size() != attrs2.size() )
-    {
-      qDebug( "Different attributes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
-      return false;
-    }
-
-    for ( int i = 0; i < attrs1.size(); ++i )
-    {
-      const QDomNode node1 = attrs1.item( i );
-      const QDomAttr attr1 = node1.toAttr();
-
-      if ( !element2.hasAttribute( attr1.name() ) )
-      {
-        qDebug( "Element2 has not attribute: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
-        return false;
-      }
-
-      if ( element2.attribute( attr1.name() ) != attr1.value() )
-      {
-        qDebug( "Element2 attribute has not the same value: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
-        return false;
-      }
-    }
-  }
-
-  if ( element1.hasChildNodes() != element2.hasChildNodes() )
-  {
-    qDebug( "Different childNodes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
-    return false;
-  }
-
-  if ( element1.hasChildNodes() )
-  {
-    const QDomNodeList nodes1 = element1.childNodes();
-    const QDomNodeList nodes2 = element2.childNodes();
-
-    if ( nodes1.size() != nodes2.size() )
-    {
-      qDebug( "Different childNodes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
-      return false;
-    }
-
-    for ( int i = 0; i < nodes1.size(); ++i )
-    {
-      const QDomNode node1 = nodes1.at( i );
-      const QDomNode node2 = nodes2.at( i );
-      if ( node1.isElement() && node2.isElement() )
-      {
-        QDomElement elt1 = node1.toElement();
-        QDomElement elt2 = node2.toElement();
-
-        if ( !compareElements( elt1, elt2 ) )
-          return false;
-      }
-      else if ( node1.isText() && node2.isText() )
-      {
-        const QDomText txt1 = node1.toText();
-        const QDomText txt2 = node2.toText();
-
-        if ( txt1.data() != txt2.data() )
-        {
-          qDebug( "Different text data: %s %s", tag1.toLatin1().data(), txt1.data().toLatin1().data() );
-          qDebug( "Different text data: %s %s", tag2.toLatin1().data(), txt2.data().toLatin1().data() );
-          return false;
-        }
-      }
-    }
-  }
-
-  if ( element1.text() != element2.text() )
-  {
-    qDebug( "Different text: %s %s", tag1.toLatin1().data(), element1.text().toLatin1().data() );
-    qDebug( "Different text: %s %s", tag2.toLatin1().data(), element2.text().toLatin1().data() );
-    return false;
-  }
-
-  return true;
-}
 static QDomElement comparableElement( const QString &xmlText )
 {
   QDomDocument doc;
@@ -239,7 +139,7 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.appendChild( elemPoint );
   xmlElem = comparableElement( QStringLiteral( "<gml:Point><gml:coordinates ts=\" \" cs=\",\">111,222</gml:coordinates></gml:Point>" ) );
   ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
   doc.removeChild( elemPoint );
 
   QDomElement elemLine = QgsOgcUtils::geometryToGML( geomLine, doc );
@@ -248,7 +148,7 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.appendChild( elemLine );
   xmlElem = comparableElement( QStringLiteral( "<gml:LineString><gml:coordinates ts=\" \" cs=\",\">111,222 222,222</gml:coordinates></gml:LineString>" ) );
   ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
   doc.removeChild( elemLine );
 
   // Test GML3
@@ -261,7 +161,7 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.appendChild( elemPoint );
   xmlElem = comparableElement( QStringLiteral( "<gml:Point><gml:pos srsDimension=\"2\">111 222</gml:pos></gml:Point>" ) );
   ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
   doc.removeChild( elemPoint );
 
   elemLine = QgsOgcUtils::geometryToGML( geomLine, doc, QStringLiteral( "GML3" ) );
@@ -270,7 +170,7 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.appendChild( elemLine );
   xmlElem = comparableElement( QStringLiteral( "<gml:LineString><gml:posList srsDimension=\"2\">111 222 222 222</gml:posList></gml:LineString>" ) );
   ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
   doc.removeChild( elemLine );
 }
 
@@ -294,7 +194,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()
     "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
     "</Filter>"
   )
-                                      << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+                                      << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<gml:Box xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"foo\"><gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\">135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>'))" );
 
   QTest::newRow( "bbox corner" )
     << QString(
@@ -308,7 +208,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()
          "</fes:BBOX>"
          "</fes:Filter>"
        )
-    << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Envelope><lowerCorner>49 2</lowerCorner><upperCorner>50 3</upperCorner></Envelope>'))" );
+    << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<gml:Envelope xmlns:gml=\"http://www.opengis.net/gml\"><gml:lowerCorner xmlns:gml=\"http://www.opengis.net/gml\">49 2</gml:lowerCorner><gml:upperCorner xmlns:gml=\"http://www.opengis.net/gml\">50 3</gml:upperCorner></gml:Envelope>'))" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
@@ -317,8 +217,10 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
   QFETCH( QString, dumpText );
 
   QDomDocument doc;
-  QVERIFY( doc.setContent( xmlText, true ) );
-  const QDomElement rootElem = doc.documentElement();
+  // wrap the string into a root tag to have "gml" and "fes" namespaces
+  const QString xml = QStringLiteral( "<tmp xmlns:gml=\"http://www.opengis.net/gml\" xmlns:fes=\"http://www.opengis.net/fes/2.0\">%1</tmp>" ).arg( xmlText );
+  QVERIFY( doc.setContent( xml, true ) );
+  const QDomElement rootElem = doc.documentElement().firstChildElement();
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
@@ -471,7 +373,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
     "</Filter>"
   )
-                                        << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+                                        << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<gml:Box xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"foo\"><gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\">135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>'))" );
 
   QTest::newRow( "Intersects" ) << QString(
     "<Filter>"
@@ -483,7 +385,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</Intersects>"
     "</Filter>"
   )
-                                << QStringLiteral( "intersects($geometry, geom_from_gml('<Point><coordinates>123,456</coordinates></Point>'))" );
+                                << QStringLiteral( "intersects($geometry, geom_from_gml('<gml:Point xmlns:gml=\"http://www.opengis.net/gml\"><gml:coordinates xmlns:gml=\"http://www.opengis.net/gml\">123,456</gml:coordinates></gml:Point>'))" );
 
   QTest::newRow( "Literal conversion" ) << QString(
     "<Filter><PropertyIsEqualTo>"
@@ -520,8 +422,10 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QFETCH( QString, dumpText );
 
   QDomDocument doc;
-  QVERIFY( doc.setContent( xmlText, true ) );
-  const QDomElement rootElem = doc.documentElement();
+  // wrap the string into a root tag to have "gml" and "ogc" namespaces
+  const QString xml = QStringLiteral( "<tmp xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\">%1</tmp>" ).arg( xmlText );
+  QVERIFY( doc.setContent( xml, true ) );
+  const QDomElement rootElem = doc.documentElement().firstChildElement();
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
@@ -564,8 +468,10 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
 
   QDomDocument doc;
 
-  QVERIFY( doc.setContent( xmlText, true ) );
-  const QDomElement rootElem = doc.documentElement();
+  // wrap the string into a root tag to have "gml" namespace
+  const QString xml = QStringLiteral( "<tmp xmlns:gml=\"%1\">%2</tmp>" ).arg( QStringLiteral( "http://www.opengis.net/gml" ), xmlText );
+  QVERIFY( doc.setContent( xml, true ) );
+  const QDomElement rootElem = doc.documentElement().firstChildElement();
 
   QgsVectorLayer layer( "Point?crs=epsg:4326", "temp", "memory" );
 
@@ -614,7 +520,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilter_data()
@@ -750,7 +656,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
   QTest::newRow( "contains + gml $geometry" ) << QStringLiteral( "contains($geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
                                                                                                                                                                                      "<ogc:Contains>"
                                                                                                                                                                                      "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                                                                                     "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
+                                                                                                                                                                                     "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
                                                                                                                                                                                      "</ogc:Contains>"
                                                                                                                                                                                      "</ogc:Filter>" );
 
@@ -771,7 +677,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
   QTest::newRow( "contains + gml @geometry" ) << QStringLiteral( "contains(@geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5,6</coordinates></Point>'))" ) << QString( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\">"
                                                                                                                                                                                      "<ogc:Contains>"
                                                                                                                                                                                      "<ogc:PropertyName>geometry</ogc:PropertyName>"
-                                                                                                                                                                                     "<Point><coordinates ts=\" \" cs=\",\">5,6</coordinates></Point>"
+                                                                                                                                                                                     "<gml:Point><gml:coordinates ts=\" \" cs=\",\">5,6</gml:coordinates></gml:Point>"
                                                                                                                                                                                      "</ogc:Contains>"
                                                                                                                                                                                      "</ogc:Filter>" );
 }
@@ -803,7 +709,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilterWFS11_data()
@@ -871,7 +777,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 void TestQgsOgcUtils::testExpressionToOgcFilterWFS20_data()
@@ -1045,7 +951,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
@@ -1342,7 +1248,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWithXPath()
   qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 void TestQgsOgcUtils::testSQLStatementToOgcFilterWithXPath()
@@ -1380,7 +1286,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilterWithXPath()
   qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
-  QVERIFY( compareElements( xmlElem, ogcElem ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 

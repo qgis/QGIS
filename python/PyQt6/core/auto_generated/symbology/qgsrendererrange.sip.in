@@ -14,6 +14,9 @@
 
 class QgsRendererRange
 {
+%Docstring(signature="appended")
+Represents a value range for a :py:class:`QgsGraduatedSymbolRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererrange.h"
@@ -30,7 +33,8 @@ Creates a renderer symbol range
 :param range: The classification range
 :param symbol: The symbol for this renderer range
 :param render: If ``True``, it will be renderered
-:param uuid: Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
+:param uuid: Optional parameter to manually set the UUID key identifier
+             for the this range (since QGIS 3.34).
 %End
 
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
@@ -42,7 +46,8 @@ Creates a renderer symbol range
 :param symbol: The symbol for this renderer range
 :param label: The label used for the range
 :param render: If ``True``, it will be renderered
-:param uuid: Optional parameter to manually set the UUID key identifier for the this range (since QGIS 3.34).
+:param uuid: Optional parameter to manually set the UUID key identifier
+             for the this range (since QGIS 3.34).
 %End
     QgsRendererRange( const QgsRendererRange &range );
 
@@ -141,15 +146,35 @@ Sets whether the range should be rendered.
 Dumps a string representation of the range.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Creates a DOM element representing the range in SLD format.
 
 :param doc: DOM document
 :param element: destination DOM element
 :param props: graduated renderer properties
-:param firstRange: set to ``True`` if the range is the first range, where the lower value uses a <= test
-                   rather than a < test.
+:param firstRange: set to ``True`` if the range is the first range,
+                   where the lower value uses a <= test rather than a <
+                   test.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context, bool firstRange = false ) const;
+%Docstring
+Creates a DOM element representing the range in SLD format.
+
+:param doc: DOM document
+:param element: destination DOM element
+:param classAttribute: classification attribute or expression
+:param context: conversion context
+:param firstRange: set to ``True`` if the range is the first range,
+                   where the lower value uses a <= test rather than a <
+                   test.
+
+.. versionadded:: 3.44
 %End
 
     SIP_PYOBJECT __repr__();
@@ -178,6 +203,7 @@ Creates a DOM element representing the range in SLD format.
 %End
 
   protected:
+
 };
 
 typedef QList<QgsRendererRange> QgsRangeList;
@@ -186,6 +212,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
 class QgsRendererRangeLabelFormat /Deprecated="Since 3.10. Use QgsClassificationMethod instead."/
 {
 %Docstring(signature="appended")
+Encapsulates the formatting for a :py:class:`QgsRendererRange` label.
 
 .. deprecated:: 3.10
 
@@ -213,10 +240,8 @@ class QgsRendererRangeLabelFormat /Deprecated="Since 3.10. Use QgsClassification
 
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
 %Docstring
-
-.. note::
-
-   labelForLowerUpper in Python bindings
+Returns the label to use for a range with the specified ``lower`` and
+``upper`` bounds.
 %End
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;

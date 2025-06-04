@@ -14,8 +14,8 @@
 class QgsMaskPaintDevice: QPaintDevice
 {
 %Docstring(signature="appended")
-Mask painter device that can be used to register everything painted into a QPainterPath
-used later as clip path
+Mask painter device that can be used to register everything painted into
+a QPainterPath used later as clip path.
 
 .. deprecated:: 3.38
 
@@ -29,10 +29,8 @@ used later as clip path
 
  QgsMaskPaintDevice( bool usePathStroker = false ) /Deprecated="Since 3.38. Use QgsGeometryPaintDevice instead."/;
 %Docstring
-!
-Constructor
-If ``usePathStroker`` is ``True``, path will be considered with a stroke regarding QPainter
-pen configuration
+! Constructor If ``usePathStroker`` is ``True``, path will be considered
+with a stroke regarding QPainter pen configuration
 
 .. deprecated:: 3.38
 

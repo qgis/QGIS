@@ -41,7 +41,7 @@ QString QgsHttpRequestAlgorithm::displayName() const
 
 QString QgsHttpRequestAlgorithm::shortDescription() const
 {
-  return tr( "Performs a HTTP(S) POST/GET request and returns the result code, error message and the data" );
+  return tr( "Performs a HTTP(S) POST/GET request and returns the result code, error message and the data." );
 }
 
 QStringList QgsHttpRequestAlgorithm::tags() const
@@ -148,6 +148,11 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
       errorCode = blockingRequest.post( request, data.toUtf8() );
       break;
     }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      throw QgsProcessingException( QObject::tr( "Unsupported HTTP method: %1" ).arg( qgsEnumValueToKey( httpMethod ) ) );
   }
 
   // Handle reply

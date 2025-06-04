@@ -30,7 +30,7 @@ QString QgsConcaveHullAlgorithm::name() const
 
 QString QgsConcaveHullAlgorithm::displayName() const
 {
-  return QObject::tr( "Concave hull" );
+  return QObject::tr( "Concave hull (by layer)" );
 }
 
 QStringList QgsConcaveHullAlgorithm::tags() const
@@ -50,7 +50,13 @@ QString QgsConcaveHullAlgorithm::groupId() const
 
 QString QgsConcaveHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes the concave hull of the features from an input layer." );
+  return QObject::tr( "This algorithm computes the concave hull covering all features from an input point layer." ) + QStringLiteral( "\n\n" )
+         + QObject::tr( "See the 'Concave hull (by feature)' algorithm for a concave hull calculation which covers individual features from a layer." );
+}
+
+QString QgsConcaveHullAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes the concave hull of all features from an input point layer." );
 }
 
 QgsConcaveHullAlgorithm *QgsConcaveHullAlgorithm::createInstance() const
@@ -129,12 +135,12 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr<QgsFeatureSink> &
       const QgsMultiPoint mp( *qgsgeometry_cast<const QgsMultiPoint *>( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        allPoints.addPartV2( qgsgeometry_cast<QgsPoint *>( *pit )->clone(), Qgis::WkbType::Point );
+        allPoints.addPartV2( qgsgeometry_cast<const QgsPoint *>( *pit )->clone(), Qgis::WkbType::Point );
       }
     }
     else
     {
-      allPoints.addPartV2( qgsgeometry_cast<QgsPoint *>( geom )->clone(), Qgis::WkbType::Point );
+      allPoints.addPartV2( qgsgeometry_cast<const QgsPoint *>( geom )->clone(), Qgis::WkbType::Point );
     }
   }
   const QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles );

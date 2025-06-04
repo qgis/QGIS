@@ -14,8 +14,8 @@
 class QgsProjectStorage
 {
 %Docstring(signature="appended")
-Abstract interface for project storage - to be implemented by various backends
-and registered in :py:class:`QgsProjectStorageRegistry`.
+Abstract interface for project storage - to be implemented by various
+backends and registered in :py:class:`QgsProjectStorageRegistry`.
 
 .. versionadded:: 3.2
 %End
@@ -28,7 +28,7 @@ and registered in :py:class:`QgsProjectStorageRegistry`.
     class Metadata
 {
 %Docstring(signature="appended")
-Metadata associated with a project
+Metadata associated with a project.
 
 .. versionadded:: 3.2
 %End
@@ -45,13 +45,16 @@ Metadata associated with a project
 
     virtual QString type() = 0;
 %Docstring
-Unique identifier of the project storage type. If :py:func:`~QgsProjectStorage.type` returns "memory", all project file names
-starting with "memory:" will have read/write redirected through that storage implementation.
+Unique identifier of the project storage type. If
+:py:func:`~QgsProjectStorage.type` returns "memory", all project file
+names starting with "memory:" will have read/write redirected through
+that storage implementation.
 %End
 
     virtual bool isSupportedUri( const QString &uri ) const;
 %Docstring
-Returns ``True`` if the specified ``uri`` is supported by the storage provider.
+Returns ``True`` if the specified ``uri`` is supported by the storage
+provider.
 
 .. note::
 
@@ -64,57 +67,66 @@ Returns ``True`` if the specified ``uri`` is supported by the storage provider.
 
     virtual QStringList listProjects( const QString &uri ) = 0;
 %Docstring
-Returns list of all projects for given URI (specific to each storage backend)
+Returns list of all projects for given URI (specific to each storage
+backend)
 %End
 
     virtual bool readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
 %Docstring
-Reads project file content stored in the backend at the specified URI to the given device
-(could be e.g. a temporary file or a memory buffer). The device is expected to be empty
-when passed to :py:func:`~QgsProjectStorage.readProject` so that the method can write all data to it and then rewind
-it using seek(0) to make it ready for reading in :py:class:`QgsProject`.
+Reads project file content stored in the backend at the specified URI to
+the given device (could be e.g. a temporary file or a memory buffer).
+The device is expected to be empty when passed to
+:py:func:`~QgsProjectStorage.readProject` so that the method can write
+all data to it and then rewind it using seek(0) to make it ready for
+reading in :py:class:`QgsProject`.
 %End
 
     virtual bool writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) = 0;
 %Docstring
-Writes project file content stored in given device (could be e.g. a temporary file or a memory buffer)
-using the backend to the specified URI. The device is expected to contain all project file data
-and having position at the start of the content when passed to :py:func:`~QgsProjectStorage.writeProject` so that the method
-can read all data from it until it reaches its end.
+Writes project file content stored in given device (could be e.g. a
+temporary file or a memory buffer) using the backend to the specified
+URI. The device is expected to contain all project file data and having
+position at the start of the content when passed to
+:py:func:`~QgsProjectStorage.writeProject` so that the method can read
+all data from it until it reaches its end.
 %End
 
     virtual bool removeProject( const QString &uri ) = 0;
 %Docstring
-Removes an existing project at the given URI. Returns ``True`` if the removal
-was successful.
+Removes an existing project at the given URI. Returns ``True`` if the
+removal was successful.
 %End
 
     virtual bool renameProject( const QString &uri, const QString &uriNew );
 %Docstring
-Rename an existing project at the given URI to a different URI. Returns ``True`` if renaming
-was successful.
+Rename an existing project at the given URI to a different URI. Returns
+``True`` if renaming was successful.
 %End
 
     virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata /Out/ );
 %Docstring
-Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
-Returns ``True`` if the metadata were read with success.
+Reads project metadata (e.g. last modified time) if this is supported by
+the storage implementation. Returns ``True`` if the metadata were read
+with success.
 %End
 
     virtual QString filePath( const QString &uri );
 %Docstring
-Extracts and returns the file path from a storage backend ``uri``, filesystem-based storage
-backends should implement this method in order to support relative paths storage.
-The default implementation returns an empty string.
+Extracts and returns the file path from a storage backend ``uri``,
+filesystem-based storage backends should implement this method in order
+to support relative paths storage. The default implementation returns an
+empty string.
 
 .. versionadded:: 3.8.1
 %End
 
  virtual QString visibleName() /Deprecated="Since 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality."/;
 %Docstring
-Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
-indicates that the storage does not implement GUI support (:py:func:`~QgsProjectStorage.showLoadGui` and :py:func:`~QgsProjectStorage.showSaveGui`).
-The name may be translatable and ideally unique as well.
+Returns human-readable name of the storage. Used as the menu item text
+in QGIS. Empty name indicates that the storage does not implement GUI
+support (:py:func:`~QgsProjectStorage.showLoadGui` and
+:py:func:`~QgsProjectStorage.showSaveGui`). The name may be translatable
+and ideally unique as well.
 
 .. deprecated:: 3.10
 
@@ -123,8 +135,9 @@ The name may be translatable and ideally unique as well.
 
  virtual QString showLoadGui() /Deprecated="Since 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality."/;
 %Docstring
-Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
-Returns project URI if user has picked a project or empty string if the GUI was canceled.
+Opens GUI to allow user to select a project to be loaded (GUI specific
+to this storage type). Returns project URI if user has picked a project
+or empty string if the GUI was canceled.
 
 .. deprecated:: 3.10
 
@@ -133,8 +146,9 @@ Returns project URI if user has picked a project or empty string if the GUI was 
 
  virtual QString showSaveGui() /Deprecated="Since 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality."/;
 %Docstring
-Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
-Returns project URI if user has picked a destination or empty string if the GUI was canceled.
+Opens GUI to allow user to select where a project should be saved (GUI
+specific to this storage type). Returns project URI if user has picked a
+destination or empty string if the GUI was canceled.
 
 .. deprecated:: 3.10
 

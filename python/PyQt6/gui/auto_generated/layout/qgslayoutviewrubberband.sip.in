@@ -12,8 +12,8 @@
 class QgsLayoutViewRubberBand : QObject
 {
 %Docstring(signature="appended")
-:py:class:`QgsLayoutViewRubberBand` is an abstract base class for temporary rubber band items
-in various shapes, for use within :py:class:`QgsLayoutView` widgets.
+An abstract base class for temporary rubber band items in various
+shapes, for use within :py:class:`QgsLayoutView` widgets.
 %End
 
 %TypeHeaderCode
@@ -40,8 +40,8 @@ Creates a new instance of the QgsLayoutViewRubberBand subclass.
 
     virtual void start( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
 %Docstring
-Called when a rubber band should be created at the specified
-starting ``position`` (in layout coordinate space).
+Called when a rubber band should be created at the specified starting
+``position`` (in layout coordinate space).
 %End
 
     virtual void update( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
@@ -52,9 +52,8 @@ ending ``position`` (in layout coordinate space).
 
     virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() ) = 0;
 %Docstring
-Called when a rubber band use has finished and the rubber
-band is no longer required.
-Returns the final bounding box of the rubber band.
+Called when a rubber band use has finished and the rubber band is no
+longer required. Returns the final bounding box of the rubber band.
 %End
 
     QgsLayoutView *view() const;
@@ -113,17 +112,19 @@ Sets the ``pen`` used for drawing the rubber band.
 %Docstring
 Emitted when the size of the rubber band is changed. The ``size``
 argument gives a translated string describing the new rubber band size,
-with a format which differs per subclass (e.g. rectangles may describe
-a size using width and height, while circles may describe a size by radius).
+with a format which differs per subclass (e.g. rectangles may describe a
+size using width and height, while circles may describe a size by
+radius).
 %End
 
   protected:
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
 %Docstring
-Calculates an updated bounding box rectangle from a original ``start`` position
-and new ``position``. If ``constrainSquare`` is ``True`` then the bounding box will be
-forced to a square shape. If ``fromCenter`` is ``True`` then the original ``start``
-position will form the center point of the returned rectangle.
+Calculates an updated bounding box rectangle from a original ``start``
+position and new ``position``. If ``constrainSquare`` is ``True`` then
+the bounding box will be forced to a square shape. If ``fromCenter`` is
+``True`` then the original ``start`` position will form the center point
+of the returned rectangle.
 %End
 
 };
@@ -132,7 +133,8 @@ position will form the center point of the returned rectangle.
 class QgsLayoutViewRectangularRubberBand : QgsLayoutViewRubberBand
 {
 %Docstring(signature="appended")
-:py:class:`QgsLayoutViewRectangularRubberBand` is rectangular rubber band for use within :py:class:`QgsLayoutView` widgets.
+A rectangular rubber band for use within :py:class:`QgsLayoutView`
+widgets.
 %End
 
 %TypeHeaderCode
@@ -160,7 +162,8 @@ Constructor for QgsLayoutViewRectangularRubberBand.
 class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 {
 %Docstring(signature="appended")
-:py:class:`QgsLayoutViewEllipseRubberBand` is elliptical rubber band for use within :py:class:`QgsLayoutView` widgets.
+An elliptical rubber band for use within :py:class:`QgsLayoutView`
+widgets.
 %End
 
 %TypeHeaderCode
@@ -188,7 +191,8 @@ Constructor for QgsLayoutViewEllipticalRubberBand.
 class QgsLayoutViewTriangleRubberBand : QgsLayoutViewRubberBand
 {
 %Docstring(signature="appended")
-:py:class:`QgsLayoutViewTriangleRubberBand` is triangular rubber band for use within :py:class:`QgsLayoutView` widgets.
+A triangular rubber band for use within :py:class:`QgsLayoutView`
+widgets.
 %End
 
 %TypeHeaderCode

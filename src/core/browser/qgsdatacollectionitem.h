@@ -23,7 +23,9 @@
 
 /**
  * \ingroup core
- * \brief A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
+ * \brief A browser item for collections of data.
+ *
+ * These represent logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 */
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {

@@ -62,23 +62,38 @@ Saves the labeling configuration to an XML element.
 
     virtual bool requiresAdvancedEffects() const = 0;
 %Docstring
-Returns ``True`` if drawing labels requires advanced effects like composition
-modes, which could prevent it being used as an isolated cached image
-or exported to a vector format.
+Returns ``True`` if drawing labels requires advanced effects like
+composition modes, which could prevent it being used as an isolated
+cached image or exported to a vector format.
+%End
+
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+%Docstring
+Returns ``True`` the labeling requires a non-default composition mode.
+
+This method is pessimistic, in that it will return ``True`` in cases
+where composition modes cannot be easily determined in advance (e.g.
+when data-defined overrides are in place for composition modes).
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
 %End
 
     virtual void multiplyOpacity( double opacityFactor );
 %Docstring
 Multiply opacity by ``opacityFactor``.
 
-This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
-by ``opacity`` effectively changing the opacity of the whole labeling elements.
+This method multiplies the opacity of the labeling elements (text,
+shadow, buffer etc.) by ``opacity`` effectively changing the opacity of
+the whole labeling elements.
 %End
 
     virtual bool isInScaleRange( double scale ) const;
 %Docstring
 Tests whether the labels should be visible at the specified ``scale``.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 
 :return: ``True`` if the labels are visible at the given scale.
 %End
@@ -91,16 +106,17 @@ Tries to create an instance of an implementation based on the XML data.
 
     virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 %Docstring
-Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+Writes the SE 1.1 TextSymbolizer element based on the current layer
+labeling settings
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
-with the labeling.
+Accepts the specified symbology ``visitor``, causing it to visit all
+symbols associated with the labeling.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 %End
 
   private:
@@ -134,12 +150,15 @@ Basic implementation of the labeling interface for raster layers.
 
     virtual bool requiresAdvancedEffects() const;
 
+    virtual bool hasNonDefaultCompositionMode() const;
+
     virtual void multiplyOpacity( double opacityFactor );
 
 
     static QgsRasterLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved configuration
+Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved
+configuration
 %End
 
     QgsTextFormat textFormat() const;
@@ -190,7 +209,8 @@ Sest the raster ``band`` to use for label values.
 %Docstring
 Returns the priority of labels.
 
-This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority.
+This is a value between 0 to 1, where 0 = highest priority and 1 =
+lowest priority.
 
 The default is 0.5.
 
@@ -201,7 +221,8 @@ The default is 0.5.
 %Docstring
 Sets the ``priority`` of labels.
 
-This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority.
+This is a value between 0 to 1, where 0 = highest priority and 1 =
+lowest priority.
 
 .. seealso:: :py:func:`priority`
 %End
@@ -240,7 +261,8 @@ Sets the label thinning ``settings``.
 %Docstring
 Returns the Z-Index of the labels.
 
-Labels with a higher z-index are rendered on top of labels with a lower z-index.
+Labels with a higher z-index are rendered on top of labels with a lower
+z-index.
 
 .. seealso:: :py:func:`setZIndex`
 %End
@@ -249,19 +271,23 @@ Labels with a higher z-index are rendered on top of labels with a lower z-index.
 %Docstring
 Sets the Z-Index of the labels.
 
-Labels with a higher z-index are rendered on top of labels with a lower z-index.
+Labels with a higher z-index are rendered on top of labels with a lower
+z-index.
 
 .. seealso:: :py:func:`zIndex`
 %End
 
     double maximumScale() const;
 %Docstring
-Returns the maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
+Returns the maximum map scale (i.e. most "zoomed in" scale) at which the
+labels will be visible.
 
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no maximum scale visibility.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map. A scale of 0 indicates no maximum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+This setting is only considered if
+:py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is
+``True``.
 
 .. seealso:: :py:func:`setMaximumScale`
 
@@ -272,12 +298,15 @@ This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasSc
 
     void setMaximumScale( double scale );
 %Docstring
-Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the labels will be visible.
+Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which
+the labels will be visible.
 
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no maximum scale visibility.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map. A scale of 0 indicates no maximum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+This setting is only considered if
+:py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is
+``True``.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -288,12 +317,15 @@ This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasSc
 
     double minimumScale() const;
 %Docstring
-Returns the minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
+Returns the minimum map scale (i.e. most "zoomed out" scale) at which
+the labels will be visible.
 
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no minimum scale visibility.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map. A scale of 0 indicates no minimum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+This setting is only considered if
+:py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is
+``True``.
 
 .. seealso:: :py:func:`setMinimumScale`
 
@@ -304,12 +336,15 @@ This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasSc
 
     void setMinimumScale( double scale );
 %Docstring
-Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the labels will be visible.
+Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which
+the labels will be visible.
 
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no minimum scale visibility.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map. A scale of 0 indicates no minimum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
+This setting is only considered if
+:py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is
+``True``.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -365,8 +400,8 @@ resampled over neighboring pixels.
 
     int resampleOver() const;
 %Docstring
-Returns the number of neighboring pixels to resample over, when labels are
-showing values resampled over neighboring pixels.
+Returns the number of neighboring pixels to resample over, when labels
+are showing values resampled over neighboring pixels.
 
 .. seealso:: :py:func:`setResampleOver`
 
@@ -375,8 +410,8 @@ showing values resampled over neighboring pixels.
 
     void setResampleOver( int pixels );
 %Docstring
-Sets the number of neighboring ``pixels`` to resample over, when labels are
-showing values resampled over neighboring pixels.
+Sets the number of neighboring ``pixels`` to resample over, when labels
+are showing values resampled over neighboring pixels.
 
 .. seealso:: :py:func:`resampleOver`
 

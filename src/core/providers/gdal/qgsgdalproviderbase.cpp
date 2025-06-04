@@ -172,6 +172,9 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
       return Qgis::DataType::UInt32;
     case GDT_Int32:
       return Qgis::DataType::Int32;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_Float16:
+#endif
     case GDT_Float32:
       return Qgis::DataType::Float32;
     case GDT_Float64:
@@ -180,6 +183,9 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
       return Qgis::DataType::CInt16;
     case GDT_CInt32:
       return Qgis::DataType::CInt32;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    case GDT_CFloat16:
+#endif
     case GDT_CFloat32:
       return Qgis::DataType::CFloat32;
     case GDT_CFloat64:
@@ -383,7 +389,6 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
   QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
   return !feedback->isCanceled();
 }
-
 
 CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback )
 {

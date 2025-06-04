@@ -14,10 +14,11 @@
 class QgsLegendSettings
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLegendSettings` class stores the appearance and layout settings
-for legend drawing with :py:class:`QgsLegendRenderer`.
+Stores the appearance and layout settings for legend drawing with
+:py:class:`QgsLegendRenderer`.
 
-The content of the legend is driven by the :py:class:`QgsLegendModel` class.
+The content of the legend is driven by the :py:class:`QgsLegendModel`
+class.
 %End
 
 %TypeHeaderCode
@@ -36,14 +37,16 @@ render ``context``.
 
     void setTitle( const QString &t );
 %Docstring
-Sets the title for the legend, which will be rendered above all legend items.
+Sets the title for the legend, which will be rendered above all legend
+items.
 
 .. seealso:: :py:func:`title`
 %End
 
     QString title() const;
 %Docstring
-Returns the title for the legend, which will be rendered above all legend items.
+Returns the title for the legend, which will be rendered above all
+legend items.
 
 .. seealso:: :py:func:`setTitle`
 %End
@@ -79,16 +82,16 @@ Sets the ``style`` for a legend component.
 
     double boxSpace() const;
 %Docstring
-Returns the legend box space (in millimeters), which is the empty margin around the inside of the legend's
-rectangle.
+Returns the legend box space (in millimeters), which is the empty margin
+around the inside of the legend's rectangle.
 
 .. seealso:: :py:func:`setBoxSpace`
 %End
 
     void setBoxSpace( double s );
 %Docstring
-Sets the legend box space (in millimeters), which is the empty margin around the inside of the legend's
-rectangle.
+Sets the legend box space (in millimeters), which is the empty margin
+around the inside of the legend's rectangle.
 
 .. seealso:: :py:func:`boxSpace`
 %End
@@ -97,8 +100,8 @@ rectangle.
 %Docstring
 Sets a string to use as a wrapping character.
 
-Whenever this string is encountered inside legend component text it will be automatically replaced with a new
-line character.
+Whenever this string is encountered inside legend component text it will
+be automatically replaced with a new line character.
 
 .. seealso:: :py:func:`wrapChar`
 %End
@@ -107,8 +110,8 @@ line character.
 %Docstring
 Returns the string used as a wrapping character.
 
-Whenever this string is encountered inside legend component text it will be automatically replaced with a new
-line character.
+Whenever this string is encountered inside legend component text it will
+be automatically replaced with a new line character.
 
 .. seealso:: :py:func:`setWrapChar`
 %End
@@ -131,8 +134,8 @@ Sets the margin space between adjacent columns (in millimeters).
 %Docstring
 Returns the desired minimum number of columns to show in the legend.
 
-If legend components have forced column breaks then the actual number of columns in the rendered
-legend may be larger than this value.
+If legend components have forced column breaks then the actual number of
+columns in the rendered legend may be larger than this value.
 
 .. seealso:: :py:func:`setColumnCount`
 %End
@@ -141,8 +144,8 @@ legend may be larger than this value.
 %Docstring
 Sets the desired minimum number of columns to show in the legend.
 
-If legend components have forced column breaks then the actual number of columns in the rendered
-legend may be larger than this value.
+If legend components have forced column breaks then the actual number of
+columns in the rendered legend may be larger than this value.
 
 .. seealso:: :py:func:`columnCount`
 %End
@@ -165,7 +168,8 @@ Sets whether layer components can be split over multiple columns.
 %Docstring
 Returns ``True`` if all columns should have equal widths.
 
-If ``False`` is returned then columns will be individually resized to their minimum possible width.
+If ``False`` is returned then columns will be individually resized to
+their minimum possible width.
 
 .. seealso:: :py:func:`setEqualColumnWidth`
 %End
@@ -174,7 +178,8 @@ If ``False`` is returned then columns will be individually resized to their mini
 %Docstring
 Sets whether all columns should have equal widths.
 
-If ``False``, then then columns will be individually resized to their minimum possible width.
+If ``False``, then then columns will be individually resized to their
+minimum possible width.
 
 .. seealso:: :py:func:`equalColumnWidth`
 %End
@@ -203,7 +208,8 @@ Sets the font color used for legend items.
 
  QColor layerFontColor() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
 %Docstring
-Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
+Returns layer font color, defaults to
+:py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`setLayerFontColor`
 
@@ -216,8 +222,8 @@ Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
  void setLayerFontColor( const QColor &fontColor ) /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
 %Docstring
-Sets layer font color to ``fontColor``
-Overrides :py:func:`~QgsLegendSettings.fontColor`
+Sets layer font color to ``fontColor`` Overrides
+:py:func:`~QgsLegendSettings.fontColor`
 
 .. seealso:: :py:func:`layerFontColor`
 
@@ -244,7 +250,8 @@ Sets the default symbol size (in millimeters) used for legend items.
 
     double maximumSymbolSize() const;
 %Docstring
-Returns the maximum symbol size (in mm). 0.0 means there is no maximum set.
+Returns the maximum symbol size (in mm). 0.0 means there is no maximum
+set.
 
 .. seealso:: :py:func:`setMaximumSymbolSize`
 
@@ -264,7 +271,8 @@ A symbol size of 0.0 indicates no maximum is set.
 
     double minimumSymbolSize() const;
 %Docstring
-Returns the minimum symbol size (in mm). A value 0.0 means there is no minimum set.
+Returns the minimum symbol size (in mm). A value 0.0 means there is no
+minimum set.
 
 .. seealso:: :py:func:`setMinimumSymbolSize`
 
@@ -330,8 +338,9 @@ Sets whether a stroke will be drawn around raster symbol items.
 
     QColor rasterStrokeColor() const;
 %Docstring
-Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
+Returns the stroke color for the stroke drawn around raster symbol
+items. The stroke is only drawn if
+:py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeColor`
 
@@ -342,8 +351,9 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
     void setRasterStrokeColor( const QColor &color );
 %Docstring
-Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
+Sets the stroke color for the stroke drawn around raster symbol items.
+The stroke is only drawn if
+:py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 :param color: stroke color
 
@@ -356,8 +366,9 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
     double rasterStrokeWidth() const;
 %Docstring
-Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
+Returns the stroke width (in millimeters) for the stroke drawn around
+raster symbol items. The stroke is only drawn if
+:py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 .. seealso:: :py:func:`setRasterStrokeWidth`
 
@@ -368,8 +379,9 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
     void setRasterStrokeWidth( double width );
 %Docstring
-Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
+Sets the stroke width for the stroke drawn around raster symbol items.
+The stroke is only drawn if
+:py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
 :param width: stroke width in millimeters
 
@@ -382,14 +394,16 @@ only drawn if :py:func:`~QgsLegendSettings.drawRasterStroke` is ``True``.
 
     QSizeF wmsLegendSize() const;
 %Docstring
-Returns the size (in millimeters) of WMS legend graphics shown in the legend.
+Returns the size (in millimeters) of WMS legend graphics shown in the
+legend.
 
 .. seealso:: :py:func:`setWmsLegendSize`
 %End
 
     void setWmsLegendSize( QSizeF s );
 %Docstring
-Sets the desired size (in millimeters) of WMS legend graphics shown in the legend.
+Sets the desired size (in millimeters) of WMS legend graphics shown in
+the legend.
 
 .. seealso:: :py:func:`wmsLegendSize`
 %End
@@ -436,7 +450,6 @@ Sets the line spacing to use between lines of legend text.
 
  double mmPerMapUnit() const /Deprecated="Since 3.40. Use scale factor from render contexts instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Use scale factor from render contexts instead.
@@ -444,7 +457,6 @@ Sets the line spacing to use between lines of legend text.
 
  void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated="Since 3.40. Set scale factor on render contexts instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Set scale factor on render contexts instead.
@@ -452,7 +464,6 @@ Sets the line spacing to use between lines of legend text.
 
  bool useAdvancedEffects() const /Deprecated="Since 3.40. Use flags from render contexts instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Use flags from render contexts instead.
@@ -460,7 +471,6 @@ Sets the line spacing to use between lines of legend text.
 
  void setUseAdvancedEffects( bool use ) /Deprecated="Since 3.40. Set flag on render contexts instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Set flag on render contexts instead.
@@ -468,8 +478,8 @@ Sets the line spacing to use between lines of legend text.
 
  double mapScale() const /Deprecated="Since 3.40. Take this property from the render context instead."/;
 %Docstring
-Returns the legend map scale.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the legend map scale. The scale value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setMapScale`
 
@@ -480,8 +490,8 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
  void setMapScale( double scale ) /Deprecated="Since 3.40. Set this property on the render context instead."/;
 %Docstring
-Sets the legend map ``scale``.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Sets the legend map ``scale``. The ``scale`` value indicates the scale
+denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`mapScale`
 
@@ -492,7 +502,8 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
  double mapUnitsPerPixel() const /Deprecated="Since 3.40. Take these properties on render contexts instead."/;
 %Docstring
-Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
+Returns the factor of map units per pixel for symbols with size given in
+map units calculated by dpi and mmPerMapUnit
 
 .. seealso:: :py:func:`setMapUnitsPerPixel`
 
@@ -503,7 +514,8 @@ Returns the factor of map units per pixel for symbols with size given in map uni
 
  void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated="Since 3.40. Set these properties on render contexts instead."/;
 %Docstring
-Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the map settings.
+Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken
+from the map settings.
 
 .. seealso:: :py:func:`mapUnitsPerPixel`
 
@@ -514,7 +526,6 @@ Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the m
 
  int dpi() const /Deprecated="Since 3.40. Take dpi from render contexts instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Take dpi from render contexts instead.
@@ -522,7 +533,6 @@ Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the m
 
  void setDpi( int dpi ) /Deprecated="Since 3.40. Set dpi on render contexts instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    Set dpi on render contexts instead.
@@ -532,10 +542,11 @@ Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the m
 
     QStringList evaluateItemText( const QString &text, const QgsExpressionContext &context ) const;
 %Docstring
-Returns the actual text to render for a legend item, split into separate lines.
+Returns the actual text to render for a legend item, split into separate
+lines.
 
-The expression ``context`` argument is used to correctly evaluated expressions contained
-within legend item text.
+The expression ``context`` argument is used to correctly evaluated
+expressions contained within legend item text.
 
 .. versionadded:: 3.6
 %End
@@ -548,8 +559,9 @@ wrap char which means no wrapping
 
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
 %Docstring
-Draws Text. Takes care about all the composer specific issues (calculation to
-pixel, scaling of font and painter to work around the Qt font bug)
+Draws Text. Takes care about all the composer specific issues
+(calculation to pixel, scaling of font and painter to work around the Qt
+font bug)
 %End
 
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
@@ -562,12 +574,14 @@ Like the above, but with a rectangle for multiline text
 :param font: font to use
 :param halignment: optional horizontal alignment
 :param valignment: optional vertical alignment
-:param flags: allows for passing Qt.TextFlags to control appearance of rendered text
+:param flags: allows for passing Qt.TextFlags to control appearance of
+              rendered text
 %End
 
     QFont scaledFontPixelSize( const QFont &font ) const;
 %Docstring
-Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
+Returns a font where size is in pixel and font size is upscaled with
+FONT_WORKAROUND_SCALE
 %End
 
     double pixelFontSize( double pointSize ) const;
@@ -577,7 +591,8 @@ Calculates font to from point size to pixel size
 
     double textWidthMillimeters( const QFont &font, const QString &text ) const;
 %Docstring
-Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+Returns the font width in millimeters (considers upscaling and
+downscaling with FONT_WORKAROUND_SCALE
 %End
 
     double fontHeightCharacterMM( const QFont &font, QChar c ) const;
@@ -587,12 +602,14 @@ Returns the font height of a character in millimeters
 
     double fontAscentMillimeters( const QFont &font ) const;
 %Docstring
-Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+Returns the font ascent in Millimeters (considers upscaling and
+downscaling with FONT_WORKAROUND_SCALE
 %End
 
     double fontDescentMillimeters( const QFont &font ) const;
 %Docstring
-Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+Returns the font descent in Millimeters (considers upscaling and
+downscaling with FONT_WORKAROUND_SCALE
 %End
 
     Qgis::LegendJsonRenderFlags jsonRenderFlags() const;
@@ -604,9 +621,33 @@ Returns the JSON export flags.
 
     void setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags );
 %Docstring
-Sets the  the JSON export flags to ``jsonRenderFlags``.
+Sets the JSON export flags to ``jsonRenderFlags``.
 
 .. versionadded:: 3.36
+%End
+
+    double autoWrapLinesAfter() const;
+%Docstring
+Returns the maximum line length (in millimeters) allowed before lines of
+text in the legend will be automatically word wrapped.
+
+If the returned value is 0, then no automatic wrapping will occur.
+
+.. seealso:: :py:func:`setAutoWrapLinesAfter`
+
+.. versionadded:: 3.44
+%End
+
+    void setAutoWrapLinesAfter( double length );
+%Docstring
+Sets the maximum line ``length`` (in millimeters) allowed before lines
+of text in the legend will be automatically word wrapped.
+
+If ``length`` is 0, then no automatic wrapping will occur.
+
+.. seealso:: :py:func:`autoWrapLinesAfter`
+
+.. versionadded:: 3.44
 %End
 
 };

@@ -15,11 +15,13 @@ Base class for renderer settings widgets.
 
 WORKFLOW:
 
-- open renderer dialog with some RENDERER  (never null!)
+- open renderer dialog with some RENDERER (never null!)
 - find out which widget to use
 - instantiate it and set in stacked widget
-- on any change of renderer type, create some default (dummy?) version and change the stacked widget
-- when clicked OK/Apply, get the renderer from active widget and clone it for the layer
+- on any change of renderer type, create some default (dummy?) version
+  and change the stacked widget
+- when clicked OK/Apply, get the renderer from active widget and clone
+  it for the layer
 %End
 
 %TypeHeaderCode
@@ -42,7 +44,8 @@ Show a dialog with renderer's symbol level settings.
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the context in which the renderer widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 :param context: symbol widget context
 
@@ -51,7 +54,8 @@ Sets the context in which the renderer widget is shown, e.g., the associated map
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the renderer widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -63,7 +67,8 @@ Returns the vector layer associated with the widget.
 
     void applyChanges();
 %Docstring
-This method should be called whenever the renderer is actually set on the layer.
+This method should be called whenever the renderer is actually set on
+the layer.
 %End
 
     virtual void setDockMode( bool dockMode );
@@ -74,9 +79,9 @@ This method should be called whenever the renderer is actually set on the layer.
 
     void layerVariablesChanged();
 %Docstring
-Emitted when expression context variables on the associated
-vector layers have been changed. Will request the parent dialog
-to re-synchronize with the variables.
+Emitted when expression context variables on the associated vector
+layers have been changed. Will request the parent dialog to
+re-synchronize with the variables.
 %End
 
  void symbolLevelsChanged() /Deprecated="Since 3.20. No longer emitted."/;
@@ -95,24 +100,28 @@ Emitted when the symbol levels settings have been changed.
 
     virtual QList<QgsSymbol *> selectedSymbols();
 %Docstring
-Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
-and by connecting the slot contextMenuViewCategories(const QPoint&).
+Subclasses may provide the capability of changing multiple symbols at
+once by implementing the following two methods and by connecting the
+slot contextMenuViewCategories(const QPoint&).
 %End
     virtual void refreshSymbolView();
 
     QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) /Factory/;
 %Docstring
-Creates widget to setup data-defined size legend.
-Returns newly created panel - may be ``None`` if it could not be opened. Ownership is transferred to the caller.
+Creates widget to setup data-defined size legend. Returns newly created
+panel - may be ``None`` if it could not be opened. Ownership is
+transferred to the caller.
 %End
 
     virtual void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled );
 %Docstring
 Sets the symbol levels for the renderer defined in the widget.
 
-The ``levels`` argument defines the updated list of symbols with rendering passes set.
+The ``levels`` argument defines the updated list of symbols with
+rendering passes set.
 
-The ``enabled`` arguments specifies if symbol levels should be enabled for the renderer.
+The ``enabled`` arguments specifies if symbol levels should be enabled
+for the renderer.
 
 .. versionadded:: 3.20
 %End
@@ -120,8 +129,8 @@ The ``enabled`` arguments specifies if symbol levels should be enabled for the r
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsFeatureRenderer::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections
-for the button and initializing the button to show the correct descriptions
-and help text for the associated property.
+for the button and initializing the button to show the correct
+descriptions and help text for the associated property.
 %End
 
   protected slots:
@@ -165,8 +174,8 @@ Pastes the clipboard symbol over selected items.
   private:
     virtual void apply();
 %Docstring
-This will be called whenever the renderer is set on a layer.
-This can be overwritten in subclasses.
+This will be called whenever the renderer is set on a layer. This can be
+overwritten in subclasses.
 %End
 };
 
@@ -197,7 +206,8 @@ Constructor
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 :param context: symbol widget context
 
@@ -206,7 +216,8 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the symbol widget is shown, e.g., the
+associated map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -231,6 +242,9 @@ Returns the vector layer associated with the widget.
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring symbol-level data defined size.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererwidget.h"
@@ -252,6 +266,9 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 
 class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring symbol-level data defined rotation.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererwidget.h"
@@ -272,6 +289,9 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 
 class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring symbol-level data defined width.
+%End
 
 %TypeHeaderCode
 #include "qgsrendererwidget.h"

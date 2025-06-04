@@ -23,34 +23,30 @@ Contains utility functions for editing vector layers.
 
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
-Insert a new vertex before the given vertex number,
-in the given ring, item (first number is index 0), and feature
-Not meaningful for Point geometries
+Insert a new vertex before the given vertex number, in the given ring,
+item (first number is index 0), and feature Not meaningful for Point
+geometries
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
-Inserts a new vertex before the given vertex number,
-in the given ring, item (first number is index 0), and feature
-Not meaningful for Point geometries
+Inserts a new vertex before the given vertex number, in the given ring,
+item (first number is index 0), and feature Not meaningful for Point
+geometries
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 %Docstring
-Moves the vertex at the given position number,
-ring and item (first number is index 0), and feature
-to the given coordinates
+Moves the vertex at the given position number, ring and item (first
+number is index 0), and feature to the given coordinates
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 %Docstring
-Moves the vertex at the given position number,
-ring and item (first number is index 0), and feature
-to the given coordinates
+Moves the vertex at the given position number, ring and item (first
+number is index 0), and feature to the given coordinates
 
-.. note::
 
-   available in Python bindings as moveVertexV2
 %End
 
     Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -66,9 +62,12 @@ Deletes a vertex from a feature.
 Adds a ring to polygon/multipolygon features
 
 :param ring: ring to add
-:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
-                         all intersecting features are tested and the ring is added to the first valid feature.
-:param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
+:param targetFeatureIds: if specified, only these features will be the
+                         candidates for adding a ring. Otherwise all
+                         intersecting features are tested and the ring
+                         is added to the first valid feature.
+:param modifiedFeatureId: if specified, feature ID for feature that ring
+                          was added to will be stored in this parameter
 
 :return: OperationResult result code: success or reason of failure
 
@@ -82,9 +81,12 @@ Adds a ring to polygon/multipolygon features
 Adds a ring to polygon/multipolygon features
 
 :param ring: ring to add
-:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
-                         all intersecting features are tested and the ring is added to the first valid feature.
-:param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
+:param targetFeatureIds: if specified, only these features will be the
+                         candidates for adding a ring. Otherwise all
+                         intersecting features are tested and the ring
+                         is added to the first valid feature.
+:param modifiedFeatureId: if specified, feature ID for feature that ring
+                          was added to will be stored in this parameter
 
 :return: OperationResult result code: success or reason of failure
 %End
@@ -94,11 +96,14 @@ Adds a ring to polygon/multipolygon features
 Adds a ring to polygon/multipolygon features
 
 :param ring: ring to add (ownership is transferred)
-:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
-                         all intersecting features are tested and the ring is added to all valid features.
+:param targetFeatureIds: if specified, only these features will be the
+                         candidates for adding a ring. Otherwise all
+                         intersecting features are tested and the ring
+                         is added to all valid features.
 
 :return: - OperationResult result code: success or reason of failure
-         - modifiedFeatureIds: feature IDS for features that ring was added to will be stored in this parameter
+         - modifiedFeatureIds: feature IDS for features that ring was
+           added to will be stored in this parameter
 
 .. versionadded:: 3.28
 %End
@@ -108,15 +113,16 @@ Adds a ring to polygon/multipolygon features
 Adds a ring to polygon/multipolygon features
 
 :param ring: ring to add
-:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
-                         all intersecting features are tested and the ring is added to the first valid feature.
-:param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
+:param targetFeatureIds: if specified, only these features will be the
+                         candidates for adding a ring. Otherwise all
+                         intersecting features are tested and the ring
+                         is added to the first valid feature.
+:param modifiedFeatureId: if specified, feature ID for feature that ring
+                          was added to will be stored in this parameter
 
 :return: OperationResult result code: success or reason of failure
 
-.. note::
 
-   available in python bindings as addCurvedRing
 %End
 
   Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
@@ -162,9 +168,7 @@ Adds a new part polygon to a multipart feature
          - :py:class:`QgsGeometry`.InvalidBaseGeometry
          - :py:class:`QgsGeometry`.InvalidInput
 
-.. note::
 
-   available in python bindings as addCurvedPart
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -245,11 +249,13 @@ Splits features cut by the given line
 Splits features cut by the given curve
 
 :param curve: line that splits the layer features
-:param preserveCircular: whether circular strings are preserved after splitting
+:param preserveCircular: whether circular strings are preserved after
+                         splitting
 :param topologicalEditing: ``True`` if topological editing is enabled
 
 :return: - :py:class:`QgsGeometry`.OperationResult
-         - topologyTestPoints: topological points to be tested against other layers
+         - topologyTestPoints: topological points to be tested against
+           other layers
 
 .. versionadded:: 3.16
 %End
@@ -258,7 +264,8 @@ Splits features cut by the given curve
 %Docstring
 Adds topological points for every vertex of the geometry.
 
-:param geom: the geometry where each vertex is added to segments of other features
+:param geom: the geometry where each vertex is added to segments of
+             other features
 
 :return: 0 in case of success
 
@@ -273,9 +280,9 @@ Adds topological points for every vertex of the geometry.
 
     int addTopologicalPoints( const QgsPointXY &p );
 %Docstring
-Adds a vertex to segments which intersect point ``p`` but don't
-already have a vertex there. If a feature already has a vertex at position p,
-no additional vertex is inserted. This method is useful for topological
+Adds a vertex to segments which intersect point ``p`` but don't already
+have a vertex there. If a feature already has a vertex at position p, no
+additional vertex is inserted. This method is useful for topological
 editing.
 
 :return: 0 in case of success
@@ -287,9 +294,9 @@ editing.
 
     int addTopologicalPoints( const QgsPoint &p );
 %Docstring
-Adds a vertex to segments which intersect point ``p`` but don't
-already have a vertex there. If a feature already has a vertex at position p,
-no additional vertex is inserted. This method is useful for topological
+Adds a vertex to segments which intersect point ``p`` but don't already
+have a vertex there. If a feature already has a vertex at position p, no
+additional vertex is inserted. This method is useful for topological
 editing.
 
 :return: 0 in case of success
@@ -303,16 +310,17 @@ editing.
 
     int addTopologicalPoints( const QgsPointSequence &ps );
 %Docstring
-Adds a vertex to segments which intersect point ``p`` but don't
-already have a vertex there. If a feature already has a vertex at position p,
-no additional vertex is inserted. This method is useful for topological
+Adds a vertex to segments which intersect point ``p`` but don't already
+have a vertex there. If a feature already has a vertex at position p, no
+additional vertex is inserted. This method is useful for topological
 editing.
 
 :return: 0 in case of success
 
 :return: 1 in case of error
 
-:return: 2 in case vertex already exists or point does not intersect segment
+:return: 2 in case vertex already exists or point does not intersect
+         segment
 
 .. versionadded:: 3.16
 %End
@@ -323,10 +331,12 @@ Merge features into a single one.
 
 :param targetFeatureId: id of the target feature (will be updated)
 :param mergeFeatureIds: id list of features to merge (will be deleted)
-:param mergeAttributes: are the resulting attributes in the merged feature
+:param mergeAttributes: are the resulting attributes in the merged
+                        feature
 :param unionGeometry: is the resulting geometry of the merged feature
 
-:return: - ``True`` if the merge was successful, or ``False`` if the operation failed.
+:return: - ``True`` if the merge was successful, or ``False`` if the
+           operation failed.
          - errorMessage: a descriptive error message if any occurs
 
 .. versionadded:: 3.30

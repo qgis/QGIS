@@ -23,6 +23,7 @@
 
 #define SIP_NO_FILE
 
+#include <QObject>
 #include <QPointer>
 #include <qtypeinfo.h>
 #include <QtDebug>

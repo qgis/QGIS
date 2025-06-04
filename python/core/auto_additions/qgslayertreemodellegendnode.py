@@ -47,43 +47,53 @@ QgsLayerTreeModelLegendNode.CustomRole.__doc__ = """Legend node data roles
 QgsLayerTreeModelLegendNode.CustomRole.baseClass = QgsLayerTreeModelLegendNode
 try:
     QgsLayerTreeModelLegendNode.ItemContext.__attribute_docs__ = {'context': 'Render context, if available', 'painter': 'Painter', 'point': 'Top-left corner of the legend item.\n\n.. deprecated:: 3.40\n\n   Use top, columnLeft, columnRight instead.', 'labelXOffset': 'Offset from the left side where label should start.\n\n.. deprecated:: 3.40\n\n   Use columnLeft, columnRight instead.', 'top': 'Top y-position of legend item.\n\n.. versionadded:: 3.10', 'columnLeft': 'Left side of current legend column. This should be used when determining\nwhere to render legend item content, correctly respecting the symbol and text\nalignment from the legend settings.\n\n.. versionadded:: 3.10', 'columnRight': 'Right side of current legend column. This should be used when determining\nwhere to render legend item content, correctly respecting the symbol and text\nalignment from the legend settings.\n\n.. versionadded:: 3.10', 'maxSiblingSymbolWidth': 'Largest symbol width, considering all other sibling legend components associated with\nthe current component.\n\n.. versionadded:: 3.10', 'patchShape': 'The patch shape to render for the node.\n\n.. versionadded:: 3.14', 'patchSize': 'Symbol patch size to render for the node.\n\nIf either the width or height are zero, then the default width/height from :py:func:`QgsLegendSettings.symbolSize()` should be used instead.\n\n.. versionadded:: 3.14', 'textDocument': 'Optional text document\n\n.. versionadded:: 3.30', 'textDocumentMetrics': 'Optional text document metrics.\n\n.. versionadded:: 3.30', 'screenProperties': 'Destination screen properties.\n\n.. versionadded:: 3.32'}
+    QgsLayerTreeModelLegendNode.ItemContext.__annotations__ = {'context': 'QgsRenderContext', 'painter': 'QPainter', 'point': 'QPointF', 'labelXOffset': float, 'top': float, 'columnLeft': float, 'columnRight': float, 'maxSiblingSymbolWidth': float, 'patchShape': 'QgsLegendPatchShape', 'patchSize': 'QSizeF', 'textDocument': 'QgsTextDocument', 'textDocumentMetrics': 'QgsTextDocumentMetrics', 'screenProperties': 'QgsScreenProperties'}
     QgsLayerTreeModelLegendNode.ItemContext.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the signal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
+    QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the\nsignal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
+    QgsLayerTreeModelLegendNode.__virtual_methods__ = ['flags', 'setData', 'isEmbeddedInParent', 'setEmbeddedInParent', 'userLabel', 'setUserLabel', 'userPatchSize', 'setUserPatchSize', 'setColumnBreak', 'columnBreak', 'isScaleOK', 'invalidateMapBasedData', 'draw', 'drawSymbol', 'exportSymbolToJson', 'drawSymbolText']
+    QgsLayerTreeModelLegendNode.__abstract_methods__ = ['data']
     QgsLayerTreeModelLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeModelLegendNode.ItemMetrics.__group__ = ['layertree']
-except (NameError, AttributeError):
-    pass
-try:
+    QgsSymbolLegendNode.__overridden_methods__ = ['flags', 'data', 'setData', 'drawSymbol', 'exportSymbolToJson', 'setEmbeddedInParent', 'setUserLabel', 'isScaleOK', 'invalidateMapBasedData']
     QgsSymbolLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
+    QgsSimpleLegendNode.__overridden_methods__ = ['data']
     QgsSimpleLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
+    QgsImageLegendNode.__overridden_methods__ = ['data', 'drawSymbol', 'exportSymbolToJson']
     QgsImageLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
+    QgsRasterSymbolLegendNode.__overridden_methods__ = ['flags', 'data', 'setData', 'drawSymbol', 'exportSymbolToJson']
     QgsRasterSymbolLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
+    QgsWmsLegendNode.__overridden_methods__ = ['data', 'drawSymbol', 'exportSymbolToJson', 'invalidateMapBasedData']
     QgsWmsLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
+    QgsDataDefinedSizeLegendNode.__overridden_methods__ = ['data', 'draw']
     QgsDataDefinedSizeLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
+    QgsVectorLabelLegendNode.__overridden_methods__ = ['data', 'drawSymbol', 'exportSymbolToJson']
     QgsVectorLabelLegendNode.__group__ = ['layertree']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsLayerTreeModelLegendNode.ItemMetrics.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass

@@ -36,7 +36,7 @@ class QgsProject;
  *
  * \ingroup core
  *
- * \brief Class allowing to manage the auxiliary storage for a vector layer.
+ * \brief Allows managing the auxiliary storage for a vector layer.
  *
  * Such auxiliary data are data used mostly for the needs of QGIS (symbology)
  * and have no real interest in being stored with the native raw geospatial
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
  *
  * \ingroup core
  *
- * \brief Class providing some utility methods to manage auxiliary storage.
+ * \brief Providing some utility methods to manage auxiliary storage.
  *
  */
 class CORE_EXPORT QgsAuxiliaryStorage

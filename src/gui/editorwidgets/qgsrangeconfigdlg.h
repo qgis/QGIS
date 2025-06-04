@@ -25,9 +25,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsRangeConfigDlg
+ * \brief Configuration widget for range widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::QgsRangeConfigDlgBase
 {
     Q_OBJECT

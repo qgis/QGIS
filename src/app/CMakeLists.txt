@@ -14,6 +14,7 @@ set(QGIS_APP_SRCS
   qgsappauthrequesthandler.cpp
   qgsappbrowserproviders.cpp
   qgsappcoordinateoperationhandlers.cpp
+  qgsappdbutils.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
@@ -275,6 +276,7 @@ set(QGIS_APP_SRCS
   gps/qgsappgpsdigitizing.cpp
   gps/qgsappgpslogging.cpp
   gps/qgsappgpssettingsmenu.cpp
+  gps/qgsappgpstools.cpp
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpscanvasbridge.cpp
   gps/qgsgpsinformationwidget.cpp
@@ -348,7 +350,9 @@ if (WITH_3D)
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
+    3d/qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
     3d/qgs3dmaptoolpointcloudchangeattribute.cpp
+    3d/qgs3dmaptoolpointcloudchangeattributepolygon.cpp
     3d/qgs3dmeasuredialog.cpp
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
@@ -381,6 +385,7 @@ if (WITH_3D)
     3d/qgs3dmapcanvaswidget.cpp
     3d/qgs3dviewsmanagerdialog.cpp
     3d/qgs3ddebugwidget.cpp
+    3d/qgsmaptoolclippingplanes.cpp
   )
 endif()
 

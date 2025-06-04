@@ -36,7 +36,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief This class manages all known edit widget factories.
+ * \brief A registry that manages all known edit widget factories.
  *
  * QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
  * QgsGui::editorWidgetRegistry().
@@ -132,6 +132,15 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * \returns A human readable name
      */
     QString name( const QString &widgetId );
+
+    /**
+     * Gets the widget's read-only flag
+     *
+     * \param widgetId The widget type to get the read-only flag for
+     *
+     * \since QGIS 3.44
+     */
+    bool isReadOnly( const QString &widgetId );
 
     /**
      * Gets access to all registered factories

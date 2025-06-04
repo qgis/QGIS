@@ -18,6 +18,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqldatabase.h"
+#include "qgsmssqlutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsdatasourceuri.h"
@@ -222,7 +223,7 @@ QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessa
   // connect to database
   std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
-  return schemas( db, errorMessage );
+  return schemas( std::move( db ), errorMessage );
 }
 
 QStringList QgsMssqlConnection::schemas( std::shared_ptr<QgsMssqlDatabase> db, QString *errorMessage )
@@ -343,10 +344,10 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 {
   return QList<QgsVectorDataProvider::NativeType>()
          // integer types
-         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer" ), QStringLiteral( "bigint" ), QMetaType::Type::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer" ), QStringLiteral( "int" ), QMetaType::Type::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer" ), QStringLiteral( "smallint" ), QMetaType::Type::Int )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes Integer (bigint)" ), QStringLiteral( "bigint" ), QMetaType::Type::LongLong )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes Integer (int)" ), QStringLiteral( "int" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes Integer (smallint)" ), QStringLiteral( "smallint" ), QMetaType::Type::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes Integer (tinyint)" ), QStringLiteral( "tinyint" ), QMetaType::Type::Int )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (numeric)" ), QStringLiteral( "numeric" ), QMetaType::Type::Double, 1, 20, 0, 20 )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal Number (decimal)" ), QStringLiteral( "decimal" ), QMetaType::Type::Double, 1, 20, 0, 20 )
 
@@ -422,7 +423,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   {
     QStringList quotedSchemas;
     for ( const QString &sch : excludedSchemaList )
-      quotedSchemas.append( QgsMssqlProvider::quotedValue( sch ) );
+      quotedSchemas.append( QgsMssqlUtils::quotedValue( sch ) );
     notSelectedSchemas = quotedSchemas.join( ',' );
     notSelectedSchemas.prepend( QStringLiteral( "( " ) );
     notSelectedSchemas.append( QStringLiteral( " )" ) );

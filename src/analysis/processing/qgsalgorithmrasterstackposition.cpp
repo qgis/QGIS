@@ -48,10 +48,17 @@ void QgsRasterStackPositionAlgorithmBase::initAlgorithm( const QVariantMap & )
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( output_nodata_parameter.release() );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
@@ -110,16 +117,21 @@ bool QgsRasterStackPositionAlgorithmBase::prepareAlgorithm( const QVariantMap &p
 
 QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( Qgis::DataType::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
@@ -195,7 +207,10 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
         }
       }
     }
-    provider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !provider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
   }
   provider->setEditable( false );
 
@@ -228,9 +243,15 @@ QStringList QgsRasterStackLowestPositionAlgorithm::tags() const
   return QObject::tr( "cell,lowest,position,pixel,stack" ).split( ',' );
 }
 
+QString QgsRasterStackLowestPositionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the position "
+                      "of the raster with the lowest value in a stack of rasters." );
+}
+
 QString QgsRasterStackLowestPositionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The lowest position algorithm evaluates on a cell-by-cell basis the position "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the lowest value in a stack of rasters. Position counts start "
                       "with 1 and range to the total number of input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the lowest value, "
@@ -331,9 +352,15 @@ QStringList QgsRasterStackHighestPositionAlgorithm::tags() const
   return QObject::tr( "cell,highest,position,pixel,stack" ).split( ',' );
 }
 
+QString QgsRasterStackHighestPositionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the position "
+                      "of the raster with the highest value in a stack of rasters." );
+}
+
 QString QgsRasterStackHighestPositionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The highest position algorithm evaluates on a cell-by-cell basis the position "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the position "
                       "of the raster with the highest value in a stack of rasters. Position counts start "
                       "with 1 and range to the total number of input rasters. The order of the input "
                       "rasters is relevant for the algorithm. If multiple rasters feature the highest value, "

@@ -86,6 +86,22 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    /**
+     * Returns name of index copc file for given \a filename of point cloud.
+     *
+     * \param filename name of the original dataset
+     *
+     * \since 3.44
+     */
+    static QString copcIndexFile( const QString &filename );
+
+    /**
+     * Override that prefers copc.laz index file as datasource for faster processing (if the index file exists) otherwise uses original layer.
+     *
+     * \since 3.44
+     */
+    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const;
+
   private:
     QMap<QString, QVariant> mOutputValues;
     bool mEnableElevationProperties = false;

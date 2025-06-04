@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * \brief A text table item that reads text from string lists
+ * \brief A text table item that reads text from string lists.
 */
 class CORE_EXPORT QgsLayoutItemTextTable : public QgsLayoutTable
 {

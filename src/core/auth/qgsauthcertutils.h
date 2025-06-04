@@ -35,7 +35,7 @@ class QgsAuthConfigSslServer;
 
 /**
  * \ingroup core
- * \brief Utilities for working with certificates and keys
+ * \brief Utilities for working with certificates and keys.
  */
 class CORE_EXPORT QgsAuthCertUtils
 {

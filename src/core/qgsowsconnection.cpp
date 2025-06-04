@@ -69,6 +69,7 @@ const QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *QgsOwsConnection::settings
 const QgsSettingsEntryString *QgsOwsConnection::settingsMaxNumFeatures = new QgsSettingsEntryString( QStringLiteral( "max-num-features" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsPagesize = new QgsSettingsEntryString( QStringLiteral( "page-size" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsPagingEnabled = new QgsSettingsEntryString( QStringLiteral( "paging-enabled" ), sTreeOwsConnections, QString( "default" ) ) ;
+const QgsSettingsEntryString *QgsOwsConnection::settingsWfsFeatureMode = new QgsSettingsEntryString( QStringLiteral( "feature-mode" ), sTreeOwsConnections, QString( "default" ) ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignore-axis-orientation" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invert-axis-orientation" ), sTreeOwsConnections, false ) ;
@@ -76,6 +77,7 @@ const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettin
 const QgsSettingsEntryString *QgsOwsConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsAuthCfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryInteger *QgsOwsConnection::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "feature-count" ), sTreeOwsConnections, 10 );
+const QgsSettingsEntryEnumFlag<Qgis::HttpMethod> *QgsOwsConnection::settingsPreferredHttpMethod = new QgsSettingsEntryEnumFlag<Qgis::HttpMethod>( QStringLiteral( "http-method" ), sTreeOwsConnections, Qgis::HttpMethod::Get, QString() );
 
 QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connName )
   : mConnName( connName )
@@ -258,6 +260,24 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
   if ( !maxnumFeatures.isEmpty() )
   {
     uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumFeatures );
+  }
+
+  const Qgis::HttpMethod httpMethod = settingsPreferredHttpMethod->value( {service.toLower(), connName} );
+  switch ( httpMethod )
+  {
+    case Qgis::HttpMethod::Get:
+      // default, we don't set to explicitly set
+      break;
+
+    case Qgis::HttpMethod::Post:
+      uri.setParam( QStringLiteral( "httpMethod" ), QStringLiteral( "post" ) );
+      break;
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported
+      break;
   }
 
   return uri;

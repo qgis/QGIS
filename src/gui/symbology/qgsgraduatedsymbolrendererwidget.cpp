@@ -24,6 +24,7 @@
 #include <QCompleter>
 #include <QPointer>
 #include <QScreen>
+#include <QUuid>
 
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "moc_qgsgraduatedsymbolrendererwidget.cpp"
@@ -134,12 +135,13 @@ QgsRendererRange QgsGraduatedSymbolRendererModel::rendererRange( const QModelInd
 
 Qt::ItemFlags QgsGraduatedSymbolRendererModel::flags( const QModelIndex &index ) const
 {
+  // Flat list, to ease drop handling valid indexes are not dropEnabled
   if ( !index.isValid() )
   {
     return Qt::ItemIsDropEnabled;
   }
 
-  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsUserCheckable;
+  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
 
   if ( index.column() == 2 )
   {
@@ -306,8 +308,8 @@ QMimeData *QgsGraduatedSymbolRendererModel::mimeData( const QModelIndexList &ind
 
 bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  Q_UNUSED( row )
   Q_UNUSED( column )
+  Q_UNUSED( parent ) // Unused because only invalid indexes have Qt::ItemIsDropEnabled
   if ( action != Qt::MoveAction )
     return true;
 
@@ -325,7 +327,11 @@ bool QgsGraduatedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::D
     rows.append( r );
   }
 
-  int to = parent.row();
+  // Items may come unsorted depending on selecion order
+  std::sort( rows.begin(), rows.end() );
+
+  int to = row;
+
   // to is -1 if dragged outside items, i.e. below any item,
   // then move to the last position
   if ( to == -1 )
@@ -492,7 +498,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mModel = new QgsGraduatedSymbolRendererModel( this, screen() );
 
-  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
+  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setLayer( mLayer );
 
   btnChangeGraduatedSymbol->setLayer( mLayer );
@@ -827,6 +833,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
@@ -872,18 +879,18 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
   clearParameterWidgets();
 
   const QString methodId = cboGraduatedMode->currentData().toString();
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
-  Q_ASSERT( method );
+  mClassificationMethod = QgsApplication::classificationMethodRegistry()->method( methodId );
+  Q_ASSERT( mClassificationMethod.get() );
 
   // need more context?
   QgsProcessingContext context;
 
-  for ( const QgsProcessingParameterDefinition *def : method->parameterDefinitions() )
+  for ( const QgsProcessingParameterDefinition *def : mClassificationMethod->parameterDefinitions() )
   {
-    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
+    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, Qgis::ProcessingMode::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
 
-    QVariant value = method->parameterValues().value( def->name(), def->defaultValueForGui() );
+    QVariant value = mClassificationMethod->parameterValues().value( def->name(), def->defaultValueForGui() );
     ppww->setParameterValue( value, context );
 
     connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -891,7 +898,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
     mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
   }
 
-  spinGraduatedClasses->setEnabled( !( method->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
+  spinGraduatedClasses->setEnabled( !( mClassificationMethod->flags() & QgsClassificationMethod::MethodProperty::IgnoresClassCount ) );
 }
 
 void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
@@ -1036,16 +1043,12 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
 {
-  if ( mBlockUpdates )
+  if ( mBlockUpdates || !mClassificationMethod )
     return;
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
   int nclasses = spinGraduatedClasses->value();
-
-  const QString methodId = cboGraduatedMode->currentData().toString();
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
-  Q_ASSERT( method );
 
   int attrNum = mLayer->fields().lookupField( attrName );
 
@@ -1059,29 +1062,29 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
   mSymmetryPointValidator->setTop( maximum );
   mSymmetryPointValidator->setMaxDecimals( spinPrecision->value() );
 
-  if ( method->id() == QgsClassificationEqualInterval::METHOD_ID || method->id() == QgsClassificationStandardDeviation::METHOD_ID )
+  if ( mClassificationMethod->id() == QgsClassificationEqualInterval::METHOD_ID || mClassificationMethod->id() == QgsClassificationStandardDeviation::METHOD_ID )
   {
     // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
     // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
     double currentValue = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     if ( currentValue < ( minimum + ( maximum - minimum ) / 100. ) || currentValue > ( maximum - ( maximum - minimum ) / 100. ) )
-      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QLocale().toString( minimum + ( maximum - minimum ) / 2., 'f', method->labelPrecision() + 2 ) );
+      cboSymmetryPoint->setItemText( cboSymmetryPoint->currentIndex(), QLocale().toString( minimum + ( maximum - minimum ) / 2., 'f', mClassificationMethod->labelPrecision() + 2 ) );
   }
 
   if ( mGroupBoxSymmetric->isChecked() )
   {
     double symmetryPoint = QgsDoubleValidator::toDouble( cboSymmetryPoint->currentText() );
     bool astride = cbxAstride->isChecked();
-    method->setSymmetricMode( true, symmetryPoint, astride );
+    mClassificationMethod->setSymmetricMode( true, symmetryPoint, astride );
   }
 
   QVariantMap parameterValues;
   for ( const auto &ppww : std::as_const( mParameterWidgetWrappers ) )
     parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
-  method->setParameterValues( parameterValues );
+  mClassificationMethod->setParameterValues( parameterValues );
 
   // set method to renderer
-  mRenderer->setClassificationMethod( method.release() );
+  mRenderer->setClassificationMethod( mClassificationMethod->clone().release() );
 
   // create and set new renderer
   mRenderer->setClassAttribute( attrName );
@@ -1452,9 +1455,10 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
   }
   else if ( event->key() == Qt::Key_V && event->modifiers() == Qt::ControlModifier )
   {
-    QgsRangeList::const_iterator rIt = mCopyBuffer.constBegin();
-    for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
+    QgsRangeList::iterator rIt = mCopyBuffer.begin();
+    for ( ; rIt != mCopyBuffer.end(); ++rIt )
     {
+      rIt->mUuid = QUuid::createUuid().toString();
       mModel->addClass( *rIt );
     }
     emit widgetChanged();

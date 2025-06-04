@@ -11,7 +11,7 @@
 class QgsRasterContourRendererWidget : QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
-Configuration widget for :py:class:`QgsRasterContourRenderer`
+Configuration widget for :py:class:`QgsRasterContourRenderer`.
 
 .. versionadded:: 3.14
 %End
@@ -22,7 +22,10 @@ Configuration widget for :py:class:`QgsRasterContourRenderer`
   public:
     QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
-Constructs the widget
+Constructor for QgsRasterContourRendererWidget.
+
+:param layer: associated raster layer
+:param extent: current canvas extent
 %End
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;

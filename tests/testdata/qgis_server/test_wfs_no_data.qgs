@@ -672,7 +672,7 @@
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings destinationLayerName="test_wfs_no_data" destinationLayerSource="/home/jean/dev/QGIS/.worktree/wfs-empty-bounding-box/tests/testdata/qgis_server/test_wfs_no_data.gpkg|layername=test_wfs_no_data" autoAddTrackVertices="0" autoCommitFeatures="0" destinationLayer="test_wfs_no_data_a1e298c7_7c28_43f3_9fc9_6be3461ad064" destinationLayerProvider="ogr" destinationFollowsActiveLayer="1">
+  <ProjectGpsSettings destinationLayerName="test_wfs_no_data" destinationLayerSource="./test_wfs_no_data.gpkg|layername=test_wfs_no_data" autoAddTrackVertices="0" autoCommitFeatures="0" destinationLayer="test_wfs_no_data_a1e298c7_7c28_43f3_9fc9_6be3461ad064" destinationLayerProvider="ogr" destinationFollowsActiveLayer="1">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>

@@ -77,6 +77,25 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
     {
       return QStringList() << QObject::tr( "Path to a raster layer" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
+    }
 };
 
 /**
@@ -129,6 +148,25 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshLayer : public QgsProcessingPara
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Path to a mesh layer" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             // TODO  << QgsProcessingOutputMeshLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
     }
 };
 
@@ -183,6 +221,33 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Path to a vector layer" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
+    }
+
+    QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const override
+    {
+      if ( const QgsProcessingParameterVectorLayer *param = dynamic_cast<const QgsProcessingParameterVectorLayer *>( parameter ) )
+        return param->dataTypes();
+      else
+        return QList<int>();
     }
 };
 
@@ -240,6 +305,30 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
     {
       return QStringList() << QObject::tr( "Path to a vector, raster or mesh layer" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -296,6 +385,41 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      //pretty much everything is compatible here and can be converted to a bool!
+      return QStringList() << QgsProcessingParameterBoolean::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterArea::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterDuration::typeName()
+             << QgsProcessingParameterScale::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterField::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterProviderConnection::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName();
+    }
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputBoolean::typeName();
+    }
 };
 
 /**
@@ -346,6 +470,27 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A valid QGIS expression string, e.g \"road_name\" = 'MAIN RD'" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterArea::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterScale::typeName()
+             << QgsProcessingParameterProviderConnection::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -411,6 +556,29 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
              << QObject::tr( "CRS as a WKT string (e.g. 'WKT:…')" )
              << QObject::tr( "Path to a layer. The CRS of the layer is used." ) ;
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterCrs::typeName()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -463,6 +631,19 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Two comma separated numeric values, e.g. '1,10'" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterRange::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -518,6 +699,20 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
     {
       return QStringList() << QObject::tr( "Point coordinate as an 'x,y' string, e.g. '1.5,10.1'" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterPoint::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -569,6 +764,22 @@ class CORE_EXPORT QgsProcessingParameterTypeGeometry : public QgsProcessingParam
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Well-Known Text string (WKT)" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterGeometry::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterPoint::typeName()
+             << QgsProcessingParameterExtent::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -622,6 +833,22 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
     {
       return QStringList() << QObject::tr( "Number of selected option, e.g. '1'" )
              << QObject::tr( "Comma separated list of options, e.g. '1,3'" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterEnum::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputNumber::typeName();
     }
 };
 
@@ -683,6 +910,30 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
       return QStringList() << QObject::tr( "A comma delimited string of x min, x max, y min, y max. E.g. '4,10,101,105'" )
              << QObject::tr( "Path to a layer. The extent of the layer is used." ) ;
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterExtent::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterAnnotationLayer::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -735,6 +986,17 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
     {
       return QStringList() << QObject::tr( "A comma delimited list of values" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterMatrix::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
 };
 
 /**
@@ -785,6 +1047,24 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Path to a file" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterFile::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName();
     }
 };
 
@@ -838,6 +1118,51 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
       return QStringList() << QObject::tr( "The name of an existing field" )
              << QObject::tr( "; delimited list of existing field names" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterField::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
+};
+
+
+/**
+ * \brief A common generic type for destination parameter, for specifying the destination path for a vector layer
+ * created by the algorithm.
+ *
+ * \ingroup core
+* \since QGIS 3.44
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDestination  : public QgsProcessingParameterType
+{
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputFolder::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -848,7 +1173,7 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('vectorDestination')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -908,7 +1233,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('fileDestination')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -957,6 +1282,23 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     {
       return QStringList() << QObject::tr( "Path for new file" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterFile::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName();
+    }
 };
 
 /**
@@ -968,7 +1310,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('folderDestination')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1017,6 +1359,21 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     {
       return QStringList() << QObject::tr( "Path for an existing or new folder" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterFile::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -1027,7 +1384,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('rasterDestination')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1130,10 +1487,37 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterAuthConfig::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterArea::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterDuration::typeName()
+             << QgsProcessingParameterScale::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterField::typeName()
+             << QgsProcessingParameterExpression::typeName()
+             << QgsProcessingParameterCoordinateOperation::typeName()
+             << QgsProcessingParameterProviderConnection::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName()
+             << QgsProcessingOutputString::typeName();
+    }
 };
 
 /**
- * \brief A authentication configuration parameter for processing algorithms.
+ * \brief An authentication configuration parameter for processing algorithms.
  *
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('authcfg')
@@ -1148,7 +1532,7 @@ class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingPar
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A authentication configuration parameter." );
+      return QCoreApplication::translate( "Processing", "An authentication configuration parameter." );
     }
 
     QString name() const override
@@ -1179,6 +1563,20 @@ class CORE_EXPORT QgsProcessingParameterTypeAuthConfig : public QgsProcessingPar
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "An existing QGIS authentication ID string" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterAuthConfig::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -1228,6 +1626,30 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
              << QObject::tr( "list[str]: list of layer sources" )
              << QStringLiteral( "list[QgsMapLayer]" )
              << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterMultipleLayers::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterFile::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMultipleLayers::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -1284,6 +1706,34 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
     {
       return QStringList() << QObject::tr( "Path to a vector layer" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterFeatureSource::typeName()
+             << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
+    }
+
+    QList<int> acceptedDataTypes( const QgsProcessingParameterDefinition *parameter ) const override
+    {
+      if ( const QgsProcessingParameterFeatureSource *param = dynamic_cast<const QgsProcessingParameterFeatureSource *>( parameter ) )
+        return param->dataTypes();
+      else
+        return QList<int>();
+    }
 };
 
 /**
@@ -1338,6 +1788,24 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterNumber::typeName()
+             << QgsProcessingParameterDistance::typeName()
+             << QgsProcessingParameterVolume::typeName()
+             << QgsProcessingParameterDuration::typeName()
+             << QgsProcessingParameterScale::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList() << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputVariant::typeName()
+             << QgsProcessingOutputString::typeName();
+    }
 };
 
 /**
@@ -1347,7 +1815,7 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('distance')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParameterTypeNumber
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1402,7 +1870,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('area')
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsProcessingParameterTypeArea : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeArea : public QgsProcessingParameterTypeNumber
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1457,7 +1925,7 @@ class CORE_EXPORT QgsProcessingParameterTypeArea : public QgsProcessingParameter
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('volume')
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsProcessingParameterTypeVolume : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeVolume : public QgsProcessingParameterTypeNumber
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1513,7 +1981,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVolume : public QgsProcessingParamet
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('duration')
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParameterTypeNumber
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1567,7 +2035,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParam
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('scale')
  * \since QGIS 3.8
  */
-class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParameterTypeNumber
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1661,6 +2129,20 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
     {
       return QStringList() << QObject::tr( "Integer value representing an existing raster band number" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterBand::typeName()
+             << QgsProcessingParameterNumber::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputNumber::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -1670,7 +2152,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('band')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1773,6 +2255,20 @@ class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParamet
     {
       return QStringList() << QObject::tr( "Name of print layout in current project" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterLayout::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -1824,6 +2320,20 @@ class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingPar
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "UUID or item id of layout item" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterLayoutItem::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -1879,6 +2389,20 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterColor::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -1928,6 +2452,20 @@ class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProc
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "String representation of Proj coordinate operation" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterCoordinateOperation::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -1979,6 +2517,20 @@ class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParame
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Name of an existing map theme" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -2036,6 +2588,20 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterDateTime::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -2086,6 +2652,21 @@ class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProce
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Name of registered database connection" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterProviderConnection::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -2138,6 +2719,21 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessin
     {
       return QStringList() << QObject::tr( "Name of existing database schema" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterDatabaseSchema::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -2188,6 +2784,21 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingP
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Name of existing database table" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterDatabaseTable::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
     }
 };
 
@@ -2242,6 +2853,25 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudLayer : public QgsProcessi
     {
       return QStringList() << QObject::tr( "Path to a point cloud layer" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterPointCloudLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputFile::typeName()
+             << QgsProcessingOutputFolder::typeName();
+    }
 };
 
 /**
@@ -2295,6 +2925,23 @@ class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessi
     {
       return QStringList() << QObject::tr( "Layer ID for an annotation layer, or \"main\" for the main annotation layer in a project." );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterAnnotationLayer::typeName()
+             << QgsProcessingParameterMapLayer::typeName()
+             << QgsProcessingParameterString::typeName()
+             << QgsProcessingParameterExpression::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputMapLayer::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -2305,7 +2952,7 @@ class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessi
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('pointCloudDestination')
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsProcessingParameterTypePointCloudDestination : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypePointCloudDestination : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -2407,6 +3054,20 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudAttribute : public QgsProc
       return QStringList() << QObject::tr( "The name of an attribute" )
              << QObject::tr( "; delimited list of attribute names" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterPointCloudAttribute::typeName()
+             << QgsProcessingParameterString::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingOutputString::typeName()
+             << QgsProcessingOutputVariant::typeName();
+    }
 };
 
 /**
@@ -2417,7 +3078,7 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudAttribute : public QgsProc
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('vectorTileDestination')
  * \since QGIS 3.32
  */
-class CORE_EXPORT QgsProcessingParameterTypeVectorTileDestination : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeVectorTileDestination : public QgsProcessingParameterTypeDestination
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {

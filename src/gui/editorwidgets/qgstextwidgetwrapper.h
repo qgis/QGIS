@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * \brief Wraps a label widget to display text
+ * \brief Wraps a label widget to display text.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsTextWidgetWrapper : public QgsWidgetWrapper

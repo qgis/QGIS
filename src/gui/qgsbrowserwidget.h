@@ -26,6 +26,7 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserProxyModel;
 class QgsMessageBar;
+class QgsMapCanvas;
 class QgsDataItemGuiContext;
 
 class QModelIndex;
@@ -63,6 +64,24 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
      * \see setMessageBar()
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Sets a map \a canvas to use alongside the widget.
+     *
+     * Setting this allows items to utilize the canvas during GUI operations.
+     *
+     * \see mapCanvas()
+     * \since QGIS 3.44
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns the map canvas associated with the widget.
+     *
+     * \see setMapCanvas()
+     * \since QGIS 3.44
+     */
+    QgsMapCanvas *mapCanvas();
 
     /**
      * Sets the customization for data items based on item's data provider key
@@ -167,6 +186,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     QString mInitPath;
 
     QgsMessageBar *mMessageBar = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QStringList mDisabledDataItemsKeys;
 
     friend class QgsBrowserDockWidget;

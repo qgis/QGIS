@@ -1,0 +1,17 @@
+{
+  "name": "repeat",
+  "type": "function",
+  "groups": ["String"],
+  "description": "Repeats a string a specified number of times.",
+  "arguments": [{
+    "arg": "string",
+    "description": "string to repeat"
+  }, {
+    "arg": "number",
+    "description": "number of times to repeat string"
+  }],
+  "examples": [{
+    "expression": "repeat('Hello', 3)",
+    "returns": "'HelloHelloHello'"
+  }]
+}

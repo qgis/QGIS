@@ -11,6 +11,9 @@
 
 class QgsNewVectorLayerDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring the properties of a new vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsnewvectorlayerdialog.h"
@@ -20,9 +23,10 @@ class QgsNewVectorLayerDialog : QDialog
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 
-If the ``initialPath`` argument is specified, then the dialog will default to the specified filename.
+If the ``initialPath`` argument is specified, then the dialog will
+default to the specified filename.
 
-:return: fileName on success, empty string use aborted, QString() if creation failed
+:return: fileName on success, empty string if aborted or creation failed
 
 .. deprecated:: 3.4.5
 
@@ -33,20 +37,25 @@ If the ``initialPath`` argument is specified, then the dialog will default to th
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 
-If the ``initialPath`` argument is specified, then the dialog will default to the specified filename.
+If the ``initialPath`` argument is specified, then the dialog will
+default to the specified filename.
 
-Returns a filename if the dialog was accepted, or an empty string if the dialog was canceled.
-If the dialog was accepted but an error occurred while creating the file, then the function will
-return an empty string and ``errorMessage`` will contain the error message.
+Returns a filename if the dialog was accepted, or an empty string if the
+dialog was canceled. If the dialog was accepted but an error occurred
+while creating the file, then the function will return an empty string
+and ``errorMessage`` will contain the error message.
 
-If ``encoding`` is specified, it will be set to the encoding of the created file.
+If ``encoding`` is specified, it will be set to the encoding of the
+created file.
 
 :param parent: parent widget for dialog
 :param initialPath: initial file path to show in dialog
 :param crs: default layer CRS to show in dialog
 
-:return: - Newly created file name, or an empty string if user canceled or an error occurred.
-         - errorMessage: any error message encountered during layer creation
+:return: - Newly created file name, or an empty string if user canceled
+           or an error occurred.
+         - errorMessage: any error message encountered during layer
+           creation
          - encoding: file encoding of created layer
 
 .. versionadded:: 3.4.5

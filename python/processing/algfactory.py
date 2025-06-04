@@ -433,26 +433,27 @@ class ProcessingAlgFactory:
     def output(self, type, *args, **kwargs):
         """
         Define a output parameter for this algorithm using @alg.output.
-        Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingOutputDefinition ` type.
+        Apart from `type` this method will take all arguments and pass them though to the correct `QgsProcessingOutputDefinition` type.
 
         Types:
-            str: QgsProcessingOutputString
-            int: QgsProcessingOutputNumber
-            float: QgsProcessingOutputNumber
-            alg.NUMBER: QgsProcessingOutputNumber
-            alg.DISTANCE: QgsProcessingOutputNumber
-            alg.INT: QgsProcessingOutputNumber
-            alg.STRING: QgsProcessingOutputString
-            alg.FILE: QgsProcessingOutputFile
-            alg.FOLDER: QgsProcessingOutputFolder
-            alg.HTML: QgsProcessingOutputHtml
-            alg.LAYERDEF:  QgsProcessingOutputLayerDefinition
-            alg.MAPLAYER:  QgsProcessingOutputMapLayer
-            alg.MULTILAYER:  QgsProcessingOutputMultipleLayers
-            alg.RASTER_LAYER: QgsProcessingOutputRasterLayer
-            alg.VECTOR_LAYER: QgsProcessingOutputVectorLayer
-            alg.POINTCLOUD_LAYER: QgsProcessingOutputPointCloudLayer
-            alg.BOOL: QgsProcessingOutputBoolean
+
+        - str: QgsProcessingOutputString
+        - int: QgsProcessingOutputNumber
+        - float: QgsProcessingOutputNumber
+        - alg.NUMBER: QgsProcessingOutputNumber
+        - alg.DISTANCE: QgsProcessingOutputNumber
+        - alg.INT: QgsProcessingOutputNumber
+        - alg.STRING: QgsProcessingOutputString
+        - alg.FILE: QgsProcessingOutputFile
+        - alg.FOLDER: QgsProcessingOutputFolder
+        - alg.HTML: QgsProcessingOutputHtml
+        - alg.LAYERDEF:  QgsProcessingOutputLayerDefinition
+        - alg.MAPLAYER:  QgsProcessingOutputMapLayer
+        - alg.MULTILAYER:  QgsProcessingOutputMultipleLayers
+        - alg.RASTER_LAYER: QgsProcessingOutputRasterLayer
+        - alg.VECTOR_LAYER: QgsProcessingOutputVectorLayer
+        - alg.POINTCLOUD_LAYER: QgsProcessingOutputPointCloudLayer
+        - alg.BOOL: QgsProcessingOutputBoolean
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Will convert into `description` arg.
@@ -470,7 +471,7 @@ class ProcessingAlgFactory:
         Define the help for the algorithm using @alg.help. This method will
         be used instead of the doc string on the function as the help in the processing dialogs.
 
-        :param helpstring: The help text. Use alg.tr() for translation support.
+        :param helpstring: The help text. Use QCoreApplication.translate() for translation support.
         """
 
         def dec(f):
@@ -487,53 +488,53 @@ class ProcessingAlgFactory:
 
         Types:
 
-            str: QgsProcessingParameterString
-            int: QgsProcessingParameterNumber
-            float: QgsProcessingParameterNumber
-            bool: QgsProcessingParameterBoolean
-            alg.NUMBER: QgsProcessingParameterNumber
-            alg.INT: QgsProcessingParameterNumber
-            alg.STRING: QgsProcessingParameterString
-            alg.DISTANCE: QgsProcessingParameterDistance
-            alg.SINK: QgsProcessingParameterFeatureSink
-            alg.SOURCE: QgsProcessingParameterFeatureSource
-            alg.FILE_DEST: QgsProcessingParameterFileDestination
-            alg.FOLDER_DEST: QgsProcessingParameterFolderDestination
-            alg.RASTER_LAYER: QgsProcessingParameterRasterLayer
-            alg.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination
-            alg.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination
-            alg.POINTCLOUD_LAYER_DEST: QgsProcessingParameterPointCloudDestination
-            alg.BAND: QgsProcessingParameterBand
-            alg.BOOL: QgsProcessingParameterBoolean
-            alg.CRS: QgsProcessingParameterCrs
-            alg.ENUM: QgsProcessingParameterEnum
-            alg.EXPRESSION: QgsProcessingParameterExpression
-            alg.EXTENT: QgsProcessingParameterExtent
-            alg.FIELD: QgsProcessingParameterField
-            alg.FILE: QgsProcessingParameterFile
-            alg.MAPLAYER: QgsProcessingParameterMapLayer
-            alg.MATRIX: QgsProcessingParameterMatrix
-            alg.MULTILAYER: QgsProcessingParameterMultipleLayers
-            alg.POINT: QgsProcessingParameterPoint
-            alg.GEOMETRY: QgsProcessingParameterGeometry
-            alg.RANGE: QgsProcessingParameterRange
-            alg.VECTOR_LAYER: QgsProcessingParameterVectorLayer
-            alg.AUTH_CFG: QgsProcessingParameterAuthConfig
-            alg.MESH_LAYER: QgsProcessingParameterMeshLayer
-            alg.SCALE: QgsProcessingParameterScale
-            alg.LAYOUT: QgsProcessingParameterLayout
-            alg.LAYOUT_ITEM: QgsProcessingParameterLayoutItem
-            alg.COLOR: QgsProcessingParameterColor
-            alg.DATETIME: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.DateTime)
-            alg.DATE: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.Date)
-            alg.TIME: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.Time)
-            alg.MAP_THEME: QgsProcessingParameterMapTheme
-            alg.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection
-            alg.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema
-            alg.DATABASE_TABLE: QgsProcessingParameterDatabaseTable
-            alg.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
-            alg.POINTCLOUD_LAYER: QgsProcessingParameterPointCloudLayer
-            alg.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
+        - str: QgsProcessingParameterString
+        - int: QgsProcessingParameterNumber
+        - float: QgsProcessingParameterNumber
+        - bool: QgsProcessingParameterBoolean
+        - alg.NUMBER: QgsProcessingParameterNumber
+        - alg.INT: QgsProcessingParameterNumber
+        - alg.STRING: QgsProcessingParameterString
+        - alg.DISTANCE: QgsProcessingParameterDistance
+        - alg.SINK: QgsProcessingParameterFeatureSink
+        - alg.SOURCE: QgsProcessingParameterFeatureSource
+        - alg.FILE_DEST: QgsProcessingParameterFileDestination
+        - alg.FOLDER_DEST: QgsProcessingParameterFolderDestination
+        - alg.RASTER_LAYER: QgsProcessingParameterRasterLayer
+        - alg.RASTER_LAYER_DEST: QgsProcessingParameterRasterDestination
+        - alg.VECTOR_LAYER_DEST: QgsProcessingParameterVectorDestination
+        - alg.POINTCLOUD_LAYER_DEST: QgsProcessingParameterPointCloudDestination
+        - alg.BAND: QgsProcessingParameterBand
+        - alg.BOOL: QgsProcessingParameterBoolean
+        - alg.CRS: QgsProcessingParameterCrs
+        - alg.ENUM: QgsProcessingParameterEnum
+        - alg.EXPRESSION: QgsProcessingParameterExpression
+        - alg.EXTENT: QgsProcessingParameterExtent
+        - alg.FIELD: QgsProcessingParameterField
+        - alg.FILE: QgsProcessingParameterFile
+        - alg.MAPLAYER: QgsProcessingParameterMapLayer
+        - alg.MATRIX: QgsProcessingParameterMatrix
+        - alg.MULTILAYER: QgsProcessingParameterMultipleLayers
+        - alg.POINT: QgsProcessingParameterPoint
+        - alg.GEOMETRY: QgsProcessingParameterGeometry
+        - alg.RANGE: QgsProcessingParameterRange
+        - alg.VECTOR_LAYER: QgsProcessingParameterVectorLayer
+        - alg.AUTH_CFG: QgsProcessingParameterAuthConfig
+        - alg.MESH_LAYER: QgsProcessingParameterMeshLayer
+        - alg.SCALE: QgsProcessingParameterScale
+        - alg.LAYOUT: QgsProcessingParameterLayout
+        - alg.LAYOUT_ITEM: QgsProcessingParameterLayoutItem
+        - alg.COLOR: QgsProcessingParameterColor
+        - alg.DATETIME: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.DateTime)
+        - alg.DATE: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.Date)
+        - alg.TIME: QgsProcessingParameterDateTime(type=QgsProcessingParameterDateTime.Type.Time)
+        - alg.MAP_THEME: QgsProcessingParameterMapTheme
+        - alg.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection
+        - alg.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema
+        - alg.DATABASE_TABLE: QgsProcessingParameterDatabaseTable
+        - alg.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
+        - alg.POINTCLOUD_LAYER: QgsProcessingParameterPointCloudLayer
+        - alg.ANNOTATION_LAYER: QgsProcessingParameterAnnotationLayer
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Translates into `description` arg.

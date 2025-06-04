@@ -250,7 +250,7 @@ tests:
   - algorithm: native:surfacetopolygon
     name: Create polygon from surface of Mesh layer
     params:
-      INPUT: 
+      INPUT:
         name: quad_and_triangle.2dm
         type: mesh
     results:
@@ -261,7 +261,7 @@ tests:
   - algorithm: native:surfacetopolygon
     name: Create polygon from surface of Mesh layer - multiple parts with hole
     params:
-      INPUT: 
+      INPUT:
         name: mesh_two_part_with_hole.2dm
         type: mesh
     results:
@@ -321,4 +321,55 @@ tests:
     results:
       OUTPUT:
         name: expected/raster_zonal_extremum.gml
+        type: vector
+
+  - algorithm: native:fillsinkswangliu
+    name: Fill sinks W&L
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      MIN_SLOPE: 0.1
+    results:
+      OUTPUT_FILLED_DEM:
+        hash: 2a436a9a5f2b0c4e5369868649ff2bf7d9e69d9fa71e21beb6ebd34c
+        type: rasterhash
+      OUTPUT_FLOW_DIRECTIONS:
+        hash: 47e3bd73b8aa8e64f726515a650fa1dfb4d14581e1b3a949182bd28b
+        type: rasterhash
+      OUTPUT_WATERSHED_BASINS:
+        hash: 38169bd8e8ff1400109936c8de70e429ab319926a053ab5142791010
+        type: rasterhash
+
+  - algorithm: native:fillsinkswangliu
+    name: Fill sinks W&L no min slope
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      MIN_SLOPE: 0.0
+    results:
+      OUTPUT_FILLED_DEM:
+        hash: 10aa3f7961764f420a6eaf19718faef69a943364d171e1242f415945
+        type: rasterhash
+      OUTPUT_FLOW_DIRECTIONS:
+        hash: 8a5f49fbcb14f7a84c59ee9952173600c6b2bd675ed59bef5c7260f0
+        type: rasterhash
+      OUTPUT_WATERSHED_BASINS:
+        hash: 38169bd8e8ff1400109936c8de70e429ab319926a053ab5142791010
+        type: rasterhash
+
+  - algorithm: native:concavehullbyfeature
+    name: Concave hull by feature
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: custom/concave_hull_points.gml|layername=concave_hull_points
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/concave_hull_by_feature.gml
         type: vector

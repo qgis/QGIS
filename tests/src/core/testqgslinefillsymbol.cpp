@@ -136,7 +136,7 @@ void TestQgsLineFillSymbol::lineFillSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill" ) ) );
@@ -156,7 +156,7 @@ void TestQgsLineFillSymbol::lineFillSymbolVector()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   lineFill->setSubSymbol( lineSymbol );
 
@@ -182,7 +182,7 @@ void TestQgsLineFillSymbol::viewportLineFillSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
   lineFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
 
@@ -203,7 +203,7 @@ void TestQgsLineFillSymbol::viewportLineFillSymbolVector()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
   lineFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
 
@@ -234,7 +234,7 @@ void TestQgsLineFillSymbol::lineFillSymbolOffsetVector()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
 
   lineFill->setOffset( 0.5 );
@@ -270,7 +270,7 @@ void TestQgsLineFillSymbol::lineFillLargeOffsetVector()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
 
   lineFill->setOffset( 8 );
@@ -305,7 +305,7 @@ void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
 
   lineFill->setOffset( -8 );
@@ -329,14 +329,14 @@ void TestQgsLineFillSymbol::lineFillClipPainter()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -368,14 +368,14 @@ void TestQgsLineFillSymbol::lineFillClipIntersection()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -407,14 +407,14 @@ void TestQgsLineFillSymbol::lineFillNoClip()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -446,14 +446,14 @@ void TestQgsLineFillSymbol::lineFillDataDefinedClip()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -479,7 +479,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( QStringLiteral( "datadefined_subsymbol" ) ) );
@@ -501,7 +501,11 @@ bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer 
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( layer->extent() );
   mMapSettings.setOutputDpi( 96 );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, forceVector );
+  if ( forceVector )
+    mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  else
+    mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );
   myChecker.setControlName( "expected_" + testType );

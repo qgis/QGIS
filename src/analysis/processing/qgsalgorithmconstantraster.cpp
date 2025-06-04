@@ -49,11 +49,16 @@ QString QgsConstantRasterAlgorithm::groupId() const
 
 QString QgsConstantRasterAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates raster layer for given extent and cell "
-                      "size filled with the specified value.\n"
+  return QObject::tr( "This algorithm generates a raster layer for a given extent and cell "
+                      "size filled with a single constant value.\n"
                       "Additionally an output data type can be specified. "
                       "The algorithm will abort if a value has been entered that "
                       "cannot be represented by the selected output raster data type." );
+}
+
+QString QgsConstantRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster layer for a given extent and cell size filled with a single constant value." );
 }
 
 QgsConstantRasterAlgorithm *QgsConstantRasterAlgorithm::createInstance() const
@@ -82,10 +87,17 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   rasterTypeParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( rasterTypeParameter.release() );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Constant" ) ) );
 }
@@ -156,7 +168,12 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
       break;
   }
 
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -172,9 +189,9 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( rasterDataType, cols, rows, rasterExtent, crs ) );
@@ -189,65 +206,7 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
 
   //prepare raw data depending on raster data type
   QgsRasterBlock block( rasterDataType, cols, 1 );
-  switch ( typeId )
-  {
-    case 0:
-    {
-      std::vector<quint8> byteRow( cols );
-      std::fill( byteRow.begin(), byteRow.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &byteRow[0], QgsRasterBlock::typeSize( Qgis::DataType::Byte ) * cols ) );
-      break;
-    }
-    case 1:
-    {
-      std::vector<qint16> int16Row( cols );
-      std::fill( int16Row.begin(), int16Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &int16Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Int16 ) * cols ) );
-      break;
-    }
-    case 2:
-    {
-      std::vector<quint16> uInt16Row( cols );
-      std::fill( uInt16Row.begin(), uInt16Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &uInt16Row[0], QgsRasterBlock::typeSize( Qgis::DataType::UInt16 ) * cols ) );
-      break;
-    }
-    case 3:
-    {
-      std::vector<qint32> int32Row( cols );
-      std::fill( int32Row.begin(), int32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &int32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Int32 ) * cols ) );
-      break;
-    }
-    case 4:
-    {
-      std::vector<quint32> uInt32Row( cols );
-      std::fill( uInt32Row.begin(), uInt32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &uInt32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::UInt32 ) * cols ) );
-      break;
-    }
-    case 5:
-    {
-      std::vector<float> float32Row( cols );
-      std::fill( float32Row.begin(), float32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &float32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Float32 ) * cols ) );
-      break;
-    }
-    case 6:
-    {
-      std::vector<double> float64Row( cols );
-      std::fill( float64Row.begin(), float64Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &float64Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Float64 ) * cols ) );
-      break;
-    }
-    default:
-    {
-      std::vector<float> float32Row( cols );
-      std::fill( float32Row.begin(), float32Row.end(), value );
-      block.setData( QByteArray::fromRawData( ( char * ) &float32Row[0], QgsRasterBlock::typeSize( Qgis::DataType::Float32 ) * cols ) );
-      break;
-    }
-  }
+  block.fill( value );
 
   const double step = rows > 0 ? 100.0 / rows : 1;
 
@@ -258,7 +217,10 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
       break;
     }
 
-    provider->writeBlock( &block, 1, 0, i );
+    if ( !provider->writeBlock( &block, 1, 0, i ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
     feedback->setProgress( i * step );
   }
 

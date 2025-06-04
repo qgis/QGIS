@@ -35,7 +35,7 @@ namespace QgsWmts
   {
     QMap<QString, tileMatrixInfo> populateFixedTileMatrixInfoMap();
 
-    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
     // Constant
     const int tileSize = 256;
@@ -289,7 +289,7 @@ namespace QgsWmts
           tmi.unit = crs.mapUnits();
           tmi.hasAxisInverted = crs.hasAxisInverted();
 
-          const QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), crs, project );
+          const QgsCoordinateTransform crsTransform( QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() ), crs, project );
           try
           {
             // firstly transform CRS bounds expressed in WGS84 to CRS
@@ -443,15 +443,15 @@ namespace QgsWmts
         }
 
         layerDef pLayer;
-        pLayer.id = treeGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+        pLayer.id = treeGroup->serverProperties()->shortName();
         if ( pLayer.id.isEmpty() )
           pLayer.id = gName;
 
-        pLayer.title = treeGroup->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
+        pLayer.title = treeGroup->serverProperties()->title();
         if ( pLayer.title.isEmpty() )
           pLayer.title = gName;
 
-        pLayer.abstract = treeGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString();
+        pLayer.abstract = treeGroup->serverProperties()->abstract();
 
         QgsRectangle wgs84BoundingRect;
         bool queryable = false;
@@ -666,7 +666,7 @@ namespace QgsWmts
         {
           continue;
         }
-        QString groupLayerId = treeGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+        QString groupLayerId = treeGroup->serverProperties()->shortName();
         if ( groupLayerId.isEmpty() )
         {
           groupLayerId = gName;

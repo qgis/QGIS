@@ -12,7 +12,7 @@
 class QgsMapToolEdit : QgsMapTool
 {
 %Docstring(signature="appended")
-Base class for map tools that edit vector geometry
+Base class for map tools that edit vector geometry.
 %End
 
 %TypeHeaderCode
@@ -25,26 +25,25 @@ Base class for map tools that edit vector geometry
 
     static double defaultZValue();
 %Docstring
-Returns default Z value.
-Used for setting Z coordinate to new vertex.
+Returns default Z value. Used for setting Z coordinate to new vertex.
 %End
 
     static double defaultMValue();
 %Docstring
-Returns default M value.
-Used for setting M coordinate to new vertex.
+Returns default M value. Used for setting M coordinate to new vertex.
 
 .. versionadded:: 3.20
 %End
 
     QgsGeometryRubberBand *createGeometryRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) const /Factory/;
 %Docstring
-Creates a  geometry rubber band with the color/line width from
-the QGIS settings. The caller takes ownership of the
-returned object
+Creates a geometry rubber band with the color/line width from the QGIS
+settings. The caller takes ownership of the returned object
 
-:param geometryType:
-:param alternativeBand: if ``True``, rubber band will be set with more transparency and a dash pattern. default is ``False``.
+:param geometryType: 
+:param alternativeBand: if ``True``, rubber band will be set with more
+                        transparency and a dash pattern. default is
+                        ``False``.
 %End
 
   protected:
@@ -63,12 +62,13 @@ Returns fill color for rubber bands (from global settings)
 
     QgsRubberBand *createRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) /Factory/;
 %Docstring
-Creates a rubber band with the color/line width from
-the QGIS settings. The caller takes ownership of the
-returned object
+Creates a rubber band with the color/line width from the QGIS settings.
+The caller takes ownership of the returned object
 
-:param geometryType:
-:param alternativeBand: if ``True``, rubber band will be set with more transparency and a dash pattern. default is ``False``.
+:param geometryType: 
+:param alternativeBand: if ``True``, rubber band will be set with more
+                        transparency and a dash pattern. default is
+                        ``False``.
 %End
 
     QgsVectorLayer *currentVectorLayer();
@@ -85,8 +85,10 @@ Returns the current vector layer of the map canvas or 0
 
  TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
-Adds a list of ``vertices`` to other features to keep topology up to date, e.g. to neighbouring polygons.
-The ``vertices`` list specifies a set of topological points to add, in the layer's coordinate reference system.
+Adds a list of ``vertices`` to other features to keep topology up to
+date, e.g. to neighbouring polygons. The ``vertices`` list specifies a
+set of topological points to add, in the layer's coordinate reference
+system.
 
 .. deprecated:: 3.12
 
@@ -95,8 +97,10 @@ The ``vertices`` list specifies a set of topological points to add, in the layer
 
     TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &vertices );
 %Docstring
-Adds a list of ``vertices`` to other features to keep topology up to date, e.g. to neighbouring polygons.
-The ``vertices`` list specifies a set of topological points to add, in the layer's coordinate reference system.
+Adds a list of ``vertices`` to other features to keep topology up to
+date, e.g. to neighbouring polygons. The ``vertices`` list specifies a
+set of topological points to add, in the layer's coordinate reference
+system.
 
 .. versionadded:: 3.10
 %End
@@ -107,7 +111,8 @@ Display a timed message bar noting the active layer is not vector.
 %End
     void notifyNotEditableLayer();
 %Docstring
-Display a timed message bar noting the active vector layer is not editable.
+Display a timed message bar noting the active vector layer is not
+editable.
 %End
 
 };

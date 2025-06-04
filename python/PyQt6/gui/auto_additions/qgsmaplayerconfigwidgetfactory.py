@@ -12,3 +12,8 @@ of a standard page.
 
 """
 # --
+try:
+    QgsMapLayerConfigWidgetFactory.__virtual_methods__ = ['icon', 'title', 'supportsStyleDock', 'supportLayerPropertiesDialog', 'layerPropertiesPagePositionHint', 'supportsLayer', 'supportsLayerTreeGroup', 'parentPage']
+    QgsMapLayerConfigWidgetFactory.__abstract_methods__ = ['createWidget']
+except (NameError, AttributeError):
+    pass

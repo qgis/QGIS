@@ -30,6 +30,7 @@
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifoptionsrequest.h"
 #include "qgsoapifqueryablesrequest.h"
+#include "qgsoapifschemarequest.h"
 #include "qgsoapifsingleitemrequest.h"
 #include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
@@ -167,6 +168,7 @@ bool QgsOapifProvider::init()
 
   bool implementsPart2 = false;
   const QString &conformanceUrl = landingPageRequest.conformanceUrl();
+  bool implementsSchemas = false;
   if ( !conformanceUrl.isEmpty() )
   {
     QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
@@ -178,6 +180,7 @@ bool QgsOapifProvider::init()
     mShared->mServerSupportsLikeBetweenIn = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators" ) ) );
     mShared->mServerSupportsCaseI = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison" ) ) );
     mShared->mServerSupportsBasicSpatialOperators = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
+    implementsSchemas = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas" ) );
   }
 
   mLayerMetadata = collectionRequest->collection().mLayerMetadata;
@@ -285,6 +288,34 @@ bool QgsOapifProvider::init()
   mShared->mWKBType = itemsRequest.wkbType();
   mShared->mFoundIdTopLevel = itemsRequest.foundIdTopLevel();
   mShared->mFoundIdInProperties = itemsRequest.foundIdInProperties();
+
+  if ( implementsSchemas )
+  {
+    QString schemaUrl;
+    // Find a link for rel=http://www.opengis.net/def/rel/ogc/1.0/schema (or [ogc-rel:schema])
+    // whose mime type is in priority "application/schema+json"
+    // Also accept "application/json" as lower priority
+    for ( const QgsAbstractMetadataBase::Link &link : mLayerMetadata.links() )
+    {
+      if ( link.name == QLatin1String( "http://www.opengis.net/def/rel/ogc/1.0/schema" ) || link.name == QLatin1String( "[ogc-rel:schema]" ) )
+      {
+        if ( link.mimeType == "application/schema+json" )
+        {
+          schemaUrl = link.url;
+          break;
+        }
+        else if ( link.mimeType == "application/json" )
+        {
+          schemaUrl = link.url;
+          // Go on in case there is a later mimeType == "application/schema+json"
+        }
+      }
+    }
+    if ( !schemaUrl.isEmpty() )
+    {
+      handleGetSchemaRequest( schemaUrl );
+    }
+  }
 
   computeCapabilities( itemsRequest );
 
@@ -470,6 +501,8 @@ bool QgsOapifProvider::empty() const
   return !getFeatures( request ).nextFeature( f );
 };
 
+QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometryColumnName; }
+
 bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
   QgsDebugMsgLevel( QStringLiteral( "filter = '%1'" ).arg( filter ), 4 );
@@ -548,6 +581,19 @@ const QString &QgsOapifProvider::clientSideFilterExpression() const
 void QgsOapifProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
   mShared = qobject_cast<QgsOapifProvider *>( source )->mShared;
+}
+
+void QgsOapifProvider::handleGetSchemaRequest( const QString &schemaUrl )
+{
+  QgsOapifSchemaRequest schemaRequest( mShared->mURI.uri() );
+  const QgsOapifSchemaRequest::Schema schema = schemaRequest.schema( schemaUrl );
+  if ( schemaRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+  {
+    mShared->mFields = schema.mFields;
+    mShared->mGeometryColumnName = schema.mGeometryColumnName;
+    if ( schema.mWKBType != Qgis::WkbType::Unknown )
+      mShared->mWKBType = schema.mWKBType;
+  }
 }
 
 bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
@@ -1382,6 +1428,15 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
         QgsGeometry g = f.geometry();
         if ( mShared->mSourceCrs.hasAxisInverted() )
           g.get()->swapXy();
+
+        // Promote single geometries to multipart if necessary
+        if ( QgsWkbTypes::flatType( g.wkbType() ) == Qgis::WkbType::Point && mShared->mWKBType == Qgis::WkbType::MultiPoint )
+          g = g.convertToType( Qgis::GeometryType::Point, /* destMultipart = */ true );
+        else if ( QgsWkbTypes::flatType( g.wkbType() ) == Qgis::WkbType::LineString && mShared->mWKBType == Qgis::WkbType::MultiLineString )
+          g = g.convertToType( Qgis::GeometryType::Line, /* destMultipart = */ true );
+        else if ( QgsWkbTypes::flatType( g.wkbType() ) == Qgis::WkbType::Polygon && mShared->mWKBType == Qgis::WkbType::MultiPolygon )
+          g = g.convertToType( Qgis::GeometryType::Polygon, /* destMultipart = */ true );
+
         dstFeat.setGeometry( g );
       }
       const auto srcAttrs = f.attributes();

@@ -47,10 +47,17 @@ void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMa
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( output_nodata_parameter.release() );
 
+  // backwards compatibility parameter
+  // TODO QGIS 4: remove parameter and related logic
   auto createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
   createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATION_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURRENCE_COUNT" ), QObject::tr( "Count of value occurrences" ) ) );
@@ -114,16 +121,21 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
 
 QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
+  QString creationOptions = parameterAsString( parameters, QStringLiteral( "CREATION_OPTIONS" ), context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( Qgis::DataType::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
@@ -207,7 +219,10 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
         }
       }
     }
-    provider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop );
+    if ( !provider->writeBlock( outputBlock.get(), 1, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
   }
   provider->setEditable( false );
 
@@ -249,7 +264,7 @@ QStringList QgsRasterFrequencyByEqualOperatorAlgorithm::tags() const
 
 QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Equal to frequency algorithm evaluates on a cell-by-cell basis the frequency "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are equal "
                       "to the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
@@ -259,6 +274,12 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
                       "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
+}
+
+QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the frequency (number of times) "
+                      "the values of an input stack of rasters are equal to the value of a value raster." );
 }
 
 QgsRasterFrequencyByEqualOperatorAlgorithm *QgsRasterFrequencyByEqualOperatorAlgorithm::createInstance() const
@@ -292,7 +313,7 @@ QStringList QgsRasterFrequencyByGreaterThanOperatorAlgorithm::tags() const
 
 QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Greater than frequency algorithm evaluates on a cell-by-cell basis the frequency "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are greater than "
                       "the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
@@ -302,6 +323,12 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() cons
                       "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
+}
+
+QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the frequency (number of times) "
+                      "the values of an input stack of rasters are greater than the value of a value raster." );
 }
 
 QgsRasterFrequencyByGreaterThanOperatorAlgorithm *QgsRasterFrequencyByGreaterThanOperatorAlgorithm::createInstance() const
@@ -335,7 +362,7 @@ QStringList QgsRasterFrequencyByLessThanOperatorAlgorithm::tags() const
 
 QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Less than frequency algorithm evaluates on a cell-by-cell basis the frequency "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are less than "
                       "the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
@@ -345,6 +372,12 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
                       "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
+}
+
+QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the frequency (number of times) "
+                      "the values of an input stack of rasters are less than the value of a value raster." );
 }
 
 QgsRasterFrequencyByLessThanOperatorAlgorithm *QgsRasterFrequencyByLessThanOperatorAlgorithm::createInstance() const

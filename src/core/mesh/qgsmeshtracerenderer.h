@@ -592,7 +592,9 @@ class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
 /**
  * \ingroup core
  *
- * \brief A wrapper for QgsMeshParticuleTracesField used to render the particles. Available for Python binding
+ * \brief A wrapper for QgsMeshParticuleTracesField used to render the particles.
+ *
+ * Available for Python binding
  *
  * \since QGIS 3.12
  */

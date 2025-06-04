@@ -12,9 +12,8 @@
 class QgsRasterChecker
 {
 %Docstring(signature="appended")
-This is a helper class for unit tests that need to
-write an image and compare it to an expected result
-or render time.
+A helper class for unit tests that need to write an image and compare it
+to an expected result or render time.
 %End
 
 %TypeHeaderCode

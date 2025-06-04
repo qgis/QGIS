@@ -545,7 +545,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     /**
      * Adjust the width of the scroll bar to fit the content.
-     * 
+     *
      * \since QGIS 3.42
      */
     void adjustScrollWidth();
@@ -686,6 +686,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \since QGIS 3.32
      */
     virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
+
+    /**
+     * Toggles comment for selected lines with the given comment prefix.
+     *
+     * \since QGIS 3.44
+     */
+    void toggleLineComments( const QString &commentPrefix );
 
   private slots:
     void onLastEditTimeout();

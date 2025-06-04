@@ -34,7 +34,7 @@
 /**
  * \class QgsFetchedContent
  * \ingroup core
- * \brief FetchedContent holds useful information about a network content being fetched
+ * \brief Holds information about fetched network content.
  * \see QgsNetworkContentFetcherRegistry
  * \since QGIS 3.2
  */
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     };
 
     //! Constructs a FetchedContent with pointer to the downloaded file and status of the download
-    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = nullptr, ContentStatus status = NotStarted,
+    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file SIP_TRANSFER = nullptr, ContentStatus status = NotStarted,
                                 const QString &authConfig = QString() )
       : mUrl( url )
       , mFile( file )
@@ -64,13 +64,13 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     {
       if ( mFile )
         mFile->close();
-      delete mFile;
+
     }
 
 
 #ifndef SIP_RUN
     //! Returns a pointer to the local file, or NULLPTR if the file is not accessible yet.
-    QFile *file() const {return mFile;}
+    QFile *file() const {return mFile.get();}
 #endif
 
     //! Returns the path to the local file, an empty string if the file is not accessible yet.
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
   private:
     QString mUrl;
-    QTemporaryFile *mFile = nullptr;
+    std::unique_ptr<QTemporaryFile> mFile;
     QString mFilePath;
     QPointer< QgsNetworkContentFetcherTask > mFetchingTask;
     ContentStatus mStatus = NotStarted;
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 /**
  * \class QgsNetworkContentFetcherRegistry
  * \ingroup core
- * \brief Registry for temporary fetched files
+ * \brief Registry for temporary fetched files.
  *
  * This provides a simple way of downloading and accessing
  * remote files during QGIS application running.

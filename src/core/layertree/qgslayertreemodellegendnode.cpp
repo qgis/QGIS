@@ -93,14 +93,22 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
   const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, f );
   // cppcheck-suppress autoVariables
-  ctx->textDocument = &textDocument;
 
   std::optional< QgsScopedRenderContextScaleToPixels > scaleToPx( *ctx->context );
   const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( *ctx->context, f );
 
-  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context, textScaleFactor );
+  QgsTextDocumentRenderContext documentContext;
+
+  if ( settings.autoWrapLinesAfter() > 0 )
+  {
+    documentContext.setMaximumWidth( ctx->context->convertToPainterUnits( settings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
+    documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
+  }
+
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context, textScaleFactor, documentContext );
   // cppcheck-suppress autoVariables
   ctx->textDocumentMetrics = &textDocumentMetrics;
+  ctx->textDocument = &textDocumentMetrics.document();
   scaleToPx.reset();
 
   // itemHeight here is not really item height, it is only for symbol
@@ -496,6 +504,7 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   context->setMapToPixel( QgsMapToPixel( mupp ) );
   context->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
+  context->setFlag( Qgis::RenderContextFlag::RenderLayerTree, true );
 
   if ( model() && !model()->targetScreenProperties().isEmpty() )
   {
@@ -671,7 +680,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
-    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
     // setup a minimal expression context
@@ -761,10 +770,10 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     Q_NOWARN_DEPRECATED_PUSH
     // QGIS 4.0 -- ctx->context will be mandatory
-    const bool useAdvancedEffects = ctx->context ? ctx->context->flags() & Qgis::RenderContextFlag::UseAdvancedEffects : settings.useAdvancedEffects();
+    const bool forceVector = ctx->context ? ctx->context->rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector : !settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
 
-    if ( opacity != 255 && useAdvancedEffects )
+    if ( opacity != 255 && !forceVector )
     {
       // if this is a semi transparent layer, we need to draw symbol to an image (to flatten it first)
 
@@ -1484,13 +1493,13 @@ QImage QgsWmsLegendNode::getLegendGraphicBlocking() const
 
 QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mSettings( new QgsDataDefinedSizeLegend( settings ) )
+  , mSettings( std::make_unique<QgsDataDefinedSizeLegend>( settings ) )
 {
 }
 
 QgsDataDefinedSizeLegendNode::~QgsDataDefinedSizeLegendNode()
 {
-  delete mSettings;
+
 }
 
 QVariant QgsDataDefinedSizeLegendNode::data( int role ) const

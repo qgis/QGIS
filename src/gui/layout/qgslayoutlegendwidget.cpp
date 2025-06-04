@@ -53,22 +53,40 @@
 
 ///@cond PRIVATE
 
-static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+namespace
 {
-  return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
-}
+  int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+  {
+    return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
+  }
 
-static int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
-{
-  // figure out index of the legend node as it comes out of the map layer legend.
-  // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
-  // next the nodes may be further filtered (by scale, map content etc).
-  // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
-  int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
-  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
-  return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
-}
+  int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+  {
+    // figure out index of the legend node as it comes out of the map layer legend.
+    // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
+    // next the nodes may be further filtered (by scale, map content etc).
+    // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
+    int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
+    return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
+  }
 
+  void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int destLegendNodeIndex )
+  {
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+    const int offset = destLegendNodeIndex - legendNodeIndex;
+
+    if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
+      return;
+    if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
+      return;
+
+    int id = order.takeAt( legendNodeIndex );
+    order.insert( legendNodeIndex + offset, id );
+
+    QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+  }
+} //namespace
 
 QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, legend )
@@ -107,6 +125,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mIconLabelSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
   connect( mBoxSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
+  connect( mMaxWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::maxWidthChanged );
   connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [=]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
@@ -157,6 +176,9 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   mSpaceBelowSubgroupHeadingSpinBox->setClearValue( 0 );
   mSubgroupSideSpinBox->setClearValue( 0 );
   mSymbolSideSpaceSpinBox->setClearValue( 0 );
+
+  mMaxWidthSpinBox->setShowClearButton( true );
+  mMaxWidthSpinBox->setClearValue( 0, tr( "Disabled" ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -227,6 +249,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::DataDefinedProperty::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::DataDefinedProperty::LegendColumnCount );
+  registerDataDefinedButton( mLegendAutoWrapWidthDDBtn, QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth );
 
   setGuiElements();
 
@@ -292,6 +315,8 @@ void QgsLayoutLegendWidget::setGuiElements()
   mSymbolSideSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
+
+  mMaxWidthSpinBox->setValue( mLegend->autoWrapLinesAfter() );
 
   mRasterStrokeGroupBox->setChecked( mLegend->drawRasterStroke() );
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
@@ -726,21 +751,17 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
   }
 }
 
-static void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int offset )
+void QgsLayoutLegendWidget::maxWidthChanged( double width )
 {
-  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
-
-  if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
-    return;
-  if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
-    return;
-
-  int id = order.takeAt( legendNodeIndex );
-  order.insert( legendNodeIndex + offset, id );
-
-  QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Legend Wrapping" ), QgsLayoutItem::UndoLegendAutoWrapAfter );
+    mLegend->setAutoWrapLinesAfter( width );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
 }
-
 
 void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
 {
@@ -770,8 +791,14 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), 1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    // get the next index, the one that will have to be above our index,
+    const QModelIndex nextIndex = index.siblingAtRow( index.row() + 1 );
+    QgsLayerTreeModelLegendNode *nextLegendNode = nextIndex.isValid() ? mItemTreeView->index2legendNode( nextIndex ) : nullptr;
+    if ( nextLegendNode )
+    {
+      _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), _unfilteredLegendNodeIndex( nextLegendNode ) );
+      mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    }
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() + 1, 0, parentIndex ) ) );
@@ -808,8 +835,14 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), -1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    // get the previous index, the one that will have to be below our index,
+    const QModelIndex prevIndex = index.siblingAtRow( index.row() - 1 );
+    QgsLayerTreeModelLegendNode *prevLegendNode = prevIndex.isValid() ? mItemTreeView->index2legendNode( prevIndex ) : nullptr;
+    if ( prevLegendNode )
+    {
+      _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), _unfilteredLegendNodeIndex( prevLegendNode ) );
+      mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    }
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() - 1, 0, parentIndex ) ) );
@@ -1342,6 +1375,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mLayerFontButton->blockSignals( b );
   mItemFontButton->blockSignals( b );
   mWrapCharLineEdit->blockSignals( b );
+  mMaxWidthSpinBox->blockSignals( b );
 }
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )

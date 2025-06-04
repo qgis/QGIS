@@ -53,6 +53,7 @@ class QgsWebView;
 /**
  * \ingroup gui
  * \class QgsVectorLayerProperties
+ * \brief Layer properties dialog for vector layers.
  */
 class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -92,8 +93,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     void mButtonRemoveJoin_clicked();
 
     // Server properties
-    void addMetadataUrl();
-    void removeSelectedMetadataUrl();
     void mButtonAddWmsDimension_clicked();
     void mButtonEditWmsDimension_clicked();
     void mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -184,7 +183,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     //! Adds a QGIS Server WMS dimension to mWmsDimensionTreeWidget
     void addWmsDimensionInfoToTreeWidget( const QgsMapLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
-    QStandardItemModel *mMetadataUrlModel = nullptr;
 
     void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );

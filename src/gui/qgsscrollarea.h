@@ -19,7 +19,7 @@
 #include <QScrollArea>
 #include "qgis_sip.h"
 #include "qgis_gui.h"
-#include <QTimer>
+#include <QElapsedTimer>
 class ScrollAreaFilter;
 
 /**
@@ -81,7 +81,8 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-    QTimer mTimer;
+    bool mTimerActive = false;
+    QElapsedTimer mTimer;
     ScrollAreaFilter *mFilter = nullptr;
     bool mVerticalOnly = false;
 };

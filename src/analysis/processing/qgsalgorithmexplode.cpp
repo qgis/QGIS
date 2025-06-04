@@ -58,6 +58,11 @@ QString QgsExplodeAlgorithm::shortHelpString() const
                       "same type and contain only single curve segments." );
 }
 
+QString QgsExplodeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a line layer in which each feature represents a segment from an input line layer." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsExplodeAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
@@ -195,7 +200,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::curveAsSingleSegments( const QgsCu
 
     case Qgis::WkbType::CompoundCurve:
     {
-      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( curve );
+      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve *>( curve );
       for ( int i = 0; i < compoundCurve->nCurves(); ++i )
       {
         std::vector<QgsGeometry> segments = curveAsSingleSegments( compoundCurve->curveAt( i ), true );

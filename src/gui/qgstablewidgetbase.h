@@ -23,7 +23,7 @@
 
 /**
  * \ingroup gui
- * \brief Base widget allowing to edit a collection, using a table.
+ * \brief Base widget allowing editing a collection, using a table.
  *
  * This widget includes buttons to add and remove rows.
  * Child classes must call init(QAbstractTableModel*) from their constructor.

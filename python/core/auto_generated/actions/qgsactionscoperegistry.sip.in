@@ -10,8 +10,8 @@
 class QgsActionScopeRegistry : QObject
 {
 %Docstring(signature="appended")
-The action scope registry is an application wide registry that
-contains a list of available action scopes.
+The action scope registry is an application wide registry that contains
+a list of available action scopes.
 
 Some scopes are available by default, additional ones can be registered
 at runtime by plugins or custom applications.
@@ -30,10 +30,10 @@ To get access use the :py:class:`QgsApplication`:
 
     explicit QgsActionScopeRegistry( QObject *parent = 0 );
 %Docstring
-Create a new QgsActionScopeRegistry.
-QGIS already creates a central registry. You will normally
-want to use :py:func:`QgsApplication.actionScopeRegistry()` to get access
-to that one instead.
+Create a new QgsActionScopeRegistry. QGIS already creates a central
+registry. You will normally want to use
+:py:func:`QgsApplication.actionScopeRegistry()` to get access to that
+one instead.
 %End
 
     QSet<QgsActionScope> actionScopes() const;
@@ -60,8 +60,8 @@ Gets an action scope by its id.
 
     void actionScopesChanged();
 %Docstring
-Emitted whenever a new action scope is registered or an action scope
-is unregistered.
+Emitted whenever a new action scope is registered or an action scope is
+unregistered.
 %End
 
 };

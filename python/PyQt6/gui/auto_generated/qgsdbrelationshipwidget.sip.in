@@ -11,7 +11,8 @@
 class QgsDbRelationWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for configuration of the properties of a relationship in a database.
+A widget for configuration of the properties of a relationship in a
+database.
 
 .. versionadded:: 3.30
 %End
@@ -22,7 +23,8 @@ A widget for configuration of the properties of a relationship in a database.
   public:
     QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDbRelationWidget with the specified ``parent`` widget, for the specified ``connection``.
+Constructor for QgsDbRelationWidget with the specified ``parent``
+widget, for the specified ``connection``.
 
 Ownership of ``connection`` is transferred to the widget.
 %End
@@ -43,7 +45,8 @@ Returns the relationship as defined in the widget.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the widget currently represents a valid relationship configuration.
+Returns ``True`` if the widget currently represents a valid relationship
+configuration.
 
 .. seealso:: :py:func:`validityChanged`
 %End
@@ -52,7 +55,8 @@ Returns ``True`` if the widget currently represents a valid relationship configu
 
     void validityChanged( bool isValid );
 %Docstring
-Emitted whenever the validity of the relationship configuration in the widget changes.
+Emitted whenever the validity of the relationship configuration in the
+widget changes.
 
 .. seealso:: :py:func:`isValid`
 %End
@@ -63,7 +67,8 @@ Emitted whenever the validity of the relationship configuration in the widget ch
 class QgsDbRelationDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog for configuration of the properties of a relationship in a database.
+A dialog for configuration of the properties of a relationship in a
+database.
 
 .. versionadded:: 3.30
 %End
@@ -74,7 +79,8 @@ A dialog for configuration of the properties of a relationship in a database.
   public:
     explicit QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
-Constructor for QgsDbRelationDialog, with the specified ``parent`` widget and window ``flags``, for the specified ``connection``.
+Constructor for QgsDbRelationDialog, with the specified ``parent``
+widget and window ``flags``, for the specified ``connection``.
 
 Ownership of ``connection`` is transferred to the widget.
 %End

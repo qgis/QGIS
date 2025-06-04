@@ -53,6 +53,7 @@ QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   connect( this, &QgsAuthOAuth2Config::requestTimeoutChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::queryPairsChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::customHeaderChanged, this, &QgsAuthOAuth2Config::configChanged );
+  connect( this, &QgsAuthOAuth2Config::extraTokensChanged, this, &QgsAuthOAuth2Config::configChanged );
 
   // always recheck validity on any change
   // this, in turn, may emit validityChanged( bool )
@@ -230,6 +231,15 @@ void QgsAuthOAuth2Config::setCustomHeader( const QString &header )
     emit customHeaderChanged( mCustomHeader );
 }
 
+void QgsAuthOAuth2Config::setExtraTokens( const QVariantMap &tokens )
+{
+  if ( mExtraTokens == tokens )
+    return;
+
+  mExtraTokens = tokens;
+  emit extraTokensChanged( mExtraTokens );
+}
+
 void QgsAuthOAuth2Config::setRequestTimeout( int value )
 {
   const int preval( mRequestTimeout );
@@ -269,6 +279,7 @@ void QgsAuthOAuth2Config::setToDefaults()
   setPersistToken( false );
   setAccessMethod( QgsAuthOAuth2Config::AccessMethod::Header );
   setCustomHeader( QString() );
+  setExtraTokens( QVariantMap() );
   setRequestTimeout( 30 ); // in seconds
   setQueryPairs( QVariantMap() );
 }
@@ -310,6 +321,10 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
   else if ( mGrantFlow == GrantFlow::ResourceOwner )
   {
     mValid = ( !tokenUrl().isEmpty() && !username().isEmpty() && !password().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
+  }
+  else if ( mGrantFlow == GrantFlow::ClientCredentials )
+  {
+    mValid = ( !tokenUrl().isEmpty() && !clientId().isEmpty() && !clientSecret().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
   }
 
   if ( mValid != oldvalid )
@@ -381,6 +396,9 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
 
       if ( variantMap.contains( QStringLiteral( "customHeader" ) ) )
         setCustomHeader( variantMap.value( QStringLiteral( "customHeader" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "extraTokens" ) ) )
+        setExtraTokens( variantMap.value( QStringLiteral( "extraTokens" ) ).toMap() );
+
       if ( variantMap.contains( QStringLiteral( "requestTimeout" ) ) )
         setRequestTimeout( variantMap.value( QStringLiteral( "requestTimeout" ) ).toInt() );
       if ( variantMap.contains( QStringLiteral( "requestUrl" ) ) )
@@ -428,6 +446,7 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
       variant.insert( "clientSecret", clientSecret() );
       variant.insert( "configType", static_cast<int>( configType() ) );
       variant.insert( "customHeader", customHeader() );
+      variant.insert( "extraTokens", extraTokens() );
       variant.insert( "description", description() );
       variant.insert( "grantFlow", static_cast<int>( grantFlow() ) );
       variant.insert( "id", id() );
@@ -480,6 +499,7 @@ QVariantMap QgsAuthOAuth2Config::mappedProperties() const
   vmap.insert( QStringLiteral( "refreshTokenUrl" ), this->refreshTokenUrl() );
   vmap.insert( QStringLiteral( "accessMethod" ), static_cast<int>( this->accessMethod() ) );
   vmap.insert( QStringLiteral( "customHeader" ), this->customHeader() );
+  vmap.insert( QStringLiteral( "extraTokens" ), this->extraTokens() );
   vmap.insert( QStringLiteral( "requestTimeout" ), this->requestTimeout() );
   vmap.insert( QStringLiteral( "requestUrl" ), this->requestUrl() );
   vmap.insert( QStringLiteral( "scope" ), this->scope() );
@@ -856,6 +876,8 @@ QString QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow flo
       return tr( "Authorization Code PKCE" );
     case QgsAuthOAuth2Config::GrantFlow::ResourceOwner:
       return tr( "Resource Owner" );
+    case QgsAuthOAuth2Config::GrantFlow::ClientCredentials:
+      return tr( "Client Credentials" );
   }
   BUILTIN_UNREACHABLE
 }

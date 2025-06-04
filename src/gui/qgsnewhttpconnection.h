@@ -170,6 +170,13 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QLineEdit *wfsPageSizeLineEdit() SIP_SKIP;
 
     /**
+     * Returns the selected preferred HTTP method.
+     *
+     * \since QGIS 3.44
+     */
+    Qgis::HttpMethod preferredHttpMethod() const;
+
+    /**
      * Returns the url.
      * \since QGIS 3.2
      */
@@ -192,6 +199,11 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * and WMS related settings).
      */
     void updateServiceSpecificSettings();
+
+    /**
+     * Adjust height of dialog to fit the content.
+     */
+    void showEvent( QShowEvent *event ) override;
 
   private:
     ConnectionTypes mTypes = ConnectionWms;
