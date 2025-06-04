@@ -640,10 +640,6 @@ void QgsAttributesFormProperties::toggleShowAliases( bool checked )
   settingShowAliases->setValue( checked );
   mAvailableWidgetsModel->setShowAliases( checked );
   mFormLayoutModel->setShowAliases( checked );
-
-  // When toggling aliases we need to refresh the filter
-  // so that items are reevaluated immediately.
-  updateFilteredItems( mSearchLineEdit->text() );
 }
 
 void QgsAttributesFormProperties::addContainer()
