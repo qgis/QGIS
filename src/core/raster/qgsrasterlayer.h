@@ -183,6 +183,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     QgsRasterLayer *clone() const override SIP_FACTORY;
 
+    QgsAbstractProfileSource *profileSource() override {return this;}
+
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     /**

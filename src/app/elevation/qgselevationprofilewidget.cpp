@@ -921,7 +921,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   sources << registrySources;
   for ( QgsMapLayer *layer : layersToGenerate )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
       sources.append( source );
   }
 
