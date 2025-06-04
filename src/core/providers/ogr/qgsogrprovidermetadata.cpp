@@ -673,21 +673,13 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       {
         adjustedPath.chop( 3 );
       }
-      else if ( adjustedPath.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-      {
-        adjustedPath.chop( 4 );
-      }
-      else if ( adjustedPath.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) )
+      else if ( adjustedPath.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) || adjustedPath.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) || adjustedPath.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
       {
         adjustedPath.chop( 4 );
       }
       else if ( adjustedPath.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) )
       {
         adjustedPath.chop( 7 );
-      }
-      else if ( adjustedPath.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
-      {
-        adjustedPath.chop( 4 );
       }
       const QFileInfo fi( adjustedPath );
       const QString qmdFileName = fi.dir().filePath( fi.completeBaseName() + QStringLiteral( ".qmd" ) );
