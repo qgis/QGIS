@@ -15,6 +15,8 @@
 
 #include "qgstiledscenedataitemguiprovider.h"
 #include "moc_qgstiledscenedataitemguiprovider.cpp"
+
+#include "qgsapplication.h"
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgstiledscenedataitems.h"
 #include "qgstiledsceneconnection.h"
@@ -107,7 +109,7 @@ void QgsTiledSceneDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsTiledSceneDataItemGuiProvider::newConnection( QgsDataItem *item, QString provider )
 {
-  QgsTiledSceneConnectionDialog dlg;
+  QgsTiledSceneConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 

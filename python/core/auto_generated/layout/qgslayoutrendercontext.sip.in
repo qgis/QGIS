@@ -20,30 +20,12 @@ layout.
 %End
   public:
 
-    enum Flag
-    {
-      FlagDebug,
-      FlagOutlineOnly,
-      FlagAntialiasing,
-      FlagUseAdvancedEffects,
-      FlagForceVectorOutput,
-      FlagHideCoverageLayer,
-      FlagDrawSelection,
-      FlagDisableTiledRasterLayerRenders,
-      FlagRenderLabelsByMapLayer,
-      FlagLosslessImageRendering,
-      FlagSynchronousLegendGraphics,
-      FlagAlwaysUseGlobalMasks,
-    };
-    typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
-
-
     QgsLayoutRenderContext( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutRenderContext.
 %End
 
-    void setFlags( QgsLayoutRenderContext::Flags flags );
+    void setFlags( Qgis::LayoutRenderFlags flags );
 %Docstring
 Sets the combination of ``flags`` that will be used for rendering the
 layout.
@@ -55,7 +37,7 @@ layout.
 .. seealso:: :py:func:`testFlag`
 %End
 
-    void setFlag( QgsLayoutRenderContext::Flag flag, bool on = true );
+    void setFlag( Qgis::LayoutRenderFlag flag, bool on = true );
 %Docstring
 Enables or disables a particular rendering ``flag`` for the layout.
 Other existing flags are not affected.
@@ -67,7 +49,7 @@ Other existing flags are not affected.
 .. seealso:: :py:func:`testFlag`
 %End
 
-    QgsLayoutRenderContext::Flags flags() const;
+    Qgis::LayoutRenderFlags flags() const;
 %Docstring
 Returns the current combination of flags used for rendering the layout.
 
@@ -78,7 +60,7 @@ Returns the current combination of flags used for rendering the layout.
 .. seealso:: :py:func:`testFlag`
 %End
 
-    bool testFlag( Flag flag ) const;
+    bool testFlag( Qgis::LayoutRenderFlag flag ) const;
 %Docstring
 Check whether a particular rendering ``flag`` is enabled for the layout.
 
@@ -93,6 +75,26 @@ Check whether a particular rendering ``flag`` is enabled for the layout.
 %Docstring
 Returns the combination of render context flags matched to the layout
 context's settings.
+%End
+
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+%Docstring
+Returns the policy controlling when rasterization of content during
+renders is permitted.
+
+.. seealso:: :py:func:`setRasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
+%End
+
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+%Docstring
+Sets the ``policy`` controlling when rasterization of content during
+renders is permitted.
+
+.. seealso:: :py:func:`rasterizedRenderingPolicy`
+
+.. versionadded:: 3.44
 %End
 
     void setDpi( double dpi );
@@ -371,7 +373,7 @@ It is currently used by QGIS Server Access Control Plugins.
 
   signals:
 
-    void flagsChanged( QgsLayoutRenderContext::Flags flags );
+    void flagsChanged( Qgis::LayoutRenderFlags flags );
 %Docstring
 Emitted whenever the context's ``flags`` change.
 

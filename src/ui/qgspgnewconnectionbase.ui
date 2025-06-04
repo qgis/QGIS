@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>821</width>
-    <height>610</height>
+    <width>880</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::Shape::NoFrame</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -42,8 +42,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>803</width>
-        <height>563</height>
+        <width>936</width>
+        <height>630</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -186,7 +186,7 @@
              <item row="0" column="0">
               <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true">
                <property name="focusPolicy">
-            <enum>Qt::FocusPolicy::StrongFocus</enum>
+                <enum>Qt::StrongFocus</enum>
                </property>
               </widget>
              </item>
@@ -203,7 +203,7 @@
           <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
+             <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -218,6 +218,12 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Database Details</string>
          </property>
@@ -259,7 +265,7 @@
           <item row="10" column="1">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
+             <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -278,6 +284,12 @@
           </item>
           <item row="9" column="0">
            <widget class="QLabel" name="TextLabel3_5">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Schema</string>
             </property>
@@ -289,7 +301,7 @@
              <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
             </property>
             <property name="echoMode">
-         <enum>QLineEdit::EchoMode::Normal</enum>
+             <enum>QLineEdit::Normal</enum>
             </property>
             <property name="placeholderText">
              <string>Limit to tables from specific schema</string>
@@ -342,7 +354,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

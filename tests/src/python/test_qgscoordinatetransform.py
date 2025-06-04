@@ -19,6 +19,7 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
     QgsPointXY,
+    QgsProjUtils,
     QgsCsException,
 )
 import unittest
@@ -414,6 +415,21 @@ class TestQgsCoordinateTransform(QgisTestCase):
         )
         self.assertFalse(transform.hasVerticalComponent())
 
+        # 2d to 3d
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:32660"),
+            QgsCoordinateReferenceSystem("EPSG:4979"),
+            QgsCoordinateTransformContext(),
+        )
+        self.assertFalse(transform.hasVerticalComponent())
+        transformedExtent = transform.transformBoundingBox(
+            QgsRectangle(6e5, 0, 10e5, 1e6)
+        )
+        self.assertAlmostEqual(transformedExtent.xMinimum(), -178.456, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMinimum(), 0, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 177.899, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 9.045, delta=1e-3)
+
         # 3d to 2d
         transform = QgsCoordinateTransform(
             QgsCoordinateReferenceSystem("EPSG:7843"),
@@ -470,6 +486,51 @@ class TestQgsCoordinateTransform(QgisTestCase):
             str(e.exception),
             "Inverse transform (EPSG:4326 to EPSG:3857) of (-7603859.000000, -7324441.000000) Error: Invalid coordinate",
         )
+
+    def testTransformBoundingBoxFromPROJPipeline(self):
+
+        context = QgsCoordinateTransformContext()
+        context.addCoordinateOperation(
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            QgsCoordinateReferenceSystem("EPSG:3844"),
+            "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step "
+            + "+proj=push +v_3 +step +proj=cart +ellps=WGS84 +step +inv "
+            + "+proj=helmert +x=2.329 +y=-147.042 +z=-92.08 +rx=0.309 +ry=-0.325 "
+            + "+rz=-0.497 +s=5.69 +convention=coordinate_frame +step +inv +proj=cart "
+            + "+ellps=krass +step +proj=pop +v_3 +step +proj=sterea +lat_0=46 "
+            + "+lon_0=25 +k=0.99975 +x_0=500000 +y_0=500000 +ellps=krass",
+        )
+
+        extent = QgsRectangle(4e5, 4e5, 4.5e5, 4.5e5)
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:3844"),
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            context,
+        )
+        transformedExtent = transform.transformBoundingBox(extent)
+        self.assertAlmostEqual(transformedExtent.xMinimum(), 23.7177083, delta=1e-6)
+        self.assertAlmostEqual(transformedExtent.yMinimum(), 45.092624, delta=1e-6)
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 24.363125, delta=1e-6)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 45.547942, delta=1e-6)
+
+    @unittest.skipIf(
+        [QgsProjUtils.projVersionMajor(), QgsProjUtils.projVersionMinor()] < [9, 6],
+        "Spilhaus support added in Proj 9.6",
+    )
+    def testTransformBoundingBoxWGS84ToSpilhaus(self):
+
+        context = QgsCoordinateTransformContext()
+        extent = QgsRectangle(-180, -90, 180, 90)
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            QgsCoordinateReferenceSystem("ESRI:54099"),
+            context,
+        )
+        transformedExtent = transform.transformBoundingBox(extent)
+        self.assertLess(transformedExtent.xMinimum(), -16000000)
+        self.assertLess(transformedExtent.yMinimum(), -16000000)
+        self.assertGreater(transformedExtent.xMaximum(), 16000000)
+        self.assertGreater(transformedExtent.yMaximum(), 16000000)
 
 
 if __name__ == "__main__":

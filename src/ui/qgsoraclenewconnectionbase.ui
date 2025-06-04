@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>878</width>
-    <height>637</height>
+    <width>880</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,7 +75,7 @@
       <item row="5" column="1" colspan="2">
        <widget class="QLineEdit" name="txtWorkspace">
         <property name="echoMode">
-         <enum>QLineEdit::EchoMode::Normal</enum>
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -99,7 +99,7 @@
       <item row="4" column="1" colspan="2">
        <widget class="QLineEdit" name="txtOptions">
         <property name="echoMode">
-         <enum>QLineEdit::EchoMode::Normal</enum>
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -137,7 +137,7 @@
          <item row="0" column="0">
           <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true">
            <property name="focusPolicy">
-            <enum>Qt::FocusPolicy::StrongFocus</enum>
+            <enum>Qt::StrongFocus</enum>
            </property>
           </widget>
          </item>
@@ -171,7 +171,7 @@
       <item row="11" column="1">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
+         <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -192,6 +192,12 @@
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="7" column="0">
        <widget class="QLabel" name="TextLabel3_5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Schema</string>
         </property>
@@ -203,7 +209,7 @@
          <string>If specified, only tables from the matching schema will be fetched and listed for the provider</string>
         </property>
         <property name="echoMode">
-         <enum>QLineEdit::EchoMode::Normal</enum>
+         <enum>QLineEdit::Normal</enum>
         </property>
         <property name="placeholderText">
          <string>Limit to tables from specific schema</string>
@@ -282,7 +288,7 @@
       <item row="8" column="0" colspan="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
+         <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -298,7 +304,7 @@
    <item row="3" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

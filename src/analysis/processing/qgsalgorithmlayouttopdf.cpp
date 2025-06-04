@@ -188,14 +188,14 @@ QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parame
   settings.exportLayersAsSeperateFiles = parameterAsBool( parameters, QStringLiteral( "SEPARATE_LAYERS" ), context ); //#spellok
 
   if ( parameterAsBool( parameters, QStringLiteral( "DISABLE_TILED" ), context ) )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+    settings.flags = settings.flags | Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders;
   else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+    settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders );
 
   if ( parameterAsEnum( parameters, QStringLiteral( "IMAGE_COMPRESSION" ), context ) == 1 )
-    settings.flags = settings.flags | QgsLayoutRenderContext::FlagLosslessImageRendering;
+    settings.flags = settings.flags | Qgis::LayoutRenderFlag::LosslessImageRendering;
   else
-    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagLosslessImageRendering;
+    settings.flags = settings.flags & ~static_cast< int >( Qgis::LayoutRenderFlag::LosslessImageRendering );
 
   switch ( exporter.exportToPdf( dest, settings ) )
   {

@@ -501,7 +501,11 @@ bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer 
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( layer->extent() );
   mMapSettings.setOutputDpi( 96 );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, forceVector );
+  if ( forceVector )
+    mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  else
+    mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );
   myChecker.setControlName( "expected_" + testType );

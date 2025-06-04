@@ -1044,15 +1044,12 @@ if (WITH_INTERNAL_POLY2TRI)
 endif ()
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
-  string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
-endif()
 string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
   COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-  DEPENDS ${JSON_HELP_FILES}
+  DEPENDS ${JSON_HELP_FILES} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 

@@ -170,7 +170,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       return static_cast<int>( entry.type );
 
     case static_cast< int >( CustomRole::ResultScore ):
-      if ( entry.filter )
+      if ( !entry.filter )
         return 0;
       else
         return ( entry.result.score );

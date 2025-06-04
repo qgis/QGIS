@@ -814,23 +814,38 @@ void QgsModelDesignerDialog::deleteSelected()
 
   std::sort( items.begin(), items.end(), []( QgsModelComponentGraphicItem *p1, QgsModelComponentGraphicItem *p2 ) {
     // try to delete the easy stuff first, so comments, then outputs, as nothing will depend on these...
-    if ( dynamic_cast<QgsModelCommentGraphicItem *>( p1 ) )
+    // NOLINTBEGIN(bugprone-branch-clone)
+
+    // 1. comments
+    if ( dynamic_cast<QgsModelCommentGraphicItem *>( p1 ) && dynamic_cast<QgsModelCommentGraphicItem *>( p2 ) )
+      return false;
+    else if ( dynamic_cast<QgsModelCommentGraphicItem *>( p1 ) )
       return true;
     else if ( dynamic_cast<QgsModelCommentGraphicItem *>( p2 ) )
+      return false;
+    // 2. group boxes
+    else if ( dynamic_cast<QgsModelGroupBoxGraphicItem *>( p1 ) && dynamic_cast<QgsModelGroupBoxGraphicItem *>( p2 ) )
       return false;
     else if ( dynamic_cast<QgsModelGroupBoxGraphicItem *>( p1 ) )
       return true;
     else if ( dynamic_cast<QgsModelGroupBoxGraphicItem *>( p2 ) )
       return false;
+    // 3. outputs
+    else if ( dynamic_cast<QgsModelOutputGraphicItem *>( p1 ) && dynamic_cast<QgsModelOutputGraphicItem *>( p2 ) )
+      return false;
     else if ( dynamic_cast<QgsModelOutputGraphicItem *>( p1 ) )
       return true;
     else if ( dynamic_cast<QgsModelOutputGraphicItem *>( p2 ) )
+      return false;
+    // 4. child algorithms
+    else if ( dynamic_cast<QgsModelChildAlgorithmGraphicItem *>( p1 ) && dynamic_cast<QgsModelChildAlgorithmGraphicItem *>( p2 ) )
       return false;
     else if ( dynamic_cast<QgsModelChildAlgorithmGraphicItem *>( p1 ) )
       return true;
     else if ( dynamic_cast<QgsModelChildAlgorithmGraphicItem *>( p2 ) )
       return false;
     return false;
+    // NOLINTEND(bugprone-branch-clone)
   } );
 
 

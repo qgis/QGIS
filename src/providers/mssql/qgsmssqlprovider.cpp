@@ -513,7 +513,7 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
     return v;
   }
 
-  return QVariant( QString() );
+  return QVariant();
 }
 
 // Returns the maximum value of an attribute
@@ -560,7 +560,7 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
     return v;
   }
 
-  return QVariant( QString() );
+  return QVariant();
 }
 
 // Returns the list of unique values of an attribute

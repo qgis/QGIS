@@ -169,6 +169,16 @@ QString QgsEditorWidgetRegistry::name( const QString &widgetId )
   return QString();
 }
 
+bool QgsEditorWidgetRegistry::isReadOnly( const QString &widgetId )
+{
+  if ( mWidgetFactories.contains( widgetId ) )
+  {
+    return mWidgetFactories[widgetId]->isReadOnly();
+  }
+
+  return false;
+}
+
 QMap<QString, QgsEditorWidgetFactory *> QgsEditorWidgetRegistry::factories()
 {
   return mWidgetFactories;

@@ -68,7 +68,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   connect( mStac, &QgsStacController::finishedCollectionsRequest, this, &QgsStacSourceSelect::onCollectionsRequestFinished );
 
   mItemsView->setModel( mItemsModel );
-  mItemsView->setItemDelegate( new QgsStacItemDelegate );
+  mItemsView->setItemDelegate( new QgsStacItemDelegate( this ) );
   mItemsView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   mItemsView->setContextMenuPolicy( Qt::CustomContextMenu );
 

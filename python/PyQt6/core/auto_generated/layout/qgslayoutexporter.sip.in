@@ -144,11 +144,9 @@ into available memory.
 
       bool exportMetadata;
 
-
-      QgsLayoutRenderContext::Flags flags;
+      Qgis::LayoutRenderFlags flags;
 
       QVector<qreal> predefinedMapScales;
-
 
       int quality;
 
@@ -200,7 +198,7 @@ set to the error description.
 
       bool exportMetadata;
 
-      QgsLayoutRenderContext::Flags flags;
+      Qgis::LayoutRenderFlags flags;
 
       Qgis::TextRenderFormat textRenderFormat;
 
@@ -273,7 +271,7 @@ set to the error description.
 
       bool rasterizeWholeImage;
 
-      QgsLayoutRenderContext::Flags flags;
+      Qgis::LayoutRenderFlags flags;
 
       QVector<qreal> predefinedMapScales;
 
@@ -322,7 +320,7 @@ set to the error description.
 
       bool exportMetadata;
 
-      QgsLayoutRenderContext::Flags flags;
+      Qgis::LayoutRenderFlags flags;
 
       Qgis::TextRenderFormat textRenderFormat;
 

@@ -813,6 +813,17 @@ Creates a raster marker symbol layer from a string map of properties.
 :param properties: QVariantMap properties object
 %End
 
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsRasterMarkerSymbolLayer from an SLD XML element.
+
+:param element: XML element containing SLD definition of symbol
+
+:return: new QgsRasterMarkerSymbolLayer
+
+.. versionadded:: 3.44
+%End
+
     static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice
@@ -833,6 +844,10 @@ versa when writing. Used internally when reading/writing symbols.
     virtual bool usesMapUnits() const;
 
     virtual QColor color() const;
+
+ virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
