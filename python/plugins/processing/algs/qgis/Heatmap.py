@@ -75,9 +75,11 @@ class Heatmap(QgisAlgorithm):
     def displayName(self):
         return self.tr("Heatmap (Kernel Density Estimation)")
 
-    def displayName(self):
-        return self.tr("Heatmap (Kernel Density Estimation)")
-
+    def shortDescription(self):
+        return self.tr(
+            "Create a heatmap from points using kernel density estimation."
+        )
+        
     def __init__(self):
         super().__init__()
 
