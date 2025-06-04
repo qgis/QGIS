@@ -30,6 +30,7 @@
 #include "qgstest.h"
 #include "qgsconfig.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
@@ -106,6 +107,7 @@
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsgeometrywidget.h"
+#include "qgsmemoryproviderutils.h"
 
 
 class TestParamDefinition : public QgsProcessingParameterDefinition
@@ -8802,6 +8804,35 @@ void TestProcessingGui::testFieldMapWidget()
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( "'abc' || \"def\"" ) );
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "alias" ) ).toString(), QStringLiteral( "my alias" ) );
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "comment" ) ).toString(), QStringLiteral( "my comment" ) );
+
+  // Test load fields from memory layer, see issue GH #62019
+  QgsFields templateFields;
+  templateFields.append( QgsField( QStringLiteral( "template_field_1" ), QMetaType::Type::QString ) );
+  std::unique_ptr<QgsVectorLayer> templateLayer( QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "source" ), templateFields, Qgis::WkbType::Point ) );
+
+  QgsFields sourceFields;
+  sourceFields.append( QgsField( QStringLiteral( "source_field_1" ), QMetaType::Type::QString ) );
+  std::unique_ptr<QgsVectorLayer> sourceLayer( QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "template" ), sourceFields, Qgis::WkbType::Point ) );
+
+  widget.setLayer( sourceLayer.get() );
+  widget.loadFieldsFromLayer();
+
+  // Check fields
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "source_field_1" ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast<int>( QMetaType::Type::QString ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( R"("source_field_1")" ) );
+
+  QgsProject project;
+  project.addMapLayer( sourceLayer.get(), false, false );
+  project.addMapLayer( templateLayer.get(), false, false );
+  widget.mLayerCombo->setProject( &project );
+
+  widget.mLayerCombo->setLayer( templateLayer.get() );
+  widget.loadLayerFields();
+
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "template_field_1" ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast<int>( QMetaType::Type::QString ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( R"("source_field_1")" ) );
 }
 
 void TestProcessingGui::testFieldMapWrapper()
