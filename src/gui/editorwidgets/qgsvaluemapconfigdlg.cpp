@@ -404,11 +404,11 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
       ceils << match.capturedTexts().last().trimmed().replace( QLatin1String( "\"\"" ), QLatin1String( "\"" ) );
     }
 
-    if ( ceils.size() == 0 )
+    if ( ceils.empty() )
       continue;
 
     QString key = ceils[0];
-    QString val = ceils.size() == 2 ? ceils[1] : QString( "" );
+    QString val = ceils.size() == 2 ? ceils[1] : QString();
     if ( key == QgsApplication::nullRepresentation() )
       key = QgsValueMapFieldFormatter::NULL_VALUE;
     map.append( qMakePair( key, val ) );
