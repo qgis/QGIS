@@ -61,6 +61,7 @@ class GUI_EXPORT QgsProcessingFieldMapPanelWidget : public QgsPanelWidget, priva
 
     QgsVectorLayer *mLayer = nullptr;
     bool mBlockChangedSignal = false;
+    friend class TestProcessingGui;
 };
 
 
