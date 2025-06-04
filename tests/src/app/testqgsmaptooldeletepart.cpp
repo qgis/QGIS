@@ -44,6 +44,7 @@ class TestQgsMapToolDeletePart : public QObject
     void testDeletePart();
     void testDeleteLastPart();
     void testDeletePartSelected();
+    void testDeletePartAddAsNewFeature();
 
   private:
     void click( double x, double y );
@@ -56,6 +57,7 @@ class TestQgsMapToolDeletePart : public QObject
     QgsMapToolDeletePart *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerMultiPolygon = nullptr;
     QgsVectorLayer *mLayerPolygon = nullptr;
+    TestQgsMapToolUtils *mUtils = nullptr;
 };
 
 TestQgsMapToolDeletePart::TestQgsMapToolDeletePart() = default;
@@ -125,6 +127,8 @@ void TestQgsMapToolDeletePart::initTestCase()
 
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
+
+  mUtils = new TestQgsMapToolUtils( mCaptureTool );
 }
 
 //runs after all tests
@@ -230,6 +234,27 @@ void TestQgsMapToolDeletePart::testDeletePartSelected()
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), mWkt1 );
   QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), mWkt2 );
   QCOMPARE( mLayerMultiPolygon->getFeature( 3 ).geometry().asWkt(), mWkt3 );
+  mLayerMultiPolygon->removeSelection();
+  mLayerMultiPolygon->undoStack()->undo();
+}
+
+void TestQgsMapToolDeletePart::testDeletePartAddAsNewFeature()
+{
+  const bool disableForm = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value();
+  QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->setValue( true );
+  mCanvas->setCurrentLayer( mLayerMultiPolygon );
+
+  QSet<QgsFeatureId> oldFids = mUtils->existingFeatureIds();
+
+  mUtils->mouseClick( 5.5, 0.5, Qt::LeftButton, Qt::ControlModifier );
+
+  QgsFeatureId newFid = mUtils->newFeatureId( oldFids );
+
+  QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 4 );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( newFid ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 0, 0 3, 7 3, 7 0, 0 0),(1 2, 1 1, 2 1, 2 2, 1 2),(5 1, 6 1, 6 2, 5 2, 5 1)))" ) );
+
+  QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->setValue( disableForm );
   mLayerMultiPolygon->undoStack()->undo();
 }
 
