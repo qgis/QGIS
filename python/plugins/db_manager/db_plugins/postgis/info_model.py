@@ -230,7 +230,7 @@ class PGTableInfo(TableInfo):
                     QApplication.translate(
                         "DBManagerPlugin",
                         "<warning> Version of installed scripts doesn't match version of released scripts!\n"
-                        "This is probably a result of incorrect PostGIS upgrade.",
+                        "This is probably a result of incorrect PostgreSQL upgrade.",
                     )
                 )
             )
