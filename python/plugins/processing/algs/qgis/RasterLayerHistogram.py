@@ -77,7 +77,7 @@ class RasterLayerHistogram(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "This algorithm generates a histogram with the values of a raster layer."
+            "Generates a histogram with the values of a raster layer."
         )
 
     def processAlgorithm(self, parameters, context, feedback):

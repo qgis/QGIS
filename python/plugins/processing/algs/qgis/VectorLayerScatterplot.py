@@ -138,7 +138,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "This algorithm creates a simple X - Y scatter plot for a vector layer."
+            "Creates a simple X - Y scatter plot for a vector layer."
         )
 
     def processAlgorithm(self, parameters, context, feedback):

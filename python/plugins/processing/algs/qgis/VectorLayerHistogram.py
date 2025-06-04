@@ -81,7 +81,7 @@ class VectorLayerHistogram(QgisAlgorithm):
 
     def shortDescription(self):
         return self.tr(
-            "This algorithm generates a histogram with the values of the attribute of a vector layer."
+            "Generates a histogram with the values of the attribute of a vector layer."
         )
 
     def processAlgorithm(self, parameters, context, feedback):
