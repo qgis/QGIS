@@ -72,8 +72,8 @@ QgsMultiCurve *QgsMultiCurve::toCurveType() const
 bool QgsMultiCurve::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,
-                            QVector<QgsAbstractGeometry *>() << new QgsLineString << new QgsCircularString << new QgsCompoundCurve,
-                            QStringLiteral( "LineString" ) );
+  {Qgis::WkbType::LineString, Qgis::WkbType::CircularString, Qgis::WkbType::CompoundCurve },
+  QStringLiteral( "LineString" ) );
 }
 
 QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const  AxisOrder axisOrder ) const

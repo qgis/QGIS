@@ -15,10 +15,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsmultilinestring.h"
 #include "qgsabstractgeometry.h"
-#include "qgsapplication.h"
 #include "qgscurve.h"
-#include "qgscircularstring.h"
-#include "qgscompoundcurve.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"
@@ -94,7 +91,7 @@ void QgsMultiLineString::clear()
 
 bool QgsMultiLineString::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );
+  return fromCollectionWkt( wkt, {Qgis::WkbType::LineString }, QStringLiteral( "LineString" ) );
 }
 
 QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
