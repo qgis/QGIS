@@ -1896,6 +1896,15 @@ depending on the layer type.
 .. versionadded:: 3.18
 %End
 
+
+    virtual QgsAbstractProfileSource *profileSource();
+%Docstring
+Returns the layer's profile source if it has profile capabilities. This
+may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.44
+%End
+
     QString legendPlaceholderImage() const;
 %Docstring
 Returns path to the placeholder image or an empty string if a generated
