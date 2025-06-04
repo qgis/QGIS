@@ -327,6 +327,55 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   return crsList;
 }
 
+QStringList QgsServerProjectUtils::wmsOutputCrsListAsOgcUrn( const QgsProject &project )
+{
+  QStringList crsList;
+  const QStringList wmsCrsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
+  if ( !wmsCrsList.isEmpty() )
+  {
+    for ( int i = 0; i < wmsCrsList.size(); ++i )
+    {
+      const QString crsString = wmsCrsList.at( i );
+      if ( !crsString.isEmpty() )
+      {
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsString );
+        crsList.append( crs.toOgcUrn() );
+      }
+    }
+  }
+  if ( crsList.isEmpty() )
+  {
+    const QStringList valueList = project.readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList() );
+    bool conversionOk;
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      const int epsgNr = valueList.at( i ).toInt( &conversionOk );
+      if ( conversionOk )
+      {
+        QString crsOgcUrn = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) ).toOgcUrn();
+        crsList.append( crsOgcUrn );
+      }
+    }
+  }
+  if ( crsList.isEmpty() )
+  {
+    //no CRS restriction defined in the project. Provide project CRS, wgs84 and pseudo mercator
+    const QString projectCrsOgcUrn = project.crs().toOgcUrn();
+    crsList.append( projectCrsOgcUrn );
+    QString crsOgcUrn4326 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" ).toOgcUrn();
+    QString crsOgcUrn3857 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:3857" ).toOgcUrn();
+    if ( projectCrsOgcUrn.compare( crsOgcUrn4326, Qt::CaseInsensitive ) != 0 )
+    {
+      crsList.append( crsOgcUrn4326 );
+    }
+    if ( projectCrsOgcUrn.compare( crsOgcUrn3857, Qt::CaseInsensitive ) != 0 )
+    {
+      crsList.append( crsOgcUrn3857 );
+    }
+  }
+  return crsList;
+}
+
 QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
   const QString serviceUpper = service.toUpper();
