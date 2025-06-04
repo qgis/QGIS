@@ -13285,7 +13285,13 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
-    map->setLayers( mMapCanvas->layers( true ) );
+
+    const QList<QgsMapLayer *> layers = mMapCanvas->layers( true );
+    const bool has3DBasemap = std::any_of( layers.begin(), layers.end(), []( QgsMapLayer *layer ) {
+      return layer->properties().testFlag( Qgis::MapLayerProperty::Is3DBasemapLayer );
+    } );
+
+    map->setLayers( layers );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
     Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
@@ -13334,6 +13340,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
           map->setCrs( QgsCoordinateReferenceSystem::createGeocentricCrs( prj->ellipsoid() ) );
 
         map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), QgsRectangle() );
+        if ( has3DBasemap )
+        {
+          // disable globe terrain by default if project has a 3d basemap
+          map->setTerrainRenderingEnabled( false );
+        }
 
         // 3D axis is not very useful with geocentric CRS: disable it by default
         Qgs3DAxisSettings axis;
