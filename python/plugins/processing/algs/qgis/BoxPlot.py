@@ -118,9 +118,7 @@ class BoxPlot(QgisAlgorithm):
         return self.tr("Box plot")
 
     def shortDescription(self):
-        return self.tr(
-            "Creates a box plot from a category and a layer field."
-        )
+        return self.tr("Creates a box plot from a category and a layer field.")
 
     def processAlgorithm(self, parameters, context, feedback):
         try:

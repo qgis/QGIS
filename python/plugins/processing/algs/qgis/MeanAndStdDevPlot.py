@@ -83,9 +83,7 @@ class MeanAndStdDevPlot(QgisAlgorithm):
         return self.tr("Mean and standard deviation plot")
 
     def shortDescription(self):
-        return self.tr(
-            "Creates a box plot with mean and standard deviation values."
-        )
+        return self.tr("Creates a box plot with mean and standard deviation values.")
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
