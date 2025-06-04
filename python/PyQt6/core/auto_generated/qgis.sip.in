@@ -1302,6 +1302,7 @@ The development version
     {
       UsersCannotToggleEditing,
       IsBasemapLayer,
+      Is3DBasemapLayer,
     };
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
@@ -1318,6 +1319,7 @@ The development version
       IsBasemapSource,
       FastExtent2D,
       FastExtent3D,
+      Is3DBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
