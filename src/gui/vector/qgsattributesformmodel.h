@@ -627,6 +627,17 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     QVector<int> rootToLeafPath( QgsAttributesFormItem *item ) const;
 
+
+    /**
+     * Emits dataChanged signal for all parent items in a model.
+     *
+     * In practice, this lets views know that the whole model has changed.
+     *
+     * \param parent  Model index representing the parent item.
+     * \param roles   List of roles that have changed in the model.
+     */
+    void emitDataChangedRecursively( const QModelIndex &parent = QModelIndex(), const QVector<int> &roles = QVector<int>() );
+
     std::unique_ptr< QgsAttributesFormItem > mRootItem;
     QgsVectorLayer *mLayer;
     QgsProject *mProject;

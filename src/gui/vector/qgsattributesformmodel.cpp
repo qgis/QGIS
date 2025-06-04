@@ -457,7 +457,21 @@ bool QgsAttributesFormModel::showAliases() const
 void QgsAttributesFormModel::setShowAliases( bool show )
 {
   mShowAliases = show;
-  emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+
+  emitDataChangedRecursively( QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+}
+
+void QgsAttributesFormModel::emitDataChangedRecursively( const QModelIndex &parent, const QVector<int> &roles )
+{
+  emit dataChanged( index( 0, 0, parent ), index( rowCount( parent ) - 1, 0, parent ), roles );
+  for ( int i = 0; i < rowCount( parent ); i++ )
+  {
+    const QModelIndex childIndex = index( i, 0, parent );
+    if ( hasChildren( childIndex ) )
+    {
+      emitDataChangedRecursively( childIndex, roles );
+    }
+  }
 }
 
 
