@@ -5169,7 +5169,6 @@ QgsGeometryCollection.draw: src/core/geometry/qgsgeometrycollection.h#L266
 QgsGeometryCollection.dropMValue: src/core/geometry/qgsgeometrycollection.h#L317
 QgsGeometryCollection.dropZValue: src/core/geometry/qgsgeometrycollection.h#L316
 QgsGeometryCollection.extractPartsByType: src/core/geometry/qgsgeometrycollection.h#L439
-QgsGeometryCollection.fromCollectionWkt: src/core/geometry/qgsgeometrycollection.h#L459
 QgsGeometryCollection.fromWkb: src/core/geometry/qgsgeometrycollection.h#L269
 QgsGeometryCollection.fromWkt: src/core/geometry/qgsgeometrycollection.h#L270
 QgsGeometryCollection.fuzzyDistanceEqual: src/core/geometry/qgsgeometrycollection.h#L113
