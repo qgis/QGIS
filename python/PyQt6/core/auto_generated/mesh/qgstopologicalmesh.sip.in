@@ -13,8 +13,8 @@
 class QgsTopologicalMesh
 {
 %Docstring(signature="appended")
-Wraps a :py:class:`QgsMesh` to ensure the consistency of the mesh during
-editing and helps to access elements from other elements.
+Class that wraps a :py:class:`QgsMesh` to ensure the consistency of the
+mesh during editing and help to access to elements from other elements
 
 A topological face must:
 
@@ -35,8 +35,8 @@ A topological face must:
     class TopologicalFaces
 {
 %Docstring(signature="appended")
-Contains independent faces and topological information about these
-faces.
+Class that contains independent faces an topological information about
+this faces
 
 This class supports unique shared vertices between faces.
 
@@ -66,8 +66,8 @@ Returns a face linked to the vertices with index ``vertexIndex``
     class Changes
 {
 %Docstring(signature="appended")
-Contains topological differences between two states of a topological
-mesh, only accessible from the QgsTopologicalMesh class.
+Class that contains topological differences between two states of a
+topological mesh, only accessible from the QgsTopologicalMesh class
 
 .. versionadded:: 3.22
 %End
@@ -226,14 +226,6 @@ instance of the class QgsTopologicalMesh.Change that can be used to
 reverse or reapply the operation.
 %End
 
-    bool delaunayConditionForEdge( int vertexIndex1, int vertexIndex2 );
-%Docstring
-Check if Delaunay condition holds for given edge returns ``True`` if
-delaunay condition holds ``False`` otherwise
-
-.. versionadded:: 3.42
-%End
-
     bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
 %Docstring
 Returns ``True`` if faces separated by vertices with indexes
@@ -354,16 +346,6 @@ there is a consistency issue
 %Docstring
 Checks the topology of the mesh ``mesh``, if error occurs, this mesh
 can't be edited
-%End
-
-    static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face );
-%Docstring
-Returns vertex position in face
-%End
-
-    static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex );
-%Docstring
-Returns vertex position in face
 %End
 
 };
