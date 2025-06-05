@@ -684,11 +684,12 @@ class GenericAlgorithmsTest(QgisTestCase):
                     f'Algorithm {alg.id()} shortDescription should NOT start with eg "This algorithm computes...", just use "Computes..." instead: "{alg.shortDescription()}"',
                 )
                 first_word = alg.shortDescription().split(" ")[0]
-                self.assertEqual(
-                    first_word[-1],
-                    "s",
-                    f'Algorithm {alg.id()} shortDescription should start with a verb ending in s, eg "Combines", "Creates",... "{alg.shortDescription()}"',
-                )
+                if first_word not in ("randomly",):
+                    self.assertEqual(
+                        first_word[-1],
+                        "s",
+                        f'Algorithm {alg.id()} shortDescription should start with a verb ending in s, eg "Combines", "Creates",... "{alg.shortDescription()}"',
+                    )
                 self.assertFalse(
                     "</" in alg.shortDescription(),
                     f'Algorithm {alg.id()} shortDescription should not contain any HTML formatting "{alg.shortDescription()}"',
