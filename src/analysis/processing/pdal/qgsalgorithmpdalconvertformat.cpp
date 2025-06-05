@@ -54,7 +54,7 @@ QString QgsPdalConvertFormatAlgorithm::shortHelpString() const
 
 QString QgsPdalConvertFormatAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Converts point cloud to a different file format, e. g. creates compressed LAZ." );
+  return QObject::tr( "Converts a point cloud to a different file format, e.g. creates compressed LAZ." );
 }
 
 QgsPdalConvertFormatAlgorithm *QgsPdalConvertFormatAlgorithm::createInstance() const
