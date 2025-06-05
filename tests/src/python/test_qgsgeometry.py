@@ -13738,6 +13738,16 @@ class TestQgsGeometry(QgisTestCase):
             "MultiPolygon (((0 10, 7 10, 7 0, 0 0, 0 10)),((10 0, 7 0, 7 5, 10 5, 10 0)),((10 10, 10 6, 10 5, 7 5, 7 10, 10 10)),((14 6, 14 5, 10 5, 10 6, 14 6)),((28 6, 28 5, 14 5, 14 6, 28 6)),((55 6, 55 5, 28 5, 28 6, 55 6)),((100 5, 55 5, 55 6, 100 5)),((100 10, 110 10, 110 0, 100 0, 100 5, 100 10)))",
         )
 
+        # mergeLines, gridSize = 1
+        geom_params = QgsGeometryParameters()
+        geom_params.setGridSize(1)
+        a = QgsGeometry.fromWkt("MULTILINESTRING((0 1.8, 11.4 10.7),((11.2 11.1, 19 60))")
+        mergeLinesExpected = a.mergeLines(geom_params)
+        self.assertEqual(
+            mergeLinesExpected.asWkt(),
+            "LineString (0 2, 11 11, 19 60)"
+        )
+
     def testIntersectsMultiPolygonEmptyRect(self):
         """Test intersection between a polygon and an empty rectangle. Fix for GH #51492."""
 
