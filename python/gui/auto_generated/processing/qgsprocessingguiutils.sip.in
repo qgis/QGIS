@@ -29,6 +29,8 @@ Contains utility functions relating to Processing GUI components.
 {
 %Docstring(signature="appended")
 Contains details of a layer result from running an algorithm.
+
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode
