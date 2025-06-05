@@ -669,6 +669,7 @@ class GenericAlgorithmsTest(QgisTestCase):
                     alg.shortDescription(),
                     f"Algorithm {alg.id()} has not shortDescription!",
                 )
+            if alg.shortDescription():
                 self.assertTrue(
                     alg.shortDescription()[0].isupper(),
                     f'Algorithm {alg.id()} shortDescription does not start with capital! "{alg.shortDescription()}"',
