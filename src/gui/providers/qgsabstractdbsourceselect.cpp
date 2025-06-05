@@ -24,9 +24,10 @@
 #include <QItemDelegate>
 #include <QActionGroup>
 
-const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%searchRegex" ), QgsSettingsTree::sTreeWindowState );
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%1searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%1searchRegex" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%1holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingColumnWidths = new QgsSettingsEntryInteger( QStringLiteral( "%1columnWidths/%2" ), QgsSettingsTree::sTreeWindowState );
 
 QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

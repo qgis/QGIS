@@ -177,11 +177,14 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   const QgsSettings settings;
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settingHoldDialogOpen->value( { SETTINGS_WINDOWS_PATH } ) );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_WINDOWS_PATH, i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    if ( settingColumnWidths->value( { SETTINGS_WINDOWS_PATH, QString::number( i ) } ) > 0 )
+    {
+      mTablesTreeView->setColumnWidth( i, settingColumnWidths->value( { SETTINGS_WINDOWS_PATH, QString::number( i ) } ) );
+    }
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -285,12 +288,12 @@ QgsMssqlSourceSelect::~QgsMssqlSourceSelect()
     mColumnTypeThread->wait();
   }
 
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), mHoldDialogOpen->isChecked() );
+  settingHoldDialogOpen->setValue( mHoldDialogOpen->isChecked(), { SETTINGS_WINDOWS_PATH } );
 
+  QgsSettings settings;
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "%1columnWidths/%2" ).arg( SETTINGS_WINDOWS_PATH, i ), mTablesTreeView->columnWidth( i ) );
+    settingColumnWidths->setValue( mTablesTreeView->columnWidth( i ), { SETTINGS_WINDOWS_PATH, QString::number( i ) } );
   }
   //store general settings in base class
   storeSettings();

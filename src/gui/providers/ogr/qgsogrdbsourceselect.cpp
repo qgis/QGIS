@@ -51,8 +51,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
-  QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) ), false, QgsSettings::Section::Providers ).toBool() );
+  mHoldDialogOpen->setChecked( settingHoldDialogOpen->value( { SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) } ) );
 
   setWindowTitle( tr( "Add %1 Layer(s)" ).arg( name() ) );
   btnEdit->hide(); // hide the edit button
@@ -76,8 +75,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
 
 QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
+  settingHoldDialogOpen->setValue( mHoldDialogOpen->isChecked(), { SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) } );
   //store general settings in base class
   storeSettings();
 }

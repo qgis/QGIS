@@ -59,8 +59,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSpatiaLiteSourceSelect::showHelp );
 
-  const QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settingHoldDialogOpen->value( { SETTINGS_WINDOWS_PATH } ) );
 
   setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide(); // hide the edit button
@@ -90,8 +89,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1HoldDialogOpen" ).arg( SETTINGS_WINDOWS_PATH ), mHoldDialogOpen->isChecked() );
+  settingHoldDialogOpen->setValue( mHoldDialogOpen->isChecked(), { SETTINGS_WINDOWS_PATH } );
   //store general settings in base class
   storeSettings();
 }

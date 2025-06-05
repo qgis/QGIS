@@ -39,6 +39,7 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     static const QgsSettingsEntryInteger *settingSearchColumn;
     static const QgsSettingsEntryBool *settingSearchRegex;
     static const QgsSettingsEntryBool *settingHoldDialogOpen;
+    static const QgsSettingsEntryInteger *settingColumnWidths;
 
     //! Constructor
     QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
