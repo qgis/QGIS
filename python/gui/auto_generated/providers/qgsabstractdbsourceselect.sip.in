@@ -10,7 +10,7 @@
 
 
 
-class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")
 The :py:class:`QgsAbstractDbSourceSelect` class is a base class for

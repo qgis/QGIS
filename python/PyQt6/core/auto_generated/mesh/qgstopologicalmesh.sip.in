@@ -1,0 +1,360 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgstopologicalmesh.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTopologicalMesh
+{
+%Docstring(signature="appended")
+Class that wraps a :py:class:`QgsMesh` to ensure the consistency of the
+mesh during editing and help to access to elements from other elements
+
+A topological face must:
+
+- be convex
+- be oriented counter-clockwise
+- not share a unique vertex with another face
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgstopologicalmesh.h"
+%End
+  public:
+
+    typedef QVector<int> FaceNeighbors;
+
+    class TopologicalFaces
+{
+%Docstring(signature="appended")
+Class that contains independent faces an topological information about
+this faces
+
+This class supports unique shared vertices between faces.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgstopologicalmesh.h"
+%End
+      public:
+
+
+        void clear();
+%Docstring
+Clears all data contained in the instance.
+%End
+
+
+        int vertexToFace( int vertexIndex ) const;
+%Docstring
+Returns a face linked to the vertices with index ``vertexIndex``
+%End
+
+    };
+
+
+    class Changes
+{
+%Docstring(signature="appended")
+Class that contains topological differences between two states of a
+topological mesh, only accessible from the QgsTopologicalMesh class
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgstopologicalmesh.h"
+%End
+      public:
+
+
+
+        QList<int> removedFaceIndexes() const;
+%Docstring
+Returns the indexes of the faces that are removed with this changes
+%End
+
+        QVector<QgsPoint> addedVertices() const;
+%Docstring
+Returns the added vertices with this changes
+%End
+
+        QList<int> verticesToRemoveIndexes() const;
+%Docstring
+Returns the indexes of vertices to remove
+%End
+
+        QList<int> changedCoordinatesVerticesIndexes() const;
+%Docstring
+Returns the indexes of vertices that have changed coordinates
+%End
+
+        QList<double> newVerticesZValues() const;
+%Docstring
+Returns the new Z values of vertices that have changed their coordinates
+%End
+
+        QList<QgsPointXY> newVerticesXYValues() const;
+%Docstring
+Returns the new (X,Y) values of vertices that have changed their
+coordinates
+%End
+
+        QList<QgsPointXY> oldVerticesXYValues() const;
+%Docstring
+Returns the old (X,Y) values of vertices that have changed their
+coordinates
+%End
+
+        QList<int> nativeFacesIndexesGeometryChanged() const;
+%Docstring
+Returns a list of the native face indexes that have a geometry changed
+%End
+
+        bool isEmpty() const;
+%Docstring
+Returns whether changes are empty, that there is nothing to change
+%End
+
+      protected:
+
+
+
+        void clearChanges();
+%Docstring
+Clears all changes
+%End
+
+    };
+
+    static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error );
+%Docstring
+Creates a topologicaly consistent mesh with ``mesh``, this static method
+modifies ``mesh`` to be topological consistent and return a
+QgsTopologicalMesh instance that contains and handles this mesh (does
+not take ownership).
+%End
+
+
+
+    QVector<int> neighborsOfFace( int faceIndex ) const;
+%Docstring
+Returns the indexes of neighbor faces of the face with index
+``faceIndex``
+%End
+
+    QList<int> facesAroundVertex( int vertexIndex ) const;
+%Docstring
+Returns the indexes of faces that are around the vertex with index
+``vertexIndex``
+%End
+
+    QgsMesh *mesh() const;
+%Docstring
+Returns a pointer to the wrapped mesh
+%End
+
+    int firstFaceLinked( int vertexIndex ) const;
+%Docstring
+Returns the index of the first face linked, returns -1 if it is a free
+vertex or out of range index
+%End
+
+    bool isVertexOnBoundary( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex is on a boundary
+%End
+
+    bool isVertexFree( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex is a free vertex
+%End
+
+    QList<int> freeVerticesIndexes() const;
+%Docstring
+Returns a list of vertices are not linked to any faces
+%End
+
+
+
+    QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
+%Docstring
+Returns whether the faces can be added to the mesh
+%End
+
+    Changes addFaces( const TopologicalFaces &topologicFaces );
+%Docstring
+Adds faces ``topologicFaces`` to the topologic mesh. The method returns
+a instance of the class QgsTopologicalMesh.Change that can be used to
+reverse or reapply the operation.
+%End
+
+    QgsMeshEditingError facesCanBeRemoved( const QList<int> &facesIndexes );
+%Docstring
+Returns whether faces with index in ``faceIndexes`` can be removed The
+method an error object with type :py:class:`QgsMeshEditingError`.NoError
+if the faces can be removed, otherwise returns the corresponding error
+%End
+
+    Changes removeFaces( const QList<int> &facesIndexes );
+%Docstring
+Removes faces with index in ``faceIndexes``. The method returns a
+instance of the class QgsTopologicalMesh.Change that can be used to
+reverse or reapply the operation.
+%End
+
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if the edge can be flipped (only available for edge
+shared by two faces with 3 vertices)
+%End
+
+    Changes flipEdge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Flips edge (``vertexIndex1``, ``vertexIndex2``) The method returns a
+instance of the class QgsTopologicalMesh.Change that can be used to
+reverse or reapply the operation.
+%End
+
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if faces separated by vertices with indexes
+``vertexIndex1`` and ``vertexIndex2`` can be merged
+%End
+
+    Changes merge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Merges faces separated by vertices with indexes ``vertexIndex1`` and
+``vertexIndex2`` The method returns a instance of the class
+QgsTopologicalMesh.Change that can be used to reverse or reapply the
+operation.
+%End
+
+    bool canBeSplit( int faceIndex ) const;
+%Docstring
+Returns ``True`` if face with index ``faceIndex`` can be split
+%End
+
+    Changes splitFace( int faceIndex );
+%Docstring
+Splits face with index ``faceIndex`` The method returns a instance of
+the class QgsTopologicalMesh.Change that can be used to reverse or
+reapply the operation.
+%End
+
+    Changes addVertexInFace( int faceIndex, const QgsMeshVertex &vertex );
+%Docstring
+Adds a ``vertex`` in the face with index ``faceIndex``. The including
+face is removed and new faces surrounding the added vertex are added.
+The method returns a instance of the class QgsTopologicalMesh.Change
+that can be used to reverse or reapply the operation.
+%End
+
+    Changes insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertex );
+%Docstring
+Inserts a ``vertex`` in the edge of face with index ``faceIndex`` at
+``position`` . The faces that are on each side of the edge are removed
+and replaced by new faces constructed by a triangulation.
+%End
+
+    Changes addFreeVertex( const QgsMeshVertex &vertex );
+%Docstring
+Adds a free ``vertex`` in the face, that is a vertex that is not
+included or linked with any faces. The method returns a instance of the
+class QgsTopologicalMesh.Change that can be used to reverse or reapply
+the operation.
+%End
+
+    Changes removeVertexFillHole( int vertexIndex );
+%Docstring
+Removes the vertex with index ``vertexIndex``. If the vertex in linked
+with faces, the operation leads also to remove the faces. In this case,
+the hole is filled by a triangulation. The method returns a instance of
+the class QgsTopologicalMesh.Change that can be used to reverse or
+reapply the operation.
+%End
+
+    Changes removeVertices( const QList<int> &vertices );
+%Docstring
+Removes all the vertices with index in the list ``vertices`` If vertices
+in linked with faces, the operation leads also to remove the faces
+without filling holes. The method returns a instance of the class
+QgsTopologicalMesh.Change that can be used to reverse or reapply the
+operation.
+%End
+
+    Changes changeZValue( const QList<int> &verticesIndexes, const QList<double> &newValues );
+%Docstring
+Changes the Z values of the vertices with indexes in ``vertices``
+indexes with the values in ``newValues``
+%End
+
+    Changes changeXYValue( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+%Docstring
+Changes the (X,Y) values of the vertices with indexes in ``vertices``
+indexes with the values in ``newValues``
+%End
+
+
+    void applyChanges( const Changes &changes );
+%Docstring
+Applies the changes
+%End
+
+    void reverseChanges( const Changes &changes );
+%Docstring
+Reverses the changes
+%End
+
+    static QgsMeshEditingError counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh );
+%Docstring
+Checks the topology of the face and sets it counter clockwise if
+necessary
+%End
+
+
+    void reindex();
+%Docstring
+Reindexes faces and vertices, after this operation, the topological mesh
+can't be edited anymore and only the method mesh can be used to access
+to the raw mesh.
+%End
+
+    bool renumber();
+%Docstring
+Renumbers the indexes of vertices and faces using the Reverse CutHill
+McKee Algorithm
+%End
+
+    QgsMeshEditingError checkConsistency() const;
+%Docstring
+Checks the consistency of the topological mesh and return ``False`` if
+there is a consistency issue
+%End
+
+    static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
+%Docstring
+Checks the topology of the mesh ``mesh``, if error occurs, this mesh
+can't be edited
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgstopologicalmesh.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -11,7 +11,7 @@
 
 
 
-class QgsColorRampShaderWidget : QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class QgsColorRampShaderWidget : QWidget
 {
 %Docstring(signature="appended")
 It has 2 ways how to use it. For raster layers, raster data provider and
