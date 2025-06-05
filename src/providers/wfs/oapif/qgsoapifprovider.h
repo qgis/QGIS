@@ -237,8 +237,8 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
     //! Whether server supports CQL2 case-insensitive-comparison conformance class (CASEI function)
     bool mServerSupportsCaseI = false;
 
-    //! Whether server supports CQL2 basic-spatial-operators conformance class (S_INTERSECTS(,BBOX() or POINT()))
-    bool mServerSupportsBasicSpatialOperators = false;
+    //! Whether server supports CQL2 basic-spatial-functions conformance class (S_INTERSECTS(,BBOX() or POINT()))
+    bool mServerSupportsBasicSpatialFunctions = false;
 
     // Map of queryables items for CQL2 request. The key of the map is a queryable name.
     QMap<QString, QgsOapifQueryablesRequest::Queryable> mQueryables;
