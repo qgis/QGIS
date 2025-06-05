@@ -54,7 +54,7 @@ QString QgsPdalExportRasterTinAlgorithm::shortHelpString() const
 
 QString QgsPdalExportRasterTinAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports point cloud data to a 2D raster grid using a triangulation of points." );
+  return QObject::tr( "Exports a point cloud to a 2D raster grid using a triangulation of points." );
 }
 
 QgsPdalExportRasterTinAlgorithm *QgsPdalExportRasterTinAlgorithm::createInstance() const

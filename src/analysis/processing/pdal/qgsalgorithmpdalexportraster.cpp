@@ -54,7 +54,7 @@ QString QgsPdalExportRasterAlgorithm::shortHelpString() const
 
 QString QgsPdalExportRasterAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports point cloud data to a 2D raster grid, writing values from the specified attribute." );
+  return QObject::tr( "Exports a point cloud to a 2D raster grid containing values from the specified attribute." );
 }
 
 QgsPdalExportRasterAlgorithm *QgsPdalExportRasterAlgorithm::createInstance() const

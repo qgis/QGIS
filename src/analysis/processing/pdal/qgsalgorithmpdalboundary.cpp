@@ -54,7 +54,7 @@ QString QgsPdalBoundaryAlgorithm::shortHelpString() const
 
 QString QgsPdalBoundaryAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports a polygon file containing point cloud layer boundary." );
+  return QObject::tr( "Creates a polygon layer containing a point cloud's boundary." );
 }
 
 QgsPdalBoundaryAlgorithm *QgsPdalBoundaryAlgorithm::createInstance() const
