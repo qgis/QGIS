@@ -52,6 +52,11 @@ QString QgsPdalAssignProjectionAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm assigns point cloud CRS if it is not present or wrong." );
 }
 
+QString QgsPdalAssignProjectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "This algorithm assigns point cloud CRS if it is not present or wrong." );
+}
+
 QgsPdalAssignProjectionAlgorithm *QgsPdalAssignProjectionAlgorithm::createInstance() const
 {
   return new QgsPdalAssignProjectionAlgorithm();
