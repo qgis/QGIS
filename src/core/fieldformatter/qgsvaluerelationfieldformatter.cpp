@@ -139,6 +139,14 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
     subsetOfAttributes << groupIdx;
   }
 
+  const bool orderByField { config.value( QStringLiteral( "OrderByField" ) ).toBool() };
+  const int fieldIdx { orderByField ? layer->fields().lookupField( config.value( QStringLiteral( "OrderByFieldName" ) ).toString() ) : -1 };
+  const bool reverseSort { config.value( QStringLiteral( "OrderByDescending" ) ).toBool() };
+  if ( fieldIdx != -1 )
+  {
+    subsetOfAttributes << fieldIdx;
+  }
+
   const QString descriptionExpressionString = config.value( "Description" ).toString();
   QgsExpression descriptionExpression( descriptionExpressionString );
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -166,10 +174,6 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
-  const bool orderByField { config.value( QStringLiteral( "OrderByField" ) ).toBool() };
-  const int fieldIdx { orderByField ? layer->fields().lookupField( config.value( QStringLiteral( "OrderByFieldName" ) ).toString() ) : -1 };
-  const bool reverseSort { config.value( QStringLiteral( "OrderByDescending" ) ).toBool() };
-
   QMap<QVariant, QVariant> orderByFieldValues;
 
   QgsFeature f;
