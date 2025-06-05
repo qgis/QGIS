@@ -3086,7 +3086,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::mergeLines() const
+QgsGeometry QgsGeometry::mergeLines( const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry )
   {
@@ -3101,7 +3101,7 @@ QgsGeometry QgsGeometry::mergeLines() const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result( geos.mergeLines( &mLastError ) );
+  QgsGeometry result( geos.mergeLines( &mLastError, parameters ) );
   result.mLastError = mLastError;
   return result;
 }
