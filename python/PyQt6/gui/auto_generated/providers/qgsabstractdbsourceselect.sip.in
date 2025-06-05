@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
 {
 %Docstring(signature="appended")
@@ -22,6 +23,10 @@ Base class for database source widget selectors.
 #include "qgsabstractdbsourceselect.h"
 %End
   public:
+    static const QgsSettingsEntryInteger *settingSearchColumn;
+    static const QgsSettingsEntryBool *settingSearchRegex;
+    static const QgsSettingsEntryBool *settingHoldDialogOpen;
+
     QgsAbstractDbSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Constructor

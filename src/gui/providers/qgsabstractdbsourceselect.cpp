@@ -16,12 +16,17 @@
 #include "qgsabstractdbtablemodel.h"
 #include "qgsabstractdbsourceselect.h"
 #include "qgssettings.h"
+#include "qgssettingstree.h"
 #include "moc_qgsabstractdbsourceselect.cpp"
 
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
 #include <QActionGroup>
+
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%searchRegex" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
 
 QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -78,7 +83,11 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
   columnActionGroup->addAction( mSearchColumnAllAction );
   bool hasPresetColumn = false;
   const QStringList columns = model->columns();
-  int storedSearchColumn = QgsSettings().value( QStringLiteral( "%1searchColumn" ).arg( settingPath() ), model->defaultSearchColumn() ).toInt();
+  int storedSearchColumn = settingSearchColumn->value( { settingPath() } );
+  if ( storedSearchColumn < 0 )
+  {
+    storedSearchColumn = model->defaultSearchColumn();
+  }
   for ( int i = 0; i < columns.count(); i++ )
   {
     if ( !model->searchableColumn( i ) )
@@ -101,7 +110,7 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
   QAction *wildcardAction = new QAction( tr( "Wildcard" ), mSearchSettingsMenu );
   wildcardAction->setCheckable( true );
   //wildcard is active when regex is disabled
-  bool regexActionSetting = QgsSettings().value( QStringLiteral( "%1searchRegex" ).arg( settingPath() ), false ).toBool();
+  bool regexActionSetting = settingSearchRegex->value( { settingPath() } );
   wildcardAction->setChecked( !regexActionSetting );
   mSearchSettingsMenu->addAction( wildcardAction );
   modeActionGroup->addAction( wildcardAction );
@@ -124,12 +133,12 @@ void QgsAbstractDbSourceSelect::storeSettings()
   {
     if ( mSearchColumnActions.at( i )->isChecked() )
     {
-      QgsSettings().setValue( QStringLiteral( "%1searchColumn" ).arg( settingPath() ), i );
+      settingSearchColumn->setValue( i, { settingPath() } );
       break;
     }
   }
 
-  QgsSettings().setValue( QStringLiteral( "%1searchRegex" ).arg( settingPath() ), mSearchModeRegexAction->isChecked() );
+  settingSearchRegex->setValue( mSearchModeRegexAction->isChecked(), settingPath() );
 }
 
 void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )

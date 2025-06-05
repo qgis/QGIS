@@ -20,6 +20,8 @@
 #include "qgis_gui.h"
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgssettingsentryimpl.h"
+
 
 class QSortFilterProxyModel;
 class QgsAbstractDbTableModel;
@@ -34,6 +36,10 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
 {
     Q_OBJECT
   public:
+    static const QgsSettingsEntryInteger *settingSearchColumn;
+    static const QgsSettingsEntryBool *settingSearchRegex;
+    static const QgsSettingsEntryBool *settingHoldDialogOpen;
+
     //! Constructor
     QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
