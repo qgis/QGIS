@@ -9490,7 +9490,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QSet<int> toSkip = d.skippedAttributeIndexes();
 
   bool firstFeature = true;
-  const auto constSelectedFeatureIds = vl->selectedFeatureIds();
+  const QgsFeatureIds constSelectedFeatureIds = vl->selectedFeatureIds();
   for ( QgsFeatureId fid : constSelectedFeatureIds )
   {
     for ( int i = 0; i < merged.count(); ++i )
@@ -9669,7 +9669,13 @@ void QgisApp::mergeSelectedFeatures()
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
   d.setWindowTitle( tr( "Merge Features" ) );
-  if ( d.exec() == QDialog::Rejected )
+
+  // don't open dialog if there are no attributes to edit
+  if ( vl->fields().isEmpty() )
+  {
+    d.setAllToSkip();
+  }
+  else if ( d.exec() == QDialog::Rejected )
   {
     return;
   }
@@ -15097,6 +15103,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
       bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, createMapLayerActionContext() ).isEmpty();
       bool isSpatial = vlayer->isSpatial();
+      bool layerHasFields = !vlayer->fields().isEmpty();
 
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
@@ -15183,7 +15190,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         {
           mActionMergeFeatures->setEnabled( layerHasSelection && canDeleteFeatures && canAddFeatures );
           mMenuEditAttributes->setEnabled( layerHasSelection );
-          mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
+          mActionMergeFeatureAttributes->setEnabled( layerHasSelection && layerHasFields );
           mActionMultiEditAttributes->setEnabled( layerHasSelection );
         }
         else
