@@ -140,7 +140,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "Windows/MSSQLSourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "MSSQLSourceSelect/" );
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )

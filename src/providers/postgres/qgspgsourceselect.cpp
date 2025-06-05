@@ -194,7 +194,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "Windows/PgSourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "PgSourceSelect/" );
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
