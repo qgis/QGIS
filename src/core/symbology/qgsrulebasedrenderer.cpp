@@ -1625,16 +1625,29 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
     auto rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
 
     QString expression;
+    const QgsRangeList ranges = graduatedRenderer->ranges();
+    const bool isInverted = ranges.size() > 1 ?
+                            ranges.at( 0 ).upperValue() > ranges.at( 1 ).upperValue() :
+                            false;
     QgsRendererRange range;
-    for ( int i = 0; i < graduatedRenderer->ranges().size(); ++i )
+    for ( int i = 0; i < ranges.size(); ++i )
     {
-      range = graduatedRenderer->ranges().value( i );
+      range = ranges.value( i );
       auto rule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
+
       rule->setLabel( range.label() );
-      if ( i == 0 )//The lower boundary of the first range is included, while it is excluded for the others
+      // Lower and upper boundaries have to be open-ended
+      if ( i == 0 )
       {
-        expression = attr + " >= " + QString::number( range.lowerValue(), 'f' ) + " AND " + \
-                     attr + " <= " + QString::number( range.upperValue(), 'f' );
+        expression = !isInverted ?
+                     QStringLiteral( "%1 <= %2" ).arg( attr, QString::number( range.upperValue(), 'f' ) ) :
+                     QStringLiteral( "%1 > %2" ).arg( attr, QString::number( range.lowerValue(), 'f' ) );
+      }
+      else if ( i == ranges.size() - 1 )
+      {
+        expression = !isInverted ?
+                     QStringLiteral( "%1 > %2" ).arg( attr, QString::number( range.lowerValue(), 'f' ) ) :
+                     QStringLiteral( "%1 <= %2" ).arg( attr, QString::number( range.upperValue(), 'f' ) );
       }
       else
       {
