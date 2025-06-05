@@ -563,13 +563,13 @@ void Qgs3DAxis::createMenu()
   QAction *viewWestAct = new QAction( tr( "&West" ) + "\t Ctrl+4", mMenu );
   QAction *viewBottomAct = new QAction( tr( "&Bottom" ) + "\t Ctrl+3", mMenu );
 
-  connect( viewHomeAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToHome(); } );
-  connect( viewTopAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToTop(); } );
-  connect( viewNorthAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToNorth(); } );
-  connect( viewEastAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToEast(); } );
-  connect( viewSouthAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToSouth(); } );
-  connect( viewWestAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToWest(); } );
-  connect( viewBottomAct, &QAction::triggered, this, [this]() { mCameraController->rotateCameraToBottom(); } );
+  connect( viewHomeAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToHome );
+  connect( viewTopAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToTop );
+  connect( viewNorthAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToNorth );
+  connect( viewEastAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToEast );
+  connect( viewSouthAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToSouth );
+  connect( viewWestAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToWest );
+  connect( viewBottomAct, &QAction::triggered, mCameraController, &QgsCameraController::rotateCameraToBottom );
 
   QMenu *viewMenu = new QMenu( QStringLiteral( "Camera View" ), mMenu );
   viewMenu->addAction( viewHomeAct );
