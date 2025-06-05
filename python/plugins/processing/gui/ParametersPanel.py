@@ -24,6 +24,7 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
+    Qgis,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterExtent,
     QgsProject,
@@ -38,6 +39,7 @@ from qgis.gui import (
     QgsProcessingGui,
     QgsProcessingParametersGenerator,
     QgsProcessingHiddenWidgetWrapper,
+    QgsAbstractProcessingParameterWidgetWrapper,
 )
 from qgis.utils import iface
 
@@ -136,6 +138,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 stretch = 0
                 if not is_python_wrapper:
                     widget = wrapper.createWrappedWidget(self.processing_context)
+                    wrapper.widgetValueHasChanged.connect(self.parameterChanged)
                     stretch = wrapper.stretch()
                 else:
                     widget = wrapper.widget
@@ -219,6 +222,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
         include_default = not (
             flags & QgsProcessingParametersGenerator.Flag.SkipDefaultValueParameters
         )
+        validate = not (flags & QgsProcessingParametersGenerator.Flag.SkipValidation)
         parameters = {}
         for p, v in self.extra_parameters.items():
             parameters[p] = v
@@ -251,7 +255,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 if param.defaultValue() != value or include_default:
                     parameters[param.name()] = value
 
-                if not param.checkValueIsAcceptable(value):
+                if validate and not param.checkValueIsAcceptable(value):
                     raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
             else:
                 if self.in_place and param.name() == "OUTPUT":
@@ -276,9 +280,12 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     parameters[param.name()] = value
 
                     context = createContext()
-                    ok, error = param.isSupportedOutputValue(value, context)
-                    if not ok:
-                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+                    if validate:
+                        ok, error = param.isSupportedOutputValue(value, context)
+                        if not ok:
+                            raise AlgorithmDialogBase.InvalidOutputExtension(
+                                widget, error
+                            )
 
         return self.algorithm().preprocessParameters(parameters)
 
@@ -297,3 +304,18 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
             wrapper = self.wrappers[param.name()]
             wrapper.setParameterValue(value, self.processing_context)
+
+    def parameterChanged(self):
+        """
+        Called when a parameter value is changed in the panel
+        """
+        wrapper: QgsAbstractProcessingParameterWidgetWrapper = self.sender()
+        default_values = self.algorithm().autogenerateParameterValues(
+            self.createProcessingParameters(
+                QgsProcessingParametersGenerator.Flag.SkipValidation
+            ),
+            wrapper.parameterDefinition().name(),
+            Qgis.ProcessingMode.Standard,
+        )
+        if default_values:
+            self.setParameters(default_values)

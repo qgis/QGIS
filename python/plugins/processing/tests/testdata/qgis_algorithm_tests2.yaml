@@ -2444,6 +2444,43 @@ tests:
             end: skip
         pk:
           - d
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer dynamic cost
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml|layername=route_points
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST2:
+        expression: d*100
+        type: property
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_dynamic.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+          - d
+          - type
 
   - algorithm: native:createattributeindex
     name: Create attribute index

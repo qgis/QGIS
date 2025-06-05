@@ -108,19 +108,18 @@
 #include "qgsgeometrywidget.h"
 
 
-class TestParamType : public QgsProcessingParameterDefinition
+class TestParamDefinition : public QgsProcessingParameterDefinition
 {
   public:
-    TestParamType( const QString &type, const QString &name, const QVariant &defaultValue = QVariant() )
+    TestParamDefinition( const QString &type, const QString &name, const QVariant &defaultValue = QVariant() )
       : QgsProcessingParameterDefinition( name, name, defaultValue )
       , mType( type )
     {}
-
     QString mType;
 
     QgsProcessingParameterDefinition *clone() const override
     {
-      return new TestParamType( mType, name() );
+      return new TestParamDefinition( mType, name() );
     }
 
     QString type() const override { return mType; }
@@ -128,10 +127,51 @@ class TestParamType : public QgsProcessingParameterDefinition
     QString asScriptCode() const override { return QString(); }
 };
 
+
+class TestParameterType : public QgsProcessingParameterType
+{
+    // QgsProcessingParameterType interface
+  public:
+    TestParameterType( const QString &type )
+      : mType( type )
+    {}
+    QString mType;
+
+    QgsProcessingParameterDefinition *create( const QString &name ) const override
+    {
+      return new QgsProcessingParameterString( name );
+    }
+
+    QString description() const override
+    {
+      return QStringLiteral( "Dummy Parameter Description" );
+    }
+
+    QString name() const override
+    {
+      return QStringLiteral( "Dummy Parameter Type" );
+    }
+
+    QString id() const override
+    {
+      return mType;
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList();
+    }
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
+};
+
+
 class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper // clazy:exclude=missing-qobject-macro
 {
   public:
-    TestWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard )
+    TestWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard )
       : QgsAbstractProcessingParameterWidgetWrapper( parameter, type )
     {}
 
@@ -169,15 +209,10 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
       return type;
     }
 
-    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override
     {
       return new TestWidgetWrapper( parameter, type );
     }
-
-
-    QStringList compatibleParameterTypes() const override { return QStringList(); }
-
-    QStringList compatibleOutputTypes() const override { return QStringList(); }
 };
 
 class DummyPluginLayer : public QgsPluginLayer
@@ -387,6 +422,7 @@ void TestProcessingGui::init()
 
 void TestProcessingGui::cleanup()
 {
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestProcessingGui::testModelUndo()
@@ -485,56 +521,66 @@ void TestProcessingGui::testFilterAlgorithmConfig()
 
 void TestProcessingGui::testWrapperFactoryRegistry()
 {
-  QgsProcessingGuiRegistry registry;
+  QgsProcessingGuiRegistry guiRegistry;
 
-  TestParamType numParam( QStringLiteral( "num" ), QStringLiteral( "num" ) );
-  TestParamType stringParam( QStringLiteral( "str" ), QStringLiteral( "str" ) );
+  TestParamDefinition numParam( QStringLiteral( "num" ), QStringLiteral( "num" ) );
+  TestParamDefinition stringParam( QStringLiteral( "str" ), QStringLiteral( "str" ) );
 
-  QVERIFY( !registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard ) );
+  TestParameterType *numParamType = new TestParameterType( QStringLiteral( "num" ) );
+  TestParameterType *stringParamType = new TestParameterType( QStringLiteral( "str" ) );
+
+  QVERIFY( !guiRegistry.createParameterWidgetWrapper( &numParam, Qgis::ProcessingMode::Standard ) );
 
   TestWidgetFactory *factory = new TestWidgetFactory( QStringLiteral( "str" ) );
-  QVERIFY( registry.addParameterWidgetFactory( factory ) );
+  QVERIFY( guiRegistry.addParameterWidgetFactory( factory ) );
 
   // duplicate type not allowed
   TestWidgetFactory *factory2 = new TestWidgetFactory( QStringLiteral( "str" ) );
-  QVERIFY( !registry.addParameterWidgetFactory( factory2 ) );
+  QVERIFY( !guiRegistry.addParameterWidgetFactory( factory2 ) );
   delete factory2;
 
-  QgsAbstractProcessingParameterWidgetWrapper *wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
+  // Register parameter type for createParameterWidgetWrapper
+  QVERIFY( QgsApplication::processingRegistry()->addParameterType( numParamType ) );
+  QVERIFY( QgsApplication::processingRegistry()->addParameterType( stringParamType ) );
+
+  QgsAbstractProcessingParameterWidgetWrapper *wrapper = guiRegistry.createParameterWidgetWrapper( &numParam, Qgis::ProcessingMode::Standard );
   QVERIFY( !wrapper );
-  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &stringParam, Qgis::ProcessingMode::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "str" ) );
   delete wrapper;
 
   TestWidgetFactory *factory3 = new TestWidgetFactory( QStringLiteral( "num" ) );
-  QVERIFY( registry.addParameterWidgetFactory( factory3 ) );
+  QVERIFY( guiRegistry.addParameterWidgetFactory( factory3 ) );
 
-  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &numParam, Qgis::ProcessingMode::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
 
   // creating wrapper using metadata
-  TestParamType customParam( QStringLiteral( "custom" ), QStringLiteral( "custom" ) );
-  wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
+  TestParamDefinition customParam( QStringLiteral( "custom" ), QStringLiteral( "custom" ) );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, Qgis::ProcessingMode::Standard );
   QVERIFY( !wrapper );
   customParam.setMetadata( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "str" ) } } ) }
   } );
-  wrapper = registry.createParameterWidgetWrapper( &customParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, Qgis::ProcessingMode::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "custom" ) );
   delete wrapper;
 
   // removing
-  registry.removeParameterWidgetFactory( nullptr );
+  guiRegistry.removeParameterWidgetFactory( nullptr );
   TestWidgetFactory *factory4 = new TestWidgetFactory( QStringLiteral( "xxxx" ) );
-  registry.removeParameterWidgetFactory( factory4 );
-  registry.removeParameterWidgetFactory( factory );
-  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
+  guiRegistry.removeParameterWidgetFactory( factory4 );
+  guiRegistry.removeParameterWidgetFactory( factory );
+  QgsApplication::processingRegistry()->removeParameterType( numParamType );
+  QgsApplication::processingRegistry()->removeParameterType( stringParamType );
+
+  wrapper = guiRegistry.createParameterWidgetWrapper( &stringParam, Qgis::ProcessingMode::Standard );
   QVERIFY( !wrapper );
 
-  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
+  wrapper = guiRegistry.createParameterWidgetWrapper( &numParam, Qgis::ProcessingMode::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
@@ -542,22 +588,22 @@ void TestProcessingGui::testWrapperFactoryRegistry()
 
 void TestProcessingGui::testWrapperGeneral()
 {
-  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  TestParamDefinition param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
   param.setAdditionalExpressionContextVariables( QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
-  QCOMPARE( wrapper.type(), QgsProcessingGui::Standard );
+  QCOMPARE( wrapper.type(), Qgis::ProcessingMode::Standard );
 
   QgsExpressionContext expContext = wrapper.createExpressionContext();
   QVERIFY( expContext.hasVariable( QStringLiteral( "a" ) ) );
   QVERIFY( expContext.hasVariable( QStringLiteral( "b" ) ) );
   QCOMPARE( expContext.highlightedVariables(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
 
-  QgsProcessingBooleanWidgetWrapper wrapper2( &param, QgsProcessingGui::Batch );
-  QCOMPARE( wrapper2.type(), QgsProcessingGui::Batch );
+  QgsProcessingBooleanWidgetWrapper wrapper2( &param, Qgis::ProcessingMode::Batch );
+  QCOMPARE( wrapper2.type(), Qgis::ProcessingMode::Batch );
   QCOMPARE( wrapper2.parameterDefinition()->name(), QStringLiteral( "bool" ) );
 
-  QgsProcessingBooleanWidgetWrapper wrapperModeler( &param, QgsProcessingGui::Modeler );
-  QCOMPARE( wrapperModeler.type(), QgsProcessingGui::Modeler );
+  QgsProcessingBooleanWidgetWrapper wrapperModeler( &param, Qgis::ProcessingMode::Modeler );
+  QCOMPARE( wrapperModeler.type(), Qgis::ProcessingMode::Modeler );
 
   QgsProcessingContext context;
   QVERIFY( !wrapper2.wrappedWidget() );
@@ -575,12 +621,12 @@ void TestProcessingGui::testWrapperGeneral()
   delete l;
 
   // check that created widget starts with default value
-  param = TestParamType( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), true );
+  param = TestParamDefinition( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), true );
   QgsProcessingBooleanWidgetWrapper trueDefault( &param );
   w = trueDefault.createWrappedWidget( context );
   QVERIFY( trueDefault.widgetValue().toBool() );
   delete w;
-  param = TestParamType( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), false );
+  param = TestParamDefinition( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), false );
   QgsProcessingBooleanWidgetWrapper falseDefault( &param );
   w = falseDefault.createWrappedWidget( context );
   QVERIFY( !falseDefault.widgetValue().toBool() );
@@ -645,8 +691,8 @@ void TestProcessingGui::testWrapperDynamic()
   const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
   const QgsProcessingParameterDefinition *allPartsDef = centroidAlg->parameterDefinition( QStringLiteral( "ALL_PARTS" ) );
 
-  QgsProcessingBooleanWidgetWrapper inputWrapper( layerDef, QgsProcessingGui::Standard );
-  QgsProcessingBooleanWidgetWrapper allPartsWrapper( allPartsDef, QgsProcessingGui::Standard );
+  QgsProcessingBooleanWidgetWrapper inputWrapper( layerDef, Qgis::ProcessingMode::Standard );
+  QgsProcessingBooleanWidgetWrapper allPartsWrapper( allPartsDef, Qgis::ProcessingMode::Standard );
 
   QgsProcessingContext context;
 
@@ -740,7 +786,7 @@ void TestProcessingGui::testModelerWrapper()
   QgsProcessingModelParameter bool1( "p1" );
   model.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
   QgsProcessingModelParameter testParam( "p2" );
-  model.addModelParameter( new TestParamType( "test_type", "p2" ), testParam );
+  model.addModelParameter( new TestParamDefinition( "test_type", "p2" ), testParam );
   QgsProcessingModelParameter testDestParam( "p3" );
   model.addModelParameter( new QgsProcessingParameterFileDestination( "test_dest", "p3" ), testDestParam );
   QgsProcessingModelParameter testLayerParam( "p4" );
@@ -749,30 +795,34 @@ void TestProcessingGui::testModelerWrapper()
   model.addModelParameter( new QgsProcessingParameterMapLayer( "p5", "test_layer2", QVariant(), true ), testLayerParam );
 
   // try to create a parameter widget, no factories registered
-  QgsProcessingGuiRegistry registry;
+  QgsProcessingGuiRegistry guiRegistry;
+
   QgsProcessingContext context;
-  QVERIFY( !registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context ) );
+  QVERIFY( !guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context ) );
+
+  // register parameter type for createModelerParameterWidget
+  QgsApplication::processingRegistry()->addParameterType( new TestParameterType( "test_type" ) );
 
   // register factory
   TestWidgetFactory *factory = new TestWidgetFactory( QStringLiteral( "test_type" ) );
-  QVERIFY( registry.addParameterWidgetFactory( factory ) );
-  QgsProcessingModelerParameterWidget *w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context );
+  QVERIFY( guiRegistry.addParameterWidgetFactory( factory ) );
+  QgsProcessingModelerParameterWidget *w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context );
   QVERIFY( w );
   delete w;
 
-  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p1" ), context );
+  w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p1" ), context );
   QVERIFY( w );
   // should default to static value
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   delete w;
 
-  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p4" ), context );
+  w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p4" ), context );
   QVERIFY( w );
   // a layer parameter should default to "model input" type
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   delete w;
   // but an optionl layer parameter should NOT -- we don't want to autofill values for optional layers by default
-  w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p5" ), context );
+  w = guiRegistry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p5" ), context );
   QVERIFY( w );
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   delete w;
@@ -826,6 +876,7 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
 
+
   // alg output
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
   QCOMPARE( w->value().value<QgsProcessingModelChildParameterSource>().source(), Qgis::ProcessingModelChildParameterSource::ChildOutput );
@@ -874,7 +925,7 @@ void TestProcessingGui::testModelerWrapper()
 
 void TestProcessingGui::testHiddenWrapper()
 {
-  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  TestParamDefinition param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
 
   QgsProcessingHiddenWidgetWrapper wrapper( &param );
   QSignalSpy spy( &wrapper, &QgsProcessingHiddenWidgetWrapper::widgetValueHasChanged );
@@ -901,7 +952,7 @@ void TestProcessingGui::testHiddenWrapper()
 
 void TestProcessingGui::testBooleanWrapper()
 {
-  TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
+  TestParamDefinition param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
 
   // standard wrapper
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
@@ -931,7 +982,7 @@ void TestProcessingGui::testBooleanWrapper()
   delete w;
 
   // batch wrapper
-  QgsProcessingBooleanWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingBooleanWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingBooleanWidgetWrapper::widgetValueHasChanged );
@@ -955,7 +1006,7 @@ void TestProcessingGui::testBooleanWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingBooleanWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingBooleanWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingBooleanWidgetWrapper::widgetValueHasChanged );
@@ -1045,7 +1096,7 @@ void TestProcessingGui::testStringWrapper()
   delete w;
 
   // batch wrapper
-  QgsProcessingStringWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingStringWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
@@ -1069,7 +1120,7 @@ void TestProcessingGui::testStringWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingStringWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingStringWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
@@ -1131,7 +1182,7 @@ void TestProcessingGui::testStringWrapper()
   delete w;
 
   // batch wrapper - should still be a line edit
-  QgsProcessingStringWidgetWrapper wrapperMultiLineB( &param, QgsProcessingGui::Batch );
+  QgsProcessingStringWidgetWrapper wrapperMultiLineB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperMultiLineB.createWrappedWidget( context );
   QSignalSpy spy5( &wrapperMultiLineB, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
@@ -1155,7 +1206,7 @@ void TestProcessingGui::testStringWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingStringWidgetWrapper wrapperMultiLineM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingStringWidgetWrapper wrapperMultiLineM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperMultiLineM.createWrappedWidget( context );
   QSignalSpy spy6( &wrapperMultiLineM, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
@@ -1302,7 +1353,7 @@ void TestProcessingGui::testStringWrapper()
 
 void TestProcessingGui::testFileWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingParameterFile param( QStringLiteral( "file" ), QStringLiteral( "file" ) );
 
     QgsProcessingFileWidgetWrapper wrapper( &param, type );
@@ -1323,7 +1374,7 @@ void TestProcessingGui::testFileWrapper()
     QVERIFY( static_cast<QgsFileWidget *>( wrapper.wrappedWidget() )->filePath().isEmpty() );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "file" ) );
@@ -1366,13 +1417,13 @@ void TestProcessingGui::testFileWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
 
   // config widget
@@ -1487,7 +1538,7 @@ void TestProcessingGui::testAuthCfgWrapper()
   delete w;
 
   // batch wrapper
-  QgsProcessingAuthConfigWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingAuthConfigWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
@@ -1509,7 +1560,7 @@ void TestProcessingGui::testAuthCfgWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingAuthConfigWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingAuthConfigWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingAuthConfigWidgetWrapper::widgetValueHasChanged );
@@ -1574,7 +1625,7 @@ void TestProcessingGui::testCrsWrapper()
   delete w;
 
   // batch wrapper
-  QgsProcessingCrsWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingCrsWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingCrsWidgetWrapper::widgetValueHasChanged );
@@ -1598,7 +1649,7 @@ void TestProcessingGui::testCrsWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingCrsWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingCrsWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingCrsWidgetWrapper::widgetValueHasChanged );
@@ -1663,7 +1714,7 @@ void TestProcessingGui::testCrsWrapper()
 
 void TestProcessingGui::testNumericWrapperDouble()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingContext context;
 
     QgsProcessingParameterNumber param( QStringLiteral( "num" ), QStringLiteral( "num" ), Qgis::ProcessingNumberParameterType::Double );
@@ -1692,7 +1743,7 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 0.0 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "num" ) );
@@ -1820,13 +1871,13 @@ void TestProcessingGui::testNumericWrapperDouble()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -1870,7 +1921,7 @@ void TestProcessingGui::testNumericWrapperDouble()
 
 void TestProcessingGui::testNumericWrapperInt()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingContext context;
 
     QgsProcessingParameterNumber param( QStringLiteral( "num" ), QStringLiteral( "num" ), Qgis::ProcessingNumberParameterType::Integer );
@@ -1897,7 +1948,7 @@ void TestProcessingGui::testNumericWrapperInt()
     QCOMPARE( static_cast<QgsSpinBox *>( wrapper.wrappedWidget() )->value(), 0 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "num" ) );
@@ -2009,13 +2060,13 @@ void TestProcessingGui::testNumericWrapperInt()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -2175,7 +2226,7 @@ void TestProcessingGui::testDistanceWrapper()
 
   TestProcessingContextGenerator generator( context );
   wrapper.registerProcessingContextGenerator( &generator );
-  wrapper.setUnitParameterValue( id );
+  wrapper.setUnitParameterValue( QVariant::fromValue( id ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
@@ -2190,17 +2241,27 @@ void TestProcessingGui::testDistanceWrapper()
   wrapper.setParameterValue( 2, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
 
-  wrapper.setUnitParameterValue( id );
-  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
+  // Changing to a layer with a CRS that has compatible units won't change the units
+  wrapper.setUnitParameterValue( QVariant::fromValue( id ) );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
   wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5000.0 );
+  QCOMPARE( wrapper.mUnitsCombo->currentIndex(), wrapper.mUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Kilometers ) ) );
+
+  // Changing to a layer with 4326 projection will reset the units
+  const QString id2 = vl2->id();
+  QgsProject::instance()->addMapLayer( vl2.release() );
+  wrapper.setUnitParameterValue( QVariant::fromValue( id2 ) );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+  wrapper.setParameterValue( 2, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
 
   delete w;
 
   // with default unit
   QgsProcessingParameterDistance paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
   paramDefaultUnit.setDefaultUnit( Qgis::DistanceUnit::Feet );
-  QgsProcessingDistanceWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  QgsProcessingDistanceWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, Qgis::ProcessingMode::Standard );
   w = wrapperDefaultUnit.createWrappedWidget( context );
   w->show();
   QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "feet" ) );
@@ -2213,14 +2274,14 @@ void TestProcessingGui::testDistanceWrapper()
   wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
   metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
   paramDecimals.setMetadata( metadata );
-  QgsProcessingDistanceWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  QgsProcessingDistanceWidgetWrapper wrapperDecimals( &paramDecimals, Qgis::ProcessingMode::Standard );
   w = wrapperDecimals.createWrappedWidget( context );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
   delete w;
 
   // batch wrapper
-  QgsProcessingDistanceWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingDistanceWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingDistanceWidgetWrapper::widgetValueHasChanged );
@@ -2242,7 +2303,7 @@ void TestProcessingGui::testDistanceWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingDistanceWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingDistanceWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingDistanceWidgetWrapper::widgetValueHasChanged );
@@ -2423,7 +2484,7 @@ void TestProcessingGui::testAreaWrapper()
   // with default unit
   QgsProcessingParameterArea paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
   paramDefaultUnit.setDefaultUnit( Qgis::AreaUnit::SquareFeet );
-  QgsProcessingAreaWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  QgsProcessingAreaWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, Qgis::ProcessingMode::Standard );
   w = wrapperDefaultUnit.createWrappedWidget( context );
   w->show();
   QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "square feet" ) );
@@ -2436,14 +2497,14 @@ void TestProcessingGui::testAreaWrapper()
   wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
   metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
   paramDecimals.setMetadata( metadata );
-  QgsProcessingAreaWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  QgsProcessingAreaWidgetWrapper wrapperDecimals( &paramDecimals, Qgis::ProcessingMode::Standard );
   w = wrapperDecimals.createWrappedWidget( context );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
   delete w;
 
   // batch wrapper
-  QgsProcessingAreaWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingAreaWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingAreaWidgetWrapper::widgetValueHasChanged );
@@ -2465,7 +2526,7 @@ void TestProcessingGui::testAreaWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingAreaWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingAreaWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingAreaWidgetWrapper::widgetValueHasChanged );
@@ -2646,7 +2707,7 @@ void TestProcessingGui::testVolumeWrapper()
   // with default unit
   QgsProcessingParameterVolume paramDefaultUnit( QStringLiteral( "num" ), QStringLiteral( "num" ) );
   paramDefaultUnit.setDefaultUnit( Qgis::VolumeUnit::CubicFeet );
-  QgsProcessingVolumeWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  QgsProcessingVolumeWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, Qgis::ProcessingMode::Standard );
   w = wrapperDefaultUnit.createWrappedWidget( context );
   w->show();
   QCOMPARE( wrapperDefaultUnit.mLabel->text(), QStringLiteral( "cubic feet" ) );
@@ -2659,14 +2720,14 @@ void TestProcessingGui::testVolumeWrapper()
   wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
   metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
   paramDecimals.setMetadata( metadata );
-  QgsProcessingVolumeWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  QgsProcessingVolumeWidgetWrapper wrapperDecimals( &paramDecimals, Qgis::ProcessingMode::Standard );
   w = wrapperDecimals.createWrappedWidget( context );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
   delete w;
 
   // batch wrapper
-  QgsProcessingVolumeWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingVolumeWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingVolumeWidgetWrapper::widgetValueHasChanged );
@@ -2688,7 +2749,7 @@ void TestProcessingGui::testVolumeWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingVolumeWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingVolumeWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingVolumeWidgetWrapper::widgetValueHasChanged );
@@ -2785,7 +2846,7 @@ void TestProcessingGui::testDurationWrapper()
   // with default unit
   QgsProcessingParameterDuration paramDefaultUnit( QStringLiteral( "dur" ), QStringLiteral( "dur" ) );
   paramDefaultUnit.setDefaultUnit( Qgis::TemporalUnit::Days );
-  QgsProcessingDurationWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  QgsProcessingDurationWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, Qgis::ProcessingMode::Standard );
   w = wrapperDefaultUnit.createWrappedWidget( context );
   w->show();
   QCOMPARE( wrapperDefaultUnit.mUnitsCombo->currentText(), QgsUnitTypes::toString( Qgis::TemporalUnit::Days ) );
@@ -2798,14 +2859,14 @@ void TestProcessingGui::testDurationWrapper()
   wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
   metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
   paramDecimals.setMetadata( metadata );
-  QgsProcessingDurationWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  QgsProcessingDurationWidgetWrapper wrapperDecimals( &paramDecimals, Qgis::ProcessingMode::Standard );
   w = wrapperDecimals.createWrappedWidget( context );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
   QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
   delete w;
 
   // batch wrapper
-  QgsProcessingDurationWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+  QgsProcessingDurationWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   QSignalSpy spy2( &wrapperB, &QgsProcessingDurationWidgetWrapper::widgetValueHasChanged );
@@ -2827,7 +2888,7 @@ void TestProcessingGui::testDurationWrapper()
   delete w;
 
   // modeler wrapper
-  QgsProcessingDurationWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+  QgsProcessingDurationWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingDurationWidgetWrapper::widgetValueHasChanged );
@@ -2890,7 +2951,7 @@ void TestProcessingGui::testDurationWrapper()
 
 void TestProcessingGui::testScaleWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingContext context;
 
     QgsProcessingParameterScale param( QStringLiteral( "num" ), QStringLiteral( "num" ) );
@@ -2912,7 +2973,7 @@ void TestProcessingGui::testScaleWrapper()
     QCOMPARE( static_cast<QgsScaleWidget *>( wrapper.wrappedWidget() )->scale(), 0.0 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "num" ) );
@@ -2967,13 +3028,13 @@ void TestProcessingGui::testScaleWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -3006,7 +3067,7 @@ void TestProcessingGui::testScaleWrapper()
 
 void TestProcessingGui::testRangeWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingContext context;
 
     QgsProcessingParameterRange param( QStringLiteral( "range" ), QStringLiteral( "range" ), Qgis::ProcessingNumberParameterType::Double );
@@ -3041,7 +3102,7 @@ void TestProcessingGui::testRangeWrapper()
     QCOMPARE( wrapper.mMaxSpinBox->value(), 36.5 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "range" ) );
@@ -3127,13 +3188,13 @@ void TestProcessingGui::testRangeWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -3194,7 +3255,7 @@ void TestProcessingGui::testMatrixDialog()
 
 void TestProcessingGui::testMatrixWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingContext context;
 
     QgsProcessingParameterMatrix param( QStringLiteral( "matrix" ), QStringLiteral( "matrix" ), 3, false, QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
@@ -3218,7 +3279,7 @@ void TestProcessingGui::testMatrixWrapper()
     QCOMPARE( wrapper.mMatrixWidget->value(), QVariantList() << QStringLiteral( "28.1" ) << QStringLiteral( "36.5" ) << QStringLiteral( "5.5" ) << QStringLiteral( "8.9" ) );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "matrix" ) );
@@ -3239,13 +3300,13 @@ void TestProcessingGui::testMatrixWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -3287,7 +3348,7 @@ void TestProcessingGui::testExpressionWrapper()
   const QgsProcessingParameterDefinition *vLayerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
   const QgsProcessingParameterDefinition *pcLayerDef = new QgsProcessingParameterPointCloudLayer( "INPUT", QStringLiteral( "input" ), QVariant(), false );
 
-  auto testWrapper = [vLayerDef, pcLayerDef]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [vLayerDef, pcLayerDef]( Qgis::ProcessingMode type ) {
     QgsProcessingParameterExpression param( QStringLiteral( "expression" ), QStringLiteral( "expression" ) );
 
     QgsProcessingExpressionWidgetWrapper wrapper( &param, type );
@@ -3306,7 +3367,7 @@ void TestProcessingGui::testExpressionWrapper()
     QVERIFY( static_cast<QgsExpressionLineEdit *>( wrapper.wrappedWidget() )->expression().isEmpty() );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "expression" ) );
@@ -3465,13 +3526,13 @@ void TestProcessingGui::testExpressionWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -3534,7 +3595,7 @@ void TestProcessingGui::testFieldWrapper()
   const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
   const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
 
-  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [layerDef]( Qgis::ProcessingMode type ) {
     TestLayerWrapper layerWrapper( layerDef );
     QgsProject p;
     QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString?field=aaa:int&field=bbb:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
@@ -3558,12 +3619,12 @@ void TestProcessingGui::testFieldWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper.wrappedWidget() )->currentField(), QStringLiteral( "bbb" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), QStringLiteral( "bbb" ) );
         break;
     }
@@ -3593,18 +3654,18 @@ void TestProcessingGui::testFieldWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper2.wrappedWidget() )->currentField(), QString() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->text(), QString() );
         break;
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "field [optional]" ) );
@@ -3619,12 +3680,12 @@ void TestProcessingGui::testFieldWrapper()
     // check signal
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         static_cast<QgsFieldComboBox *>( wrapper2.wrappedWidget() )->setField( QStringLiteral( "bbb" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->setText( QStringLiteral( "bbb" ) );
         break;
     }
@@ -3633,12 +3694,12 @@ void TestProcessingGui::testFieldWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer(), vl );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -3649,12 +3710,12 @@ void TestProcessingGui::testFieldWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QVERIFY( !wrapper2.mComboBox->layer() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -3662,12 +3723,12 @@ void TestProcessingGui::testFieldWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QVERIFY( !wrapper2.mComboBox->layer() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     QVERIFY( !wrapper2.mParentLayer.get() );
@@ -3681,12 +3742,12 @@ void TestProcessingGui::testFieldWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer(), vl );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     QVERIFY( !wrapper2.mParentLayer.get() );
@@ -3697,12 +3758,12 @@ void TestProcessingGui::testFieldWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer()->publicSource(), pointFileName );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -3754,12 +3815,12 @@ void TestProcessingGui::testFieldWrapper()
     w = wrapper4.createWrappedWidget( context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper4.wrappedWidget() )->filters(), QgsFieldProxyModel::String );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     f2 = wrapper4.filterFields( f );
@@ -3774,13 +3835,13 @@ void TestProcessingGui::testFieldWrapper()
     wrapper4a.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper4a.mPanel->fields().count(), 1 );
         QCOMPARE( wrapper4a.mPanel->fields().at( 0 ).name(), QStringLiteral( "bbb" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     delete w;
@@ -3791,12 +3852,12 @@ void TestProcessingGui::testFieldWrapper()
     w = wrapper5.createWrappedWidget( context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper5.wrappedWidget() )->filters(), QgsFieldProxyModel::Numeric );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     f2 = wrapper5.filterFields( f );
@@ -3813,13 +3874,13 @@ void TestProcessingGui::testFieldWrapper()
     wrapper5a.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper5a.mPanel->fields().count(), 1 );
         QCOMPARE( wrapper5a.mPanel->fields().at( 0 ).name(), QStringLiteral( "aaa" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     delete w;
@@ -3830,12 +3891,12 @@ void TestProcessingGui::testFieldWrapper()
     w = wrapper6.createWrappedWidget( context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper6.wrappedWidget() )->filters(), QgsFieldProxyModel::Date | QgsFieldProxyModel::Time | QgsFieldProxyModel::DateTime );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     f2 = wrapper6.filterFields( f );
@@ -3850,12 +3911,12 @@ void TestProcessingGui::testFieldWrapper()
     w = wrapper7.createWrappedWidget( context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper7.wrappedWidget() )->filters(), QgsFieldProxyModel::Binary );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     f2 = wrapper7.filterFields( f );
@@ -3869,12 +3930,12 @@ void TestProcessingGui::testFieldWrapper()
     w = wrapper8.createWrappedWidget( context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsFieldComboBox *>( wrapper8.wrappedWidget() )->filters(), QgsFieldProxyModel::Boolean );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     f2 = wrapper8.filterFields( f );
@@ -3890,12 +3951,12 @@ void TestProcessingGui::testFieldWrapper()
     wrapper9.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper9.widgetValue().toList(), QVariantList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     delete w;
@@ -3912,25 +3973,25 @@ void TestProcessingGui::testFieldWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper10.widgetValue().toList(), QVariantList() << QStringLiteral( "bbb" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     delete w;
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -4299,7 +4360,7 @@ void TestProcessingGui::testBandWrapper()
   const QgsProcessingAlgorithm *statsAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:rasterlayerstatistics" ) );
   const QgsProcessingParameterDefinition *layerDef = statsAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
 
-  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [layerDef]( Qgis::ProcessingMode type ) {
     TestLayerWrapper layerWrapper( layerDef );
     QgsProject p;
     QgsRasterLayer *rl = new QgsRasterLayer( TEST_DATA_DIR + QStringLiteral( "/landsat.tif" ), QStringLiteral( "x" ), QStringLiteral( "gdal" ) );
@@ -4323,12 +4384,12 @@ void TestProcessingGui::testBandWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsRasterBandComboBox *>( wrapper.wrappedWidget() )->currentBand(), 3 );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), QStringLiteral( "3" ) );
         break;
     }
@@ -4339,12 +4400,12 @@ void TestProcessingGui::testBandWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsRasterBandComboBox *>( wrapper.wrappedWidget() )->currentBand(), 1 );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), QStringLiteral( "1" ) );
         break;
     }
@@ -4370,18 +4431,18 @@ void TestProcessingGui::testBandWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsRasterBandComboBox *>( wrapper2.wrappedWidget() )->currentBand(), -1 );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->text(), QString() );
         break;
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "band [optional]" ) );
@@ -4396,12 +4457,12 @@ void TestProcessingGui::testBandWrapper()
     // check signal
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         static_cast<QgsRasterBandComboBox *>( wrapper2.wrappedWidget() )->setBand( 6 );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->setText( QStringLiteral( "6" ) );
         break;
     }
@@ -4410,12 +4471,12 @@ void TestProcessingGui::testBandWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer(), rl );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -4426,12 +4487,12 @@ void TestProcessingGui::testBandWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QVERIFY( !wrapper2.mComboBox->layer() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -4439,12 +4500,12 @@ void TestProcessingGui::testBandWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QVERIFY( !wrapper2.mComboBox->layer() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     QVERIFY( !wrapper2.mParentLayer.get() );
@@ -4458,12 +4519,12 @@ void TestProcessingGui::testBandWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer(), rl );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     QVERIFY( !wrapper2.mParentLayer.get() );
@@ -4474,12 +4535,12 @@ void TestProcessingGui::testBandWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer()->publicSource(), rasterFileName );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -4547,13 +4608,13 @@ void TestProcessingGui::testBandWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -4595,7 +4656,7 @@ void TestProcessingGui::testMultipleInputWrapper()
   QString path1 = TEST_DATA_DIR + QStringLiteral( "/landsat-f32-b1.tif" );
   QString path2 = TEST_DATA_DIR + QStringLiteral( "/landsat.tif" );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     QgsProcessingParameterMultipleLayers param( QStringLiteral( "multi" ), QStringLiteral( "multi" ), Qgis::ProcessingSourceType::Vector, QVariant(), false );
 
     QgsProcessingMultipleLayerWidgetWrapper wrapper( &param, type );
@@ -4634,7 +4695,7 @@ void TestProcessingGui::testMultipleInputWrapper()
     QVERIFY( static_cast<QgsProcessingMultipleLayerPanelWidget *>( wrapper2.wrappedWidget() )->value().toList().isEmpty() );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "multi [optional]" ) );
@@ -4651,7 +4712,7 @@ void TestProcessingGui::testMultipleInputWrapper()
     QCOMPARE( spy2.count(), 3 );
 
 
-    if ( wrapper.type() == QgsProcessingGui::Modeler )
+    if ( wrapper.type() == Qgis::ProcessingMode::Modeler )
     {
       // different mix of sources
 
@@ -4671,13 +4732,13 @@ void TestProcessingGui::testMultipleInputWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -4965,7 +5026,7 @@ void TestProcessingGui::testEnumCheckboxPanel()
 
 void TestProcessingGui::testEnumWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type, bool checkboxStyle = false ) {
+  auto testWrapper = []( Qgis::ProcessingMode type, bool checkboxStyle = false ) {
     // non optional, single value
     QgsProcessingParameterEnum param( QStringLiteral( "enum" ), QStringLiteral( "enum" ), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ), false );
     QVariantMap metadata;
@@ -5007,7 +5068,7 @@ void TestProcessingGui::testEnumWrapper()
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "enum" ) );
@@ -5414,16 +5475,16 @@ void TestProcessingGui::testEnumWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // checkbox style (not for batch or model mode!)
-  testWrapper( QgsProcessingGui::Standard, true );
+  testWrapper( Qgis::ProcessingMode::Standard, true );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -5469,7 +5530,7 @@ void TestProcessingGui::testLayoutWrapper()
   l2->setName( "l2" );
   p.layoutManager()->addLayout( l2 );
 
-  auto testWrapper = [&p]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [&p]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterLayout param( QStringLiteral( "layout" ), QStringLiteral( "layout" ), false );
 
@@ -5486,7 +5547,7 @@ void TestProcessingGui::testLayoutWrapper()
     wrapper.setWidgetValue( "l2", context );
     QCOMPARE( spy.count(), 1 );
     QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "l2" ) );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper.wrappedWidget() )->currentIndex(), 1 );
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
@@ -5498,7 +5559,7 @@ void TestProcessingGui::testLayoutWrapper()
     wrapper.setWidgetValue( "l1", context );
     QCOMPARE( spy.count(), 2 );
     QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "l1" ) );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper.wrappedWidget() )->currentIndex(), 0 );
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
@@ -5509,7 +5570,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "layout" ) );
@@ -5522,7 +5583,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
 
     // check signal
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       static_cast<QComboBox *>( wrapper.wrappedWidget() )->setCurrentIndex( 1 );
     }
@@ -5546,7 +5607,7 @@ void TestProcessingGui::testLayoutWrapper()
     wrapper2.setWidgetValue( "l2", context );
     QCOMPARE( spy2.count(), 1 );
     QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "l2" ) );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper2.wrappedWidget() )->currentIndex(), 2 );
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l2" ) );
@@ -5558,7 +5619,7 @@ void TestProcessingGui::testLayoutWrapper()
     wrapper2.setWidgetValue( "l1", context );
     QCOMPARE( spy2.count(), 2 );
     QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "l1" ) );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper2.wrappedWidget() )->currentIndex(), 1 );
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
@@ -5570,7 +5631,7 @@ void TestProcessingGui::testLayoutWrapper()
     wrapper2.setWidgetValue( QVariant(), context );
     QCOMPARE( spy2.count(), 3 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( static_cast<QgsLayoutComboBox *>( wrapper2.wrappedWidget() )->currentIndex(), 0 );
       QVERIFY( static_cast<QgsLayoutComboBox *>( wrapper2.wrappedWidget() )->currentText().isEmpty() );
@@ -5581,7 +5642,7 @@ void TestProcessingGui::testLayoutWrapper()
     }
 
     // check signal
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
       static_cast<QComboBox *>( wrapper2.wrappedWidget() )->setCurrentIndex( 2 );
     else
       static_cast<QComboBox *>( wrapper2.wrappedWidget() )->setCurrentText( QStringLiteral( "aaa" ) );
@@ -5591,13 +5652,13 @@ void TestProcessingGui::testLayoutWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testLayoutItemWrapper()
@@ -5613,7 +5674,7 @@ void TestProcessingGui::testLayoutItemWrapper()
   label2->setId( "b" );
   l1->addLayoutItem( label2 );
 
-  auto testWrapper = [&p, l1, label1, label2]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [&p, l1, label1, label2]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterLayoutItem param( QStringLiteral( "layout" ), QStringLiteral( "layout" ), false );
 
@@ -5631,7 +5692,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
     wrapper.setWidgetValue( "b", context );
     QCOMPARE( spy.count(), 1 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper.widgetValue().toString(), label2->uuid() );
       QCOMPARE( static_cast<QgsLayoutItemComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
@@ -5643,7 +5704,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     }
     wrapper.setWidgetValue( "a", context );
     QCOMPARE( spy.count(), 2 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper.widgetValue().toString(), label1->uuid() );
       QCOMPARE( static_cast<QgsLayoutItemComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
@@ -5655,7 +5716,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "layout" ) );
@@ -5668,7 +5729,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     }
 
     // check signal
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       static_cast<QComboBox *>( wrapper.wrappedWidget() )->setCurrentIndex( 1 );
     }
@@ -5692,7 +5753,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
     wrapper2.setWidgetValue( "b", context );
     QCOMPARE( spy2.count(), 1 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper2.widgetValue().toString(), label2->uuid() );
       QCOMPARE( static_cast<QgsLayoutItemComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "b" ) );
@@ -5704,7 +5765,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     }
     wrapper2.setWidgetValue( "a", context );
     QCOMPARE( spy2.count(), 2 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper2.widgetValue().toString(), label1->uuid() );
       QCOMPARE( static_cast<QgsLayoutItemComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "a" ) );
@@ -5717,7 +5778,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     wrapper2.setWidgetValue( QVariant(), context );
     QCOMPARE( spy2.count(), 3 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QVERIFY( static_cast<QgsLayoutItemComboBox *>( wrapper2.wrappedWidget() )->currentText().isEmpty() );
     }
@@ -5727,7 +5788,7 @@ void TestProcessingGui::testLayoutItemWrapper()
     }
 
     // check signal
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
       static_cast<QgsLayoutItemComboBox *>( wrapper2.wrappedWidget() )->setCurrentIndex( 1 );
     else
       static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->setText( QStringLiteral( "aaa" ) );
@@ -5737,13 +5798,13 @@ void TestProcessingGui::testLayoutItemWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
 
   // config widget
@@ -5812,7 +5873,7 @@ void TestProcessingGui::testPointPanel()
 
 void TestProcessingGui::testPointWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterPoint param( QStringLiteral( "point" ), QStringLiteral( "point" ), false );
 
@@ -5824,7 +5885,7 @@ void TestProcessingGui::testPointWrapper()
     QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
     wrapper.setWidgetValue( "1,2", context );
     QCOMPARE( spy.count(), 1 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1.000000,2.000000" ) );
       QCOMPARE( static_cast<QgsProcessingPointPanel *>( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000" ) );
@@ -5836,7 +5897,7 @@ void TestProcessingGui::testPointWrapper()
     }
     wrapper.setWidgetValue( "1,2 [EPSG:3111]", context );
     QCOMPARE( spy.count(), 2 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
       QCOMPARE( static_cast<QgsProcessingPointPanel *>( wrapper.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
@@ -5848,7 +5909,7 @@ void TestProcessingGui::testPointWrapper()
     }
 
     // check signal
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       static_cast<QgsProcessingPointPanel *>( wrapper.wrappedWidget() )->mLineEdit->setText( QStringLiteral( "b" ) );
     }
@@ -5860,7 +5921,7 @@ void TestProcessingGui::testPointWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "point" ) );
@@ -5884,7 +5945,7 @@ void TestProcessingGui::testPointWrapper()
     QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
     wrapper2.setWidgetValue( "1,2", context );
     QCOMPARE( spy2.count(), 1 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( static_cast<QgsProcessingPointPanel *>( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000" ) );
       QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1.000000,2.000000" ) );
@@ -5897,7 +5958,7 @@ void TestProcessingGui::testPointWrapper()
 
     wrapper2.setWidgetValue( "1,2 [EPSG:3111]", context );
     QCOMPARE( spy2.count(), 2 );
-    if ( type != QgsProcessingGui::Modeler )
+    if ( type != Qgis::ProcessingMode::Modeler )
     {
       QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
       QCOMPARE( static_cast<QgsProcessingPointPanel *>( wrapper2.wrappedWidget() )->mLineEdit->text(), QStringLiteral( "1.000000,2.000000 [EPSG:3111]" ) );
@@ -5910,7 +5971,7 @@ void TestProcessingGui::testPointWrapper()
     wrapper2.setWidgetValue( QVariant(), context );
     QCOMPARE( spy2.count(), 3 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
-    if ( type == QgsProcessingGui::Modeler )
+    if ( type == Qgis::ProcessingMode::Modeler )
     {
       QVERIFY( static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->text().isEmpty() );
     }
@@ -5923,7 +5984,7 @@ void TestProcessingGui::testPointWrapper()
     wrapper2.setWidgetValue( "", context );
     QCOMPARE( spy2.count(), 5 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
-    if ( type == QgsProcessingGui::Modeler )
+    if ( type == Qgis::ProcessingMode::Modeler )
     {
       QVERIFY( static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->text().isEmpty() );
     }
@@ -5935,7 +5996,7 @@ void TestProcessingGui::testPointWrapper()
     // check signals
     wrapper2.setWidgetValue( "1,3", context );
     QCOMPARE( spy2.count(), 6 );
-    if ( type == QgsProcessingGui::Modeler )
+    if ( type == Qgis::ProcessingMode::Modeler )
     {
       static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->clear();
     }
@@ -5949,13 +6010,13 @@ void TestProcessingGui::testPointWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingContext context;
@@ -5989,7 +6050,7 @@ void TestProcessingGui::testPointWrapper()
 
 void TestProcessingGui::testGeometryWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterGeometry param( QStringLiteral( "geometry" ), QStringLiteral( "geometry" ), false );
 
@@ -6009,7 +6070,7 @@ void TestProcessingGui::testGeometryWrapper()
     QVERIFY( static_cast<QgsGeometryWidget *>( wrapper.wrappedWidget() )->geometryValue().asWkt().isEmpty() );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "geometry" ) );
@@ -6059,14 +6120,14 @@ void TestProcessingGui::testGeometryWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
 
   // config widget
@@ -6103,7 +6164,7 @@ void TestProcessingGui::testGeometryWrapper()
 
 void TestProcessingGui::testExtentWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterExtent param( QStringLiteral( "extent" ), QStringLiteral( "extent" ), false );
 
@@ -6129,7 +6190,7 @@ void TestProcessingGui::testExtentWrapper()
     QCOMPARE( spy.count(), 3 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "extent" ) );
@@ -6189,13 +6250,13 @@ void TestProcessingGui::testExtentWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingContext context;
@@ -6228,7 +6289,7 @@ void TestProcessingGui::testExtentWrapper()
 
 void TestProcessingGui::testColorWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingParameterColor param( QStringLiteral( "color" ), QStringLiteral( "color" ) );
 
     QgsProcessingColorWidgetWrapper wrapper( &param, type );
@@ -6249,7 +6310,7 @@ void TestProcessingGui::testColorWrapper()
     QVERIFY( !static_cast<QgsColorButton *>( wrapper.wrappedWidget() )->color().isValid() );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "color" ) );
@@ -6293,13 +6354,13 @@ void TestProcessingGui::testColorWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -6335,7 +6396,7 @@ void TestProcessingGui::testColorWrapper()
 
 void TestProcessingGui::testCoordinateOperationWrapper()
 {
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingParameterCoordinateOperation param( QStringLiteral( "op" ), QStringLiteral( "op" ) );
 
     QgsProcessingCoordinateOperationWidgetWrapper wrapper( &param, type );
@@ -6351,7 +6412,7 @@ void TestProcessingGui::testCoordinateOperationWrapper()
     QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
+      case Qgis::ProcessingMode::Standard:
       {
         QCOMPARE( static_cast<QgsCoordinateOperationWidget *>( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
         wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
@@ -6366,8 +6427,8 @@ void TestProcessingGui::testCoordinateOperationWrapper()
         break;
       }
 
-      case QgsProcessingGui::Modeler:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Modeler:
+      case Qgis::ProcessingMode::Batch:
       {
         QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
         wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
@@ -6382,7 +6443,7 @@ void TestProcessingGui::testCoordinateOperationWrapper()
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "op" ) );
@@ -6398,13 +6459,13 @@ void TestProcessingGui::testCoordinateOperationWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -7022,7 +7083,7 @@ void TestProcessingGui::testMapLayerWrapper()
   QgsRasterLayer *raster = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "band1_byte" ) );
   QgsProject::instance()->addMapLayer( raster );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterMapLayer param( QStringLiteral( "layer" ), QStringLiteral( "layer" ), false );
 
@@ -7036,9 +7097,9 @@ void TestProcessingGui::testMapLayerWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -7070,11 +7131,11 @@ void TestProcessingGui::testMapLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), raster->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte" ) );
         break;
     }
@@ -7087,12 +7148,12 @@ void TestProcessingGui::testMapLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), polygon->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1 [EPSG:4326]" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
         break;
     }
@@ -7116,11 +7177,11 @@ void TestProcessingGui::testMapLayerWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), raster->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte" ) );
         break;
     }
@@ -7131,7 +7192,7 @@ void TestProcessingGui::testMapLayerWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "layer" ) );
@@ -7145,13 +7206,13 @@ void TestProcessingGui::testMapLayerWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -7191,7 +7252,7 @@ void TestProcessingGui::testRasterLayerWrapper()
   QgsRasterLayer *raster2 = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "band1_byte2" ) );
   QgsProject::instance()->addMapLayer( raster2 );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterRasterLayer param( QStringLiteral( "raster" ), QStringLiteral( "raster" ), false );
 
@@ -7205,9 +7266,9 @@ void TestProcessingGui::testRasterLayerWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -7239,11 +7300,11 @@ void TestProcessingGui::testRasterLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), raster->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte" ) );
         break;
     }
@@ -7256,12 +7317,12 @@ void TestProcessingGui::testRasterLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), raster2->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte2 [EPSG:4326]" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte2" ) );
         break;
     }
@@ -7285,11 +7346,11 @@ void TestProcessingGui::testRasterLayerWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), raster->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte" ) );
         break;
     }
@@ -7300,7 +7361,7 @@ void TestProcessingGui::testRasterLayerWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "raster" ) );
@@ -7314,13 +7375,13 @@ void TestProcessingGui::testRasterLayerWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testVectorLayerWrapper()
@@ -7336,7 +7397,7 @@ void TestProcessingGui::testVectorLayerWrapper()
   QgsVectorLayer *noGeom = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( noGeom );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterVectorLayer param( QStringLiteral( "vector" ), QStringLiteral( "vector" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ), false );
 
@@ -7350,9 +7411,9 @@ void TestProcessingGui::testVectorLayerWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -7384,11 +7445,11 @@ void TestProcessingGui::testVectorLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), point->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "point [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "point" ) );
         break;
     }
@@ -7401,12 +7462,12 @@ void TestProcessingGui::testVectorLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), polygon->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1 [EPSG:4326]" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
         break;
     }
@@ -7430,11 +7491,11 @@ void TestProcessingGui::testVectorLayerWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), point->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "point [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "point" ) );
         break;
     }
@@ -7445,7 +7506,7 @@ void TestProcessingGui::testVectorLayerWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "vector" ) );
@@ -7459,13 +7520,13 @@ void TestProcessingGui::testVectorLayerWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -7509,7 +7570,7 @@ void TestProcessingGui::testFeatureSourceWrapper()
   QgsVectorLayer *noGeom = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( noGeom );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterFeatureSource param( QStringLiteral( "source" ), QStringLiteral( "source" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ), false );
 
@@ -7523,9 +7584,9 @@ void TestProcessingGui::testFeatureSourceWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -7557,11 +7618,11 @@ void TestProcessingGui::testFeatureSourceWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), point->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "point [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "point" ) );
         break;
     }
@@ -7574,12 +7635,12 @@ void TestProcessingGui::testFeatureSourceWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), polygon->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1 [EPSG:4326]" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
         break;
     }
@@ -7603,11 +7664,11 @@ void TestProcessingGui::testFeatureSourceWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), point->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "point [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "point" ) );
         break;
     }
@@ -7618,7 +7679,7 @@ void TestProcessingGui::testFeatureSourceWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "source" ) );
@@ -7632,13 +7693,13 @@ void TestProcessingGui::testFeatureSourceWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -7684,7 +7745,7 @@ void TestProcessingGui::testMeshLayerWrapper()
   mesh2->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QgsProject::instance()->addMapLayer( mesh2 );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterMeshLayer param( QStringLiteral( "mesh" ), QStringLiteral( "mesh" ), false );
 
@@ -7698,9 +7759,9 @@ void TestProcessingGui::testMeshLayerWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -7732,11 +7793,11 @@ void TestProcessingGui::testMeshLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), mesh2->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "mesh2 [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "mesh2" ) );
         break;
     }
@@ -7749,12 +7810,12 @@ void TestProcessingGui::testMeshLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), mesh->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "mesh1 [EPSG:4326]" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "mesh1" ) );
         break;
     }
@@ -7778,11 +7839,11 @@ void TestProcessingGui::testMeshLayerWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), mesh2->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "mesh2 [EPSG:4326]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "mesh2" ) );
         break;
     }
@@ -7793,7 +7854,7 @@ void TestProcessingGui::testMeshLayerWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "mesh" ) );
@@ -7807,13 +7868,13 @@ void TestProcessingGui::testMeshLayerWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::paramConfigWidget()
@@ -7853,7 +7914,7 @@ void TestProcessingGui::testMapThemeWrapper()
 
   QCOMPARE( p.mapThemeCollection()->mapThemes(), QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "bb" ) );
 
-  auto testWrapper = [&p]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [&p]( Qgis::ProcessingMode type ) {
     // non optional, no existing themes
     QgsProcessingParameterMapTheme param( QStringLiteral( "theme" ), QStringLiteral( "theme" ), false );
 
@@ -7867,8 +7928,8 @@ void TestProcessingGui::testMapThemeWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         // batch or standard mode, only valid themes can be set!
         QCOMPARE( spy.count(), 0 );
         QVERIFY( !wrapper.widgetValue().isValid() );
@@ -7879,7 +7940,7 @@ void TestProcessingGui::testMapThemeWrapper()
         QCOMPARE( static_cast<QComboBox *>( wrapper.wrappedWidget() )->currentIndex(), -1 );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -7938,7 +7999,7 @@ void TestProcessingGui::testMapThemeWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "theme" ) );
@@ -7952,13 +8013,13 @@ void TestProcessingGui::testMapThemeWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
 
   // config widget
@@ -7998,7 +8059,7 @@ void TestProcessingGui::testMapThemeWrapper()
 
 void TestProcessingGui::testDateTimeWrapper()
 {
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional, no existing themes
     QgsProcessingParameterDateTime param( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), Qgis::ProcessingDateTimeParameterDataType::DateTime, QVariant(), false );
 
@@ -8093,7 +8154,7 @@ void TestProcessingGui::testDateTimeWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "datetime" ) );
@@ -8107,13 +8168,13 @@ void TestProcessingGui::testDateTimeWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -8153,7 +8214,7 @@ void TestProcessingGui::testProviderConnectionWrapper()
   md->saveConnection( conn, QStringLiteral( "aa" ) );
   md->saveConnection( conn, QStringLiteral( "bb" ) );
 
-  auto testWrapper = []( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
     QgsProcessingParameterProviderConnection param( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "ogr" ), false );
 
     QgsProcessingProviderConnectionWidgetWrapper wrapper( &param, type );
@@ -8174,8 +8235,8 @@ void TestProcessingGui::testProviderConnectionWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         // batch or standard mode, only valid connections can be set!
         // not valid
@@ -8185,7 +8246,7 @@ void TestProcessingGui::testProviderConnectionWrapper()
         QCOMPARE( static_cast<QComboBox *>( wrapper.wrappedWidget() )->currentIndex(), -1 );
         break;
       }
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         // invalid connections permitted
         wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
         QCOMPARE( spy.count(), 3 );
@@ -8218,7 +8279,7 @@ void TestProcessingGui::testProviderConnectionWrapper()
     QVERIFY( !wrapper3.widgetValue().isValid() );
     delete w;
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "connection" ) );
@@ -8232,13 +8293,13 @@ void TestProcessingGui::testProviderConnectionWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -8292,7 +8353,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   const QStringList schemas = dynamic_cast<QgsAbstractDatabaseProviderConnection *>( conn )->schemas();
   QVERIFY( !schemas.isEmpty() );
 
-  auto testWrapper = [&schemas]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [&schemas]( Qgis::ProcessingMode type ) {
     QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), QVariant(), true );
     TestLayerWrapper connWrapper( &connParam );
 
@@ -8326,8 +8387,8 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         // batch or standard mode, only valid schemas can be set!
         // not valid
@@ -8337,7 +8398,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
         QCOMPARE( static_cast<QgsDatabaseSchemaComboBox *>( wrapper.wrappedWidget() )->comboBox()->currentIndex(), -1 );
         break;
       }
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         // invalid schemas permitted
         wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
         QCOMPARE( spy.count(), 3 );
@@ -8357,14 +8418,14 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         QCOMPARE( spy.count(), 3 );
         break;
       }
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 5 );
         break;
     }
@@ -8373,14 +8434,14 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
     wrapper.setWidgetValue( QStringLiteral( "qgis_test" ), context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         QVERIFY( !wrapper.widgetValue().isValid() );
         break;
       }
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         // invalid schemas permitted
         QCOMPARE( spy.count(), 6 );
         QCOMPARE( static_cast<QgsDatabaseSchemaComboBox *>( wrapper.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "qgis_test" ) );
@@ -8414,7 +8475,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
 
     delete w;
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "schema" ) );
@@ -8428,13 +8489,13 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -8493,7 +8554,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
 
   QVERIFY( !tableNames.isEmpty() );
 
-  auto testWrapper = [&tableNames]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [&tableNames]( Qgis::ProcessingMode type ) {
     QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), QVariant(), true );
     TestLayerWrapper connWrapper( &connParam );
     QgsProcessingParameterDatabaseSchema schemaParam( QStringLiteral( "schema" ), QStringLiteral( "schema" ), QStringLiteral( "connection" ), QVariant(), true );
@@ -8531,8 +8592,8 @@ void TestProcessingGui::testDatabaseTableWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         // batch or standard mode, only valid tables can be set!
         // not valid
@@ -8542,7 +8603,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
         QCOMPARE( static_cast<QgsDatabaseTableComboBox *>( wrapper.wrappedWidget() )->comboBox()->currentIndex(), -1 );
         break;
       }
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         // invalid tables permitted
         wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
         QCOMPARE( spy.count(), 3 );
@@ -8562,14 +8623,14 @@ void TestProcessingGui::testDatabaseTableWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         QCOMPARE( spy.count(), 3 );
         break;
       }
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 5 );
         break;
     }
@@ -8578,14 +8639,14 @@ void TestProcessingGui::testDatabaseTableWrapper()
     wrapper.setWidgetValue( QStringLiteral( "some_poly_data" ), context );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
       {
         QVERIFY( !wrapper.widgetValue().isValid() );
         break;
       }
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         // invalid tables permitted
         QCOMPARE( spy.count(), 6 );
         QCOMPARE( static_cast<QgsDatabaseTableComboBox *>( wrapper.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "some_poly_data" ) );
@@ -8651,7 +8712,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
 
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "table" ) );
@@ -8665,13 +8726,13 @@ void TestProcessingGui::testDatabaseTableWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -8748,7 +8809,7 @@ void TestProcessingGui::testFieldMapWrapper()
   const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
   const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
 
-  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [layerDef]( Qgis::ProcessingMode type ) {
     QgsProcessingParameterFieldMapping param( QStringLiteral( "mapping" ), QStringLiteral( "mapping" ) );
 
     QgsProcessingFieldMapWidgetWrapper wrapper( &param, type );
@@ -8791,7 +8852,7 @@ void TestProcessingGui::testFieldMapWrapper()
     QCOMPARE( static_cast<QgsProcessingFieldMapPanelWidget *>( wrapper.wrappedWidget() )->value().toList().size(), 1 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "mapping" ) );
@@ -8871,13 +8932,13 @@ void TestProcessingGui::testFieldMapWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -8948,7 +9009,7 @@ void TestProcessingGui::testAggregateWrapper()
   const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
   const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
 
-  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [layerDef]( Qgis::ProcessingMode type ) {
     QgsProcessingParameterAggregate param( QStringLiteral( "mapping" ), QStringLiteral( "mapping" ) );
 
     QgsProcessingAggregateWidgetWrapper wrapper( &param, type );
@@ -8993,7 +9054,7 @@ void TestProcessingGui::testAggregateWrapper()
     QCOMPARE( static_cast<QgsProcessingAggregatePanelWidget *>( wrapper.wrappedWidget() )->value().toList().size(), 1 );
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "mapping" ) );
@@ -9074,13 +9135,13 @@ void TestProcessingGui::testAggregateWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
@@ -9929,7 +9990,7 @@ void TestProcessingGui::testFeatureSourceOptionsWidget()
 
 void TestProcessingGui::testVectorOutWrapper()
 {
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterVectorDestination param( QStringLiteral( "vector" ), QStringLiteral( "vector" ) );
 
@@ -9943,9 +10004,9 @@ void TestProcessingGui::testVectorOutWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
@@ -9978,7 +10039,7 @@ void TestProcessingGui::testVectorOutWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "vector" ) );
@@ -9992,18 +10053,18 @@ void TestProcessingGui::testVectorOutWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  // testWrapper( QgsProcessingGui::Batch );
+  // testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testSinkWrapper()
 {
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterFeatureSink param( QStringLiteral( "sink" ), QStringLiteral( "sink" ) );
 
@@ -10017,9 +10078,9 @@ void TestProcessingGui::testSinkWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
@@ -10052,7 +10113,7 @@ void TestProcessingGui::testSinkWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "sink" ) );
@@ -10066,18 +10127,18 @@ void TestProcessingGui::testSinkWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  // testWrapper( QgsProcessingGui::Batch );
+  // testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testRasterOutWrapper()
 {
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterRasterDestination param( QStringLiteral( "raster" ), QStringLiteral( "raster" ) );
 
@@ -10091,9 +10152,9 @@ void TestProcessingGui::testRasterOutWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/bb.tif" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/bb.tif" ) );
@@ -10126,7 +10187,7 @@ void TestProcessingGui::testRasterOutWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "raster" ) );
@@ -10140,18 +10201,18 @@ void TestProcessingGui::testRasterOutWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  // testWrapper( QgsProcessingGui::Batch );
+  // testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testFileOutWrapper()
 {
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterFileDestination param( QStringLiteral( "file" ), QStringLiteral( "file" ) );
 
@@ -10165,9 +10226,9 @@ void TestProcessingGui::testFileOutWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/bb.tif" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().toString(), QStringLiteral( "/bb.tif" ) );
@@ -10200,7 +10261,7 @@ void TestProcessingGui::testFileOutWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "file" ) );
@@ -10214,18 +10275,18 @@ void TestProcessingGui::testFileOutWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  // testWrapper( QgsProcessingGui::Batch );
+  // testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testFolderOutWrapper()
 {
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterFolderDestination param( QStringLiteral( "folder" ), QStringLiteral( "folder" ) );
 
@@ -10239,9 +10300,9 @@ void TestProcessingGui::testFolderOutWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/bb" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().toString(), QStringLiteral( "/bb" ) );
@@ -10274,7 +10335,7 @@ void TestProcessingGui::testFolderOutWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "folder" ) );
@@ -10288,13 +10349,13 @@ void TestProcessingGui::testFolderOutWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  // testWrapper( QgsProcessingGui::Batch );
+  // testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testTinInputLayerWrapper()
@@ -10767,7 +10828,7 @@ void TestProcessingGui::testPointCloudLayerWrapper()
   QVERIFY( cloud2->isValid() );
   QgsProject::instance()->addMapLayer( cloud2 );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterPointCloudLayer param( QStringLiteral( "cloud" ), QStringLiteral( "cloud" ), false );
 
@@ -10781,9 +10842,9 @@ void TestProcessingGui::testPointCloudLayerWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( spy.count(), 1 );
         QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
@@ -10815,11 +10876,11 @@ void TestProcessingGui::testPointCloudLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), cloud2->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud2 [EPSG:28356]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud2" ) );
         break;
     }
@@ -10832,12 +10893,12 @@ void TestProcessingGui::testPointCloudLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), cloud1->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud1 [EPSG:28356]" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud1" ) );
         break;
     }
@@ -10861,11 +10922,11 @@ void TestProcessingGui::testPointCloudLayerWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), cloud2->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "cloud2 [EPSG:28356]" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QgsProcessingMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "cloud2" ) );
         break;
     }
@@ -10875,7 +10936,7 @@ void TestProcessingGui::testPointCloudLayerWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "cloud" ) );
@@ -10889,13 +10950,13 @@ void TestProcessingGui::testPointCloudLayerWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testAnnotationLayerWrapper()
@@ -10906,7 +10967,7 @@ void TestProcessingGui::testAnnotationLayerWrapper()
   QVERIFY( layer1->isValid() );
   QgsProject::instance()->addMapLayer( layer1 );
 
-  auto testWrapper = [=]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [=]( Qgis::ProcessingMode type ) {
     // non optional
     QgsProcessingParameterAnnotationLayer param( QStringLiteral( "annotation" ), QStringLiteral( "annotation" ), false );
 
@@ -10933,11 +10994,11 @@ void TestProcessingGui::testAnnotationLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), layer1->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( qgis::down_cast<QgsMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( qgis::down_cast<QgsMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
         break;
     }
@@ -10950,12 +11011,12 @@ void TestProcessingGui::testAnnotationLayerWrapper()
     QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "main" ) );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( qgis::down_cast<QgsMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "Annotations" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( qgis::down_cast<QgsMapLayerComboBox *>( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "Annotations" ) );
         break;
     }
@@ -10979,11 +11040,11 @@ void TestProcessingGui::testAnnotationLayerWrapper()
     QCOMPARE( wrapper3.widgetValue().toString(), layer1->id() );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( qgis::down_cast<QgsMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
         break;
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( qgis::down_cast<QgsMapLayerComboBox *>( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "secondary annotations" ) );
         break;
     }
@@ -10993,7 +11054,7 @@ void TestProcessingGui::testAnnotationLayerWrapper()
     delete w;
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "annotation" ) );
@@ -11007,20 +11068,20 @@ void TestProcessingGui::testAnnotationLayerWrapper()
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testPointCloudAttributeWrapper()
 {
   const QgsProcessingParameterDefinition *layerDef = new QgsProcessingParameterPointCloudLayer( "INPUT", QStringLiteral( "input" ), QVariant(), false );
 
-  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type ) {
+  auto testWrapper = [layerDef]( Qgis::ProcessingMode type ) {
     TestLayerWrapper layerWrapper( layerDef );
     QgsProject p;
     QgsPointCloudLayer *pcl = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/copc/rgb.copc.laz", QStringLiteral( "x" ), QStringLiteral( "copc" ) );
@@ -11044,12 +11105,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsPointCloudAttributeComboBox *>( wrapper.wrappedWidget() )->currentAttribute(), QStringLiteral( "Red" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), QStringLiteral( "Red" ) );
         break;
     }
@@ -11079,18 +11140,18 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( static_cast<QgsPointCloudAttributeComboBox *>( wrapper2.wrappedWidget() )->currentAttribute(), QString() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         QCOMPARE( static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->text(), QString() );
         break;
     }
 
     QLabel *l = wrapper.createWrappedLabel();
-    if ( wrapper.type() != QgsProcessingGui::Batch )
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
     {
       QVERIFY( l );
       QCOMPARE( l->text(), QStringLiteral( "attribute [optional]" ) );
@@ -11105,12 +11166,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
     // check signal
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         static_cast<QgsPointCloudAttributeComboBox *>( wrapper2.wrappedWidget() )->setAttribute( QStringLiteral( "Red" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         static_cast<QLineEdit *>( wrapper2.wrappedWidget() )->setText( QStringLiteral( "Red" ) );
         break;
     }
@@ -11119,12 +11180,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer(), pcl );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -11135,12 +11196,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
 
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QVERIFY( !wrapper2.mComboBox->layer() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -11148,12 +11209,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QVERIFY( !wrapper2.mComboBox->layer() );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     QVERIFY( !wrapper2.mParentLayer.get() );
@@ -11167,12 +11228,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer(), pcl );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     QVERIFY( !wrapper2.mParentLayer.get() );
@@ -11183,12 +11244,12 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
     wrapper2.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper2.mComboBox->layer()->publicSource(), pointCloudFileName );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
 
@@ -11228,25 +11289,25 @@ void TestProcessingGui::testPointCloudAttributeWrapper()
     wrapper4.setParentLayerWrapperValue( &layerWrapper );
     switch ( type )
     {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
+      case Qgis::ProcessingMode::Standard:
+      case Qgis::ProcessingMode::Batch:
         QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << QStringLiteral( "X" ) << QStringLiteral( "Y" ) << QStringLiteral( "Z" ) << QStringLiteral( "Intensity" ) << QStringLiteral( "ReturnNumber" ) << QStringLiteral( "NumberOfReturns" ) << QStringLiteral( "ScanDirectionFlag" ) << QStringLiteral( "EdgeOfFlightLine" ) << QStringLiteral( "Classification" ) << QStringLiteral( "ScanAngleRank" ) << QStringLiteral( "UserData" ) << QStringLiteral( "PointSourceId" ) << QStringLiteral( "Synthetic" ) << QStringLiteral( "KeyPoint" ) << QStringLiteral( "Withheld" ) << QStringLiteral( "Overlap" ) << QStringLiteral( "ScannerChannel" ) << QStringLiteral( "GpsTime" ) << QStringLiteral( "Red" ) << QStringLiteral( "Green" ) << QStringLiteral( "Blue" ) );
         break;
 
-      case QgsProcessingGui::Modeler:
+      case Qgis::ProcessingMode::Modeler:
         break;
     }
     delete w;
   };
 
   // standard wrapper
-  testWrapper( QgsProcessingGui::Standard );
+  testWrapper( Qgis::ProcessingMode::Standard );
 
   // batch wrapper
-  testWrapper( QgsProcessingGui::Batch );
+  testWrapper( Qgis::ProcessingMode::Batch );
 
   // modeler wrapper
-  testWrapper( QgsProcessingGui::Modeler );
+  testWrapper( Qgis::ProcessingMode::Modeler );
 
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;

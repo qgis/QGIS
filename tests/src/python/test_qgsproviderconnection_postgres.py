@@ -941,6 +941,75 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         table_names = self._table_names(connUnprivilegedUser.tables(schema))
         self.assertNotIn("layer_w_role", table_names)
 
+    def test_rename_field(self):
+        """Test rename fields"""
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        CREATE TABLE qgis_test.rename_field (id SERIAL PRIMARY KEY);
+        ALTER TABLE qgis_test.rename_field ADD COLUMN geom geometry(POINT,4326);
+        ALTER TABLE qgis_test.rename_field ADD COLUMN column_1 TEXT;
+        INSERT INTO qgis_test.rename_field (id, geom, column_1) VALUES (221, ST_GeomFromText('point(9 45)', 4326), 'text');
+        """
+
+        conn.executeSql(sql)
+        fields = conn.fields("qgis_test", "rename_field")
+        self.assertEqual(fields.names(), ["id", "geom", "column_1"])
+
+        conn.renameField("qgis_test", "rename_field", "column_1", "new_column")
+
+        fields = conn.fields("qgis_test", "rename_field")
+        self.assertEqual(fields.names(), ["id", "geom", "new_column"])
+
+    def test_move_table_to_schema(self):
+        """Test that table can be moved to another schema."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.table_to_move;
+        CREATE TABLE qgis_test.table_to_move (
+            id SERIAL PRIMARY KEY,
+            geom geometry(Geometry,4326)
+        );
+        CREATE SCHEMA schema_test;
+        """
+
+        conn.executeSql(sql)
+
+        # test table exist
+        table = conn.table("qgis_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
+        # test fail in move - target schema does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move",
+                "schema_test_non_existent",
+            )
+
+        # test fail in move - table does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move_non_existent",
+                "schema_test",
+            )
+
+        # move table to another schema
+        conn.moveTableToSchema(
+            "qgis_test",
+            "table_to_move",
+            "schema_test",
+        )
+
+        # test moved table exist in the schema
+        table = conn.table("schema_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
 
 if __name__ == "__main__":
     unittest.main()

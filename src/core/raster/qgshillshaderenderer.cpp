@@ -23,6 +23,7 @@
 #include "qgsrasterblock.h"
 #include "qgsrectangle.h"
 #include "qgsmessagelog.h"
+#include "qgssldexportcontext.h"
 #include <memory>
 
 #ifdef HAVE_OPENCL
@@ -596,13 +597,20 @@ bool QgsHillshadeRenderer::setInputBand( int band )
 
 void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
   // create base structure
-  QgsRasterRenderer::toSld( doc, element, props );
+  QgsRasterRenderer::toSld( doc, element, context );
 
   // look for RasterSymbolizer tag
   QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
   if ( elements.size() == 0 )
-    return;
+    return false;
 
   // there SHOULD be only one
   QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
@@ -672,4 +680,6 @@ void QgsHillshadeRenderer::toSld( QDomDocument &doc, QDomElement &element, const
   multidirectionalVendorOptionElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "multidirectional" ) );
   multidirectionalVendorOptionElem.appendChild( doc.createTextNode( QString::number( multiDirectional() ) ) );
   shadedReliefElem.appendChild( multidirectionalVendorOptionElem );
+
+  return true;
 }

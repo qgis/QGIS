@@ -1,7 +1,7 @@
 ARG DISTRO_VERSION=39
 
-FROM fedora:${DISTRO_VERSION} as binary-for-oracle
-MAINTAINER Matthias Kuhn <matthias@opengis.ch>
+FROM fedora:${DISTRO_VERSION} AS binary-for-oracle
+LABEL org.opencontainers.image.authors="Matthias Kuhn <matthias@opengis.ch>"
 
 RUN dnf -y --refresh install \
     bison \
@@ -32,6 +32,7 @@ RUN dnf -y --refresh install \
     libxml2-devel \
     libzip-devel \
     libzstd-devel \
+    libaio \
     mold \
     netcdf-devel \
     ninja-build \
@@ -102,16 +103,17 @@ RUN unzip -n instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
 RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
 ENV PATH="/instantclient_21_16:${PATH}"
-ENV LD_LIBRARY_PATH="/instantclient_21_16:${LD_LIBRARY_PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_21_16"
 
 ENV LANG=C.UTF-8
 
-FROM binary-for-oracle as binary-only
+FROM binary-for-oracle AS binary-only
 
 RUN dnf -y install \
     python3-gdal \
     python3-nose2 \
     python3-psycopg2 \
-    python3-pyyaml
+    python3-pyyaml \
+    python3-shapely
 
 FROM binary-only

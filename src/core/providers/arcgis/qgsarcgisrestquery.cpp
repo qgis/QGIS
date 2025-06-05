@@ -107,9 +107,12 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   QUrlQuery query( queryUrl );
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   query.addQueryItem( QStringLiteral( "objectIds" ), ids.join( QLatin1Char( ',' ) ) );
-  const QString wkid = crs.indexOf( QLatin1Char( ':' ) ) >= 0 ? crs.split( ':' )[1] : QString();
-  query.addQueryItem( QStringLiteral( "inSR" ), wkid );
-  query.addQueryItem( QStringLiteral( "outSR" ), wkid );
+  if ( !crs.isEmpty() && crs.contains( ':' ) )
+  {
+    const QString wkid = crs.indexOf( QLatin1Char( ':' ) ) >= 0 ? crs.split( ':' )[1] : QString();
+    query.addQueryItem( QStringLiteral( "inSR" ), wkid );
+    query.addQueryItem( QStringLiteral( "outSR" ), wkid );
+  }
 
   query.addQueryItem( QStringLiteral( "returnGeometry" ), fetchGeometry ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 

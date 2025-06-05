@@ -75,6 +75,12 @@ class GUI_EXPORT QgsEditorWidgetFactory
     QString name() const;
 
     /**
+     * Returns true if this widget is a read-only widget.
+     * \since QGIS 3.44
+     */
+    virtual bool isReadOnly() const { return false; }
+
+    /**
      * Override this in your implementation.
      * Create a new configuration widget for this widget type.
      *

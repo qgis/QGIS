@@ -43,6 +43,7 @@ class QgsGenerateElevationProfileAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsGenerateElevationProfileAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

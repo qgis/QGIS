@@ -138,6 +138,20 @@ Returns ``True`` if ``path`` represents base64 encoded data.
 .. versionadded:: 3.40
 %End
 
+    virtual bool invalidateCacheEntry( const QString &path );
+%Docstring
+Invalidates a cache entry for the specified ``path``.
+
+If an entry exists for the given ``path``, it will be removed from the
+cache.
+
+:param path: The path of the cache entry to invalidate.
+
+:return: ``True`` if an entry was invalidated, ``False`` otherwise.
+
+.. versionadded:: 3.44
+%End
+
   signals:
 
     void remoteContentFetched( const QString &url );

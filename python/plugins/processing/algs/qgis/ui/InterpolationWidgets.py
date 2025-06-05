@@ -425,10 +425,16 @@ class PixelSizeWidgetWrapper(WidgetWrapper):
             return
 
         for wrapper in wrappers:
-            if wrapper.parameterDefinition().name() == self.param.layersData:
+            if (
+                wrapper.parameterDefinition().name()
+                == self.parameterDefinition().layersData
+            ):
                 self.setLayers(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.layersChanged)
-            elif wrapper.parameterDefinition().name() == self.param.extent:
+            elif (
+                wrapper.parameterDefinition().name()
+                == self.parameterDefinition().extent
+            ):
                 self.setExtent(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.extentChanged)
 

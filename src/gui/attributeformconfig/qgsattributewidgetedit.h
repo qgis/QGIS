@@ -21,18 +21,16 @@
 
 #include <QWidget>
 
-#include "qgsattributesformproperties.h"
-
+#include "qgsattributesformmodel.h"
 #include "ui_qgsattributewidgeteditgroupbox.h"
 #include "ui_qgsattributewidgetrelationeditwidget.h"
-
 #include "qgis_gui.h"
 
-class QTreeWidgetItem;
 class QgsAbstractRelationEditorConfigWidget;
 
 /**
- * Widget to edit the configuration (tab or group box, any field or relation, QML, …) of a form item
+ * Widget to edit the configuration (tab, group box, row, any field or relation, QML, …) of a form item
+ *
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private Ui_QgsAttributeWidgetEditGroupBox
@@ -40,10 +38,21 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     Q_OBJECT
 
   public:
-    explicit QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent = nullptr );
+    explicit QgsAttributeWidgetEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QWidget *parent = nullptr );
 
+    /**
+     * Updates the contents of the \a itemData object based on the widget status.
+     *
+     * \since QGIS 3.44
+     */
+    void updateItemData( QgsAttributesFormData::AttributeFormItemData &itemData ) const;
 
-    void updateItemData();
+    /**
+     * Returns an updated relation editor configuration based on the widget status.
+     *
+     * \since QGIS 3.44
+     */
+    QgsAttributesFormData::RelationEditorConfiguration updatedRelationConfiguration() const;
 
     // Methods to update widget status
     void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
@@ -51,10 +60,16 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
     void setHorizontalStretch( const int horizontalStretch );
     void setVerticalStretch( const int verticalStretch );
 
+    /**
+     * Sets up the relation specific widget based on a \a configuration object and on a \a relationId.
+     *
+     * \since QGIS 3.44
+     */
+    void setRelationSpecificWidget( const QgsAttributesFormData::RelationEditorConfiguration &configuration, const QString &relationId );
+
   private:
     void showRelationButtons( bool show );
 
-    QTreeWidgetItem *mTreeItem = nullptr;
     QWidget *mSpecificEditWidget = nullptr;
 };
 
@@ -70,9 +85,9 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
   public:
     explicit QgsAttributeWidgetRelationEditWidget( QWidget *parent = nullptr );
 
-    void setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config, const QString &relationId );
+    void setRelationEditorConfiguration( const QgsAttributesFormData::RelationEditorConfiguration &config, const QString &relationId );
 
-    QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration() const;
+    QgsAttributesFormData::RelationEditorConfiguration relationEditorConfiguration() const;
 
     static QString title() { return tr( "Relation" ); }
 

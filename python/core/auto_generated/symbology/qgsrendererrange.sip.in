@@ -146,7 +146,7 @@ Sets whether the range should be rendered.
 Dumps a string representation of the range.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
+ void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Creates a DOM element representing the range in SLD format.
 
@@ -156,6 +156,25 @@ Creates a DOM element representing the range in SLD format.
 :param firstRange: set to ``True`` if the range is the first range,
                    where the lower value uses a <= test rather than a <
                    test.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context, bool firstRange = false ) const;
+%Docstring
+Creates a DOM element representing the range in SLD format.
+
+:param doc: DOM document
+:param element: destination DOM element
+:param classAttribute: classification attribute or expression
+:param context: conversion context
+:param firstRange: set to ``True`` if the range is the first range,
+                   where the lower value uses a <= test rather than a <
+                   test.
+
+.. versionadded:: 3.44
 %End
 
     SIP_PYOBJECT __repr__();

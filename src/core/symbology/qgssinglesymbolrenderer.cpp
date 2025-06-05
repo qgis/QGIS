@@ -33,6 +33,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgssldexportcontext.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -130,7 +131,15 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 
 void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QVariantMap newProps = props;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap newProps = oldProps;
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
@@ -141,7 +150,12 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
 
   QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, newProps );
 
-  if ( mSymbol ) mSymbol->toSld( doc, ruleElem, newProps );
+  context.setExtraProperties( newProps );
+  if ( mSymbol )
+    mSymbol->toSld( doc, ruleElem, context );
+
+  context.setExtraProperties( oldProps );
+  return true;
 }
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const

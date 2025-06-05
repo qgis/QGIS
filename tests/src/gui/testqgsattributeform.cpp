@@ -63,6 +63,7 @@ class TestQgsAttributeForm : public QObject
     void testZeroDoubles();
     void testMinimumWidth();
     void testFieldConstraintDuplicateField();
+    void testCaseInsensitiveFieldConstraint();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1274,6 +1275,26 @@ void TestQgsAttributeForm::testFieldConstraintDuplicateField()
   formEditorWidgets[0]->editorWidget()->setValues( 20, QVariantList() );
   QCOMPARE( formEditorWidgets[0]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultPass );
   QCOMPARE( formEditorWidgets[1]->editorWidget()->constraintResult(), QgsEditorWidgetWrapper::ConstraintResultPass );
+}
+
+void TestQgsAttributeForm::testCaseInsensitiveFieldConstraint()
+{
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=f1:integer&field=f2:integer&field=f3:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+  layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+  layer->setEditorWidgetSetup( 2, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+
+  // the expressions only differ by case
+  layer->setConstraintExpression( 0, QStringLiteral( R"exp("f3" > 0)exp" ) );
+  layer->setConstraintExpression( 1, QStringLiteral( R"exp("F3" > 0)exp" ) );
+
+  QgsAttributeForm form( layer.get() );
+
+  QVERIFY( form.mWidgets.size() == 3 );
+
+  auto depsF3 = form.constraintDependencies( qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] ) );
+  QCOMPARE( depsF3.size(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

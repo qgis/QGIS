@@ -470,7 +470,14 @@ QString QgsServerSettings::projectCacheStrategy() const
   QString result = value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY ).toString();
   if ( result.compare( QLatin1String( "filesystem" ) ) && result.compare( QLatin1String( "periodic" ) ) && result.compare( QLatin1String( "off" ) ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy, expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Warning );
+    if ( !result.isEmpty() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy '%1', expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ).arg( result ), "Server", Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "No cache strategy was specified. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Info );
+    }
     result = QStringLiteral( "filesystem" );
   }
   return result;

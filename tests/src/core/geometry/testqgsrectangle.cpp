@@ -43,6 +43,7 @@ class TestQgsRectangle : public QObject
     void include();
     void buffered();
     void isFinite();
+    void maximal();
     void combine();
     void dataStream();
     void scale();
@@ -529,6 +530,21 @@ void TestQgsRectangle::isFinite()
   QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::quiet_NaN(), 3, 4 ).isFinite() );
   QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::quiet_NaN(), 4 ).isFinite() );
   QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::quiet_NaN() ).isFinite() );
+}
+
+void TestQgsRectangle::maximal()
+{
+  QVERIFY( !QgsRectangle( 1, 2, 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::infinity(), 2, 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::infinity(), 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::infinity(), 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::infinity() ).isMaximal() );
+  QVERIFY( QgsRectangle( std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity() ).isMaximal() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::lowest(), 2, 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::lowest(), 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::max(), 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::max() ).isMaximal() );
+  QVERIFY( QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() ).isMaximal() );
 }
 
 void TestQgsRectangle::combine()

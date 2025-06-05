@@ -10,12 +10,22 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
+     <normaloff/>
    </iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QgsMapLayerServerPropertiesWidget" name="mMapLayerServerPropertiesWidget" native="true"/>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mComputeTimeDimension">
+     <property name="toolTip">
+      <string>When a GetCapabilities request is sent, QGIS server will return a TIME dimension computed as an union of all time dimension of its children recursively</string>
+     </property>
+     <property name="text">
+      <string>Compute TIME dimension from children</string>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">

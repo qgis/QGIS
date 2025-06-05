@@ -82,6 +82,7 @@ class GUI_EXPORT QgsProcessingParametersGenerator
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SkipDefaultValueParameters = 1 << 0, //!< Parameters which are unchanged from their default values should not be included
+      SkipValidation = 1 << 1,             //!< Skip validation of parameters. \since QGIS 3.44
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -274,12 +275,12 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      * Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.
      */
-    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the dialog type for which widgets and labels will be created by this wrapper.
      */
-    QgsProcessingGui::WidgetType type() const;
+    Qgis::ProcessingMode type() const;
 
     /**
      * Sets the \a context in which the Processing parameter widget is shown, e.g., the
@@ -482,7 +483,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     void parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
 
   private:
-    QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
+    Qgis::ProcessingMode mType = Qgis::ProcessingMode::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
 
     void setDynamicParentLayerParameter( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
@@ -526,7 +527,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      *
      * \see createModelerWidgetWrapper()
      */
-    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) = 0 SIP_FACTORY;
+    virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) = 0 SIP_FACTORY;
 
     /**
      * Creates a new modeler parameter widget for the given \a parameter. This widget allows
@@ -591,7 +592,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \see compatibleOutputTypes()
      * \see compatibleDataTypes()
      */
-    virtual QStringList compatibleParameterTypes() const = 0;
+    virtual QStringList compatibleParameterTypes() const;
 
     /**
      * Returns a list of compatible Processing output types for inputs
@@ -607,7 +608,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \see compatibleParameterTypes()
      * \see compatibleDataTypes()
      */
-    virtual QStringList compatibleOutputTypes() const = 0;
+    virtual QStringList compatibleOutputTypes() const;
 
     /**
      * Returns a list of compatible Processing data types for inputs
@@ -664,7 +665,7 @@ class GUI_EXPORT QgsProcessingHiddenWidgetWrapper : public QgsAbstractProcessing
      * Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.
      */
-    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;

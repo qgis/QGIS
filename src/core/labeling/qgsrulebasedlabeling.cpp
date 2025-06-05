@@ -16,6 +16,7 @@
 #include "qgsscaleutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgssldexportcontext.h"
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
   : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop, nullptr )
@@ -136,6 +137,25 @@ bool QgsRuleBasedLabeling::Rule::requiresAdvancedEffects() const
   for ( Rule *rule : std::as_const( mChildren ) )
   {
     if ( rule->requiresAdvancedEffects() )
+      return true;
+  }
+
+  return false;
+}
+
+bool QgsRuleBasedLabeling::Rule::hasNonDefaultCompositionMode() const
+{
+  if ( mSettings &&
+       ( mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+         || mSettings->format().hasNonDefaultCompositionMode() ) )
+    return true;
+
+  for ( Rule *rule : std::as_const( mChildren ) )
+  {
+    if ( rule->hasNonDefaultCompositionMode() )
       return true;
   }
 
@@ -571,6 +591,11 @@ bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
   return mRootRule->requiresAdvancedEffects();
 }
 
+bool QgsRuleBasedLabeling::hasNonDefaultCompositionMode() const
+{
+  return mRootRule->hasNonDefaultCompositionMode();
+}
+
 void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
 {
   if ( settings )
@@ -581,11 +606,18 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
   }
 }
 
-void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
+void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &properties ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( properties );
+  toSld( parent, context );
+}
+
+bool QgsRuleBasedLabeling::toSld( QDomNode &parent, QgsSldExportContext &context ) const
 {
   if ( !mRootRule )
   {
-    return;
+    return false;
   }
 
   const QgsRuleBasedLabeling::RuleList rules = mRootRule->children();
@@ -602,24 +634,25 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) c
 
       if ( !rule->filterExpression().isEmpty() )
       {
-        QgsSymbolLayerUtils::createFunctionElement( doc, ruleElement, rule->filterExpression() );
+        QgsSymbolLayerUtils::createFunctionElement( doc, ruleElement, rule->filterExpression(), context );
       }
 
       // scale dependencies, the actual behavior is that the PAL settings min/max and
       // the rule min/max get intersected
-      QVariantMap localProps = QVariantMap( props );
+      const QVariantMap oldProps = context.extraProperties();
+      QVariantMap localProps = oldProps;
       QgsSymbolLayerUtils::mergeScaleDependencies( rule->maximumScale(), rule->minimumScale(), localProps );
       if ( settings->scaleVisibility )
       {
         QgsSymbolLayerUtils::mergeScaleDependencies( settings->maximumScale, settings->minimumScale, localProps );
       }
       QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElement, localProps );
-
-      QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, props );
+      context.setExtraProperties( localProps );
+      QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, context );
+      context.setExtraProperties( oldProps );
     }
-
   }
-
+  return true;
 }
 
 void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )

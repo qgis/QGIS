@@ -12,3 +12,8 @@ try:
     QgsModelDesignerFoldButtonGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
+try:
+    QgsModelDesignerSocketGraphicItem.__overridden_methods__ = ['paint']
+    QgsModelDesignerSocketGraphicItem.__group__ = ['processing', 'models']
+except (NameError, AttributeError):
+    pass

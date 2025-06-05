@@ -25,6 +25,7 @@
 #include "qgsproviderregistry.h"
 #include <QPushButton>
 #include <QItemSelectionModel>
+#include <QMenu>
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
@@ -59,6 +60,34 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   connect( mDeleteButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::removeSelectedFields );
   connect( mUpButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsUp );
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
+
+  mEditButton->setPopupMode( QToolButton::InstantPopup ); // Show menu on button click
+
+  // Create a menu for the dropdown
+  QMenu *menu = new QMenu( mEditButton );
+
+  // Add menu items
+  menu->addAction( tr( "Convert All Field Names to Lowercase" ), this, [=]() {
+    QgsFieldMappingModel *model = mFieldsView->model();
+    for ( int i = 0; i < model->rowCount(); i++ )
+    {
+      const QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      const QString name = model->data( index, Qt::EditRole ).toString();
+      model->setData( index, name.toLower(), Qt::EditRole );
+    }
+  } );
+
+  menu->addAction( tr( "Convert All Field Names to Uppercase" ), this, [=]() {
+    QgsFieldMappingModel *model = mFieldsView->model();
+    for ( int i = 0; i < model->rowCount(); i++ )
+    {
+      const QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      const QString name = model->data( index, Qt::EditRole ).toString();
+      model->setData( index, name.toUpper(), Qt::EditRole );
+    }
+  } );
+
+  mEditButton->setMenu( menu );
 
   const bool supportsSchemas = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Schemas );
   if ( supportsSchemas )
@@ -234,6 +263,9 @@ void QgsDbImportVectorLayerDialog::setSourceLayer( QgsVectorLayer *layer )
   mFieldsView->setSourceLayer( mSourceLayer );
   mFieldsView->setSourceFields( mSourceLayer->fields() );
   mFieldsView->setDestinationFields( mSourceLayer->fields() );
+
+  const bool selectedFeatures = mSourceLayer->selectedFeatureCount() > 0;
+  mSourceLayerOnlySelected->setEnabled( selectedFeatures );
 }
 
 void QgsDbImportVectorLayerDialog::loadFieldsFromLayer()
@@ -350,6 +382,11 @@ std::unique_ptr<QgsVectorLayerExporterTask> QgsDbImportVectorLayerDialog::create
   if ( mExtentGroupBox->isEnabled() && mExtentGroupBox->isChecked() )
   {
     exportOptions.setExtent( QgsReferencedRectangle( mExtentGroupBox->outputExtent(), mExtentGroupBox->outputCrs() ) );
+  }
+
+  if ( mSourceLayerOnlySelected->isEnabled() && mSourceLayerOnlySelected->isChecked() )
+  {
+    exportOptions.setSelectedOnly( true );
   }
 
   const QList<QgsFieldMappingModel::Field> fieldMapping = mFieldsView->mapping();

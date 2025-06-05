@@ -70,6 +70,11 @@ QString QgsFixGeometriesAlgorithm::shortHelpString() const
                       "NOTE: M values will be dropped from the output." );
 }
 
+QString QgsFixGeometriesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Attempts to create a valid representation of a given invalid geometry without losing any of the input vertices." );
+}
+
 QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
 {
   return new QgsFixGeometriesAlgorithm();

@@ -30,7 +30,7 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
  *
  * \brief A QGIS expression editor based on QScintilla2.
  *
- * dds syntax highlighting and code autocompletion.
+ * Adds syntax highlighting and code autocompletion.
  *
  * \since QGIS 3.4
  */

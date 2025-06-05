@@ -66,6 +66,7 @@ class QgsCellStatisticsAlgorithm : public QgsCellStatisticsAlgorithmBase
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsCellStatisticsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -88,6 +89,7 @@ class QgsCellStatisticsPercentileAlgorithm : public QgsCellStatisticsAlgorithmBa
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsCellStatisticsPercentileAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -111,6 +113,7 @@ class QgsCellStatisticsPercentRankFromValueAlgorithm : public QgsCellStatisticsA
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsCellStatisticsPercentRankFromValueAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -134,6 +137,7 @@ class QgsCellStatisticsPercentRankFromRasterAlgorithm : public QgsCellStatistics
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsCellStatisticsPercentRankFromRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

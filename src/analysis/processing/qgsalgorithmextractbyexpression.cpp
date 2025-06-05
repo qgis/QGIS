@@ -63,6 +63,11 @@ QString QgsExtractByExpressionAlgorithm::shortHelpString() const
                       "which is available in the expression builder." );
 }
 
+QString QgsExtractByExpressionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that only contains features matching a QGIS expression from an input layer." );
+}
+
 QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::createInstance() const
 {
   return new QgsExtractByExpressionAlgorithm();

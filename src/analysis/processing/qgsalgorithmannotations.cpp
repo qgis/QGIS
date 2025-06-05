@@ -52,7 +52,12 @@ Qgis::ProcessingAlgorithmFlags QgsTransferAnnotationsFromMainAlgorithm::flags() 
 
 QString QgsTransferAnnotationsFromMainAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Transfer all annotations from the main annotation layer in a project to a new annotation layer." );
+  return QObject::tr( "This algorithm transfers all annotations from the main annotation layer in a project to a new annotation layer." );
+}
+
+QString QgsTransferAnnotationsFromMainAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Transfers all annotations from the main annotation layer in a project to a new annotation layer." );
 }
 
 QgsTransferAnnotationsFromMainAlgorithm *QgsTransferAnnotationsFromMainAlgorithm::createInstance() const

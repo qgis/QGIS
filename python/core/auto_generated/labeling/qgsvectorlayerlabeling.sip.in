@@ -77,6 +77,19 @@ composition modes, which could prevent it being used as an isolated
 cached image or exported to a vector format.
 %End
 
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+%Docstring
+Returns ``True`` the labeling requires a non-default composition mode.
+
+This method is pessimistic, in that it will return ``True`` in cases
+where composition modes cannot be easily determined in advance (e.g.
+when data-defined overrides are in place for composition modes).
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
+%End
+
     virtual void multiplyOpacity( double opacityFactor );
 %Docstring
 Multiply opacity by ``opacityFactor``.
@@ -94,10 +107,22 @@ the whole labeling elements.
 Try to create instance of an implementation based on the XML data
 %End
 
-    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
+ virtual void toSld( QDomNode &parent, const QVariantMap &props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Writes the SE 1.1 TextSymbolizer element based on the current layer
 labeling settings
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool toSld( QDomNode &parent, QgsSldExportContext &context ) const;
+%Docstring
+Writes the SE 1.1 TextSymbolizer element based on the current layer
+labeling settings.
+
+.. versionadded:: 3.44
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
@@ -121,7 +146,7 @@ Returns the default layer settings to use for the specified vector
 
   protected:
 
-    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
+ virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Writes a TextSymbolizer element contents based on the provided labeling
 settings
@@ -131,6 +156,23 @@ settings
 :param settings: the settings getting translated to a TextSymbolizer
 :param props: a open ended set of properties that can drive/inform the
               SLD encoding
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    virtual bool writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, QgsSldExportContext &context ) const;
+%Docstring
+Writes a TextSymbolizer element contents based on the provided labeling
+settings
+
+:param parent: the node that will have the text symbolizer element added
+               to it
+:param settings: the settings getting translated to a TextSymbolizer
+:param context: export context
+
+.. versionadded:: 3.44
 %End
 
   private:
@@ -177,7 +219,11 @@ Set pal settings (takes ownership).
 
     virtual bool requiresAdvancedEffects() const;
 
-    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
+    virtual bool hasNonDefaultCompositionMode() const;
+
+ virtual void toSld( QDomNode &parent, const QVariantMap &props ) const /Deprecated/;
+
+    virtual bool toSld( QDomNode &parent, QgsSldExportContext &context ) const;
 
     virtual void multiplyOpacity( double opacityFactor );
 

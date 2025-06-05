@@ -498,7 +498,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mModel = new QgsGraduatedSymbolRendererModel( this, screen() );
 
-  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
+  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setLayer( mLayer );
 
   btnChangeGraduatedSymbol->setLayer( mLayer );
@@ -833,6 +833,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
+  emit widgetChanged();
 }
 
 void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
@@ -886,7 +887,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
 
   for ( const QgsProcessingParameterDefinition *def : mClassificationMethod->parameterDefinitions() )
   {
-    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
+    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, Qgis::ProcessingMode::Standard );
     mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
 
     QVariant value = mClassificationMethod->parameterValues().value( def->name(), def->defaultValueForGui() );

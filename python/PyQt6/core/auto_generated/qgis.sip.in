@@ -1544,6 +1544,13 @@ The development version
     typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
 
 
+    enum class RasterizedRenderingPolicy /BaseType=IntEnum/
+    {
+      Default,
+      PreferVector,
+      ForceVector,
+    };
+
     enum class MapSettingsFlag /BaseType=IntFlag/
     {
       Antialiasing,
@@ -1593,6 +1600,7 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
+      RenderLayerTree
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -2030,6 +2038,13 @@ The development version
       DefaultLevel,
       Verbose,
       ModelDebug,
+    };
+
+    enum class ProcessingMode
+    {
+      Standard,
+      Batch,
+      Modeler,
     };
 
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
@@ -2873,6 +2888,25 @@ The development version
       ScreenUnits
     };
 
+    enum class LayoutRenderFlag /BaseType=IntFlag/
+    {
+      Debug,
+      OutlineOnly,
+      Antialiasing,
+      UseAdvancedEffects,
+      ForceVectorOutput,
+      HideCoverageLayer,
+      DrawSelection,
+      DisableTiledRasterLayerRenders,
+      RenderLabelsByMapLayer,
+      LosslessImageRendering,
+      SynchronousLegendGraphics,
+      AlwaysUseGlobalMasks,
+    };
+
+    typedef QFlags<Qgis::LayoutRenderFlag> LayoutRenderFlags;
+
+
     enum class PictureFormat /BaseType=IntEnum/
       {
       SVG,
@@ -3614,6 +3648,8 @@ QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability 
 
 QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
 
+QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
+
 
 
 
@@ -3721,6 +3757,25 @@ for incorrect numbers of digits between thousand separators
 .. versionadded:: 3.4
 %End
 
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+Compares two QVariant values.
+
+:return: < 0 if lhs < rhs, > 0 if lhs > rhs, or 0 if lhs == rhs
+
+Useful for sorting lists of variants, correctly handling sorting of the
+various QVariant data types (such as strings, numeric values, dates and
+times)
+
+Invalid < NULL < Values
+
+.. seealso:: :py:func:`qgsVariantLessThan`
+
+.. seealso:: :py:func:`qgsVariantGreaterThan`
+
+.. versionadded:: 3.44
+%End
+
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
 Compares two QVariant values and returns whether the first is less than
@@ -3731,6 +3786,8 @@ values, dates and times)
 Invalid < NULL < Values
 
 .. seealso:: :py:func:`qgsVariantGreaterThan`
+
+.. seealso:: :py:func:`qgsVariantCompare`
 %End
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
@@ -3753,6 +3810,8 @@ handling sorting of the various QVariant data types (such as strings,
 numeric values, dates and times)
 
 .. seealso:: :py:func:`qgsVariantLessThan`
+
+.. seealso:: :py:func:`qgsVariantCompare`
 %End
 
 

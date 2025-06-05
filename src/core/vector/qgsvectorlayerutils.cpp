@@ -161,6 +161,13 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   if ( fieldIndex < 0 || fieldIndex >= fields.count() )
     return false;
 
+
+  // If it's an unset value assume value doesn't exist
+  if ( QgsVariantUtils::isUnsetAttributeValue( value ) )
+  {
+    return false;
+  }
+
   // If it's a joined field search the value in the source layer
   if ( fields.fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Join )
   {
@@ -439,9 +446,11 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
     if ( !exempt )
     {
-      valid = valid && !QgsVariantUtils::isNull( value );
 
-      if ( QgsVariantUtils::isNull( value ) )
+      const bool isNullOrUnset { QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) };
+      valid = valid && !isNullOrUnset;
+
+      if ( isNullOrUnset )
       {
         errors << QObject::tr( "value is NULL" );
         notNullConstraintViolated = true;

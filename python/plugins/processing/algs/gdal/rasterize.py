@@ -164,7 +164,7 @@ class rasterize(GdalAlgorithm):
         self.addParameter(options_param)
 
         creation_options_param = QgsProcessingParameterString(
-            self.OPTIONS,
+            self.CREATION_OPTIONS,
             self.tr("Additional creation options"),
             defaultValue="",
             optional=True,

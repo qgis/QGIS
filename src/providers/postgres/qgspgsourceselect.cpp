@@ -218,7 +218,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   }
   else
   {
-    setWindowTitle( tr( "Add PostGIS Table(s)" ) );
+    setWindowTitle( tr( "Add PostgreSQL Table(s)" ) );
   }
 
   populateConnectionList();
@@ -294,7 +294,7 @@ void QgsPgSourceSelect::btnLoad_clicked()
 void QgsPgSourceSelect::btnEdit_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
-  nc->setWindowTitle( tr( "Edit PostGIS Connection" ) );
+  nc->setWindowTitle( tr( "Edit PostgreSQL Connection" ) );
   if ( nc->exec() )
   {
     populateConnectionList();

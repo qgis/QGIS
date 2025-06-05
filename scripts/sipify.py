@@ -134,6 +134,14 @@ class Context:
         self.deprecated_message = None
         self.method_py_name: Optional[str] = None
 
+    def reset_method_state(self):
+        """
+        Should be called immediately after processing (or skipping) a method
+        """
+        self.comment = ""
+        self.deprecated_message = ""
+        self.return_type = ""
+
     def current_fully_qualified_class_name(self) -> str:
         return ".".join(
             _c
@@ -1724,6 +1732,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         while not re.match(r"^#endif", CONTEXT.current_line):
             CONTEXT.current_line = read_line()
 
+    using_match = re.match(r"(\s*)using\s+(.*?)\s*=\s*(.*);", CONTEXT.current_line)
+    if using_match:
+        CONTEXT.current_line = f"{using_match.group(1)}typedef {using_match.group(3)} {using_match.group(2)};"
+
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
         r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
@@ -1732,7 +1744,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"%{re.match(r'^ *[/]*% *(.*)$', CONTEXT.current_line).group(1)}"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         dbg_info("do not process SIP code")
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
@@ -1764,7 +1776,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         write_output("COD", CONTEXT.current_line + "\n")
         continue
 
@@ -1773,7 +1785,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% (.*)$', CONTEXT.current_line).group(1)}"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         write_output("COD", CONTEXT.current_line)
         continue
 
@@ -1791,7 +1803,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 elif nesting_index == 0 and re.match(
                     r"^\s*#(endif|else)", CONTEXT.current_line
                 ):
-                    CONTEXT.comment = ""
+                    CONTEXT.reset_method_state()
                     break
                 elif nesting_index != 0 and re.match(
                     r"^\s*#endif", CONTEXT.current_line
@@ -1830,7 +1842,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         CONTEXT.ifdef_nesting_idx += 1
                     elif re.match(r"^\s*#endif", CONTEXT.current_line):
                         if CONTEXT.ifdef_nesting_idx == 0:
-                            CONTEXT.comment = ""
+                            CONTEXT.reset_method_state()
                             CONTEXT.sip_run = False
                             break
                         else:
@@ -1883,7 +1895,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         if match.group("external"):
             dbg_info("do not skip external forward declaration")
-            CONTEXT.comment = ""
+            CONTEXT.reset_method_state()
         else:
             dbg_info("skipping forward declaration")
             continue
@@ -1988,7 +2000,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             if args.python_output:
                 CONTEXT.output_python.append(f"{pyop}\n")
 
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         continue
 
     # Detect comment block
@@ -2064,7 +2076,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         # Inheritance
         if class_pattern_match.group("domain"):
             m = class_pattern_match.group("domain")
-            m = re.sub(r"public +(\w+, *)*(Ui::\w+,? *)+", "", m)
+            dbg_info(f"class: {CONTEXT.classname[-1]} domain is {m}")
+            m = re.sub(r"(?:(?:,\s*)?public|(?:,\s*)?protected|,)\s+Ui::\w+\s*", "", m)
             m = re.sub(r"public +", "", m)
             m = re.sub(r"[,:]?\s*private +\w+(::\w+)?", "", m)
 
@@ -2177,7 +2190,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             exit_with_error("expecting { after class definition")
         CONTEXT.bracket_nesting_idx[-1] += 1
 
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         CONTEXT.header_code = True
         CONTEXT.access[-1] = Visibility.Private
         continue
@@ -2217,8 +2230,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         Visibility.Public
                     )  # Top level should stay public
 
-                CONTEXT.comment = ""
-                CONTEXT.return_type = ""
+                CONTEXT.reset_method_state()
                 CONTEXT.private_section_line = ""
 
             dbg_info(f"new bracket balance: {CONTEXT.bracket_nesting_idx}")
@@ -2228,7 +2240,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.access[-1] = Visibility.Private
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.private_section_line = CONTEXT.current_line
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         dbg_info("going private")
         continue
 
@@ -2236,19 +2248,19 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info("going public")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Public
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
 
     elif re.match(r"^\s*signals:.*$", CONTEXT.current_line):
         dbg_info("going public for signals")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Signals
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
 
     elif re.match(r"^\s*(protected)( slots)?:.*$", CONTEXT.current_line):
         dbg_info("going protected")
         CONTEXT.last_access_section_line = CONTEXT.current_line
         CONTEXT.access[-1] = Visibility.Protected
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
 
     elif (
         CONTEXT.access[-1] == Visibility.Private and "SIP_FORCE" in CONTEXT.current_line
@@ -2259,7 +2271,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.private_section_line = ""
 
     elif any(x == Visibility.Private for x in CONTEXT.access) and not CONTEXT.sip_run:
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         continue
 
     # Skip operators
@@ -2267,6 +2279,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"operator(=|<<|>>|->)\s*\(", CONTEXT.current_line
     ):
         dbg_info("skip operator")
+        CONTEXT.reset_method_state()
         detect_and_remove_following_body_or_initializerlist()
         continue
 
@@ -2282,7 +2295,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.comment = process_doxygen_line(match.group(1))
                 CONTEXT.comment = CONTEXT.comment.rstrip()
             elif not re.search(r"\*/", CONTEXT.input_lines[CONTEXT.line_idx - 1]):
-                CONTEXT.comment = ""
+                CONTEXT.reset_method_state()
             continue
 
     # Handle Q_DECLARE_FLAGS in Qt6
@@ -2679,7 +2692,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         CONTEXT.current_line = f"{match.group('staticconst')};"
         if match.group("static") is None:
-            CONTEXT.comment = ""
+            CONTEXT.reset_method_state()
 
         if match.group("endingchar") == "|":
             dbg_info("multiline const static assignment")
@@ -3020,7 +3033,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$",
         CONTEXT.current_line,
     ):
-        CONTEXT.comment = ""
+        dbg_info(f"removing deleted function {CONTEXT.current_line}")
+        CONTEXT.reset_method_state()
         continue
 
     # remove export macro from struct definition
@@ -3131,7 +3145,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.current_line = (
             f"{CONTEXT.indent}const QgsSettingsEntryEnumFlag_{var_name} {var_name};"
         )
-        CONTEXT.comment = ""
+        CONTEXT.reset_method_state()
         write_output("ENF", f"{prep_line}\n", "prepend")
 
     write_output("NOR", f"{CONTEXT.current_line}\n")
@@ -3384,8 +3398,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     ] = doc_string
                 write_output("CM4", f"{doc_prepend}%End\n")
 
-        CONTEXT.comment = ""
-        CONTEXT.return_type = ""
+        CONTEXT.reset_method_state()
         if CONTEXT.is_override_or_make_private == PrependType.MakePrivate:
             write_output("MKP", CONTEXT.last_access_section_line)
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend

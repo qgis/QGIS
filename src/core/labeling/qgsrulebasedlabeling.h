@@ -300,6 +300,19 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         bool requiresAdvancedEffects() const;
 
         /**
+         * Returns TRUE if this rule or any of its children requires a non-default composition mode.
+         *
+         * This method is pessimistic, in that it will return TRUE in cases where composition
+         * modes cannot be easily determined in advance (e.g. when data-defined overrides are
+         * in place for composition modes).
+         *
+         * The default composition mode is QPainter::CompositionMode_SourceOver.
+         *
+         * \since QGIS 3.44
+         */
+        bool hasNonDefaultCompositionMode() const;
+
+        /**
          * Accepts the specified symbology \a visitor, causing it to visit all child rules associated
          * with the rule.
          *
@@ -392,7 +405,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
      */
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
     bool requiresAdvancedEffects() const override;
-    void toSld( QDomNode &parent, const QVariantMap &props ) const override;
+    bool hasNonDefaultCompositionMode() const override;
+    Q_DECL_DEPRECATED void toSld( QDomNode &parent, const QVariantMap &properties ) const override SIP_DEPRECATED;
+    bool toSld( QDomNode &parent, QgsSldExportContext &context ) const override;
     void multiplyOpacity( double opacityFactor ) override;
 
 

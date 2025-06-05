@@ -543,12 +543,16 @@ void QgsClipboard::setText( const QString &text )
 
 bool QgsClipboard::hasFormat( const QString &mimeType ) const
 {
-  return QApplication::clipboard()->mimeData()->hasFormat( mimeType );
+  if ( const QMimeData *data = QApplication::clipboard()->mimeData() )
+    return data->hasFormat( mimeType );
+  return false;
 }
 
 QByteArray QgsClipboard::data( const QString &mimeType ) const
 {
-  return QApplication::clipboard()->mimeData()->data( mimeType );
+  if ( const QMimeData *data = QApplication::clipboard()->mimeData() )
+    return data->data( mimeType );
+  return QByteArray();
 }
 
 QgsFields QgsClipboard::fields() const

@@ -39,6 +39,7 @@
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgssldexportcontext.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -133,6 +134,18 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
 
   QString attrName = props[ QStringLiteral( "attribute" )].toString();
 
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, attrName, context );
+}
+
+bool QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context ) const
+{
+  if ( !mSymbol.get() || classAttribute.isEmpty() )
+    return false;
+
+  QString attrName = classAttribute;
+
   // try to determine if attribute name is actually a field reference or expression.
   // If it's a field reference, we need to quote it.
   // Because we don't have access to the layer or fields here, we treat a parser error
@@ -192,20 +205,24 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
     filterFunc = QStringLiteral( "%1 = %2" ).arg( attrName, QgsExpression::quotedValue( mValue ) );
   }
 
-  QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
+  QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc, context );
 
   // add the mix/max scale denoms if we got any from the callers
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap props = oldProps;
   QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
-
-  mSymbol->toSld( doc, ruleElem, props );
+  context.setExtraProperties( props );
+  mSymbol->toSld( doc, ruleElem, context );
+  context.setExtraProperties( oldProps );
   if ( !QgsSymbolLayerUtils::hasSldSymbolizer( ruleElem ) )
   {
     // symbol could not be converted to SLD, or is an "empty" symbol. In this case we do not generate a rule, as
     // SLD spec requires a Symbolizer element to be present
-    return;
+    return false;
   }
 
   element.appendChild( ruleElem );
+  return true;
 }
 
 ///////////////////
@@ -460,7 +477,7 @@ bool labelLessThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2
 
 bool labelGreaterThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 )
 {
-  return !labelLessThan( c1, c2 );
+  return QString::localeAwareCompare( c1.label(), c2.label() ) > 0;
 }
 
 void QgsCategorizedSymbolRenderer::sortByLabel( Qt::SortOrder order )
@@ -573,14 +590,27 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::clone() const
 
 void QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QVariantMap newProps = props;
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap newProps = oldProps;
   newProps[ QStringLiteral( "attribute" )] = mAttrName;
+  context.setExtraProperties( newProps );
 
   // create a Rule for each range
+  bool result = true;
   for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); ++it )
   {
-    it->toSld( doc, element, newProps );
+    if ( !it->toSld( doc, element, mAttrName, context ) )
+      result = false;
   }
+  context.setExtraProperties( oldProps );
+  return result;
 }
 
 QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )

@@ -75,6 +75,11 @@ QString QgsRandomPointsExtentAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsRandomPointsExtentAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point layer with a given number of random points, all of them within a given extent." );
+}
+
 QgsRandomPointsExtentAlgorithm *QgsRandomPointsExtentAlgorithm::createInstance() const
 {
   return new QgsRandomPointsExtentAlgorithm();

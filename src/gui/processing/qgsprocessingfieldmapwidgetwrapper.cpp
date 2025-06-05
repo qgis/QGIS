@@ -270,7 +270,7 @@ QgsProcessingParameterDefinition *QgsProcessingFieldMapParameterDefinitionWidget
 // QgsProcessingFieldMapWidgetWrapper
 //
 
-QgsProcessingFieldMapWidgetWrapper::QgsProcessingFieldMapWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingFieldMapWidgetWrapper::QgsProcessingFieldMapWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
@@ -280,7 +280,7 @@ QString QgsProcessingFieldMapWidgetWrapper::parameterType() const
   return QgsProcessingParameterFieldMapping::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldMapWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldMapWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingFieldMapWidgetWrapper( parameter, type );
 }
@@ -308,8 +308,8 @@ void QgsProcessingFieldMapWidgetWrapper::postInitialize( const QList<QgsAbstract
   QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
   {
-    case QgsProcessingGui::Standard:
-    case QgsProcessingGui::Batch:
+    case Qgis::ProcessingMode::Standard:
+    case Qgis::ProcessingMode::Batch:
     {
       for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
       {
@@ -325,7 +325,7 @@ void QgsProcessingFieldMapWidgetWrapper::postInitialize( const QList<QgsAbstract
       break;
     }
 
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Modeler:
       break;
   }
 }
@@ -383,17 +383,6 @@ void QgsProcessingFieldMapWidgetWrapper::setWidgetValue( const QVariant &value, 
 QVariant QgsProcessingFieldMapWidgetWrapper::widgetValue() const
 {
   return mPanel ? mPanel->value() : QVariant();
-}
-
-QStringList QgsProcessingFieldMapWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterFieldMapping::typeName();
-}
-
-QStringList QgsProcessingFieldMapWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList();
 }
 
 QString QgsProcessingFieldMapWidgetWrapper::modelerExpressionFormatString() const

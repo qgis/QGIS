@@ -17,15 +17,11 @@
 #include <QUrlQuery>
 
 #include "qgstest.h"
-#include <qgswmsprovider.h>
-#include <qgsapplication.h>
-#include <qgsmultirenderchecker.h>
-#include <qgsrasterlayer.h>
-#include <qgsproviderregistry.h>
-#include <qgsxyzconnection.h>
-#include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsrastershader.h>
-#include <qgsstyle.h>
+#include "qgswmsprovider.h"
+#include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgsproviderregistry.h"
+#include "qgsxyzconnection.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgshillshaderenderer.h"
@@ -42,7 +38,7 @@ class TestQgsWmsProvider : public QgsTest
 
   public:
     TestQgsWmsProvider()
-      : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
+      : QgsTest( QStringLiteral( "WMS Provider Tests" ), QStringLiteral( "wmsprovider" ) ) {}
 
   private slots:
 
@@ -92,8 +88,6 @@ class TestQgsWmsProvider : public QgsTest
     void testTerrariumInterpretation();
 
     void testResampling();
-
-    bool imageCheck( const QString &testType, QgsMapSettings &mapSettings );
 
     void testParseWmstUriWithoutTemporalExtent();
 
@@ -263,7 +257,7 @@ void TestQgsWmsProvider::testMBTiles()
   mapSettings.setExtent( layer.extent() );
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
-  QVERIFY( imageCheck( "mbtiles_1", mapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "mbtiles_1", "mbtiles_1", mapSettings, 500, 20 );
 
   // since no terrain interpretation set, we don't know for sure that the layer contains elevation
   QVERIFY( !layer.dataProvider()->elevationProperties()->containsElevationData() );
@@ -416,7 +410,7 @@ void TestQgsWmsProvider::testDpiDependentData()
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setDpiTarget( 48 );
-  QVERIFY( imageCheck( "mbtiles_dpidependentdata", mapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "mbtiles_dpidependentdata", "mbtiles_dpidependentdata", mapSettings, 500, 20 );
 }
 
 void TestQgsWmsProvider::providerUriUpdates()
@@ -523,7 +517,7 @@ void TestQgsWmsProvider::testConvertToValue()
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setDpiTarget( 48 );
-  QVERIFY( imageCheck( "convert_value", mapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "convert_value", "convert_value", mapSettings, 500, 20 );
 }
 
 void TestQgsWmsProvider::testTerrariumInterpretation()
@@ -551,7 +545,7 @@ void TestQgsWmsProvider::testTerrariumInterpretation()
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setDpiTarget( 48 );
-  QVERIFY( imageCheck( "terrarium_terrain", mapSettings ) );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "terrarium_terrain", "terrarium_terrain", mapSettings, 500, 20 );
 }
 
 void TestQgsWmsProvider::testResampling()
@@ -580,21 +574,7 @@ void TestQgsWmsProvider::testResampling()
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setDpiTarget( 48 );
-  QVERIFY( imageCheck( "cubic_resampling", mapSettings ) );
-}
-
-bool TestQgsWmsProvider::imageCheck( const QString &testType, QgsMapSettings &mapSettings )
-{
-  //use the QgsRenderChecker test utility class to
-  //ensure the rendered output matches our control image
-  QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "wmsprovider" ) );
-  myChecker.setControlName( "expected_" + testType );
-  myChecker.setMapSettings( mapSettings );
-  myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( testType, 500 );
-  mReport += myChecker.report();
-  return myResultFlag;
+  QGSVERIFYRENDERMAPSETTINGSCHECK( "cubic_resampling", "cubic_resampling", mapSettings, 500, 20 );
 }
 
 void TestQgsWmsProvider::testParseWmstUriWithoutTemporalExtent()

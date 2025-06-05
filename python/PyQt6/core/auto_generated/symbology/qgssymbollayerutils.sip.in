@@ -490,7 +490,7 @@ Checks if ``element`` contains an ExternalGraphic element with format
          found .
 %End
 
-    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+    static bool hasExternalGraphicV2( const QDomElement &element, const QString format = QString() );
 %Docstring
 Checks if ``element`` contains an ExternalGraphic element, if the
 optional ``format`` is specified it will also be checked.
@@ -504,7 +504,28 @@ optional ``format`` is specified it will also be checked.
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
-    static bool needSvgMarker( QDomElement &element );
+
+    static bool needSvgMarker( const QDomElement &element );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element that should
+translate to an SVG marker.
+
+:return: ``True`` if the ExternalGraphic element is found and is of type
+         SVG.
+%End
+
+    static bool needRasterMarker( const QDomElement &element );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element that should
+translate to a raster marker.
+
+This is the case for any type of ExternalGraphic that is not an SVG.
+
+:return: ``True`` if the ExternalGraphic element is found and is not of
+         type SVG.
+
+.. versionadded:: 3.44
+%End
     static bool needEllipseMarker( QDomElement &element );
     static bool needMarkerLine( QDomElement &element );
     static bool needLinePatternFill( QDomElement &element );
@@ -522,8 +543,24 @@ type PNG, JPEG or GIF.
 .. versionadded:: 3.30
 %End
 
-    static void fillToSld( QDomDocument &doc, QDomElement &element,
+ static void fillToSld( QDomDocument &doc, QDomElement &element,
+        Qt::BrushStyle brushStyle, const QColor &color = QColor() ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Exports fill details to an SLD element.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    static void fillToSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context,
                            Qt::BrushStyle brushStyle, const QColor &color = QColor() );
+%Docstring
+Exports fill details to an SLD element.
+
+.. versionadded:: 3.44
+%End
+
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
 
@@ -539,9 +576,26 @@ type PNG, JPEG or GIF.
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
 
+ static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
+        const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
+        double strokeWidth = -1, double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Exports a marker to SLD
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
+                                      QgsSldExportContext &context,
                                       double strokeWidth = -1, double size = -1 );
+%Docstring
+Exports a marker to SLD
+
+.. versionadded:: 3.44
+%End
 
     static bool wellKnownMarkerFromSld( QDomElement &element,
                                         QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
@@ -550,16 +604,47 @@ type PNG, JPEG or GIF.
 Extracts properties from an SLD marker definition.
 %End
 
+ static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
+        const QString &path, const QString &format, int *markIndex = 0,
+        const QColor &color = QColor(), double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Exports a marker to an SLD definition.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                     const QString &path, const QString &format, int *markIndex = 0,
+                                     const QString &path, const QString &format, QgsSldExportContext &context, int *markIndex = 0,
                                      const QColor &color = QColor(), double size = -1 );
+%Docstring
+Exports a marker to an SLD definition.
+
+.. versionadded:: 3.44
+%End
+
     static bool externalMarkerFromSld( QDomElement &element,
                                        QString &path, QString &format, int &markIndex,
                                        QColor &color, double &size );
 
+ static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
+        const QFont &font, const QColor &color = QColor(), double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Exports label text to SLD
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
 
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
-                                const QFont &font, const QColor &color = QColor(), double size = -1 );
+                                const QFont &font, QgsSldExportContext &context, const QColor &color = QColor(), double size = -1 );
+%Docstring
+Exports label text to SLD
+
+.. versionadded:: 3.44
+%End
 
     static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor &c,
                                        Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
@@ -577,10 +662,40 @@ Create ogr feature style string for brush
 :param fillColr: fill color
 %End
 
-    static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc );
+ static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Creates SLD rotation element.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc, QgsSldExportContext &context );
+%Docstring
+Creates SLD rotation element.
+
+.. versionadded:: 3.44
+%End
+
     static bool rotationFromSldElement( QDomElement &element, QString &rotationFunc );
 
-    static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc );
+ static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Creates SLD opacity element.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc, QgsSldExportContext &context );
+%Docstring
+Creates SLD opacity element.
+
+.. versionadded:: 3.44
+%End
+
     static bool opacityFromSldElement( QDomElement &element, QString &alphaFunc );
 
     static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
@@ -599,10 +714,25 @@ element
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
 
-    static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc );
+ static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Creates an SLD geometry element.
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc, QgsSldExportContext &context );
+%Docstring
+Creates an SLD geometry element.
+
+.. versionadded:: 3.44
+%End
+
     static bool geometryFromSldElement( QDomElement &element, QString &geomFunc );
 
-    static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
+ static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Creates a OGC Expression element based on the provided function
 expression
@@ -610,8 +740,41 @@ expression
 :param doc: The document owning the element
 :param element: The element parent
 :param function: The expression to be encoded
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
 %End
-    static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );
+
+    static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function, QgsSldExportContext &context );
+%Docstring
+Creates a OGC Expression element based on the provided function
+expression
+
+:param doc: The document owning the element
+:param element: The element parent
+:param function: The expression to be encoded
+:param context: export context
+
+.. versionadded:: 3.44
+%End
+
+ static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Creates an OGC function element
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function, QgsSldExportContext &context );
+%Docstring
+Creates an OGC function element
+
+.. versionadded:: 3.44
+%End
+
     static bool functionFromSldElement( QDomElement &element, QString &function );
 
     static QDomElement createSvgParameterElement( QDomDocument &doc, const QString &name, const QString &value );
@@ -1011,14 +1174,31 @@ Merges the local scale limits, if any, with the ones already in the map,
 if any
 %End
 
-    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
-                                    const QString &path,
-                                    const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth );
+ static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
+        const QString &path,
+        const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Encodes a reference to a parametric SVG into SLD, as a succession of
 parametric SVG using URL parameters, a fallback SVG without parameters,
 and a final fallback as a mark with the right colors and stroke for
 systems that cannot do SVG at all
+
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
+                                    const QString &path,
+                                    const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth,
+                                    QgsSldExportContext &context );
+%Docstring
+Encodes a reference to a parametric SVG into SLD, as a succession of
+parametric SVG using URL parameters, a fallback SVG without parameters,
+and a final fallback as a mark with the right colors and stroke for
+systems that cannot do SVG at all
+
+.. versionadded:: 3.44
 %End
 
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );

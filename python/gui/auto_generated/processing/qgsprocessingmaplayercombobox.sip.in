@@ -26,7 +26,7 @@ Processing map layer combo box.
 #include "qgsprocessingmaplayercombobox.h"
 %End
   public:
-    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = 0 );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsProcessingMapLayerComboBox, with the specified
 ``parameter`` definition.

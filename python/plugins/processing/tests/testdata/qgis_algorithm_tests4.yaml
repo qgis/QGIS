@@ -424,6 +424,38 @@ tests:
         name: expected/filter_points_big.gml
         type: vector
 
+  - algorithm: model:Inner model
+    name: Inner model
+    params:
+      input:
+        name: custom/points_3857.gml|layername=points_3857
+        type: vector
+    results:
+      output:
+        name: expected/inner_model.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 3
+            normalize: True
+
+  - algorithm: model:Outer model
+    name: Nested models
+    params:
+      input:
+        name: custom/points_3857.gml|layername=points_3857
+        type: vector
+    results:
+      output:
+        name: expected/nested_models.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 3
+            normalize: True
+
   - algorithm: native:intersection
     name: Test Intersection (basic)
     params:
@@ -2522,6 +2554,35 @@ tests:
         name: expected/join_to_nearest_no_matches.gml
         type: vector
 
+  - algorithm: native:joinbynearest
+    name: Join by nearest field unordered
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      INPUT_2:
+        name: airports.gml|layername=airports
+        type: vector
+      NEIGHBORS: 1
+      PREFIX: ''
+      FIELDS_TO_COPY:
+      - USE
+      - NAME
+      - fk_region
+      - ELEV
+    results:
+      OUTPUT:
+        name: expected/nearest_field_subset_unordered.gml
+        type: vector
+        compare:
+          fields:
+            distance:
+              precision: 1
+            feature_x: skip
+            nearest_x: skip
+            feature_y: skip
+            nearest_y: skip
+
   - name: Generate XYZ tiles (Directory)
     algorithm: qgis:tilesxyzdirectory
     project: ../../../../../tests/testdata/xyztiles.qgs
@@ -3241,4 +3302,52 @@ tests:
         name: expected/join_attributes_table_issue_47650.gml
         type: vector
 
+  - algorithm: native:joinattributestable
+    name: Join by attribute ordered field subet
+    params:
+      DISCARD_NONMATCHING: true
+      FIELD: id
+      FIELDS_TO_COPY:
+      - fid
+      - fk_region
+      - ELEV
+      - NAME
+      FIELD_2: ID
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      INPUT_2:
+        name: airports.gml|layername=airports
+        type: vector
+      METHOD: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_attributes_subset_ordered.gml
+        type: vector
+
+
+  - algorithm: native:joinattributestable
+    name: Join by attribute unordered field subset
+    params:
+      DISCARD_NONMATCHING: true
+      FIELD: id
+      FIELDS_TO_COPY:
+      - ELEV
+      - NAME
+      - fk_region
+      - fid
+      FIELD_2: ID
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      INPUT_2:
+        name: airports.gml|layername=airports
+        type: vector
+      METHOD: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/join_attributes_subset_unordered.gml
+        type: vector
 # See ../README.md for a description of the file format

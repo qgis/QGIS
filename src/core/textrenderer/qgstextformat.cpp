@@ -954,6 +954,29 @@ bool QgsTextFormat::containsAdvancedEffects() const
   return false;
 }
 
+bool QgsTextFormat::hasNonDefaultCompositionMode() const
+{
+  if ( d->blendMode != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( mBufferSettings.enabled() && mBufferSettings.blendMode() != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( mBackgroundSettings.enabled() && mBackgroundSettings.blendMode() != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( mShadowSettings.enabled() && mShadowSettings.blendMode() != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeBlendMode ) )
+    return true;
+
+  return false;
+}
+
 QgsPropertyCollection &QgsTextFormat::dataDefinedProperties()
 {
   d->isValid = true;
@@ -1291,7 +1314,7 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
     }
   }
 
-  context.setUseAdvancedEffects( true );
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainter( &painter );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );

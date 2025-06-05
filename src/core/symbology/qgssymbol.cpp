@@ -60,6 +60,7 @@
 #include "qgsunittypes.h"
 #include "qgsgeometrypaintdevice.h"
 #include "qgspainting.h"
+#include "qgssldexportcontext.h"
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -1090,8 +1091,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     screen.updateRenderContextForScreen( *context );
   }
 
-  const bool prevForceVector = context->forceVectorOutput();
-  context->setForceVectorOutput( true );
+  Qgis::RasterizedRenderingPolicy oldRasterizedRenderingPolicy = context->rasterizedRenderingPolicy();
+  context->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
 
   const double opacity = expressionContext ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, *expressionContext, mOpacity * 100 ) * 0.01 : mOpacity;
 
@@ -1241,7 +1242,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     QgsPainting::drawPicture( context->painter(), QPointF( 0, 0 ), *pictureForDeferredRendering );
   }
 
-  context->setForceVectorOutput( prevForceVector );
+  context->setRasterizedRenderingPolicy( oldRasterizedRenderingPolicy );
 }
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )
@@ -1368,15 +1369,30 @@ QString QgsSymbol::dump() const
 
 void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  const QVariantMap oldProps = context.extraProperties();
+  QVariantMap props = oldProps;
+  //TODO move these to proper getters/setters in QgsSldExportContext
   props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
   double scaleFactor = 1.0;
   props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
   props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QString() );
 
+  context.setExtraProperties( props );
+  bool result = true;
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    ( *it )->toSld( doc, element, props );
+    if ( !( *it )->toSld( doc, element, context ) )
+      result = false;
   }
+  context.setExtraProperties( oldProps );
+  return result;
 }
 
 QgsSymbolLayerList QgsSymbol::cloneLayers() const

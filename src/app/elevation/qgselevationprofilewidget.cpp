@@ -478,7 +478,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   } );
   setLayout( layout );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, false, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, true, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
 
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );
@@ -806,7 +806,7 @@ void QgsElevationProfileWidget::exportAsPdf()
 
   QgsRenderContext rc = QgsRenderContext::fromQPainter( &p );
   rc.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-  rc.setFlag( Qgis::RenderContextFlag::ForceVectorOutput, true );
+  rc.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   rc.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
   rc.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );

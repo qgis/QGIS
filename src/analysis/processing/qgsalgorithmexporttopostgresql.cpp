@@ -75,7 +75,7 @@ QString QgsExportToPostgresqlAlgorithm::shortHelpString() const
 
 QString QgsExportToPostgresqlAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Exports a vector layer to a PostgreSQL database" );
+  return QObject::tr( "Exports a vector layer to a PostgreSQL database." );
 }
 
 QgsExportToPostgresqlAlgorithm *QgsExportToPostgresqlAlgorithm::createInstance() const

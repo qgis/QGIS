@@ -92,7 +92,7 @@ will be deleted.
 .. versionadded:: 3.4
 %End
 
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) /Factory/;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) /Factory/;
 %Docstring
 Creates a new parameter widget wrapper for the given ``parameter``. The
 ``type`` argument dictates the type of dialog the wrapper should be

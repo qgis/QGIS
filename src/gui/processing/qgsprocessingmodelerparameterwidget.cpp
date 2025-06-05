@@ -27,6 +27,8 @@
 #include "qgsguiutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingparametertype.h"
 #include "qgsfilterlineedit.h"
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -74,7 +76,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
 
   mStackedWidget = new QStackedWidget();
 
-  mStaticWidgetWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameterDefinition, QgsProcessingGui::Modeler ) );
+  mStaticWidgetWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameterDefinition, Qgis::ProcessingMode::Modeler ) );
   if ( mStaticWidgetWrapper )
   {
     QWidget *widget = mStaticWidgetWrapper->createWrappedWidget( context );
@@ -412,7 +414,7 @@ void QgsProcessingModelerParameterWidget::updateUi()
 
 void QgsProcessingModelerParameterWidget::populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes )
 {
-  const QList<QgsProcessingModelChildParameterSource> sources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );
+  QgsProcessingModelChildParameterSources sources = mModel->availableSourcesForChild( mChildId, compatibleParameterTypes, compatibleOutputTypes, compatibleDataTypes );
 
   for ( const QgsProcessingModelChildParameterSource &source : sources )
   {

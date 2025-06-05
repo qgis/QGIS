@@ -108,7 +108,34 @@ bool QgsVectorTileLayerRenderer::render()
   tTotal.start();
 
   const double tileRenderScale = mTileMatrixSet.scaleForRenderContext( ctx );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ), 2 );
+
+  QgsRectangle extent = ctx.extent();
+  if ( extent.isMaximal() )
+  {
+    // invalid extent. We don't want to fetch ALL tiles at the zoom level!
+    // This has occurred because the map renderer is being pessimistic and thinks a worst-case
+    // scenario is acceptable when it failed to transform the map extent to the layer's crs.
+    // But while that's permissible eg for a local raster layer, it's entirely inappropriate
+    // for vector tiles!
+    // So let's try and determine a MINIMAL extent for the layer, avoiding the pessimism used
+    // in the generic map renderer code
+    QgsCoordinateTransform layerToMapTransform = ctx.coordinateTransform();
+    layerToMapTransform.setAllowFallbackTransforms( true );
+    layerToMapTransform.setBallparkTransformsAreAppropriate( true );
+
+    QgsRectangle extentInMapCrs = ctx.mapExtent();
+    try
+    {
+      extent = layerToMapTransform.transformBoundingBox( extentInMapCrs, Qgis::TransformDirection::Reverse );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsDebugError( QStringLiteral( "Could not transform map extent to layer extent -- cannot calculate valid extent for vector tiles, aborting: %1" ).arg( cs.what() ) );
+      return false;
+    }
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + extent.toString( -1 ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( tileRenderScale ), 2 );
 
   mTileZoomToFetch = mTileMatrixSet.scaleToZoomLevel( tileRenderScale );
@@ -118,13 +145,13 @@ bool QgsVectorTileLayerRenderer::render()
 
   mTileMatrix = mTileMatrixSet.tileMatrix( mTileZoomToFetch );
 
-  mTileRange = mTileMatrix.tileRangeFromExtent( ctx.extent() );
-  QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
+  mTileRange = mTileMatrix.tileRangeFromExtent( extent );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4 (%5 tiles total)" )
                     .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
-                    .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ), 2 );
+                    .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ).arg( mTileRange.count() ), 2 );
 
   // view center is used to sort the order of tiles for fetching and rendering
-  const QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
+  const QPointF viewCenter = mTileMatrix.mapToTileCoordinates( extent.center() );
 
   if ( !mTileRange.isValid() )
   {
@@ -247,8 +274,15 @@ bool QgsVectorTileLayerRenderer::render()
 
 bool QgsVectorTileLayerRenderer::forceRasterRender() const
 {
-  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
-    return false;
+  switch ( renderContext()->rasterizedRenderingPolicy() )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      return false;
+  }
 
   if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
     return true;

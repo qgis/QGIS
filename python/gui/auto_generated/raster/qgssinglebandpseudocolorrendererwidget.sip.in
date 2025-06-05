@@ -23,7 +23,10 @@ widget, a raster min max widget and a band selector.
   public:
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
-Creates new raster renderer widget
+Constructor for QgsSingleBandPseudoColorRendererWidget.
+
+:param layer: associated raster layer
+:param extent: current canvas extent
 %End
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;

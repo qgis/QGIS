@@ -787,8 +787,10 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertAlmostEqual(geoTransform[5], -13.183886222186642, 4)
 
         # check that the metadata has _not_ been added to the exported PDF
+        # starting with Qt 6.9 QPdfWriter generates a pdf with an empty
+        # author by default
         metadata = d.GetMetadata()
-        self.assertNotIn("AUTHOR", metadata)
+        self.assertEqual(metadata.get("AUTHOR", ""), "")
 
         exporter = QgsLayoutExporter(l)
         # setup settings

@@ -513,7 +513,7 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
     return v;
   }
 
-  return QVariant( QString() );
+  return QVariant();
 }
 
 // Returns the maximum value of an attribute
@@ -560,7 +560,7 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
     return v;
   }
 
-  return QVariant( QString() );
+  return QVariant();
 }
 
 // Returns the list of unique values of an attribute
@@ -1014,7 +1014,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( attrs.at( i ) ) )
         continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
@@ -1115,7 +1115,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( attrs.at( i ) ) )
         continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
@@ -1377,7 +1377,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( it2.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( it2.value() ) )
         continue;
 
       if ( mComputedColumns.contains( fld.name() ) )

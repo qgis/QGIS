@@ -78,5 +78,17 @@ QgsMapLayerAction.EnabledOnlyWhenEditable.is_monkey_patched = True
 QgsMapLayerAction.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
 QgsMapLayerAction.Flags = _Qgis.MapLayerActionFlags
 
+QgsProcessingGui.WidgetType = _Qgis.ProcessingMode
+# monkey patching scoped based enum
+QgsProcessingGui.Standard = _Qgis.ProcessingMode.Standard
+QgsProcessingGui.Standard.is_monkey_patched = True
+QgsProcessingGui.Standard.__doc__ = "Standard (single-run) algorithm mode"
+QgsProcessingGui.Batch = _Qgis.ProcessingMode.Batch
+QgsProcessingGui.Batch.is_monkey_patched = True
+QgsProcessingGui.Batch.__doc__ = "Batch processing mode"
+QgsProcessingGui.Modeler = _Qgis.ProcessingMode.Modeler
+QgsProcessingGui.Modeler.is_monkey_patched = True
+QgsProcessingGui.Modeler.__doc__ = "Modeler mode"
+
 # Classes patched
 QgsSettingsEnumEditorWidgetWrapper = PyQgsSettingsEnumEditorWidgetWrapper

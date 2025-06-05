@@ -33,11 +33,16 @@ QString QgsAggregateAlgorithm::displayName() const
 
 QString QgsAggregateAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm take a vector or table layer and aggregate features based on a group by expression. Features for which group by expression return the same value are grouped together.\n\n"
+  return QObject::tr( "This algorithm takes a vector or table layer and aggregates features based on a group by expression. Features for which group by expression return the same value are grouped together.\n\n"
                       "It is possible to group all source features together using constant value in group by parameter, example: NULL.\n\n"
                       "It is also possible to group features using multiple fields using Array function, example: Array(\"Field1\", \"Field2\").\n\n"
                       "Geometries (if present) are combined into one multipart geometry for each group.\n\n"
                       "Output attributes are computed depending on each given aggregate definition." );
+}
+
+QString QgsAggregateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Aggregates features based on a group by expression, combining geometries (if present) into one multipart geometry for each group." );
 }
 
 QStringList QgsAggregateAlgorithm::tags() const

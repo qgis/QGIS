@@ -92,7 +92,11 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
             parameters = {parameter_name: parameters[parameter_name].source}
 
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
-        if input_layer is None or input_layer.providerType() in ("memory", "grass"):
+        if input_layer is None or input_layer.providerType() in (
+            "memory",
+            "grass",
+            "virtual",
+        ):
             if executing:
                 # parameter is not a vector layer - try to convert to a source compatible with OGR
                 # and extract selection if required
@@ -108,13 +112,16 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 return GdalConnectionDetails(
                     connection_string=ogr_data_path,
                     layer_name=GdalUtils.ogrLayerName(ogr_data_path),
+                    geometry_column_name="geom",
                 )
             else:
                 # not executing - don't waste time converting incompatible sources, just return dummy strings
                 # for the command preview (since the source isn't compatible with OGR, it has no meaning anyway and can't
                 # be run directly in the command line)
                 return GdalConnectionDetails(
-                    connection_string="path_to_data_file", layer_name="layer_name"
+                    connection_string="path_to_data_file",
+                    layer_name="layer_name",
+                    geometry_column_name="geom",
                 )
         elif input_layer.providerType() == "ogr":
             if (

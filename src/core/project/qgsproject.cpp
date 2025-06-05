@@ -2027,12 +2027,12 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
   QgsScopedRuntimeProfile profile( tr( "Setting up translations" ), QStringLiteral( "projectload" ) );
 
-  const QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), QgsApplication::settingsLocaleUserLocale->value() );
+  const QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( mFile ).baseName(), QgsApplication::settingsLocaleUserLocale->value() );
 
-  if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
+  if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( mFile ).absolutePath(), localeFileName ) ).exists() )
   {
     mTranslator.reset( new QTranslator() );
-    ( void )mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() );
+    ( void )mTranslator->load( localeFileName, QFileInfo( mFile ).absolutePath() );
   }
 
   profile.switchTask( tr( "Reading project file" ) );
@@ -2656,7 +2656,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   if ( mTranslator )
   {
     //project possibly translated -> rename it with locale postfix
-    const QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) );
+    const QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( mFile ).absolutePath(), localeFileName ) );
     setFileName( newFileName );
 
     if ( write() )
@@ -3260,6 +3260,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
+    mMetadata.setAuthor( QgsApplication::userFullName() );
+    if ( !mMetadata.creationDateTime().isValid() )
+    {
+      mMetadata.setCreationDateTime( QDateTime( QDateTime::currentDateTime() ) );
+    }
     mSaveDateTime = QDateTime::currentDateTime();
     qgisNode.setAttribute( QStringLiteral( "saveDateTime" ), mSaveDateTime.toString( Qt::ISODate ) );
   }
@@ -3267,6 +3272,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     mSaveUser.clear();
     mSaveUserFull.clear();
+    mMetadata.setAuthor( QString() );
+    mMetadata.setCreationDateTime( QDateTime() );
     mSaveDateTime = QDateTime();
   }
   doc->appendChild( qgisNode );

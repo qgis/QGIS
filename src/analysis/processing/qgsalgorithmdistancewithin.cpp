@@ -238,6 +238,11 @@ QString QgsSelectWithinDistanceAlgorithm::shortHelpString() const
                       "the specified maximum distance from the features in an additional reference layer." );
 }
 
+QString QgsSelectWithinDistanceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Selects features that are within a specified distance from features in another layer." );
+}
+
 QgsSelectWithinDistanceAlgorithm *QgsSelectWithinDistanceAlgorithm::createInstance() const
 {
   return new QgsSelectWithinDistanceAlgorithm();
@@ -318,6 +323,12 @@ QString QgsExtractWithinDistanceAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an "
                       "input layer. Features are copied wherever they are within "
                       "the specified maximum distance from the features in an additional reference layer." );
+}
+
+QString QgsExtractWithinDistanceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a new vector layer with features that are within "
+                      "a specified distance from features in another layer." );
 }
 
 QgsExtractWithinDistanceAlgorithm *QgsExtractWithinDistanceAlgorithm::createInstance() const

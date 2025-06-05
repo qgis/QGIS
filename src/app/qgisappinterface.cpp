@@ -47,10 +47,12 @@
 #include "qgsmessagebar.h"
 #include "qgsappmaptools.h"
 #include "qgspointcloudlayer.h"
+#include "qgsappgpsdigitizing.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
   , pluginManagerIface( _qgis->pluginManager() )
+  , mGpsToolsIface()
 {
   // connect signals
   connect( qgis, &QgisApp::activeLayerChanged, this, &QgisInterface::currentLayerChanged );
@@ -74,6 +76,11 @@ QgsPluginManagerInterface *QgisAppInterface::pluginManagerInterface()
 QgsLayerTreeView *QgisAppInterface::layerTreeView()
 {
   return qgis->layerTreeView();
+}
+
+QgsGpsToolsInterface *QgisAppInterface::gpsTools()
+{
+  return &mGpsToolsIface;
 }
 
 void QgisAppInterface::addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers )

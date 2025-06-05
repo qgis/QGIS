@@ -1831,8 +1831,17 @@ QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const 
   const QgsFields fields = feature.fields();
   for ( const QgsField &field : fields )
   {
+    QVariant value = feature.attribute( field.name() );
+    if ( value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+    {
+      if ( flags.testFlag( FeatureToJsonFlag::SkipUnsetAttributes ) )
+        continue;
+      else
+        value = QVariant(); // reset to null, we can't store 'QgsUnsetAttributeValue' as json
+    }
+
     if ( ( flags & FeatureToJsonFlag::IncludeNonObjectIdAttributes ) || field.name() == context.objectIdFieldName() )
-      attributes.insert( field.name(), variantToAttributeValue( feature.attribute( field.name() ), field.type(), context ) );
+      attributes.insert( field.name(), variantToAttributeValue( value, field.type(), context ) );
   }
   if ( !attributes.isEmpty() )
   {

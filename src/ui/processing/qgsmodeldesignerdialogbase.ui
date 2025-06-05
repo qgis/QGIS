@@ -333,7 +333,7 @@
   </widget>
   <widget class="QgsDockWidget" name="mAlgorithmsDock">
    <property name="windowTitle">
-    <string>Algorithms</string>
+    <string>Toolbox</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -386,14 +386,14 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QgsFilterLineEdit" name="mAlgorithmSearchEdit">
+          <widget class="QgsFilterLineEdit" name="mToolboxSearchEdit">
            <property name="toolTip">
             <string>Enter algorithm name to filter list</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QgsProcessingToolboxTreeView" name="mAlgorithmsTree">
+          <widget class="QgsProcessingToolboxTreeView" name="mToolboxTree">
            <property name="alternatingRowColors">
             <bool>true</bool>
            </property>

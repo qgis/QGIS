@@ -49,6 +49,11 @@ QString QgsDelaunayTriangulationAlgorithm::groupId() const
 
 QString QgsDelaunayTriangulationAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm creates a polygon layer with the Delaunay triangulation corresponding to a points layer." );
+}
+
+QString QgsDelaunayTriangulationAlgorithm::shortDescription() const
+{
   return QObject::tr( "Creates a polygon layer with the Delaunay triangulation corresponding to a points layer." );
 }
 

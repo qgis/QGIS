@@ -484,7 +484,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       context.setMapToPixel( newCoordXForm );
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
-      context.setUseAdvancedEffects( true );
+      context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background
@@ -785,6 +785,9 @@ void QgsFontButton::setMode( Mode mode )
 
 bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat &resultFormat ) const
 {
+  if ( !mimeData )
+    return false;
+
   bool ok = false;
   resultFormat = QgsTextFormat::fromMimeData( mimeData, &ok );
   return ok;
@@ -792,6 +795,9 @@ bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat
 
 bool QgsFontButton::fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const
 {
+  if ( !mimeData )
+    return false;
+
   bool ok = false;
   resultFont = QgsFontUtils::fromMimeData( mimeData, &ok );
   return ok;
@@ -906,7 +912,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
       context.setDevicePixelRatio( devicePixelRatioF() );
-      context.setUseAdvancedEffects( true );
+      context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );
 

@@ -62,7 +62,7 @@ void QgsCoverageValidateAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsCoverageValidateAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Analyzes a coverage of polygon features to find places where the assumption of exactly matching edges is not met" );
+  return QObject::tr( "Analyzes a coverage of polygon features to find places where the assumption of exactly matching edges is not met." );
 }
 
 QString QgsCoverageValidateAlgorithm::shortHelpString() const

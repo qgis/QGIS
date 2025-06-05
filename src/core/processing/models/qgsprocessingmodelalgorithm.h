@@ -449,12 +449,24 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, int indentSize ) const;
 
     /**
+     * Returns a list of possible sources which can be used for the parameter \a param for a child \a childId
+     * algorithm in the model
+     *
+     * The source compatibilibity is deducted from the parameter type
+     *
+     * \since QGIS 3.44
+     */
+    QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QgsProcessingParameterDefinition *param ) const;
+
+    /**
      * Returns a list of possible sources which can be used for the parameters for a child
      * algorithm in the model. Returned sources are those which match either one of the
      * specified \a parameterTypes (see QgsProcessingParameterDefinition::type() ) or
      * one of the specified \a outputTypes (see QgsProcessingOutputDefinition::type() ).
      * If specified, an optional list of \a dataTypes can be used to filter the returned
      * sources to those with compatible data types for the parameter/outputs.
+     *
+     * Use it when you need fine grained support for the requested compatible sources
      */
     QList< QgsProcessingModelChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
         const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;

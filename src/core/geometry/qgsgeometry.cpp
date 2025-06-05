@@ -1695,7 +1695,7 @@ json QgsGeometry::asJsonObject( int precision ) const
 
 }
 
-QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM ) const
+QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
 {
   QVector< QgsGeometry > res;
   if ( isNull() )
@@ -1768,7 +1768,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     QSet< QgsPoint > added;
     for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
     {
-      if ( added.contains( *vertex ) )
+      if ( avoidDuplicates && added.contains( *vertex ) )
         continue; // avoid duplicate points, e.g. start/end of rings
       mp->addGeometry( ( *vertex ).clone() );
       added.insert( *vertex );

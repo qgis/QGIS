@@ -18,13 +18,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsbox3d.h"
 #include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
-#include "qgscircularstring.h"
-#include "qgscompoundcurve.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
-#include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
@@ -382,12 +379,23 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
-                            << new QgsCircularString << new QgsCompoundCurve
-                            << new QgsCurvePolygon
-                            << new QgsMultiPoint << new QgsMultiLineString
-                            << new QgsMultiPolygon << new QgsGeometryCollection
-                            << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Point,
+                                   Qgis::WkbType::LineString,
+                                   Qgis::WkbType::Polygon,
+                                   Qgis::WkbType::CircularString,
+                                   Qgis::WkbType::CompoundCurve,
+                                   Qgis::WkbType::CurvePolygon,
+                                   Qgis::WkbType::MultiPoint,
+                                   Qgis::WkbType::MultiLineString,
+                                   Qgis::WkbType::MultiPolygon,
+                                   Qgis::WkbType::GeometryCollection,
+                                   Qgis::WkbType::MultiCurve,
+                                   Qgis::WkbType::MultiSurface,
+                                   Qgis::WkbType::Triangle,
+                                   Qgis::WkbType::PolyhedralSurface,
+                                   Qgis::WkbType::TIN
+                                 },
+                            QStringLiteral( "GeometryCollection" ) );
 }
 
 int QgsGeometryCollection::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const
@@ -703,7 +711,7 @@ double QgsGeometryCollection::perimeter() const
   return perimeter;
 }
 
-bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
+bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector<Qgis::WkbType> &subtypes, const QString &defaultChildWkbType )
 {
   clear();
 
@@ -711,7 +719,6 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
 
   if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::flatType( wkbType() ) )
   {
-    qDeleteAll( subtypes );
     return false;
   }
   mWkbType = parts.first;
@@ -721,7 +728,6 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
   {
-    qDeleteAll( subtypes );
     return true;
   }
 
@@ -733,11 +739,13 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
     QPair<Qgis::WkbType, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
     bool success = false;
-    for ( const QgsAbstractGeometry *geom : subtypes )
+    for ( const Qgis::WkbType subtype : subtypes )
     {
-      if ( QgsWkbTypes::flatType( childParts.first ) == QgsWkbTypes::flatType( geom->wkbType() ) )
+      if ( QgsWkbTypes::flatType( childParts.first ) == QgsWkbTypes::flatType( subtype ) )
       {
-        mGeometries.append( geom->clone() );
+        mGeometries.append(
+          QgsGeometryFactory::geomFromWkbType( subtype ).release()
+        );
         if ( mGeometries.back()->fromWkt( childWkt ) )
         {
           success = true;
@@ -748,11 +756,9 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
     if ( !success )
     {
       clear();
-      qDeleteAll( subtypes );
       return false;
     }
   }
-  qDeleteAll( subtypes );
 
   //scan through geometries and check if dimensionality of geometries is different to collection.
   //if so, update the type dimensionality of the collection to match

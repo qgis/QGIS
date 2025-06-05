@@ -41,6 +41,7 @@ class QgsStyleEntityVisitorInterface;
 class QgsRenderContext;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
+class QgsSldExportContext;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -357,12 +358,21 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
 
-    //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const
-    {
-      element.appendChild( doc.createComment( QStringLiteral( "FeatureRenderer %1 not implemented yet" ).arg( type() ) ) );
-      ( void ) props; // warning avoidance
-    }
+    /**
+     * Used from subclasses to create SLD Rule elements following SLD v1.1 specs
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+     */
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const SIP_DEPRECATED;
+
+    /**
+     * Exports the renderer to SLD Rule elements following the SLD v1.1 specs.
+     *
+     * Returns TRUE if the renderer was exported to SLD successfully.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     /**
      * Returns the set of all legend keys used by the renderer.
@@ -706,7 +716,7 @@ class CORE_EXPORT QgsFeatureRenderer
     //! The current size of editing marker
     double mCurrentVertexMarkerSize = 2;
 
-    QgsPaintEffect *mPaintEffect = nullptr;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 
     bool mForceRaster = false;
 
