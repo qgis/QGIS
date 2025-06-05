@@ -72,7 +72,6 @@ void QgsStringStatisticalSummary::addValue( const QVariant &value )
   {
     testString( value.toString() );
   }
-  finalize();
 }
 
 void QgsStringStatisticalSummary::finalize()
