@@ -1220,7 +1220,7 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         additionalConformance = [
             "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
             "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
-            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions",
             "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
             "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
             "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
