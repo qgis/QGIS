@@ -559,7 +559,7 @@ class GenericAlgorithmsTest(QgisTestCase):
         # check that calling helpUrl() works without error
         alg.helpUrl()
 
-        if alg.provider().id() in ("qgis", "native", "3d"):
+        if alg.provider().id() in ("qgis", "native", "3d", "pdal"):
             if alg.id() not in (
                 "native:exportmeshedges",
                 "native:exportmeshfaces",
@@ -623,6 +623,23 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "native:createspatialindex",
                 "native:tilesxyzdirectory",
                 "native:tilesxyzmbtiles",
+                "pdal:assignprojection",
+                "pdal:boundary",
+                "pdal:clip",
+                "pdal:convertformat",
+                "pdal:createcopc",
+                "pdal:density",
+                "pdal:exportraster",
+                "pdal:exportrastertin",
+                "pdal:exportvector",
+                "pdal:filter",
+                "pdal:info",
+                "pdal:merge",
+                "pdal:reproject",
+                "pdal:thinbydecimate",
+                "pdal:thinbyradius",
+                "pdal:tile",
+                "pdal:virtualpointcloud",
                 "qgis:advancedpythonfieldcalculator",
                 "qgis:distancematrix",
                 "qgis:distancetonearesthublinetohub",
