@@ -5699,6 +5699,11 @@ QgsProcessingGuiRegistry.createParameterWidgetWrapper: src/gui/processing/qgspro
 QgsProcessingGuiRegistry.removeAlgorithmConfigurationWidgetFactory: src/gui/processing/qgsprocessingguiregistry.h#L66
 QgsProcessingGuiRegistry.removeParameterWidgetFactory: src/gui/processing/qgsprocessingguiregistry.h#L102
 QgsProcessingGuiRegistry: src/gui/processing/qgsprocessingguiregistry.h#L42
+QgsProcessingGuiUtils.ResultLayerDetails: src/gui/processing/qgsprocessingguiutils.h#L44
+QgsProcessingGuiUtils.addResultLayers: src/gui/processing/qgsprocessingguiutils.h#L91
+QgsProcessingGuiUtils.configureResultLayerTreeLayer: src/gui/processing/qgsprocessingguiutils.h#L80
+QgsProcessingGuiUtils.layerTreeResultsGroup: src/gui/processing/qgsprocessingguiutils.h#L86
+QgsProcessingGuiUtils: src/gui/processing/qgsprocessingguiutils.h#L36
 QgsProcessingHiddenWidgetWrapper.createLabel: src/gui/processing/qgsprocessingwidgetwrapper.h#L682
 QgsProcessingHiddenWidgetWrapper.createWidget: src/gui/processing/qgsprocessingwidgetwrapper.h#L681
 QgsProcessingHiddenWidgetWrapper.linkedVectorLayer: src/gui/processing/qgsprocessingwidgetwrapper.h#L673
