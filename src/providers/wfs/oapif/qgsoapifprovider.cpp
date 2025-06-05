@@ -185,7 +185,10 @@ bool QgsOapifProvider::init()
     implementsSchemas = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas" ) );
   }
 
-  mLayerMetadata = collectionRequest->collection().mLayerMetadata;
+  const QgsOapifCollection &collectionDesc = collectionRequest->collection();
+
+  mLayerMetadata = collectionDesc.mLayerMetadata;
+  mFeatureCount = collectionDesc.mFeatureCount;
 
   QString srsName = mShared->mURI.SRSName();
   if ( implementsPart2 && !srsName.isEmpty() )
@@ -208,12 +211,12 @@ bool QgsOapifProvider::init()
       QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
     );
   }
-  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+  mShared->mCapabilityExtent = collectionDesc.mBbox;
 
   // Reproject extent of /collection request to the layer CRS
-  if ( !mShared->mCapabilityExtent.isNull() && collectionRequest->collection().mBboxCrs != mShared->mSourceCrs )
+  if ( !mShared->mCapabilityExtent.isNull() && collectionDesc.mBboxCrs != mShared->mSourceCrs )
   {
-    QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
+    QgsCoordinateTransform ct( collectionDesc.mBboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
     try
@@ -349,6 +352,11 @@ long long QgsOapifProvider::featureCount() const
   // If no filter is set try the fast way of retrieving the feature count
   if ( mSubsetString.isEmpty() )
   {
+    if ( mShared->mServerFilter.isEmpty() && mFeatureCount >= 0 )
+    {
+      return mFeatureCount;
+    }
+
     QString url = mShared->mItemsUrl;
     url += QLatin1String( "?limit=1" );
     url = mShared->appendExtraQueryParameters( url );

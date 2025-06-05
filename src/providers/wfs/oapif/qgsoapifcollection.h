@@ -51,6 +51,9 @@ struct QgsOapifCollection
     //! Layer metadata
     QgsLayerMetadata mLayerMetadata;
 
+    //! Feature count when advertized (currently only through ldproxy's itemCount)
+    int64_t mFeatureCount = -1;
+
     //! Fills a collection from its JSON serialization
     bool deserialize( const json &j, const json &jCollections );
 };

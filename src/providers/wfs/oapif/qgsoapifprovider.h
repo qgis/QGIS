@@ -127,6 +127,9 @@ class QgsOapifProvider final : public QgsVectorDataProvider
     //! Layer metadata
     QgsLayerMetadata mLayerMetadata;
 
+    //! Feature count when advertized (currently only through ldproxy's itemCount)
+    int64_t mFeatureCount = -1;
+
     //! Set to true by reloadProviderData()
     mutable bool mUpdateFeatureCountAtNextFeatureCountRequest = true;
 
