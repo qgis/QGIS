@@ -39,6 +39,7 @@ class GUI_EXPORT QgsProcessingGuiUtils
     /**
      * Contains details of a layer result from running an algorithm.
      * \ingroup gui
+     * \since QGIS 3.44
      */
     class GUI_EXPORT ResultLayerDetails
     {
