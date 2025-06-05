@@ -124,6 +124,11 @@ class TopoColor(QgisAlgorithm):
     def displayName(self):
         return self.tr("Topological coloring")
 
+    def shortDescription(self):
+        return self.tr(
+            "Assigns a color index to polygon features, so no adjacent polygons share the same color index."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:

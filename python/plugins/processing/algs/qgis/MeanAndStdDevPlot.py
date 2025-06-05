@@ -82,6 +82,9 @@ class MeanAndStdDevPlot(QgisAlgorithm):
     def displayName(self):
         return self.tr("Mean and standard deviation plot")
 
+    def shortDescription(self):
+        return self.tr("Creates a box plot with mean and standard deviation values.")
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

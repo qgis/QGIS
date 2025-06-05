@@ -144,6 +144,11 @@ class TinInterpolation(QgisAlgorithm):
     def displayName(self):
         return self.tr("TIN interpolation")
 
+    def shortDescription(self):
+        return self.tr(
+            "Generates a Triangulated Irregular Network (TIN) interpolation of a point vector layer."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         interpolationData = ParameterInterpolationData.parseValue(
             parameters[self.INTERPOLATION_DATA]
