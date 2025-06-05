@@ -1033,6 +1033,10 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
+  // Don't do lazy extent if the layer is currently in edit mode
+  if ( mLazyExtent2D && isEditable() )
+    mLazyExtent2D = false;
+
   if ( mDataProvider && mDataProvider->isValid() && ( mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent2D ) )
   {
     // Provider has a trivial 2D extent calculation => always get extent from provider.
