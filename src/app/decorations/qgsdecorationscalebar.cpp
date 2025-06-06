@@ -77,7 +77,7 @@ void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
   mPreferredSize = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), 30 );
-  mMaxWidth = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MaxWidth" ), 33 );
+  mMaximumWidth = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MaxWidth" ), 33 );
   mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Style" ), 1 );
   mSnapping = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Snapping" ), true );
   mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
@@ -121,7 +121,7 @@ void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), mPreferredSize );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MaxWidth" ), mMaxWidth );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MaxWidth" ), mMaximumWidth );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Snapping" ), mSnapping );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Style" ), mStyleIndex );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsColorUtils::colorToString( mColor ) );
@@ -273,14 +273,14 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   //If scale bar is very small (< 30 pixels) reset to max percentage of map canvas
   if ( scaleBarWidth < 30 )
   {
-    scaleBarWidth = deviceWidth * mMaxWidth/100;             // value in pixels
+    scaleBarWidth = deviceWidth * mMaximumWidth / 100;       // value in pixels
     unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel; // value in map units
   }
 
   //if scale bar is more than the maximum percentage of the width of the map canvas resize to maxWidth
-  if ( scaleBarWidth > deviceWidth * mMaxWidth/100 )
+  if ( scaleBarWidth > deviceWidth * mMaximumWidth / 100 )
   {
-    scaleBarWidth = deviceWidth * mMaxWidth/100;
+    scaleBarWidth = deviceWidth * mMaximumWidth / 100;
     unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel;
   }
 
