@@ -38,7 +38,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   spnSize->setValue( mDeco.mPreferredSize );
 
-  spnMaxWidth->setValue(mDeco.mMaxWidth);
+  spnMaxWidth->setValue( mDeco.mMaximumWidth );
 
   chkSnapping->setChecked( mDeco.mSnapping );
 
@@ -99,7 +99,7 @@ void QgsDecorationScaleBarDialog::apply()
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
   mDeco.mPreferredSize = spnSize->value();
-  mDeco.mMaxWidth = spnMaxWidth->value();
+  mDeco.mMaximumWidth = spnMaxWidth->value();
   mDeco.mSnapping = chkSnapping->isChecked();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
