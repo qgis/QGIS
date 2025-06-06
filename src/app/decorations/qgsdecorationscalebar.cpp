@@ -60,7 +60,7 @@ email                : sbr00pwb@users.sourceforge.net
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
   : QgsDecorationItem( parent )
 {
-  mPlacement = TopLeft;
+  mPlacement = BottomLeft;
   mMarginUnit = Qgis::RenderUnit::Millimeters;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
                << tr( "Bar" ) << tr( "Box" );
@@ -77,7 +77,8 @@ void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
   mPreferredSize = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Style" ), 0 );
+  mMaxWidth = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MaxWidth" ), 33 );
+  mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Style" ), 1 );
   mSnapping = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Snapping" ), true );
   mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
   mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
@@ -120,6 +121,7 @@ void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), mPreferredSize );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MaxWidth" ), mMaxWidth );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Snapping" ), mSnapping );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Style" ), mStyleIndex );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsColorUtils::colorToString( mColor ) );
@@ -262,24 +264,25 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
     return;
 
+  //Set length of scale bar to desired length in map units
   double unitsPerSegment = mPreferredSize;
 
-  //Calculate size of scale bar for preferred number of map units
+  //Calculate size of scale bar in pixels for preferred number of map units
   double scaleBarWidth = mPreferredSize / scaleBarUnitsPerPixel;
 
-  //If scale bar is very small reset to 1/4 of the canvas wide
+  //If scale bar is very small (< 30 pixels) reset to max percentage of map canvas
   if ( scaleBarWidth < 30 )
   {
-    scaleBarWidth = deviceWidth / 4.0;                       // value in pixels
+    scaleBarWidth = deviceWidth * mMaxWidth/100;             // value in pixels
     unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel; // value in map units
   }
 
-  //if scale bar is more than half the canvas wide keep halving until not
-  while ( scaleBarWidth > deviceWidth / 3.0 )
+  //if scale bar is more than the maximum percentage of the width of the map canvas resize to maxWidth
+  if ( scaleBarWidth > deviceWidth * mMaxWidth/100 )
   {
-    scaleBarWidth = scaleBarWidth / 3;
+    scaleBarWidth = deviceWidth * mMaxWidth/100;
+    unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel;
   }
-  unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel;
 
   // Work out the exponent for the number - e.g, 1234 will give 3,
   // and .001234 will give -3
