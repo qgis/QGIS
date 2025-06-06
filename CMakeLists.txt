@@ -873,7 +873,7 @@ if(MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17 /permissive-")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-  # Increase our stack size to 8MB to give us a bit more room and avod stackoverflow crashes
+  # Increase our stack size to 8MB to give us a bit more room and avoid stackoverflow crashes
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8000000")
   # disable macros that offend std::numeric_limits<T>::min()/max()
   add_definitions(-DNOMINMAX)
