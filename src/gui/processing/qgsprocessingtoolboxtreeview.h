@@ -129,6 +129,11 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     void setFilterString( const QString &filter );
 
+    /**
+     * Expands the tree view if a filter string is set after the view is reset.
+     */
+    void reset() override;
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
 
