@@ -1198,17 +1198,23 @@ void QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged( c
 
 void QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged( int )
 {
-  Qgis::WkbType currentIndexData = static_cast<Qgis::WkbType>( mGeometryTypeComboBox->currentData().toInt() );
-
-  if ( mGeometryTypeComboBox->currentIndex() != -1 && currentIndexData != Qgis::WkbType::NoGeometry )
+  const int currentIndexData = mGeometryTypeComboBox->currentData().toInt();
+  if ( currentIndexData != -1 && static_cast<Qgis::WkbType>( currentIndexData ) != Qgis::WkbType::NoGeometry )
   {
     mForceMultiCheckBox->setEnabled( true );
     mIncludeZCheckBox->setEnabled( true );
   }
   else
   {
-    mForceMultiCheckBox->setEnabled( false );
-    mForceMultiCheckBox->setChecked( false );
+    if ( static_cast<Qgis::WkbType>( currentIndexData ) == Qgis::WkbType::NoGeometry )
+    {
+      mForceMultiCheckBox->setEnabled( false );
+      mForceMultiCheckBox->setChecked( false );
+    }
+    else
+    {
+      mForceMultiCheckBox->setEnabled( true );
+    }
     mIncludeZCheckBox->setEnabled( false );
     mIncludeZCheckBox->setChecked( false );
   }
