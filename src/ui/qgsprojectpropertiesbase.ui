@@ -2733,7 +2733,7 @@
                         <item row="2" column="0">
                           <widget class="QCheckBox" name="mHTMLFiOnlyMaptip">
                            <property name="text">
-                            <string>Use maptip only for HTML GetFeatureInfo response</string>
+                            <string>Use only maptip for HTML GetFeatureInfo response</string>
                            </property>
                           </widget>
                         </item>
