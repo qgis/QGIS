@@ -5897,8 +5897,9 @@ QgsProcessingToolboxProxyModel.toolboxModel: src/gui/processing/qgsprocessingtoo
 QgsProcessingToolboxProxyModel: src/gui/processing/qgsprocessingtoolboxmodel.h#L513
 QgsProcessingToolboxTreeView.algorithmForIndex: src/gui/processing/qgsprocessingtoolboxtreeview.h#L81
 QgsProcessingToolboxTreeView.filters: src/gui/processing/qgsprocessingtoolboxtreeview.h#L117
-QgsProcessingToolboxTreeView.keyPressEvent: src/gui/processing/qgsprocessingtoolboxtreeview.h#L133
+QgsProcessingToolboxTreeView.keyPressEvent: src/gui/processing/qgsprocessingtoolboxtreeview.h#L138
 QgsProcessingToolboxTreeView.parameterTypeForIndex: src/gui/processing/qgsprocessingtoolboxtreeview.h#L95
+QgsProcessingToolboxTreeView.reset: src/gui/processing/qgsprocessingtoolboxtreeview.h#L135
 QgsProcessingToolboxTreeView.selectedAlgorithm: src/gui/processing/qgsprocessingtoolboxtreeview.h#L87
 QgsProcessingToolboxTreeView.selectedParameterType: src/gui/processing/qgsprocessingtoolboxtreeview.h#L103
 QgsProcessingToolboxTreeView.setFilterString: src/gui/processing/qgsprocessingtoolboxtreeview.h#L130
