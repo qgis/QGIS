@@ -14,7 +14,7 @@ import csv
 import math
 import os
 
-from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtGui import (
     QBrush,
     QColor,
