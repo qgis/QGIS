@@ -683,7 +683,7 @@ class GenericAlgorithmsTest(QgisTestCase):
                     alg.shortDescription().lower().startswith("this algorithm"),
                     f'Algorithm {alg.id()} shortDescription should NOT start with eg "This algorithm computes...", just use "Computes..." instead: "{alg.shortDescription()}"',
                 )
-                first_word = alg.shortDescription().split(" ")[0]
+                first_word = alg.shortDescription().split(" ")[0].lower()
                 if first_word not in ("randomly",):
                     self.assertEqual(
                         first_word[-1],
