@@ -547,8 +547,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
     QTextStream textStream( &metadataXml );
     document.save( textStream, 2 );
 
-    QFileInfo fi( path );
-    if ( fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    if ( path.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
     {
       const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
       QgsOgrLayerUniquePtr userLayer;
@@ -668,6 +667,19 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       // file based, but not a geopackage -- store as .qmd sidecar file instead
       // (possibly there's other formats outside of GPKG which also has some native means of storing metadata,
       // which could be added for those formats before we resort to the sidecar approach!)
+
+      QString adjustedPath = path;
+      const QStringList excludedExtensions = { QLatin1String( ".gz" ), QLatin1String( ".zip" ), QLatin1String( ".tar" ), QLatin1String( ".tgz" ), QLatin1String( ".tar.gz" ) };
+      for ( const QString &excludedExtension : excludedExtensions )
+      {
+        if ( adjustedPath.endsWith( excludedExtension, Qt::CaseInsensitive ) )
+        {
+          adjustedPath.chop( excludedExtension.size() );
+          break;
+        }
+      }
+
+      const QFileInfo fi( adjustedPath );
       const QString qmdFileName = fi.dir().filePath( fi.completeBaseName() + QStringLiteral( ".qmd" ) );
       QFile qmdFile( qmdFileName );
       if ( qmdFile.open( QFile::WriteOnly | QFile::Truncate ) )

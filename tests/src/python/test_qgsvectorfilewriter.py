@@ -1885,6 +1885,50 @@ class TestQgsVectorFileWriter(QgisTestCase):
         int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 7, 0),
         "GDAL 3.7 required",
     )
+    def testWriteGpkgZipWithMetadata(self):
+        tmp_dir = QTemporaryDir()
+        tmp_path = tmp_dir.path()
+
+        layer = QgsVectorLayer(
+            (
+                "Point?crs=epsg:4326&field=name:string(20)&"
+                "field=age:integer&field=size:double"
+            ),
+            "test",
+            "memory",
+        )
+
+        # set some metadata on the source layer
+        metadata = QgsLayerMetadata()
+        metadata.setTitle("my title")
+        metadata.setAbstract("my abstract")
+        metadata.setLicenses(["l1", "l2"])
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "GPKG"
+        options.layerName = "test"
+        options.saveMetadata = True
+        options.layerMetadata = metadata
+
+        dest_file_name = os.path.join(tmp_path, "test_metadata.gpkg.zip")
+        write_result, error_message, new_file_name, new_layer = (
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                layer, dest_file_name, QgsProject.instance().transformContext(), options
+            )
+        )
+        self.assertEqual(
+            write_result, QgsVectorFileWriter.WriterError.NoError, error_message
+        )
+        self.assertEqual(new_file_name, dest_file_name)
+
+        dest_layer = QgsVectorLayer(dest_file_name, "test", "ogr")
+        dest_layer.loadDefaultMetadata()
+        self.assertEqual(dest_layer.metadata().title(), metadata.title())
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 7, 0),
+        "GDAL 3.7 required",
+    )
     def test_field_capabilities(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             dest_file_name = os.path.join(temp_dir, "test_gpkg.gpkg")
