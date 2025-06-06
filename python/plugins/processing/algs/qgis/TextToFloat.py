@@ -63,7 +63,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         return self.tr("Float from text")
 
     def shortDescription(self):
-        return self.tr("Converts a text attribute containing numeric strings into a numeric attribute.")
+        return self.tr(
+            "Converts a text attribute containing numeric strings into a numeric attribute."
+        )
 
     def inputLayerTypes(self):
         return [QgsProcessing.SourceType.TypeVector]
