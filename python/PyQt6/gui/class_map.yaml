@@ -4976,11 +4976,11 @@ QgsModelDesignerFlatButtonGraphicItem: src/gui/processing/models/qgsmodelgraphic
 QgsModelDesignerFoldButtonGraphicItem.folded: src/gui/processing/models/qgsmodelgraphicitem.h#L142
 QgsModelDesignerFoldButtonGraphicItem.mousePressEvent: src/gui/processing/models/qgsmodelgraphicitem.h#L130
 QgsModelDesignerFoldButtonGraphicItem: src/gui/processing/models/qgsmodelgraphicitem.h#L116
-QgsModelDesignerSocketGraphicItem.component: src/gui/processing/models/qgsmodelgraphicitem.h#L194
-QgsModelDesignerSocketGraphicItem.componentItem: src/gui/processing/models/qgsmodelgraphicitem.h#L197
-QgsModelDesignerSocketGraphicItem.edge: src/gui/processing/models/qgsmodelgraphicitem.h#L184
-QgsModelDesignerSocketGraphicItem.index: src/gui/processing/models/qgsmodelgraphicitem.h#L177
-QgsModelDesignerSocketGraphicItem.isInput: src/gui/processing/models/qgsmodelgraphicitem.h#L191
+QgsModelDesignerSocketGraphicItem.component: src/gui/processing/models/qgsmodelgraphicitem.h#L198
+QgsModelDesignerSocketGraphicItem.componentItem: src/gui/processing/models/qgsmodelgraphicitem.h#L203
+QgsModelDesignerSocketGraphicItem.edge: src/gui/processing/models/qgsmodelgraphicitem.h#L186
+QgsModelDesignerSocketGraphicItem.index: src/gui/processing/models/qgsmodelgraphicitem.h#L178
+QgsModelDesignerSocketGraphicItem.isInput: src/gui/processing/models/qgsmodelgraphicitem.h#L193
 QgsModelDesignerSocketGraphicItem.paint: src/gui/processing/models/qgsmodelgraphicitem.h#L171
 QgsModelDesignerSocketGraphicItem: src/gui/processing/models/qgsmodelgraphicitem.h#L157
 QgsModelGraphicsScene.childAlgorithmItem: src/gui/processing/models/qgsmodelgraphicsscene.h#L126
