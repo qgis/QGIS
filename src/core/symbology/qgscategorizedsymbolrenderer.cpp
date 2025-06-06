@@ -1194,9 +1194,11 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     }
     else
     {
+      // NULL cat value may be stored as an empty string or an invalid variant, depending on how
+      // the renderer was constructed and which QGIS version was used
       if ( QgsVariantUtils::isNull( value ) )
       {
-        match = cat.value().toString().isEmpty();
+        match = cat.value().toString().isEmpty() || QgsVariantUtils::isNull( cat.value() );
       }
       else
       {
