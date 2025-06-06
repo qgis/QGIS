@@ -9,7 +9,9 @@
 
 
 
-class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+
+
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")
 Base class for database source widget selectors.
