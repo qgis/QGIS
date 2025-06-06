@@ -354,6 +354,25 @@ tests:
           geometry:
             precision: 2
 
+  - algorithm: native:voronoipolygons
+    name: Voronoi polygons, ensure filtering output to only polygon parts
+    params:
+      BUFFER: 0.0
+      COPY_ATTRIBUTES: true
+      INPUT:
+        name: custom/voronoi_points_extent_clip.json
+        type: vector
+      TOLERANCE: 0.0
+    results:
+      OUTPUT:
+        name: expected/voronoi_polygons_extent_clip.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            precision: 2
+
   - algorithm: native:explodelines
     name: Explode lines
     params:
