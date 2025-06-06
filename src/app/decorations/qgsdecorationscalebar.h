@@ -53,6 +53,8 @@ class APP_EXPORT QgsDecorationScaleBar : public QgsDecorationItem
   private:
     //! The size preferred size of the scale bar
     int mPreferredSize;
+    //! The maximum width of the scale bar in percentage of width of map canvas
+    int mMaxWidth;
     //! Should we snap to integer times power of 10?
     bool mSnapping;
     //! Style of scale bar. An index and the translated text
