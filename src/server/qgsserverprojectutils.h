@@ -223,6 +223,14 @@ class SERVER_EXPORT QgsServerProjectUtils
     static bool wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project );
 
     /**
+    * Returns if only maptip should be used for HTML feature info response
+    * \param project the QGIS project
+    * \returns true if only the maptip should be used for the feature info response only
+    * \since QGIS 4.0
+   */
+    static bool wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project );
+
+    /**
    * Returns if the geometry has to be segmentize in GetFeatureInfo request.
    * \param project the QGIS project
    * \returns if the geometry has to be segmentize in GetFeatureInfo request.

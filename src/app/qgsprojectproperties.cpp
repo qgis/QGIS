@@ -736,6 +736,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   bool useAttributeFormSettings = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ) );
   mUseAttributeFormSettingsCheckBox->setChecked( useAttributeFormSettings );
 
+  bool useOnlyMaptip = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ), QStringLiteral( "/" ) );
+  mHTMLFiOnlyMaptip->setChecked( useOnlyMaptip );
+
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ) );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
 
@@ -1566,6 +1569,7 @@ void QgsProjectProperties::apply()
   }
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ), mUseAttributeFormSettingsCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ), QStringLiteral( "/" ), mHTMLFiOnlyMaptip->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), mAddWktGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), mSegmentizeFeatureInfoGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddLayerGroupsLegendGraphic" ), QStringLiteral( "/" ), mAddLayerGroupsLegendGraphicCheckBox->isChecked() );
