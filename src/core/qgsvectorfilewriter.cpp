@@ -289,7 +289,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       const auto constAllExts = allExts;
       for ( const QString &ext : constAllExts )
       {
-        if ( vectorFileName.endsWith( '.' + ext.mid( 2 ), Qt::CaseInsensitive ) )
+        // Remove the wildcard (*) at the beginning of the extension
+        if ( vectorFileName.endsWith( ext.mid( 1 ), Qt::CaseInsensitive ) )
         {
           found = true;
           break;

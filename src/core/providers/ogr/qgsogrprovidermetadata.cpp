@@ -669,18 +669,16 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       // which could be added for those formats before we resort to the sidecar approach!)
 
       QString adjustedPath = path;
-      if ( adjustedPath.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
+      const QStringList excludedExtensions = { QLatin1String( ".gz" ), QLatin1String( ".zip" ), QLatin1String( ".tar" ), QLatin1String( ".tgz" ), QLatin1String( ".tar.gz" ) };
+      for ( const QString &excludedExtension : excludedExtensions )
       {
-        adjustedPath.chop( 3 );
+        if ( adjustedPath.endsWith( excludedExtension, Qt::CaseInsensitive ) )
+        {
+          adjustedPath.chop( excludedExtension.size() );
+          break;
+        }
       }
-      else if ( adjustedPath.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) || adjustedPath.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) || adjustedPath.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )
-      {
-        adjustedPath.chop( 4 );
-      }
-      else if ( adjustedPath.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) )
-      {
-        adjustedPath.chop( 7 );
-      }
+
       const QFileInfo fi( adjustedPath );
       const QString qmdFileName = fi.dir().filePath( fi.completeBaseName() + QStringLiteral( ".qmd" ) );
       QFile qmdFile( qmdFileName );
