@@ -8197,10 +8197,30 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
 void QgisApp::saveAsLayerDefinition()
 {
+  QString defaultFileName = "";
+
+  QgsLayerTreeNode *node = mLayerTreeView->currentNode();
+  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  {
+    QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>(node);
+    if (layerNode && layerNode->layer())
+    {
+      defaultFileName =  QStringLiteral( "/%1.qlr" ).arg( layerNode->layer()->name() );
+    }
+  }
+  else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+  {
+    QgsLayerTreeGroup *groupNode = dynamic_cast<QgsLayerTreeGroup *>(node);
+    if (groupNode)
+    {
+      defaultFileName = QStringLiteral( "/%1.qlr" ).arg( groupNode->name() );
+    }
+  }
+
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
 
-  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
+  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), QStringLiteral( "%1%2" ).arg( lastUsedDir, defaultFileName ), QStringLiteral( "*.qlr" ) );
   QgsDebugMsgLevel( path, 2 );
   if ( path.isEmpty() )
     return;
