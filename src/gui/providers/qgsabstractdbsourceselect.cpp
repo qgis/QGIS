@@ -139,7 +139,7 @@ void QgsAbstractDbSourceSelect::storeSettings()
     }
   }
 
-  settingSearchRegex->setValue( mSearchModeRegexAction->isChecked(), settingPath() );
+  settingSearchRegex->setValue( mSearchModeRegexAction->isChecked(), { settingPath() } );
 }
 
 void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )
