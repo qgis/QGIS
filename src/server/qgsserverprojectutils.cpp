@@ -183,8 +183,7 @@ bool QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( const QgsPro
 bool QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project )
 {
   const QString useFormSettings = project.readEntry( QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ), QStringLiteral( "/" ), "" );
-  return useFormSettings.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
-         || useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  return useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )

@@ -254,7 +254,9 @@ the feature info response
 
     static bool wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project );
 %Docstring
-Returns if only maptip should be used for HTML feature info response
+Returns if only the maptip should be used for HTML feature info response
+so that the HTML response to the feature info request only contains the
+maptip. If no maptip is set, the HTML response is empty.
 
 :param project: the QGIS project
 
