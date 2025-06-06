@@ -21,7 +21,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, Qgis::DistanceUnit units, QWidget *parent )
+QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, QWidget *parent )
   : QDialog( parent )
   , mDeco( deco )
 {

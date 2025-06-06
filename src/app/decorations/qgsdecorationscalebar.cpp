@@ -141,7 +141,7 @@ void QgsDecorationScaleBar::saveToProject()
 
 void QgsDecorationScaleBar::run()
 {
-  QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance()->mapCanvas()->mapUnits(), QgisApp::instance() );
+  QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance() );
   dlg.exec();
 }
 
@@ -254,11 +254,12 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();
   const float deviceWidth = static_cast<float>( device->width() ) / context.devicePixelRatio();
   const Qgis::DistanceUnit preferredUnits = QgsProject::instance()->distanceUnits();
-  Qgis::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
+  //Qgis::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
 
   //Get map units per pixel
   const double scaleBarUnitsPerPixel = ( mapWidth( mapSettings ) / mapSettings.outputSize().width() ) * QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), preferredUnits );
-  scaleBarUnits = preferredUnits;
+  //scaleBarUnits = preferredUnits;
+  Qgis::DistanceUnit scaleBarUnits = preferredUnits;
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
