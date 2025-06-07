@@ -203,7 +203,7 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
   sEditorDialog->setTable( table );
 
   connect( frame, &QgsLayoutFrame::destroyed, sEditorDialog, &QMainWindow::close );
-  auto updateName = [frame] { sEditorDialog->setWindowTitle( QString( "%1 - %2 " ).arg( sEditorDialog->tr( "Table Designer" ) ).arg( frame->displayName() ) ); };
+  auto updateName = [frame] { sEditorDialog->setWindowTitle( QString( "%1 - %2 " ).arg( tr( "Table Designer" ) ).arg( frame->displayName() ) ); };
   connect( frame, &QgsLayoutFrame::changed, sEditorDialog, updateName );
   updateName();
 
