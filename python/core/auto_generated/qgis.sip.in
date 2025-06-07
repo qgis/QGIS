@@ -3336,6 +3336,10 @@ The development version
       ResizeRightUp,
       ResizeLeftDown,
       ResizeRightDown,
+      RotateLeftUp,
+      RotateRightUp,
+      RotateLeftDown,
+      RotateRightDown,
       SelectItem,
       NoAction
     };
