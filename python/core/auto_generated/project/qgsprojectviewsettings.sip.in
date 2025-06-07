@@ -97,6 +97,22 @@ should be calculated based on the layers in the project.
 .. versionadded:: 3.18
 %End
 
+    void setCanvasUseProjectExtent( bool state );
+%Docstring
+Sets wheter the project's preset full extent should be loaded when the
+project is loaded.
+
+.. versionadded:: 3.44
+%End
+
+    bool canvasUseProjectExtent();
+%Docstring
+Returns wheter the project's preset full extent should be loaded when
+the project is loaded.
+
+.. versionadded:: 3.44
+%End
+
     QgsReferencedRectangle fullExtent() const;
 %Docstring
 Returns the full extent of the project, which represents the maximal

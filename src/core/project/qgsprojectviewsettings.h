@@ -105,6 +105,20 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     void setPresetFullExtent( const QgsReferencedRectangle &extent );
 
     /**
+     * Sets wheter the project's preset full extent should be loaded when the project is loaded.
+     *
+     * \since QGIS 3.44
+     */
+    void setCanvasUseProjectExtent( bool state );
+
+    /**
+     * Returns wheter the project's preset full extent should be loaded when the project is loaded.
+     *
+     * \since QGIS 3.44
+     */
+    bool canvasUseProjectExtent();
+
+    /**
      * Returns the full extent of the project, which represents the maximal limits of the project.
      *
      * The returned extent will be in the project's CRS.
@@ -228,6 +242,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     bool mUseProjectScales = false;
     QgsReferencedRectangle mDefaultViewExtent;
     QgsReferencedRectangle mPresetFullExtent;
+    bool mLoadProjectExtent;
     double mDefaultRotation = 0;
 };
 
