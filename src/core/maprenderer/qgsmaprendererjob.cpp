@@ -493,8 +493,8 @@ QImage *QgsMapRendererJob::allocateImage( QString layerId )
   QImage *image = new QImage( mSettings.deviceOutputSize(),
                               mSettings.outputImageFormat() );
   image->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
-  image->setDotsPerMeterX( 1000 * mSettings.outputDpi() / 25.4 );
-  image->setDotsPerMeterY( 1000 * mSettings.outputDpi() / 25.4 );
+  image->setDotsPerMeterX( static_cast< int >( 1000 * mSettings.outputDpi() / 25.4 ) );
+  image->setDotsPerMeterY( static_cast< int >( 1000 * mSettings.outputDpi() / 25.4 ) );
   if ( image->isNull() )
   {
     mErrors.append( Error( layerId, tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -752,7 +752,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       }
     }
 
-    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
+    job.renderingTime = static_cast< int >( layerTime.elapsed() ); // include job preparation time in layer rendering time
   }
 
   return layerJobs;
@@ -860,7 +860,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
         if ( !layerJobMapping.contains( sourceLayerId ) )
           continue;
 
-        for ( const QString &symbolLayerId : mit.value().symbolLayerIds )
+        for ( const QString &symbolLayerId : std::as_const( mit.value().symbolLayerIds ) )
           slRefs.insert( QgsSymbolLayerReference( sourceLayerId, symbolLayerId ) );
 
         hasEffects |= mit.value().hasEffects;
@@ -1078,7 +1078,7 @@ QList<QPointer<QgsMapLayer> > QgsMapRendererJob::participatingLabelLayers( QgsLa
 {
   QList<QPointer<QgsMapLayer> > res = _qgis_listRawToQPointer( engine->participatingLayers() );
 
-  for ( auto it : std::as_const( mAdditionalLabelLayers ) )
+  for ( const QPointer< QgsMapLayer > &it : std::as_const( mAdditionalLabelLayers ) )
   {
     if ( !res.contains( it ) )
       res.append( it );
@@ -1471,7 +1471,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
     if ( isRasterRendering && job.maskJobs.size() > 1 )
     {
       QPainter *maskPainter = nullptr;
-      for ( QPair<LayerRenderJob *, int> p : job.maskJobs )
+      for ( QPair<LayerRenderJob *, int> p : std::as_const( job.maskJobs ) )
       {
         QImage *maskImage = static_cast<QImage *>( p.first ? p.first->maskPaintDevice.get() : labelJob.maskPaintDevices[p.second].get() );
         if ( !maskPainter )

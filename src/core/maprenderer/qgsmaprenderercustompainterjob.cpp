@@ -20,7 +20,6 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsmaplayerlistutils_p.h"
 #include "qgselevationmap.h"
 #include "qgspainting.h"
 
@@ -246,7 +245,7 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
   if ( !mPrepared ) // can't access from other thread
-    mRenderingTime = mRenderingStart.elapsed();
+    mRenderingTime = static_cast< int >( mRenderingStart.elapsed() );
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER futureFinished" ), 5 );
 
   if ( !mPrepared )
@@ -335,7 +334,7 @@ void QgsMapRendererCustomPainterJob::doRender()
         job.renderer->renderContext()->painter()->end();
       }
 
-      job.renderingTime += layerTime.elapsed();
+      job.renderingTime += static_cast< int >( layerTime.elapsed() );
     }
 
     if ( ! hasSecondPass && job.img )
@@ -401,7 +400,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       }
 
       mLabelJob.complete = true;
-      mLabelJob.renderingTime = labelTime.elapsed();
+      mLabelJob.renderingTime = static_cast< int >( labelTime.elapsed() );
       mLabelJob.participatingLayers = participatingLabelLayers( mLabelingEngineV2.get() );
     }
   }
@@ -448,7 +447,7 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.renderer->renderContext()->painter()->end();
         }
 
-        job.renderingTime += layerTime.elapsed();
+        job.renderingTime += static_cast< int >( layerTime.elapsed() );
       }
     }
 
