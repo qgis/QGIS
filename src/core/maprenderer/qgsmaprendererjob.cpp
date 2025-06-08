@@ -486,8 +486,8 @@ std::unique_ptr<QImage> QgsMapRendererJob::allocateImage( const QString &layerId
 {
   auto image = std::make_unique< QImage >( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
   image->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
-  image->setDotsPerMeterX( 1000 * mSettings.outputDpi() / 25.4 );
-  image->setDotsPerMeterY( 1000 * mSettings.outputDpi() / 25.4 );
+  image->setDotsPerMeterX( static_cast< int >( 1000 * mSettings.outputDpi() / 25.4 ) );
+  image->setDotsPerMeterY( static_cast< int >( 1000 * mSettings.outputDpi() / 25.4 ) );
   if ( image->isNull() )
   {
     QgsDebugError( u"Insufficient memory for image %1x%2"_s.arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) );
@@ -760,7 +760,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       }
     }
 
-    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
+    job.renderingTime = static_cast< int >( layerTime.elapsed() ); // include job preparation time in layer rendering time
   }
 
   return layerJobs;
