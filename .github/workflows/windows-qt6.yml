@@ -98,7 +98,7 @@ jobs:
       - name: 🌋 Build
         shell: bash
         run: |
-          cmake --build "${{ github.workspace }}/build" --config Release
+          cmake --build "${{ github.workspace }}/build" --config Release -- -v
 
 #      - uses: m-kuhn/action-tmate@patch-1
 #        if: failure()
