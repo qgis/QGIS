@@ -80,7 +80,7 @@ jobs:
                 -D VCPKG_HOST_TRIPLET=x64-windows-release \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
-                -D WITH_BINDINGS=ON \
+                -D WITH_BINDINGS=OFF \
                 -D ENABLE_TESTS=ON \
                 -D BUILD_WITH_QT6=ON \
                 -D USE_CCACHE=ON \
