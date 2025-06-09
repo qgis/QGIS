@@ -87,7 +87,7 @@ bool QgsProjectServerValidator::isOnlyMaptipEnabled( QgsProject *project )
 {
   return project->readBoolEntry(
            QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ),
-           QStringLiteral( "" ),
+           QString(),
            false
          );
 }
