@@ -43,6 +43,9 @@ elseif(WITH_VCPKG)
 else()
   message(STATUS "Building with system libraries --")
 endif()
+message(STATUS "RUNNING SIP COMMAND ${SIP_BUILD_EXECUTABLE}")
+execute_process(COMMAND SIP_BUILD_EXECUTABLE ERROR_VARIABLE SIP_erorr RESULT_VARIABLE SIP_result )
+message(STATUS "SIP COMMAND ERROR (${SIP_erorr}) RESULT(${SIP_result})")
 
 
 if(WITH_VCPKG)
