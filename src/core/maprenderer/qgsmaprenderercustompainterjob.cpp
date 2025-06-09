@@ -463,7 +463,9 @@ void QgsMapRendererCustomPainterJob::doRender()
       else
       {
         mPainter->setOpacity( job.opacity );
+        mPainter->setCompositionMode( job.blendMode );
         mPainter->drawImage( 0, 0, *job.img );
+        mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
         mPainter->setOpacity( 1.0 );
       }
     }

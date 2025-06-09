@@ -999,7 +999,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       {
         if ( mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks )
              || maskRequiresLayerRasterization
-             || ( job.renderer && job.renderer->forceRasterRender() ) )
+             || ( job.renderer && job.renderer->forceRasterRender() )
+             || ( job.blendMode != QPainter::CompositionMode_SourceOver ) )
           job.maskRenderFormat = Qgis::RenderFormat::Raster;
         else
           job.maskRenderFormat = Qgis::RenderFormat::Vector;
