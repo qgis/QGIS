@@ -1887,10 +1887,95 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setOutputSize(QSize(800, 600))
         map_settings.setOutputDpi(72)
         map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.ForceVectorOutput, False)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
+        map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
         map_settings.setDestinationCrs(crs)
         map_settings.setLayers([points, polys])
+
+        im = QImage(map_settings.outputSize(), QImage.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(self.image_check("layer_opacity", "layer_opacity", im))
+
+        polys.setOpacity(1.0)
+        points.setOpacity(0.5)
+
+        im = QImage(map_settings.outputSize(), QImage.Format_RGB32)
+        im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.setDotsPerMeterY(int(map_settings.outputDpi() / 25.4 * 1000))
+        im.fill(Qt.transparent)
+        p = QPainter(im)
+
+        job = QgsMapRendererCustomPainterJob(map_settings, p)
+        job.start()
+        job.waitForFinished()
+
+        p.end()
+
+        self.assertTrue(
+            self.image_check("layer_opacity_points", "layer_opacity_points", im)
+        )
+
+    def test_layer_opacity2(self):
+        """
+        Test that layer opacity is respected during exports
+        """
+        self.assertTrue(
+            QgsProject.instance().read(
+                os.path.join(unitTestDataPath(), "selective_masking.qgs")
+            )
+        )
+
+        polys = QgsProject.instance().mapLayersByName("polys")[0]
+        self.assertTrue(polys)
+        simple_fill = QgsFillSymbol.createSimple(
+            {"color": "#ffaaaa", "style_border": "no"}
+        )
+        polys.setRenderer(QgsSingleSymbolRenderer(simple_fill))
+        polys.setOpacity(0.5)
+
+        self.assertTrue(len(polys.labeling().subProviders()), 1)
+        settings = polys.labeling().settings()
+        fmt = settings.format()
+        fmt.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        fmt.setSize(32)
+        fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        mask = fmt.mask()
+        mask.setEnabled(True)
+        mask.setSize(9)
+        mask.setSizeUnit(Qgis.RenderUnit.Millimeters)
+        mask.setMaskedSymbolLayers(
+            [QgsSymbolLayerReference(polys.id(), simple_fill[0].id())]
+        )
+
+        fmt.setMask(mask)
+
+        settings.setFormat(fmt)
+        polys.labeling().setSettings(settings)
+
+        map_settings = QgsMapSettings()
+        crs = polys.crs()
+        map_settings.setExtent(polys.extent())
+        map_settings.setBackgroundColor(QColor(152, 219, 249))
+        map_settings.setOutputSize(QSize(800, 600))
+        map_settings.setOutputDpi(72)
+        map_settings.setFlag(QgsMapSettings.Antialiasing, True)
+        map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+        map_settings.setDestinationCrs(crs)
+        map_settings.setLayers([polys])
 
         im = QImage(map_settings.outputSize(), QImage.Format_RGB32)
         im.setDotsPerMeterX(int(map_settings.outputDpi() / 25.4 * 1000))
@@ -1978,8 +2063,9 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setOutputSize(QSize(800, 600))
         map_settings.setOutputDpi(72)
         map_settings.setFlag(QgsMapSettings.Antialiasing, True)
-        map_settings.setFlag(QgsMapSettings.ForceVectorOutput, False)
-        map_settings.setFlag(QgsMapSettings.UseAdvancedEffects, True)
+        map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
         map_settings.setDestinationCrs(crs)
         map_settings.setLayers([points, polys])
 
