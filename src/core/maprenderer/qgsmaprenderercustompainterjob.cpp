@@ -451,35 +451,28 @@ void QgsMapRendererCustomPainterJob::doRender()
       }
     }
 
-    bool forceVector = mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && !mSettings.testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
-    composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector );
+    composeSecondPass( mSecondPassLayerJobs, mLabelJob );
 
-    if ( !forceVector )
+    for ( LayerRenderJob &job : mLayerJobs )
     {
-      const QImage finalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+      // if there is vector rendering we use it, else we use the raster rendering
+      if ( job.picture )
+      {
+        QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *job.picture );
+      }
+      else
+        mPainter->drawImage( 0, 0, *job.img );
+    }
 
+    if ( mLabelJob.picture )
+    {
+      QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *mLabelJob.picture );
+    }
+    else if ( mLabelJob.img )
+    {
       mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
       mPainter->setOpacity( 1.0 );
-      mPainter->drawImage( 0, 0, finalImage );
-    }
-    else
-    {
-      //Vector composition is simply draw the saved picture on the painter
-      for ( LayerRenderJob &job : mLayerJobs )
-      {
-        // if there is vector rendering we use it, else we use the raster rendering
-        if ( job.picture )
-        {
-          QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *job.picture );
-        }
-        else
-          mPainter->drawImage( 0, 0, *job.img );
-      }
-
-      if ( mLabelJob.picture )
-      {
-        QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *mLabelJob.picture );
-      }
+      mPainter->drawImage( 0, 0, *mLabelJob.img );
     }
   }
 

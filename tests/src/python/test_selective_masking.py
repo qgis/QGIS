@@ -1054,12 +1054,25 @@ class TestSelectiveMasking(QgisTestCase):
 
         self.check_renderings(self.map_settings, "label_mask_with_effect")
 
-        # test that force vector output has no impact on the result
-        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        # test that prefer vector output has no impact on the result, as we should detect the effects and fallback
+        # to raster rendering anyway
+        self.map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
         # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
         # is used
         self.check_renderings(
             self.map_settings, "label_mask_with_effect", test_parallel_rendering=False
+        )
+
+        # with force vector output the effects should not render
+        self.map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.ForceVector
+        )
+        self.check_renderings(
+            self.map_settings,
+            "label_mask_with_effect_force_vector",
+            test_parallel_rendering=False,
         )
 
     def test_label_with_blend_mode(self):
@@ -1093,8 +1106,12 @@ class TestSelectiveMasking(QgisTestCase):
         map_settings.setFlag(Qgis.MapSettingsFlag.UseAdvancedEffects, True)
         self.check_renderings(map_settings, "label_mask_with_blend_mode")
 
-        # test that force vector output has no impact on the result
-        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        # test that prefer vector output has no impact on the result, as we should detect the effects and fallback
+        # to raster rendering anyway
+        self.map_settings.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+
         # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
         # is used
         self.check_renderings(

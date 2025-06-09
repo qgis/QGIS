@@ -162,6 +162,8 @@ class LayerRenderJob
      */
     QString layerId;
 
+    Qgis::RenderFormat maskRenderFormat = Qgis::RenderFormat::Raster;
+
     /**
      * Selective masking handling.
      *
@@ -180,15 +182,8 @@ class LayerRenderJob
     //! painter used to draw mask
     std::unique_ptr<QPainter> maskPainter;
 
-
     //! Mask paint device, needed during the first pass to render the mask
     std::unique_ptr<QPaintDevice> maskPaintDevice;
-
-    /**
-     * If effects are involved in masking we need to rasterize the layer rendering even if
-     * vector output has been requested
-     */
-    bool maskRequiresLayerRasterization = false;
 
     /**
      * Pointer to the first pass job, needed during the second pass
@@ -635,10 +630,11 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     /**
      * Compose second pass images into first pass images.
      * First pass jobs pointed to by the second pass jobs must still exist.
+     *
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob, bool forceVector = false ) SIP_SKIP;
+    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
