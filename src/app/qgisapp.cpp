@@ -4373,6 +4373,9 @@ void QgisApp::setupConnections()
 
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
+  // When default project CRS is set to "no projection" and new project is created we need to update
+  // mOnTheFlyProjectionStatusButton with the correct icon, see https://github.com/qgis/QGIS/issues/53768
+  connect( QgsProject::instance(), &QgsProject::cleared, this, &QgisApp::updateCrsStatusBar );
 
   connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::mapScalesChanged, this, [=] { mScaleWidget->updateScales(); } );
 
