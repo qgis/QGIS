@@ -124,6 +124,32 @@ class TestQgsprojectServerValidator(QgisTestCase):
             results[0].error,
         )
 
+    def test_empty_maptip_enabled(self):
+        """Empty maptip must fail when only‐maptip is enabled."""
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "testlayer", "memory")
+        project.addMapLayers([layer])
+        layer.setMapTipTemplate("")
+        project.writeEntry("WMSHTMLFeatureInfoUseOnlyMaptip", "", True)
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(
+            QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
+            results[0].error,
+        )
+
+    def test_empty_maptip_disabled(self):
+        """Empty maptip must pass when only‐maptip is disabled."""
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "testlayer", "memory")
+        project.addMapLayers([layer])
+        layer.setMapTipTemplate("")
+        project.writeEntry("WMSHTMLFeatureInfoUseOnlyMaptip", "", False)
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid)
+        self.assertEqual(0, len(results))
+
 
 if __name__ == "__main__":
     unittest.main()

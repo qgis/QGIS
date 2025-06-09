@@ -33,6 +33,7 @@ project.
       LayerEncoding,
       ProjectShortName,
       ProjectRootNameConflict,
+      OnlyMaptipTrueButEmptyMaptip,
     };
 
     static QString displayValidationError( QgsProjectServerValidator::ValidationError error );
