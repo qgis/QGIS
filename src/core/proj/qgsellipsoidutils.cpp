@@ -214,6 +214,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
       params.semiMinor = semiMinor;
       params.inverseFlattening = semiMajor / ( semiMajor - semiMinor );
       params.useCustomParameters = true;
+      params.crs.createFromProj( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs +type=crs" ).arg( params.semiMajor, 0, 'g', 17 ).arg( params.semiMinor, 0, 'g', 17 ) );
     }
     else
     {
