@@ -132,6 +132,7 @@ connect to and access the data.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
+    virtual QgsAbstractProfileSource *profileSource();
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
      virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
