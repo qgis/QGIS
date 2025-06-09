@@ -742,7 +742,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             QgsMapBoxGlStyleConverter.parseExpression(
                 ["all", ["==", "_symbol", 8], ["!in", "Viz", 3]], conversion_context
             ),
-            """("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" NOT IN (3)))""",
+            """("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" IS NOT 3))""",
         )
 
         self.assertEqual(

@@ -3376,10 +3376,21 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
       parts << part;
     }
-    if ( op == QLatin1String( "in" ) )
-      return QStringLiteral( "%1 IN (%2)" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+
+    if ( parts.size() == 1 )
+    {
+      if ( op == QLatin1String( "in" ) )
+        return QStringLiteral( "%1 IS %2" ).arg( key, parts.at( 0 ) );
+      else
+        return QStringLiteral( "(%1 IS NULL OR %1 IS NOT %2)" ).arg( key, parts.at( 0 ) );
+    }
     else
-      return QStringLiteral( "(%1 IS NULL OR %1 NOT IN (%2))" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+    {
+      if ( op == QLatin1String( "in" ) )
+        return QStringLiteral( "%1 IN (%2)" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+      else
+        return QStringLiteral( "(%1 IS NULL OR %1 NOT IN (%2))" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+    }
   }
   else if ( op == QLatin1String( "get" ) )
   {
