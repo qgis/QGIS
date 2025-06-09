@@ -876,6 +876,7 @@ void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameter
   if ( params.useCustomParameters )
   {
     setEllipsoid( params.semiMajor, params.semiMinor );
+    mCoordTransform.setDestinationCrs( params.crs );
   }
   else
   {
