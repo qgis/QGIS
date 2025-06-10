@@ -270,25 +270,43 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     // All other variants always return false.
 
     // Note: Boolean logical operators behave the same in C++ and SQL.
-    switch ( mOp )
+    const bool vLBool = vL.toBool();
+    const bool vRBool = vR.toBool();
+    switch ( op )
     {
       case boEQ:
-        return vL.toBool() == vR.toBool() ? TVL_True : TVL_False;
+        return vLBool == vRBool ? TVL_True : TVL_False;
       case boNE:
-        return vL.toBool() != vR.toBool() ? TVL_True : TVL_False;
+        return vLBool != vRBool ? TVL_True : TVL_False;
       case boLT:
-        return vL.toBool() <  vR.toBool() ? TVL_True : TVL_False;
+        return vLBool <  vRBool ? TVL_True : TVL_False;
       case boLE:
-        return vL.toBool() <= vR.toBool() ? TVL_True : TVL_False;
+        return vLBool <= vRBool ? TVL_True : TVL_False;
       case boGT:
-        return vL.toBool() >  vR.toBool() ? TVL_True : TVL_False;
+        return vLBool > vRBool ? TVL_True : TVL_False;
       case boGE:
-        return vL.toBool() >= vR.toBool() ? TVL_True : TVL_False;
-      default:
-        // Can't happen [cosmic ray hits excepted]
-        Q_ASSERT( false );
-        return TVL_Unknown;
+        return vLBool >= vRBool ? TVL_True : TVL_False;
+      case boOr:
+      case boAnd:
+      case boRegexp:
+      case boLike:
+      case boNotLike:
+      case boILike:
+      case boNotILike:
+      case boIs:
+      case boIsNot:
+      case boPlus:
+      case boMinus:
+      case boMul:
+      case boDiv:
+      case boIntDiv:
+      case boMod:
+      case boPow:
+      case boConcat:
+        // should not happen
+        break;
     }
+    return TVL_Unknown;
   }
 
   // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
