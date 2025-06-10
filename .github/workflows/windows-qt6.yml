@@ -95,6 +95,11 @@ jobs:
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
+      - name: 🌋 Build
+        shell: bash
+        run: |
+          cmake --build "${{ github.workspace }}/build" --config Release
+          
       - name: Run SIP command for fail check
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         if: always()
