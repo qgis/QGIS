@@ -48,7 +48,7 @@ jobs:
         - language: c-cpp
           build-mode: none
           paths:
-            - src
+          - src
         - language: python
           build-mode: none
 
