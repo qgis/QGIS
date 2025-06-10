@@ -9,7 +9,7 @@ This splitting was originally done because the Processing provider did not suppo
 Each description file starts with three lines containing:
 
  1. The name of the GRASS command to call to execute the algorithm (e.g. `v.buffer`)
- 2. The description of the algorithm that will be displayed in the alforithm dialog. For split commands you must include the algorithm id first, e.g.:
+ 2. The description of the algorithm that will be displayed in the algorithm dialog. For split commands you must include the algorithm id first, e.g.:
    ```
    r.sun.insoltime - Solar irradiance and irradiation model (daily sums)
    ```
@@ -78,7 +78,7 @@ The following parameters are supported:
   ```
   QgsProcessingParameterRange|[name of GRASS parameter]|[description of parameter to show]|QgsProcessingParameterNumber.Integer or QgsProcessingParameterNumber.Double|[default minimum and maximum values, separated by comma]|[True/False, indicating if the parameter is optional or not]
   ```
-  If minimum and maximum values are ommited the range will not have lower and upper limit.
+  If minimum and maximum values are omitted the range will not have lower and upper limit.
   
   Example: `QgsProcessingParameterRange|range|Input imagery range|QgsProcessingParameterNumber.Integer|0,255|True`
 
@@ -102,7 +102,7 @@ The following parameters are supported:
 
 - A pair of coordinates
   ```
-  QgsProcessingParameterPoint[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
+  QgsProcessingParameterPoint|[name of GRASS parameter]|[description of parameter to show]|[default value]|[True/False, indicating if the parameter is optional or not]
   ```
   Example: `QgsProcessingParameterPoint|coordinates|The coordinate of the center (east,north)|0,0|False`
 
@@ -170,7 +170,7 @@ These two lines mean that the parameters `operation=report` and `-o` will be add
 
 ### Advanced parameters
 
-Some algorithm parameters may not be widely used by most users. In that case, you can mark them as "advanced" so they are addeded to the "Advanced parameters" group of the algorithm dialog, which is collapsed by default. To mark an input parameter as "Advanced," add an asterisk (*) before its declaration.
+Some algorithm parameters may not be widely used by most users. In that case, you can mark them as "advanced" so they are added to the "Advanced parameters" group of the algorithm dialog, which is collapsed by default. To mark an input parameter as "Advanced," add an asterisk (*) before its declaration.
 
 ```*QgsProcessingParameterBoolean|-i|Output raster map as integer|False```
 
@@ -189,9 +189,7 @@ To save the console output from GRASS to file, simply create a `QgsProcessingPar
 
 ### Adding custom logic to algorithm
 
-If you want to add custom logic to an algorithm, such as a preliminary data check or the use of more than one GRASS command,
-, or transforming output data, you need to use the ext mechanism. This involves creating a Python file
-that performs the necessary actions at the predetermined level(s).
+If you want to add custom logic to an algorithm, such as a preliminary data check or the use of more than one GRASS command, or transforming output data, you need to use the ext mechanism. This involves creating a Python file that performs the necessary actions at the predetermined level(s).
 
 There are five different levels at which you can add logic:
 
@@ -214,4 +212,4 @@ The Python file should implement at least one of the functions:
 
 If there is a Python file with the algorithm name in the `ext` directory, these functions will be imported from the file. In the case of `processCommand()`, `processInputs()`, `processOutputs()` and `convertToHtml()` these will override thec "standard" versions of these methods in the code of the GRASS provider. You will need to read (and understand) the code for the "standard" methods in `python/plugins/grassprovider/grass_algorithm.py`. The `checkParameterValuesBeforeExecuting` method from ext file will override the standard `checkParameterValues()` method from `QgsProcessingAlgorithm` class.
 
-If we take the example of `v.what.rast`, there is an ext file: `ext/v_what_rast.py`. In this file there is a `processCommand()` method. It just launches the standard `processCommand()` but with the `delOutputs` option set to `True` as we do not want to have standard outputs. Then there is also a customized `processOutputs` which exports the input vector as an output for QGIS. We need to do this because `v.what.rast` modifies values directly in the input vector layer instead of generating a new output, so we have to build this output ourself. 
+If we take the example of `v.what.rast.txt`, there is an ext file: `ext/v_what_rast.py`. In this file there is a `processCommand()` method. It just launches the standard `processCommand()` but with the `delOutputs` option set to `True` as we do not want to have standard outputs. Then there is also a overloaded `processOutputs` which exports the input vector as an output for QGIS. We need to do this because `v.what.rast` modifies values directly in the input vector layer instead of generating a new output, so we have to build this output ourself.
