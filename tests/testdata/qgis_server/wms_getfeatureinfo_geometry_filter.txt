@@ -5,9 +5,9 @@ Content-Type: text/xml; charset=utf-8
 <GetFeatureInfoResponse>
  <Layer title="A test vector layer" name="testlayer èé">
   <Feature id="1">
-   <Attribute name="id" value="2"/>
-   <Attribute name="name" value="two"/>
-   <Attribute name="utf8nameè" value="two àò"/>
+   <Attribute name="id" attrname="id" value="2"/>
+   <Attribute name="name" attrname="name" value="two"/>
+   <Attribute name="utf8nameè" attrname="utf8nameè" value="two àò"/>
    <BoundingBox CRS="EPSG:4326" minx="8.2035" maxx="8.2035" miny="44.9014" maxy="44.9014"/>
   </Feature>
  </Layer>
