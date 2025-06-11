@@ -94,6 +94,27 @@ void QgsEffectStack::draw( QgsRenderContext &context )
 {
   QPainter *destPainter = context.painter();
 
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    // can we render this stack if we're forcing vectors?
+    bool requiresRasterization = false;
+    for ( const QgsPaintEffect *effect : std::as_const( mEffectList ) )
+    {
+      if ( effect->enabled() && effect->flags().testFlag( Qgis::PaintEffectFlag::RequiresRasterization ) )
+      {
+        requiresRasterization = true;
+        break;
+      }
+    }
+
+    if ( requiresRasterization )
+    {
+      //just draw unmodified source, we can't render this effect stack when forcing vectors
+      drawSource( *context.painter() );
+    }
+    return;
+  }
+
   //first, we build up a list of rendered effects
   //we do this moving backwards through the stack, so that each effect's results
   //becomes the source of the previous effect
