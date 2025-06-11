@@ -202,6 +202,52 @@ QString QgsExpressionNodeUnaryOperator::text() const
 
 //
 
+template<class T>
+bool compareOp( T diff, QgsExpressionNodeBinaryOperator::BinaryOperator op )
+{
+  switch ( op )
+  {
+    case QgsExpressionNodeBinaryOperator::boEQ:
+      return diff == 0;
+    case QgsExpressionNodeBinaryOperator::boNE:
+      return diff != 0;
+    case QgsExpressionNodeBinaryOperator::boLT:
+      return diff < 0;
+    case QgsExpressionNodeBinaryOperator::boGT:
+      return diff > 0;
+    case QgsExpressionNodeBinaryOperator::boLE:
+      return diff <= 0;
+    case QgsExpressionNodeBinaryOperator::boGE:
+      return diff >= 0;
+    default:
+      Q_ASSERT( false );
+      return false;
+  }
+}
+
+template<>
+bool compareOp( double diff, QgsExpressionNodeBinaryOperator::BinaryOperator op )
+{
+  switch ( op )
+  {
+    case QgsExpressionNodeBinaryOperator::boEQ:
+      return qgsDoubleNear( diff, 0.0 );
+    case QgsExpressionNodeBinaryOperator::boNE:
+      return !qgsDoubleNear( diff, 0.0 );
+    case QgsExpressionNodeBinaryOperator::boLT:
+      return diff < 0;
+    case QgsExpressionNodeBinaryOperator::boGT:
+      return diff > 0;
+    case QgsExpressionNodeBinaryOperator::boLE:
+      return diff <= 0;
+    case QgsExpressionNodeBinaryOperator::boGE:
+      return diff >= 0;
+    default:
+      Q_ASSERT( false );
+      return false;
+  }
+}
+
 QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *parent, const QgsExpressionContext *, const QVariant &vL, const QVariant &vR, BinaryOperator op )
 {
   if ( ( vL.userType() == QMetaType::Type::QDateTime && vR.userType() == QMetaType::Type::QDateTime ) )
@@ -218,7 +264,7 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     dL.setTimeSpec( Qt::UTC );
     dR.setTimeSpec( Qt::UTC );
 
-    return compare( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+    return compareOp<qint64>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
   }
   else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QDate ) )
   {
@@ -226,7 +272,7 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     ENSURE_NO_EVAL_ERROR
     const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
     ENSURE_NO_EVAL_ERROR
-    return compare( dR.daysTo( dL ), op ) ? TVL_True : TVL_False;
+    return compareOp<qint64>( dR.daysTo( dL ), op ) ? TVL_True : TVL_False;
   }
   else if ( ( vL.userType() == QMetaType::Type::QTime && vR.userType() == QMetaType::Type::QTime ) )
   {
@@ -234,7 +280,7 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     ENSURE_NO_EVAL_ERROR
     const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
     ENSURE_NO_EVAL_ERROR
-    return compare( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+    return compareOp<int>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
   }
   else if ( ( vL.userType() != QMetaType::Type::QString || vR.userType() != QMetaType::Type::QString ) &&
             QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
@@ -245,7 +291,7 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     ENSURE_NO_EVAL_ERROR
     double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
     ENSURE_NO_EVAL_ERROR
-    return compare( fL - fR, op ) ? TVL_True : TVL_False;
+    return compareOp< double >( fL - fR, op ) ? TVL_True : TVL_False;
   }
 
   else if ( vL.userType() == QMetaType::Type::Bool || vR.userType() == QMetaType::Type::Bool )
@@ -316,7 +362,7 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     ENSURE_NO_EVAL_ERROR
     double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
     ENSURE_NO_EVAL_ERROR
-    return compare( fL - fR, op ) ? TVL_True : TVL_False;
+    return compareOp< double >( fL - fR, op ) ? TVL_True : TVL_False;
   }
   else
   {
@@ -326,7 +372,7 @@ QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *p
     QString sR = QgsExpressionUtils::getStringValue( vR, parent );
     ENSURE_NO_EVAL_ERROR
     int diff = QString::compare( sL, sR );
-    return compare( diff, op ) ? TVL_True : TVL_False;
+    return compareOp<int>( diff, op ) ? TVL_True : TVL_False;
   }
 }
 
@@ -650,28 +696,6 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
   }
   Q_ASSERT( false );
   return QVariant();
-}
-
-bool QgsExpressionNodeBinaryOperator::compare( double diff, BinaryOperator op )
-{
-  switch ( op )
-  {
-    case boEQ:
-      return qgsDoubleNear( diff, 0.0 );
-    case boNE:
-      return !qgsDoubleNear( diff, 0.0 );
-    case boLT:
-      return diff < 0;
-    case boGT:
-      return diff > 0;
-    case boLE:
-      return diff <= 0;
-    case boGE:
-      return diff >= 0;
-    default:
-      Q_ASSERT( false );
-      return false;
-  }
 }
 
 qlonglong QgsExpressionNodeBinaryOperator::computeInt( qlonglong x, qlonglong y )
