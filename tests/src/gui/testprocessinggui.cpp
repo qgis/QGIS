@@ -3540,6 +3540,21 @@ void TestProcessingGui::testFieldSelectionPanel()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() );
   QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 field(s) selected" ) );
+
+  // ensure that settings fields invalidates value and removes values that don't
+  // exists in the fields, see https://github.com/qgis/QGIS/issues/39351
+  w.setValue( QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "bb,aa,cc" ) );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "aa" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "cc" ), QMetaType::Type::Int ) );
+  w.setFields( fields );
+  QCOMPARE( spy.count(), 5 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "aa,cc" ) );
 }
 
 void TestProcessingGui::testFieldWrapper()
