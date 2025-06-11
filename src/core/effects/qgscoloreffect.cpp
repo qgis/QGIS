@@ -35,6 +35,11 @@ QgsColorEffect::QgsColorEffect()
 
 }
 
+Qgis::PaintEffectFlags QgsColorEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
+
 void QgsColorEffect::draw( QgsRenderContext &context )
 {
   if ( !enabled() || !context.painter() || source().isNull() )

@@ -33,6 +33,8 @@ picture.
     QgsGlowEffect( const QgsGlowEffect &other );
     ~QgsGlowEffect();
 
+    virtual Qgis::PaintEffectFlags flags() const;
+
     virtual QVariantMap properties() const;
 
     virtual void readProperties( const QVariantMap &props );

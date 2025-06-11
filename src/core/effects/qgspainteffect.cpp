@@ -36,6 +36,11 @@ QgsPaintEffect::~QgsPaintEffect()
   mEffectPainter.reset();
 }
 
+Qgis::PaintEffectFlags QgsPaintEffect::flags() const
+{
+  return Qgis::PaintEffectFlags();
+}
+
 void QgsPaintEffect::setEnabled( const bool enabled )
 {
   mEnabled = enabled;
@@ -186,6 +191,16 @@ QgsPaintEffect *QgsDrawSourceEffect::create( const QVariantMap &map )
   QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();
   effect->readProperties( map );
   return effect;
+}
+
+Qgis::PaintEffectFlags QgsDrawSourceEffect::flags() const
+{
+  Qgis::PaintEffectFlags res;
+  if ( mBlendMode != QPainter::CompositionMode_SourceOver || !qgsDoubleNear( mOpacity, 1.0 ) )
+  {
+    res.setFlag( Qgis::PaintEffectFlag::RequiresRasterization );
+  }
+  return res;
 }
 
 void QgsDrawSourceEffect::draw( QgsRenderContext &context )
