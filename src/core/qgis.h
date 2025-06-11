@@ -2744,6 +2744,25 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( MapLayerRendererFlags, MapLayerRendererFlag )
     Q_FLAG( MapLayerRendererFlags )
 
+    /**
+     * Flags which control how paint effects behave.
+     *
+     * \since QGIS 3.44
+     */
+    enum class PaintEffectFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RequiresRasterization = 1 << 0, //!< The effect requires raster-based rendering.
+    };
+    Q_ENUM( PaintEffectFlag )
+
+    /**
+     * Flags which control how paint effects behave.
+     *
+     * \since QGIS 3.44
+     */
+    Q_DECLARE_FLAGS( PaintEffectFlags, PaintEffectFlag )
+    Q_FLAG( PaintEffectFlags )
+
     // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
     // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
 
@@ -6161,6 +6180,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PaintEffectFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
