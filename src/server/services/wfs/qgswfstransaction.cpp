@@ -914,7 +914,7 @@ namespace QgsWfs
       }
 
       QMap<QString, QStringList>::const_iterator fidsMapIt = fidsMap.constBegin();
-      while ( fidsMapIt != fidsMap.constEnd() )
+      for ( ;fidsMapIt != fidsMap.constEnd(); ++fidsMapIt )
       {
         transactionDelete action;
         action.typeName = fidsMapIt.key();
