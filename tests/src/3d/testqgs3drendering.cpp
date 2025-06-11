@@ -1731,9 +1731,14 @@ void TestQgs3DRendering::testInstancedRendering()
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
   vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 200.0f;
+  vmCylinder[QStringLiteral( "length" )] = 300.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  // simulate call to set transform as the symbol widget will do
+  QMatrix4x4 id;
+  id.translate( 10.0, 0.0, 10.0 );
+  cylinder3DSymbol->setTransform( id );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
 
@@ -1818,9 +1823,14 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
   vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 200.0f;
+  vmCylinder[QStringLiteral( "length" )] = 300.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  // simulate call to set transform as the symbol widget will do
+  QMatrix4x4 id;
+  id.translate( 10.0, 0.0, 10.0 );
+  cylinder3DSymbol->setTransform( id );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
 
