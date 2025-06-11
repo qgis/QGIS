@@ -1617,6 +1617,14 @@ The development version
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
 
 
+    enum class PaintEffectFlag
+    {
+      RequiresRasterization,
+    };
+
+    typedef QFlags<Qgis::PaintEffectFlag> PaintEffectFlags;
+
+
 
     enum class TextRenderFormat
       {
@@ -3591,6 +3599,8 @@ QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::PaintEffectFlag> operator|(Qgis::PaintEffectFlag f1, QFlags<Qgis::PaintEffectFlag> f2);
 
 QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
