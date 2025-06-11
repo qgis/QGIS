@@ -1728,16 +1728,9 @@ namespace QgsWms
 
           if ( layer->type() == Qgis::LayerType::Mesh )
           {
-            QgsMessageLog::logMessage( QString( "GetFeatureInfo will be supported for Mesh layers" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
             QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-
             QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
-
             ( void ) featureInfoFromMeshLayer( meshLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
-
-            QgsMessageLog::logMessage( QString( "GetFeatureInfo not supported yet for Mesh layers" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
           }
 
         }
@@ -2194,31 +2187,11 @@ namespace QgsWms
   {
     Q_UNUSED( version )
     Q_UNUSED( mapSettings )
-    // Q_UNUSED( renderContext )
-    // Q_UNUSED( infoDocument )
-    // Q_UNUSED( layerElement )
 
     if ( !infoPoint || !layer || !layer->dataProvider() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "featureInfoFromMeshLayer fail 1" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
       return false;
     }
-
-    QgsMessageLog::logMessage( QStringLiteral( "featureInfoFromMeshLayer infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
-
-    /*     if ( !( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyValue ) && !( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature ) )
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "featureInfoFromMeshLayer fail 2" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-      return false;
-    }
-
-    const Qgis::RasterIdentifyFormat identifyFormat(
-      static_cast<bool>( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature )
-        ? Qgis::RasterIdentifyFormat::Feature
-        : Qgis::RasterIdentifyFormat::Value
-    ); */
 
     bool isTemporal = layer->temporalProperties()->isActive();
     QgsDateTimeRange range, layerRange;
@@ -2230,7 +2203,7 @@ namespace QgsWms
 
     const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
 
-    if ( isTemporal ) //non active dataset group value are only accessible if temporal is active
+    if ( isTemporal )
     {
       range = renderContext.temporalRange();
       layerRange = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent();
@@ -2253,13 +2226,11 @@ namespace QgsWms
     }
     else
     {
-      // only active datasets
       if ( activeScalarGroup >= 0 )
         datasetIndexList.append( layer->staticScalarDatasetIndex() );
       if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
         datasetIndexList.append( layer->staticVectorDatasetIndex() );
 
-      // ...and static dataset group
       for ( int groupIndex : allGroup )
       {
         if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
@@ -2272,18 +2243,12 @@ namespace QgsWms
 
     double searchRadius = Qgis::DEFAULT_SEARCH_RADIUS_MM * renderContext.scaleFactor() * renderContext.mapToPixel().mapUnitsPerPixel();
 
-    int contador = 0;
     double scalarDoubleValue = 0.0;
 
     for ( const QgsMeshDatasetIndex &index : datasetIndexList )
     {
-      contador++;
-
       if ( !index.isValid() )
-      {
         continue;
-      }
-
 
       const QgsMeshDatasetGroupMetadata &groupMeta = layer->datasetGroupMetadata( index );
       QMap<QString, QString> derivedAttributes;
@@ -2321,15 +2286,6 @@ namespace QgsWms
       derivedAttributes.insert( "Source", groupMeta.uri() );
 
       QString resultName = groupMeta.name();
-      // if ( isTemporal && ( index.group() == activeScalarGroup || index.group() == activeVectorGroup ) )
-      //   resultName.append( " (active)" );
-
-      QgsMessageLog::logMessage( QStringLiteral( "featureInfoFromMeshLayer Result: %1" ).arg( resultName ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
-      // QMap<int, QVariant> results;
-
-      //   results.insert( 1, "" );
-      // }
 
       QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
       attributeElement.setAttribute( QStringLiteral( "name" ), resultName );
@@ -2342,7 +2298,6 @@ namespace QgsWms
 
       attributeElement.setAttribute( QStringLiteral( "value" ), value );
       layerElement.appendChild( attributeElement );
-
 
       if ( isTemporal )
       {
@@ -2359,10 +2314,6 @@ namespace QgsWms
         attributeElementTime.setAttribute( QStringLiteral( "value" ), value );
         layerElement.appendChild( attributeElementTime );
       }
-
-      // const IdentifyResult result( layer, resultName, attribute, derivedAttributes );
-
-      // results->append( result );
     }
     return true;
   }

@@ -556,31 +556,18 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValueUncached( const QgsRenderContext &
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::datasetValue: point.x: %1 point.y %2 radius: %3 index: %4" ).arg( point.x() ).arg( point.y() ).arg( searchRadius ).arg( index.dataset() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
   QgsMeshDatasetValue value;
   const QgsTriangularMesh *mesh = triangularMesh();
 
-  if ( mesh )
-    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::mesh valid" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-  else
+  if ( !mesh )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::mesh datasetValueUncached" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     updateTriangularMesh( renderContext.coordinateTransform() );
     mesh = triangularMesh();
   }
 
-
-  if ( index.isValid() )
-    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::index valid" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
-
   if ( mesh && index.isValid() )
   {
     value = datasetValue( index, point, searchRadius );
-  }
-  else
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "QgsMeshLayer::datasetValue INVALID" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
 
   return value;
