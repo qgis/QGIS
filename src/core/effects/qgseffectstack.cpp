@@ -48,6 +48,19 @@ QgsEffectStack::~QgsEffectStack()
   clearStack();
 }
 
+Qgis::PaintEffectFlags QgsEffectStack::flags() const
+{
+  Qgis::PaintEffectFlags res;
+  for ( const QgsPaintEffect *effect : mEffectList )
+  {
+    if ( effect->flags().testFlag( Qgis::PaintEffectFlag::RequiresRasterization ) )
+    {
+      res.setFlag( Qgis::PaintEffectFlag::RequiresRasterization );
+    }
+  }
+  return res;
+}
+
 QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 {
   if ( &rhs == this )

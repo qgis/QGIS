@@ -39,6 +39,11 @@ QgsGlowEffect::~QgsGlowEffect()
   delete mRamp;
 }
 
+Qgis::PaintEffectFlags QgsGlowEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
+
 void QgsGlowEffect::draw( QgsRenderContext &context )
 {
   if ( !enabled() || !context.painter() || source().isNull() )

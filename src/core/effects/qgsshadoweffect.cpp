@@ -27,6 +27,11 @@ QgsShadowEffect::QgsShadowEffect()
 
 }
 
+Qgis::PaintEffectFlags QgsShadowEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
+
 void QgsShadowEffect::draw( QgsRenderContext &context )
 {
   if ( !enabled() || !context.painter() || source().isNull() )

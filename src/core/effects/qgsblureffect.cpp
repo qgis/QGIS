@@ -28,6 +28,11 @@ QgsPaintEffect *QgsBlurEffect::create( const QVariantMap &map )
   return newEffect;
 }
 
+Qgis::PaintEffectFlags QgsBlurEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
+
 void QgsBlurEffect::draw( QgsRenderContext &context )
 {
   if ( !enabled() || !context.painter() || source().isNull() )
