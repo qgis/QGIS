@@ -204,7 +204,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     QString text() const;
 
   private:
-    static bool compare( double diff, BinaryOperator op );
+
     qlonglong computeInt( qlonglong x, qlonglong y );
     double computeDouble( double x, double y );
 
