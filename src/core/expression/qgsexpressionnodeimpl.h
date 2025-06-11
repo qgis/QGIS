@@ -217,8 +217,6 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 #ifdef SIP_RUN
     QgsExpressionNodeBinaryOperator( const QgsExpressionNodeBinaryOperator &other );
 #endif
-
-    static bool compare( double diff, BinaryOperator op );
     qlonglong computeInt( qlonglong x, qlonglong y );
     double computeDouble( double x, double y );
 
