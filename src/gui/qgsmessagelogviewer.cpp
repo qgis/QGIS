@@ -120,15 +120,20 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   if ( i < tabWidget->count() )
   {
     w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
-    tabWidget->setCurrentIndex( i );
+    if ( i != tabWidget->currentIndex() )
+    {
+      tabWidget->setTabIcon( i, QgsApplication::getThemeIcon( QStringLiteral( "mMessageLog.svg" ) ) );
+    }
   }
   else
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
     w->viewport()->installEventFilter( this );
-    tabWidget->addTab( w, cleanedTag );
-    tabWidget->setCurrentIndex( tabWidget->count() - 1 );
+    i = tabWidget->addTab( w, QgsApplication::getThemeIcon( QStringLiteral( "mMessageLog.svg" ) ), cleanedTag );
+    connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) {
+      tabWidget->setTabIcon( index, QIcon() );
+    } );
   }
 
   QString levelString;
