@@ -40,6 +40,13 @@ void QgsColorEffect::draw( QgsRenderContext &context )
   if ( !enabled() || !context.painter() || source().isNull() )
     return;
 
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    //just draw unmodified source, we can't render this effect when forcing vectors
+    drawSource( *context.painter() );
+    return;
+  }
+
   QPainter *painter = context.painter();
 
   //rasterize source and apply modifications

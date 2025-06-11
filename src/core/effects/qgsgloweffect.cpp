@@ -44,6 +44,13 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   if ( !enabled() || !context.painter() || source().isNull() )
     return;
 
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    //just draw unmodified source, we can't render this effect when forcing vectors
+    drawSource( *context.painter() );
+    return;
+  }
+
   QImage im = sourceAsImage( context ).copy();
 
   QgsColorRamp *ramp = nullptr;
