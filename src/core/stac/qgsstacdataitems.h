@@ -28,7 +28,11 @@ class QgsStacController;
 class QgsStacCollection;
 
 
-//! Item to display that there are additional STAC items which are not loaded.
+/**
+ * \ingroup core
+ * \brief Item to display that there are additional STAC items which are not loaded.
+ * \since QGIS 3.44
+*/
 class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 {
     Q_OBJECT
@@ -40,7 +44,11 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 
 };
 
-//! Item for STAC Items within a catalog or collection.
+/**
+ * \ingroup core
+ * \brief Item for STAC Items within a catalog or collection.
+ * \since QGIS 3.44
+*/
 class CORE_EXPORT QgsStacItemItem : public QgsDataItem
 {
     Q_OBJECT
@@ -79,7 +87,11 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     QString mConnName;
 };
 
-//! Item for catalogs and collections.
+/**
+ * \ingroup core
+ * \brief Item for catalogs and collections.
+ * \since QGIS 3.44
+*/
 class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -132,7 +144,11 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
     QUrl mFetchMoreUrl;
 };
 
-//! Item for STAC connections, is also a catalog itself.
+/**
+ * \ingroup core
+ * \brief Item for STAC connections, is also a catalog itself.
+ * \since QGIS 3.44
+*/
 class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
 {
     Q_OBJECT
@@ -148,7 +164,11 @@ class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
     std::unique_ptr<QgsStacController> mController;
 };
 
-//! Root item for STAC connections.
+/**
+ * \ingroup core
+ * \brief Root item for STAC connections.
+ * \since QGIS 3.44
+*/
 class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
@@ -163,7 +183,11 @@ class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
     void onConnectionsChanged();
 };
 
-//! Provider for STAC root data item.
+/**
+ * \ingroup core
+ * \brief Provider for STAC root data item.
+ * \since QGIS 3.44
+*/
 class CORE_EXPORT QgsStacDataItemProvider : public QgsDataItemProvider
 {
   public:
