@@ -747,7 +747,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     const QString base = safeName( name, capitalize );
     QString candidate = base;
     int i = 1;
-    while ( friendlyNames.contains( candidate ) )
+    while ( std::find( friendlyNames.cbegin(), friendlyNames.cend(), candidate ) != friendlyNames.cend() )
     {
       i++;
       candidate = QStringLiteral( "%1_%2" ).arg( base ).arg( i );
