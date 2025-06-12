@@ -367,7 +367,9 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
             cmd.extend(command_tuple)
         print(f"Executing {cmd} {path}")
     try:
-        result = subprocess.run(cmd + [path], check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            cmd + [path], check=True, capture_output=True, text=True
+        )
         print(result.stdout)
         print(result.stderr)
     except subprocess.CalledProcessError as e:
@@ -377,7 +379,6 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
         print("stderr:")
         print(e.stderr)
         raise
-
 
 
 def main():
