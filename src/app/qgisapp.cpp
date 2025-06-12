@@ -319,6 +319,7 @@
 #include "qgslayoutlocatorfilter.h"
 #include "qgsnominatimlocatorfilter.h"
 #include "qgssettingslocatorfilter.h"
+#include "qgswktlocatorfilter.h"
 #include "qgsnominatimgeocoder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -4111,6 +4112,7 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsGotoLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsLayerMetadataLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsWktLocatorFilter() );
 
   mNominatimGeocoder = std::make_unique<QgsNominatimGeocoder>();
   mLocatorWidget->locator()->registerFilter( new QgsNominatimLocatorFilter( mNominatimGeocoder.get(), mMapCanvas ) );
