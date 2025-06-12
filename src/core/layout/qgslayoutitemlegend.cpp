@@ -1186,18 +1186,20 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QgsLayerTreeFilterSettings filterSettings( mapSettings );
 
     QList<QgsMapLayer *> layersToClip;
-    if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
+    if ( mMap )
     {
-      layersToClip = mMap->atlasClippingSettings()->layersToClip();
-      for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+      if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
       {
-        QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
-        mapLayers.removeAll( layer );
-        filterSettings.mapSettings().setLayers( mapLayers );
-        filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+        layersToClip = mMap->atlasClippingSettings()->layersToClip();
+        for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+        {
+          QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
+          mapLayers.removeAll( layer );
+          filterSettings.mapSettings().setLayers( mapLayers );
+          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+        }
       }
     }
-
 
     if ( !linkedFilterMaps.empty() )
     {
