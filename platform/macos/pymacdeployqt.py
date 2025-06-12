@@ -366,7 +366,18 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
         for command_tuple in changes:
             cmd.extend(command_tuple)
         print(f"Executing {cmd} {path}")
-        subprocess.run(cmd + [path], check=True)
+    try:
+        result = subprocess.run(cmd + [path], check=True, capture_output=True, text=True)
+        print(result.stdout)
+        print(result.stderr)
+    except subprocess.CalledProcessError as e:
+        print(f"Command failed with exit code {e.returncode}")
+        print("stdout:")
+        print(e.stdout)
+        print("stderr:")
+        print(e.stderr)
+        raise
+
 
 
 def main():
