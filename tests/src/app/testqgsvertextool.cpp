@@ -1651,6 +1651,9 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
 
 void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
 {
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (2 1, 1 1, 1 3)" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" );
+
   // test moving of vertices of two features at once
 
   QgsProject::instance()->setTopologicalEditing( true );
