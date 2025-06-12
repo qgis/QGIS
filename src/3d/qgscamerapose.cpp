@@ -77,6 +77,16 @@ void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 
 void QgsCameraPose::updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, double lon )
 {
+  QVector3D viewCenter = mCenterPoint.toVector3D();
+  QQuaternion q = globeRotation( lat, lon, mPitchAngle, mHeadingAngle );
+  QVector3D cameraToCenter = ( q * QVector3D( -1, 0, 0 ) ) * mDistanceFromCenterPoint;
+  camera->setUpVector( q * QVector3D( 0, 0, 1 ) );
+  camera->setPosition( viewCenter - cameraToCenter );
+  camera->setViewCenter( viewCenter );
+}
+
+QQuaternion QgsCameraPose::globeRotation( double lat, double lon, float pitch, float heading )
+{
   // how the camera setup works:
   // - we are using ECEF coordinates (https://en.wikipedia.org/wiki/Earth-centered,_Earth-fixed_coordinate_system)
   //    - point (0,0,0) is in the center of reference ellipsoid
@@ -85,20 +95,13 @@ void QgsCameraPose::updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, 
   //    - Y axis grows towards 90 degrees of longitude
   //    - Z axis grows towards the north pole
 
-  QVector3D viewCenter = mCenterPoint.toVector3D();
-
   // rotate camera so that it is looking towards the tangent plane to ellipsoid at given
   // lat/lon coordinates
   QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( lon ) ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( lat ) );
 
   // rotate camera using the pitch and heading angles
-  QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), mHeadingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), mPitchAngle );
+  QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), heading ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), pitch );
 
   // combine the two rotations (the order is important: pitch/heading is applied first)
-  QQuaternion q = qLatLon * qPitchHeading;
-
-  QVector3D cameraToCenter = ( q * QVector3D( -1, 0, 0 ) ) * mDistanceFromCenterPoint;
-  camera->setUpVector( q * QVector3D( 0, 0, 1 ) );
-  camera->setPosition( viewCenter - cameraToCenter );
-  camera->setViewCenter( viewCenter );
+  return qLatLon * qPitchHeading;
 }
