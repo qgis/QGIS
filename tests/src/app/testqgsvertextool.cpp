@@ -153,6 +153,7 @@ class TestQgsVertexTool : public QObject
     }
 
   private:
+    QgsCoordinateReferenceSystem mFake27700;
     QgsMapCanvas *mCanvas = nullptr;
     QgisApp *mQgisApp = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
@@ -199,33 +200,48 @@ void TestQgsVertexTool::initTestCase()
 
   QgsSettings().clear();
 
+  // EPSG:27700 was a silly choice for these tests, as the transformations rely on the presence of a grid shift
+  // file which may or may not be present on some platforms :'(
+
+  // Fake a similar CRS which can't use grid based transforms ;)
+  mFake27700 = QgsCoordinateReferenceSystem::fromProj( "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=4000.0000001 +y_0=-100000 +ellps=airy +units=m +no_defs" );
+  QCOMPARE( mFake27700.authid(), QString() );
+
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( mFake27700 );
 
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
 
   // make testing layers
-  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine->setCrs( mFake27700 );
   QVERIFY( mLayerLine->isValid() );
-  mLayerMultiLine = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=EPSG:27700" ), QStringLiteral( "layer multiline" ), QStringLiteral( "memory" ) );
+  mLayerMultiLine = new QgsVectorLayer( QStringLiteral( "MultiLineString?" ), QStringLiteral( "layer multiline" ), QStringLiteral( "memory" ) );
+  mLayerMultiLine->setCrs( mFake27700 );
   QVERIFY( mLayerMultiLine->isValid() );
   mLayerLineReprojected = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineReprojected->isValid() );
-  mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:27700" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
+  mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPolygon->isValid() );
-  mLayerMultiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=EPSG:27700" ), QStringLiteral( "layer multipolygon" ), QStringLiteral( "memory" ) );
+  mLayerPolygon->setCrs( mFake27700 );
+  mLayerMultiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?" ), QStringLiteral( "layer multipolygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerMultiPolygon->isValid() );
-  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  mLayerMultiPolygon->setCrs( mFake27700 );
+  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPoint->isValid() );
-  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "layer pointz" ), QStringLiteral( "memory" ) );
+  mLayerPoint->setCrs( mFake27700 );
+  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?" ), QStringLiteral( "layer pointz" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPointZ->isValid() );
-  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerPointZ->setCrs( mFake27700 );
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineZ->isValid() );
-  mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=27700" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
+  mLayerLineZ->setCrs( mFake27700 );
+  mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerCompoundCurve->isValid() );
+  mLayerCompoundCurve->setCrs( mFake27700 );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
@@ -356,7 +372,7 @@ void TestQgsVertexTool::init()
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
 
   QgsProject::instance()->setTopologicalEditing( false );
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( mFake27700 );
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
@@ -1443,7 +1459,8 @@ void TestQgsVertexTool::testActiveLayerPriority()
   // check that features from current layer get priority when picking points
 
   // create a temporary line layer that has a common vertex with existing line layer at (1, 1)
-  QgsVectorLayer *layerLine2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line 2" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layerLine2 = new QgsVectorLayer( QStringLiteral( "LineString?" ), QStringLiteral( "layer line 2" ), QStringLiteral( "memory" ) );
+  layerLine2->setCrs( mFake27700 );
   QVERIFY( layerLine2->isValid() );
   QgsPolylineXY line1;
   line1 << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 0 );
