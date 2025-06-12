@@ -1727,7 +1727,7 @@ QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element,
     }
     else
     {
-      expr->d->mRootNode = std::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boConcat, expr->d->mRootNode.get(), node );
+      expr->d->mRootNode = std::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boConcat, expr->d->mRootNode.release(), node );
     }
 
     childElem = childElem.nextSiblingElement();
