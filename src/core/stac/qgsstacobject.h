@@ -16,8 +16,7 @@
 #ifndef QGSSTACOBJECT_H
 #define QGSSTACOBJECT_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsstaclink.h"
 
@@ -27,23 +26,13 @@
 
 /**
  * \ingroup core
- * \brief Abstract base class for storing a STAC objects
- *
- * \note Not available in python bindings
+ * \brief Abstract base class for storing STAC objects.
  *
  * \since QGIS 3.40
  */
 class CORE_EXPORT QgsStacObject
 {
   public:
-    //! Available types of stac objects
-    enum Type
-    {
-      Unknown, //!< Type is not known
-      Catalog, //!< STAC catalog
-      Collection, //!< STAC collection
-      Item, //!< STAC item
-    };
 
     //! Default constructor is used for creating invalid objects
     QgsStacObject() = delete;
@@ -55,7 +44,7 @@ class CORE_EXPORT QgsStacObject
     virtual ~QgsStacObject() = default;
 
     //! Returns the \a Type of the STAC object
-    virtual Type type() const = 0;
+    virtual Qgis::StacObjectType type() const = 0;
 
     //! Returns an HTML representation of the STAC object
     virtual QString toHtml() const = 0;
@@ -95,7 +84,7 @@ class CORE_EXPORT QgsStacObject
 
 
   protected:
-    Type mType = Type::Unknown;
+    Qgis::StacObjectType mType = Qgis::StacObjectType::Unknown;
     QString mId;
     QString mStacVersion;
     QStringList mStacExtensions;

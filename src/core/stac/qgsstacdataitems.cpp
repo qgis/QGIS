@@ -461,7 +461,7 @@ void QgsStacCatalogItem::setStacCatalog( std::unique_ptr<QgsStacCatalog> catalog
     if ( mName.isEmpty() && !mStacCatalog->title().isEmpty() )
       setName( mStacCatalog->title() );
 
-    if ( mStacCatalog->type() == QgsStacObject::Collection )
+    if ( mStacCatalog->type() == Qgis::StacObjectType::Collection )
     {
       mIsCollection = true;
       mIconName = QStringLiteral( "mIconFolderOpen.svg" );

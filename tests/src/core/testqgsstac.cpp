@@ -88,7 +88,7 @@ void TestQgsStac::testParseLocalCatalog()
   QgsStacController c;
   std::unique_ptr< QgsStacCatalog > cat = c.fetchStacObject< QgsStacCatalog >( url.toString() );
   QVERIFY( cat );
-  QCOMPARE( cat->type(), QgsStacObject::Type::Catalog );
+  QCOMPARE( cat->type(), Qgis::StacObjectType::Catalog );
 
   QVERIFY( cat );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
@@ -115,7 +115,7 @@ void TestQgsStac::testParseLocalCollection()
   QgsStacController c;
   std::unique_ptr< QgsStacCollection > col = c.fetchStacObject< QgsStacCollection >( url.toString() );
   QVERIFY( col );
-  QCOMPARE( col->type(), QgsStacObject::Type::Collection );
+  QCOMPARE( col->type(), Qgis::StacObjectType::Collection );
 
   QVERIFY( col );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );
@@ -162,7 +162,7 @@ void TestQgsStac::testParseLocalItem()
   QgsStacController c;
   std::unique_ptr< QgsStacItem > item = c.fetchStacObject< QgsStacItem >( url.toString() );
   QVERIFY( item );
-  QCOMPARE( item->type(), QgsStacObject::Type::Item );
+  QCOMPARE( item->type(), Qgis::StacObjectType::Item );
 
   QVERIFY( item );
   QCOMPARE( item->id(), QLatin1String( "20201211_223832_CS2" ) );
@@ -275,7 +275,7 @@ void TestQgsStac::testFetchStacObjectAsync()
 
   std::unique_ptr< QgsStacCatalog > obj = c.takeStacObject< QgsStacCatalog >( id );
   QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
+  QCOMPARE( obj->type(), Qgis::StacObjectType::Catalog );
 
   // cannot take same id twice
   obj = c.takeStacObject< QgsStacCatalog >( id );
@@ -296,7 +296,7 @@ void TestQgsStac::testFetchStacObjectAsync()
 
   obj = c.takeStacObject< QgsStacCatalog >( id );
   QVERIFY( obj );
-  QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
+  QCOMPARE( obj->type(), Qgis::StacObjectType::Collection );
 
   // cannot take same id twice
   obj = c.takeStacObject< QgsStacCatalog >( id );
@@ -317,7 +317,7 @@ void TestQgsStac::testFetchStacObjectAsync()
 
   std::unique_ptr< QgsStacItem > item = c.takeStacObject< QgsStacItem >( id );
   QVERIFY( item );
-  QCOMPARE( item->type(), QgsStacObject::Type::Item );
+  QCOMPARE( item->type(), Qgis::StacObjectType::Item );
 
   // cannot take same id twice
   item = c.takeStacObject< QgsStacItem >( id );

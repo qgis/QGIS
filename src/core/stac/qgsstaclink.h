@@ -16,17 +16,15 @@
 #ifndef QGSSTACLINK_H
 #define QGSSTACLINK_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 
 #include <QString>
 
 /**
  * \ingroup core
- * \brief Class for storing data associated with a STAC link
+ * \brief Class for storing data associated with a STAC link.
  *
- * \note Not available in python bindings
  * \since QGIS 3.40
  */
 class CORE_EXPORT QgsStacLink

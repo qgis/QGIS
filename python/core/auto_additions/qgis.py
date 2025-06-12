@@ -11487,6 +11487,23 @@ Qgis.SegmentCalculationMethod.__doc__ = """brief Method used to calculate the nu
 """
 # --
 Qgis.SegmentCalculationMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.StacObjectType.Unknown.__doc__ = "Type is not known"
+Qgis.StacObjectType.Catalog.__doc__ = "STAC catalog"
+Qgis.StacObjectType.Collection.__doc__ = "STAC collection"
+Qgis.StacObjectType.Item.__doc__ = "STAC item"
+Qgis.StacObjectType.__doc__ = """Available types of stac objects
+
+.. versionadded:: 3.44
+
+* ``Unknown``: Type is not known
+* ``Catalog``: STAC catalog
+* ``Collection``: STAC collection
+* ``Item``: STAC item
+
+"""
+# --
+Qgis.StacObjectType.baseClass = Qgis
 from enum import Enum
 
 

@@ -16,8 +16,7 @@
 #ifndef QGSSTACCATALOG_H
 #define QGSSTACCATALOG_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsstacobject.h"
 
@@ -26,9 +25,7 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Catalog's data
- *
- * \note Not available in python bindings
+ * \brief Class for storing a STAC Catalog's data.
  *
  * \since QGIS 3.40
  */
@@ -50,7 +47,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
                     const QString &description,
                     const QVector< QgsStacLink > &links );
 
-    QgsStacObject::Type type() const override;
+    Qgis::StacObjectType type() const override;
     QString toHtml() const override;
 
     //! Returns a short descriptive one-line title for the Catalog.

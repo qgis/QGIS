@@ -130,16 +130,16 @@ void QgsStacController::handleStacObjectReply()
   std::unique_ptr< QgsStacObject > object;
   switch ( parser.type() )
   {
-    case QgsStacObject::Type::Catalog:
+    case Qgis::StacObjectType::Catalog:
       object = parser.catalog();
       break;
-    case QgsStacObject::Type::Collection:
+    case Qgis::StacObjectType::Collection:
       object = parser.collection();
       break;
-    case QgsStacObject::Type::Item:
+    case Qgis::StacObjectType::Item:
       object = parser.item();
       break;
-    case QgsStacObject::Type::Unknown:
+    case Qgis::StacObjectType::Unknown:
       object = nullptr;
       error = parser.error().isEmpty() ? QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" ) : parser.error();
       break;
@@ -390,16 +390,16 @@ std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString 
   std::unique_ptr< QgsStacObject > object;
   switch ( parser.type() )
   {
-    case QgsStacObject::Type::Catalog:
+    case Qgis::StacObjectType::Catalog:
       object = parser.catalog();
       break;
-    case QgsStacObject::Type::Collection:
+    case Qgis::StacObjectType::Collection:
       object = parser.collection();
       break;
-    case QgsStacObject::Type::Item:
+    case Qgis::StacObjectType::Item:
       object = parser.item();
       break;
-    case QgsStacObject::Type::Unknown:
+    case Qgis::StacObjectType::Unknown:
       break;
   }
 

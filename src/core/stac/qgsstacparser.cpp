@@ -26,7 +26,7 @@
 void QgsStacParser::setData( const QByteArray &data )
 {
   mError = QString();
-  mType = QgsStacObject::Type::Unknown;
+  mType = Qgis::StacObjectType::Unknown;
   try
   {
     mData = nlohmann::json::parse( data.data() );
@@ -51,15 +51,15 @@ void QgsStacParser::setData( const QByteArray &data )
   {
     if ( mData.at( "type" ) == "Catalog" )
     {
-      mType = QgsStacObject::Type::Catalog;
+      mType = Qgis::StacObjectType::Catalog;
     }
     else if ( mData.at( "type" ) == "Collection" )
     {
-      mType = QgsStacObject::Type::Collection;
+      mType = Qgis::StacObjectType::Collection;
     }
     else if ( mData.at( "type" ) == "Feature" )
     {
-      mType = QgsStacObject::Type::Item;
+      mType = Qgis::StacObjectType::Item;
     }
   }
   catch ( nlohmann::json::exception &ex )
@@ -73,7 +73,7 @@ void QgsStacParser::setBaseUrl( const QUrl &url )
   mBaseUrl = url;
 }
 
-QgsStacObject::Type QgsStacParser::type() const
+Qgis::StacObjectType QgsStacParser::type() const
 {
   return mType;
 }

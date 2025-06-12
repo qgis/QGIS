@@ -5945,6 +5945,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( SegmentCalculationMethod )
 
     /**
+    * Available types of stac objects
+    * \since QGIS 3.44
+    */
+    enum class StacObjectType : int
+    {
+      Unknown,      //!< Type is not known
+      Catalog,      //!< STAC catalog
+      Collection,   //!< STAC collection
+      Item,         //!< STAC item
+    };
+    Q_ENUM( StacObjectType )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
