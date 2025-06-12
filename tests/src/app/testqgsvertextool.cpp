@@ -186,14 +186,18 @@ void TestQgsVertexTool::initTestCase()
 {
   qDebug() << "TestQgsVertexTool::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init();
-  QgsApplication::initQgis();
-  mQgisApp = new QgisApp();
 
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  QgsSettings().clear();
+
+  mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
