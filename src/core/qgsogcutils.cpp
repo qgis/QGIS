@@ -1723,11 +1723,11 @@ QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element,
     // use the concat binary operator to append to the root node
     if ( !expr->d->mRootNode )
     {
-      expr->d->mRootNode = node;
+      expr->d->mRootNode.reset( node );
     }
     else
     {
-      expr->d->mRootNode = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boConcat, expr->d->mRootNode, node );
+      expr->d->mRootNode = std::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boConcat, expr->d->mRootNode.release(), node );
     }
 
     childElem = childElem.nextSiblingElement();
