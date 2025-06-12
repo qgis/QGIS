@@ -1651,6 +1651,9 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
 
 void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
 {
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (2 1, 1 1, 1 3)" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" );
+
   // test moving of vertices of two features at once
 
   QgsProject::instance()->setTopologicalEditing( true );
@@ -1673,8 +1676,8 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   mouseClick( mapPointEnd.x(), mapPointEnd.y(), Qt::LeftButton );
 
   // polygon and line features have changed, within the CRS conversion precision
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (3 3, 1 1, 1 3)" );
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 1 ), "LineString (3 3, 1 1, 1 3)" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 3 ); // one more move of vertex from earlier
   QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
