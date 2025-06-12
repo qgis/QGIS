@@ -1475,7 +1475,6 @@ void TestQgsVertexTool::testActiveLayerPriority()
   const QgsFeatureId fidLineF1 = lineF1.id();
   QCOMPARE( layerLine2->featureCount(), ( long ) 1 );
   QgsProject::instance()->addMapLayer( layerLine2 );
-  QList<QgsMapLayer *> oldMapLayers = mCanvas->layers();
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerCompoundCurve << layerLine2 );
 
   // make one layer active and check its vertex is used
