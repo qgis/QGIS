@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacextent.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsStacExtent
+{
+%Docstring(signature="appended")
+Class for storing a STAC SpatioTemporal extent.
+
+:py:class:`QgsStacExtent` contains one overall spatial extent and one
+overall temporal extent It is possible to add further refined sub
+extents to better describe clustered data.
+
+All spatial extents are in WGS84 longitude/latitude and elevation in
+meters.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsstacextent.h"
+%End
+  public:
+    QgsStacExtent();
+%Docstring
+Default constructor for empty extent
+%End
+
+    void setSpatialExtent( QgsBox3D extent );
+%Docstring
+Sets the overall spatial extent to ``extent``
+%End
+
+    void setSpatialExtent( QgsRectangle extent );
+%Docstring
+Sets the overall spatial extent to ``extent``
+%End
+
+    void addDetailedSpatialExtent( QgsBox3D extent );
+%Docstring
+Adds a more detailed spatial ``extent``
+%End
+
+    void addDetailedSpatialExtent( QgsRectangle extent );
+%Docstring
+Adds a more detailed spatial ``extent``
+%End
+
+    QgsBox3D spatialExtent() const;
+%Docstring
+Returns the overall spatial extent
+%End
+
+    void setTemporalExtent( QgsDateTimeRange extent );
+%Docstring
+Sets the overall temporal extent to ``extent``
+%End
+
+    void addDetailedTemporalExtent( QgsDateTimeRange extent );
+%Docstring
+Adds a more detailed temporal ``extent``
+%End
+
+    QgsDateTimeRange temporalExtent() const;
+%Docstring
+Returns the overall temporal extent
+%End
+
+    QVector< QgsBox3D > detailedSpatialExtents() const;
+%Docstring
+Returns all detailed spatial sub extents defined
+%End
+
+    QVector< QgsDateTimeRange > detailedTemporalExtents() const;
+%Docstring
+Returns all detailed temporal sub extents defined
+%End
+
+    bool hasDetailedSpatialExtents() const;
+%Docstring
+Returns ``True`` if there are detailed spatial sub extents defined
+%End
+
+    bool hasDetailedTemporalExtents() const;
+%Docstring
+Returns ``True`` if there are detailed temporal sub extents defined
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacextent.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

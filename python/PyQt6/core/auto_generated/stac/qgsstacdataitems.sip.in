@@ -1,0 +1,197 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacdataitems.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsStacFetchMoreItem : QgsDataItem
+{
+%Docstring(signature="appended")
+Item to display that there are additional STAC items which are not
+loaded.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacdataitems.h"
+%End
+  public:
+    QgsStacFetchMoreItem( QgsDataItem *parent, const QString &name );
+
+    virtual bool handleDoubleClick();
+
+    virtual QVariant sortKey() const;
+
+};
+
+class QgsStacItemItem : QgsDataItem
+{
+%Docstring(signature="appended")
+Item for STAC Items within a catalog or collection.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacdataitems.h"
+%End
+  public:
+    QgsStacItemItem( QgsDataItem *parent, const QString &name, const QString &path );
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+    virtual bool hasDragEnabled() const;
+
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
+
+    virtual bool equal( const QgsDataItem *other );
+
+    virtual QVariant sortKey() const;
+
+    void updateToolTip();
+    QgsStacController *stacController();
+
+    void setStacItem( QgsStacItem *item /Transfer/ );
+%MethodCode
+    sipCpp-> setStacItem( std::unique_ptr< QgsStacItem >( a0 ) );
+%End
+
+
+    QgsStacItem *stacItem() const;
+%Docstring
+does not transfer ownership
+%End
+
+  public slots:
+    void itemRequestFinished( int requestId, QString error );
+
+};
+
+class QgsStacCatalogItem : QgsDataCollectionItem
+{
+%Docstring(signature="appended")
+Item for catalogs and collections.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacdataitems.h"
+%End
+  public:
+    QgsStacCatalogItem( QgsDataItem *parent, const QString &name, const QString &path );
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+    virtual bool equal( const QgsDataItem *other );
+
+    virtual QVariant sortKey() const;
+
+    void updateToolTip();
+
+    void setStacCatalog( QgsStacCatalog *object /Transfer/ ) /HoldGIL/;
+%Docstring
+takes ownership
+%End
+%MethodCode
+    sipCpp->setStacCatalog( std::unique_ptr< QgsStacCatalog>( a0 ) );
+%End
+
+    QgsStacCatalog *stacCatalog() const;
+%Docstring
+does not transfer ownership
+%End
+
+    void fetchMoreChildren();
+
+    bool isCatalog() const;
+    bool isCollection() const;
+    QgsStacController *stacController() const;
+    QgsStacCatalog *rootCatalog() const;
+    QgsStacFetchMoreItem *fetchMoreItem() const;
+
+  public slots:
+    virtual void childrenCreated();
+
+
+};
+
+class QgsStacConnectionItem : QgsStacCatalogItem
+{
+%Docstring(signature="appended")
+Item for STAC connections, is also a catalog itself.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacdataitems.h"
+%End
+  public:
+    QgsStacConnectionItem( QgsDataItem *parent, const QString &connectionName );
+
+    QgsStacController *controller() const;
+
+};
+
+class QgsStacRootItem : QgsConnectionsRootItem
+{
+%Docstring(signature="appended")
+Root item for STAC connections.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacdataitems.h"
+%End
+  public:
+    QgsStacRootItem( QgsDataItem *parent, const QString &name, const QString &path );
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
+    virtual QVariant sortKey() const;
+
+  public slots:
+    void onConnectionsChanged();
+};
+
+class QgsStacDataItemProvider : QgsDataItemProvider
+{
+%Docstring(signature="appended")
+Provider for STAC root data item.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacdataitems.h"
+%End
+  public:
+    virtual QString name();
+
+    virtual QString dataProviderKey() const;
+
+    virtual Qgis::DataItemProviderCapabilities capabilities() const;
+
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem );
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacdataitems.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

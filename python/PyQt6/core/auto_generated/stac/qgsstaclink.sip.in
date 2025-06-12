@@ -1,0 +1,67 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaclink.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsStacLink
+{
+%Docstring(signature="appended")
+Class for storing data associated with a STAC link.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsstaclink.h"
+%End
+  public:
+
+    QgsStacLink( const QString &href, const QString &relation, const QString &mediaType, const QString &title );
+%Docstring
+Constructor
+
+:param href: The actual link in the format of an URL.
+:param relation: Relationship between the parent document and the linked
+                 document.
+:param mediaType: Media type of the referenced entity
+:param title: A human readable title to be used in rendered displays of
+              the link.
+%End
+
+    QString href() const;
+%Docstring
+Returns the actual link in the format of an URL.
+%End
+
+    QString relation() const;
+%Docstring
+Returns the relationship between the parent document and the linked
+document.
+%End
+
+    QString mediaType() const;
+%Docstring
+Returns the Media type of the referenced entity
+%End
+
+    QString title() const;
+%Docstring
+Returns a human readable title to be used in rendered displays of the
+link.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaclink.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
