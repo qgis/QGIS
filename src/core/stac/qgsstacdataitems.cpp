@@ -21,7 +21,7 @@
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
@@ -371,7 +371,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     {
       // use /collections api
       QString error;
-      std::unique_ptr< QgsStacCollections > cols( controller->fetchCollections( link.href(), &error ) );
+      std::unique_ptr< QgsStacCollectionList > cols( controller->fetchCollections( link.href(), &error ) );
       if ( cols )
       {
         contents.append( createCollections( cols->takeCollections() ) );

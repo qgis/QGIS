@@ -17,7 +17,7 @@
 #include "qgsstacitem.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 #include "qgsstacitemcollection.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
@@ -514,7 +514,7 @@ std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
   return std::make_unique< QgsStacItemCollection >( rawItems, links, numberMatched );
 }
 
-QgsStacCollections *QgsStacParser::collections()
+QgsStacCollectionList *QgsStacParser::collections()
 {
   std::vector< std::unique_ptr<QgsStacCollection> > cols;
   QVector< QgsStacLink > links;
@@ -548,5 +548,5 @@ QgsStacCollections *QgsStacParser::collections()
       rawCols.append( c.release() );
   }
 
-  return new QgsStacCollections( rawCols, links, numberMatched );
+  return new QgsStacCollectionList( rawCols, links, numberMatched );
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsstaccollections.cpp
+    qgsstaccollectionlist.cpp
     ---------------------
     begin                : October 2024
     copyright            : (C) 2024 by Stefanos Natsis
@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 
-QgsStacCollections::QgsStacCollections( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched )
+QgsStacCollectionList::QgsStacCollectionList( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched )
   : mCollections( collections )
   , mNumberMatched( numberMatched )
 {
@@ -30,49 +30,49 @@ QgsStacCollections::QgsStacCollections( const QVector< QgsStacCollection * > col
 }
 
 
-QgsStacCollections::~QgsStacCollections()
+QgsStacCollectionList::~QgsStacCollectionList()
 {
   qDeleteAll( mCollections );
 }
 
-QVector<QgsStacCollection *> QgsStacCollections::collections() const
+QVector<QgsStacCollection *> QgsStacCollectionList::collections() const
 {
   return mCollections;
 }
 
-QVector<QgsStacCollection *> QgsStacCollections::takeCollections()
+QVector<QgsStacCollection *> QgsStacCollectionList::takeCollections()
 {
   QVector< QgsStacCollection * > cols = mCollections;
   mCollections.clear(); // detach
   return cols;
 }
 
-int QgsStacCollections::numberReturned() const
+int QgsStacCollectionList::numberReturned() const
 {
   return mCollections.size();
 }
 
-int QgsStacCollections::numberMatched() const
+int QgsStacCollectionList::numberMatched() const
 {
   return mNumberMatched;
 }
 
-QUrl QgsStacCollections::url() const
+QUrl QgsStacCollectionList::url() const
 {
   return QUrl( mUrls.value( QStringLiteral( "self" ), QString() ) );
 }
 
-QUrl QgsStacCollections::rootUrl() const
+QUrl QgsStacCollectionList::rootUrl() const
 {
   return QUrl( mUrls.value( QStringLiteral( "root" ), QString() ) );
 }
 
-QUrl QgsStacCollections::nextUrl() const
+QUrl QgsStacCollectionList::nextUrl() const
 {
   return QUrl( mUrls.value( QStringLiteral( "next" ), QString() ) );
 }
 
-QUrl QgsStacCollections::prevUrl() const
+QUrl QgsStacCollectionList::prevUrl() const
 {
   return QUrl( mUrls.value( QStringLiteral( "prev" ), QString() ) );
 }

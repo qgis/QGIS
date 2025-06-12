@@ -365,7 +365,7 @@ set(QGIS_CORE_SRCS
   stac/qgsstacasset.cpp
   stac/qgsstaccatalog.cpp
   stac/qgsstaccollection.cpp
-  stac/qgsstaccollections.cpp
+  stac/qgsstaccollectionlist.cpp
   stac/qgsstacconnection.cpp
   stac/qgsstaccontroller.cpp
   stac/qgsstacdataitems.cpp
@@ -1967,7 +1967,7 @@ set(QGIS_CORE_HDRS
   stac/qgsstacasset.h
   stac/qgsstaccatalog.h
   stac/qgsstaccollection.h
-  stac/qgsstaccollections.h
+  stac/qgsstaccollectionlist.h
   stac/qgsstacconnection.h
   stac/qgsstaccontroller.h
   stac/qgsstacdataitems.h

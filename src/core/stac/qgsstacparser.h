@@ -25,7 +25,7 @@
 
 class QgsStacCatalog;
 class QgsStacCollection;
-class QgsStacCollections;
+class QgsStacCollectionList;
 class QgsStacItem;
 class QgsStacItemCollection;
 
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsStacParser
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned collections
      */
-    QgsStacCollections *collections();
+    QgsStacCollectionList *collections();
 
     //! Returns the type of the parsed object
     Qgis::StacObjectType type() const;

@@ -695,7 +695,7 @@
 %Include auto_generated/stac/qgsstacasset.sip
 %Include auto_generated/stac/qgsstaccatalog.sip
 %Include auto_generated/stac/qgsstaccollection.sip
-%Include auto_generated/stac/qgsstaccollections.sip
+%Include auto_generated/stac/qgsstaccollectionlist.sip
 %Include auto_generated/stac/qgsstacconnection.sip
 %Include auto_generated/stac/qgsstaccontroller.sip
 %Include auto_generated/stac/qgsstacdataitems.sip

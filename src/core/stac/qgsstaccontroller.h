@@ -28,7 +28,7 @@
 class QgsStacObject;
 class QgsStacCatalog;
 class QgsStacCollection;
-class QgsStacCollections;
+class QgsStacCollectionList;
 class QgsStacItem;
 class QgsStacItemCollection;
 class QNetworkReply;
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned feature collection
      */
-    std::unique_ptr< QgsStacCollections > fetchCollections( const QUrl &url, QString *error = nullptr );
+    std::unique_ptr< QgsStacCollectionList > fetchCollections( const QUrl &url, QString *error = nullptr );
 
     /**
      * Initiates an asynchronous request for a STAC object using the \a url
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * \see finishedCollectionsRequest
      * \since QGIS 3.42
      */
-    std::unique_ptr< QgsStacCollections > takeCollections( int requestId );
+    std::unique_ptr< QgsStacCollectionList > takeCollections( int requestId );
 
     /**
      * Returns the authentication config id which will be used during the request.
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsStacController : public QObject
     QgsHttpHeaders mHeaders;
     QMap< int, QgsStacObject *> mFetchedStacObjects;
     QMap< int, QgsStacItemCollection *> mFetchedItemCollections;
-    QMap< int, QgsStacCollections *> mFetchedCollections;
+    QMap< int, QgsStacCollectionList *> mFetchedCollections;
     QVector<QNetworkReply *> mReplies;
     QString mError;
 };
