@@ -354,6 +354,14 @@ void TestQgsVertexTool::init()
   // except for layerLineZ
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+
+  QgsProject::instance()->setTopologicalEditing( false );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
 }
 
 void TestQgsVertexTool::cleanup()
@@ -383,7 +391,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -398,7 +405,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 5 7 5, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineString Z (5 7 5, 7 7 10)" ) );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
@@ -414,7 +420,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
 
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -429,7 +434,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 6 7 7.5, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineString Z (5 7 5, 6 7 7.5, 7 7 10)" ) );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   // Two undo steps, one for the vertex move, one for the topological point
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
@@ -444,7 +448,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
 {
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -462,7 +465,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 5.5 5.5 5, 6 6 1, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF3 ).geometry().asWkt(), QString( "LineString Z (5.5 5.5 5, 7 5.5 10)" ) );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   // Two undo steps, one for the vertex move, one for the topological point
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
@@ -484,7 +486,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
   QCOMPARE( mLayerLineZ->featureCount(), ( long ) 4 );
 
   // Activates topological editing
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
 
   // And snapping
@@ -511,7 +512,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
   // Undo changes
   mLayerLineZ->deleteFeature( linez.id() );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
@@ -1059,8 +1059,6 @@ void TestQgsVertexTool::testMoveVertexTopo()
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testDeleteVertexTopo()
@@ -1088,8 +1086,6 @@ void TestQgsVertexTool::testDeleteVertexTopo()
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testAddVertexTopo()
@@ -1119,8 +1115,6 @@ void TestQgsVertexTool::testAddVertexTopo()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testMoveEdgeTopo()
@@ -1176,8 +1170,6 @@ void TestQgsVertexTool::testMoveEdgeTopo()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testAddVertexTopoFirstSegment()
@@ -1197,8 +1189,6 @@ void TestQgsVertexTool::testAddVertexTopoFirstSegment()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
@@ -1212,7 +1202,6 @@ void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
   QVERIFY( resAdd );
   const QgsFeatureId fTmpId = fTmp.id();
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -1253,7 +1242,6 @@ void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
 
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
 }
@@ -1405,7 +1393,6 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
 
-  QgsProject::instance()->setTopologicalEditing( false );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
 
@@ -1497,7 +1484,6 @@ void TestQgsVertexTool::testActiveLayerPriority()
   mCanvas->setCurrentLayer( nullptr );
 
   // get rid of the temporary layer
-  mCanvas->setLayers( oldMapLayers );
   QgsProject::instance()->removeMapLayer( layerLine2 );
 }
 
@@ -1668,15 +1654,13 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   // test moving of vertices of two features at once
 
   QgsProject::instance()->setTopologicalEditing( true );
-  QgsCoordinateReferenceSystem prevCrs = QgsProject::instance()->crs();
-  QgsCoordinateReferenceSystem tmpCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 
   // move linestring vertex to connect with polygon at point (7, 1)
   mouseClick( 2, 1, Qt::LeftButton );
   mouseClick( 7, 1, Qt::LeftButton );
 
   // change CRS so that the map canvas and the layers CRSs are different
-  mCanvas->setDestinationCrs( tmpCrs );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mCanvas->snappingUtils()->locatorForLayer( mLayerLine )->init();
   mCanvas->snappingUtils()->locatorForLayer( mLayerPolygon )->init();
 
@@ -1701,8 +1685,6 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   // back to the original state
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-  mCanvas->setDestinationCrs( prevCrs );
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )
