@@ -143,7 +143,6 @@ void QgsAbstractDbSourceSelect::storeSettings()
     {
       if ( mSearchColumnActions.at( i )->isChecked() )
       {
-        qDebug() << "store storedSearchColumn is " << i;
         settingSearchColumn->setValue( i, { settingPath() } );
         break;
       }

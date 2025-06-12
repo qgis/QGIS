@@ -35,7 +35,7 @@ Returns the setting path of the derived source select
 
 :return: setting path
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
   protected:
@@ -54,7 +54,7 @@ Returns the proxy model used to filter the results
 %Docstring
 Stores the settings made in the gui
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
   protected slots:

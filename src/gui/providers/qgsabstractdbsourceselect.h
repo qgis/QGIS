@@ -52,7 +52,7 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
      *
      * \returns setting path
      *
-     * \since QGIS 3.40
+     * \since QGIS 3.44
      */
     virtual QString settingPath() const { return QString(); }
 
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     /**
      * Stores the settings made in the gui
      *
-     * \since QGIS 3.40
+     * \since QGIS 3.44
      */
     void storeSettings();
 
