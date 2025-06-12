@@ -1006,6 +1006,9 @@ void TestQgsVertexTool::testConvertVertex()
 
 void TestQgsVertexTool::testMoveMultipleVertices()
 {
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228838 6428900, -228838 6428903)" ) );
+
   // select two vertices
   mousePress( 0.5, 0.5, Qt::LeftButton );
   mouseMove( 1.5, 3.5 );
@@ -1019,16 +1022,17 @@ void TestQgsVertexTool::testMoveMultipleVertices()
   mouseClick( 8, 8, Qt::LeftButton );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0 0, 0 2)" ) );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 0 0, 0 2)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228840 6428899, -228840 6428902)" ) );
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLineReprojected->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228840 6428899, -228840 6428902)" ) );
 
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
-
-  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841259 6405988)" ) );
   mLayerLineReprojected->undoStack()->undo();
-  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841258 6405990)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228838 6428900, -228838 6428903)" ) );
 }
 
 void TestQgsVertexTool::testMoveMultipleVertices2()
