@@ -138,6 +138,24 @@ class TestQgsprojectServerValidator(QgisTestCase):
             QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
             results[0].error,
         )
+        # Explicitly enable MapTips — should still fail
+        layer.setMapTipsEnabled(True)
+        valid2, results2 = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid2)
+        self.assertEqual(1, len(results2))
+        self.assertEqual(
+            QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
+            results2[0].error,
+        )
+        # Explicitly disable MapTips — should still fail
+        layer.setMapTipsEnabled(False)
+        valid3, results3 = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid3)
+        self.assertEqual(1, len(results3))
+        self.assertEqual(
+            QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
+            results3[0].error,
+        )
 
     def test_empty_maptip_disabled(self):
         """Empty maptip must pass when only‐maptip is disabled."""
@@ -149,6 +167,16 @@ class TestQgsprojectServerValidator(QgisTestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertTrue(valid)
         self.assertEqual(0, len(results))
+        # Explicitly enable MapTips — should still pass
+        layer.setMapTipsEnabled(True)
+        valid2, results2 = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid2)
+        self.assertEqual(0, len(results2))
+        # Explicitly disable MapTips — should still pass
+        layer.setMapTipsEnabled(False)
+        valid3, results3 = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid3)
+        self.assertEqual(0, len(results3))
 
 
 if __name__ == "__main__":
