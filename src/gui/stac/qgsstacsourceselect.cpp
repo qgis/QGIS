@@ -297,10 +297,16 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     for ( auto &l : cat->links() )
     {
       // collections endpoint should have a "data" relation according to spec but some servers don't
-      // so let's be less strict and only check the href
-      if ( l.href().endsWith( "/collections" ) )
+      // so let's be less strict and only check the href and optionally the media type
+      if ( QUrl( l.href() ).path().endsWith( "/collections" ) &&     // allow query parameters in the url
+           ( l.mediaType().isEmpty() ||                              // media type is optional
+             l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
+             l.mediaType() == QLatin1String( "application/geo+json" ) ) )
         collectionsUrl = l.href();
-      else if ( l.relation() == "search" )
+      else if ( l.relation() == "search" &&                               // relation needs to be "search" according to spec
+                ( l.mediaType().isEmpty() ||                              // media type is optional
+                  l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
+                  l.mediaType() == QLatin1String( "application/geo+json" ) ) )
         mSearchUrl = l.href();
 
       if ( !collectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
