@@ -522,7 +522,9 @@ QgsStacCollections *QgsStacParser::collections()
 
   try
   {
-    links = parseLinks( mData.at( "links" ) );
+    // some servers don't include links here, let's be more forgiving
+    if ( mData.contains( "links" ) )
+      links = parseLinks( mData.at( "links" ) );
 
     cols.reserve( mData.at( "collections" ).size() );
     for ( auto &col : mData.at( "collections" ) )
