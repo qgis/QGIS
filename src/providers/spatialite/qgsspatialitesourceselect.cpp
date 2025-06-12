@@ -44,7 +44,7 @@ email                : a.furieri@lqt.it
 #define strcasecmp( a, b ) stricmp( a, b )
 #endif
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "SpatiaLiteSourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "SpatiaLiteSourceSelect" );
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )

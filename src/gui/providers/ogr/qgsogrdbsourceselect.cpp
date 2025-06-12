@@ -33,7 +33,7 @@
 
 #include <QMessageBox>
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "ogr/%1SourceSelect/" );
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "ogr/%1SourceSelect" );
 
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )

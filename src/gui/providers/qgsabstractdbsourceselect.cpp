@@ -24,10 +24,11 @@
 #include <QItemDelegate>
 #include <QActionGroup>
 
-const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%1searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%1searchRegex" ), QgsSettingsTree::sTreeWindowState );
-const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%1holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
-const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingColumnWidths = new QgsSettingsEntryInteger( QStringLiteral( "%1columnWidths/%2" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( QStringLiteral( "%1/searchColumnAll" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%1/searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%1/searchRegex" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%1/holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingColumnWidths = new QgsSettingsEntryInteger( QStringLiteral( "%1/columnWidths/%2" ), QgsSettingsTree::sTreeWindowState );
 
 QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -82,13 +83,19 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
   mSearchColumnAllAction->setCheckable( true );
   mSearchSettingsMenu->addAction( mSearchColumnAllAction );
   columnActionGroup->addAction( mSearchColumnAllAction );
+  bool searchColumnAll = settingSearchColumnAll->value( { settingPath() } );
+  int storedSearchColumn = -1;
+  //Avoid having a usable presetColumn when all is selected
+  if ( !searchColumnAll )
+  {
+    storedSearchColumn = settingSearchColumn->value( { settingPath() } );
+    if ( storedSearchColumn < 0 )
+    {
+      storedSearchColumn = model->defaultSearchColumn();
+    }
+  }
   bool hasPresetColumn = false;
   const QStringList columns = model->columns();
-  int storedSearchColumn = settingSearchColumn->value( { settingPath() } );
-  if ( storedSearchColumn < 0 )
-  {
-    storedSearchColumn = model->defaultSearchColumn();
-  }
   for ( int i = 0; i < columns.count(); i++ )
   {
     if ( !model->searchableColumn( i ) )
@@ -130,15 +137,19 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
 
 void QgsAbstractDbSourceSelect::storeSettings()
 {
-  for ( int i = 0; i < mSearchColumnActions.count(); i++ )
+  if ( !mSearchColumnAllAction->isChecked() )
   {
-    if ( mSearchColumnActions.at( i )->isChecked() )
+    for ( int i = 0; i < mSearchColumnActions.count(); i++ )
     {
-      settingSearchColumn->setValue( i, { settingPath() } );
-      break;
+      if ( mSearchColumnActions.at( i )->isChecked() )
+      {
+        qDebug() << "store storedSearchColumn is " << i;
+        settingSearchColumn->setValue( i, { settingPath() } );
+        break;
+      }
     }
   }
-
+  settingSearchColumnAll->setValue( mSearchColumnAllAction->isChecked(), { settingPath() } );
   settingSearchRegex->setValue( mSearchModeRegexAction->isChecked(), { settingPath() } );
 }
 

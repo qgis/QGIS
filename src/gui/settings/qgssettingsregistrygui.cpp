@@ -31,11 +31,11 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   // single settings - added in 3.30
   settingsRespectScreenDPI->copyValueFromKey( QStringLiteral( "gui/qgis/respect_screen_dpi" ), {}, true );
 
-  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "ogr/GPKGSourceSelect/HoldDialogOpen" ), { QStringLiteral( "ogr/GPKGSourceSelect/" ) }, true );
-  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "ogr/SQLiteSourceSelect/HoldDialogOpen" ), { QStringLiteral( "ogr/SQLiteSourceSelect/" ) }, true );
-  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), { QStringLiteral( "MSSQLSourceSelect/" ) }, true );
-  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), { QStringLiteral( "PgSourceSelect/" ) }, true );
-  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), { QStringLiteral( "SpatiaLiteSourceSelect/" ) }, true );
+  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "ogr/GPKGSourceSelect/HoldDialogOpen" ), { QStringLiteral( "ogr/GPKGSourceSelect" ) }, true );
+  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "ogr/SQLiteSourceSelect/HoldDialogOpen" ), { QStringLiteral( "ogr/SQLiteSourceSelect" ) }, true );
+  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), { QStringLiteral( "MSSQLSourceSelect" ) }, true );
+  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), { QStringLiteral( "PgSourceSelect" ) }, true );
+  QgsAbstractDbSourceSelect::settingHoldDialogOpen->copyValueFromKey( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), { QStringLiteral( "SpatiaLiteSourceSelect" ) }, true );
 }
 
 QgsSettingsRegistryGui::~QgsSettingsRegistryGui()
