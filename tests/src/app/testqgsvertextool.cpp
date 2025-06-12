@@ -60,7 +60,9 @@ class TestQgsVertexTool : public QObject
     TestQgsVertexTool();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
+    void init();
+    void cleanup();
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testSelectVerticesByPolygon();
@@ -226,6 +228,37 @@ void TestQgsVertexTool::initTestCase()
   QVERIFY( mLayerCompoundCurve->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
 
+  mCanvas->setFrameStyle( QFrame::NoFrame );
+  mCanvas->resize( 512, 512 );
+  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
+  mCanvas->show(); // to make the canvas resize
+  mCanvas->hide();
+  QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
+
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  mCanvas->setSnappingUtils( snappingUtils );
+
+  snappingUtils->locatorForLayer( mLayerLine )->init();
+  snappingUtils->locatorForLayer( mLayerMultiLine )->init();
+  snappingUtils->locatorForLayer( mLayerLineReprojected )->init();
+  snappingUtils->locatorForLayer( mLayerPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerMultiPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerPoint )->init();
+  snappingUtils->locatorForLayer( mLayerPointZ )->init();
+  snappingUtils->locatorForLayer( mLayerLineZ )->init();
+  snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
+
+  // create vertex tool
+  mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
+
+  mCanvas->setMapTool( mVertexTool );
+}
+
+void TestQgsVertexTool::init()
+{
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromWkt( "LineString (2 1, 1 1, 1 3)" ) );
 
@@ -321,34 +354,19 @@ void TestQgsVertexTool::initTestCase()
   // except for layerLineZ
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+}
 
-  mCanvas->setFrameStyle( QFrame::NoFrame );
-  mCanvas->resize( 512, 512 );
-  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
-  mCanvas->show(); // to make the canvas resize
-  mCanvas->hide();
-  QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
-  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
-
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
-
-  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
-  mCanvas->setSnappingUtils( snappingUtils );
-
-  snappingUtils->locatorForLayer( mLayerLine )->init();
-  snappingUtils->locatorForLayer( mLayerMultiLine )->init();
-  snappingUtils->locatorForLayer( mLayerLineReprojected )->init();
-  snappingUtils->locatorForLayer( mLayerPolygon )->init();
-  snappingUtils->locatorForLayer( mLayerMultiPolygon )->init();
-  snappingUtils->locatorForLayer( mLayerPoint )->init();
-  snappingUtils->locatorForLayer( mLayerPointZ )->init();
-  snappingUtils->locatorForLayer( mLayerLineZ )->init();
-  snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
-
-  // create vertex tool
-  mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
-
-  mCanvas->setMapTool( mVertexTool );
+void TestQgsVertexTool::cleanup()
+{
+  mLayerLine->rollBack();
+  mLayerMultiLine->rollBack();
+  mLayerLineReprojected->rollBack();
+  mLayerPolygon->rollBack();
+  mLayerMultiPolygon->rollBack();
+  mLayerPoint->rollBack();
+  mLayerPointZ->rollBack();
+  mLayerLineZ->rollBack();
+  mLayerCompoundCurve->rollBack();
 }
 
 //runs after all tests
