@@ -5,7 +5,6 @@ test_core_layoutpicture
 test_core_vectortilelayer
 test_gui_processinggui
 test_app_advanceddigitizing
-test_app_vertextool
 
 # Crashes -- also disabled on qt5 builds!
 test_gui_queryresultwidget
