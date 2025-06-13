@@ -51,6 +51,7 @@ class APP_EXPORT Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigW
     void updateMaxZoomLevel();
     void validate();
     void on3DAxisChanged();
+    void onNavigationModeChanged();
 
   private:
     Qgs3DMapSettings *mMap = nullptr;
