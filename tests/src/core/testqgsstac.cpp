@@ -15,21 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
 
-//qgis includes...
-#include "qgsstaccontroller.h"
+#include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
+#include "qgsstaccollectionlist.h"
+#include "qgsstaccontroller.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
-#include "qgsstaccollections.h"
-#include "qgsapplication.h"
 #include "qgsproject.h"
-#include "qgis.h"
-#include "qsignalspy.h"
+#include "qgstest.h"
+
+#include <QObject>
+#include <QSignalSpy>
+#include <QString>
 
 /**
  * \ingroup UnitTests
@@ -239,7 +239,7 @@ void TestQgsStac::testParseLocalCollections()
 {
   const QString fileName = mDataDir + QStringLiteral( "collectioncollection-sample-full.json" );
   QgsStacController c;
-  std::unique_ptr< QgsStacCollections > cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
+  std::unique_ptr< QgsStacCollectionList > cols = c.fetchCollections( QStringLiteral( "file://%1" ).arg( fileName ) );
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
@@ -375,7 +375,7 @@ void TestQgsStac::testFetchCollectionsAsync()
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), id );
   QVERIFY( spy.at( 0 ).at( 1 ).toString().isEmpty() );
 
-  std::unique_ptr< QgsStacCollections > cols = c.takeCollections( id );
+  std::unique_ptr< QgsStacCollectionList > cols = c.takeCollections( id );
   QVERIFY( cols );
   QCOMPARE( cols->numberReturned(), 1 );
   QCOMPARE( cols->numberMatched(), 11 );
