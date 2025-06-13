@@ -896,7 +896,7 @@ QColor QgsModelParameterGraphicItem::getLinkColor( Qt::Edge /* unused in this im
 
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
   {
-    return this->model()->parameterDefinition( parameter->parameterName() )->getColor();
+    return this->model()->parameterDefinition( parameter->parameterName() )->modelColor();
   }
 
   return fallbackColor();
@@ -1195,7 +1195,7 @@ QColor QgsModelComponentGraphicItem::getLinkColor( Qt::Edge edge, int index )
       {
         if ( index <= child->algorithm()->outputDefinitions().size() - 1 )
         {
-          return child->algorithm()->outputDefinitions().at( index )->getColor();
+          return child->algorithm()->outputDefinitions().at( index )->modelColor();
         }
         return fallbackColor();
       }
@@ -1205,7 +1205,7 @@ QColor QgsModelComponentGraphicItem::getLinkColor( Qt::Edge edge, int index )
 
         if ( index <= params.size() - 1 )
         {
-          return params.at( index )->getColor();
+          return params.at( index )->modelColor();
         }
 
         return fallbackColor();
