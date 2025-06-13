@@ -59,6 +59,15 @@ widget.
 Sets the related ``scene``.
 %End
 
+    void friendlySetSceneRect();
+%Docstring
+Sets the scene rect used for scrollbar without disturbing the user i.e:
+- We growth the scene rect as the model growth - We shrink only if the
+model scene rect is outside the current viewed viewport
+
+Called each time the view viewport moved or the model scene changed
+%End
+
     QgsModelGraphicsScene *modelScene() const;
 %Docstring
 Returns the scene associated with the tool.
@@ -138,7 +147,6 @@ Pastes items from clipboard, using the specified ``mode``.
 %Docstring
 Snaps the selected items to the grid.
 %End
-
   signals:
 
     void algorithmDropped( const QString &algorithmId, const QPointF &pos );

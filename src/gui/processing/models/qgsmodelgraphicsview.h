@@ -67,6 +67,16 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void setModelScene( QgsModelGraphicsScene *scene );
 
     /**
+     * Sets the scene rect used for scrollbar without disturbing the user
+     * i.e:
+     *  - We growth the scene rect as the model growth
+     *  - We shrink only if the model scene rect is outside the current viewed viewport
+     * 
+     * Called each time the view viewport moved or the model scene changed
+     */
+    void friendlySetSceneRect();
+
+    /**
      * Returns the scene associated with the tool.
      * \see view()
      */
@@ -162,7 +172,6 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Snaps the selected items to the grid.
      */
     void snapSelected();
-
   signals:
 
     /**
