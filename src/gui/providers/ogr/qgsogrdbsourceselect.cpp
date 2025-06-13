@@ -33,6 +33,8 @@
 
 #include <QMessageBox>
 
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "ogr/%1SourceSelect" );
+
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
   , mOgrDriverName( theSettingsKey )
@@ -49,8 +51,7 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
-  QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName() ), false, QgsSettings::Section::Providers ).toBool() );
+  mHoldDialogOpen->setChecked( settingHoldDialogOpen->value( { SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) } ) );
 
   setWindowTitle( tr( "Add %1 Layer(s)" ).arg( name() ) );
   btnEdit->hide(); // hide the edit button
@@ -74,8 +75,9 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
 
 QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "ogr/%1SourceSelect/HoldDialogOpen" ).arg( ogrDriverName() ), mHoldDialogOpen->isChecked(), QgsSettings::Section::Providers );
+  settingHoldDialogOpen->setValue( mHoldDialogOpen->isChecked(), { SETTINGS_WINDOWS_PATH.arg( mOgrDriverName ) } );
+  //store general settings in base class
+  storeSettings();
 }
 
 
@@ -335,6 +337,11 @@ void QgsOgrDbSourceSelect::dbChanged()
   // Remember which database was selected.
   QgsSettings settings;
   settings.setValue( QStringLiteral( "GeoPackage/connections/selected" ), cmbConnections->currentText() );
+}
+
+QString QgsOgrDbSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH.arg( mOgrDriverName );
 }
 
 void QgsOgrDbSourceSelect::refresh()

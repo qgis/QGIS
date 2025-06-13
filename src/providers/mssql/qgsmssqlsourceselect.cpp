@@ -140,6 +140,8 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "MSSQLSourceSelect" );
+
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
@@ -175,11 +177,14 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   const QgsSettings settings;
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settingHoldDialogOpen->value( { SETTINGS_WINDOWS_PATH } ) );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/MSSQLSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    if ( settingColumnWidths->value( { SETTINGS_WINDOWS_PATH, QString::number( i ) } ) > 0 )
+    {
+      mTablesTreeView->setColumnWidth( i, settingColumnWidths->value( { SETTINGS_WINDOWS_PATH, QString::number( i ) } ) );
+    }
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -283,13 +288,15 @@ QgsMssqlSourceSelect::~QgsMssqlSourceSelect()
     mColumnTypeThread->wait();
   }
 
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settingHoldDialogOpen->setValue( mHoldDialogOpen->isChecked(), { SETTINGS_WINDOWS_PATH } );
 
+  QgsSettings settings;
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/MSSQLSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settingColumnWidths->setValue( mTablesTreeView->columnWidth( i ), { SETTINGS_WINDOWS_PATH, QString::number( i ) } );
   }
+  //store general settings in base class
+  storeSettings();
 }
 
 void QgsMssqlSourceSelect::populateConnectionList()
@@ -530,6 +537,11 @@ QString QgsMssqlSourceSelect::connectionInfo()
 void QgsMssqlSourceSelect::reset()
 {
   mTablesTreeView->clearSelection();
+}
+
+QString QgsMssqlSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH;
 }
 
 void QgsMssqlSourceSelect::refresh()
