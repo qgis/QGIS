@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "461f91ec1125bb2c20aaa28d7456dfd83dbc3eec",
+        "baseline": "c9b89198fad4de775f79bfd32b85ae491db1d598",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -116,7 +116,9 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-psycopg",
         "py-psycopg2",
+        "py-pydantic",
         {
           "name": "py-pyqt6",
           "features": [
