@@ -252,6 +252,20 @@ the feature info response
          feature info response
 %End
 
+    static bool wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project );
+%Docstring
+Returns if only the maptip should be used for HTML feature info response
+so that the HTML response to the feature info request only contains the
+maptip. If no maptip is set, the HTML response is empty.
+
+:param project: the QGIS project
+
+:return: true if only the maptip should be used for the feature info
+         response only
+
+.. versionadded:: 4.0
+%End
+
     static bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
 %Docstring
 Returns if the geometry has to be segmentize in GetFeatureInfo request.
