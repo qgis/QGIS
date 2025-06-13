@@ -24,6 +24,8 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
+#include "qgsvectorlayereditutils.h"
+#include "qgsmultipoint.h"
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
@@ -211,16 +213,71 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
   if ( reshapeDone )
   {
-    // Add topological points due to snapping
+    // Add topological points
     if ( QgsProject::instance()->topologicalEditing() )
     {
-      const QList<QgsPointLocator::Match> sm = snappingMatches();
-      Q_ASSERT( pts.size() == sm.size() );
-      for ( int i = 0; i < sm.size(); ++i )
+      //check if we need to add topological points to other layers
+      const QList<QgsMapLayer *> layers = canvas()->layers( true );
+      QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+      QgsGeometry pointsAsGeom( new QgsMultiPoint( pts ) );
+      QgsRectangle bbox = pointsAsGeom.boundingBox();
+
+      for ( QgsMapLayer *layer : layers )
       {
-        if ( sm.at( i ).layer() )
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vectorLayer && vectorLayer->isEditable() && vectorLayer->isSpatial() && ( vectorLayer->geometryType() == Qgis::GeometryType::Line || vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
         {
-          sm.at( i ).layer()->addTopologicalPoints( pts.at( i ) );
+          QgsCoordinateTransform ct;
+          if ( vectorLayer->crs() != vlayer->crs() )
+          {
+            ct = QgsCoordinateTransform( vlayer->crs(), vectorLayer->crs(), vectorLayer->transformContext() );
+            try
+            {
+              bbox = ct.transformBoundingBox( bbox );
+            }
+            catch ( QgsCsException & )
+            {
+              QgsDebugError( QStringLiteral( "Bounding box transformation failed, skipping topological points for layer %1" ).arg( vlayer->id() ) );
+              continue;
+            }
+          }
+          bbox.grow( QgsVectorLayerEditUtils::getTopologicalSearchRadius( vectorLayer ) );
+          request.setFilterRect( bbox );
+
+          // We check that there is actually at least one feature intersecting our geometry in the layer to avoid creating an empty edit command and calling costly addTopologicalPoint
+          if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
+            continue;
+
+          vectorLayer->beginEditCommand( tr( "Topological points added by Reshape" ) );
+
+          int returnValue = 2;
+          if ( vectorLayer->crs() != vlayer->crs() )
+          {
+            try
+            {
+              // transform digitized geometry from vlayer crs to vectorLayer crs and add topological points
+              pointsAsGeom.transform( ct );
+              returnValue = vectorLayer->addTopologicalPoints( pointsAsGeom );
+            }
+            catch ( QgsCsException & )
+            {
+              QgsDebugError( QStringLiteral( "transformation to vectorLayer coordinate failed" ) );
+            }
+          }
+          else
+          {
+            returnValue = vectorLayer->addTopologicalPoints( pts );
+          }
+
+          if ( returnValue == 0 )
+          {
+            vectorLayer->endEditCommand();
+          }
+          else
+          {
+            // the layer was not modified, leave the undo buffer intact
+            vectorLayer->destroyEditCommand();
+          }
         }
       }
     }
