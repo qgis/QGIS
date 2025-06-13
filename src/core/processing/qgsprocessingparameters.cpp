@@ -3021,7 +3021,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterBoolean::clone() const
   return new QgsProcessingParameterBoolean( *this );
 }
 
-QColor QgsProcessingParameterDefinition::getColor() const
+QColor QgsProcessingParameterDefinition::modelColor() const
 {
   return QColor( 128, 128, 128 ); /* mid gray */
 }

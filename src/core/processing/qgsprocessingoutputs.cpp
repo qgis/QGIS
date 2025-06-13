@@ -48,7 +48,7 @@ QString QgsProcessingOutputDefinition::valueAsFormattedString( const QVariant &v
   return valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputDefinition::getColor() const
+QColor QgsProcessingOutputDefinition::modelColor() const
 {
   return QColor( 128, 128, 128 ); /* mid  gray */
 }
@@ -68,7 +68,7 @@ void QgsProcessingOutputVectorLayer::setDataType( Qgis::ProcessingSourceType typ
   mDataType = type;
 }
 
-QColor QgsProcessingOutputVectorLayer::getColor() const
+QColor QgsProcessingOutputVectorLayer::modelColor() const
 {
   return QColor( 122, 0, 47 ); /* burgundy */
 }
@@ -77,7 +77,7 @@ QgsProcessingOutputRasterLayer::QgsProcessingOutputRasterLayer( const QString &n
   : QgsProcessingOutputDefinition( name, description )
 {}
 
-QColor QgsProcessingOutputRasterLayer::getColor() const
+QColor QgsProcessingOutputRasterLayer::modelColor() const
 {
   return QColor( 0, 180, 180 ); /* turquoise */
 }
@@ -90,7 +90,7 @@ QgsProcessingOutputVectorTileLayer::QgsProcessingOutputVectorTileLayer( const QS
   : QgsProcessingOutputDefinition( name, description )
 {}
 
-QColor QgsProcessingOutputVectorTileLayer::getColor() const
+QColor QgsProcessingOutputVectorTileLayer::modelColor() const
 {
   return QColor( 137, 150, 171 ); /* cold gray */
 }
@@ -110,7 +110,7 @@ QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, 
   return valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputHtml::getColor() const
+QColor QgsProcessingOutputHtml::modelColor() const
 {
   return QColor( 255, 131, 23 ); /* orange */
 }
@@ -137,7 +137,7 @@ QString QgsProcessingOutputNumber::valueAsString( const QVariant &value, QgsProc
   return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputNumber::getColor() const
+QColor QgsProcessingOutputNumber::modelColor() const
 {
   return QColor( 34, 157, 214 ); /* blue */
 }
@@ -146,7 +146,7 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
   : QgsProcessingOutputDefinition( name, description )
 {}
 
-QColor QgsProcessingOutputString::getColor() const
+QColor QgsProcessingOutputString::modelColor() const
 {
   return QColor( 255, 131, 23 ); /* orange */
 }
@@ -166,7 +166,7 @@ QString QgsProcessingOutputBoolean::valueAsString( const QVariant &value, QgsPro
   return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputBoolean::getColor() const
+QColor QgsProcessingOutputBoolean::modelColor() const
 {
   return QColor( 51, 201, 28 ); /* green */
 }
@@ -186,7 +186,7 @@ QString QgsProcessingOutputFolder::valueAsFormattedString( const QVariant &value
   return valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputFolder::getColor() const
+QColor QgsProcessingOutputFolder::modelColor() const
 {
   return QColor( 80, 80, 80 ); /* dark gray */
 }
@@ -206,7 +206,7 @@ QString QgsProcessingOutputFile::valueAsFormattedString( const QVariant &value, 
   return valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputFile::getColor() const
+QColor QgsProcessingOutputFile::modelColor() const
 {
   return QColor( 80, 80, 80 ); /* dark gray */
 }
@@ -220,7 +220,7 @@ QString QgsProcessingOutputMapLayer::type() const
   return typeName();
 }
 
-QColor QgsProcessingOutputMapLayer::getColor() const
+QColor QgsProcessingOutputMapLayer::modelColor() const
 {
   return QColor( 137, 150, 171 ); /* cold gray */
 }
@@ -265,7 +265,7 @@ QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value,
   return QgsProcessingOutputDefinition::valueAsString( value, context, ok );
 }
 
-QColor QgsProcessingOutputMultipleLayers::getColor() const
+QColor QgsProcessingOutputMultipleLayers::modelColor() const
 {
   return QColor( 137, 150, 171 ); /* cold gray */
 }
