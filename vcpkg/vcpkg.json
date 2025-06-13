@@ -77,7 +77,12 @@
         "ossl"
       ]
     },
-    "qtbase",
+    {
+      "name": "qtbase",
+      "features": [
+        "sql-odbc"
+      ]
+    }
     "qtdeclarative",
     "qtkeychain-qt6",
     "qtlocation",
