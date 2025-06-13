@@ -52,6 +52,9 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
+  connect( horizontalScrollBar(), &QScrollBar::sliderReleased, this, [=] { friendlySetSceneRect(); } );
+  connect( verticalScrollBar(), &QScrollBar::sliderReleased, this, [=] { friendlySetSceneRect(); } );
+
   mSnapper.setSnapToGrid( true );
 }
 
@@ -397,6 +400,8 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
 
+  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, [=] { friendlySetSceneRect(); } );
+
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
   mSnapMarker = new QgsModelViewSnapMarker();
@@ -489,6 +494,21 @@ void QgsModelGraphicsView::snapSelected()
     mSnapper.setSnapToGrid( prevSetting );
   }
   endMacroCommand();
+}
+
+void QgsModelGraphicsView::friendlySetSceneRect()
+{
+  QRectF modelSceneRect = modelScene()->sceneRect();
+  QRectF viewSceneRect = sceneRect();
+
+  QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+
+  viewSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
+  viewSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
+  viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
+  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
+
+  setSceneRect( viewSceneRect );
 }
 
 void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )
