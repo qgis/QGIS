@@ -98,6 +98,8 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputFolder::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
 };
 
 /**
@@ -170,6 +172,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshLayer : public QgsProcessingPara
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputFolder::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
 };
 
 /**
@@ -251,6 +255,8 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
       else
         return QList<int>();
     }
+
+    QColor modelColor() const override { return QColor( 122, 0, 47 ); /* burgundy */ };
 };
 
 /**
@@ -331,6 +337,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
 };
 
 /**
@@ -422,6 +430,8 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
              << QgsProcessingOutputVariant::typeName()
              << QgsProcessingOutputBoolean::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 51, 201, 28 ); /* green */ };
 };
 
 /**
@@ -494,6 +504,8 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
              << QgsProcessingOutputNumber::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 };
 
 /**
@@ -581,6 +593,8 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 };
 
 /**
@@ -647,6 +661,8 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
       return QStringList() << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -715,6 +731,8 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 122, 0, 47 ); /* burgundy */ };
 };
 
 /**
@@ -783,6 +801,8 @@ class CORE_EXPORT QgsProcessingParameterTypeGeometry : public QgsProcessingParam
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 122, 0, 47 ); /* burgundy */ };
 };
 
 /**
@@ -852,6 +872,8 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
              << QgsProcessingOutputVariant::typeName()
              << QgsProcessingOutputNumber::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 152, 68, 201 ); /* purple */ };
 };
 
 /**
@@ -936,6 +958,8 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -999,6 +1023,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
     {
       return QStringList();
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -1068,6 +1094,8 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
              << QgsProcessingOutputVectorLayer::typeName()
              << QgsProcessingOutputMapLayer::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 /**
@@ -1225,6 +1253,8 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     {
       return QStringList() << QObject::tr( "Path for new vector layer" );
     }
+
+    QColor modelColor() const override { return QColor( 122, 0, 47 ); /* burgundy */ };
 };
 
 /**
@@ -1301,6 +1331,8 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
              << QgsProcessingOutputVectorLayer::typeName()
              << QgsProcessingOutputMapLayer::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 /**
@@ -1376,6 +1408,8 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 /**
@@ -1436,6 +1470,8 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     {
       return QStringList() << QObject::tr( "Path for new raster layer" );
     }
+
+    QColor modelColor() const override { return QColor( 0, 180, 180 ); /* turquoise */ };
 };
 
 /**
@@ -1516,6 +1552,8 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
              << QgsProcessingOutputFolder::typeName()
              << QgsProcessingOutputString::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 };
 
 /**
@@ -1653,6 +1691,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
 };
 
 /**
@@ -1736,6 +1776,8 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
       else
         return QList<int>();
     }
+
+    QColor modelColor() const override { return QColor( 122, 0, 47 ); /* burgundy */  };
 };
 
 /**
@@ -1808,6 +1850,8 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
              << QgsProcessingOutputVariant::typeName()
              << QgsProcessingOutputString::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -1862,6 +1906,8 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 
@@ -2028,6 +2074,8 @@ class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParam
              << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
              << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -2080,6 +2128,8 @@ class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParamete
     {
       return QStringList() << QObject::tr( "A numeric value representing the scale denominator" );
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -2206,6 +2256,8 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
     {
       return QStringList() << QObject::tr( "Path for new vector layer" );
     }
+
+    QColor modelColor() const override { return QColor( 122, 0, 47 ); /* burgundy */ };
 };
 
 /**
@@ -2405,6 +2457,8 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 34, 157, 214 ); /* blue */ };
 };
 
 /**
@@ -2604,6 +2658,8 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 255, 131, 23 ); /* orange */ };
 };
 
 /**
@@ -2874,6 +2930,8 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudLayer : public QgsProcessi
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputFolder::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
 };
 
 /**
@@ -2944,6 +3002,8 @@ class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessi
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
+
+    QColor modelColor() const override { return QColor( 137, 150, 171 ); /* cold gray */ };
 };
 
 /**
@@ -3004,6 +3064,8 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudDestination : public QgsPr
     {
       return QStringList() << QObject::tr( "Path for new point cloud layer" );
     }
+
+    QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 /**
@@ -3130,6 +3192,8 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileDestination : public QgsPr
     {
       return QStringList() << QObject::tr( "Path for new vector tile layer" );
     }
+
+    QColor modelColor() const override { return QColor( 80, 80, 80 ); /* dark gray */ };
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

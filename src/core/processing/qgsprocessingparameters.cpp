@@ -3073,7 +3073,13 @@ QgsProcessingParameterDefinition *QgsProcessingParameterBoolean::clone() const
 
 QColor QgsProcessingParameterDefinition::modelColor() const
 {
-  return QColor( 128, 128, 128 ); /* mid gray */
+  QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( type() );
+  if ( paramType )
+  {
+    return paramType->modelColor();
+  }
+
+  return QgsProcessingParameterType::defaultModelColor();
 }
 
 QString QgsProcessingParameterDefinition::getUserFriendlyValue( QVariant paramValue ) const
