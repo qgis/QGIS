@@ -70,6 +70,14 @@ Sets heading (yaw) angle in degrees
 
 
 
+    static QQuaternion globeRotation( double lat, double lon, float pitch, float heading );
+%Docstring
+Calculate rotation to go from a plane tangent at the equator (X up, Y
+east, Z north) to a plane tangent at the given point.
+
+.. versionadded:: 3.44
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element and returns it
