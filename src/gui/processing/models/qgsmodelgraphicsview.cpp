@@ -468,7 +468,6 @@ void QgsModelGraphicsView::endCommand()
   emit commandEnded();
 }
 
-
 void QgsModelGraphicsView::snapSelected()
 {
   QgsModelGraphicsScene *s = modelScene();
