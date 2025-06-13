@@ -82,7 +82,7 @@
       "features": [
         "sql-odbc"
       ]
-    }
+    },
     "qtdeclarative",
     "qtkeychain-qt6",
     "qtlocation",
