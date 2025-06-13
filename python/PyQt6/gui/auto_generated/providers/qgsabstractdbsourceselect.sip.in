@@ -35,6 +35,10 @@ Returns the setting path of the derived source select
 
 :return: setting path
 
+.. note::
+
+   Might be pure virtual in QGIS 5.x
+
 .. versionadded:: 3.44
 %End
 
