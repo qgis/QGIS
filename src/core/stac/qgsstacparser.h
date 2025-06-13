@@ -36,6 +36,7 @@ class QgsStacItemCollection;
  * This class parses json data and creates the appropriate
  * STAC Catalog, Collection, Item or ItemCollection.
  *
+ * \since QGIS 3.44
 */
 class CORE_EXPORT QgsStacParser
 {
@@ -57,14 +58,7 @@ class CORE_EXPORT QgsStacParser
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned catalog
      */
-#ifndef SIP_RUN
     std::unique_ptr< QgsStacCatalog > catalog();
-#else
-    QgsStacCatalog *catalog() SIP_FACTORY;
-    % MethodCode
-    sipRes = sipCpp->catalog().release();
-    % End
-#endif
 
 
     /**

@@ -13,7 +13,7 @@ class QgsStacItem : QgsStacObject
 %Docstring(signature="appended")
 Class for storing a STAC Item's data.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode

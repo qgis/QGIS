@@ -28,10 +28,35 @@
  * \ingroup core
  * \brief Abstract base class for storing STAC objects.
  *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacObject
 {
+    //SIP_TYPEHEADER_INCLUDE( "qgsstacitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsstaccollection.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsstaccatalog.h" );
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsStacItem *item = dynamic_cast< QgsStacItem * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacItem;
+    }
+    else if ( QgsStacCollection *item = dynamic_cast< QgsStacCollection * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCollection;
+    }
+    else if ( QgsStacCatalog *item = dynamic_cast< QgsStacCatalog * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCatalog;
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
+
   public:
 
     //! Default constructor is used for creating invalid objects

@@ -28,7 +28,7 @@ class QgsStacCollection;
  * \ingroup core
  * \brief Class for storing a list of STAC Collections, which is typically used to store the data returned by STAC API /collections endpoint.
  *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacCollectionList
 {

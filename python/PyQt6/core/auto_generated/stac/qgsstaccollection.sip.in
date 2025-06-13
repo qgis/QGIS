@@ -13,7 +13,7 @@ class QgsStacCollection : QgsStacCatalog
 %Docstring(signature="appended")
 Class for storing a STAC Collection's data.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode

@@ -17,7 +17,7 @@ The :py:class:`QgsStacController` class handles STAC requests.
 
 Contains methods to generate STAC objects from local and remote urls.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode

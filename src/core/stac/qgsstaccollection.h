@@ -27,7 +27,7 @@
  * \ingroup core
  * \brief Class for storing a STAC Collection's data.
  *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
 {

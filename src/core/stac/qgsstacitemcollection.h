@@ -31,7 +31,7 @@ class QgsStacItem;
  * An Item Collection is typically returned by STAP API endpoints and contains a subset
  * of the STAC Items available in a STAC Catalog or Collection.
  *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacItemCollection
 {

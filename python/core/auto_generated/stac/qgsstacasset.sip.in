@@ -14,7 +14,7 @@ class QgsStacAsset
 %Docstring(signature="appended")
 Class for storing a STAC asset's data.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode

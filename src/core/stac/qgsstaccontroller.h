@@ -39,7 +39,7 @@ class QNetworkReply;
  *
  * Contains methods to generate STAC objects from local and remote urls.
 
- * \since QGIS 3.40
+ * \since QGIS 3.44
 */
 class CORE_EXPORT QgsStacController : public QObject
 {

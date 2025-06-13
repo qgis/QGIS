@@ -14,11 +14,32 @@ class QgsStacObject
 %Docstring(signature="appended")
 Abstract base class for storing STAC objects.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode
 #include "qgsstacobject.h"
+#include "qgsstacitem.h"
+#include "qgsstaccollection.h"
+#include "qgsstaccatalog.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsStacItem *item = dynamic_cast< QgsStacItem * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacItem;
+    }
+    else if ( QgsStacCollection *item = dynamic_cast< QgsStacCollection * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCollection;
+    }
+    else if ( QgsStacCatalog *item = dynamic_cast< QgsStacCatalog * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCatalog;
+    }
+    else
+    {
+      sipType = NULL;
+    }
 %End
   public:
 

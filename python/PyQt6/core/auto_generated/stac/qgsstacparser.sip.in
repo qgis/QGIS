@@ -18,6 +18,8 @@ SpatioTemporal Asset Catalog JSON parser.
 
 This class parses json data and creates the appropriate STAC Catalog,
 Collection, Item or ItemCollection.
+
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode
@@ -40,13 +42,10 @@ Sets the base ``url`` that will be used to resolve relative links. If
 not called, relative links will not be resolved to absolute links.
 %End
 
-    QgsStacCatalog *catalog() /Factory/;
+    std::unique_ptr< QgsStacCatalog > catalog();
 %Docstring
 Returns the parsed STAC Catalog If parsing failed, ``None`` is returned
 The caller takes ownership of the returned catalog
-%End
-%MethodCode
-    sipRes = sipCpp->catalog().release();
 %End
 
 

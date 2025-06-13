@@ -19,7 +19,7 @@ An Item Collection is typically returned by STAP API endpoints and
 contains a subset of the STAC Items available in a STAC Catalog or
 Collection.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode

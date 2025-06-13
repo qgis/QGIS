@@ -16,7 +16,7 @@ class QgsStacCollectionList
 Class for storing a list of STAC Collections, which is typically used to
 store the data returned by STAC API /collections endpoint.
 
-.. versionadded:: 3.40
+.. versionadded:: 3.44
 %End
 
 %TypeHeaderCode
