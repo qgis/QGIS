@@ -1897,7 +1897,6 @@ A boolean parameter for processing algorithms.
 Constructor for QgsProcessingParameterBoolean.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -1933,7 +1932,6 @@ A coordinate reference system parameter for processing algorithms.
 Constructor for QgsProcessingParameterCrs.
 %End
 
-    virtual QColor modelColor() const;
     virtual QString getUserFriendlyValue( QVariant paramValue ) const;
 
 %Docstring
@@ -1981,7 +1979,6 @@ A rectangular map extent parameter for processing algorithms.
 Constructor for QgsProcessingParameterExtent.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -2022,8 +2019,6 @@ A point parameter for processing algorithms.
 %Docstring
 Constructor for QgsProcessingParameterPoint.
 %End
-
-    virtual QColor modelColor() const;
 
     static QString typeName();
 %Docstring
@@ -2067,7 +2062,6 @@ Passing a empty list will allow for any type of geometry. The
 ``allowMultiPart`` argument allows specifying a multi part geometry
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -2150,7 +2144,6 @@ one of ``extension`` or ``fileFilter`` should be specified, if both are
 specified then ``fileFilter`` takes precedence.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -2269,7 +2262,6 @@ Constructor for QgsProcessingParameterMatrix.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2364,7 +2356,6 @@ A parameter for processing algorithms which accepts multiple map layers.
 Constructor for QgsProcessingParameterMultipleLayers.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -2468,7 +2459,6 @@ Constructor for QgsProcessingParameterNumber.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2577,7 +2567,6 @@ Constructor for QgsProcessingParameterDistance.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QString getUserFriendlyValue( QVariant paramValue ) const;
 
 
@@ -2842,7 +2831,6 @@ Constructor for QgsProcessingParameterDuration.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QgsProcessingParameterDuration *clone() const /Factory/;
 
 
@@ -2901,7 +2889,6 @@ Constructor for QgsProcessingParameterScale.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QgsProcessingParameterScale *clone() const /Factory/;
 
 
@@ -2941,7 +2928,6 @@ Constructor for QgsProcessingParameterRange.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2995,7 +2981,6 @@ A raster layer parameter for processing algorithms.
 Constructor for QgsProcessingParameterRasterLayer.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3054,7 +3039,6 @@ values.
 Constructor for QgsProcessingParameterEnum.
 %End
 
-    virtual QColor modelColor() const;
     virtual QString getUserFriendlyValue( QVariant paramValue ) const;
 
 %Docstring
@@ -3180,7 +3164,6 @@ accordingly.)
 Constructor for QgsProcessingParameterString.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3284,7 +3267,6 @@ An expression parameter for processing algorithms.
 Constructor for QgsProcessingParameterExpression.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3406,8 +3388,6 @@ Consider using the more versatile
 Constructor for QgsProcessingParameterVectorLayer.
 %End
 
-    virtual QColor modelColor() const;
-
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3461,7 +3441,6 @@ A mesh layer parameter for processing algorithms.
 Constructor for QgsProcessingParameterMeshLayer.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3504,7 +3483,6 @@ A map layer parameter for processing algorithms.
 Constructor for QgsProcessingParameterMapLayer.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3685,7 +3663,6 @@ algorithms.
 Constructor for QgsProcessingParameterFeatureSource.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3862,7 +3839,6 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -3984,7 +3960,6 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -4074,7 +4049,6 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -4148,7 +4122,6 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -4219,7 +4192,6 @@ the algorithm.
 Constructor for QgsProcessingParameterFolderDestination.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -4492,7 +4464,6 @@ varying color opacity.
 Returns the type name for the parameter class.
 %End
 
-    virtual QColor modelColor() const;
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -4749,7 +4720,6 @@ will return a date time value.
 Constructor for QgsProcessingParameterDateTime.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -5129,7 +5099,6 @@ A point cloud layer parameter for processing algorithms.
 Constructor for QgsProcessingParameterPointCloudLayer.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -5174,7 +5143,6 @@ An annotation layer parameter for processing algorithms.
 Constructor for QgsProcessingParameterAnnotationLayer.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -5222,7 +5190,6 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
@@ -5388,7 +5355,6 @@ If ``createByDefault`` is ``False`` and the parameter is ``optional``,
 then this destination output will not be created by default.
 %End
 
-    virtual QColor modelColor() const;
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.

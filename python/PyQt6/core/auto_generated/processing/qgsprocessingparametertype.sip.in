@@ -23,6 +23,8 @@ Makes metadata of processing parameters available.
 %End
   public:
 
+    static QColor defaultModelColor();
+
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 /Factory/;
 %Docstring
 Creates a new parameter of this type.
@@ -175,6 +177,11 @@ for the parameter.
 .. seealso:: :py:func:`acceptedOutputTypes`
 
 .. versionadded:: 3.44
+%End
+
+    virtual QColor modelColor() const;
+%Docstring
+A color to represent the default parameter
 %End
 
 };
