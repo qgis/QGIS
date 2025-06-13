@@ -529,7 +529,7 @@ Returns a GeometryCollection having two elements:
 %End
 
 
-    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Merges any connected lines in a LineString/MultiLineString geometry and
 converts them to single line strings.
@@ -540,6 +540,8 @@ converts them to single line strings.
            lines joined. An empty geometry will be returned if the input
            geometry was not a LineString/MultiLineString geometry.
          - errorMsg: descriptive error string if the operation fails
+           :param parameters: can be used to specify parameters which
+           control the mergeLines results (since QGIS 3.44)
 %End
 
     std::unique_ptr< QgsAbstractGeometry > closestPoint( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;

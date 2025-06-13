@@ -3050,7 +3050,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::reshapeGeometry( const QgsLineStri
   }
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   if ( !mGeos )
   {
@@ -3064,7 +3064,14 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg ) 
   geos::unique_ptr geos;
   try
   {
-    geos.reset( GEOSLineMerge_r( context, mGeos.get() ) );
+    double gridSize = parameters.gridSize();
+    if ( gridSize > 0 )
+    {
+      geos::unique_ptr geosFixedSize( GEOSGeom_setPrecision_r( context, mGeos.get(), gridSize, 0 ) );
+      geos.reset( GEOSLineMerge_r( context, geosFixedSize.get() ) );
+    }
+    else
+      geos.reset( GEOSLineMerge_r( context, mGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );

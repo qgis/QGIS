@@ -2040,8 +2040,11 @@ class CORE_EXPORT QgsGeometry
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * MultiLineString geometry.
+     *
+     * Since QGIS 3.44 the optional \a parameters argument can be used to specify parameters which
+     * control the mergeLines results.
      */
-    QgsGeometry mergeLines() const;
+    QgsGeometry mergeLines( const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
