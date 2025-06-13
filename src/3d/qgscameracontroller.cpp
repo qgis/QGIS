@@ -190,14 +190,14 @@ void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosit
     {
       QgsVector3D viewCenterLonLat = globeViewCenterLonLat();
       QQuaternion q = QgsCameraPose::globeRotation( viewCenterLonLat.y(), viewCenterLonLat.x(), mCameraPose.pitchAngle(), mCameraPose.headingAngle() );
-      newViewCenter = newCamPosition + ( q * QVector3D( -newDistance, 0, 0 ) );
+      newViewCenter = newCamPosition + ( q * QVector3D( static_cast<float>( -newDistance ), 0, 0 ) );
       break;
     }
 
     case Qgis::SceneMode::Local:
     {
       QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( mCameraPose.pitchAngle(), mCameraPose.headingAngle() );
-      QVector3D cameraToCenter = q * QVector3D( 0, 0, -newDistance );
+      QVector3D cameraToCenter = q * QVector3D( 0, 0, static_cast<float>( -newDistance ) );
       newViewCenter = newCamPosition + cameraToCenter;
       break;
     }
