@@ -27,11 +27,12 @@
 class QgsStacController;
 class QgsStacCollection;
 
+///@cond PRIVATE
+#define SIP_NO_FILE
 
 /**
- * \ingroup core
  * \brief Item to display that there are additional STAC items which are not loaded.
- * \since QGIS 3.44
+ * \since QGIS 3.40
 */
 class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 {
@@ -45,9 +46,8 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 };
 
 /**
- * \ingroup core
  * \brief Item for STAC Items within a catalog or collection.
- * \since QGIS 3.44
+ * \since QGIS 3.40
 */
 class CORE_EXPORT QgsStacItemItem : public QgsDataItem
 {
@@ -64,16 +64,8 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     void updateToolTip();
     QgsStacController *stacController();
 
-#ifndef SIP_RUN
     //! takes ownership
     void setStacItem( std::unique_ptr< QgsStacItem > item );
-#else
-    void setStacItem( QgsStacItem *item SIP_TRANSFER );
-    % MethodCode
-    sipCpp-> setStacItem( std::unique_ptr< QgsStacItem >( a0 ) );
-    % End
-#endif
-
 
     //! does not transfer ownership
     QgsStacItem *stacItem() const;
@@ -88,9 +80,8 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
 };
 
 /**
- * \ingroup core
  * \brief Item for catalogs and collections.
- * \since QGIS 3.44
+ * \since QGIS 3.40
 */
 class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 {
@@ -105,14 +96,7 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
     void updateToolTip();
 
     //! takes ownership
-#ifndef SIP_RUN
     void setStacCatalog( std::unique_ptr< QgsStacCatalog > object );
-#else
-    void setStacCatalog( QgsStacCatalog *object SIP_TRANSFER ) SIP_HOLDGIL;
-    % MethodCode
-    sipCpp->setStacCatalog( std::unique_ptr< QgsStacCatalog>( a0 ) );
-    % End
-#endif
 
     //! does not transfer ownership
     QgsStacCatalog *stacCatalog() const;
@@ -145,9 +129,8 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 };
 
 /**
- * \ingroup core
  * \brief Item for STAC connections, is also a catalog itself.
- * \since QGIS 3.44
+ * \since QGIS 3.40
 */
 class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
 {
@@ -165,9 +148,8 @@ class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
 };
 
 /**
- * \ingroup core
  * \brief Root item for STAC connections.
- * \since QGIS 3.44
+ * \since QGIS 3.40
 */
 class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
 {
@@ -184,9 +166,8 @@ class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
 };
 
 /**
- * \ingroup core
  * \brief Provider for STAC root data item.
- * \since QGIS 3.44
+ * \since QGIS 3.40
 */
 class CORE_EXPORT QgsStacDataItemProvider : public QgsDataItemProvider
 {
@@ -197,5 +178,6 @@ class CORE_EXPORT QgsStacDataItemProvider : public QgsDataItemProvider
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
+///@endcond
 
 #endif // QGSSTACDATAITEMS_H

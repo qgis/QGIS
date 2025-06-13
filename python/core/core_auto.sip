@@ -698,7 +698,6 @@
 %Include auto_generated/stac/qgsstaccollectionlist.sip
 %Include auto_generated/stac/qgsstacconnection.sip
 %Include auto_generated/stac/qgsstaccontroller.sip
-%Include auto_generated/stac/qgsstacdataitems.sip
 %Include auto_generated/stac/qgsstacextent.sip
 %Include auto_generated/stac/qgsstacitemcollection.sip
 %Include auto_generated/stac/qgsstacitem.sip
