@@ -57,9 +57,17 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
     def runAsSingle(self):
         self.close()
 
-        from processing.gui.AlgorithmDialog import AlgorithmDialog
+        if self.algorithm().id().startswith("gdal"):
+            from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 
-        dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+            dlg = GdalAlgorithmDialog(
+                self.algorithm().create(), parent=iface.mainWindow()
+            )
+        else:
+            from processing.gui.AlgorithmDialog import AlgorithmDialog
+
+            dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
+
         dlg.show()
         dlg.exec()
 
