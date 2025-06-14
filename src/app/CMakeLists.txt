@@ -226,6 +226,7 @@ set(QGIS_APP_SRCS
   locator/qgslayoutlocatorfilter.cpp
   locator/qgsnominatimlocatorfilter.cpp
   locator/qgssettingslocatorfilter.cpp
+  locator/qgswktlocatorfilter.cpp
 
   locator/qgslocatoroptionswidget.cpp
 
