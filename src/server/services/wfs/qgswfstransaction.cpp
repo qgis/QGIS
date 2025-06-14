@@ -803,7 +803,7 @@ namespace QgsWfs
       QDomNode currentAttributeChild = featureElem.firstChild();
       bool conversionSuccess = true;
 
-      for (;  !currentAttributeChild.isNull(); currentAttributeChild = currentAttributeChild.nextSibling() )
+      for ( ; !currentAttributeChild.isNull(); currentAttributeChild = currentAttributeChild.nextSibling() )
       {
         QDomElement currentAttributeElement = currentAttributeChild.toElement();
         QString attrName = currentAttributeElement.localName();
@@ -914,7 +914,7 @@ namespace QgsWfs
       }
 
       QMap<QString, QStringList>::const_iterator fidsMapIt = fidsMap.constBegin();
-      for ( ;fidsMapIt != fidsMap.constEnd(); ++fidsMapIt )
+      for ( ; fidsMapIt != fidsMap.constEnd(); ++fidsMapIt )
       {
         transactionDelete action;
         action.typeName = fidsMapIt.key();
