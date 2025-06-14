@@ -5,13 +5,13 @@ Content-Type: text/xml; charset=utf-8
 <GetFeatureInfoResponse>
  <Layer title="layer3" name="layer3">
   <Feature id="1">
-   <Attribute value="1" name="id"/>
-   <Attribute value="Id no. 1 value, Id no. 2 value, Id número 3 value" name="location"/>
+   <Attribute value="1" name="id" attrname="id"/>
+   <Attribute value="Id no. 1 value, Id no. 2 value, Id número 3 value" name="location" attrname="location"/>
    <BoundingBox maxy="5606025.2373" maxx="913209.0358" miny="5606025.2373" CRS="EPSG:3857" minx="913209.0358"/>
   </Feature>
   <Feature id="2">
-   <Attribute value="2" name="id"/>
-   <Attribute value="" name="location"/>
+   <Attribute value="2" name="id" attrname="id"/>
+   <Attribute value="" name="location" attrname="location"/>
    <BoundingBox maxy="5606017.8743" maxx="913214.6741" miny="5606017.8743" CRS="EPSG:3857" minx="913214.6741"/>
   </Feature>
  </Layer>

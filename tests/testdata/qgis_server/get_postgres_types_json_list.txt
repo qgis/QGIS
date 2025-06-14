@@ -5,9 +5,9 @@ Content-Type: text/xml; charset=utf-8
 <GetFeatureInfoResponse>
  <Layer title="json" name="json">
   <Feature id="1">
-   <Attribute value="1" name="pk"/>
-   <Attribute value="[&#xa;    1,&#xa;    2,&#xa;    3&#xa;]&#xa;" name="jvalue"/>
-   <Attribute value="[&#xa;    4,&#xa;    5,&#xa;    6&#xa;]&#xa;" name="jbvalue"/>
+   <Attribute value="1" name="pk" attrname="pk"/>
+   <Attribute value="[&#xa;    1,&#xa;    2,&#xa;    3&#xa;]&#xa;" name="jvalue" attrname="jvalue"/>
+   <Attribute value="[&#xa;    4,&#xa;    5,&#xa;    6&#xa;]&#xa;" name="jbvalue" attrname="jbvalue"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>
