@@ -9,19 +9,39 @@
 	<key>CFBundleIdentifier</key>
 	<string>org.qgis.qgis3</string>
 	<key>CFBundleExecutable</key>
-	<string>${QGIS_APP_NAME}</string>
+	<string>@QGIS_APP_NAME@</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA}), © 2002-2019 QGIS Development Team</string>
+	<string>@QGIS_APP_NAME@ @COMPLETE_VERSION@-@RELEASE_NAME@ (@SHA@)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>${COMPLETE_VERSION}</string>
+	<string>@COMPLETE_VERSION@</string>
 	<key>CFBundleVersion</key>
-	<string>${COMPLETE_VERSION} (${SHA})</string>
+	<string>@COMPLETE_VERSION@ (@SHA@)</string>
 	<key>CFBundleIconFile</key>
 	<string>qgis.icns</string>
+        <key>CFBundleIcons</key>
+        <dict>
+            <key>CFBundlePrimaryIcon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>qgis.icns</string>
+                </array>
+            </dict>
+            <key>CFBundleAlternateIcons</key>
+            <dict>
+                <key>DarkModeIcon</key>
+                <dict>
+                    <key>CFBundleIconFiles</key>
+                    <array>
+                        <string>qgis-dark.icns</string>
+                    </array>
+                </dict>
+            </dict>
+        </dict>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CSResourcesFileMapped</key>
@@ -34,7 +54,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
-			<string>qgs.icns</string>
+			<string>qgis.icns</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>qgs</string>
