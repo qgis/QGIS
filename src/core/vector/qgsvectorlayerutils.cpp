@@ -1233,14 +1233,20 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
                                     };
 
   QString bestCandidateName;
-  QString bestCandidateNameWithAntiCandidate;
+  QString bestCandidateContainsName;
+  QString bestCandidateContainsNameWithAntiCandidate;
 
   for ( const QString &candidate : sCandidates )
   {
     for ( const QgsField &field : fields )
     {
       const QString fldName = field.name();
-      if ( fldName.contains( candidate, Qt::CaseInsensitive ) )
+
+      if ( fldName.compare( candidate, Qt::CaseInsensitive ) == 0 )
+      {
+        bestCandidateName = fldName;
+      }
+      else if ( fldName.contains( candidate, Qt::CaseInsensitive ) )
       {
         bool isAntiCandidate = false;
         for ( const QString &antiCandidate : sAntiCandidates )
@@ -1254,15 +1260,17 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
 
         if ( isAntiCandidate )
         {
-          if ( bestCandidateNameWithAntiCandidate.isEmpty() )
+          if ( bestCandidateContainsNameWithAntiCandidate.isEmpty() )
           {
-            bestCandidateNameWithAntiCandidate = fldName;
+            bestCandidateContainsNameWithAntiCandidate = fldName;
           }
         }
         else
         {
-          bestCandidateName = fldName;
-          break;
+          if ( bestCandidateContainsName.isEmpty() )
+          {
+            bestCandidateContainsName = fldName;
+          }
         }
       }
     }
@@ -1271,7 +1279,12 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
       break;
   }
 
-  QString candidateName = bestCandidateName.isEmpty() ? bestCandidateNameWithAntiCandidate : bestCandidateName;
+  QString candidateName = bestCandidateName;
+  if ( candidateName.isEmpty() )
+  {
+    candidateName = bestCandidateContainsName.isEmpty() ? bestCandidateContainsNameWithAntiCandidate : bestCandidateContainsName;
+  }
+
   if ( !candidateName.isEmpty() )
   {
     // Special case for layers got from WFS using the OGR GMLAS field parsing logic.

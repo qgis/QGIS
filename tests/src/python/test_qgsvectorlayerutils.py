@@ -1104,6 +1104,17 @@ class TestQgsVectorLayerUtils(QgisTestCase):
             QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), "areaadminname"
         )
 
+        fields = QgsFields()
+        fields.append(QgsField("amenity", QVariant.String))
+        fields.append(QgsField("housename", QVariant.String))
+        fields.append(QgsField("housenumber", QVariant.String))
+        fields.append(QgsField("name", QVariant.String))
+        fields.append(QgsField("name_de", QVariant.String))
+        fields.append(QgsField("office", QVariant.String))
+        self.assertEqual(
+            QgsVectorLayerUtils.guessFriendlyIdentifierField(fields), "name"
+        )
+
         # if no good matches by name found, the first string field should be used
         fields = QgsFields()
         fields.append(QgsField("id", QVariant.Int))
