@@ -1097,6 +1097,11 @@
    <property name="text">
     <string>Delete Part</string>
    </property>
+   <property name="toolTip">
+    <string>Delete Part
+Deletes a part of a multigeometry.
+Ctrl+click deletes the part and adds it as a new feature.</string>
+   </property>
   </action>
   <action name="mActionMergeFeatures">
    <property name="icon">
