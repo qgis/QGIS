@@ -1159,7 +1159,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     std::unique_ptr<QTranslator> mQtTranslator;
     std::unique_ptr<QTranslator> mQtBaseTranslator;
 
-    QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
+    std::unique_ptr<QgsDataItemProviderRegistry> mDataItemProviderRegistry;
     QgsAuthManager *mAuthManager = nullptr;
 
     struct ApplicationMembers
@@ -1219,7 +1219,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     };
 
     // Applications members which belong to an instance of QgsApplication
-    ApplicationMembers *mApplicationMembers = nullptr;
+    std::unique_ptr<ApplicationMembers> mApplicationMembers;
     // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
     static ApplicationMembers *sApplicationMembers;
 

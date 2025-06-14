@@ -4061,6 +4061,7 @@ FileOperationFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \n.. versionadded:: 3.22"
 Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest \n.. versionadded:: 3.26"
+Qgis.MapLayerProperty.Is3DBasemapLayer.__doc__ = "Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data \n.. versionadded:: 3.44"
 Qgis.MapLayerProperty.__doc__ = """Generic map layer properties.
 
 .. versionadded:: 3.22
@@ -4072,6 +4073,10 @@ Qgis.MapLayerProperty.__doc__ = """Generic map layer properties.
 * ``IsBasemapLayer``: Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest
 
   .. versionadded:: 3.26
+
+* ``Is3DBasemapLayer``: Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data
+
+  .. versionadded:: 3.44
 
 
 """
@@ -4098,6 +4103,7 @@ Qgis.AutoRefreshMode.baseClass = Qgis
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
 Qgis.DataProviderFlag.FastExtent2D.__doc__ = "Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate \n.. versionadded:: 3.38"
 Qgis.DataProviderFlag.FastExtent3D.__doc__ = "Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate \n.. versionadded:: 3.38"
+Qgis.DataProviderFlag.Is3DBasemapSource.__doc__ = "Associated source should be considered a '3D basemap' layer. See Qgis.MapLayerProperty.Is3DBasemapLayer. \n.. versionadded:: 3.44"
 Qgis.DataProviderFlag.__doc__ = """Generic data provider flags.
 
 .. versionadded:: 3.26
@@ -4110,6 +4116,10 @@ Qgis.DataProviderFlag.__doc__ = """Generic data provider flags.
 * ``FastExtent3D``: Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate
 
   .. versionadded:: 3.38
+
+* ``Is3DBasemapSource``: Associated source should be considered a '3D basemap' layer. See Qgis.MapLayerProperty.Is3DBasemapLayer.
+
+  .. versionadded:: 3.44
 
 
 """

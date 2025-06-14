@@ -291,6 +291,10 @@ QWidget *QgsProcessingAlignRasterLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingAlignRasterLayersWidget( nullptr );
   mPanel->setProject( widgetContext().project() );
+  if ( parameterDefinition() )
+  {
+    mPanel->setToolTip( parameterDefinition()->toolTip() );
+  }
   connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [=] {
     emit widgetValueHasChanged( this );
   } );

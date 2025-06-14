@@ -1224,12 +1224,11 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     }
     else
     {
-      // Numeric NULL cat value is stored as an empty string
-      if ( QgsVariantUtils::isNull( value ) && ( value.userType() == QMetaType::Type::Double || value.userType() == QMetaType::Type::Int ||
-           value.userType() == QMetaType::Type::UInt || value.userType() == QMetaType::Type::LongLong ||
-           value.userType() == QMetaType::Type::ULongLong || value.userType() == QMetaType::Type::Bool ) )
+      // NULL cat value may be stored as an empty string or an invalid variant, depending on how
+      // the renderer was constructed and which QGIS version was used
+      if ( QgsVariantUtils::isNull( value ) )
       {
-        match = cat.value().toString().isEmpty();
+        match = cat.value().toString().isEmpty() || QgsVariantUtils::isNull( cat.value() );
       }
       else
       {

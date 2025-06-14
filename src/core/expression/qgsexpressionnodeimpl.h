@@ -217,8 +217,6 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 #ifdef SIP_RUN
     QgsExpressionNodeBinaryOperator( const QgsExpressionNodeBinaryOperator &other );
 #endif
-
-    bool compare( double diff );
     qlonglong computeInt( qlonglong x, qlonglong y );
     double computeDouble( double x, double y );
 
@@ -228,6 +226,11 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
      * \param i interval to add or subtract (depending on mOp)
      */
     QDateTime computeDateTimeFromInterval( const QDateTime &d, QgsInterval *i );
+
+    /**
+     * Compares two values, which are guaranteed to be non-null, using the specified operator.
+     */
+    static QVariant compareNonNullValues( QgsExpression *parent, const QgsExpressionContext *context, const QVariant &vL, const QVariant &vR, BinaryOperator op );
 
     BinaryOperator mOp;
     std::unique_ptr<QgsExpressionNode> mOpLeft;

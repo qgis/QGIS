@@ -2952,7 +2952,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
-      if ( it2->userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( it2.value() ) )
         continue;
 
       if ( mFirstFieldIsFid )

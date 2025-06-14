@@ -139,6 +139,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void updatedFields();
 
+    void updateFilteredItems( const QString &filterText );
+
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
@@ -172,6 +174,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
     QgsAttributesFormLayoutModel *mFormLayoutModel;
+    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
+    QgsAttributesFormProxyModel *mFormLayoutProxyModel;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -209,6 +213,13 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
      */
     explicit QgsAttributesFormBaseView( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
+    /**
+     * Returns the source model index corresponding to the first selected row.
+     *
+     * \note The first selected row is the first one the user selected, and not necessarily the one closer to the header.
+     */
+    QModelIndex firstSelectedIndex() const;
+
     // QgsExpressionContextGenerator interface
     QgsExpressionContext createExpressionContext() const override;
 
@@ -220,8 +231,16 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
      */
     void selectFirstMatchingItem( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId );
 
+    /**
+     * Sets the filter text to the underlying proxy model.
+     *
+     * \param text Filter text to be used to filter source model items.
+     */
+    void setFilterText( const QString &text );
+
   protected:
     QgsVectorLayer *mLayer = nullptr;
+    QgsAttributesFormProxyModel *mModel = nullptr;
 };
 
 
@@ -244,14 +263,11 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsView : public QgsAttributesFormBas
      */
     explicit QgsAttributesAvailableWidgetsView( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    //! Overridden setModel() from base class. Only QgsAttributesAvailableWidgetsModel is an acceptable model.
+    //! Overridden setModel() from base class. Only QgsAttributesFormProxyModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
 
-    //! Access the underlying QgsAttributesAvailableWidgetsModel model
+    //! Access the underlying QgsAttributesAvailableWidgetsModel source model
     QgsAttributesAvailableWidgetsModel *availableWidgetsModel() const;
-
-  private:
-    QgsAttributesAvailableWidgetsModel *mModel = nullptr;
 };
 
 
@@ -274,11 +290,8 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
      */
     explicit QgsAttributesFormLayoutView( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    //! Overridden setModel() from base class. Only QgsAttributesFormLayoutModel is an acceptable model.
+    //! Overridden setModel() from base class. Only QgsAttributesFormProxyModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
-
-    //! Access the underlying QgsAttributesFormLayoutModel model
-    QgsAttributesFormLayoutModel *formLayoutModel() const;
 
   protected:
     // Drag and drop support (to handle internal moves)
@@ -290,9 +303,6 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
     void onItemDoubleClicked( const QModelIndex &index );
     void handleExternalDroppedItem( QModelIndex &index );
     void handleInternalDroppedItem( QModelIndex &index );
-
-  private:
-    QgsAttributesFormLayoutModel *mModel = nullptr;
 };
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H

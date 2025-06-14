@@ -60,12 +60,12 @@ class QgsExpressionPrivate
 
     ~QgsExpressionPrivate()
     {
-      delete mRootNode;
+
     }
 
     QAtomicInt ref;
 
-    QgsExpressionNode *mRootNode = nullptr;
+    std::unique_ptr<QgsExpressionNode> mRootNode;
 
     QString mParserErrorString;
     QString mEvalErrorString;

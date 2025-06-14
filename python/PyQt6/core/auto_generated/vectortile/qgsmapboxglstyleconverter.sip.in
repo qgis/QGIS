@@ -90,39 +90,54 @@ sizes when converting styles.
 .. seealso:: :py:func:`pixelSizeConversionFactor`
 %End
 
-    QImage spriteImage() const;
+    QStringList spriteCategories() const;
 %Docstring
-Returns the sprite image to use during conversion, or an invalid image
-if this is not set.
+Returns the list of sprite categories to use during conversion, or an
+empty list of none is set.
+
+.. seealso:: :py:func:`spriteDefinitions`
+
+.. seealso:: :py:func:`spriteImage`
+
+.. versionadded:: 3.44
+%End
+
+    QImage spriteImage( const QString &category = QString() ) const;
+%Docstring
+Returns the sprite image for a given ``category`` to use during
+conversion, or an invalid image if this is not set.
+
+.. seealso:: :py:func:`spriteCategories`
 
 .. seealso:: :py:func:`spriteDefinitions`
 
 .. seealso:: :py:func:`setSprites`
 %End
 
-    QVariantMap spriteDefinitions() const;
+    QVariantMap spriteDefinitions( const QString &category = QString() ) const;
 %Docstring
-Returns the sprite definitions to use during conversion.
+Returns the sprite definitions for a given ``category`` to use during
+conversion.
 
 .. seealso:: :py:func:`spriteImage`
 
 .. seealso:: :py:func:`setSprites`
 %End
 
-    void setSprites( const QImage &image, const QVariantMap &definitions );
+    void setSprites( const QImage &image, const QVariantMap &definitions, const QString &category = QString() );
 %Docstring
-Sets the sprite ``image`` and ``definitions`` JSON to use during
-conversion.
+Sets the sprite ``image`` and ``definitions`` JSON for a given
+``category`` to use during conversion.
 
 .. seealso:: :py:func:`spriteImage`
 
 .. seealso:: :py:func:`spriteDefinitions`
 %End
 
-    void setSprites( const QImage &image, const QString &definitions );
+    void setSprites( const QImage &image, const QString &definitions, const QString &category = QString() );
 %Docstring
-Sets the sprite ``image`` and ``definitions`` JSON string to use during
-conversion.
+Sets the sprite ``image`` and ``definitions`` JSON string for a given
+``category`` to use during conversion.
 
 .. seealso:: :py:func:`spriteImage`
 

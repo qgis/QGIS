@@ -104,6 +104,7 @@ def create_landing_page_api_collection(
     additionalApiResponse={},
     additionalConformance=[],
     collectionLinks=None,
+    itemCount=None,
 ):
 
     questionmark_extraparam = "?" + extraparam if extraparam else ""
@@ -196,6 +197,8 @@ def create_landing_page_api_collection(
         collection["crs"] = crsList
     if collectionLinks:
         collection["links"] = collectionLinks
+    if itemCount:
+        collection["itemCount"] = itemCount
 
     with open(
         sanitize(
@@ -1220,7 +1223,7 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         additionalConformance = [
             "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
             "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
-            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions",
             "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
             "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
             "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
@@ -2024,6 +2027,50 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(source.featureCount(), 1000)
 
         self.assertEqual(len(app_spy), 0, list(app_spy))
+
+    def testFeatureCountFromLDProxyItemCount(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        endpoint = basetestpath + "/fake_qgis_http_endpoint_feature_count_ldproxy"
+
+        create_landing_page_api_collection(
+            endpoint, itemCount=123456789012345, bbox=None
+        )
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [],
+        }
+
+        # first items
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=1&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        # first items
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        # Create test layer
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", "test", "OAPIF"
+        )
+        assert vl.isValid()
+        source = vl.dataProvider()
+
+        self.assertEqual(source.featureCount(), 123456789012345)
 
     def testFeatureInsertionDeletion(self):
 

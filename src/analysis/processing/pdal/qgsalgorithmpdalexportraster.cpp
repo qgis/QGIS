@@ -52,6 +52,11 @@ QString QgsPdalExportRasterAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports point cloud data to a 2D raster grid having cell size of given resolution, writing values from the specified attribute." );
 }
 
+QString QgsPdalExportRasterAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a point cloud to a 2D raster grid containing values from the specified attribute." );
+}
+
 QgsPdalExportRasterAlgorithm *QgsPdalExportRasterAlgorithm::createInstance() const
 {
   return new QgsPdalExportRasterAlgorithm();
