@@ -506,6 +506,13 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
      */
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
+    static bool isGroup( QgsAttributesFormItem *item );
+
+  signals:
+    void addedChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo );
+    //void removedChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo );
+
+
   private:
     QString mName = QString();
     QString mDisplayName = QString();
@@ -593,13 +600,6 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     void setShowAliases( bool show );
 
-  public slots:
-    /**
-     * Populates the model with initial data read from the layer.
-     */
-    virtual void populate() = 0;
-
-  protected:
     /**
      * Returns the underlying item that corresponds to the given \a index.
      *
@@ -607,6 +607,15 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     QgsAttributesFormItem *itemForIndex( const QModelIndex &index ) const;
 
+    QgsAttributesFormItem *rootItem() const;
+
+  public slots:
+    /**
+     * Populates the model with initial data read from the layer.
+     */
+    virtual void populate() = 0;
+
+  protected:
     /**
      * Auxiliary function to sort indexes, returning true if index \a a is less than index \a b.
      *
@@ -845,6 +854,8 @@ class GUI_EXPORT QgsAttributesFormProxyModel : public QSortFilterProxyModel
      * Returns the text used to filter source model items.
      */
     const QString filterText() const;
+
+    QgsAttributesFormModel *sourceAttributesFormModel() const;
 
   public slots:
     //! Sets the filter text

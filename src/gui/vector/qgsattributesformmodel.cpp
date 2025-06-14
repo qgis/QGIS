@@ -262,7 +262,13 @@ void QgsAttributesFormItem::addChild( std::unique_ptr< QgsAttributesFormItem > &
   if ( !item->mParent )
     item->mParent = this;
 
+  // forward the signal towards the root
+  connect( item.get(), &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormItem::addedChildren );
+
   mChildren.push_back( std::move( item ) );
+
+  emit addedChildren( this, mChildren.size() - 1, mChildren.size() - 1 );
+  //connect( item, &QgsAttributesFormItem::willRemoveChildren, this, &QgsAttributesFormItem::willRemoveChildren );
 }
 
 void QgsAttributesFormItem::insertChild( int position, std::unique_ptr< QgsAttributesFormItem > &&item )
@@ -273,7 +279,12 @@ void QgsAttributesFormItem::insertChild( int position, std::unique_ptr< QgsAttri
   if ( !item->mParent )
     item->mParent = this;
 
+  // forward the signal towards the root
+  connect( item.get(), &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormItem::addedChildren );
+
   mChildren.insert( mChildren.begin() + position, std::move( item ) );
+
+  emit addedChildren( this, position, position );
 }
 
 void QgsAttributesFormItem::deleteChildAtIndex( int index )
@@ -286,6 +297,12 @@ void QgsAttributesFormItem::deleteChildren()
 {
   mChildren.clear();
 }
+
+bool QgsAttributesFormItem::isGroup( QgsAttributesFormItem *item )
+{
+  return item->type() == QgsAttributesFormData::WidgetType || item->type() == QgsAttributesFormData::Container;
+}
+
 
 QVariant QgsAttributesFormItem::data( int role ) const
 {
@@ -367,6 +384,12 @@ QgsAttributesFormItem *QgsAttributesFormModel::itemForIndex( const QModelIndex &
   }
   return mRootItem.get();
 }
+
+QgsAttributesFormItem *QgsAttributesFormModel::rootItem() const
+{
+  return mRootItem.get();
+}
+
 
 int QgsAttributesFormModel::rowCount( const QModelIndex &parent ) const
 {
@@ -1694,6 +1717,11 @@ void QgsAttributesFormProxyModel::setAttributesFormSourceModel( QgsAttributesFor
 {
   mModel = model;
   QSortFilterProxyModel::setSourceModel( mModel );
+}
+
+QgsAttributesFormModel *QgsAttributesFormProxyModel::sourceAttributesFormModel() const
+{
+  return mModel;
 }
 
 const QString QgsAttributesFormProxyModel::filterText() const

@@ -1694,6 +1694,10 @@ endif()
 
 add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
+  vector/qgsattributesformview.h vector/qgsattributesformview.cpp
+  vector/qgsattributesformtreeviewindicator.h vector/qgsattributesformtreeviewindicator.cpp
+  vector/qgsattributesformtreeviewitemdelegate.h vector/qgsattributesformtreeviewitemdelegate.cpp
+  vector/qgsattributesformtreeviewindicatorprovider.h vector/qgsattributesformtreeviewindicatorprovider.cpp
 )
 
 # require c++17
