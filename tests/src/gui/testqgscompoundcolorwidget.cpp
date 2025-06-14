@@ -286,7 +286,7 @@ void TestQgsCompoundColorWidget::testSliderWidgets()
   w.mSaturationSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mSaturationSlider->mRampWidget->width() ) / 2.f, 0.f ) );
   w.mValueSlider->mRampWidget->setColorFromPoint( QPointF( static_cast<float>( w.mValueSlider->mRampWidget->width() ) / 2.f, 0.f ) );
 
-  QCOMPARE( w.mHueSlider->mSpinBox->value(), 179.5 );
+  QCOMPARE( w.mHueSlider->mSpinBox->value(), 180 );
   compareFloat( w.mHueSlider->mRampWidget->color().hueF(), 0.5f );
   QCOMPARE( w.mSaturationSlider->mSpinBox->value(), 50 );
   compareFloat( w.mSaturationSlider->mRampWidget->color().saturationF(), 0.5f );
