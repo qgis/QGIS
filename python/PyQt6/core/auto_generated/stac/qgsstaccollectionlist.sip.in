@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccollectionlist.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStacCollectionList
+{
+%Docstring(signature="appended")
+Class for storing a list of STAC Collections, which is typically used to
+store the data returned by STAC API /collections endpoint.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstaccollectionlist.h"
+%End
+  public:
+
+    QgsStacCollectionList( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched = -1 );
+%Docstring
+Constructs a valid list of collections,
+
+:param collections: The STAC Collections to be stored, ownership is
+                    transferred
+:param links: A list of references to other documents.
+:param numberMatched: The total number of collections in the parent
+                      catalog, collection or total matching results from
+                      a STAC API endpoint
+
+.. note::
+
+   ownership of ``collections`` is transferred. Collections will be deleted when object is destroyed.
+%End
+
+    ~QgsStacCollectionList();
+
+    QVector< QgsStacCollection * > collections() const;
+%Docstring
+Returns the collections Ownership is not transferred
+%End
+
+    QVector< QgsStacCollection * > takeCollections();
+%Docstring
+Returns the collections Caller takes ownership of the returned
+collections
+%End
+
+    int numberReturned() const;
+%Docstring
+Returns the number of returned collections
+%End
+
+    int numberMatched() const;
+%Docstring
+Returns the total number of available collections If this information
+was not available by the STAC server, -1 is returned
+%End
+
+    QUrl url() const;
+%Docstring
+Returns the url of the collections' "self" link
+%End
+
+    QUrl rootUrl() const;
+%Docstring
+Returns the url of the collections' "root" link
+%End
+
+    QUrl nextUrl() const;
+%Docstring
+Returns the url of the collections' "next" link
+%End
+
+    QUrl prevUrl() const;
+%Docstring
+Returns the url of the collections' "prev" link
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccollectionlist.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -17,7 +17,7 @@
 #include "moc_qgsstaccontroller.cpp"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 #include "qgsstacparser.h"
@@ -130,16 +130,16 @@ void QgsStacController::handleStacObjectReply()
   std::unique_ptr< QgsStacObject > object;
   switch ( parser.type() )
   {
-    case QgsStacObject::Type::Catalog:
+    case Qgis::StacObjectType::Catalog:
       object = parser.catalog();
       break;
-    case QgsStacObject::Type::Collection:
+    case Qgis::StacObjectType::Collection:
       object = parser.collection();
       break;
-    case QgsStacObject::Type::Item:
+    case Qgis::StacObjectType::Item:
       object = parser.item();
       break;
-    case QgsStacObject::Type::Unknown:
+    case Qgis::StacObjectType::Unknown:
       object = nullptr;
       error = parser.error().isEmpty() ? QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" ) : parser.error();
       break;
@@ -207,7 +207,7 @@ void QgsStacController::handleCollectionsReply()
   parser.setData( data );
   parser.setBaseUrl( reply->url() );
 
-  QgsStacCollections *cols = parser.collections();
+  QgsStacCollectionList *cols = parser.collections();
   mFetchedCollections.insert( requestId, cols );
   emit finishedCollectionsRequest( requestId, parser.error() );
   reply->deleteLater();
@@ -237,9 +237,9 @@ std::unique_ptr< QgsStacItemCollection > QgsStacController::takeItemCollection( 
   return col;
 }
 
-std::unique_ptr< QgsStacCollections > QgsStacController::takeCollections( int requestId )
+std::unique_ptr< QgsStacCollectionList > QgsStacController::takeCollections( int requestId )
 {
-  std::unique_ptr< QgsStacCollections > cols( mFetchedCollections.take( requestId ) );
+  std::unique_ptr< QgsStacCollectionList > cols( mFetchedCollections.take( requestId ) );
   return cols;
 }
 
@@ -268,7 +268,7 @@ std::unique_ptr< QgsStacItemCollection > QgsStacController::fetchItemCollection(
   return ic;
 }
 
-std::unique_ptr< QgsStacCollections > QgsStacController::fetchCollections( const QUrl &url, QString *error )
+std::unique_ptr< QgsStacCollectionList > QgsStacController::fetchCollections( const QUrl &url, QString *error )
 {
   QgsNetworkReplyContent content = fetchBlocking( url );
 
@@ -284,7 +284,7 @@ std::unique_ptr< QgsStacCollections > QgsStacController::fetchCollections( const
 
   QgsStacParser parser;
   parser.setData( data );
-  std::unique_ptr< QgsStacCollections > col( parser.collections() );
+  std::unique_ptr< QgsStacCollectionList > col( parser.collections() );
 
   if ( error )
     *error = parser.error();
@@ -390,16 +390,16 @@ std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString 
   std::unique_ptr< QgsStacObject > object;
   switch ( parser.type() )
   {
-    case QgsStacObject::Type::Catalog:
+    case Qgis::StacObjectType::Catalog:
       object = parser.catalog();
       break;
-    case QgsStacObject::Type::Collection:
+    case Qgis::StacObjectType::Collection:
       object = parser.collection();
       break;
-    case QgsStacObject::Type::Item:
+    case Qgis::StacObjectType::Item:
       object = parser.item();
       break;
-    case QgsStacObject::Type::Unknown:
+    case Qgis::StacObjectType::Unknown:
       break;
   }
 

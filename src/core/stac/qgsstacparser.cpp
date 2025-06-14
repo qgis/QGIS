@@ -17,7 +17,7 @@
 #include "qgsstacitem.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 #include "qgsstacitemcollection.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
@@ -26,7 +26,7 @@
 void QgsStacParser::setData( const QByteArray &data )
 {
   mError = QString();
-  mType = QgsStacObject::Type::Unknown;
+  mType = Qgis::StacObjectType::Unknown;
   try
   {
     mData = nlohmann::json::parse( data.data() );
@@ -51,15 +51,15 @@ void QgsStacParser::setData( const QByteArray &data )
   {
     if ( mData.at( "type" ) == "Catalog" )
     {
-      mType = QgsStacObject::Type::Catalog;
+      mType = Qgis::StacObjectType::Catalog;
     }
     else if ( mData.at( "type" ) == "Collection" )
     {
-      mType = QgsStacObject::Type::Collection;
+      mType = Qgis::StacObjectType::Collection;
     }
     else if ( mData.at( "type" ) == "Feature" )
     {
-      mType = QgsStacObject::Type::Item;
+      mType = Qgis::StacObjectType::Item;
     }
   }
   catch ( nlohmann::json::exception &ex )
@@ -73,7 +73,7 @@ void QgsStacParser::setBaseUrl( const QUrl &url )
   mBaseUrl = url;
 }
 
-QgsStacObject::Type QgsStacParser::type() const
+Qgis::StacObjectType QgsStacParser::type() const
 {
   return mType;
 }
@@ -514,7 +514,7 @@ std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
   return std::make_unique< QgsStacItemCollection >( rawItems, links, numberMatched );
 }
 
-QgsStacCollections *QgsStacParser::collections()
+QgsStacCollectionList *QgsStacParser::collections()
 {
   std::vector< std::unique_ptr<QgsStacCollection> > cols;
   QVector< QgsStacLink > links;
@@ -548,5 +548,5 @@ QgsStacCollections *QgsStacParser::collections()
       rawCols.append( c.release() );
   }
 
-  return new QgsStacCollections( rawCols, links, numberMatched );
+  return new QgsStacCollectionList( rawCols, links, numberMatched );
 }

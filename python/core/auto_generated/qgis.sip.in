@@ -3376,6 +3376,14 @@ The development version
       ConstantDensity
     };
 
+    enum class StacObjectType
+    {
+      Unknown,
+      Catalog,
+      Collection,
+      Item,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

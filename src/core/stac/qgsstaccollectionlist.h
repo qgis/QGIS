@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsstaccollections.h
+    qgsstaccollectionlist.h
     ---------------------
     begin                : October 2024
     copyright            : (C) 2024 by Stefanos Natsis
@@ -13,10 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSTACCOLLECTIONS_H
-#define QGSSTACCOLLECTIONS_H
-
-#define SIP_NO_FILE
+#ifndef QGSSTACCOLLECTIONLIST_H
+#define QGSSTACCOLLECTIONLIST_H
 
 #include "qgis_core.h"
 #include "qgsstaclink.h"
@@ -28,16 +26,15 @@ class QgsStacCollection;
 
 /**
  * \ingroup core
- * \brief Class for storing a list of STAC Collections.
- * This is typically used to store the data returned by STAC API /collections endpoint
- * \note Not available in python bindings
- * \since QGIS 3.40
+ * \brief Class for storing a list of STAC Collections, which is typically used to store the data returned by STAC API /collections endpoint.
+ *
+ * \since QGIS 3.44
  */
-class CORE_EXPORT QgsStacCollections
+class CORE_EXPORT QgsStacCollectionList
 {
   public:
     //! Default constructor deleted, use the variant with required parameters
-    QgsStacCollections() = delete;
+    QgsStacCollectionList() = delete;
 
     /**
      *  Constructs a valid list of collections,
@@ -46,10 +43,10 @@ class CORE_EXPORT QgsStacCollections
      *  \param numberMatched The total number of collections in the parent catalog, collection or total matching results from a STAC API endpoint
      *  \note ownership of \a collections is transferred. Collections will be deleted when object is destroyed.
      */
-    QgsStacCollections( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched = -1 );
+    QgsStacCollectionList( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched = -1 );
 
     //! Destructor
-    ~QgsStacCollections();
+    ~QgsStacCollectionList();
 
     /**
      * Returns the collections
@@ -98,4 +95,4 @@ class CORE_EXPORT QgsStacCollections
     int mNumberMatched = -1;
 };
 
-#endif // QGSSTACCOLLECTIONS_H
+#endif // QGSSTACCOLLECTIONLIST_H

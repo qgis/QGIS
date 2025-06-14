@@ -16,8 +16,7 @@
 #ifndef QGSSTACITEM_H
 #define QGSSTACITEM_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsrange.h"
 #include "qgsstacobject.h"
@@ -28,11 +27,9 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Item's data
+ * \brief Class for storing a STAC Item's data.
  *
- * \note Not available in python bindings
- *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacItem : public QgsStacObject
 {
@@ -58,7 +55,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
                  const QMap< QString, QgsStacAsset > &assets,
                  const QgsBox3D &bbox );
 
-    QgsStacObject::Type type() const override;
+    Qgis::StacObjectType type() const override;
     QString toHtml() const override;
 
     //! Returns the full footprint of the asset represented by this item, in WGS84

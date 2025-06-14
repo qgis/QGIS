@@ -16,8 +16,7 @@
 #ifndef QGSSTACCONTROLLER_H
 #define QGSSTACCONTROLLER_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include <QObject>
 #include <nlohmann/json.hpp>
 
@@ -29,19 +28,18 @@
 class QgsStacObject;
 class QgsStacCatalog;
 class QgsStacCollection;
-class QgsStacCollections;
+class QgsStacCollectionList;
 class QgsStacItem;
 class QgsStacItemCollection;
 class QNetworkReply;
 
 /**
  * \ingroup core
- * \brief The QgsStacController class handles STAC requests
+ * \brief The QgsStacController class handles STAC requests.
  *
- * Contains methods to generate STAC objects from local and remote urls
- *
- * \note not available in Python bindings
- * \since QGIS 3.40
+ * Contains methods to generate STAC objects from local and remote urls.
+
+ * \since QGIS 3.44
 */
 class CORE_EXPORT QgsStacController : public QObject
 {
@@ -76,7 +74,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned object
      */
-    template<class T> std::unique_ptr< T > fetchStacObject( const QUrl &url, QString *error = nullptr );
+    template<class T> std::unique_ptr< T > fetchStacObject( const QUrl &url, QString *error = nullptr ) SIP_SKIP;
 
     /**
      * Fetches a feature collection from \a url using a blocking network request.
@@ -90,7 +88,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * An optional \a error parameter will be populated with any network error information.
      * The caller takes ownership of the returned feature collection
      */
-    std::unique_ptr< QgsStacCollections > fetchCollections( const QUrl &url, QString *error = nullptr );
+    std::unique_ptr< QgsStacCollectionList > fetchCollections( const QUrl &url, QString *error = nullptr );
 
     /**
      * Initiates an asynchronous request for a STAC object using the \a url
@@ -131,7 +129,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * \see fetchStacObjectAsync
      * \see finishedStacObjectRequest
      */
-    template<class T> std::unique_ptr< T > takeStacObject( int requestId );
+    template<class T> std::unique_ptr< T > takeStacObject( int requestId ) SIP_SKIP;
 
     /**
      * Returns the feature collection fetched with the specified \a requestId
@@ -152,7 +150,7 @@ class CORE_EXPORT QgsStacController : public QObject
      * \see finishedCollectionsRequest
      * \since QGIS 3.42
      */
-    std::unique_ptr< QgsStacCollections > takeCollections( int requestId );
+    std::unique_ptr< QgsStacCollectionList > takeCollections( int requestId );
 
     /**
      * Returns the authentication config id which will be used during the request.
@@ -212,7 +210,7 @@ class CORE_EXPORT QgsStacController : public QObject
     QgsHttpHeaders mHeaders;
     QMap< int, QgsStacObject *> mFetchedStacObjects;
     QMap< int, QgsStacItemCollection *> mFetchedItemCollections;
-    QMap< int, QgsStacCollections *> mFetchedCollections;
+    QMap< int, QgsStacCollectionList *> mFetchedCollections;
     QVector<QNetworkReply *> mReplies;
     QString mError;
 };

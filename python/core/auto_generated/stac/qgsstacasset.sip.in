@@ -1,0 +1,92 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacasset.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsStacAsset
+{
+%Docstring(signature="appended")
+Class for storing a STAC asset's data.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacasset.h"
+%End
+  public:
+    QgsStacAsset( const QString &href,
+                  const QString &title,
+                  const QString &description,
+                  const QString &mediaType,
+                  const QStringList &roles );
+%Docstring
+Constructor
+%End
+
+    QString href() const;
+%Docstring
+Returns the URI to the asset object
+%End
+
+    QString title() const;
+%Docstring
+Returns the displayed title for clients and users.
+%End
+
+    QString description() const;
+%Docstring
+Returns a description of the Asset providing additional details, such as
+how it was processed or created. CommonMark 0.29 syntax MAY be used for
+rich text representation.
+%End
+
+    QString mediaType() const;
+%Docstring
+Returns the media type of the asset
+%End
+
+    QStringList roles() const;
+%Docstring
+Returns the roles assigned to the asset. Roles are used to describe the
+purpose of the asset (eg. thumbnail, data etc).
+%End
+
+    bool isCloudOptimized() const;
+%Docstring
+Returns whether the asset is in a cloud optimized format like COG or
+COPC
+
+.. versionadded:: 3.42
+%End
+
+    QString formatName() const;
+%Docstring
+Returns the format name for cloud optimized formats
+
+.. versionadded:: 3.42
+%End
+
+    QgsMimeDataUtils::Uri uri() const;
+%Docstring
+Returns a uri for the asset if it is a cloud optimized file like COG or
+COPC
+
+.. versionadded:: 3.42
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacasset.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

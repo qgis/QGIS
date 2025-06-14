@@ -21,7 +21,7 @@
 #include "qgsstaccontroller.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 #include "qgsstacconnection.h"
 #include "qgsstacconnectiondialog.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -323,7 +323,7 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
 void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished collections request %1" ).arg( requestId ), 2 );
-  std::unique_ptr<QgsStacCollections> cols( mStac->takeCollections( requestId ) );
+  std::unique_ptr<QgsStacCollectionList> cols( mStac->takeCollections( requestId ) );
 
   if ( !cols )
   {

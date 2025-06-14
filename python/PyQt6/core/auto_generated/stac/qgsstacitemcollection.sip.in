@@ -1,0 +1,105 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacitemcollection.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStacItemCollection
+{
+%Docstring(signature="appended")
+Class for storing a STAC Item Collections.
+
+An Item Collection is typically returned by STAP API endpoints and
+contains a subset of the STAC Items available in a STAC Catalog or
+Collection.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacitemcollection.h"
+%End
+  public:
+
+    QgsStacItemCollection( const QVector< QgsStacItem * > &items, const QVector< QgsStacLink > &links, int numberMatched = -1 );
+%Docstring
+Constructs a valid item collection
+
+:param items: The STAC Items in the item collection, ownership is
+              transferred
+:param links: A list of references to other documents.
+:param numberMatched: The total number of items in the parent catalog,
+                      collection or total matching results from a STAC
+                      API endpoint
+
+.. note::
+
+   ownership of ``items`` is transferred. Items will be deleted when object is destroyed.
+%End
+
+    ~QgsStacItemCollection();
+
+    QVector< QgsStacItem * > items() const;
+%Docstring
+Returns the items in the collection Ownership is not transferred
+%End
+
+    QVector< QgsStacItem * > takeItems();
+%Docstring
+Returns the items in the collection Caller takes ownership of the
+returned items
+%End
+
+    QUrl url() const;
+%Docstring
+Returns the url of the item collection's "self" link
+%End
+
+    QUrl rootUrl() const;
+%Docstring
+Returns the url of the item collection's "root" link
+%End
+
+    QUrl parentUrl() const;
+%Docstring
+Returns the url of the item collection's "parent" link
+%End
+
+    QUrl collectionUrl() const;
+%Docstring
+Returns the url of the item collection's "collection" link
+%End
+
+    QUrl nextUrl() const;
+%Docstring
+Returns the url of the item collection's "next" link
+%End
+
+    int numberReturned() const;
+%Docstring
+Returns the number of items in the collection
+%End
+
+    int numberMatched() const;
+%Docstring
+Returns the total number of items in the parent collection If this
+information was not available by the STAC server, -1 is returned
+%End
+
+  private:
+    QgsStacItemCollection( const QgsStacItemCollection &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacitemcollection.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

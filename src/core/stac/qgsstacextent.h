@@ -16,22 +16,19 @@
 #ifndef QGSSTACEXTENT_H
 #define QGSSTACEXTENT_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsbox3d.h"
 #include "qgsrange.h"
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC SpatioTemporal extent
+ * \brief Class for storing a STAC SpatioTemporal extent.
  *
  *  QgsStacExtent contains one overall spatial extent and one overall temporal extent
  *  It is possible to add further refined sub extents to better describe clustered data.
  *
- *  All spatial extents are in WGS84 longitude/latitude and elevation in meters
- *
- * \note Not available in python bindings
+ *  All spatial extents are in WGS84 longitude/latitude and elevation in meters.
  *
  * \since QGIS 3.40
  */
