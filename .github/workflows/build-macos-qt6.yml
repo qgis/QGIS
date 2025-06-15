@@ -136,7 +136,7 @@ jobs:
           
           otool -l ./build/_CPack_Packages/Darwin/External/*/QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
           echo "Manual fixup"
-          install_name_tool -add_rpath @loader_path/../Frameworks QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
+          install_name_tool -add_rpath @loader_path/../Frameworks ./build/_CPack_Packages/Darwin/External/*/QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
           otool -l ./build/_CPack_Packages/Darwin/External/*/QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
 
       - name: Archive app
