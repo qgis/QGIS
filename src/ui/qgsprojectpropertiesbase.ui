@@ -1021,7 +1021,7 @@
               <item>
                <widget class="QCheckBox" name="mCheckBoxLoadProjectExtent">
                 <property name="text">
-                 <string>Use as extent for each canvas when opening the project</string>
+                 <string>Use as extent for the main canvas when opening the project</string>
                 </property>
                </widget>
               </item>
