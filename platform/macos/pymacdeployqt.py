@@ -345,7 +345,7 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
             and new_path not in lib_info.rpaths
         ):
             commands[binary].append(("-add_rpath", new_path))
-    
+
     # Second pass: update each binary's direct dependencies
     for binary_path, lib_info in all_dependencies.items():
         if binary_path not in commands:
