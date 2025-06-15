@@ -96,6 +96,7 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   {
     int arg = 0;
     const QList< QgsExpressionNode * > argList = args->list();
+    argValues.reserve( argList.size() );
     for ( QgsExpressionNode *n : argList )
     {
       QVariant v;
