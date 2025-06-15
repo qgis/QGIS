@@ -134,7 +134,10 @@ jobs:
           cmake --build build
           cmake --build build --target bundle
           
-          otool -l ./build/_CPack_Packages/Darwin/External/*/*.app/Contents/MacOS/QGIS-*
+          otool -l ./build/_CPack_Packages/Darwin/External/*/QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
+          echo "Manual fixup"
+          install_name_tool -add_rpath @loader_path/../Frameworks QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
+          otool -l ./build/_CPack_Packages/Darwin/External/*/QGIS-PR60039.app/Contents/MacOS/QGIS-PR60039
 
       - name: Archive app
         run: |
