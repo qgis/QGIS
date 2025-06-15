@@ -28,17 +28,18 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
   public:
     explicit QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view );
 
+  public slots:
+    /**
+     * Updates the state of a the indicator for the given \a item.
+     */
+    void updateItemIndicator( QgsAttributesFormItem *item );
+
   protected:
     // Subclasses MAY override:
     // //! Connect signals, default implementation connects layers to dataSourceChanged()
     // virtual void connectSignals( QgsMapLayer *layer );
     // //! Disconnect signals, default implementation disconnects layers from dataSourceChanged()
     // virtual void disconnectSignals( QgsMapLayer *layer );
-
-    /**
-     * Updates the state of a the indicator for the given \a layer.
-     */
-    void updateIndicator( QgsAttributesFormItem *item );
 
   protected slots:
 
@@ -66,8 +67,6 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
 
     //! Indicator factory
     std::unique_ptr<QgsAttributesFormTreeViewIndicator> newIndicator( QgsAttributesFormItem *item );
-    //! Add or remove the indicator to the given node
-    void updateItemIndicator( QgsAttributesFormItem *item );
 
   protected:
     QgsAttributesFormBaseView *mAttributesFormTreeView = nullptr;

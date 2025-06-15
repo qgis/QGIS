@@ -793,7 +793,14 @@ bool QgsAttributesAvailableWidgetsModel::setData( const QModelIndex &index, cons
   bool result = item->setData( role, value );
 
   if ( result )
+  {
     emit dataChanged( index, index, { role } );
+
+    if ( role == QgsAttributesFormModel::ItemFieldConfigRole )
+    {
+      emit fieldConfigDataChanged( item );
+    }
+  }
 
   return result;
 }

@@ -722,6 +722,9 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
      */
     void populateLayerActions( const QList< QgsAction > actions );
 
+  signals:
+    void fieldConfigDataChanged( QgsAttributesFormItem *item );
+
   private:
     /**
      * Refresh action items in the model.

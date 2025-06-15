@@ -60,7 +60,6 @@ void QgsAttributesFormTreeViewIndicatorProvider::updateItemIndicator( QgsAttribu
     {
       if ( mIndicators.contains( indicator ) )
       {
-        // Update just in case ...
         indicator->setToolTip( tooltipText( item ) );
         indicator->setIcon( QgsApplication::getThemeIcon( iconName( item ) ) );
         return;
@@ -74,7 +73,7 @@ void QgsAttributesFormTreeViewIndicatorProvider::updateItemIndicator( QgsAttribu
   {
     const QList<QgsAttributesFormTreeViewIndicator *> itemIndicators = mAttributesFormTreeView->indicators( item );
 
-    // there may be existing indicator we need to get rid of
+    // Get rid of the existing indicator
     for ( QgsAttributesFormTreeViewIndicator *indicator : itemIndicators )
     {
       if ( mIndicators.contains( indicator ) )
@@ -179,7 +178,8 @@ bool QgsFieldDefaultValueIndicatorProvider::acceptsItem( QgsAttributesFormItem *
 {
   if ( item->type() == QgsAttributesFormData::Field )
   {
-    return true;
+    const QgsAttributesFormData::FieldConfig config = item->data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
+    return !config.mDefaultValueExpression.isEmpty();
   }
   return false;
 }
@@ -189,7 +189,14 @@ QString QgsFieldDefaultValueIndicatorProvider::iconName( QgsAttributesFormItem *
   return QStringLiteral( "/mIndicatorNotes.svg" );
 }
 
-QString QgsFieldDefaultValueIndicatorProvider::tooltipText( QgsAttributesFormItem * )
+QString QgsFieldDefaultValueIndicatorProvider::tooltipText( QgsAttributesFormItem *item )
 {
-  return QStringLiteral( "Default value" );
+  const QgsAttributesFormData::FieldConfig config = item->data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
+  QString text;
+  if ( !config.mDefaultValueExpression.isEmpty() )
+  {
+    text += config.mDefaultValueExpression;
+    text += config.mApplyDefaultValueOnUpdate ? tr( "\n(Apply on update)" ) : tr( "\n(Do not apply on update)" );
+  }
+  return text;
 }

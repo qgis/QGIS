@@ -70,8 +70,11 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsProxyModel->setRecursiveFilteringEnabled( true );
   mAvailableWidgetsView->setModel( mAvailableWidgetsProxyModel );
 
-  new QgsFieldConstraintIndicatorProvider( mAvailableWidgetsView );   // gets parented to the available widgets view
-  new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the form layout view
+  QgsFieldConstraintIndicatorProvider *constraintIndicatorProvider = new QgsFieldConstraintIndicatorProvider( mAvailableWidgetsView );       // gets parented to the available widgets view
+  QgsFieldDefaultValueIndicatorProvider *defaultValueIndicatorProvider = new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the form layout view
+
+  connect( mAvailableWidgetsModel, &QgsAttributesAvailableWidgetsModel::fieldConfigDataChanged, constraintIndicatorProvider, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+  connect( mAvailableWidgetsModel, &QgsAttributesAvailableWidgetsModel::fieldConfigDataChanged, defaultValueIndicatorProvider, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mAvailableWidgetsProxyModel, this );
