@@ -487,7 +487,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   else
     mExtentWidget->setOutputExtentFromUser( presetExtent, presetExtent.crs() );
   mExtentGroupBox->setChecked( !presetExtent.isNull() );
-  mCheckBoxLoadProjectExtent->setChecked( QgsProject::instance()->viewSettings()->canvasUseProjectExtent() );
+  mCheckBoxLoadProjectExtent->setChecked( QgsProject::instance()->viewSettings()->mainCanvasOpensAtProjectExtent() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
@@ -1367,7 +1367,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle() );
   }
 
-  QgsProject::instance()->viewSettings()->setCanvasUseProjectExtent( mCheckBoxLoadProjectExtent->isChecked() );
+  QgsProject::instance()->viewSettings()->setMainCanvasOpensAtProjectExtent( mCheckBoxLoadProjectExtent->isChecked() );
 
   bool isDirty = false;
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
