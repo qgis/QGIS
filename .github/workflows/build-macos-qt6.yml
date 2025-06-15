@@ -145,6 +145,8 @@ jobs:
           path: |
             qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}.tar.gz
 
+
+
   schedule_download_comment:
     name: Create dmg
     runs-on: macos-latest
@@ -156,7 +158,6 @@ jobs:
       - name: 🔨 Prepare build env
         run: |
           brew install create-dmg
-
 
       - name: 🎲 Get artifact ids
         id: workflow-artifact-ids
@@ -175,9 +176,15 @@ jobs:
           gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-x64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-x64-osx-dynamic-release.tar.gz -C x64
           mkdir -p arm64
           gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release.tar.gz -C arm64
+          
+          echo "otool -l before lipomerge"
+          otool -l x64/*/*.app/Contents/MacOS/QGIS-PR60039
 
           pip install lipomerge
           lipomerge ./x64 ./arm64 universal
+
+          echo "otool -l after lipomerge"
+          otool -l universal/*/*.app/Contents/MacOS/QGIS-PR60039
 
       - name: Create dmg
         run: |
