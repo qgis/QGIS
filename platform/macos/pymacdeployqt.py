@@ -317,16 +317,6 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
         # Set its own install name
         commands[new_path].append(("-id", new_install_name))
 
-    # Second pass: update each binary's direct dependencies
-    for binary_path, lib_info in all_dependencies.items():
-        if binary_path not in commands:
-            commands[binary_path] = []
-
-        # Update only the direct dependencies of this binary
-        for dep in lib_info.dependencies:
-            if dep in lib_mapping:
-                commands[binary_path].append(("-change", dep, lib_mapping[dep]))
-
     frameworks_dir = os.path.join(app_bundle, "Contents", "Frameworks")
 
     def calculate_relative_frameworks_path(binary_path: str) -> str:
@@ -355,6 +345,16 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
             and new_path not in lib_info.rpaths
         ):
             commands[binary].append(("-add_rpath", new_path))
+    
+    # Second pass: update each binary's direct dependencies
+    for binary_path, lib_info in all_dependencies.items():
+        if binary_path not in commands:
+            commands[binary_path] = []
+
+        # Update only the direct dependencies of this binary
+        for dep in lib_info.dependencies:
+            if dep in lib_mapping:
+                commands[binary_path].append(("-change", dep, lib_mapping[dep]))
 
     # Execute install_name_tool commands
     for path, changes in commands.items():
