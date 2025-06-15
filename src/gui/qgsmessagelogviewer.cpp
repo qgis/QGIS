@@ -174,6 +174,18 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   emptyLabel->hide();
 }
 
+void QgsMessageLogViewer::showTab( const QString &tag )
+{
+  for ( int i = 0; i < tabWidget->count(); i++ )
+  {
+    if ( tabWidget->tabText( i ).remove( QChar( '&' ) ) == tag )
+    {
+      tabWidget->setCurrentIndex( i );
+      return;
+    }
+  }
+}
+
 void QgsMessageLogViewer::closeTab( int index )
 {
   tabWidget->removeTab( index );
