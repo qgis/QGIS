@@ -70,6 +70,7 @@ class GUI_EXPORT QgsAttributesFormData
         bool mEditable = true;
         bool mLabelOnTop = false;
         bool mReuseLastValues = false;
+        bool mApplyDefaultValueOnUpdate = false;
         QgsFieldConstraints mFieldConstraints;
         QPushButton *mButton = nullptr;
         QString mEditorWidgetType;
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsAttributesFormData
         QString mAlias;
         QgsPropertyCollection mDataDefinedProperties;
         QString mComment;
+        QString mDefaultValueExpression;
         Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
         Qgis::FieldDuplicatePolicy mDuplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
         Qgis::FieldDomainMergePolicy mMergePolicy = Qgis::FieldDomainMergePolicy::DefaultValue;

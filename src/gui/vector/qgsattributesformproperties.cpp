@@ -266,9 +266,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
   loadAttributeTypeDialogFromConfiguration( cfg );
 
-  mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( fieldIndex ).expression() );
-  mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( fieldIndex ).applyOnUpdate() );
-
   mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
 
@@ -292,6 +289,8 @@ void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( cons
   mAttributeTypeDialog->setSplitPolicy( config.mSplitPolicy );
   mAttributeTypeDialog->setDuplicatePolicy( config.mDuplicatePolicy );
   mAttributeTypeDialog->setMergePolicy( config.mMergePolicy );
+  mAttributeTypeDialog->setDefaultValueExpression( config.mDefaultValueExpression );
+  mAttributeTypeDialog->setApplyDefaultValueOnUpdate( config.mApplyDefaultValueOnUpdate );
 
   QgsFieldConstraints::Constraints providerConstraints = QgsFieldConstraints::Constraints();
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
@@ -368,9 +367,10 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mDuplicatePolicy = mAttributeTypeDialog->duplicatePolicy();
   cfg.mMergePolicy = mAttributeTypeDialog->mergePolicy();
 
-  const int fieldIndex = mAttributeTypeDialog->fieldIdx();
-  mLayer->setDefaultValueDefinition( fieldIndex, QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
+  cfg.mApplyDefaultValueOnUpdate = mAttributeTypeDialog->applyDefaultValueOnUpdate();
+  cfg.mDefaultValueExpression = mAttributeTypeDialog->defaultValueExpression();
 
+  const int fieldIndex = mAttributeTypeDialog->fieldIdx();
   const QString fieldName = mLayer->fields().at( fieldIndex ).name();
 
   QModelIndex index = mAvailableWidgetsModel->fieldModelIndex( fieldName );
@@ -843,6 +843,8 @@ void QgsAttributesFormProperties::apply()
     mLayer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
     mLayer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
     mLayer->setFieldMergePolicy( idx, cfg.mMergePolicy );
+
+    mLayer->setDefaultValueDefinition( idx, QgsDefaultValue( cfg.mDefaultValueExpression, cfg.mApplyDefaultValueOnUpdate ) );
   }
 
   // // tabs and groups
@@ -1192,8 +1194,8 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
     const QDomElement defaultElement = docElem.firstChildElement( QStringLiteral( "default" ) );
     if ( !defaultElement.isNull() )
     {
-      mAttributeTypeDialog->setDefaultValueExpression( defaultElement.attribute( QStringLiteral( "expression" ) ) );
-      mAttributeTypeDialog->setApplyDefaultValueOnUpdate( defaultElement.attribute( QStringLiteral( "applyOnUpdate" ) ).toInt() );
+      config.mDefaultValueExpression = defaultElement.attribute( QStringLiteral( "expression" ) );
+      config.mApplyDefaultValueOnUpdate = defaultElement.attribute( QStringLiteral( "applyOnUpdate" ) ).toInt();
     }
 
     // Constraints

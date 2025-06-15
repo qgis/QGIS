@@ -48,6 +48,8 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mSplitPolicy = layer->fields().at( idx ).splitPolicy();
   mDuplicatePolicy = layer->fields().at( idx ).duplicatePolicy();
   mMergePolicy = layer->fields().at( idx ).mergePolicy();
+  mDefaultValueExpression = layer->fields().at( idx ).defaultValueDefinition().expression();
+  mApplyDefaultValueOnUpdate = layer->fields().at( idx ).defaultValueDefinition().applyOnUpdate();
 }
 
 QgsAttributesFormData::FieldConfig::operator QVariant()
