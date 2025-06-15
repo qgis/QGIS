@@ -133,6 +133,8 @@ jobs:
           # Ideally, we would specify each target that is required to be installed, but this workaround is sufficient for now
           cmake --build build
           cmake --build build --target bundle
+          
+          otool -l ./build/_CPack_Packages/Darwin/External/*/*.app/Contents/MacOS/QGIS-*
 
       - name: Archive app
         run: |
