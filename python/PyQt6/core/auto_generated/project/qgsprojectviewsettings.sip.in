@@ -97,7 +97,7 @@ should be calculated based on the layers in the project.
 .. versionadded:: 3.18
 %End
 
-    void setCanvasUseProjectExtent( bool state );
+    void setMainCanvasOpensAtProjectExtent( bool state );
 %Docstring
 Sets wheter the project's preset full extent should be loaded when the
 project is loaded.
@@ -105,7 +105,7 @@ project is loaded.
 .. versionadded:: 3.44
 %End
 
-    bool canvasUseProjectExtent();
+    bool mainCanvasOpensAtProjectExtent();
 %Docstring
 Returns wheter the project's preset full extent should be loaded when
 the project is loaded.
