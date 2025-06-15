@@ -74,12 +74,12 @@ void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &
   emit presetFullExtentChanged();
 }
 
-void QgsProjectViewSettings::setCanvasUseProjectExtent( bool state )
+void QgsProjectViewSettings::setMainCanvasOpensAtProjectExtent( bool state )
 {
   mLoadProjectExtent = state;
 }
 
-bool QgsProjectViewSettings::canvasUseProjectExtent( )
+bool QgsProjectViewSettings::mainCanvasOpensAtProjectExtent( )
 {
   return mLoadProjectExtent;
 }

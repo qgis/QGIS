@@ -109,14 +109,14 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      *
      * \since QGIS 3.44
      */
-    void setCanvasUseProjectExtent( bool state );
+    void setMainCanvasOpensAtProjectExtent( bool state );
 
     /**
      * Returns wheter the project's preset full extent should be loaded when the project is loaded.
      *
      * \since QGIS 3.44
      */
-    bool canvasUseProjectExtent();
+    bool mainCanvasOpensAtProjectExtent();
 
     /**
      * Returns the full extent of the project, which represents the maximal limits of the project.
