@@ -1336,6 +1336,16 @@ QgsBox3D QgsGeometry::boundingBox3D() const
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
   mLastError.clear();
+
+  if ( type() == Qgis::GeometryType::Point && d->geometry->partCount() == 1 )
+  {
+    area = 0;
+    angle = 0;
+    width = 0;
+    height = 0;
+    return QgsGeometry::fromRect( d->geometry->boundingBox() );
+  }
+
   QgsInternalGeometryEngine engine( *this );
   const QgsGeometry res = engine.orientedMinimumBoundingBox( area, angle, width, height );
   if ( res.isNull() )
