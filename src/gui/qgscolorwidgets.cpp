@@ -41,7 +41,7 @@
 
 #include <cmath>
 
-#define HUE_MAX 359
+#define HUE_MAX 360
 
 
 // TODO QGIS 4 remove typedef, QColor was qreal (double) and is now float
