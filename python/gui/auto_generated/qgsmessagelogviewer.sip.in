@@ -33,6 +33,13 @@ to the system's :py:func:`QgsApplication.messageLog()` instance.
 Logs a ``message`` to the viewer.
 %End
 
+    void showTab( const QString &tag );
+%Docstring
+Activates the tab whose title matches the given ``tag``, if any.
+
+.. versionadded:: 3.44
+%End
+
   protected:
     virtual void closeEvent( QCloseEvent *e );
 

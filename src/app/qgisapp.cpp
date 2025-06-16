@@ -4837,9 +4837,10 @@ void QgisApp::toggleLogMessageIcon( bool hasLogMessage )
   }
 }
 
-void QgisApp::openMessageLog()
+void QgisApp::openMessageLog( const QString &tabName )
 {
   mLogDock->setUserVisible( true );
+  mLogViewer->showTab( tabName );
 }
 
 void QgisApp::addUserInputWidget( QWidget *widget )
