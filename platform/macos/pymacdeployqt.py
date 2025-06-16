@@ -314,8 +314,8 @@ def deploy_libraries(app_bundle: str, lib_dirs: list[str]) -> None:
         if new_path not in commands:
             commands[new_path] = []
 
-        # Set its own install name
-        commands[new_path].append(("-id", new_install_name))
+            # Set its own install name
+            commands[new_path].append(("-id", new_install_name))
 
     # Second pass: update each binary's direct dependencies
     for binary_path, lib_info in all_dependencies.items():
