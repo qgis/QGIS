@@ -1213,6 +1213,8 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * For singlepart point geometries, the result is equivalent to the bounding box of the geometry.
+     *
      * \see boundingBox()
      */
     QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
@@ -1224,6 +1226,7 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * For singlepart point geometries, the result is equivalent to the bounding box of the geometry.
      */
     QgsGeometry orientedMinimumBoundingBox() const SIP_SKIP;
 
