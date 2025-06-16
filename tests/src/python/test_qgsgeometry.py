@@ -10234,10 +10234,20 @@ class TestQgsGeometry(QgisTestCase):
         bbox, area, angle, width, height = empty.orientedMinimumBoundingBox()
         self.assertFalse(bbox)
 
-        # not a useful geometry
+        # Special case: singlepart point geometry
         point = QgsGeometry.fromWkt("Point(1 2)")
         bbox, area, angle, width, height = point.orientedMinimumBoundingBox()
-        self.assertFalse(bbox)
+        exp = "Polygon ((1 2, 1 2, 1 2, 1 2, 1 2))"
+        result = bbox.asWkt(2)
+
+        self.assertTrue(
+            compareWkt(result, exp),
+            f"Oriented MBBR: mismatch Expected:\n{exp}\nGot:\n{result}\n",
+        )
+        self.assertEqual(area, 0)
+        self.assertEqual(angle, 0)
+        self.assertEqual(width, 0)
+        self.assertEqual(height, 0)
 
         # polygon
         polygon = QgsGeometry.fromWkt(
