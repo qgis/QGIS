@@ -4342,6 +4342,8 @@ class TestQgsExpression : public QObject
 
       geom = QgsGeometry::fromPolygonXY( polygon );
       QTest::newRow( "oriented_bbox" ) << "oriented_bbox( $geometry )" << geom << false << true << geom.orientedMinimumBoundingBox();
+      geom = QgsGeometry::fromPointXY( point1 );
+      QTest::newRow( "oriented_bbox_point" ) << "oriented_bbox( $geometry )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Polygon ((10 20, 10 20, 10 20, 10 20, 10 20))" ) );
       geom = QgsGeometry::fromPolygonXY( polygon );
       QTest::newRow( "minimal_circle" ) << "minimal_circle( $geometry )" << geom << false << true << geom.minimalEnclosingCircle();
 
