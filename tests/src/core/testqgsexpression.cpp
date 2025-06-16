@@ -1605,7 +1605,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "main angle polygon" ) << "round(main_angle( geom_from_wkt('POLYGON((0 0,2 9,9 2,0 0))')))" << false << QVariant( 77 );
       QTest::newRow( "main angle polygon edge case" ) << "round(main_angle( geom_from_wkt('POLYGON((353542.63843526 378974.92373469, 353544.95808017 378975.73690545, 353545.27173175 378974.84218528, 353542.95208684 378974.02901451, 353542.63843526 378974.92373469))')))" << false << QVariant( 71 );
       QTest::newRow( "main angle multi polygon" ) << "round(main_angle( geom_from_wkt('MULTIPOLYGON(((0 0,3 10,1 10,1 6,0 0)))')))" << false << QVariant( 17 );
-      QTest::newRow( "main angle point" ) << "main_angle( geom_from_wkt('POINT (1.5 0.5)') )" << true << QVariant();
+      QTest::newRow( "main angle point" ) << "main_angle( geom_from_wkt('POINT (1.5 0.5)') )" << false << QVariant( 0.0 );
       QTest::newRow( "main angle line" ) << "round(main_angle( geom_from_wkt('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( 45 );
       QTest::newRow( "main angle not geom" ) << "main_angle('g')" << true << QVariant();
       QTest::newRow( "main angle null" ) << "main_angle(NULL)" << false << QVariant();
