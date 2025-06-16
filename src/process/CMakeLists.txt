@@ -15,7 +15,7 @@ endif()
 ########################################################
 # Build
 
-add_executable (qgis_process MACOSX_BUNDLE ${QGIS_PROCESS_SRCS})
+add_executable (qgis_process ${QGIS_PROCESS_SRCS})
 
 # require c++17
 target_compile_features(qgis_process PRIVATE cxx_std_17)
@@ -53,10 +53,6 @@ endif()
 if (WITH_BINDINGS)
   target_link_libraries(qgis_process qgispython)
   add_definitions(-DWITH_BINDINGS)
-endif()
-
-if(HAVE_OPENCL)
-  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 # install
