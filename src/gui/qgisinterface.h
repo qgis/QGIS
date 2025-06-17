@@ -1060,9 +1060,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Opens the message log dock widget, and optionally activates a specific tab by name.
      *
-     * \param tabName Name of the tab to be activated.
-     *
-     * \since QGIS 3.44
+     * \param tabName Name of the tab to be activated (since QGIS 3.44)
      */
     virtual void openMessageLog( const QString &tabName = QString() ) = 0;
 
