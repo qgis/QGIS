@@ -70,11 +70,11 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsProxyModel->setRecursiveFilteringEnabled( true );
   mAvailableWidgetsView->setModel( mAvailableWidgetsProxyModel );
 
-  QgsFieldConstraintIndicatorProvider *constraintIndicatorProvider = new QgsFieldConstraintIndicatorProvider( mAvailableWidgetsView );       // gets parented to the available widgets view
-  QgsFieldDefaultValueIndicatorProvider *defaultValueIndicatorProvider = new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the form layout view
+  QgsFieldConstraintIndicatorProvider *constraintIndicatorProviderAvailableWidgets = new QgsFieldConstraintIndicatorProvider( mAvailableWidgetsView );       // gets parented to the available widgets view
+  QgsFieldDefaultValueIndicatorProvider *defaultValueIndicatorProviderAvailableWidgets = new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the form layout view
 
-  connect( mAvailableWidgetsModel, &QgsAttributesAvailableWidgetsModel::fieldConfigDataChanged, constraintIndicatorProvider, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-  connect( mAvailableWidgetsModel, &QgsAttributesAvailableWidgetsModel::fieldConfigDataChanged, defaultValueIndicatorProvider, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+  connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, constraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+  connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, defaultValueIndicatorProviderAvailableWidgets, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mAvailableWidgetsProxyModel, this );
@@ -91,15 +91,17 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutView->setItemDelegate( new QgsAttributesFormTreeViewItemDelegate( mFormLayoutView ) );
   mFormLayoutView->setStyle( new QgsAttributesFormTreeViewProxyStyle( mFormLayoutView ) );
 
-
   mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject().instance(), this );
   mFormLayoutProxyModel = new QgsAttributesFormProxyModel( this );
   mFormLayoutProxyModel->setAttributesFormSourceModel( mFormLayoutModel );
   mFormLayoutProxyModel->setRecursiveFilteringEnabled( true );
   mFormLayoutView->setModel( mFormLayoutProxyModel );
 
-  new QgsFieldConstraintIndicatorProvider( mFormLayoutView );   // gets parented to the form layout view
-  new QgsFieldDefaultValueIndicatorProvider( mFormLayoutView ); // gets parented to the form layout view
+  QgsFieldConstraintIndicatorProvider *constraintIndicatorProviderFormLayout = new QgsFieldConstraintIndicatorProvider( mFormLayoutView );       // gets parented to the form layout view
+  QgsFieldDefaultValueIndicatorProvider *defaultValueIndicatorProviderFormLayout = new QgsFieldDefaultValueIndicatorProvider( mFormLayoutView ); // gets parented to the form layout view
+
+  connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, constraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+  connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, defaultValueIndicatorProviderFormLayout, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mFormLayoutProxyModel, this );
@@ -382,6 +384,9 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
     mAvailableWidgetsModel->setData( index, QVariant::fromValue<QgsAttributesFormData::FieldConfig>( cfg ), QgsAttributesFormModel::ItemFieldConfigRole );
     mAvailableWidgetsModel->setData( index, mAttributeTypeDialog->alias(), QgsAttributesFormModel::ItemDisplayRole );
   }
+
+  // Save field config to each matching field item in Form Layout model
+  mFormLayoutModel->updateFieldConfigForFieldItems( fieldName, cfg );
 
   // Save alias to each matching field item in Form Layout model
   mFormLayoutModel->updateAliasForFieldItems( fieldName, mAttributeTypeDialog->alias() );

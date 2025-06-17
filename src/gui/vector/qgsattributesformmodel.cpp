@@ -474,6 +474,27 @@ QModelIndex QgsAttributesFormModel::firstRecursiveMatchingModelIndex( const QgsA
   return item ? createIndex( item->row(), 0, item ) : QModelIndex();
 }
 
+bool QgsAttributesFormModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  QgsAttributesFormItem *item = itemForIndex( index );
+  bool result = item->setData( role, value );
+
+  if ( result )
+  {
+    emit dataChanged( index, index, { role } );
+
+    if ( role == QgsAttributesFormModel::ItemFieldConfigRole )
+    {
+      emit fieldConfigDataChanged( item );
+    }
+  }
+
+  return result;
+}
+
 bool QgsAttributesFormModel::showAliases() const
 {
   return mShowAliases;
@@ -784,27 +805,6 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
   }
 }
 
-bool QgsAttributesAvailableWidgetsModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  QgsAttributesFormItem *item = itemForIndex( index );
-  bool result = item->setData( role, value );
-
-  if ( result )
-  {
-    emit dataChanged( index, index, { role } );
-
-    if ( role == QgsAttributesFormModel::ItemFieldConfigRole )
-    {
-      emit fieldConfigDataChanged( item );
-    }
-  }
-
-  return result;
-}
-
 Qt::DropActions QgsAttributesAvailableWidgetsModel::supportedDragActions() const
 {
   return Qt::CopyAction;
@@ -971,6 +971,9 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       if ( fieldIndex != -1 )
       {
         editorItem->setData( ItemDisplayRole, mLayer->fields().field( fieldIndex ).alias() );
+
+        QgsAttributesFormData::FieldConfig config( mLayer, fieldIndex );
+        editorItem->setData( ItemFieldConfigRole, config );
       }
 
       break;
@@ -1291,23 +1294,6 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   }
 }
 
-bool QgsAttributesFormLayoutModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  if ( role == ItemFieldConfigRole ) // This model doesn't store data for that role
-    return false;
-
-  QgsAttributesFormItem *item = itemForIndex( index );
-  bool result = item->setData( role, value );
-
-  if ( result )
-    emit dataChanged( index, index, { role } );
-
-  return result;
-}
-
 bool QgsAttributesFormLayoutModel::removeRows( int row, int count, const QModelIndex &parent )
 {
   if ( row < 0 )
@@ -1514,6 +1500,29 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   return isDropSuccessful;
 }
 
+void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QgsAttributesFormData::FieldConfig &config )
+{
+  for ( int i = 0; i < parent->childCount(); i++ )
+  {
+    QgsAttributesFormItem *child = parent->child( i );
+    if ( child->name() == fieldName && child->type() == QgsAttributesFormData::Field )
+    {
+      child->setData( ItemFieldConfigRole, QVariant::fromValue( config ) );
+      emit fieldConfigDataChanged( child ); // Item's field config has changed, let views know about it
+    }
+
+    if ( child->childCount() > 0 )
+    {
+      updateFieldConfigForFieldItemsRecursive( child, fieldName, config );
+    }
+  }
+}
+
+void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItems( const QString &fieldName, const QgsAttributesFormData::FieldConfig &config )
+{
+  updateFieldConfigForFieldItemsRecursive( mRootItem.get(), fieldName, config );
+}
+
 void QgsAttributesFormLayoutModel::updateAliasForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QString &fieldAlias )
 {
   for ( int i = 0; i < parent->childCount(); i++ )
@@ -1523,7 +1532,7 @@ void QgsAttributesFormLayoutModel::updateAliasForFieldItemsRecursive( QgsAttribu
     {
       child->setData( ItemDisplayRole, fieldAlias );
       const QModelIndex index = createIndex( child->row(), 0, child );
-      emit dataChanged( index, index );
+      emit dataChanged( index, index ); // Item's alias has changed, let views know about it
     }
 
     if ( child->childCount() > 0 )

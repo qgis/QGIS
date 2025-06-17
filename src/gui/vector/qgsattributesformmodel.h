@@ -574,6 +574,8 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+
     /**
      * Returns the first top-level model index that matches the given \a itemType and \a itemId.
      *
@@ -616,6 +618,9 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      * Populates the model with initial data read from the layer.
      */
     virtual void populate() = 0;
+
+  signals:
+    void fieldConfigDataChanged( QgsAttributesFormItem *item );
 
   protected:
     /**
@@ -680,7 +685,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     Qt::DropActions supportedDragActions() const override;
     QStringList mimeTypes() const override;
@@ -722,9 +726,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
      */
     void populateLayerActions( const QList< QgsAction > actions );
 
-  signals:
-    void fieldConfigDataChanged( QgsAttributesFormItem *item );
-
   private:
     /**
      * Refresh action items in the model.
@@ -759,7 +760,6 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Removes the index located at \a row within the given \a parent.
@@ -790,6 +790,8 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      */
     void addContainer( QModelIndex &parent, const QString &name, int columnCount, Qgis::AttributeEditorContainerType type );
 
+    void updateFieldConfigForFieldItems( const QString &fieldName, const QgsAttributesFormData::FieldConfig &config );
+
     /**
      * Updates the aliases of all matching fields in the model.
      *
@@ -817,6 +819,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     void internalItemDropped( QModelIndex &index );
 
   private:
+    void updateFieldConfigForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QgsAttributesFormData::FieldConfig &config );
     void updateAliasForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QString &fieldAlias );
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > recursiveListOfContainers( QgsAttributesFormItem *parent ) const;
     void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormItem *parent, const int position = -1 );
