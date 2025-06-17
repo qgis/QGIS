@@ -7,13 +7,6 @@ QgsAttributesFormTreeViewIndicatorProvider::QgsAttributesFormTreeViewIndicatorPr
   : QObject( view )
   , mAttributesFormTreeView( view )
 {
-  QgsAttributesFormItem *item = mAttributesFormTreeView->sourceModel()->rootItem();
-  if ( item->childCount() > 0 )
-  {
-    onAddedChildren( item, 0, item->childCount() - 1 );
-  }
-
-  connect( item, &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormTreeViewIndicatorProvider::onAddedChildren );
   //connect( item, &QgsAttributesFormItem::willRemoveChildren, this, &QgsAttributesFormTreeViewIndicatorProvider::onWillRemoveChildren );
 }
 
@@ -71,20 +64,62 @@ void QgsAttributesFormTreeViewIndicatorProvider::updateItemIndicator( QgsAttribu
   }
   else
   {
-    const QList<QgsAttributesFormTreeViewIndicator *> itemIndicators = mAttributesFormTreeView->indicators( item );
+    removeItemIndicator( item );
+  }
+}
 
-    // Get rid of the existing indicator
-    for ( QgsAttributesFormTreeViewIndicator *indicator : itemIndicators )
+void QgsAttributesFormTreeViewIndicatorProvider::removeItemIndicator( QgsAttributesFormItem *item )
+{
+  const QList<QgsAttributesFormTreeViewIndicator *> itemIndicators = mAttributesFormTreeView->indicators( item );
+
+  // Get rid of the existing indicator
+  for ( QgsAttributesFormTreeViewIndicator *indicator : itemIndicators )
+  {
+    if ( mIndicators.contains( indicator ) )
     {
-      if ( mIndicators.contains( indicator ) )
-      {
-        mAttributesFormTreeView->removeIndicator( item, indicator );
-        indicator->deleteLater();
-        return;
-      }
+      mIndicators.remove( indicator );
+      mAttributesFormTreeView->removeIndicator( item, indicator );
+      indicator->deleteLater();
+      return;
+    }
+  }
+}
+
+void QgsAttributesFormTreeViewIndicatorProvider::setEnabled( bool enabled )
+{
+  QgsAttributesFormItem *item = mAttributesFormTreeView->sourceModel()->rootItem();
+
+  if ( enabled )
+  {
+    if ( mEnabled )
+    {
+      return; // Already done
     }
 
-    // no indicator was there before, nothing to do
+    // Draw indicators for all existing items
+    if ( item->childCount() > 0 )
+    {
+      onAddedChildren( item, 0, item->childCount() - 1 );
+    }
+
+    // Connect
+    connect( item, &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormTreeViewIndicatorProvider::onAddedChildren );
+    mEnabled = true;
+  }
+  else
+  {
+    if ( !mEnabled )
+    {
+      return; // Already done
+    }
+
+    // Disconnect
+    disconnect( item, &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormTreeViewIndicatorProvider::onAddedChildren );
+
+    // Get rid of all item indicators in the view and in the provider
+    mAttributesFormTreeView->removeAllIndicators();
+    mIndicators.clear();
+    mEnabled = false;
   }
 }
 

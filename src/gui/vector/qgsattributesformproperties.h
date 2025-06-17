@@ -48,6 +48,8 @@ class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
+class QgsFieldConstraintIndicatorProvider;
+class QgsFieldDefaultValueIndicatorProvider;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -172,6 +174,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void copyWidgetConfiguration();
     void pasteWidgetConfiguration();
 
+    void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
+    void setFormLayoutIndicatorProvidersEnabled( bool enabled );
+
+
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
     QgsAttributesFormLayoutModel *mFormLayoutModel;
     QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
@@ -189,6 +195,12 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QMenu *mAvailableWidgetsContextMenu = nullptr;
     QAction *mActionCopyWidgetConfiguration = nullptr;
     QAction *mActionPasteWidgetConfiguration = nullptr;
+
+    QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderAvailableWidgets = nullptr;
+    QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
+
+    QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
+    QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
 
     friend class TestQgsAttributesFormProperties;
 };

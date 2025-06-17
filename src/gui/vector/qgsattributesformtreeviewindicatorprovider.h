@@ -28,6 +28,9 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
   public:
     explicit QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view );
 
+    bool isEnabled() { return mEnabled; }
+    void setEnabled( bool enabled );
+
   public slots:
     /**
      * Updates the state of a the indicator for the given \a item.
@@ -68,9 +71,12 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
     //! Indicator factory
     std::unique_ptr<QgsAttributesFormTreeViewIndicator> newIndicator( QgsAttributesFormItem *item );
 
+    void removeItemIndicator( QgsAttributesFormItem *item );
+
   protected:
     QgsAttributesFormBaseView *mAttributesFormTreeView = nullptr;
     QSet<QgsAttributesFormTreeViewIndicator *> mIndicators;
+    bool mEnabled = false;
 };
 
 

@@ -108,6 +108,18 @@ void QgsAttributesFormBaseView::removeIndicator( QgsAttributesFormItem *item, Qg
   update();
 }
 
+void QgsAttributesFormBaseView::removeAllIndicators()
+{
+  const QList<QgsAttributesFormItem *> keys = mIndicators.keys();
+  for ( QgsAttributesFormItem *key : keys )
+  {
+    qDeleteAll( mIndicators[key] );
+    mIndicators[key].clear();
+  }
+  mIndicators.clear();
+  update();
+}
+
 QgsAttributesFormModel *QgsAttributesFormBaseView::sourceModel() const
 {
   return mModel->sourceAttributesFormModel();

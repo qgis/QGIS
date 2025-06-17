@@ -70,11 +70,8 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsProxyModel->setRecursiveFilteringEnabled( true );
   mAvailableWidgetsView->setModel( mAvailableWidgetsProxyModel );
 
-  QgsFieldConstraintIndicatorProvider *constraintIndicatorProviderAvailableWidgets = new QgsFieldConstraintIndicatorProvider( mAvailableWidgetsView );       // gets parented to the available widgets view
-  QgsFieldDefaultValueIndicatorProvider *defaultValueIndicatorProviderAvailableWidgets = new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the form layout view
-
-  connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, constraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-  connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, defaultValueIndicatorProviderAvailableWidgets, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+  mConstraintIndicatorProviderAvailableWidgets = new QgsFieldConstraintIndicatorProvider( mAvailableWidgetsView );     // gets parented to the available widgets view
+  mDefaultValueIndicatorProviderAvailableWidgets = new QgsFieldDefaultValueIndicatorProvider( mAvailableWidgetsView ); // gets parented to the available widgets view
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mAvailableWidgetsProxyModel, this );
@@ -97,11 +94,8 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutProxyModel->setRecursiveFilteringEnabled( true );
   mFormLayoutView->setModel( mFormLayoutProxyModel );
 
-  QgsFieldConstraintIndicatorProvider *constraintIndicatorProviderFormLayout = new QgsFieldConstraintIndicatorProvider( mFormLayoutView );       // gets parented to the form layout view
-  QgsFieldDefaultValueIndicatorProvider *defaultValueIndicatorProviderFormLayout = new QgsFieldDefaultValueIndicatorProvider( mFormLayoutView ); // gets parented to the form layout view
-
-  connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, constraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-  connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, defaultValueIndicatorProviderFormLayout, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+  mConstraintIndicatorProviderFormLayout = new QgsFieldConstraintIndicatorProvider( mFormLayoutView );     // gets parented to the form layout view
+  mDefaultValueIndicatorProviderFormLayout = new QgsFieldDefaultValueIndicatorProvider( mFormLayoutView ); // gets parented to the form layout view
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mFormLayoutProxyModel, this );
@@ -697,7 +691,7 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
 
 void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int )
 {
-  // Refresh the right panel. Save selection to recover it later.
+  // Refresh the right-hand side panel: first, save selection to recover it later
   const QItemSelection selection = mAvailableWidgetsView->selectionModel()->selection();
   if ( selection.count() > 0 )
   {
@@ -719,6 +713,9 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( false );
       mRemoveLayoutItemButton->setVisible( false );
       mInvertSelectionButton->setVisible( false );
+
+      setAvailableWidgetsIndicatorProvidersEnabled( true );
+      setFormLayoutIndicatorProvidersEnabled( false );
       break;
 
     case Qgis::AttributeFormLayout::DragAndDrop:
@@ -728,6 +725,9 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( true );
       mRemoveLayoutItemButton->setVisible( true );
       mInvertSelectionButton->setVisible( true );
+
+      setAvailableWidgetsIndicatorProvidersEnabled( false );
+      setFormLayoutIndicatorProvidersEnabled( true );
       break;
 
     case Qgis::AttributeFormLayout::UiFile:
@@ -738,10 +738,13 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mAddContainerButton->setVisible( false );
       mRemoveLayoutItemButton->setVisible( false );
       mInvertSelectionButton->setVisible( false );
+
+      setAvailableWidgetsIndicatorProvidersEnabled( true );
+      setFormLayoutIndicatorProvidersEnabled( false );
       break;
   }
 
-  // Get the selection back so that we refresh the right panel
+  // Get the selection back so that we refresh the right-hand side panel
   if ( selection.count() > 0 )
   {
     mAvailableWidgetsView->selectionModel()->select( selection, QItemSelectionModel::Select );
@@ -1294,5 +1297,55 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
         mAttributeWidgetEdit->setLabelStyle( style );
       }
     }
+  }
+}
+
+void QgsAttributesFormProperties::setAvailableWidgetsIndicatorProvidersEnabled( bool enabled )
+{
+  if ( enabled && !mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
+  {
+    connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderAvailableWidgets->setEnabled( enabled );
+  }
+  else if ( !enabled && mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
+  {
+    disconnect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderAvailableWidgets->setEnabled( enabled );
+  }
+
+  if ( enabled && !mDefaultValueIndicatorProviderAvailableWidgets->isEnabled() )
+  {
+    connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderAvailableWidgets, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+    mDefaultValueIndicatorProviderAvailableWidgets->setEnabled( enabled );
+  }
+  else if ( !enabled && mDefaultValueIndicatorProviderAvailableWidgets->isEnabled() )
+  {
+    disconnect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderAvailableWidgets, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+    mDefaultValueIndicatorProviderAvailableWidgets->setEnabled( enabled );
+  }
+}
+
+void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool enabled )
+{
+  if ( enabled && !mConstraintIndicatorProviderFormLayout->isEnabled() )
+  {
+    connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
+  }
+  else if ( !enabled && mConstraintIndicatorProviderFormLayout->isEnabled() )
+  {
+    disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
+  }
+
+  if ( enabled && !mDefaultValueIndicatorProviderFormLayout->isEnabled() )
+  {
+    connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderFormLayout, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+    mDefaultValueIndicatorProviderFormLayout->setEnabled( enabled );
+  }
+  else if ( !enabled && mDefaultValueIndicatorProviderFormLayout->isEnabled() )
+  {
+    disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderFormLayout, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
+    mDefaultValueIndicatorProviderFormLayout->setEnabled( enabled );
   }
 }

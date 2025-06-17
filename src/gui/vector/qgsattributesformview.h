@@ -55,6 +55,8 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
 
     void removeIndicator( QgsAttributesFormItem *item, QgsAttributesFormTreeViewIndicator *indicator );
 
+    void removeAllIndicators();
+
     QgsAttributesFormModel *sourceModel() const;
 
   public slots:
