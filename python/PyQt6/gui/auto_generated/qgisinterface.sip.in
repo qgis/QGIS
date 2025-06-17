@@ -1284,9 +1284,7 @@ Add a toolbar
 Opens the message log dock widget, and optionally activates a specific
 tab by name.
 
-:param tabName: Name of the tab to be activated.
-
-.. versionadded:: 3.44
+:param tabName: Name of the tab to be activated (since QGIS 3.44)
 %End
 
     virtual void addUserInputWidget( QWidget *widget ) = 0;
