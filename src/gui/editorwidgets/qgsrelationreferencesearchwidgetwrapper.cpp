@@ -227,7 +227,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   // if no relation is given from the config, fetch one if there is only one available
   if ( !relation.isValid() && !layer()->referencingRelations( mFieldIdx ).isEmpty() && layer()->referencingRelations( mFieldIdx ).count() == 1 )
     relation = layer()->referencingRelations( mFieldIdx )[0];
-  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool(), config( QStringLiteral( "OrderExpression" ) ).toString(), config( QStringLiteral( "OrderDescending" ), false ).toBool() );
 
   mWidget->showIndeterminateState();
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValuesChanged );

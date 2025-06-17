@@ -44,7 +44,7 @@ A widget which shows related features.
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( const QgsRelation &relation, bool allowNullValue );
+    void setRelation( const QgsRelation &relation, bool allowNullValue, const QString &orderExpression = QString(), bool orderDescending = false );
 
     void setRelationEditable( bool editable );
 

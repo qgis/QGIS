@@ -81,7 +81,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     ~QgsRelationReferenceWidget() override;
 
-    void setRelation( const QgsRelation &relation, bool allowNullValue );
+    void setRelation( const QgsRelation &relation, bool allowNullValue, const QString &orderExpression = QString(), bool orderDescending = false );
 
     void setRelationEditable( bool editable );
 
@@ -364,6 +364,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QString mReferencedLayerName;
     QString mReferencedLayerDataSource;
     QString mReferencedLayerProviderKey;
+    QString mOrderExpression;
+    bool mOrderDescending;
 
     // UI
     QVBoxLayout *mTopLayout = nullptr;

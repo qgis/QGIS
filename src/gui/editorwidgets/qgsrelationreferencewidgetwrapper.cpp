@@ -116,11 +116,11 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   // constraints of the referencing fields
   if ( !config( QStringLiteral( "AllowNULL" ) ).isValid() )
   {
-    mWidget->setRelation( relation, relation.referencingFieldsAllowNull() );
+    mWidget->setRelation( relation, relation.referencingFieldsAllowNull(), config( QStringLiteral( "OrderExpression" ) ).toString(), config( QStringLiteral( "OrderDescending" ), false ).toBool() );
   }
   else
   {
-    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
+    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool(), config( QStringLiteral( "OrderExpression" ) ).toString(), config( QStringLiteral( "OrderDescending" ), false ).toBool() );
   }
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );

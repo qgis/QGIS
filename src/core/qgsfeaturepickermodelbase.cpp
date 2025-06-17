@@ -302,7 +302,14 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+    if ( mOrderDescending )
+    {
+      std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.orderValue.localeAwareCompare( b.orderValue ) > 0; } );
+    }
+    else
+    {
+      std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.orderValue.localeAwareCompare( b.orderValue ) < 0; } );
+    }
 
     if ( mAllowNull && mSourceLayer )
     {
@@ -690,3 +697,36 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraId
   emit extraIdentifierValueChanged();
 }
 
+
+QString QgsFeaturePickerModelBase::orderExpression() const
+{
+  return mOrderExpression.expression();
+}
+
+
+void QgsFeaturePickerModelBase::setOrderExpression( const QString &orderExpression )
+{
+  if ( mOrderExpression.expression() == orderExpression )
+    return;
+
+  mOrderExpression = QgsExpression( orderExpression );
+  reload();
+  emit orderExpressionChanged();
+}
+
+
+bool QgsFeaturePickerModelBase::orderDescending() const
+{
+  return mOrderDescending;
+}
+
+
+void QgsFeaturePickerModelBase::setOrderDescending( const bool orderDescending )
+{
+  if ( mOrderDescending == orderDescending )
+    return;
+
+  mOrderDescending = orderDescending;
+  reload();
+  emit orderDescendingChanged();
+}
