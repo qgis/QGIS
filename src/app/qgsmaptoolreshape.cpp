@@ -162,12 +162,11 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
   QgsAvoidIntersectionsOperation avoidIntersections;
   connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
-  vlayer->beginEditCommand( tr( "Reshape" ) );
+  QHash<QgsFeatureId, QgsGeometry> reshapedGeometries;
+
+  // we first gather the features that are actually going to be reshaped and the reshaped results
   while ( fit.nextFeature( f ) )
   {
-    //query geometry
-    //call geometry->reshape(mCaptureList)
-    //register changed geometry in vector layer
     QgsGeometry geom = f.geometry();
     if ( !geom.isNull() )
     {
@@ -179,34 +178,43 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
       reshapeReturn = geom.reshapeGeometry( reshapeLineString );
       if ( reshapeReturn == Qgis::GeometryOperationResult::Success )
       {
-        //avoid intersections on polygon layers
-        if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
-        {
-          //ignore all current layer features as they should be reshaped too
-          QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures;
-          ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
-
-          const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, f.id(), geom, ignoreFeatures );
-          if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
-          {
-            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
-            vlayer->destroyEditCommand();
-            stopCapturing();
-            return;
-          }
-
-          if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
-          {
-            emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::MessageLevel::Critical );
-            vlayer->destroyEditCommand();
-            return;
-          }
-        }
-
-        vlayer->changeGeometry( f.id(), geom );
-        reshapeDone = true;
+        reshapedGeometries.insert( f.id(), geom );
       }
     }
+  }
+  // ignore features that are going to be reshaped
+  // some intersected features may not be reshaped because of active selection or reshape line geometry
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures { { vlayer, qgis::listToSet( reshapedGeometries.keys() ) } };
+
+  // then we can apply intersection avoidance logic and eventually update the layer
+  vlayer->beginEditCommand( tr( "Reshape" ) );
+  for ( auto it = reshapedGeometries.begin(); it != reshapedGeometries.end(); ++it )
+  {
+    QgsFeatureId fid = it.key();
+    QgsGeometry geom = it.value();
+
+    //avoid intersections on polygon layers
+    if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
+    {
+      const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, fid, geom, ignoreFeatures );
+      if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType )
+      {
+        emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::MessageLevel::Warning );
+        vlayer->destroyEditCommand();
+        stopCapturing();
+        return;
+      }
+
+      if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry
+      {
+        emit messageEmitted( tr( "The feature cannot be reshaped because the resulting geometry is empty" ), Qgis::MessageLevel::Critical );
+        vlayer->destroyEditCommand();
+        return;
+      }
+    }
+
+    vlayer->changeGeometry( fid, geom );
+    reshapeDone = true;
   }
 
   if ( reshapeDone )
