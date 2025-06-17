@@ -54,7 +54,13 @@ class TestQgsOgcUtils : public QObject
     }
 
     void testGeometryFromGML();
+
+    void testGeometryFromGMLWithZ_data();
+    void testGeometryFromGMLWithZ();
+
     void testGeometryToGML();
+
+    void testGeometryZToGML();
 
     void testExpressionFromOgcFilter();
     void testExpressionFromOgcFilter_data();
@@ -108,6 +114,85 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geomBox = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
   QVERIFY( !geomBox.isNull() );
   QVERIFY( geomBox.wkbType() == Qgis::WkbType::Polygon );
+
+  // Test point GML3 Z
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::PointZ );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POINTZ(0 1 2)" ) ) ) );
+
+  // Test polygon GML3 Z
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210 0 0 1200</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)GML" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::PolygonZ );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" ) ) ) );
+
+  // Test linestring GML3 Z
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:LineString srsName="EPSG:4326"><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString>)GML" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::LineStringZ );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" ) ) ) );
+}
+
+void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<Qgis::WkbType>( "type" );
+  QTest::addColumn<QString>( "WKT" );
+
+#if 1
+  QTest::newRow( "PointZ" )
+    << QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>" )
+    << Qgis::WkbType::PointZ
+    << QStringLiteral( "POINTZ( 0 1 2)" );
+
+  QTest::newRow( "LineStringZ" )
+    << QStringLiteral( R"GML(<gml:LineString srsName="EPSG:4326"><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString>)GML" )
+    << Qgis::WkbType::LineStringZ
+    << QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" );
+
+  QTest::newRow( "PolygonZ" )
+    << QStringLiteral( R"GML(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210 0 0 1200</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)GML" )
+    << Qgis::WkbType::PolygonZ
+    << QStringLiteral( "POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" );
+
+  // Test multipoint GML3 Z
+  QTest::newRow( "MultiPointZ" )
+    << QStringLiteral( R"GML(<gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:pos srsDimension="3">0 1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos srsDimension="3">3 4 5</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>)GML" )
+    << Qgis::WkbType::MultiPointZ
+    << QStringLiteral( "MULTIPOINTZ((0 1 2), (3 4 5))" );
+
+  // Test multilinestring GML2 Z
+  QTest::newRow( "MultiLineStringZ GML2" )
+    << QStringLiteral( R"GML(<gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>0,0,1200 0,1,1250 1,1,1230 1,0,1210</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:coordinates>2,2,2200 2,3,2250 3,3,2230 3,2,2210</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>)GML" )
+    << Qgis::WkbType::MultiLineStringZ
+    << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+
+  QTest::newRow( "MultiLineStringZ no curve" )
+    << QStringLiteral( R"GML(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:LineString><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList srsDimension="3">2 2 2200 2 3 2250 3 3 2230 3 2 2210</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>)GML" )
+    << Qgis::WkbType::MultiLineStringZ
+    << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+
+#endif
+
+  // Test multilinestring GML3 Z
+  QTest::newRow( "MultiLineStringZ" )
+    << QStringLiteral( R"GML(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">2 2 2200 2 3 2250 3 3 2230 3 2 2210</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>)GML" )
+    << Qgis::WkbType::MultiLineStringZ
+    << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+}
+
+
+void TestQgsOgcUtils::testGeometryFromGMLWithZ()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( Qgis::WkbType, type );
+  QFETCH( QString, WKT );
+
+  QgsGeometry geom = QgsOgcUtils::geometryFromGML( xmlText );
+  QVERIFY( !geom.isNull() );
+  QCOMPARE( geom.wkbType(), type );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( WKT ) ) );
 }
 
 static QDomElement comparableElement( const QString &xmlText )
@@ -172,6 +257,26 @@ void TestQgsOgcUtils::testGeometryToGML()
   ogcElem = comparableElement( doc.toString( -1 ) );
   QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
   doc.removeChild( elemLine );
+}
+
+void TestQgsOgcUtils::testGeometryZToGML()
+{
+  QDomDocument doc;
+  const QgsGeometry geomPoint( QgsGeometry::fromWkt( QStringLiteral( "POINTZ (111 222 333)" ) ) );
+
+  // Elements to compare
+  QDomElement xmlElem;
+  QDomElement ogcElem;
+
+  // Test GML3
+  QDomElement elemPoint = QgsOgcUtils::geometryToGML( geomPoint, doc, QStringLiteral( "GML3" ) );
+  QVERIFY( !elemPoint.isNull() );
+
+  doc.appendChild( elemPoint );
+
+  xmlElem = comparableElement( QStringLiteral( R"GML(<gml:Point><gml:pos srsDimension="3">111 222 333</gml:pos></gml:Point>)GML" ) );
+  ogcElem = comparableElement( doc.toString( -1 ) );
+  QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()

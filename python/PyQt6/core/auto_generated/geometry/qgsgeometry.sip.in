@@ -18,6 +18,9 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
 
 typedef QgsPointSequence QgsPolyline;
 
+
+typedef QVector<QVector< QgsPoint >> QgsMultiPolyline;
+
 typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 
 typedef QVector<QgsPointXY> QgsMultiPointXY;
