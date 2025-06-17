@@ -2156,6 +2156,7 @@ namespace QgsWms
     QString attributeName = layer->attributeDisplayName( attributeIndex );
     QDomElement attributeElement = doc.createElement( QStringLiteral( "Attribute" ) );
     attributeElement.setAttribute( QStringLiteral( "name" ), attributeName );
+    attributeElement.setAttribute( QStringLiteral( "attrname" ), fields.at( attributeIndex ).name() );
     const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( attributeIndex );
     attributeElement.setAttribute( QStringLiteral( "value" ), QgsExpression::replaceExpressionText( replaceValueMapAndRelation( layer, attributeIndex, featureAttributes[attributeIndex] ), &renderContext.expressionContext() ) );
     featureElem.appendChild( attributeElement );
