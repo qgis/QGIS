@@ -180,6 +180,12 @@ bool QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( const QgsPro
          || useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
+bool QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project )
+{
+  const QString useFormSettings = project.readEntry( QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ), QStringLiteral( "/" ), "" );
+  return useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+}
+
 bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )
 {
   const QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
