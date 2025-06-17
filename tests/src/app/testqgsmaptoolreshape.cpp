@@ -50,6 +50,8 @@ class TestQgsMapToolReshape : public QObject
     void testTopologicalEditing();
     void testTopologicalEditingNoSnap();
     void testAvoidIntersectionAndTopoEdit();
+    void testAvoidIntersectionAndTopoEditSameLayer();
+    void testAvoidIntersectionAndTopoEditSameLayerSelection();
     void reshapeWithBindingLine();
     void testWithTracing();
     void testKeepDirection();
@@ -403,6 +405,97 @@ void TestQgsMapToolReshape::testAvoidIntersectionAndTopoEdit()
   QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 4 0, 4 4, 0 4, 0 0))" ) );
   QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4, 7 0))" ) );
 
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  QgsProject::instance()->setAvoidIntersectionsMode( mode );
+  QgsProject::instance()->setAvoidIntersectionsLayers( vlayers );
+  mCaptureTool->setAutoSnapEnabled( isAutoSnapEnabled );
+}
+
+void TestQgsMapToolReshape::testAvoidIntersectionAndTopoEditSameLayer()
+{
+  QList<QgsMapLayer *> layers = { mLayerTopo, mLayerTopo2 };
+  QgsProject::instance()->addMapLayers( layers );
+  mCanvas->setLayers( layers );
+
+  // backup project settings
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
+  const QList<QgsVectorLayer *> vlayers = QgsProject::instance()->avoidIntersectionsLayers();
+  const bool isAutoSnapEnabled = mCaptureTool->isAutoSnapEnabled();
+
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers );
+  QgsProject::instance()->setAvoidIntersectionsLayers( { mLayerTopo, mLayerTopo2 } );
+  QgsProject::instance()->setTopologicalEditing( true );
+  mCanvas->setCurrentLayer( mLayerTopo );
+  mCaptureTool->setAutoSnapEnabled( false );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  // reshape mLayerTopo feature 1 with two points inside mLayerTopo feature 2, both features should be reshaped
+  utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7, 4, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7.5, 3, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7.5, 1, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7, 0, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 4, 0, Qt::RightButton );
+
+  QCOMPARE( mLayerTopo2->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 5, 4 5, 4 7, 0 7, 0 5))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((4 0, 7 0, 7.5 1, 7.5 3, 7 4, 4 4, 0 4, 0 0, 4 0))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4, 7.5 3, 7.5 1, 7 0))" ) );
+
+  mLayerTopo->undoStack()->undo();
+
+  QCOMPARE( mLayerTopo2->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 5, 4 5, 4 7, 0 7, 0 5))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 4 0, 4 4, 0 4, 0 0))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4, 7 0))" ) );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  QgsProject::instance()->setAvoidIntersectionsMode( mode );
+  QgsProject::instance()->setAvoidIntersectionsLayers( vlayers );
+  mCaptureTool->setAutoSnapEnabled( isAutoSnapEnabled );
+}
+
+void TestQgsMapToolReshape::testAvoidIntersectionAndTopoEditSameLayerSelection()
+{
+  QList<QgsMapLayer *> layers = { mLayerTopo, mLayerTopo2 };
+  QgsProject::instance()->addMapLayers( layers );
+  mCanvas->setLayers( layers );
+
+  // backup project settings
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
+  const QList<QgsVectorLayer *> vlayers = QgsProject::instance()->avoidIntersectionsLayers();
+  const bool isAutoSnapEnabled = mCaptureTool->isAutoSnapEnabled();
+
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers );
+  QgsProject::instance()->setAvoidIntersectionsLayers( { mLayerTopo, mLayerTopo2 } );
+  QgsProject::instance()->setTopologicalEditing( true );
+  mCanvas->setCurrentLayer( mLayerTopo );
+  mCaptureTool->setAutoSnapEnabled( false );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mLayerTopo->selectByIds( { 1 } );
+
+  // reshape mLayerTopo feature 1 with two points inside mLayerTopo feature 2, only the selected feature should be reshaped
+  utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7, 4, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7.5, 3, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7.5, 1, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 7, 0, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers() );
+  utils.mouseClick( 4, 0, Qt::RightButton );
+
+  QCOMPARE( mLayerTopo2->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 5, 4 5, 4 7, 0 7, 0 5))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((4 0, 0 0, 0 4, 4 4, 7 4, 7 0, 4 0))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4, 7 0))" ) );
+
+  mLayerTopo->undoStack()->undo();
+
+  QCOMPARE( mLayerTopo2->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 5, 4 5, 4 7, 0 7, 0 5))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 4 0, 4 4, 0 4, 0 0))" ) );
+  QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon ((7 0, 8 0, 8 4, 7 4, 7 0))" ) );
+
+  mLayerTopo->removeSelection();
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
   QgsProject::instance()->setAvoidIntersectionsLayers( vlayers );
