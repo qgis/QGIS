@@ -13741,12 +13741,11 @@ class TestQgsGeometry(QgisTestCase):
         # mergeLines, gridSize = 1
         geom_params = QgsGeometryParameters()
         geom_params.setGridSize(1)
-        a = QgsGeometry.fromWkt("MULTILINESTRING((0 1.8, 11.4 10.7),((11.2 11.1, 19 60))")
-        mergeLinesExpected = a.mergeLines(geom_params)
-        self.assertEqual(
-            mergeLinesExpected.asWkt(),
-            "LineString (0 2, 11 11, 19 60)"
+        a = QgsGeometry.fromWkt(
+            "MULTILINESTRING((0 1.8, 11.4 10.7),((11.2 11.1, 19 60))"
         )
+        mergeLinesExpected = a.mergeLines(geom_params)
+        self.assertEqual(mergeLinesExpected.asWkt(), "LineString (0 2, 11 11, 19 60)")
 
     def testIntersectsMultiPolygonEmptyRect(self):
         """Test intersection between a polygon and an empty rectangle. Fix for GH #51492."""
