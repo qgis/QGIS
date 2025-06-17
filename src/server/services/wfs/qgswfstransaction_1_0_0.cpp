@@ -780,7 +780,7 @@ namespace QgsWfs
         QDomNode currentAttributeChild = featureElem.firstChild();
         bool conversionSuccess = true;
 
-        for ( ; !currentAttributeChild.isNull(); currentAttributeChild = currentAttributeChild.nextSibling() )
+        while ( !currentAttributeChild.isNull() )
         {
           QDomElement currentAttributeElement = currentAttributeChild.toElement();
           QString attrName = currentAttributeElement.localName();
@@ -792,7 +792,6 @@ namespace QgsWfs
               fieldMapIt = fieldMap.find( attrName );
               if ( fieldMapIt == fieldMap.constEnd() )
               {
-                QgsMessageLog::logMessage( QStringLiteral( "Skipping unknown attribute: name=%1" ).arg( attrName ) );
                 continue;
               }
 
@@ -825,6 +824,7 @@ namespace QgsWfs
               feat.setGeometry( g );
             }
           }
+          currentAttributeChild = currentAttributeChild.nextSibling();
         }
         // update feature list
         featList << feat;
@@ -891,7 +891,7 @@ namespace QgsWfs
         }
 
         QMap<QString, QStringList>::const_iterator fidsMapIt = fidsMap.constBegin();
-        for ( ; fidsMapIt != fidsMap.constEnd(); ++fidsMapIt )
+        while ( fidsMapIt != fidsMap.constEnd() )
         {
           transactionDelete action;
           action.typeName = fidsMapIt.key();

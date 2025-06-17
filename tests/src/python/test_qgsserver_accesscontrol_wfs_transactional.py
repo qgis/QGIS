@@ -13,8 +13,18 @@ __date__ = "28/08/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 from qgis.testing import unittest
+from qgis.core import QgsProject, QgsVectorLayer
+from qgis.server import (
+    QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerFilter,
+    QgsServerRequest,
+)
 
 from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
+from test_qgsserver import QgsServerTestBase
+from osgeo import ogr
 
 WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:Transaction {xml_ns}>
@@ -30,6 +40,22 @@ WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
       <qgs:color>{color}</qgs:color>
     </qgs:db_point>
   </wfs:Insert>
+</wfs:Transaction>"""
+
+WFS_TRANSACTION_Z_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction {xml_ns}>
+    <wfs:Insert idgen="GenerateNew">
+        <qgs:{layer_name}>
+            <qgs:geom>
+                <gml:Point srsDimension="3" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                    <gml:coordinates decimal="." cs="," ts=" ">{x},{y},{z}</gml:coordinates>
+                </gml:Point>
+            </qgs:geom>
+            <qgs:gid>{gid}</qgs:gid>
+            <qgs:name>{name}</qgs:name>
+            <qgs:color>{color}</qgs:color>
+        </qgs:{layer_name}>
+    </wfs:Insert>
 </wfs:Transaction>"""
 
 WFS_TRANSACTION_UPDATE = """<?xml version="1.0" encoding="UTF-8"?>
@@ -250,6 +276,68 @@ class TestQgsServerAccessControlWFSTransactional(TestQgsServerAccessControl):
             str(response).find("<SUCCESS/>") != -1,
             f"WFS/Transactions Delete don't succeed\n{response}",
         )
+
+
+class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
+    """Test transactions with Z coordinate support."""
+
+    project = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # Create a GPKG project with point, linestring and polygon layers
+        # that supports Z coordinates, using GDAL
+        drv = ogr.GetDriverByName("GPKG")
+        ds = drv.CreateDataSource(cls.temporary_path + "/test_z.gpkg")
+        ds.CreateLayer(
+            "test_point", geom_type=ogr.wkbPoint25D, options=["GEOMETRY_NAME=geom"]
+        )
+        layer = ds.GetLayerByName("test_point")
+        layer.CreateField(ogr.FieldDefn("name", ogr.OFTString))
+        layer.CreateField(ogr.FieldDefn("color", ogr.OFTString))
+        layer.CreateField(ogr.FieldDefn("gid", ogr.OFTInteger))
+
+        del layer
+        del ds
+
+        cls.project = QgsProject()
+        assert cls.project.addMapLayer(
+            QgsVectorLayer(
+                cls.temporary_path + "/test_z.gpkg|layername=test_point",
+                "test_point",
+                "ogr",
+            )
+        )
+        # Enable WFS-T support for the layer project
+        layer_ids = [layer.id() for layer in cls.project.mapLayers().values()]
+
+        cls.project.writeEntry("WFSLayers", "/", layer_ids)
+        for method in ["Insert", "Update", "Delete"]:
+            cls.project.writeEntry("WFSTLayers", method, layer_ids)
+
+    def testInsert(self):
+
+        xml = WFS_TRANSACTION_Z_INSERT.format(
+            layer_name="test_point",
+            x=1,
+            y=2,
+            z=3,
+            name="test",
+            color="black",
+            gid=1,
+            xml_ns=XML_NS,
+        )
+
+        request = QgsBufferServerRequest(
+            f"http://server.qgis.org/?SERVICE=WFS&REQUEST=Transaction",
+            QgsBufferServerRequest.PostMethod,
+            {"Content-Type": "application/xml"},
+            xml.encode("utf-8"),
+        )
+
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, self.project)
 
 
 if __name__ == "__main__":
