@@ -55,6 +55,7 @@ class TestQgsMapToolReshape : public QObject
     void reshapeWithBindingLine();
     void testWithTracing();
     void testKeepDirection();
+    void testWithSnapToSegment();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -648,11 +649,42 @@ void TestQgsMapToolReshape::testKeepDirection()
   QString wkt3 = QStringLiteral( "LineString (13 1, 12 1, 12 3, 13 3, 14 3, 14 5, 13 5, 12 5, 12 7, 13 7, 13 8, 19 11, 25 8, 25 0, 13 0, 13 1)" );
   QCOMPARE( mLayerLine->getFeature( 3 ).geometry().asWkt(), wkt3 );
 
+  // undo the three changes
+  mLayerLine->undoStack()->undo();
+  mLayerLine->undoStack()->undo();
+  mLayerLine->undoStack()->undo();
+
   // activate back snapping
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 }
 
+void TestQgsMapToolReshape::testWithSnapToSegment()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+  mCanvas->setLayers( { mLayerPolygonZ } );
+  mCanvas->setCurrentLayer( mLayerPolygonZ );
+  mCanvas->setDestinationCrs( mLayerPolygonZ->crs() );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Segment ) );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon Z ((7 5 4, 3 2 1, 0 1 2, 7 5 4))" ) );
+
+  // snap to segment on a diagonal
+  utils.mouseClick( 5.5, 4.5, Qt::LeftButton, {}, true );
+  utils.mouseClick( 1, 5, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::LeftButton, {}, true );
+  utils.mouseClick( 1, 2, Qt::RightButton );
+
+  QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt( 1 ), QStringLiteral( "Polygon Z ((1.2 1.7 333, 1 5 333, 5.7 4.2 333, 7 5 4, 3 2 1, 0 1 2, 1.2 1.7 333))" ) );
+
+  mLayerLine->undoStack()->undo();
+
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
 
 QGSTEST_MAIN( TestQgsMapToolReshape )
 #include "testqgsmaptoolreshape.moc"
