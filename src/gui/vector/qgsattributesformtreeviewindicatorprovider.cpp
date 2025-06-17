@@ -1,13 +1,28 @@
+/***************************************************************************
+    qgsattributesformtreeviewindicatorprovider.cpp
+    ---------------------
+    begin                : June 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsapplication.h"
 #include "qgsattributesformtreeviewindicatorprovider.h"
 #include "qgsfieldconstraints.h"
+#include "moc_qgsattributesformtreeviewindicatorprovider.cpp"
 
 
 QgsAttributesFormTreeViewIndicatorProvider::QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view )
   : QObject( view )
   , mAttributesFormTreeView( view )
 {
-  //connect( item, &QgsAttributesFormItem::willRemoveChildren, this, &QgsAttributesFormTreeViewIndicatorProvider::onWillRemoveChildren );
 }
 
 void QgsAttributesFormTreeViewIndicatorProvider::onAddedChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo )
@@ -24,9 +39,8 @@ void QgsAttributesFormTreeViewIndicatorProvider::onAddedChildren( QgsAttributesF
         onAddedChildren( childItem, 0, childItem->childCount() - 1 );
       }
     }
-    else // if ( QgsLayerTree::isLayer( childNode ) )
+    else
     {
-      //connectSignals( layerNode->layer() );
       updateItemIndicator( childItem );
     }
   }
@@ -37,8 +51,8 @@ std::unique_ptr<QgsAttributesFormTreeViewIndicator> QgsAttributesFormTreeViewInd
   auto indicator = std::make_unique<QgsAttributesFormTreeViewIndicator>( this );
   indicator->setIcon( QgsApplication::getThemeIcon( iconName( item ) ) );
   indicator->setToolTip( tooltipText( item ) );
-  //connect( indicator.get(), &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewIndicatorProvider::onIndicatorClicked );
   mIndicators.insert( indicator.get() );
+
   return indicator;
 }
 
@@ -83,6 +97,11 @@ void QgsAttributesFormTreeViewIndicatorProvider::removeItemIndicator( QgsAttribu
       return;
     }
   }
+}
+
+bool QgsAttributesFormTreeViewIndicatorProvider::isEnabled()
+{
+  return mEnabled;
 }
 
 void QgsAttributesFormTreeViewIndicatorProvider::setEnabled( bool enabled )

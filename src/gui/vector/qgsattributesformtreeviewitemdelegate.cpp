@@ -1,5 +1,21 @@
+/***************************************************************************
+    qgsattributesformtreeviewitemdelegate.cpp
+    ---------------------
+    begin                : June 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsattributesformtreeviewitemdelegate.h"
 #include "qgsattributesformview.h"
+#include "moc_qgsattributesformtreeviewitemdelegate.cpp"
 
 #include <QHelpEvent>
 #include <QToolTip>
@@ -11,18 +27,14 @@ QgsAttributesFormTreeViewProxyStyle::QgsAttributesFormTreeViewProxyStyle( QgsAtt
 {
 }
 
-
 QRect QgsAttributesFormTreeViewProxyStyle::subElementRect( QStyle::SubElement element, const QStyleOption *option, const QWidget *widget ) const
 {
   if ( element == SE_AttributesFormTreeItemIndicator )
   {
     if ( const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>( option ) )
     {
-      //if ( QgsLayerTreeNode *node = mLayerTreeView->index2node( vopt->index ) )
-      //if ( mAttributesFormView->indicators( vopt->index ).count() )
       if ( vopt->index.isValid() )
       {
-        //const int count = mAttributesFormTreeView->indicators( node ).count();
         const int count = mAttributesFormTreeView->indicators( vopt->index ).count();
         if ( count )
         {

@@ -1,5 +1,23 @@
+/***************************************************************************
+    qgsattributesformtreeviewindicatorprovider.h
+    ---------------------
+    begin                : June 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSATTRIBUTESFORMTREEVIEWINDICATORPROVIDER_H
 #define QGSATTRIBUTESFORMTREEVIEWINDICATORPROVIDER_H
+
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
 
 #include "qgsattributesformview.h"
 #include "qgsattributesformtreeviewindicator.h"
@@ -7,70 +25,65 @@
 #include <QObject>
 
 /**
- * The QgsAttributesFormTreeViewIndicatorProvider class provides an interface for
- * layer tree indicator providers.
+ * Provides an interface for attributes form tree indicator providers.
  *
  * Subclasses must override:
  *
+ * - acceptsItem()
  * - iconName()
  * - tooltipText()
- * - acceptLayer() filter function to determine whether the indicator must be added for the layer
  *
- * Subclasses may override:
- *
- * - onIndicatorClicked() default implementation does nothing
- * - connectSignals() default implementation connects layers to dataSourceChanged()
- * - disconnectSignals() default implementation disconnects layers from dataSourceChanged()
+ * \ingroup gui
+ * \since QGIS 4.0
  */
 class QgsAttributesFormTreeViewIndicatorProvider : public QObject
 {
     Q_OBJECT
   public:
+    /**
+     * Constructor for QgsAttributesFormTreeViewIndicatorProvider.
+     *
+     * The provider gets parented to the \a view.
+     */
     explicit QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view );
 
-    bool isEnabled() { return mEnabled; }
+    //! Returns whether the provider is enabled or not.
+    bool isEnabled();
+
+    /**
+     * Enables or disables the provider.
+     *
+     * \param enabled   Boolead value which specifies whether to enable (TRUE) or disable (FALSE) the provider.
+     */
     void setEnabled( bool enabled );
 
   public slots:
     /**
      * Updates the state of a the indicator for the given \a item.
+     *
+     * If the indicator does not exist, it will be created.
+     * If the indicator exists, but is no longer accepted, it will be removed.
      */
     void updateItemIndicator( QgsAttributesFormItem *item );
 
-  protected:
-    // Subclasses MAY override:
-    // //! Connect signals, default implementation connects layers to dataSourceChanged()
-    // virtual void connectSignals( QgsMapLayer *layer );
-    // //! Disconnect signals, default implementation disconnects layers from dataSourceChanged()
-    // virtual void disconnectSignals( QgsMapLayer *layer );
-
   protected slots:
-
-    // //! Action on indicator clicked, default implementation does nothing
-    // virtual void onIndicatorClicked( const QModelIndex &index ) { Q_UNUSED( index ) }
-    // End MAY overrides
-
-    //! Connects to signals of layers newly added to the tree
+    //! Connects to signals of new items added to the tree
     void onAddedChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo );
-    //! Disconnects from layers about to be removed from the tree
-    //void onWillRemoveChildren( QgsAttributesFormItem *item, int indexFrom, int indexTo );
-    //void onLayerLoaded();
-    ////! Adds/removes indicator of a layer
-    //void onLayerChanged();
 
   private:
     // Subclasses MUST override:
-    //! Layer filter: layers that pass the test will get the indicator
+    //! Item filter: items that pass the test will get the indicator.
     virtual bool acceptsItem( QgsAttributesFormItem *item ) = 0;
-    //! Returns the icon name for the given \a layer, icon name is passed to QgsApplication::getThemeIcon()
+    //! Returns the icon name for the given \a item, icon name is passed to QgsApplication::getThemeIcon().
     virtual QString iconName( QgsAttributesFormItem *item ) = 0;
-    //! Returns the tooltip text for the given \a layer
+    //! Returns the tooltip text for the given \a item.
     virtual QString tooltipText( QgsAttributesFormItem *item ) = 0;
     // End MUST overrides
 
     //! Indicator factory
     std::unique_ptr<QgsAttributesFormTreeViewIndicator> newIndicator( QgsAttributesFormItem *item );
 
+    //! Removes the indicator from the given \a item.
     void removeItemIndicator( QgsAttributesFormItem *item );
 
   protected:
@@ -80,11 +93,20 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
 };
 
 
+/**
+ * Provides field constraint indicators for attribute form views.
+ *
+ * \ingroup gui
+ * \since QGIS 4.0
+ */
 class QgsFieldConstraintIndicatorProvider : public QgsAttributesFormTreeViewIndicatorProvider
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsFieldConstraintIndicatorProvider.
+     */
     explicit QgsFieldConstraintIndicatorProvider( QgsAttributesFormBaseView *view );
 
   private:
@@ -94,11 +116,20 @@ class QgsFieldConstraintIndicatorProvider : public QgsAttributesFormTreeViewIndi
 };
 
 
+/**
+ * Provides default value indicators for attribute form views.
+ *
+ * \ingroup gui
+ * \since QGIS 4.0
+ */
 class QgsFieldDefaultValueIndicatorProvider : public QgsAttributesFormTreeViewIndicatorProvider
 {
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsFieldDefaultValueIndicatorProvider.
+     */
     explicit QgsFieldDefaultValueIndicatorProvider( QgsAttributesFormBaseView *view );
 
   private:

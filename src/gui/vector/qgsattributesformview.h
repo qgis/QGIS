@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsattributesformview.h
+    ---------------------
+    begin                : June 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSATTRIBUTESFORMVIEW_H
 #define QGSATTRIBUTESFORMVIEW_H
 
@@ -42,21 +57,45 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
     QgsExpressionContext createExpressionContext() const override;
 
     /**
-     * Returns list of indicators associated with a particular index.
+     * Returns the list of indicators associated with a given \a index.
+     *
+     * \since QGIS 4.0
      */
     const QList<QgsAttributesFormTreeViewIndicator *> indicators( const QModelIndex &index ) const;
 
     /**
-     * Returns list of indicators associated with a particular item.
+     * Returns the list of indicators associated with a given \a item.
+     *
+     * \since QGIS 4.0
      */
     const QList<QgsAttributesFormTreeViewIndicator *> indicators( QgsAttributesFormItem *item ) const;
 
+    /**
+     * Adds the \a indicator to the given \a item.
+     *
+     * \since QGIS 4.0
+     */
     void addIndicator( QgsAttributesFormItem *item, QgsAttributesFormTreeViewIndicator *indicator );
 
+    /**
+     * Removes the \a indicator from the given \a item.
+     *
+     * \since QGIS 4.0
+     */
     void removeIndicator( QgsAttributesFormItem *item, QgsAttributesFormTreeViewIndicator *indicator );
 
+    /**
+     * Removes all indicators in the current view.
+     *
+     * \since QGIS 4.0
+     */
     void removeAllIndicators();
 
+    /**
+     * Returns the underlying QgsAttributesFormModel model where the view gets data from.
+     *
+     * \since QGIS 4.0
+     */
     QgsAttributesFormModel *sourceModel() const;
 
   public slots:

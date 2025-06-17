@@ -1302,6 +1302,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
 void QgsAttributesFormProperties::setAvailableWidgetsIndicatorProvidersEnabled( bool enabled )
 {
+  // Only enable if the provider is disabled and only disable if it's enabled
   if ( enabled && !mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
   {
     connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
@@ -1327,6 +1328,7 @@ void QgsAttributesFormProperties::setAvailableWidgetsIndicatorProvidersEnabled( 
 
 void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool enabled )
 {
+  // Only enable if the provider is disabled and only disable if it's enabled
   if ( enabled && !mConstraintIndicatorProviderFormLayout->isEnabled() )
   {
     connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );

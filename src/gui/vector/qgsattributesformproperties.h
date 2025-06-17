@@ -177,7 +177,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
     void setFormLayoutIndicatorProvidersEnabled( bool enabled );
 
-
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
     QgsAttributesFormLayoutModel *mFormLayoutModel;
     QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
@@ -196,9 +195,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QAction *mActionCopyWidgetConfiguration = nullptr;
     QAction *mActionPasteWidgetConfiguration = nullptr;
 
+    //! Indicator providers for both views
     QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderAvailableWidgets = nullptr;
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
-
     QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
 

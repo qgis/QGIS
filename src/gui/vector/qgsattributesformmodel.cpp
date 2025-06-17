@@ -270,7 +270,6 @@ void QgsAttributesFormItem::addChild( std::unique_ptr< QgsAttributesFormItem > &
   mChildren.push_back( std::move( item ) );
 
   emit addedChildren( this, mChildren.size() - 1, mChildren.size() - 1 );
-  //connect( item, &QgsAttributesFormItem::willRemoveChildren, this, &QgsAttributesFormItem::willRemoveChildren );
 }
 
 void QgsAttributesFormItem::insertChild( int position, std::unique_ptr< QgsAttributesFormItem > &&item )
@@ -304,7 +303,6 @@ bool QgsAttributesFormItem::isGroup( QgsAttributesFormItem *item )
 {
   return item->type() == QgsAttributesFormData::WidgetType || item->type() == QgsAttributesFormData::Container;
 }
-
 
 QVariant QgsAttributesFormItem::data( int role ) const
 {

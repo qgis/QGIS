@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsattributesformtreeviewindicator.h
+    ---------------------
+    begin                : June 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSATTRIBUTESFORMTREEVIEWINDICATOR_H
 #define QGSATTRIBUTESFORMTREEVIEWINDICATOR_H
 
@@ -17,28 +32,24 @@
  *
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
- * \since QGIS 3.44
+ * \since QGIS 4.0
  */
 class GUI_EXPORT QgsAttributesFormTreeViewIndicator : public QObject
 {
     Q_OBJECT
   public:
-    //! Constructs an indicator, optionally transferring ownership to a parent QObject
+    //! Constructs an indicator, optionally transferring ownership to a parent QObject.
     explicit QgsAttributesFormTreeViewIndicator( QObject *parent = nullptr );
 
-    //! Indicator icon that will be displayed in the Attributes Form tree view
-    QIcon icon() const { return mIcon; }
-    //! Sets indicator icon that will be displayed in the Attributes Form tree view
-    void setIcon( const QIcon &icon )
-    {
-      mIcon = icon;
-      emit changed();
-    }
+    //! Indicator icon that will be displayed in the Attributes Form tree view.
+    QIcon icon() const;
+    //! Sets indicator icon that will be displayed in the Attributes Form tree view.
+    void setIcon( const QIcon &icon );
 
-    //! Returns tool tip text that will be shown when user hovers mouse over the indicator
-    QString toolTip() const { return mToolTip; }
-    //! Sets tool tip text
-    void setToolTip( const QString &tip ) { mToolTip = tip; }
+    //! Returns tool tip text that will be shown when user hovers mouse over the indicator.
+    QString toolTip() const;
+    //! Sets tool tip text for the indicator.
+    void setToolTip( const QString &tip );
 
   signals:
     /**
