@@ -1337,6 +1337,9 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
 {
   mLastError.clear();
 
+  if ( isNull() )
+    return QgsGeometry();
+
   if ( type() == Qgis::GeometryType::Point && d->geometry->partCount() == 1 )
   {
     area = 0;
