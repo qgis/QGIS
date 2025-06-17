@@ -230,6 +230,7 @@ class CORE_EXPORT QgsGmlStreamingParser
      * Creates a set of points from a coordinate string.
      * \param points list that will contain the created points
      * \param coordString the text containing the coordinates
+     * \param dimension number of dimensions determined from the coordinate string
      * \returns 0 in case of success
      */
     int pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString, int *dimension = nullptr ) const;
