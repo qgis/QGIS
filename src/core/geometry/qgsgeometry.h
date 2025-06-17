@@ -67,15 +67,18 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
  * This type has full support for Z/M dimensions.
  *
  */
+#ifndef SIP_RUN
 typedef QgsPointSequence QgsPolyline;
-
+#else
+typedef QVector<QgsPoint> QgsPolyline;
+#endif
 
 /**
  * Multi polyline represented as a vector of polylines.
  *
  * This type has full support for Z/M dimensions.
  *
- * \since QGIS 4.0
+ * \since QGIS 3.44
  */
 #ifndef SIP_RUN
 typedef QVector<QgsPolyline> QgsMultiPolyline;
