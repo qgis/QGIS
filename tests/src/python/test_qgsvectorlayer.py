@@ -4171,7 +4171,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.displayExpression(), '"NAME"')
         self.assertEqual(layer.displayField(), "NAME")
         layer = QgsVectorLayer(
-            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string",
+            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=ALT_NAME:string",
             "vl",
             "memory",
         )
