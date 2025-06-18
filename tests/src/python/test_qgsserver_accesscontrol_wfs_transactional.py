@@ -35,7 +35,7 @@ WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
         </gml:Point>
       </qgs:geometry>
       <qgs:gid>{gid}</qgs:gid>
-      <qgs:name>{name}</qgs:name>
+      <qgs:name>new_name</qgs:name>
       <qgs:color>{color}</qgs:color>
     </qgs:db_point>
   </wfs:Insert>
