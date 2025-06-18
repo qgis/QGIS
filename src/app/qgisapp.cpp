@@ -16221,6 +16221,8 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   {
     widget->mapCanvas3D()->cameraController()->readXml( elemCamera );
   }
+  // not nice hack to ensure camera navigation mode is correctly setup to previous mode
+  widget->mapCanvas3D()->mapSettings()->emit cameraNavigationModeChanged();
 
   QDomElement elemAnimation = elem3DMap.firstChildElement( QStringLiteral( "animation3d" ) );
   if ( !elemAnimation.isNull() )
