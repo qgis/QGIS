@@ -896,18 +896,21 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   if ( nPolygons < 1 )
     return QgsGeometry();
 
+  const bool hasZ { !std::isnan( multiPolygonPoints.first().first().first().z() ) };
+
   int size = 1 + 2 * sizeof( int );
   //calculate the wkb size
+
   for ( auto it = multiPolygonPoints.constBegin(); it != multiPolygonPoints.constEnd(); ++it )
   {
     size += 1 + 2 * sizeof( int );
     for ( auto iter = it->begin(); iter != it->end(); ++iter )
     {
-      size += sizeof( int ) + 2 * iter->size() * sizeof( double );
+      size += sizeof( int ) + ( hasZ ? 3 : 2 ) * iter->size() * sizeof( double );
     }
   }
 
-  Qgis::WkbType type = Qgis::WkbType::MultiPolygon;
+  Qgis::WkbType type = hasZ ? Qgis::WkbType::MultiPolygonZ : Qgis::WkbType::MultiPolygon;
   unsigned char *wkb = new unsigned char[size];
 
   char e = htonl( 1 ) != 1;
@@ -924,7 +927,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   memcpy( &( wkb )[wkbPosition], &nPolygons, sizeof( int ) );
   wkbPosition += sizeof( int );
 
-  type = Qgis::WkbType::Polygon;
+  type = hasZ ? Qgis::WkbType::PolygonZ : Qgis::WkbType::Polygon;
 
   for ( auto it = multiPolygonPoints.constBegin(); it != multiPolygonPoints.constEnd(); ++it )
   {
@@ -948,6 +951,12 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
         wkbPosition += sizeof( double );
         memcpy( &( wkb )[wkbPosition], &y, sizeof( double ) );
         wkbPosition += sizeof( double );
+        if ( hasZ )
+        {
+          double z = iterator->z();
+          memcpy( &( wkb )[wkbPosition], &z, sizeof( double ) );
+          wkbPosition += sizeof( double );
+        }
       }
     }
   }
@@ -1427,12 +1436,20 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
           QString coordString = qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
           // Add Z
-          if ( hasZValue && gmlVersion != GML_2_1_2 )
+          if ( hasZValue )
           {
-            double z = 0;
-            wkbPtr >> z;
-            coordString += cs + qgsDoubleToString( z, precision );
+            if ( gmlVersion != GML_2_1_2 )
+            {
+              double z = 0;
+              wkbPtr >> z;
+              coordString += cs + qgsDoubleToString( z, precision );
+            }
+            else
+            {
+              wkbPtr += sizeof( double );
+            }
           }
+
           const QDomText coordText = doc.createTextNode( coordString );
 
           coordElem.appendChild( coordText );
@@ -1440,10 +1457,6 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
             coordElem.setAttribute( QStringLiteral( "srsDimension" ), hasZValue ? QStringLiteral( "3" ) : QStringLiteral( "2" ) );
           pointElem.appendChild( coordElem );
 
-          if ( hasZValue )
-          {
-            wkbPtr += sizeof( double );
-          }
 
           pointMemberElem.appendChild( pointElem );
           multiPointElem.appendChild( pointMemberElem );
@@ -1486,8 +1499,18 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
           if ( hasZValue )
           {
-            wkbPtr += sizeof( double );
+            if ( gmlVersion != GML_2_1_2 )
+            {
+              double z = 0;
+              wkbPtr >> z;
+              coordString += cs + qgsDoubleToString( z, precision );
+            }
+            else
+            {
+              wkbPtr += sizeof( double );
+            }
           }
+
         }
         const QDomText coordText = doc.createTextNode( coordString );
         coordElem.appendChild( coordText );
@@ -1544,7 +1567,16 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
             if ( hasZValue )
             {
-              wkbPtr += sizeof( double );
+              if ( gmlVersion != GML_2_1_2 )
+              {
+                double z = 0;
+                wkbPtr >> z;
+                coordString += cs + qgsDoubleToString( z, precision );
+              }
+              else
+              {
+                wkbPtr += sizeof( double );
+              }
             }
           }
           const QDomText coordText = doc.createTextNode( coordString );
@@ -1607,9 +1639,20 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
               wkbPtr >> x >> y;
 
             coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
             if ( hasZValue )
             {
-              wkbPtr += sizeof( double );
+              if ( gmlVersion != GML_2_1_2 )
+              {
+                // Add Z
+                double z = 0;
+                wkbPtr >> z;
+                coordString += cs + qgsDoubleToString( z, precision );
+              }
+              else
+              {
+                wkbPtr += sizeof( double );
+              }
             }
           }
           const QDomText coordText = doc.createTextNode( coordString );
@@ -1684,8 +1727,19 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
               if ( hasZValue )
               {
-                wkbPtr += sizeof( double );
+                if ( gmlVersion != GML_2_1_2 )
+                {
+                  // Add Z
+                  double z = 0;
+                  wkbPtr >> z;
+                  coordString += cs + qgsDoubleToString( z, precision );
+                }
+                else
+                {
+                  wkbPtr += sizeof( double );
+                }
               }
+
             }
             const QDomText coordText = doc.createTextNode( coordString );
             coordElem.appendChild( coordText );

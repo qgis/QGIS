@@ -346,7 +346,6 @@ class CORE_EXPORT QgsOgcUtils
      */
     static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
 
-
     /**
      * Create a GML coordinates element from a point list.
      * \param points list of data points
