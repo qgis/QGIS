@@ -41,6 +41,10 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
 
   connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 
+  connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) {
+    tabWidget->setTabIcon( index, QIcon() );
+  } );
+
   mTabBarContextMenu = new QMenu( this );
   tabWidget->tabBar()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( tabWidget->tabBar(), &QWidget::customContextMenuRequested, this, &QgsMessageLogViewer::showContextMenuForTabBar );
@@ -131,9 +135,6 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
     w->setReadOnly( true );
     w->viewport()->installEventFilter( this );
     i = tabWidget->addTab( w, QgsApplication::getThemeIcon( QStringLiteral( "mMessageLog.svg" ) ), cleanedTag );
-    connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) {
-      tabWidget->setTabIcon( index, QIcon() );
-    } );
   }
 
   QString levelString;
