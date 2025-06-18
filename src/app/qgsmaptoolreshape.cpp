@@ -67,14 +67,10 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     deleteTempRubberBand();
 
-    //find out bounding box of mCaptureList
-    if ( size() < 1 )
+    if ( size() > 1 )
     {
-      stopCapturing();
-      return;
+      reshape( vlayer );
     }
-
-    reshape( vlayer );
 
     stopCapturing();
   }
