@@ -1277,7 +1277,7 @@ bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
       return true;
     }
   }
-  else if ( event->type() == QKeyEvent::Type::KeyPress || event->type() == QEvent::ShortcutOverride )
+  else if ( event->type() == QEvent::ShortcutOverride )
   {
     if ( event->modifiers() & Qt::ControlModifier )
     {
