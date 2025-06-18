@@ -141,7 +141,6 @@ void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()
   QTest::addColumn<Qgis::WkbType>( "type" );
   QTest::addColumn<QString>( "WKT" );
 
-#if 1
   QTest::newRow( "PointZ" )
     << QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>" )
     << Qgis::WkbType::PointZ
@@ -173,8 +172,6 @@ void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()
     << QStringLiteral( R"GML(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:LineString><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList srsDimension="3">2 2 2200 2 3 2250 3 3 2230 3 2 2210</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>)GML" )
     << Qgis::WkbType::MultiLineStringZ
     << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
-
-#endif
 
   // Test multilinestring GML3 Z
   QTest::newRow( "MultiLineStringZ" )
