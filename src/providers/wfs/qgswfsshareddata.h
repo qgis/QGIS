@@ -74,6 +74,10 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Creates a deep copy of this shared data
     QgsWFSSharedData *clone() const;
 
+    bool initialGetFeatureIssued() const;
+    void setInitialGetFeatureIssued( bool initialGetFeatureIssued );
+
+
   signals:
 
     //! Raise error
@@ -170,6 +174,8 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     long long getFeatureCountFromServer() const override;
 
     void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
+    bool mInitialGetFeatureIssued = false;
 };
 
 //! Utility class to issue a GetFeature resultType=hits request

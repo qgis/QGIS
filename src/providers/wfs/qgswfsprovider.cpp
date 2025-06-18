@@ -163,14 +163,20 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     }
   }
 
-  if ( !mShared->mURI.skipInitialGetFeature() )
+  if ( !mShared->mURI.skipInitialGetFeature() || mShared->mURI.forceInitialGetFeature() )
   {
-    issueInitialGetFeature();
+    issueInitialGetFeature( mShared->mURI.forceInitialGetFeature() );
   }
 }
 
-void QgsWFSProvider::issueInitialGetFeature()
+void QgsWFSProvider::issueInitialGetFeature( bool force )
 {
+  // Skip if already issued
+  if ( mShared->initialGetFeatureIssued() )
+  {
+    return;
+  }
+
   const auto GetGeometryTypeFromOneFeature = [&]( bool includeBbox ) {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = std::make_unique<QgsFeatureDownloader>();
@@ -185,7 +191,10 @@ void QgsWFSProvider::issueInitialGetFeature()
     }
 
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
-    connect( downloader.get(), qOverload<QVector<QgsFeatureUniqueIdPair>>( &QgsFeatureDownloader::featureReceived ), this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
+    connect( downloader.get(), qOverload<QVector<QgsFeatureUniqueIdPair>>( &QgsFeatureDownloader::featureReceived ), this, [&]( QVector<QgsFeatureUniqueIdPair> list ) {
+      QgsWFSProvider::featureReceivedAnalyzeOneFeature( list, force );
+    } );
+
     if ( requestMadeFromMainThread )
     {
       auto processEvents = []() {
@@ -200,12 +209,10 @@ void QgsWFSProvider::issueInitialGetFeature()
   };
 
   const auto TryToDetectGeometryType = [&]() {
-    const Qgis::WkbType initialGeometryType = mShared->mWKBType;
-
     // try first without a BBOX, because some servers exhibit very poor
     // performance when being requested on a large extent
     GetGeometryTypeFromOneFeature( false );
-    if ( initialGeometryType == Qgis::WkbType::Unknown )
+    if ( mShared->mWKBType == Qgis::WkbType::Unknown )
     {
       bool noGeometryFound = ( mShared->mWKBType == Qgis::WkbType::NoGeometry );
       if ( noGeometryFound )
@@ -232,10 +239,6 @@ void QgsWFSProvider::issueInitialGetFeature()
 
       if ( noGeometryFound && mShared->mWKBType == Qgis::WkbType::Unknown )
         mShared->mWKBType = Qgis::WkbType::NoGeometry;
-    }
-    else
-    {
-      mShared->mWKBType = initialGeometryType;
     }
   };
 
@@ -821,9 +824,11 @@ void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
   pushError( errorMsg );
 }
 
-void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> list )
+void QgsWFSProvider::featureReceivedAnalyzeOneFeature( const QVector<QgsFeatureUniqueIdPair> &list, bool force )
 {
-  if ( list.size() != 0 && mShared->mWKBType == Qgis::WkbType::Unknown )
+  const Qgis::WkbType originalType { mShared->mWKBType };
+
+  if ( list.size() != 0 && ( force || originalType == Qgis::WkbType::Unknown ) )
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
@@ -882,6 +887,7 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
       }
     }
   }
+
   if ( list.size() != 0 )
   {
     QgsFeature feat = list[0].first;
@@ -889,6 +895,12 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
     mSampleFeatureHasDescription = !feat.attribute( "description" ).isNull();
     mSampleFeatureHasIdentifier = !feat.attribute( "identifier" ).isNull();
     mSampleFeatureHasName = !feat.attribute( "name" ).isNull();
+  }
+
+  // Re-assign the original type if type was not determined and force was set
+  if ( force && mShared->mWKBType == Qgis::WkbType::Unknown )
+  {
+    mShared->mWKBType = originalType;
   }
 }
 

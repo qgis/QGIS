@@ -72,10 +72,19 @@ QgsWFSSharedData *QgsWFSSharedData::clone() const
   return copy;
 }
 
+bool QgsWFSSharedData::initialGetFeatureIssued() const
+{
+  return mInitialGetFeatureIssued;
+}
+
+void QgsWFSSharedData::setInitialGetFeatureIssued( bool initialGetFeatureIssued )
+{
+  mInitialGetFeatureIssued = initialGetFeatureIssued;
+}
+
 void QgsWFSSharedData::invalidateCacheBaseUnderLock()
 {
 }
-
 
 QString QgsWFSSharedData::srsName() const
 {
