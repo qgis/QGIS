@@ -2981,7 +2981,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::reshapeGeometry( const QgsLineStri
     }
 
     if ( errorCode )
-      *errorCode = Success;
+    {
+      if ( reshapedGeometry )
+        *errorCode = Success;
+      else
+        *errorCode = NothingHappened;
+    }
+
     std::unique_ptr< QgsAbstractGeometry > reshapeResult = fromGeos( reshapedGeometry.get() );
     return reshapeResult;
   }
