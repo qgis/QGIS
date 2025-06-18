@@ -254,7 +254,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPoint( const QDomElement &geometryElemen
   const char e = htonl( 1 ) != 1;
   const double x = point_it->x();
   const double y = point_it->y();
-  const int size = 1 + sizeof( int ) + ( hasZ ? 3 : 2 ) * sizeof( double );
+  const int size = 1 + static_cast<int>( sizeof( int ) ) + ( hasZ ? 3 : 2 ) * static_cast<int>( sizeof( double ) );
 
   const Qgis::WkbType type { hasZ ? Qgis::WkbType::PointZ : Qgis::WkbType::Point };
   unsigned char *wkb = new unsigned char[size];
@@ -310,7 +310,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLLineString( const QDomElement &geometryE
   const bool hasZ { !std::isnan( lineCoordinates.first().z() ) };
 
   char e = htonl( 1 ) != 1;
-  const int size = 1 + 2 * sizeof( int ) + lineCoordinates.size() * ( hasZ ? 3 : 2 ) * sizeof( double );
+  const int size = 1 + 2 * static_cast<int>( sizeof( int ) + lineCoordinates.size() ) * ( hasZ ? 3 : 2 ) * static_cast<int>( sizeof( double ) );
 
   const Qgis::WkbType type{ hasZ ? Qgis::WkbType::LineStringZ : Qgis::WkbType::LineString };
   unsigned char *wkb = new unsigned char[size];
@@ -440,7 +440,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
 
   const bool hasZ { !std::isnan( ringCoordinates.first().first().z() ) };
 
-  const int size = 1 + 2 * sizeof( int ) + nrings * sizeof( int ) + ( hasZ ? 3 : 2 ) * npoints * sizeof( double );
+  const int size = 1 + 2 * static_cast<int>( sizeof( int ) ) + nrings * static_cast<int>( sizeof( int ) ) + ( hasZ ? 3 : 2 ) * npoints * static_cast<int>( sizeof( double ) );
 
   const Qgis::WkbType type { hasZ ? Qgis::WkbType::PolygonZ : Qgis::WkbType::Polygon };
   unsigned char *wkb = new unsigned char[size];
@@ -554,7 +554,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
   const bool hasZ { !std::isnan( pointList.first().z() ) };
 
   //calculate the required wkb size
-  const int size = 1 + 2 * sizeof( int ) + pointList.size() * ( ( hasZ ? 3 : 2 ) * sizeof( double ) + 1 + sizeof( int ) );
+  const int size = 1 + 2 * static_cast<int>( sizeof( int ) ) + static_cast<int>( pointList.size() ) * ( ( hasZ ? 3 : 2 ) * static_cast<int>( sizeof( double ) ) + 1 + static_cast<int>( sizeof( int ) ) );
 
   const Qgis::WkbType type { hasZ ? Qgis::WkbType::MultiPointZ :  Qgis::WkbType::MultiPoint };
   unsigned char *wkb = new unsigned char[size];
@@ -699,7 +699,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
   const int coordSize { hasZ ? 3 : 2 };
 
   //calculate the required wkb size
-  int size = ( lineCoordinates.size() + 1 ) * ( 1 + 2 * sizeof( int ) );
+  int size = static_cast<int>( lineCoordinates.size() + 1 ) * ( 1 + 2 * sizeof( int ) );
   for ( QList< QgsPolyline >::const_iterator it = lineCoordinates.constBegin(); it != lineCoordinates.constEnd(); ++it )
   {
     size += it->size() * coordSize * sizeof( double );
@@ -906,7 +906,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
     size += 1 + 2 * sizeof( int );
     for ( auto iter = it->begin(); iter != it->end(); ++iter )
     {
-      size += sizeof( int ) + ( hasZ ? 3 : 2 ) * iter->size() * sizeof( double );
+      size += static_cast<int>( sizeof( int ) ) + ( hasZ ? 3 : 2 ) * static_cast<int>( iter->size() * sizeof( double ) );
     }
   }
 
