@@ -13,7 +13,7 @@ __date__ = "28/08/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 from qgis.testing import unittest
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject, QgsVectorLayer, QgsGeometry, QgsOgcUtils
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
@@ -21,7 +21,6 @@ from qgis.server import (
     QgsServerFilter,
     QgsServerRequest,
 )
-
 from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
 from test_qgsserver import QgsServerTestBase
 from osgeo import ogr
@@ -46,16 +45,37 @@ WFS_TRANSACTION_Z_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:Transaction {xml_ns}>
     <wfs:Insert idgen="GenerateNew">
         <qgs:{layer_name}>
-            <qgs:geom>
-                <gml:Point srsDimension="3" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-                    <gml:coordinates decimal="." cs="," ts=" ">{x},{y},{z}</gml:coordinates>
-                </gml:Point>
-            </qgs:geom>
-            <qgs:gid>{gid}</qgs:gid>
-            <qgs:name>{name}</qgs:name>
-            <qgs:color>{color}</qgs:color>
+            <qgs:geometry>
+                {gml}
+            </qgs:geometry>
+            <qgs:gid>1</qgs:gid>
+            <qgs:name>name</qgs:name>
+            <qgs:color>black</qgs:color>
         </qgs:{layer_name}>
     </wfs:Insert>
+</wfs:Transaction>"""
+
+WFS_TRANSACTION_Z_UPDATE = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction {xml_ns}>
+    <wfs:Update typeName="{layer_name}">
+        <wfs:Property>
+            <wfs:Name>color</wfs:Name>
+            <wfs:Value>red</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>name</wfs:Name>
+            <wfs:Value>new_name</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>geometry</wfs:Name>
+            <wfs:Value>
+                {gml}
+            </wfs:Value>
+        </wfs:Property>
+        <ogc:Filter>
+            <ogc:FeatureId fid="{id}"/>
+        </ogc:Filter>
+    </wfs:Update>
 </wfs:Transaction>"""
 
 WFS_TRANSACTION_UPDATE = """<?xml version="1.0" encoding="UTF-8"?>
@@ -286,29 +306,38 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Create a GPKG project with point, linestring and polygon layers
-        # that supports Z coordinates, using GDAL
+        # Create a GPKG data and project with point, linestring and polygon layers
+        # that supports Z coordinates
         drv = ogr.GetDriverByName("GPKG")
         ds = drv.CreateDataSource(cls.temporary_path + "/test_z.gpkg")
-        ds.CreateLayer(
-            "test_point", geom_type=ogr.wkbPoint25D, options=["GEOMETRY_NAME=geom"]
-        )
-        layer = ds.GetLayerByName("test_point")
-        layer.CreateField(ogr.FieldDefn("name", ogr.OFTString))
-        layer.CreateField(ogr.FieldDefn("color", ogr.OFTString))
-        layer.CreateField(ogr.FieldDefn("gid", ogr.OFTInteger))
+        layer_names = []
+        for wkb_type_name in ["Point", "LineString", "Polygon"]:
+            for prefix in ["", "Multi"]:
+                wkb_type_name = prefix + wkb_type_name
+                wkb_type = getattr(ogr, "wkb" + wkb_type_name + "25D", None)
+                layer_name = "test_" + wkb_type_name.lower()
+                layer_names.append(layer_name)
+                layer = ds.CreateLayer(
+                    layer_name,
+                    geom_type=wkb_type,
+                    options=["GEOMETRY_NAME=geom"],
+                )
+                layer.CreateField(ogr.FieldDefn("name", ogr.OFTString))
+                layer.CreateField(ogr.FieldDefn("color", ogr.OFTString))
+                layer.CreateField(ogr.FieldDefn("gid", ogr.OFTInteger))
 
-        del layer
         del ds
 
         cls.project = QgsProject()
-        assert cls.project.addMapLayer(
-            QgsVectorLayer(
-                cls.temporary_path + "/test_z.gpkg|layername=test_point",
-                "test_point",
+
+        for layer_name in layer_names:
+            layer = QgsVectorLayer(
+                cls.temporary_path + "/test_z.gpkg|layername=" + layer_name,
+                layer_name,
                 "ogr",
             )
-        )
+            assert cls.project.addMapLayer(layer)
+
         # Enable WFS-T support for the layer project
         layer_ids = [layer.id() for layer in cls.project.mapLayers().values()]
 
@@ -316,17 +345,12 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
         for method in ["Insert", "Update", "Delete"]:
             cls.project.writeEntry("WFSTLayers", method, layer_ids)
 
-    def testInsert(self):
+    def do_operation(self, operation, layer_name, wkt):
 
-        xml = WFS_TRANSACTION_Z_INSERT.format(
-            layer_name="test_point",
-            x=1,
-            y=2,
-            z=3,
-            name="test",
-            color="black",
-            gid=1,
-            xml_ns=XML_NS,
+        geometry = ogr.Geometry(wkt=wkt)
+
+        xml = operation.format(
+            layer_name=layer_name, gml=geometry.ExportToGML(), xml_ns=XML_NS, id=1
         )
 
         request = QgsBufferServerRequest(
@@ -338,6 +362,73 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
 
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, self.project)
+
+        return response
+
+    def do_insert(self, layer_name, wkt):
+
+        geometry = QgsGeometry.fromWkt(wkt)
+        geom_wkt = geometry.asWkt().upper()
+
+        response = self.do_operation(WFS_TRANSACTION_Z_INSERT, layer_name, geom_wkt)
+
+        # Check layer
+        layer = self.project.mapLayersByName(layer_name)[0]
+        self.assertEqual(layer.featureCount(), 1)
+        feature = next(layer.getFeatures())
+        self.assertEqual(feature["name"], "name")
+        self.assertEqual(feature["color"], "black")
+        self.assertEqual(feature["gid"], 1)
+        self.assertEqual(feature.geometry().asWkt().upper(), geom_wkt)
+
+    def do_update(self, layer_name, wkt):
+
+        geometry = QgsGeometry.fromWkt(wkt)
+        geom_wkt = geometry.asWkt().upper()
+
+        response = self.do_operation(WFS_TRANSACTION_Z_UPDATE, layer_name, geom_wkt)
+
+        # Check layer
+        layer = self.project.mapLayersByName(layer_name)[0]
+        self.assertEqual(layer.featureCount(), 1)
+        feature = next(layer.getFeatures())
+        self.assertEqual(feature["color"], "red")
+        self.assertEqual(feature["name"], "new_name")
+        self.assertEqual(feature.geometry().asWkt().upper(), geom_wkt)
+
+    def testGeometries(self):
+
+        self.do_insert("test_point", "POINT Z (1 2 3)")
+        self.do_update("test_point", "POINT Z (4 5 6)")
+
+        self.do_insert("test_linestring", "LINESTRING Z (1 2 3, 4 5 6, 7 8 9)")
+        self.do_update("test_linestring", "LINESTRING Z (10 11 12, 13 14 15, 16 17 18)")
+
+        self.do_insert("test_polygon", "POLYGON Z ((1 2 3, 4 5 6, 7 8 9, 1 2 3))")
+        self.do_update(
+            "test_polygon", "POLYGON Z ((10 11 12, 13 14 15, 16 17 18, 10 11 12))"
+        )
+
+        self.do_insert("test_multipoint", "MULTIPOINT Z (1 2 3, 4 5 6, 7 8 9)")
+        self.do_update("test_multipoint", "MULTIPOINT Z (10 11 12, 13 14 15, 16 17 18)")
+
+        self.do_insert(
+            "test_multilinestring",
+            "MULTILINESTRING Z ((1 2 3, 4 5 6, 7 8 9), (10 11 12, 13 14 15, 16 17 18))",
+        )
+        self.do_update(
+            "test_multilinestring",
+            "MULTILINESTRING Z ((19 20 21, 22 23 24, 25 26 27), (28 29 30, 31 32 33, 34 35 36))",
+        )
+
+        self.do_insert(
+            "test_multipolygon",
+            "MULTIPOLYGON Z (((1 2 3, 4 5 6, 7 8 9, 1 2 3)), ((10 11 12, 13 14 15, 16 17 18, 10 11 12)))",
+        )
+        self.do_update(
+            "test_multipolygon",
+            "MULTIPOLYGON Z (((10 11 12, 13 14 15, 16 17 18, 10 11 12)), ((19 20 21, 22 23 24, 25 26 27, 19 20 21)))",
+        )
 
 
 if __name__ == "__main__":
