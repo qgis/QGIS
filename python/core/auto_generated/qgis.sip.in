@@ -1553,6 +1553,12 @@ The development version
       ForceVector,
     };
 
+    enum class RenderFormat
+    {
+      Raster,
+      Vector,
+    };
+
     enum class MapSettingsFlag
     {
       Antialiasing,
