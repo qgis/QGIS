@@ -1038,6 +1038,7 @@ bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
       {
         qApp->restoreOverrideCursor();
       }
+      event->accept();
       return true;
     }
 
@@ -1049,6 +1050,7 @@ bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
         mCaptureFpsMouseMovements = false;
         mIgnoreNextMouseMove = true;
         qApp->restoreOverrideCursor();
+        event->accept();
         return true;
       }
       break;
@@ -1057,8 +1059,15 @@ bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
       break;
   }
 
-  if ( !event->isAutoRepeat() && walkNavigationSavedKeys.contains( event->key() ) )
-    mDepressedKeys.insert( event->key() );
+  if ( walkNavigationSavedKeys.contains( event->key() ) )
+  {
+    if ( !event->isAutoRepeat() )
+    {
+      mDepressedKeys.insert( event->key() );
+    }
+    event->accept();
+    return true;
+  }
   return false;
 }
 
@@ -1300,6 +1309,7 @@ bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
               setCameraNavigationMode( Qgis::NavigationMode::Walk );
               break;
           }
+          event->accept();
           return true;
         }
 
