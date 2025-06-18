@@ -3749,8 +3749,11 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
 
   reshapeResult.reset();
 
-  newRing = GEOSGeom_createLinearRing_r( context, newCoordSequence );
-  if ( !newRing )
+  try
+  {
+    newRing = GEOSGeom_createLinearRing_r( context, newCoordSequence );
+  }
+  catch ( GEOSException & )
   {
     delete [] innerRings;
     return nullptr;
