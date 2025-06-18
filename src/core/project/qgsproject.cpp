@@ -1941,9 +1941,9 @@ bool QgsProject::read( const QString &filename, Qgis::ProjectReadFlags flags )
   QUrl url( filename );
   if ( url.scheme() == QStringLiteral( "base64" ) )
   {
-    QByteArray filenameBA = filename.toUtf8();
-    int len = filenameBA.length() - QString( "base64://" ).length();
-    QByteArray decoded = QByteArray::fromBase64( filenameBA.right( len ) );
+    const QByteArray filenameBA( filename.toUtf8() );
+    const int len = filenameBA.length() - QString( "base64://" ).length();
+    const QByteArray decoded( QByteArray::fromBase64( filenameBA.right( len ) ) );
     mFile.setFileName( QString::fromUtf8( decoded ) );
   }
   else
