@@ -769,6 +769,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     const QString base = safeName( name, capitalize );
     QString candidate = base;
     int i = 1;
+    // iterate over friendlyNames value to find candidate
     while ( std::find( friendlyNames.cbegin(), friendlyNames.cend(), candidate ) != friendlyNames.cend() )
     {
       i++;
