@@ -1726,7 +1726,7 @@ int QgsGmlStreamingParser::pointsFromString( QList<QgsPoint> &points, const QStr
 
 int QgsGmlStreamingParser::getPointWKB( QByteArray &wkbPtr, const QgsPoint &point, int dimension ) const
 {
-  const int wkbSize = 1 + sizeof( int ) + dimension * sizeof( double );
+  const int wkbSize = 1 + static_cast<int>( sizeof( int ) ) + dimension * static_cast<int>( sizeof( double ) );
   wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
@@ -1741,7 +1741,7 @@ int QgsGmlStreamingParser::getPointWKB( QByteArray &wkbPtr, const QgsPoint &poin
 
 int QgsGmlStreamingParser::getLineWKB( QByteArray &wkbPtr, const QList<QgsPoint> &lineCoordinates, int dimension ) const
 {
-  const int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * dimension * sizeof( double );
+  const int wkbSize = 1 + 2 * static_cast<int>( sizeof( int ) ) + static_cast<int>( lineCoordinates.size() ) * dimension * static_cast<int>( sizeof( double ) );
   wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
@@ -1763,7 +1763,7 @@ int QgsGmlStreamingParser::getLineWKB( QByteArray &wkbPtr, const QList<QgsPoint>
 
 int QgsGmlStreamingParser::getRingWKB( QByteArray &wkbPtr, const QList<QgsPoint> &ringCoordinates, int dimension ) const
 {
-  const int wkbSize = sizeof( int ) + ringCoordinates.size() * dimension * sizeof( double );
+  const int wkbSize = static_cast<int>( sizeof( int ) ) + static_cast<int>( ringCoordinates.size() ) * dimension * static_cast<int>( sizeof( double ) );
   wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
@@ -1785,7 +1785,7 @@ int QgsGmlStreamingParser::getRingWKB( QByteArray &wkbPtr, const QList<QgsPoint>
 
 int QgsGmlStreamingParser::createMultiLineFromFragments()
 {
-  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) + totalWKBFragmentSize();
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
@@ -1807,7 +1807,7 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
 
 int QgsGmlStreamingParser::createMultiPointFromFragments()
 {
-  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) + totalWKBFragmentSize();
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
@@ -1828,7 +1828,7 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
 
 int QgsGmlStreamingParser::createPolygonFromFragments()
 {
-  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) + totalWKBFragmentSize();
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
@@ -1849,9 +1849,9 @@ int QgsGmlStreamingParser::createPolygonFromFragments()
 int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 {
   int size = 0;
-  size += 1 + ( mDimension > 2 ? mDimension : 2 ) * sizeof( int );
+  size += 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) );
   size += totalWKBFragmentSize();
-  size += mCurrentWKBFragments.size() * ( 1 + ( mDimension > 2 ? mDimension : 2 ) * sizeof( int ) ); //fragments are just the rings
+  size += mCurrentWKBFragments.size() * ( 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) ); //fragments are just the rings
 
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 

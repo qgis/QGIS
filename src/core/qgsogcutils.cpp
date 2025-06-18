@@ -251,7 +251,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPoint( const QDomElement &geometryElemen
 
   const bool hasZ { !std::isnan( pointCoordinate.first().z() ) };
   QgsPolyline::const_iterator point_it = pointCoordinate.constBegin();
-  const char e = htonl( 1 ) != 1;
+  const char e = static_cast<char>( htonl( 1 ) != 1 );
   const double x = point_it->x();
   const double y = point_it->y();
   const int size = 1 + static_cast<int>( sizeof( int ) ) + ( hasZ ? 3 : 2 ) * static_cast<int>( sizeof( double ) );
@@ -309,7 +309,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLLineString( const QDomElement &geometryE
 
   const bool hasZ { !std::isnan( lineCoordinates.first().z() ) };
 
-  char e = htonl( 1 ) != 1;
+  char e = static_cast<char>( htonl( 1 ) != 1 );
   const int size = 1 + 2 * static_cast<int>( sizeof( int ) + lineCoordinates.size() ) * ( hasZ ? 3 : 2 ) * static_cast<int>( sizeof( double ) );
 
   const Qgis::WkbType type{ hasZ ? Qgis::WkbType::LineStringZ : Qgis::WkbType::LineString };
@@ -446,7 +446,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
   unsigned char *wkb = new unsigned char[size];
 
   //char e = QgsApplication::endian();
-  char e = htonl( 1 ) != 1;
+  char e = static_cast<char>( htonl( 1 ) != 1 );
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPointsInRing = 0;
   double x, y, z;
@@ -560,7 +560,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
   unsigned char *wkb = new unsigned char[size];
 
   //fill the wkb content
-  char e = htonl( 1 ) != 1;
+  char e = static_cast<char>( htonl( 1 ) != 1 );
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y, z;
   memcpy( &( wkb )[wkbPosition], &e, 1 );
@@ -709,7 +709,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement &geom
   unsigned char *wkb = new unsigned char[size];
 
   //fill the wkb content
-  char e = htonl( 1 ) != 1;
+  char e = static_cast<char>( htonl( 1 ) != 1 );
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPoints; //number of points in a line
   double x, y, z;
@@ -913,7 +913,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   Qgis::WkbType type = hasZ ? Qgis::WkbType::MultiPolygonZ : Qgis::WkbType::MultiPolygon;
   unsigned char *wkb = new unsigned char[size];
 
-  char e = htonl( 1 ) != 1;
+  char e = static_cast<char>( htonl( 1 ) != 1 );
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   int nRings;
