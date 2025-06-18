@@ -1860,7 +1860,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       } );
     }
 
-    if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
+    // Move to schema should not be available for connections and schemata
+    const bool isTable = qobject_cast<QgsLayerItem *>( item );
+    if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
       QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
 
