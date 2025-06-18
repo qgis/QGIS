@@ -154,6 +154,9 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
 
   for ( int row = 0; row < height; ++row )
   {
+    if ( feedback->isCanceled() )
+      return nullptr;
+
     for ( int col = 0; col < width; ++col )
     {
       const qgssize i = static_cast< qgssize >( row ) * width + static_cast< qgssize >( col );
