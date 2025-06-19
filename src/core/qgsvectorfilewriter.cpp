@@ -2155,6 +2155,33 @@ class QgsVectorFileWriterMetadataContainer
                                QString()  // Default value
                              ) );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+      datasetOptions.insert( QStringLiteral( "INSUNITS" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Drawing units for the model space ($INSUNITS system variable)." ),
+                               QStringList()
+                               << QStringLiteral( "AUTO" )
+                               << QStringLiteral( "HEADER_VALUE" )
+                               << QStringLiteral( "UNITLESS" )
+                               << QStringLiteral( "INCHES" )
+                               << QStringLiteral( "FEET" )
+                               << QStringLiteral( "MILLIMETERS" )
+                               << QStringLiteral( "CENTIMETERS" )
+                               << QStringLiteral( "METERS" )
+                               << QStringLiteral( "US_SURVEY_FEET" ),
+                               QStringLiteral( "AUTO" ) // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "MEASUREMENT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Whether the current drawing uses imperial or metric hatch "
+                                            "pattern and linetype ($MEASUREMENT system variable)." ),
+                               QStringList()
+                               << QStringLiteral( "HEADER_VALUE" )
+                               << QStringLiteral( "IMPERIAL" )
+                               << QStringLiteral( "METRIC" ),
+                               QStringLiteral( "HEADER_VALUE" ) // Default value
+                             ) );
+#endif
+
       driverMetadata.insert( QStringLiteral( "DXF" ),
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "AutoCAD DXF" ),
