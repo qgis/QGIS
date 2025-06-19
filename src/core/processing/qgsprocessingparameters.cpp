@@ -3796,7 +3796,8 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
     return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
-           qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+           qgsDoubleToString( r.yMaximum() ),
+           r.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
   }
   else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
   {
