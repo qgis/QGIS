@@ -572,8 +572,8 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
   }
   else if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) )
   {
-    QgsProcessingModelParameter paramComp = mModel->parameterComponent( param->parameterName() );
-    paramComp.setLinksCollapsed( edge, folded );
+    QgsProcessingModelParameter parameterComponent = mModel->parameterComponent( param->parameterName() );
+    parameterComponent.setLinksCollapsed( edge, folded );
   }
   else if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( mComponent.get() ) )
   {
