@@ -227,7 +227,7 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 
 QColor QgsModelDesignerSocketGraphicItem::socketColor() const
 {
-  return mComponentItem->getLinkColor( mEdge, mIndex );
+  return mComponentItem->linkColor( mEdge, mIndex );
 }
 
 
