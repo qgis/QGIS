@@ -650,7 +650,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:hypsometriccurves",
                 "qgis:linestopolygons",
                 "qgis:listuniquevalues",
-                "qgis:minimumboundinggeometry",
                 "qgis:pointsdisplacement",
                 "qgis:randomextractwithinsubsets",
                 "qgis:randompointsalongline",
