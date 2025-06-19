@@ -3727,7 +3727,7 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ),
-           r.crs().authid() );
+           r.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
   }
   else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
   {
