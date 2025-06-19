@@ -17,7 +17,6 @@
 #define QGSPOSTPROCESSINGRENDERVIEW_H
 
 #include "qgsabstractrenderview.h"
-#include "qgspostprocessingentity.h"
 
 namespace Qt3DRender
 {
@@ -26,7 +25,10 @@ namespace Qt3DRender
   class QClearBuffers;
   class QRenderStateSet;
   class QRenderCapture;
+  class QRenderTarget;
 } //namespace Qt3DRender
+
+class QgsPostprocessingEntity;
 
 #define SIP_NO_FILE
 
@@ -36,9 +38,7 @@ namespace Qt3DRender
  *
  * \note Not available in Python bindings
  *
- * The postprocessing buffer render pass is made to copy the postprocessing buffer into
- * an RGB texture that can be captured into a QImage and sent to the CPU for
- * calculating real 3D points from mouse coordinates (for zoom, rotation, drag..)
+ * The postprocessing pass apply post-processing effects (shadows, EDL, SSAO).
  *
  * \since QGIS 3.44
  */
@@ -75,6 +75,7 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
     void setSubPasses( QVector<Qt3DRender::QFrameGraphNode *> topNodes );
 
   private:
+    Qt3DRender::QRenderTarget *buildRenderCaptureTextures( QSize mSize );
     Qt3DRender::QFrameGraphNode *constructPostprocessingMainPass( QSize mSize );
     Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing( QgsShadowRenderView &shadowRenderView,       //
                                                                     QgsForwardRenderView &forwardRenderView,     //

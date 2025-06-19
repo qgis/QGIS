@@ -43,12 +43,11 @@
       (Qt3DRender::QSubtreeEnabler{142/post_processing::SubtreeEnabler})
         (Qt3DRender::QRenderTargetSelector{143/post_processing::RenderTargetSelector}) [D] [ (outputs:[ (Color0:{146[RGB8_UNorm]/post_processing::ColorTarget), (Depth:{148[DepthFormat]/post_processing::DepthTarget) ]) ]
           (Qt3DRender::QFrameGraphNode{149/post_processing::Sub passes top node})
-            (Qt3DRender::QCameraSelector{150/post_processing::Sub pass::Postprocessing}) [ (Qt3DRender::QCamera:{51/shadow::LightCamera}) ]
-              (Qt3DRender::QLayerFilter{151/<no_name>}) [ (AcceptAnyMatchingLayers:[ {152/<no_name>} ]) ]
-                (Qt3DRender::QClearBuffers{153/<no_name>})
-            (Qt3DRender::QNoDraw{189/debug_texture::NoDraw})
-              (Qt3DRender::QSubtreeEnabler{190/debug_texture::SubtreeEnabler}) [D]
-                (Qt3DRender::QLayerFilter{192/<no_name>}) [ (AcceptAnyMatchingLayers:[ {191/debug_texture::Layer} ]) ]
-                  (Qt3DRender::QRenderStateSet{193/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-            (Qt3DRender::QNoDraw{187/post_processing::Sub pass::RenderCapture}) [D]
-              (Qt3DRender::QRenderCapture{188/<no_name>})
+            (Qt3DRender::QLayerFilter{150/post_processing::Sub pass::Postprocessing}) [ (AcceptAnyMatchingLayers:[ {151/<no_name>} ]) ]
+              (Qt3DRender::QClearBuffers{152/<no_name>})
+            (Qt3DRender::QNoDraw{188/debug_texture::NoDraw})
+              (Qt3DRender::QSubtreeEnabler{189/debug_texture::SubtreeEnabler}) [D]
+                (Qt3DRender::QLayerFilter{191/<no_name>}) [ (AcceptAnyMatchingLayers:[ {190/debug_texture::Layer} ]) ]
+                  (Qt3DRender::QRenderStateSet{192/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+            (Qt3DRender::QNoDraw{186/post_processing::Sub pass::RenderCapture}) [D]
+              (Qt3DRender::QRenderCapture{187/<no_name>})
