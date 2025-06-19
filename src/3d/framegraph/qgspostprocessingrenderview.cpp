@@ -89,19 +89,11 @@ void QgsPostprocessingRenderView::setOffScreenRenderCaptureEnabled( bool enabled
   mRenderCapture->parentNode()->setEnabled( enabled ); // for NoDraw node
 }
 
-Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructPostprocessingMainPass( QSize mSize )
+
+Qt3DRender::QRenderTarget *QgsPostprocessingRenderView::buildRenderCaptureTextures( QSize mSize )
 {
-  // Due to a bug in Qt5 (fixed in Qt6 - https://codereview.qt-project.org/c/qt/qt3d/+/462575) we need to move the render target selector at the top
-  // of this branch. Doing so this allows Qt3d to have a FBO format matching the one need to do the capture
-  mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mRendererEnabler );
-  mRenderCaptureTargetSelector->setObjectName( mViewName + "::RenderTargetSelector" );
-  mRenderCaptureTargetSelector->setEnabled( false );
-
-  // =============== v NEED ONLY DURING UNIT TEST v
+  // =============== v NEEDED ONLY DURING UNIT TEST v
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( mRenderCaptureTargetSelector );
-
-  // The lifetime of the objects created here is managed
-  // automatically, as they become children of this object.
 
   // Create a render target output for rendering color.
   Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
@@ -134,9 +126,23 @@ Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructPostprocessin
   depthOutput->setTexture( mRenderCaptureDepthTexture );
   renderTarget->addOutput( depthOutput );
 
-  mRenderCaptureTargetSelector->setTarget( renderTarget );
-  // =============== ^ NEED ONLY DURING UNIT TEST ^
+  return renderTarget;
+  // =============== ^ NEEDED ONLY DURING UNIT TEST ^
+}
 
+Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructPostprocessingMainPass( QSize mSize )
+{
+  // Due to a bug in Qt5 (fixed in Qt6 - https://codereview.qt-project.org/c/qt/qt3d/+/462575) we need to move the render target selector at the top
+  // of this branch. Doing so this allows Qt3d to have a FBO format matching the one need to do the capture
+  mRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mRendererEnabler );
+  mRenderCaptureTargetSelector->setObjectName( mViewName + "::RenderTargetSelector" );
+  mRenderCaptureTargetSelector->setEnabled( false );
+
+  // build texture part
+  Qt3DRender::QRenderTarget *renderTarget = buildRenderCaptureTextures( mSize );
+  mRenderCaptureTargetSelector->setTarget( renderTarget );
+
+  // add node for sub passes
   mSubPassesNode = new Qt3DRender::QFrameGraphNode( mRenderCaptureTargetSelector );
   mSubPassesNode->setObjectName( mViewName + "::Sub passes top node" );
 
@@ -149,11 +155,8 @@ Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassFo
                                                                                              QgsAmbientOcclusionRenderView &aoRenderView, //
                                                                                              Qt3DCore::QEntity *rootSceneEntity )
 {
-  Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector;
-  cameraSelector->setObjectName( mViewName + "::Sub pass::Postprocessing" );
-  cameraSelector->setCamera( shadowRenderView.lightCamera() );
-
-  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter;
+  layerFilter->setObjectName( mViewName + "::Sub pass::Postprocessing" );
 
   Qt3DRender::QLayer *postProcessingLayer = new Qt3DRender::QLayer();
   postProcessingLayer->setRecursive( true );
@@ -169,7 +172,7 @@ Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassFo
                                                        rootSceneEntity );
   mPostprocessingEntity->setObjectName( "PostProcessingPassEntity" );
 
-  return cameraSelector;
+  return layerFilter;
 }
 
 Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassForRenderCapture()

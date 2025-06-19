@@ -230,7 +230,7 @@ set(QGIS_3D_HDRS
   framegraph/qgshighlightsrenderview.h
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
-  framegraph/qgspostprocessingrenderview.cpp
+  framegraph/qgspostprocessingrenderview.h
   framegraph/qgsshadowrenderview.h
 
   symbols/qgsbillboardgeometry.h
