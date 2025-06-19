@@ -92,6 +92,9 @@ bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mCircle.isEmpty() )
+      return false;
+
     if ( match.isValid() && ( mPoints.size() == 4 ) )
     {
       match.edgePoints( p1, p2 );
