@@ -49,6 +49,11 @@ QString QgsUniqueValuesAlgorithm::shortHelpString() const
   return QObject::tr( "Returns list of unique values in given field(s) of a vector layer." );
 }
 
+QString QgsUniqueValuesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Returns list of unique values in given field(s) of a vector layer." );
+}
+
 QgsUniqueValuesAlgorithm *QgsUniqueValuesAlgorithm::createInstance() const
 {
   return new QgsUniqueValuesAlgorithm();
