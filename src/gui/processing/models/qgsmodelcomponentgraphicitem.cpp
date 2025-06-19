@@ -1276,46 +1276,45 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
 
 
         QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
-        QString paramValueAsStr = "";
+        QString parameterValueAsString;
 
         if ( paramSources.size() > 0 )
         {
-          QgsProcessingModelChildParameterSource firstParamSource = paramSources[0];
+          QgsProcessingModelChildParameterSource firstParameterSource = paramSources[0];
 
-          switch ( firstParamSource.source() )
+          switch ( firstParameterSource.source() )
           {
             case Qgis::ProcessingModelChildParameterSource::ChildOutput:
-              paramValueAsStr = QStringLiteral( ": %1" ).arg(
-                firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) )
+              parameterValueAsString = QStringLiteral( ": %1" ).arg(
+                firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) )
               );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::Expression:
-              paramValueAsStr = QStringLiteral( ": %1" ).arg( firstParamSource.expression() );
+              parameterValueAsString = QStringLiteral( ": %1" ).arg( firstParameterSource.expression() );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ExpressionText:
-              paramValueAsStr = QStringLiteral( ": %1" ).arg( firstParamSource.expressionText() );
+              parameterValueAsString = QStringLiteral( ": %1" ).arg( firstParameterSource.expressionText() );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
-              paramValueAsStr = QStringLiteral( ": <%1>" ).arg( firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
+              parameterValueAsString = QStringLiteral( ": <%1>" ).arg( firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) ) );
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelParameter:
             {
-              QString friendlyName = firstParamSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) );
-              // paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": value from '%1'" ).arg( friendlyName );
-              paramValueAsStr = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": <%1>" ).arg( friendlyName );
+              const QString friendlyName = firstParameterSource.friendlyIdentifier( const_cast<QgsProcessingModelAlgorithm *>( model() ) );
+              parameterValueAsString = friendlyName.isEmpty() ? QStringLiteral( ":" ) : QStringLiteral( ": <%1>" ).arg( friendlyName );
               break;
             }
 
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
             default:
               QVariant paramValue = paramSources[0].staticValue();
-              paramValueAsStr = QStringLiteral( ": %1" ).arg( param->userFriendlyString( paramValue ) );
+              parameterValueAsString = QStringLiteral( ": %1" ).arg( param->userFriendlyString( paramValue ) );
           }
-          title += paramValueAsStr;
+          title += parameterValueAsString;
         }
 
         return truncatedTextForItem( title );
