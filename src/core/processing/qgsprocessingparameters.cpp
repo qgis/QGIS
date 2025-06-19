@@ -3062,7 +3062,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
     const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
     if ( !g.isNull() )
     {
-      return QStringLiteral( "[%1] %2" ).arg( g.crs().authid(), g.typeName() );
+      return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
     }
     return g.typeName();
   }
@@ -3078,7 +3078,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
     const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedRect( value.value<QgsReferencedRectangle>() );
     if ( !g.isNull() )
     {
-      return QStringLiteral( "[%1] %2" ).arg( g.crs().authid(), g.typeName() );
+      return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
     }
     return g.typeName();
   }
@@ -3099,7 +3099,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
   {
     const QDateTime dt = value.toDateTime();
     if ( !dt.isValid() )
-      return QStringLiteral( "invalid datetime" );
+      return QObject::tr( "Invalid datetime" );
     else
       return QStringLiteral( "%1-%2-%3T%4:%5:%6" )
              .arg( dt.date().year() )
@@ -3114,7 +3114,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
   {
     const QDate dt = value.toDate();
     if ( !dt.isValid() )
-      return QStringLiteral( "invalid date" );
+      return QObject::tr( "Invalid date" );
     else
       return QStringLiteral( "%1-%2-%3" )
              .arg( dt.year() )
@@ -3126,7 +3126,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
   {
     const QTime dt = value.toTime();
     if ( !dt.isValid() )
-      return QStringLiteral( "invalid time" );
+      return QObject::tr( "Invalid time" );
     else
       return QStringLiteral( "%4:%5:%6" )
              .arg( dt.hour() )
@@ -3144,6 +3144,8 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
       return g.typeName();
     }
   }
+
+  qDebug() << value ;
 
   return value.toString();
 }
