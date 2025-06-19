@@ -3054,12 +3054,7 @@ QString QgsProcessingParameterDefinition::getUserFriendlyValue( QVariant paramVa
   else if ( paramValue.userType() == qMetaTypeId< QgsGeometry>() )
   {
     const QgsGeometry g = paramValue.value<QgsGeometry>();
-    if ( !g.isNull() )
-    {
-      const QString wkt = g.asWkt();
-      return QStringLiteral( "wkt(%1)" ).arg( wkt );
-    }
-    return QStringLiteral( "wkt(null)" );
+    return g.typeName();
   }
 
   else if ( paramValue.userType() == qMetaTypeId<QgsReferencedGeometry>() )
@@ -3068,20 +3063,15 @@ QString QgsProcessingParameterDefinition::getUserFriendlyValue( QVariant paramVa
     if ( !g.isNull() )
     {
       const QString wkt = g.asWkt();
-      return QStringLiteral( "[%1] wkt(%2)" ).arg( g.crs().authid(), wkt );
+      return QStringLiteral( "[%1] %2" ).arg( g.crs().authid(), g.typeName() );
     }
-    return QStringLiteral( "wkt(null)" );
+    return g.typeName();
   }
 
   if ( paramValue.userType() == qMetaTypeId<QgsRectangle>() )
   {
     const QgsGeometry g = QgsGeometry::fromRect( paramValue.value<QgsRectangle>() );
-    if ( !g.isNull() )
-    {
-      const QString wkt = g.asWkt();
-      return QStringLiteral( "wkt(%1)" ).arg( wkt );
-    }
-    return QStringLiteral( "wkt(null)" );
+    return g.typeName();
   }
 
   else if ( paramValue.userType() == qMetaTypeId<QgsReferencedRectangle>() )
@@ -3090,9 +3080,9 @@ QString QgsProcessingParameterDefinition::getUserFriendlyValue( QVariant paramVa
     if ( !g.isNull() )
     {
       const QString wkt = g.asWkt();
-      return QStringLiteral( "[%1] wkt(%2)" ).arg( g.crs().authid(), wkt );
+      return QStringLiteral( "[%1] %2" ).arg( g.crs().authid(), g.typeName() );
     }
-    return QStringLiteral( "wkt(null)" );
+    return g.typeName();
   }
 
   else if ( paramValue.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )

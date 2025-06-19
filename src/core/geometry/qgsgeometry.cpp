@@ -476,6 +476,19 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
   return QgsGeometry( std::move( cp ) );
 }
 
+QString QgsGeometry::name( Qgis::GeometryType type )
+{
+  switch ( type )
+  {
+    case Qgis::GeometryType::Line: return QString( "Line" );
+    case Qgis::GeometryType::Point: return QString( "Point" );
+    case Qgis::GeometryType::Polygon: return QString( "Polygon" );
+    case Qgis::GeometryType::Null: return QString( "Null" );
+    case Qgis::GeometryType::Unknown:
+    default: return QString( "Unknown" );
+  }
+}
+
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
   QgsConstWkbPtr ptr( wkb, length );
@@ -508,6 +521,16 @@ Qgis::GeometryType QgsGeometry::type() const
     return Qgis::GeometryType::Unknown;
   }
   return QgsWkbTypes::geometryType( d->geometry->wkbType() );
+}
+
+QString QgsGeometry::typeName() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry::name( Qgis::GeometryType::Null );
+  }
+
+  return QgsGeometry::name( type() );
 }
 
 bool QgsGeometry::isEmpty() const

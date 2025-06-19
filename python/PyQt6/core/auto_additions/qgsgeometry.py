@@ -14,6 +14,7 @@ try:
     QgsGeometry.collectGeometry = staticmethod(QgsGeometry.collectGeometry)
     QgsGeometry.createWedgeBuffer = staticmethod(QgsGeometry.createWedgeBuffer)
     QgsGeometry.createWedgeBufferFromAngles = staticmethod(QgsGeometry.createWedgeBufferFromAngles)
+    QgsGeometry.name = staticmethod(QgsGeometry.name)
     QgsGeometry.unaryUnion = staticmethod(QgsGeometry.unaryUnion)
     QgsGeometry.polygonize = staticmethod(QgsGeometry.polygonize)
     QgsGeometry.fromQPointF = staticmethod(QgsGeometry.fromQPointF)

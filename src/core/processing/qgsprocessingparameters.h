@@ -467,8 +467,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QColor modelColor() const;
 
     /**
-     * Get a user friendly string representation of the provided parameter value.
-     * (Meant to be override by child classes to adapt to specific param types)
+     * Returns a user-friendly string representation of the provided parameter \a value.
+     *
+     * The returned string is to be used for display purposes only, and should be translated as required.
+     * \since QGIS 3.44
      */
     virtual QString getUserFriendlyValue( QVariant paramValue ) const;
 

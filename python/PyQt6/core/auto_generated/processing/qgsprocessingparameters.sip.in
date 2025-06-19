@@ -371,9 +371,13 @@ A color to represent the default parameter
 
     virtual QString getUserFriendlyValue( QVariant paramValue ) const;
 %Docstring
-Get a user friendly string representation of the provided parameter
-value. (Meant to be override by child classes to adapt to specific param
-types)
+Returns a user-friendly string representation of the provided parameter
+``value``.
+
+The returned string is to be used for display purposes only, and should
+be translated as required.
+
+.. versionadded:: 3.44
 %End
 
     virtual QgsProcessingParameterDefinition *clone() const = 0 /Factory/;
