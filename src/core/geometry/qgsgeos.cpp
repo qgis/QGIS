@@ -3761,6 +3761,11 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
   }
   catch ( GEOSException & )
   {
+    // nothing to do: on exception newRing will be null
+  }
+
+  if ( !newRing )
+  {
     delete [] innerRings;
     return nullptr;
   }
