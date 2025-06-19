@@ -9,7 +9,7 @@ except (NameError, AttributeError):
 try:
     QgsMeshLayer.__attribute_docs__ = {'activeScalarDatasetGroupChanged': 'Emitted when active scalar group dataset is changed\n\n.. versionadded:: 3.14\n', 'activeVectorDatasetGroupChanged': 'Emitted when active vector group dataset is changed\n\n.. versionadded:: 3.14\n', 'timeSettingsChanged': 'Emitted when time format is changed\n\n.. versionadded:: 3.8\n', 'reloaded': 'Emitted when the mesh layer is reloaded, see\n:py:func:`~QgsMeshLayer.reload`\n\n.. versionadded:: 3.28\n'}
     QgsMeshLayer.__virtual_methods__ = ['loadDefaultStyle']
-    QgsMeshLayer.__overridden_methods__ = ['dataProvider', 'clone', 'extent', 'createMapRenderer', 'createProfileGenerator', 'readSymbology', 'writeSymbology', 'writeStyle', 'readStyle', 'encodedSource', 'decodedSource', 'readXml', 'writeXml', 'temporalProperties', 'elevationProperties', 'reload', 'subLayers', 'htmlMetadata', 'isEditable', 'supportsEditing', 'isModified', 'setTransformContext']
+    QgsMeshLayer.__overridden_methods__ = ['dataProvider', 'clone', 'extent', 'createMapRenderer', 'profileSource', 'createProfileGenerator', 'readSymbology', 'writeSymbology', 'writeStyle', 'readStyle', 'encodedSource', 'decodedSource', 'readXml', 'writeXml', 'temporalProperties', 'elevationProperties', 'reload', 'subLayers', 'htmlMetadata', 'isEditable', 'supportsEditing', 'isModified', 'setTransformContext']
     QgsMeshLayer.__signal_arguments__ = {'activeScalarDatasetGroupChanged': ['index: int'], 'activeVectorDatasetGroupChanged': ['index: int']}
     QgsMeshLayer.__group__ = ['mesh']
 except (NameError, AttributeError):
