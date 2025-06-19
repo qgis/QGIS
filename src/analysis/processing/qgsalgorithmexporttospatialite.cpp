@@ -51,8 +51,12 @@ QString QgsExportToSpatialiteAlgorithm::groupId() const
 
 QString QgsExportToSpatialiteAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Exports a vector layer to a SpatiaLite database, creating "
-                      "a new table.\n\n" );
+  return QObject::tr( "Exports a vector layer to a SpatiaLite database, creating a new table." );
+}
+
+QString QgsExportToSpatialiteAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a vector layer to a SpatiaLite database, creating a new table." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsExportToSpatialiteAlgorithm::flags() const

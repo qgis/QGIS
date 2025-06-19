@@ -39,6 +39,7 @@ class QgsExportToRegisteredSpatialiteAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QgsExportToRegisteredSpatialiteAlgorithm *createInstance() const override SIP_FACTORY;
 

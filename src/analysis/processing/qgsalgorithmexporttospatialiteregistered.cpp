@@ -57,6 +57,11 @@ QString QgsExportToRegisteredSpatialiteAlgorithm::shortHelpString() const
                       "Browser panel)." );
 }
 
+QString QgsExportToRegisteredSpatialiteAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a vector layer to a registered SpatiaLite database, creating a new table." );
+}
+
 Qgis::ProcessingAlgorithmFlags QgsExportToRegisteredSpatialiteAlgorithm::flags() const
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
