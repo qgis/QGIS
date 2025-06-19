@@ -868,7 +868,7 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
 }
 
 
-QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index )
+QString QgsModelParameterGraphicItem::linkedParameterDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const
 {
   if ( index < 0 )
   {
@@ -884,7 +884,7 @@ QString QgsModelParameterGraphicItem::getLinkedParamDataType( Qt::Edge /* unused
 }
 
 
-QColor QgsModelParameterGraphicItem::getLinkColor( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index )
+QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const
 {
   if ( index < 0 )
   {
@@ -1139,7 +1139,7 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
 }
 
 
-QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int index )
+QString QgsModelComponentGraphicItem::linkedParameterDataType( Qt::Edge edge, int index ) const
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {
@@ -1179,7 +1179,7 @@ QString QgsModelComponentGraphicItem::getLinkedParamDataType( Qt::Edge edge, int
   return QString();
 }
 
-QColor QgsModelComponentGraphicItem::getLinkColor( Qt::Edge edge, int index )
+QColor QgsModelComponentGraphicItem::linkColor( Qt::Edge edge, int index ) const
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
   {

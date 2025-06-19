@@ -137,11 +137,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
-    virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
+    virtual QString linkedParameterDataType( Qt::Edge edge, int index ) const;
 
 #ifndef SIP_RUN
 
-    virtual QColor getLinkColor( Qt::Edge edge, int index );
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
     /**
      * Shows a preview of setting a new \a rect for the item.
@@ -368,7 +368,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void updateButtonPositions();
 
     /**
-     * Get the fallback color if parameter or output do not have a specific color
+     * Returns the fallback color if the parameter or output does not have a specific color.
      */
     QColor fallbackColor() const { return mFallbackColor; };
 
@@ -437,9 +437,9 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
-    QString getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) override;
+    QString linkedParameterDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const override;
 
-    QColor getLinkColor( Qt::Edge edge, int index ) override;
+    QColor linkColor( Qt::Edge edge, int index ) const override;
 
   protected:
     QColor fillColor( State state ) const override;

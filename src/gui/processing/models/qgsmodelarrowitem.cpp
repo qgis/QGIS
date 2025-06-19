@@ -73,7 +73,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, M
 
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  QColor color = mStartItem->getLinkColor( mStartEdge, mStartIndex );
+  QColor color = mStartItem->linkColor( mStartEdge, mStartIndex );
 
   if ( mStartItem->state() == QgsModelComponentGraphicItem::Selected || mEndItem->state() == QgsModelComponentGraphicItem::Selected )
     color.setAlpha( 220 );
@@ -121,7 +121,7 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
 
   // Set the painter back to regular stroke thickness
   p = pen();
-  QColor endColor = mEndItem->getLinkColor( mEndEdge, mEndIndex );
+  QColor endColor = mEndItem->linkColor( mEndEdge, mEndIndex );
   color.setAlpha( 255 );
 
   QLinearGradient gradient;

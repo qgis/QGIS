@@ -112,7 +112,7 @@ Shows a preview of moving the item from its stored position by ``dx``,
 Sets a new scene ``rect`` for the item.
 %End
 
-    virtual QString getLinkedParamDataType( Qt::Edge edge, int index );
+    virtual QString linkedParameterDataType( Qt::Edge edge, int index ) const;
 
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
@@ -328,8 +328,8 @@ Updates the item's button positions, based on the current item rect.
 
     QColor fallbackColor() const;
 %Docstring
-Get the fallback color if parameter or output do not have a specific
-color
+Returns the fallback color if the parameter or output does not have a
+specific color.
 %End
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
@@ -369,10 +369,10 @@ Ownership of ``parameter`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-    virtual QString getLinkedParamDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index );
+    virtual QString linkedParameterDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const;
 
 
-    virtual QColor getLinkColor( Qt::Edge edge, int index );
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
 
   protected:
