@@ -179,15 +179,19 @@ Return the component associated to the socket */
 %Docstring
 Return the parent graphic item associated to the socket */
 %End
-    QColor getColor();
+    QColor socketColor() const;
 %Docstring
 Returns the color of the socket based on the type of data the param
-corresponds to */
+corresponds to.
+
+.. versionadded:: 4.0
 %End
 
-    bool isDefaultParamValue();
+    bool isDefaultParameterValue() const;
 %Docstring
-Returns whether the param value bear the default param value */
+Returns ``True`` if the parameter is set to the default parameter value.
+
+.. versionadded:: 4.0
 %End
   signals:
 

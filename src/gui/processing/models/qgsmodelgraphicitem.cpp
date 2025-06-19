@@ -185,12 +185,12 @@ QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelCo
 
 void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  QColor outlineColor = getColor();
+  QColor outlineColor = socketColor();
   QColor fillColor = QColor( outlineColor );
 
   if ( isInput() )
   {
-    fillColor.setAlpha( isDefaultParamValue() ? 30 : 255 );
+    fillColor.setAlpha( isDefaultParameterValue() ? 30 : 255 );
   }
   else
   {
@@ -222,13 +222,13 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 }
 
 
-QColor QgsModelDesignerSocketGraphicItem::getColor()
+QColor QgsModelDesignerSocketGraphicItem::socketColor() const
 {
-  return componentItem()->getLinkColor( mEdge, mIndex );
+  return mComponentItem->getLinkColor( mEdge, mIndex );
 }
 
 
-bool QgsModelDesignerSocketGraphicItem::isDefaultParamValue()
+bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
 {
   if ( !mComponent )
   {
