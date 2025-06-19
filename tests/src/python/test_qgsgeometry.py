@@ -4365,7 +4365,8 @@ class TestQgsGeometry(QgisTestCase):
         # no overlap
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(4, 2), QgsPoint(7, 2)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(4, 2), QgsPoint(7, 2)])),
+            QgsGeometry.OperationResult.NothingHappened,
         )
         expWkt = "LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4419,7 +4420,8 @@ class TestQgsGeometry(QgisTestCase):
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1)")
         # extend start
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1)"
         wkt = g.asWkt()
@@ -4431,7 +4433,7 @@ class TestQgsGeometry(QgisTestCase):
             g.reshapeGeometry(
                 QgsLineString([QgsPoint(5, 1), QgsPoint(10, 1), QgsPoint(10, 2)])
             ),
-            0,
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)"
         wkt = g.asWkt()
@@ -4442,7 +4444,8 @@ class TestQgsGeometry(QgisTestCase):
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1)")
         # extend start
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(-1, 0), QgsPoint(0, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(-1, 0), QgsPoint(0, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1)"
         wkt = g.asWkt()
@@ -4454,7 +4457,7 @@ class TestQgsGeometry(QgisTestCase):
             g.reshapeGeometry(
                 QgsLineString([QgsPoint(10, 2), QgsPoint(10, 1), QgsPoint(5, 1)])
             ),
-            0,
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)"
         wkt = g.asWkt()
@@ -4465,7 +4468,8 @@ class TestQgsGeometry(QgisTestCase):
         # reshape where reshape line exactly overlaps some portions of geometry
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(2, 0), QgsPoint(6, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(2, 0), QgsPoint(6, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (0 0, 2 0, 5 0, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4476,7 +4480,8 @@ class TestQgsGeometry(QgisTestCase):
 
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(5, 0), QgsPoint(7, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(5, 0), QgsPoint(7, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (0 0, 5 0, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4488,7 +4493,8 @@ class TestQgsGeometry(QgisTestCase):
         # reshape line overlaps at both start and end
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(4, 0), QgsPoint(7, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(4, 0), QgsPoint(7, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (0 0, 4 0, 5 0, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4512,7 +4518,7 @@ class TestQgsGeometry(QgisTestCase):
                     ]
                 )
             ),
-            0,
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (152.96371 -25.60916, 152.96371 -25.60913, 152.96401 -25.60859, 152.96423 -25.60858, 152.96423 -25.60858, 152.96428 -25.60858, 152.96538 -25.60854, 152.96576 -25.6088)"
         wkt = g.asWkt(5)
