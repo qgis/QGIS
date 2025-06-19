@@ -1,6 +1,4 @@
 usr/lib/qgis/crssync
-#pdal#usr/lib/qgis/untwine
-#pdal_wrench#usr/lib/qgis/pdal_wrench
 usr/lib/qgis/plugins/libauthmethod_apiheader.so
 usr/lib/qgis/plugins/libauthmethod_awss3.so
 usr/lib/qgis/plugins/libauthmethod_basic.so
@@ -16,7 +14,6 @@ usr/lib/qgis/plugins/libprovider_gpx.so
 usr/lib/qgis/plugins/libprovider_hana.so
 usr/lib/qgis/plugins/libprovider_mdal.so
 usr/lib/qgis/plugins/libprovider_mssql.so
-#pdal#usr/lib/qgis/plugins/libprovider_pdal.so
 usr/lib/qgis/plugins/libprovider_postgres.so
 usr/lib/qgis/plugins/libprovider_postgresraster.so
 usr/lib/qgis/plugins/libprovider_spatialite.so
@@ -25,4 +22,7 @@ usr/lib/qgis/plugins/libprovider_virtualraster.so
 usr/lib/qgis/plugins/libprovider_wcs.so
 usr/lib/qgis/plugins/libprovider_wfs.so
 usr/lib/qgis/plugins/libprovider_wms.so
-usr/lib/*/qt?/plugins/sqldrivers/libqsqlspatialite.so
+usr/lib/*/qt5/plugins/sqldrivers/libqsqlspatialite.so
+#pdal#usr/lib/qgis/untwine
+#pdal_wrench#usr/lib/qgis/pdal_wrench
+#pdal#usr/lib/qgis/plugins/libprovider_pdal.so

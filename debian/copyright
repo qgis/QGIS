@@ -242,12 +242,6 @@ Files: external/qt3dextra-headers/Qt3DExtras/qextrudedtextgeometry.h
 Copyright: 2016-2017, Klaralvdalens Datakonsult AB (KDAB)
 License: QT-Commercial or BSD-3-Clause
 
-Files: external/qwtpolar-1.1.1/*
-Copyright: 2008, Uwe Rathmann
-Comment: This library is free software; you can redistribute it and/or
- modify it under the terms of the Qwt License, Version 1.0
-License: QWT-1.0
-
 Files: external/wintoast/*
 Copyright: 2016, Mohammed Boujemaoui Boulaghmoudi
 License: MIT

@@ -24,7 +24,7 @@
 #include "qgsmeshspatialindex.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshutils.h"
-#include "meshOptimizer/meshoptimizer.h"
+#include "meshoptimizer.h"
 
 static void triangulateFaces( const QgsMeshFace &face,
                               int nativeIndex,
@@ -497,7 +497,12 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
                     vertices.data(),
                     verticesCount,
                     sizeof( float ) * 3,
-                    maxNumberOfIndexes );
+                    maxNumberOfIndexes
+#if MESHOPTIMIZER_VERSION > 150
+                    , 0
+                    , nullptr
+#endif
+                  );
 
 
     returnIndexes.resize( size );
