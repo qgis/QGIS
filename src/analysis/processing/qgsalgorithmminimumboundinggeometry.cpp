@@ -55,6 +55,11 @@ QString QgsMinimumBoundingGeometryAlgorithm::shortHelpString() const
                       "a minimal geometry covering just the features with matching values." );
 }
 
+QString QgsMinimumBoundingGeometryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates geometries which enclose the features from an input layer." );
+}
+
 QgsMinimumBoundingGeometryAlgorithm *QgsMinimumBoundingGeometryAlgorithm::createInstance() const
 {
   return new QgsMinimumBoundingGeometryAlgorithm();
@@ -174,11 +179,11 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
       {
         if ( !geometryHash.contains( fieldValue ) )
         {
-          geometryHash.insert( fieldValue, QList<QgsGeometry>() << f.geometry() );
+          geometryHash.insert( fieldValue, QVector<QgsGeometry>() << f.geometry() );
         }
         else
         {
-          geometryHash.insert( fieldValue, geometryHash.value( fieldValue ) << f.geometry() );
+          geometryHash.insert( fieldValue, geometryHash[fieldValue] << f.geometry() );
         }
       }
       i++;
@@ -190,7 +195,7 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
     if ( geometryType == 0 )
     {
       step = boundsHash.size() > 0 ? 50 / boundsHash.size() : 1;
-      for ( auto it = boundsHash.cbegin(), end = boundsHash.cend(); it != end; ++it )
+      for ( auto it = boundsHash.constBegin(); it != boundsHash.constEnd(); ++it )
       {
         if ( feedback->isCanceled() )
           break;
@@ -202,7 +207,7 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         feature.setAttributes( QgsAttributes() << i << it.key() << rect.width() << rect.height() << rect.area() << rect.perimeter() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-        geometryHash.remove( it.key() );
+        geometryHash.insert( it.key(), QVector<QgsGeometry>() );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -210,7 +215,7 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
     else
     {
       step = geometryHash.size() > 0 ? 50 / geometryHash.size() : 1;
-      for ( auto it = geometryHash.cbegin(), end = geometryHash.cend(); it != end; ++it )
+      for ( auto it = geometryHash.constBegin(); it != geometryHash.constEnd(); ++it )
       {
         if ( feedback->isCanceled() )
           break;
@@ -219,7 +224,7 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         QgsFeature feature = createFeature( feedback, i, geometryType, it.value(), it.key() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-        geometryHash.remove( it.key() );
+        geometryHash.insert( it.key(), QVector<QgsGeometry>() );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -290,7 +295,7 @@ QgsFeature QgsMinimumBoundingGeometryAlgorithm::createFeature( QgsProcessingFeed
     attrs << classField;
   }
 
-  QgsMultiPoint multiPoint;
+  auto multiPoint = std::make_unique<QgsMultiPoint>();
 
   for ( auto &g : geometries )
   {
@@ -302,11 +307,11 @@ QgsFeature QgsMinimumBoundingGeometryAlgorithm::createFeature( QgsProcessingFeed
       if ( feedback->isCanceled() )
         break;
 
-      multiPoint.addGeometry( ( *it ).clone() );
+      multiPoint->addGeometry( ( *it ).clone() );
     }
   }
 
-  QgsGeometry geometry( &multiPoint );
+  QgsGeometry geometry( std::move( multiPoint ) );
   QgsGeometry outputGeometry;
   if ( featureType == 0 )
   {

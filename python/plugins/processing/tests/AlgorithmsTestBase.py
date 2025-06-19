@@ -648,7 +648,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:generatepointspixelcentroidsalongline",
                 "qgis:hypsometriccurves",
                 "qgis:linestopolygons",
-                "qgis:minimumboundinggeometry",
                 "qgis:pointsdisplacement",
                 "qgis:randomextractwithinsubsets",
                 "qgis:randompointsalongline",
