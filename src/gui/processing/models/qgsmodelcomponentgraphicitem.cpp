@@ -847,7 +847,6 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
     return QString();
   }
 
-
   if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
   {
     QString text = this->model()->parameterDefinition( parameter->parameterName() )->type();
@@ -859,13 +858,11 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
 
       if ( paramValue.isValid() )
       {
-        text += ": " + paramDef->getUserFriendlyValue( paramValue );
+        text += ": " + paramDef->userFriendlyString( paramValue );
       }
     }
-
     return truncatedTextForItem( text );
   }
-
 
   return QString();
 }
@@ -1316,7 +1313,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
             default:
               QVariant paramValue = paramSources[0].staticValue();
-              paramValueAsStr = QStringLiteral( ": %1" ).arg( param->getUserFriendlyValue( paramValue ) );
+              paramValueAsStr = QStringLiteral( ": %1" ).arg( param->userFriendlyString( paramValue ) );
           }
           title += paramValueAsStr;
         }

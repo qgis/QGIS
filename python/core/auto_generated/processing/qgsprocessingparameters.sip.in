@@ -369,7 +369,7 @@ Constructor for QgsProcessingParameterDefinition.
 A color to represent the default parameter
 %End
 
-    virtual QString getUserFriendlyValue( QVariant paramValue ) const;
+    virtual QString userFriendlyString( QVariant &value ) const;
 %Docstring
 Returns a user-friendly string representation of the provided parameter
 ``value``.
@@ -377,7 +377,7 @@ Returns a user-friendly string representation of the provided parameter
 The returned string is to be used for display purposes only, and should
 be translated as required.
 
-.. versionadded:: 3.44
+.. versionadded:: 4.0
 %End
 
     virtual QgsProcessingParameterDefinition *clone() const = 0 /Factory/;
@@ -1936,12 +1936,8 @@ A coordinate reference system parameter for processing algorithms.
 Constructor for QgsProcessingParameterCrs.
 %End
 
-    virtual QString getUserFriendlyValue( QVariant paramValue ) const;
+    virtual QString userFriendlyString( QVariant &value ) const;
 
-%Docstring
-Get a user friendly string representation of the provided parameter
-value.
-%End
 
     static QString typeName();
 %Docstring
@@ -2571,7 +2567,7 @@ Constructor for QgsProcessingParameterDistance.
 Returns the type name for the parameter class.
 %End
 
-    virtual QString getUserFriendlyValue( QVariant paramValue ) const;
+    virtual QString userFriendlyString( QVariant &value ) const;
 
 
     virtual QgsProcessingParameterDistance *clone() const /Factory/;
@@ -3043,12 +3039,8 @@ values.
 Constructor for QgsProcessingParameterEnum.
 %End
 
-    virtual QString getUserFriendlyValue( QVariant paramValue ) const;
+    virtual QString userFriendlyString( QVariant &value ) const;
 
-%Docstring
-Get a user friendly string representation of the provided parameter
-value.
-%End
 
     static QString typeName();
 %Docstring

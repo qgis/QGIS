@@ -470,9 +470,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Returns a user-friendly string representation of the provided parameter \a value.
      *
      * The returned string is to be used for display purposes only, and should be translated as required.
-     * \since QGIS 3.44
+     * \since QGIS 4.0
      */
-    virtual QString getUserFriendlyValue( QVariant paramValue ) const;
+    virtual QString userFriendlyString( QVariant &value ) const;
 
     /**
      * Creates a clone of the parameter definition.
@@ -1826,10 +1826,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     QgsProcessingParameterCrs( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                bool optional = false );
 
-    /**
-     * Get a user friendly string representation of the provided parameter value.
-     */
-    QString getUserFriendlyValue( QVariant paramValue ) const override;
+    QString userFriendlyString( QVariant &value ) const override;
 
     /**
      * Returns the type name for the parameter class.
@@ -2381,7 +2378,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      */
     static QString typeName() { return QStringLiteral( "distance" ); } // cppcheck-suppress duplInheritedMember
 
-    QString getUserFriendlyValue( QVariant paramValue ) const override;
+    QString userFriendlyString( QVariant &value ) const override;
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2803,10 +2800,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
                                 bool optional = false,
                                 bool usesStaticStrings = false );
 
-    /**
-     * Get a user friendly string representation of the provided parameter value.
-     */
-    QString getUserFriendlyValue( QVariant paramValue ) const override;
+    QString userFriendlyString( QVariant &value ) const override;
 
     /**
      * Returns the type name for the parameter class.
