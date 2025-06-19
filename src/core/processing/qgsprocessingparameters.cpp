@@ -3195,8 +3195,6 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
     }
   }
 
-  qDebug() << value ;
-
   return value.toString();
 }
 
