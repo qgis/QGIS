@@ -1241,7 +1241,17 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
-  QgsGeos geos( d->geometry.get() );
+  // We're trying adding the reshape line's vertices to the geometry so that
+  // snap to segment always produces a valid reshape
+  QgsPointSequence reshapePoints;
+  reshapeLineString.points( reshapePoints );
+  QgsGeometry tmpGeom( *this );
+  for ( const QgsPoint &v : std::as_const( reshapePoints ) )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
+  QgsGeos geos( tmpGeom.get() );
   QgsGeometryEngine::EngineOperationResult errorCode = QgsGeometryEngine::Success;
   mLastError.clear();
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
