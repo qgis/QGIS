@@ -765,8 +765,8 @@ QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelPa
   svg.render( &painter );
   painter.end();
 
-  if ( const QgsProcessingParameterDefinition *paramDef = model->parameterDefinition( parameter->parameterName() ) )
-    setLabel( paramDef->description() );
+  if ( const QgsProcessingParameterDefinition *parameterDefinition = model->parameterDefinition( parameter->parameterName() ) )
+    setLabel( parameterDefinition->description() );
   else
     setLabel( QObject::tr( "Error (%1)" ).arg( parameter->parameterName() ) );
 }
