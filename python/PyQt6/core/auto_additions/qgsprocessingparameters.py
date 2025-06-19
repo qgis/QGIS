@@ -82,7 +82,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterCrs.typeName = staticmethod(QgsProcessingParameterCrs.typeName)
     QgsProcessingParameterCrs.fromScriptCode = staticmethod(QgsProcessingParameterCrs.fromScriptCode)
-    QgsProcessingParameterCrs.__overridden_methods__ = ['getUserFriendlyValue', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
+    QgsProcessingParameterCrs.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsString', 'valueAsJsonObject']
     QgsProcessingParameterCrs.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -137,7 +137,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterDistance.typeName = staticmethod(QgsProcessingParameterDistance.typeName)
-    QgsProcessingParameterDistance.__overridden_methods__ = ['getUserFriendlyValue', 'clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDistance.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterDistance.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -183,7 +183,7 @@ except (NameError, AttributeError):
 try:
     QgsProcessingParameterEnum.typeName = staticmethod(QgsProcessingParameterEnum.typeName)
     QgsProcessingParameterEnum.fromScriptCode = staticmethod(QgsProcessingParameterEnum.fromScriptCode)
-    QgsProcessingParameterEnum.__overridden_methods__ = ['getUserFriendlyValue', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterEnum.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterEnum.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
@@ -389,7 +389,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProcessingParameterDefinition.__virtual_methods__ = ['modelColor', 'getUserFriendlyValue', 'isDestination', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsJsonObject', 'valueAsString', 'valueAsStringList', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'dependsOnOtherParameters', 'toolTip']
+    QgsProcessingParameterDefinition.__virtual_methods__ = ['modelColor', 'userFriendlyString', 'isDestination', 'checkValueIsAcceptable', 'valueAsPythonString', 'valueAsJsonObject', 'valueAsString', 'valueAsStringList', 'valueAsPythonComment', 'asScriptCode', 'asPythonString', 'toVariantMap', 'fromVariantMap', 'dependsOnOtherParameters', 'toolTip']
     QgsProcessingParameterDefinition.__abstract_methods__ = ['clone', 'type']
     QgsProcessingParameterDefinition.__group__ = ['processing']
 except (NameError, AttributeError):
