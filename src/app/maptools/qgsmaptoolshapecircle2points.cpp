@@ -74,7 +74,7 @@ bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Q
 void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode )
 {
   Q_UNUSED( mode )
-  if ( !mTempRubberBand )
+  if ( !mTempRubberBand || mPoints.isEmpty() )
     return;
 
   mCircle = QgsCircle::from2Points( mPoints.at( 0 ), mParentTool->mapPoint( *e ) );

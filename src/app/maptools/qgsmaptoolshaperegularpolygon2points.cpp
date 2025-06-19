@@ -92,7 +92,7 @@ void QgsMapToolShapeRegularPolygon2Points::cadCanvasMoveEvent( QgsMapMouseEvent 
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 
-  if ( mTempRubberBand )
+  if ( mTempRubberBand && !mPoints.isEmpty() )
   {
     mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value() );
     mTempRubberBand->setGeometry( mRegularPolygon.toPolygon() );
