@@ -58,6 +58,12 @@ QString QgsHubDistanceAlgorithm::shortHelpString() const
                       "of the lines" );
 }
 
+QString QgsHubDistanceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes the distance between features from the source layer to the closest feature from the destination layer." );
+}
+
+
 QgsHubDistanceAlgorithm *QgsHubDistanceAlgorithm::createInstance() const
 {
   return new QgsHubDistanceAlgorithm();
