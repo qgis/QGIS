@@ -4521,6 +4521,21 @@ class TestQgsGeometry(QgisTestCase):
             f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n",
         )
 
+        # test should not raise exception
+        expWkt = "Polygon ((0 0, 5 0, 5 2, 0 2, 0 0))"
+        g = QgsGeometry.fromWkt(expWkt)
+        self.assertEqual(
+            g.reshapeGeometry(
+                QgsLineString([QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 2)])
+            ),
+            QgsGeometry.OperationResult.NothingHappened,
+        )
+        wkt = g.asWkt()
+        self.assertTrue(
+            compareWkt(expWkt, wkt),
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n",
+        )
+
     def testConvertToMultiType(self):
         """Test converting geometries to multi type"""
         point = QgsGeometry.fromWkt("Point (1 2)")
