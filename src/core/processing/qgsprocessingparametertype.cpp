@@ -59,5 +59,5 @@ QList<int> QgsProcessingParameterType::acceptedDataTypes( const QgsProcessingPar
 
 QColor QgsProcessingParameterType::modelColor() const
 {
-  return QColor( 128, 128, 128 ); /* mid gray */
+  return defaultModelColor();
 }

@@ -24,6 +24,11 @@ Makes metadata of processing parameters available.
   public:
 
     static QColor defaultModelColor();
+%Docstring
+Returns the default color for a processing parameter.
+
+.. versionadded:: 4.0
+%End
 
     virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 /Factory/;
 %Docstring
@@ -181,7 +186,12 @@ for the parameter.
 
     virtual QColor modelColor() const;
 %Docstring
-A color to represent the default parameter
+Returns the color to use for the parameter in model designer windows.
+
+The default implementation retrieves the color from the parameter type,
+see :py:func:`QgsProcessingParameterType.modelColor()`.
+
+.. versionadded:: 4.0
 %End
 
 };
