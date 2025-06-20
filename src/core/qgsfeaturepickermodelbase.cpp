@@ -302,14 +302,35 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    if ( mOrderDescending )
+    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b )
     {
-      std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.orderValue.localeAwareCompare( b.orderValue ) > 0; } );
-    }
-    else
-    {
-      std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.orderValue.localeAwareCompare( b.orderValue ) < 0; } );
-    }
+      bool ok = false;
+      double aNumericOrderValue = a.orderValue.toDouble( &ok );
+      if ( ok )
+      {
+        double bNumericOrderValue = b.orderValue.toDouble( &ok );
+        if ( ok )
+        {
+          if ( mOrderDescending )
+          {
+            return aNumericOrderValue > bNumericOrderValue;
+          }
+          else
+          {
+            return aNumericOrderValue < bNumericOrderValue;
+          }
+        }
+      }
+      if ( mOrderDescending )
+      {
+        return a.orderValue.localeAwareCompare( b.orderValue ) > 0;
+      }
+      else
+      {
+        return a.orderValue.localeAwareCompare( b.orderValue ) < 0;
+      }
+
+    } );
 
     if ( mAllowNull && mSourceLayer )
     {
