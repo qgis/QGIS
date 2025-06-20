@@ -81,7 +81,7 @@ void QgsMapToolShapeCircleCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e, 
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 
-  if ( mTempRubberBand )
+  if ( mTempRubberBand && !mPoints.isEmpty() )
   {
     mCircle = QgsCircle::fromCenterPoint( mPoints.at( 0 ), point );
     mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
