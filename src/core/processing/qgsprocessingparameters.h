@@ -462,7 +462,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual ~QgsProcessingParameterDefinition() = default;
 
     /**
-     * A color to represent the default parameter
+     * Returns the color to use for the parameter type in model designer windows.
+     *
+     * \since QGIS 4.0
      */
     virtual QColor modelColor() const;
 
