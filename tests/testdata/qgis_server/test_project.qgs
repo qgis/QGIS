@@ -4180,136 +4180,136 @@ def my_form_open(dialog, layer, feature):
     <layer id="testlayer2024010402"/>
   </layerorder>
   <labelEngineSettings/>
-  <properties name="properties">
-    <properties name="DefaultStyles"/>
-    <properties name="Digitizing">
-      <properties name="AvoidIntersectionsList" type="QStringList"/>
-      <properties name="AvoidIntersectionsMode" type="int">2</properties>
-      <properties name="DefaultSnapTolerance" type="double">0</properties>
-      <properties name="DefaultSnapToleranceUnit" type="int">2</properties>
-      <properties name="DefaultSnapType" type="QString">off</properties>
-      <properties name="LayerSnapToList" type="QStringList"/>
-      <properties name="LayerSnappingEnabledList" type="QStringList"/>
-      <properties name="LayerSnappingList" type="QStringList"/>
-      <properties name="LayerSnappingToleranceList" type="QStringList"/>
-      <properties name="LayerSnappingToleranceUnitList" type="QStringList"/>
-      <properties name="SnappingMode" type="QString">current_layer</properties>
-    </properties>
-    <properties name="Gui">
-      <properties name="CanvasColorBluePart" type="int">255</properties>
-      <properties name="CanvasColorGreenPart" type="int">255</properties>
-      <properties name="CanvasColorRedPart" type="int">255</properties>
-      <properties name="SelectionColorAlphaPart" type="int">255</properties>
-      <properties name="SelectionColorBluePart" type="int">0</properties>
-      <properties name="SelectionColorGreenPart" type="int">255</properties>
-      <properties name="SelectionColorRedPart" type="int">255</properties>
-    </properties>
-    <properties name="Identify">
-      <properties name="disabledLayers" type="QStringList">
+  <properties>
+    <DefaultStyles/>
+    <Digitizing>
+      <AvoidIntersectionsList type="QStringList"/>
+      <AvoidIntersectionsMode type="int">2</AvoidIntersectionsMode>
+      <DefaultSnapTolerance type="double">0</DefaultSnapTolerance>
+      <DefaultSnapToleranceUnit type="int">2</DefaultSnapToleranceUnit>
+      <DefaultSnapType type="QString">off</DefaultSnapType>
+      <LayerSnapToList type="QStringList"/>
+      <LayerSnappingEnabledList type="QStringList"/>
+      <LayerSnappingList type="QStringList"/>
+      <LayerSnappingToleranceList type="QStringList"/>
+      <LayerSnappingToleranceUnitList type="QStringList"/>
+      <SnappingMode type="QString">current_layer</SnappingMode>
+    </Digitizing>
+    <Gui>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+    </Gui>
+    <Identify>
+      <disabledLayers type="QStringList">
         <value>testlayer_0b835118_a5d5_4255_b5dd_f42253c0a4a0</value>
-      </properties>
-    </properties>
-    <properties name="Legend">
-      <properties name="filterByMap" type="bool">false</properties>
-    </properties>
-    <properties name="Macros">
-      <properties name="pythonCode" type="QString"></properties>
-    </properties>
-    <properties name="Measure">
-      <properties name="Ellipsoid" type="QString">WGS84</properties>
-    </properties>
-    <properties name="Measurement">
-      <properties name="AreaUnits" type="QString">m2</properties>
-      <properties name="DistanceUnits" type="QString">meters</properties>
-    </properties>
-    <properties name="PAL">
-      <properties name="CandidatesLine" type="int">50</properties>
-      <properties name="CandidatesLinePerCM" type="double">5</properties>
-      <properties name="CandidatesPoint" type="int">16</properties>
-      <properties name="CandidatesPolygon" type="int">30</properties>
-      <properties name="CandidatesPolygonPerCM" type="double">2.5</properties>
-      <properties name="DrawLabelMetrics" type="bool">false</properties>
-      <properties name="DrawOutlineLabels" type="bool">true</properties>
-      <properties name="DrawRectOnly" type="bool">false</properties>
-      <properties name="DrawUnplaced" type="bool">false</properties>
-      <properties name="PlacementEngineVersion" type="int">0</properties>
-      <properties name="SearchMethod" type="int">0</properties>
-      <properties name="ShowingAllLabels" type="bool">false</properties>
-      <properties name="ShowingCandidates" type="bool">false</properties>
-      <properties name="ShowingPartialsLabels" type="bool">true</properties>
-      <properties name="TextFormat" type="int">0</properties>
-      <properties name="UnplacedColor" type="QString">255,0,0,255,rgb:1,0,0,1</properties>
-    </properties>
-    <properties name="Paths">
-      <properties name="Absolute" type="bool">false</properties>
-    </properties>
-    <properties name="PositionPrecision">
-      <properties name="Automatic" type="bool">true</properties>
-      <properties name="DecimalPlaces" type="int">2</properties>
-      <properties name="DegreeFormat" type="QString">D</properties>
-    </properties>
-    <properties name="RequiredLayers">
-      <properties name="Layers" type="QStringList"/>
-    </properties>
-    <properties name="SpatialRefSys">
-      <properties name="ProjectCRSID" type="int">3452</properties>
-      <properties name="ProjectCRSProj4String" type="QString">+proj=longlat +datum=WGS84 +no_defs</properties>
-      <properties name="ProjectCrs" type="QString">EPSG:4326</properties>
-      <properties name="ProjectionsEnabled" type="int">1</properties>
-    </properties>
-    <properties name="Variables">
-      <properties name="variableNames" type="QStringList"/>
-      <properties name="variableValues" type="QStringList"/>
-    </properties>
-    <properties name="WCSLayers" type="QStringList"/>
-    <properties name="WCSUrl" type="QString"></properties>
-    <properties name="WFSLayers" type="QStringList">
+      </disabledLayers>
+    </Identify>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <Macros>
+      <pythonCode type="QString"></pythonCode>
+    </Macros>
+    <Measure>
+      <Ellipsoid type="QString">WGS84</Ellipsoid>
+    </Measure>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
+    <PAL>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <CandidatesLinePerCM type="double">5</CandidatesLinePerCM>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <CandidatesPolygonPerCM type="double">2.5</CandidatesPolygonPerCM>
+      <DrawLabelMetrics type="bool">false</DrawLabelMetrics>
+      <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <DrawUnplaced type="bool">false</DrawUnplaced>
+      <PlacementEngineVersion type="int">0</PlacementEngineVersion>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <TextFormat type="int">0</TextFormat>
+      <UnplacedColor type="QString">255,0,0,255,rgb:1,0,0,1</UnplacedColor>
+    </PAL>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <PositionPrecision>
+      <Automatic type="bool">true</Automatic>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+      <DegreeFormat type="QString">D</DegreeFormat>
+    </PositionPrecision>
+    <RequiredLayers>
+      <Layers type="QStringList"/>
+    </RequiredLayers>
+    <SpatialRefSys>
+      <ProjectCRSID type="int">3452</ProjectCRSID>
+      <ProjectCRSProj4String type="QString">+proj=longlat +datum=WGS84 +no_defs</ProjectCRSProj4String>
+      <ProjectCrs type="QString">EPSG:4326</ProjectCrs>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <Variables>
+      <variableNames type="QStringList"/>
+      <variableValues type="QStringList"/>
+    </Variables>
+    <WCSLayers type="QStringList"/>
+    <WCSUrl type="QString"></WCSUrl>
+    <WFSLayers type="QStringList">
       <value>testlayer20150528120452665</value>
-    </properties>
-    <properties name="WFSLayersPrecision">
-      <properties name="testlayer20150528120452665" type="int">8</properties>
-    </properties>
-    <properties name="WFSTLayers">
-      <properties name="Delete" type="QStringList">
+    </WFSLayers>
+    <WFSLayersPrecision>
+      <testlayer20150528120452665 type="int">8</testlayer20150528120452665>
+    </WFSLayersPrecision>
+    <WFSTLayers>
+      <Delete type="QStringList">
         <value>testlayer20150528120452665</value>
-      </properties>
-      <properties name="Insert" type="QStringList">
+      </Delete>
+      <Insert type="QStringList">
         <value>testlayer20150528120452665</value>
-      </properties>
-      <properties name="Update" type="QStringList">
+      </Insert>
+      <Update type="QStringList">
         <value>testlayer20150528120452665</value>
-      </properties>
-    </properties>
-    <properties name="WFSUrl" type="QString"></properties>
-    <properties name="WMSAccessConstraints" type="QString">None</properties>
-    <properties name="WMSAddWktGeometry" type="bool">true</properties>
-    <properties name="WMSContactMail" type="QString">elpaso@itopen.it</properties>
-    <properties name="WMSContactOrganization" type="QString">QGIS dev team</properties>
-    <properties name="WMSContactPerson" type="QString">Alessandro Pasotti</properties>
-    <properties name="WMSContactPhone" type="QString"></properties>
-    <properties name="WMSContactPosition" type="QString"></properties>
-    <properties name="WMSExtent" type="QStringList">
+      </Update>
+    </WFSTLayers>
+    <WFSUrl type="QString"></WFSUrl>
+    <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
+    <WMSAddWktGeometry type="bool">true</WMSAddWktGeometry>
+    <WMSContactMail type="QString">elpaso@itopen.it</WMSContactMail>
+    <WMSContactOrganization type="QString">QGIS dev team</WMSContactOrganization>
+    <WMSContactPerson type="QString">Alessandro Pasotti</WMSContactPerson>
+    <WMSContactPhone type="QString"></WMSContactPhone>
+    <WMSContactPosition type="QString"></WMSContactPosition>
+    <WMSExtent type="QStringList">
       <value>8.20315414376310059</value>
       <value>44.901236559338642</value>
       <value>8.204164917965862</value>
       <value>44.90159838674664172</value>
-    </properties>
-    <properties name="WMSFees" type="QString">conditions unknown</properties>
-    <properties name="WMSImageQuality" type="int">90</properties>
-    <properties name="WMSKeywordList" type="QStringList">
+    </WMSExtent>
+    <WMSFees type="QString">conditions unknown</WMSFees>
+    <WMSImageQuality type="int">90</WMSImageQuality>
+    <WMSKeywordList type="QStringList">
       <value></value>
-    </properties>
-    <properties name="WMSOnlineResource" type="QString"></properties>
-    <properties name="WMSPrecision" type="QString">4</properties>
-    <properties name="WMSRequestDefinedDataSources" type="bool">false</properties>
-    <properties name="WMSRestrictedComposers" type="QStringList"/>
-    <properties name="WMSRestrictedLayers" type="QStringList"/>
-    <properties name="WMSSegmentizeFeatureInfoGeometry" type="bool">false</properties>
-    <properties name="WMSServiceAbstract" type="QString">Some UTF8 text èòù</properties>
-    <properties name="WMSServiceCapabilities" type="bool">true</properties>
-    <properties name="WMSServiceTitle" type="QString">QGIS TestProject</properties>
-    <properties name="WMSUrl" type="QString"></properties>
-    <properties name="WMSUseLayerIDs" type="bool">false</properties>
+    </WMSKeywordList>
+    <WMSOnlineResource type="QString"></WMSOnlineResource>
+    <WMSPrecision type="QString">4</WMSPrecision>
+    <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
+    <WMSRestrictedComposers type="QStringList"/>
+    <WMSRestrictedLayers type="QStringList"/>
+    <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
+    <WMSServiceAbstract type="QString">Some UTF8 text èòù</WMSServiceAbstract>
+    <WMSServiceCapabilities type="bool">true</WMSServiceCapabilities>
+    <WMSServiceTitle type="QString">QGIS TestProject</WMSServiceTitle>
+    <WMSUrl type="QString"></WMSUrl>
+    <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
   </properties>
   <dataDefinedServerProperties>
     <Option type="Map">
