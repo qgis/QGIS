@@ -59,10 +59,10 @@ endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "43")
+set(CPACK_PACKAGE_VERSION_MINOR "44")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-set(RELEASE_NAME "Master")
+set(RELEASE_NAME "Solothurn")
 project(qgis VERSION ${COMPLETE_VERSION})
 
 if (APPLE)
