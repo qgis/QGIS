@@ -1938,16 +1938,7 @@ bool QgsProject::read( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QUrl url( filename );
-  if ( url.scheme() == QStringLiteral( "base64" ) )
-  {
-    const QByteArray filenameBA( filename.toUtf8() );
-    const int len = filenameBA.length() - QString( "base64://" ).length();
-    const QByteArray decoded( QByteArray::fromBase64( filenameBA.right( len ) ) );
-    mFile.setFileName( QString::fromUtf8( decoded ) );
-  }
-  else
-    mFile.setFileName( filename );
+  mFile.setFileName( filename );
   mCachedHomePath.clear();
   mProjectScope.reset();
 
