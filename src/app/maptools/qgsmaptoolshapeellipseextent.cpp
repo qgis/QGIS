@@ -74,6 +74,9 @@ bool QgsMapToolShapeEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Q
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mEllipse.isEmpty() )
+      return false;
+
     addEllipseToParentTool();
     return true;
   }
