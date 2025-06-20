@@ -1,5 +1,56 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.44 'Solothurn'?
+
+This release has following new features:
+
+- Temporal: Allow WMS-T group node to expose time dimension
+- Temporal: Add fixed date/time to raster temporal mode
+- User Interface: Open a specific tab in the Message Log Panel
+- Symbology: Add an option to delete unused categories in the categorized symbol renderer widget
+- Labelling: Add settings for controlling margin around labels and preventing duplicate labels
+- 3D Features: Clipping planes tool
+- Point Clouds: Update pdal_wrench to v1.2
+- Print Layouts: Add auto-wrap after setting for layout legends
+- Expressions: Add repeat function and reverse variant for strings
+- Expressions: Expression functions to create CRS from string definition and to get authid from CRS
+- Digitising: Add merge policies
+- Data Management: Use HEIGHT_AVERAGE from RPC when available
+- Data Management: Allow field customisation when importing db tables
+- Data Management: Add optional extent, expression based filter when importing tables to database
+- Data Management: Add stored query support to Execute SQL window
+- Data Management: Saving/Loading SQL queries from Execute SQL/Update SQL dialogs
+- Data Management: Allow for extra OAuth2 token(s) to be added into headers
+- Data Management: Convert field name Casing when importing vector layers
+- Data Management: Import selected features only to database table
+- Forms and Widgets: Switch between field names and field aliases in forms
+- Forms and Widgets: Add a search box to Atrributes Form Designer
+- Analysis Tools: Add input parameters to the toolbox in the modeler
+- Processing: Port SAGA "Fill Sinks Wang & Liu" to native tool
+- Processing: Add creation options UI to raster calculator
+- Processing: Batch processing temporary output
+- Processing: Add basic drag and drop support in the model designer
+- Processing: Processing raster rank algorithm
+- Application and Project Options: Add project setting for scale calculation, including new "scale at equator" method
+- Application and Project Options: Add multiple country codes filter to Nominatim Geocoder Locator
+- Profile Plots: Add support for subsections indicator
+- Browser: Port SQL Query History to Browser
+- Browser: Improved project management for PostgreSQL stored Projects
+- Browser: Show dialog when importing tables via browser and give users options to control import
+- Browser: Move table to another schema for PostgreSQL Provider
+- Browser: Enable field rename for PostgreSQL
+- Data Providers: Add a WFS parameter for featureMode
+- Data Providers: Add connection setting for restricting PostgreSQL Schema
+- Data Providers: Add option to use POST requests for WFS connections
+- Data Providers: Allow SQL queries as layer sources from SQL Server
+- QGIS Server: Allow configuring the server project cache size
+- QGIS Server: Add server properties on layer tree group
+- Programmability: Add method to convert shapely geometry to QGIS Geometry
+- Programmability: Expose QGIS GPS Tools to Python API and Plugins
+- Notable Fixes: Bug fixes by Even Rouault (Spatialys)
+-
+
+
 # What's new in Version 3.42 'Münster'?
 
 This release has following new features:
