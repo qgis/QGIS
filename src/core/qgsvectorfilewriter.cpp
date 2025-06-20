@@ -284,12 +284,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( metadataFound )
     {
-      QStringList allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
+      QStringList allExts = metadata.glob.split( ' ', Qt::SkipEmptyParts );
       bool found = false;
       const auto constAllExts = allExts;
       for ( const QString &ext : constAllExts )
       {
-        if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
+        // Remove the wildcard (*) at the beginning of the extension
+        if ( vectorFileName.endsWith( ext.mid( 1 ), Qt::CaseInsensitive ) )
         {
           found = true;
           break;
@@ -298,6 +299,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       if ( !found )
       {
+        allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
         vectorFileName += '.' + allExts[0];
       }
     }
