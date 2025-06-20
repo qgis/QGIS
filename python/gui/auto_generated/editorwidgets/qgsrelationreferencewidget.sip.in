@@ -44,7 +44,7 @@ A widget which shows related features.
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( const QgsRelation &relation, bool allowNullValue, const QString &orderExpression = QString(), bool orderDescending = false );
+    void setRelation( const QgsRelation &relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -256,6 +256,39 @@ Returns the limit of fetched features (0 means all features)
 Set the limit of fetched features (0 means all features)
 
 .. versionadded:: 3.32
+%End
+
+    QString orderExpression() const;
+%Docstring
+Returns the string of the order expression The order expression will be
+used for sort values in the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    void setOrderExpression( const QString &orderExpression );
+%Docstring
+Set the string of the order expression The order expression will be used
+for sort values in the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    bool orderDescending() const;
+%Docstring
+Returns true if the order direction is descending The order direction
+will be used for sort values in the combobox. Ascending or not
+(descending).
+
+.. versionadded:: 4.0
+%End
+
+    void setOrderDescending( const bool orderDescending );
+%Docstring
+Set the order direction (true if descending) The order direction will be
+used for sort values in the combobox. Ascending or not (descending).
+
+.. versionadded:: 4.0
 %End
 
   public slots:

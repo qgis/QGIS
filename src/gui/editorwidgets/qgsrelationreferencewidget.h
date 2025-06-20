@@ -81,7 +81,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     ~QgsRelationReferenceWidget() override;
 
-    void setRelation( const QgsRelation &relation, bool allowNullValue, const QString &orderExpression = QString(), bool orderDescending = false );
+    void setRelation( const QgsRelation &relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -266,6 +266,34 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setFetchLimit( int fetchLimit ) { mFetchLimit = fetchLimit; }
 
+    /**
+     * Returns the string of the order expression
+     * The order expression will be used for sort values in the combobox.
+     * \since QGIS 4.0
+     */
+    QString orderExpression() const { return mOrderExpression; }
+
+    /**
+     * Set the string of the order expression
+     * The order expression will be used for sort values in the combobox.
+     * \since QGIS 4.0
+     */
+    void setOrderExpression( const QString &orderExpression ) { mOrderExpression = orderExpression; }
+
+    /**
+     * Returns true if the order direction is descending
+     * The order direction will be used for sort values in the combobox. Ascending or not (descending).
+     * \since QGIS 4.0
+     */
+    bool orderDescending() const { return mOrderDescending; }
+
+    /**
+     * Set the order direction (true if descending)
+     * The order direction will be used for sort values in the combobox. Ascending or not (descending).
+     * \since QGIS 4.0
+     */
+    void setOrderDescending( const bool orderDescending ) { mOrderDescending = orderDescending; }
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -365,7 +393,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QString mReferencedLayerDataSource;
     QString mReferencedLayerProviderKey;
     QString mOrderExpression;
-    bool mOrderDescending;
+    bool mOrderDescending = false;
 
     // UI
     QVBoxLayout *mTopLayout = nullptr;

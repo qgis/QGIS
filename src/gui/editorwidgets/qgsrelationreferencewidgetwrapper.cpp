@@ -83,6 +83,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   }
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 
+  mWidget->setOrderExpression( config( QStringLiteral( "OrderExpression" ) ).toString() );
+  mWidget->setOrderDescending( config( QStringLiteral( "OrderDescending" ), false ).toBool() );
+
   const QVariant relationName = config( QStringLiteral( "Relation" ) );
 
   // Store relation data source and provider key
@@ -116,11 +119,11 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   // constraints of the referencing fields
   if ( !config( QStringLiteral( "AllowNULL" ) ).isValid() )
   {
-    mWidget->setRelation( relation, relation.referencingFieldsAllowNull(), config( QStringLiteral( "OrderExpression" ) ).toString(), config( QStringLiteral( "OrderDescending" ), false ).toBool() );
+    mWidget->setRelation( relation, relation.referencingFieldsAllowNull() );
   }
   else
   {
-    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool(), config( QStringLiteral( "OrderExpression" ) ).toString(), config( QStringLiteral( "OrderDescending" ), false ).toBool() );
+    mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
   }
 
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeysChanged );

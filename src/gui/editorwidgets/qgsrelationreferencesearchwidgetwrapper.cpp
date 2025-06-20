@@ -222,12 +222,14 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
     mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
+  mWidget->setOrderExpression( config( QStringLiteral( "OrderExpression" ) ).toString() );
+  mWidget->setOrderDescending( config( QStringLiteral( "OrderDescending" ), false ).toBool() );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
   // if no relation is given from the config, fetch one if there is only one available
   if ( !relation.isValid() && !layer()->referencingRelations( mFieldIdx ).isEmpty() && layer()->referencingRelations( mFieldIdx ).count() == 1 )
     relation = layer()->referencingRelations( mFieldIdx )[0];
-  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool(), config( QStringLiteral( "OrderExpression" ) ).toString(), config( QStringLiteral( "OrderDescending" ), false ).toBool() );
+  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
   mWidget->showIndeterminateState();
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValuesChanged );
