@@ -89,3 +89,15 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
   };
   return traverseTree( project->layerTreeRoot() );
 }
+
+QString QgsProjectUtils::decodeBase64Filename( const QString &filename )
+{
+  const QString base64Prefix = QStringLiteral( "base64://" );
+  if ( !filename.startsWith( base64Prefix ) )
+    return filename;
+
+  const QByteArray filenameBA( filename.toUtf8() );
+  const int len = filenameBA.length() - base64Prefix.length();
+  const QByteArray decoded( QByteArray::fromBase64( filenameBA.right( len ) ) );
+  return QString::fromUtf8( decoded );
+}

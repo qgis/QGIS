@@ -38,6 +38,7 @@ class TestQgsDataSourceUri : public QObject
     void checkParameterKeys();
     void checkRemovePassword();
     void checkUnicodeUri();
+    void checkUriInUri();
 };
 
 void TestQgsDataSourceUri::checkparser_data()
@@ -820,6 +821,52 @@ void TestQgsDataSourceUri::checkUnicodeUri()
   QgsDataSourceUri uri;
   uri.setEncodedUri( QStringLiteral( "url=file:///directory/テスト.mbtiles&type=mbtiles" ) );
   QCOMPARE( uri.param( QStringLiteral( "url" ) ), QStringLiteral( "file:///directory/テスト.mbtiles" ) );
+}
+
+// If the 'url' field references a QGIS server then the 'MAP' parameter can contain an url to the project file.
+// When the project is saved in a postgresql db, the connection url will also contains '&' and '='.
+// Even when the project file uri is urlencoded (once), the whole uri parsing process (by Qt) will decode some '&' and '=' and break the query parameters.
+// One solution is to urlencod twice this url and another solution is to use the encode the project file url to base64 and use the 'base64://' scheme.
+// See issue #31192
+void TestQgsDataSourceUri::checkUriInUri()
+{
+  QgsDataSourceUri uri;
+
+  // here QGIS server will not be able to parse the url if called from QGIS Desktop (as QGIS Desktop will apply an extra urldecode process):
+  // QGIS server will receive a call with this url: http://localhost:8000/ows/?MAP=postgresql://?service=qgis_test&dbname&schema=project&project=luxembourg&SERVICE=WMS&REQUEST=GetCapabilities
+  // from QGIS server POV the 'schema' and 'project' keys will be parsed as main query parameters for 'http://localhost:8000/ows/?' and not associated to the project file uri.
+  uri.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3Dpostgresql%3A%2F%2F%3Fservice%3Dqgis_test%26dbname%26schema%3Dproject%26project%3Dluxembourg&SERVICE=WMS&REQUEST=GetCapabilities&username=username&password=qgis%C3%A8%C3%A9" ) );
+  QCOMPARE( uri.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+  QCOMPARE( uri.username(), QStringLiteral( "username" ) );
+  QCOMPARE( uri.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri.password(), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+  QCOMPARE( uri.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+  QCOMPARE( uri.param( QStringLiteral( "url" ) ), QStringLiteral( "http://localhost:8000/ows/?MAP=postgresql%3A%2F%2F%3Fservice=qgis_test&dbname&schema=project&project=luxembourg" ) );
+
+  QgsDataSourceUri uri2;
+  // here, we have twice urlencoded the project file uri and QGIS server will be able to parse the url if called from QGIS Desktop (as QGIS Desktop will apply an extra urldecode process).
+  // QGIS server will receive a call with this url: http://localhost:8000/ows/?MAP=postgresql%3A%2F%2F%3Fservice%3Dqgis_test%26dbname%26schema%3Dproject%26project%3Dluxembourg&SERVICE=WMS&REQUEST=GetCapabilities
+  uri2.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3Dpostgresql%253A%252F%252F%253Fservice%253Dqgis_test%2526dbname%2526schema%253Dproject%2526project%253Dluxembourg&SERVICE=WMS&REQUEST=GetCapabilities&username=username&password=qgis%C3%A8%C3%A9" ) );
+  QCOMPARE( uri2.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+  QCOMPARE( uri2.username(), QStringLiteral( "username" ) );
+  QCOMPARE( uri2.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri2.password(), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri2.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+  QCOMPARE( uri2.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+  QCOMPARE( uri2.param( QStringLiteral( "url" ) ), QStringLiteral( "http://localhost:8000/ows/?MAP=postgresql%253A%252F%252F%253Fservice%253Dqgis_test%2526dbname%2526schema%253Dproject%2526project%253Dluxembourg" ) );
+
+  QgsDataSourceUri uri3;
+  // here, we have encode the project file uri in base64 and QGIS server will be able to parse the url.
+  // QGIS server will receive a call with this url: http://localhost:8000/ows/?MAP=base64://cG9zdGdyZXNxbDovLz9zZXJ2aWNlPXFnaXNfdGVzdCZkYm5hbWUmc2NoZW1hPXByb2plY3QmcHJvamVjdD1sdXhlbWJvdXJn&SERVICE=WMS&REQUEST=GetCapabilities
+  uri3.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3Dbase64%3A%2F%2FcG9zdGdyZXNxbDovLz9zZXJ2aWNlPXFnaXNfdGVzdCZkYm5hbWUmc2NoZW1hPXByb2plY3QmcHJvamVjdD1sdXhlbWJvdXJn&SERVICE=WMS&REQUEST=GetCapabilities&username=username&password=qgis%C3%A8%C3%A9" ) );
+  QCOMPARE( uri3.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+  QCOMPARE( uri3.username(), QStringLiteral( "username" ) );
+  QCOMPARE( uri3.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri3.password(), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri3.param( QStringLiteral( "SERVICE" ) ), QStringLiteral( "WMS" ) );
+  QCOMPARE( uri3.param( QStringLiteral( "REQUEST" ) ), QStringLiteral( "GetCapabilities" ) );
+  QCOMPARE( uri3.param( QStringLiteral( "url" ) ), QStringLiteral( "http://localhost:8000/ows/?MAP=base64%3A%2F%2FcG9zdGdyZXNxbDovLz9zZXJ2aWNlPXFnaXNfdGVzdCZkYm5hbWUmc2NoZW1hPXByb2plY3QmcHJvamVjdD1sdXhlbWJvdXJn" ) );
 }
 
 

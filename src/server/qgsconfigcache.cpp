@@ -20,6 +20,7 @@
 #include "qgsserverexception.h"
 #include "qgsstorebadlayerinfo.h"
 #include "qgsserverprojectutils.h"
+#include "qgsprojectutils.h"
 
 #include <QFile>
 
@@ -136,7 +137,8 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
       }
     }
 
-    if ( prj->read( path, readFlags ) )
+    QString decodedPath = QgsProjectUtils::decodeBase64Filename( path );
+    if ( prj->read( decodedPath, readFlags ) )
     {
       if ( !badLayerHandler->badLayers().isEmpty() )
       {
@@ -162,7 +164,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
           if ( !settings || !settings->ignoreBadLayers() )
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
+              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), decodedPath ),
               QStringLiteral( "Server" ), Qgis::MessageLevel::Critical
             );
             throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
@@ -170,7 +172,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
           else
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
+              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), decodedPath ),
               QStringLiteral( "Server" ), Qgis::MessageLevel::Warning
             );
           }
@@ -181,7 +183,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     else
     {
       QgsMessageLog::logMessage(
-        QStringLiteral( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
+        QStringLiteral( "Error when loading project file '%1': %2 " ).arg( decodedPath, prj->error() ),
         QStringLiteral( "Server" ), Qgis::MessageLevel::Critical
       );
     }

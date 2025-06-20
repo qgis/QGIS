@@ -48,7 +48,15 @@ Returns ``True`` if the specified ``layer`` is a child layer from any
 .. versionadded:: 3.24
 %End
 
+    static QString decodeBase64Filename( const QString &filename );
+%Docstring
+Returns the decoded ``filename``.
 
+If the ``filename`` starts with the scheme 'base64://', this will decode
+what after the scheme and return it. Else returns the filename as it.
+
+.. versionadded:: 3.44
+%End
 };
 
 

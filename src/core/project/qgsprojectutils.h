@@ -58,7 +58,15 @@ class CORE_EXPORT QgsProjectUtils
      */
     static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
 
-
+    /**
+     * Returns the decoded \a filename.
+     *
+     * If the \a filename starts with the scheme 'base64://', this will decode what after the scheme and return it.
+     * Else returns the filename as it.
+     *
+     * \since QGIS 3.44
+     */
+    static QString decodeBase64Filename( const QString &filename );
 };
 
 #endif // QGSPROJECTUTILS_H

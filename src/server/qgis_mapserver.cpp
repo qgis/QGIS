@@ -37,6 +37,7 @@ while QGIS server internal logging is printed to stderr.
 #include "qgsbufferserverresponse.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
+#include "qgsprojectutils.h"
 
 #include <QFontDatabase>
 #include <QString>
@@ -591,7 +592,7 @@ int main( int argc, char *argv[] )
   if ( !parser.value( projectOption ).isEmpty() )
   {
     // Check it!
-    const QString projectFilePath { parser.value( projectOption ) };
+    const QString projectFilePath = QgsProjectUtils::decodeBase64Filename( parser.value( projectOption ) );
     if ( !QgsProject::instance()->read( projectFilePath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoadLayouts | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontUpgradeAnnotations ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
