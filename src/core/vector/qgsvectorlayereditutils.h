@@ -284,6 +284,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     ///@cond PRIVATE
     static double getTopologicalSearchRadius( const QgsVectorLayer *layer ) SIP_SKIP;
+
+    static void addTopologicalPointsToLayers( const QgsGeometry &geom, QgsVectorLayer *vlayer, const QList<QgsMapLayer *> &layers, const QString &toolName ) SIP_SKIP;
     ///@endcond
 
   private:

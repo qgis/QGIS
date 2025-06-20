@@ -41,6 +41,10 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
 
   connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 
+  connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) {
+    tabWidget->setTabIcon( index, QIcon() );
+  } );
+
   mTabBarContextMenu = new QMenu( this );
   tabWidget->tabBar()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( tabWidget->tabBar(), &QWidget::customContextMenuRequested, this, &QgsMessageLogViewer::showContextMenuForTabBar );
@@ -120,15 +124,17 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   if ( i < tabWidget->count() )
   {
     w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
-    tabWidget->setCurrentIndex( i );
+    if ( i != tabWidget->currentIndex() )
+    {
+      tabWidget->setTabIcon( i, QgsApplication::getThemeIcon( QStringLiteral( "mMessageLog.svg" ) ) );
+    }
   }
   else
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
     w->viewport()->installEventFilter( this );
-    tabWidget->addTab( w, cleanedTag );
-    tabWidget->setCurrentIndex( tabWidget->count() - 1 );
+    i = tabWidget->addTab( w, QgsApplication::getThemeIcon( QStringLiteral( "mMessageLog.svg" ) ), cleanedTag );
   }
 
   QString levelString;
@@ -172,6 +178,18 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
   tabWidget->show();
   emptyLabel->hide();
+}
+
+void QgsMessageLogViewer::showTab( const QString &tag )
+{
+  for ( int i = 0; i < tabWidget->count(); i++ )
+  {
+    if ( tabWidget->tabText( i ).remove( QChar( '&' ) ) == tag )
+    {
+      tabWidget->setCurrentIndex( i );
+      return;
+    }
+  }
 }
 
 void QgsMessageLogViewer::closeTab( int index )

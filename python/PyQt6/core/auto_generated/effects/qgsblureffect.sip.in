@@ -39,6 +39,8 @@ Creates a new QgsBlurEffect effect from a properties string map.
 
     QgsBlurEffect();
 
+    virtual Qgis::PaintEffectFlags flags() const;
+
     virtual QString type() const;
     virtual QVariantMap properties() const;
 

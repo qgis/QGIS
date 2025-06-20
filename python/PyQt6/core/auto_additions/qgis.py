@@ -5137,6 +5137,20 @@ Qgis.MapLayerRendererFlag.baseClass = Qgis
 Qgis.MapLayerRendererFlags = lambda flags=0: Qgis.MapLayerRendererFlag(flags)
 Qgis.MapLayerRendererFlags.baseClass = Qgis
 MapLayerRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.PaintEffectFlag.RequiresRasterization.__doc__ = "The effect requires raster-based rendering."
+Qgis.PaintEffectFlag.__doc__ = """Flags which control how paint effects behave.
+
+.. versionadded:: 3.44
+
+* ``RequiresRasterization``: The effect requires raster-based rendering.
+
+"""
+# --
+Qgis.PaintEffectFlag.baseClass = Qgis
+Qgis.PaintEffectFlags = lambda flags=0: Qgis.PaintEffectFlag(flags)
+Qgis.PaintEffectFlags.baseClass = Qgis
+PaintEffectFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.TextRenderFormat = Qgis.TextRenderFormat
 # monkey patching scoped based enum
 QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines

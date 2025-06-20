@@ -24,6 +24,8 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
+#include "qgsvectorlayereditutils.h"
+#include "qgsmultipoint.h"
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
@@ -207,18 +209,13 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
 
   if ( reshapeDone )
   {
-    // Add topological points due to snapping
+    // Add topological points
     if ( QgsProject::instance()->topologicalEditing() )
     {
-      const QList<QgsPointLocator::Match> sm = snappingMatches();
-      Q_ASSERT( pts.size() == sm.size() );
-      for ( int i = 0; i < sm.size(); ++i )
-      {
-        if ( sm.at( i ).layer() )
-        {
-          sm.at( i ).layer()->addTopologicalPoints( pts.at( i ) );
-        }
-      }
+      //check if we need to add topological points to other layers
+      const QList<QgsMapLayer *> layers = canvas()->layers( true );
+      QgsGeometry pointsAsGeom( new QgsMultiPoint( pts ) );
+      QgsVectorLayerEditUtils::addTopologicalPointsToLayers( pointsAsGeom, vlayer, layers, mToolName );
     }
 
     vlayer->endEditCommand();

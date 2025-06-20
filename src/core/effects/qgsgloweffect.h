@@ -50,6 +50,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsGlowEffect( const QgsGlowEffect &other );
     ~QgsGlowEffect() override;
 
+    Qgis::PaintEffectFlags flags() const override;
     QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
 

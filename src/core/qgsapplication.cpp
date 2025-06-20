@@ -121,6 +121,9 @@
 #include <QScreen>
 #include <QAuthenticator>
 #include <QRecursiveMutex>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QImageReader>
+#endif
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() );
 
@@ -456,6 +459,11 @@ void QgsApplication::init( QString profileFolder )
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  // the default of 256 is not enough for QGIS
+  QImageReader::setAllocationLimit( 512 );
+#endif
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );

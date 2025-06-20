@@ -1056,6 +1056,7 @@ class TestSelectiveMasking(QgisTestCase):
 
         # test that force vector output has no impact on the result
         self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        self.map_settings.setFlag(Qgis.MapSettingsFlag.UseAdvancedEffects, True)
         # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
         # is used
         self.check_renderings(
