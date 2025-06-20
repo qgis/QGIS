@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>815</width>
-    <height>557</height>
+    <height>617</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -210,21 +210,23 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QStackedWidget" name="mOptionsStackedWidget">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QgsScrollArea" name="scrollArea">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
+         <property name="widgetResizable">
+          <bool>true</bool>
          </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="mOptsPage_Information">
-          <layout class="QVBoxLayout" name="verticalLayout_20">
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>664</width>
+            <height>565</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -238,98 +240,240 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Source">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsScrollArea" name="scrollArea_3">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+            <widget class="QStackedWidget" name="mOptionsStackedWidget">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_3">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>661</width>
-                <height>507</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_7">
+             <property name="currentIndex">
+              <number>6</number>
+             </property>
+             <widget class="QWidget" name="mOptsPage_Information">
+              <layout class="QVBoxLayout" name="verticalLayout_20">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_14">
-                 <item>
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>Layer name</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="mLayerOrigNameLineEd"/>
-                 </item>
-                </layout>
+                <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
                </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="mOptsPage_Source">
+              <layout class="QVBoxLayout" name="verticalLayout_6">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mCrsGroupBox">
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
+                <widget class="QgsScrollArea" name="scrollArea_3">
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
                  </property>
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>664</width>
+                    <height>565</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_7">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_14">
+                     <item>
+                      <widget class="QLabel" name="label_8">
+                       <property name="text">
+                        <string>Layer name</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="mLayerOrigNameLineEd"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QgsCollapsibleGroupBox" name="mCrsGroupBox">
+                     <property name="focusPolicy">
+                      <enum>Qt::StrongFocus</enum>
+                     </property>
+                     <property name="title">
+                      <string>Assigned Coordinate Reference System (CRS)</string>
+                     </property>
+                     <property name="checkable">
+                      <bool>false</bool>
+                     </property>
+                     <property name="syncGroup" stdset="0">
+                      <string notr="true">vectorgeneral</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_28">
+                      <property name="spacing">
+                       <number>6</number>
+                      </property>
+                      <item>
+                       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                        <property name="focusPolicy">
+                         <enum>Qt::StrongFocus</enum>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="label_17">
+                        <property name="text">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Changing this option does not modify the original data source or perform any reprojection of the vector tile layer. Rather, it can be used to override the layer's CRS within this project if it could not be detected or has been incorrectly detected.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
+                        <property name="textFormat">
+                         <enum>Qt::RichText</enum>
+                        </property>
+                        <property name="wordWrap">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="Line" name="line_4">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QgsCollapsibleGroupBox" name="mSourceGroupBox">
+                     <property name="title">
+                      <string>Layer Source</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Expanding</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>17</width>
+                       <height>111</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </widget>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="mOptsPage_Style">
+              <layout class="QVBoxLayout" name="verticalLayout_14">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="mOptsPage_Labeling">
+              <layout class="QVBoxLayout" name="verticalLayout_4"/>
+             </widget>
+             <widget class="QWidget" name="mOptsPage_Rendering">
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
                  <property name="title">
-                  <string>Assigned Coordinate Reference System (CRS)</string>
+                  <string>Scale Dependent Visibility</string>
                  </property>
                  <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
                   <bool>false</bool>
                  </property>
                  <property name="syncGroup" stdset="0">
-                  <string notr="true">vectorgeneral</string>
+                  <string notr="true">rastergeneral</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_28">
-                  <property name="spacing">
+                 <layout class="QGridLayout" name="_5">
+                  <property name="leftMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>11</number>
+                  </property>
+                  <property name="verticalSpacing">
                    <number>6</number>
                   </property>
-                  <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_17">
-                    <property name="text">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Changing this option does not modify the original data source or perform any reprojection of the vector tile layer. Rather, it can be used to override the layer's CRS within this project if it could not be detected or has been incorrectly detected.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="textFormat">
-                     <enum>Qt::RichText</enum>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="Line" name="line_4">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
+                    <property name="toolTip">
+                     <string/>
                     </property>
                    </widget>
                   </item>
@@ -337,410 +481,379 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mSourceGroupBox">
-                 <property name="title">
-                  <string>Layer Source</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_3">
+                <spacer name="verticalSpacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Expanding</enum>
-                 </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>17</width>
-                   <height>111</height>
+                   <width>20</width>
+                   <height>40</height>
                   </size>
                  </property>
                 </spacer>
                </item>
               </layout>
              </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Style">
-          <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Labeling">
-          <layout class="QVBoxLayout" name="verticalLayout_4"/>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Rendering">
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
-             <property name="title">
-              <string>Scale Dependent Visibility</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <property name="syncGroup" stdset="0">
-              <string notr="true">rastergeneral</string>
-             </property>
-             <layout class="QGridLayout" name="_5">
-              <property name="leftMargin">
-               <number>11</number>
-              </property>
-              <property name="topMargin">
-               <number>11</number>
-              </property>
-              <property name="rightMargin">
-               <number>11</number>
-              </property>
-              <property name="bottomMargin">
-               <number>11</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>6</number>
-              </property>
-              <item row="0" column="0" colspan="2">
-               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
-                <property name="toolTip">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Metadata">
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QFrame" name="metadataFrame">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Server">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <item>
-            <widget class="QgsCollapsibleGroupBox" name="mMetaDescriptionGrpBx">
-             <property name="title">
-              <string>Description</string>
-             </property>
-             <property name="syncGroup" stdset="0">
-              <string notr="true">vectormeta</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="1" column="0">
-               <widget class="QLabel" name="mLayerTitleLabel">
-                <property name="text">
-                 <string>Title</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QLineEdit" name="mLayerKeywordListLineEdit">
-                <property name="toolTip">
-                 <string>List of keywords separated by comma to help catalog searching.</string>
-                </property>
-                <property name="placeholderText">
-                 <string>List of keywords separated by comma to help catalog searching.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <item>
-                 <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
-                  <property name="toolTip">
-                   <string>A URL of the data presentation.</string>
+             <widget class="QWidget" name="mOptsPage_Metadata">
+              <layout class="QVBoxLayout" name="verticalLayout_5">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QgsScrollArea" name="scrollArea_4">
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents_4">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>664</width>
+                    <height>565</height>
+                   </rect>
                   </property>
-                  <property name="placeholderText">
-                   <string>A URL of the data presentation.</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="mLayerDataUrlFormatLabel">
-                  <property name="text">
-                   <string>Format</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="mLayerDataUrlFormatComboBox">
-                  <item>
-                   <property name="text">
-                    <string notr="true">text/html</string>
+                  <layout class="QVBoxLayout" name="verticalLayout_11">
+                   <property name="leftMargin">
+                    <number>0</number>
                    </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string notr="true">text/plain</string>
+                   <property name="topMargin">
+                    <number>0</number>
                    </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string notr="true">application/pdf</string>
+                   <property name="rightMargin">
+                    <number>0</number>
                    </property>
-                  </item>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QFrame" name="metadataFrame">
+                     <property name="frameShape">
+                      <enum>QFrame::NoFrame</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Raised</enum>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="mLayerKeywordListLabel">
-                <property name="text">
-                 <string>Keyword list</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="mLayerShortNameLabel">
-                <property name="text">
-                 <string>Short name</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="mLayerShortNameLineEdit">
-                <property name="toolTip">
-                 <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
-                </property>
-                <property name="inputMask">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="placeholderText">
-                 <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="mLayerTitleLineEdit">
-                <property name="toolTip">
-                 <string>The title is for the benefit of humans to identify layer.</string>
-                </property>
-                <property name="placeholderText">
-                 <string>The title is for the benefit of humans to identify layer.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="mLayerAbstractLabel">
-                <property name="text">
-                 <string>Abstract</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QPlainTextEdit" name="mLayerAbstractTextEdit">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>150</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>The abstract is a descriptive narrative providing more information about the layer.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="mLayerDataUrlLabel">
-                <property name="text">
-                 <string>Data URL</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="mOptsPage_Server">
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QgsScrollArea" name="scrollArea_2">
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>664</width>
+                    <height>565</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_10">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QgsCollapsibleGroupBox" name="mMetaDescriptionGrpBx">
+                     <property name="title">
+                      <string>Description</string>
+                     </property>
+                     <property name="syncGroup" stdset="0">
+                      <string notr="true">vectormeta</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_5">
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="mLayerTitleLabel">
+                        <property name="text">
+                         <string>Title</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="1">
+                       <widget class="QLineEdit" name="mLayerKeywordListLineEdit">
+                        <property name="toolTip">
+                         <string>List of keywords separated by comma to help catalog searching.</string>
+                        </property>
+                        <property name="placeholderText">
+                         <string>List of keywords separated by comma to help catalog searching.</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="6" column="1">
+                       <layout class="QHBoxLayout" name="horizontalLayout_7">
+                        <item>
+                         <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
+                          <property name="toolTip">
+                           <string>A URL of the data presentation.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>A URL of the data presentation.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="mLayerDataUrlFormatLabel">
+                          <property name="text">
+                           <string>Format</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="mLayerDataUrlFormatComboBox">
+                          <item>
+                           <property name="text">
+                            <string notr="true">text/html</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string notr="true">text/plain</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string notr="true">application/pdf</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item row="5" column="0">
+                       <widget class="QLabel" name="mLayerKeywordListLabel">
+                        <property name="text">
+                         <string>Keyword list</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="mLayerShortNameLabel">
+                        <property name="text">
+                         <string>Short name</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QLineEdit" name="mLayerShortNameLineEdit">
+                        <property name="toolTip">
+                         <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                        </property>
+                        <property name="inputMask">
+                         <string/>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="placeholderText">
+                         <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QLineEdit" name="mLayerTitleLineEdit">
+                        <property name="toolTip">
+                         <string>The title is for the benefit of humans to identify layer.</string>
+                        </property>
+                        <property name="placeholderText">
+                         <string>The title is for the benefit of humans to identify layer.</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="0">
+                       <widget class="QLabel" name="mLayerAbstractLabel">
+                        <property name="text">
+                         <string>Abstract</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="1">
+                       <widget class="QPlainTextEdit" name="mLayerAbstractTextEdit">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>150</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>The abstract is a descriptive narrative providing more information about the layer.</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="6" column="0">
+                       <widget class="QLabel" name="mLayerDataUrlLabel">
+                        <property name="text">
+                         <string>Data URL</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QgsCollapsibleGroupBox" name="mMetaAttributionGrpBx">
+                     <property name="title">
+                      <string>Attribution</string>
+                     </property>
+                     <property name="syncGroup" stdset="0">
+                      <string notr="true">vectormeta</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_7">
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="mLayerAttributionLabel">
+                        <property name="text">
+                         <string>Title</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QLineEdit" name="mLayerAttributionLineEdit">
+                        <property name="toolTip">
+                         <string>Attribution's title indicates the provider of the layer.</string>
+                        </property>
+                        <property name="placeholderText">
+                         <string>Attribution's title indicates the provider of the data layer.</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
+                       <widget class="QLabel" name="mLayerAttributionUrlLabel">
+                        <property name="text">
+                         <string>URL</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit">
+                        <property name="toolTip">
+                         <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+                        </property>
+                        <property name="placeholderText">
+                         <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QgsCollapsibleGroupBox" name="mMetaLegendGrpBx">
+                     <property name="title">
+                      <string>Legend URL</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_10">
+                      <item row="0" column="0">
+                       <layout class="QHBoxLayout" name="horizontalLayout_11">
+                        <item>
+                         <widget class="QLabel" name="mLayerLegendUrlLabel">
+                          <property name="text">
+                           <string>URL</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
+                          <property name="toolTip">
+                           <string>A URL of the legend image.</string>
+                          </property>
+                          <property name="placeholderText">
+                           <string>A URL of the legend image.</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="mLayerLegendUrlFormatLabel">
+                          <property name="text">
+                           <string>Format</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="mLayerLegendUrlFormatComboBox">
+                          <property name="minimumSize">
+                           <size>
+                            <width>137</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="currentIndex">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string notr="true">image/png</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string notr="true">image/jpeg</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </widget>
-           </item>
-           <item>
-            <widget class="QgsCollapsibleGroupBox" name="mMetaAttributionGrpBx">
-             <property name="title">
-              <string>Attribution</string>
-             </property>
-             <property name="syncGroup" stdset="0">
-              <string notr="true">vectormeta</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
-               <widget class="QLabel" name="mLayerAttributionLabel">
-                <property name="text">
-                 <string>Title</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="mLayerAttributionLineEdit">
-                <property name="toolTip">
-                 <string>Attribution's title indicates the provider of the layer.</string>
-                </property>
-                <property name="placeholderText">
-                 <string>Attribution's title indicates the provider of the data layer.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="mLayerAttributionUrlLabel">
-                <property name="text">
-                 <string>URL</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit">
-                <property name="toolTip">
-                 <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
-                </property>
-                <property name="placeholderText">
-                 <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QgsCollapsibleGroupBox" name="mMetaLegendGrpBx">
-             <property name="title">
-              <string>Legend URL</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_10">
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QLabel" name="mLayerLegendUrlLabel">
-                  <property name="text">
-                   <string>URL</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
-                  <property name="toolTip">
-                   <string>A URL of the legend image.</string>
-                  </property>
-                  <property name="placeholderText">
-                   <string>A URL of the legend image.</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="mLayerLegendUrlFormatLabel">
-                  <property name="text">
-                   <string>Format</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="mLayerLegendUrlFormatComboBox">
-                  <property name="minimumSize">
-                   <size>
-                    <width>137</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="currentIndex">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string notr="true">image/png</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string notr="true">image/jpeg</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -800,6 +913,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -808,12 +927,6 @@
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -831,6 +944,24 @@
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>mLayerOrigNameLineEd</tabstop>
+  <tabstop>mCrsGroupBox</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
