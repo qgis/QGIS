@@ -129,7 +129,7 @@ void QgsFeatureFilterModel::setIdentifierFields( const QStringList &identifierFi
 
 QgsFeatureExpressionValuesGatherer *QgsFeatureFilterModel::createValuesGatherer( const QgsFeatureRequest &request ) const
 {
-  return new QgsFeatureExpressionValuesGatherer( sourceLayer(), displayExpression(), request, mIdentifierFields );
+  return new QgsFeatureExpressionValuesGatherer( sourceLayer(), displayExpression(), orderExpression(), request, mIdentifierFields );
 }
 
 

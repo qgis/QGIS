@@ -71,6 +71,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsRelationReferenceConfigDlg::mEditExpression_clicked );
   connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mFetchLimitCheckBox, &QCheckBox::toggled, mFetchLimit, &QSpinBox::setEnabled );
+  connect( mCbxChainFilters, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mOrderByDescending, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mOrderByExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsEditorConfigWidget::changed );
 }
 
 void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
@@ -118,8 +121,11 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
   mCbxReadOnly->setChecked( config.value( QStringLiteral( "ReadOnly" ), false ).toBool() );
   mFetchLimitCheckBox->setChecked( config.value( QStringLiteral( "FetchLimitActive" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() > 0 ).toBool() );
   mFetchLimit->setValue( config.value( QStringLiteral( "FetchLimitNumber" ), QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ) ).toInt() );
-  mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
 
+  mOrderByExpressionWidget->setExpression( config.value( QStringLiteral( "OrderExpression" ) ).toString() );
+  mOrderByDescending->setChecked( config.value( QStringLiteral( "OrderDescending" ), false ).toBool() );
+
+  mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   if ( config.contains( QStringLiteral( "FilterFields" ) ) )
   {
     mFilterGroupBox->setChecked( true );
@@ -145,7 +151,7 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
     mExpressionWidget->setField( mReferencedLayer->displayExpression() );
     mCbxMapIdentification->setEnabled( mReferencedLayer->isSpatial() );
   }
-
+  mOrderByExpressionWidget->setLayer( mReferencedLayer );
   // If AllowNULL is not set in the config, provide a default value based on the
   // constraints of the referencing fields
   if ( !mAllowNullWasSetByConfig )
@@ -187,6 +193,9 @@ QVariantMap QgsRelationReferenceConfigDlg::config()
   myConfig.insert( QStringLiteral( "AllowAddFeatures" ), mCbxAllowAddFeatures->isChecked() );
   myConfig.insert( QStringLiteral( "FetchLimitActive" ), mFetchLimitCheckBox->isChecked() );
   myConfig.insert( QStringLiteral( "FetchLimitNumber" ), mFetchLimit->value() );
+
+  myConfig.insert( QStringLiteral( "OrderExpression" ), mOrderByExpressionWidget->currentField() );
+  myConfig.insert( QStringLiteral( "OrderDescending" ), mOrderByDescending->isChecked() );
 
   if ( mFilterGroupBox->isChecked() )
   {
