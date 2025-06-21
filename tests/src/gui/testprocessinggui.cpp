@@ -11455,6 +11455,42 @@ void TestProcessingGui::testModelGraphicsView()
   // should not exist
   QVERIFY( !layerCommentItem );
 
+  //check model bounds
+  scene2.updateBounds();
+  QRectF modelRect = scene2.sceneRect();
+  QGSCOMPARENEAR( modelRect.height(), 624.4, 3 ); // Sligtly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect.width(), 655.00, 0.01 );
+  QGSCOMPARENEAR( modelRect.left(), -252.0, 0.01 );
+  QGSCOMPARENEAR( modelRect.top(), -232.0, 0.01 );
+
+
+  // test model large modelRect
+  QgsProcessingModelAlgorithm model2;
+
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "buffer" );
+  algc2.setAlgorithmId( "native:buffer" );
+  algc2.setPosition( QPointF( 4250, 4250 ) );
+  QgsProcessingModelParameter param1;
+  param1.setParameterName( QStringLiteral( "LAYER" ) );
+  param1.setSize( QSizeF( 500, 400 ) );
+  param1.setPosition( QPointF( -250, -250 ) );
+  model2.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER" ) ), param );
+  algc2.addParameterSources( QStringLiteral( "INPUT" ), QList<QgsProcessingModelChildParameterSource>() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "LAYER" ) ) );
+
+  model2.addChildAlgorithm( algc2 );
+
+  QgsModelGraphicsScene scene3;
+  scene3.setModel( &model2 );
+  scene3.createItems( &model2, context );
+
+  scene3.updateBounds();
+  QRectF modelRect2 = scene3.sceneRect();
+  QGSCOMPARENEAR( modelRect2.height(), 4505.4, 3 ); // Sligtly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect2.width(), 4603.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.left(), -201.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.top(), -150.0, 0.01 );
+
 
   QgsModelGraphicsScene scene;
   QVERIFY( !scene.model() );
