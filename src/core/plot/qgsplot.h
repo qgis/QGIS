@@ -261,9 +261,6 @@ class CORE_EXPORT QgsPlotAxis
 /**
  * \brief Base class for 2-dimensional plot/chart/graphs.
  *
- * The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
- * can implement the renderContent() method to render their actual plot content.
- *
  * \warning This class is not considered stable API, and may change in future!
  *
  * \ingroup core
@@ -289,7 +286,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     /**
      * Renders the plot.
      */
-    void render( QgsRenderContext &context );
+    virtual void render( QgsRenderContext &context );
 
     /**
      * Renders the plot content.
@@ -322,7 +319,72 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      */
-    QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context ) const;
+
+    /**
+     * Returns the margins of the plot area (in millimeters)
+     *
+     * \see setMargins()
+     */
+    const QgsMargins &margins() const;
+
+    /**
+     * Sets the \a margins of the plot area (in millimeters)
+     *
+     * \see setMargins()
+     */
+    void setMargins( const QgsMargins &margins );
+
+  private:
+
+#ifdef SIP_RUN
+    Qgs2DPlot( const Qgs2DPlot &other );
+#endif
+
+    QSizeF mSize;
+    QgsMargins mMargins;
+
+    friend class Qgs2DXyPlot;
+};
+
+/**
+ * \brief Base class for 2-dimensional plot/chart/graphs with an X and Y axes.
+ *
+ * The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
+ * can implement the renderContent() method to render their actual plot content.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
+{
+  public:
+
+    /**
+     * Constructor for Qgs2DXyPlot.
+     */
+    Qgs2DXyPlot();
+
+    ~Qgs2DXyPlot() override;
+
+    Qgs2DXyPlot( const Qgs2DXyPlot &other ) = delete;
+    Qgs2DXyPlot &operator=( const Qgs2DXyPlot &other ) = delete;
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+
+    /**
+     * Renders the plot.
+     */
+    void render( QgsRenderContext &context ) override;
+
+    /**
+     * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
+     * outside the plot area).
+     */
+    QRectF interiorPlotArea( QgsRenderContext &context ) const override;
 
     /**
      * Automatically sets the grid and label intervals to optimal values
@@ -449,27 +511,11 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      */
     void setChartBorderSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
-    /**
-     * Returns the margins of the plot area (in millimeters)
-     *
-     * \see setMargins()
-     */
-    const QgsMargins &margins() const;
-
-    /**
-     * Sets the \a margins of the plot area (in millimeters)
-     *
-     * \see setMargins()
-     */
-    void setMargins( const QgsMargins &margins );
-
   private:
 
 #ifdef SIP_RUN
-    Qgs2DPlot( const Qgs2DPlot &other );
+    Qgs2DXyPlot( const Qgs2DXyPlot &other );
 #endif
-
-    QSizeF mSize;
 
     double mMinX = 0;
     double mMinY = 0;
@@ -478,8 +524,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 
     std::unique_ptr< QgsFillSymbol > mChartBackgroundSymbol;
     std::unique_ptr< QgsFillSymbol > mChartBorderSymbol;
-
-    QgsMargins mMargins;
 
     QgsPlotAxis mXAxis;
     QgsPlotAxis mYAxis;

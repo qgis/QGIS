@@ -234,10 +234,6 @@ class Qgs2DPlot : QgsPlot
 %Docstring(signature="appended")
 Base class for 2-dimensional plot/chart/graphs.
 
-The base class is responsible for rendering the axis, grid lines and
-chart area. Subclasses can implement the :py:func:`~renderContent`
-method to render their actual plot content.
-
 .. warning::
 
    This class is not considered stable API, and may change in future!
@@ -263,7 +259,7 @@ Constructor for Qgs2DPlot.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    void render( QgsRenderContext &context );
+    virtual void render( QgsRenderContext &context );
 %Docstring
 Renders the plot.
 %End
@@ -301,7 +297,73 @@ components which sit outside the plot area).
 .. seealso:: :py:func:`size`
 %End
 
-    QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context ) const;
+%Docstring
+Returns the area of the plot which corresponds to the actual plot
+content (excluding all titles and other components which sit outside the
+plot area).
+%End
+
+    const QgsMargins &margins() const;
+%Docstring
+Returns the margins of the plot area (in millimeters)
+
+.. seealso:: :py:func:`setMargins`
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the ``margins`` of the plot area (in millimeters)
+
+.. seealso:: :py:func:`setMargins`
+%End
+
+  private:
+    Qgs2DPlot( const Qgs2DPlot &other );
+};
+
+class Qgs2DXyPlot : Qgs2DPlot
+{
+%Docstring(signature="appended")
+Base class for 2-dimensional plot/chart/graphs with an X and Y axes.
+
+The base class is responsible for rendering the axis, grid lines and
+chart area. Subclasses can implement the :py:func:`~renderContent`
+method to render their actual plot content.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    Qgs2DXyPlot();
+%Docstring
+Constructor for Qgs2DXyPlot.
+%End
+
+    ~Qgs2DXyPlot();
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+
+    virtual void render( QgsRenderContext &context );
+
+%Docstring
+Renders the plot.
+%End
+
+    virtual QRectF interiorPlotArea( QgsRenderContext &context ) const;
+
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
 content (excluding all titles and other components which sit outside the
@@ -421,22 +483,8 @@ Ownership of ``symbol`` is transferred to the plot.
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
 
-    const QgsMargins &margins() const;
-%Docstring
-Returns the margins of the plot area (in millimeters)
-
-.. seealso:: :py:func:`setMargins`
-%End
-
-    void setMargins( const QgsMargins &margins );
-%Docstring
-Sets the ``margins`` of the plot area (in millimeters)
-
-.. seealso:: :py:func:`setMargins`
-%End
-
   private:
-    Qgs2DPlot( const Qgs2DPlot &other );
+    Qgs2DXyPlot( const Qgs2DXyPlot &other );
 };
 
 class QgsPlotDefaultSettings

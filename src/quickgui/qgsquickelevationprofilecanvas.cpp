@@ -38,7 +38,7 @@
 
 
 ///@cond PRIVATE
-class QgsElevationProfilePlotItem : public Qgs2DPlot
+class QgsElevationProfilePlotItem : public Qgs2DXyPlot
 {
   public:
     explicit QgsElevationProfilePlotItem( QgsQuickElevationProfileCanvas *canvas )

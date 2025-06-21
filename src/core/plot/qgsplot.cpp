@@ -169,14 +169,84 @@ void QgsPlotAxis::setTextFormat( const QgsTextFormat &format )
 Qgs2DPlot::Qgs2DPlot()
   : mMargins( 2, 2, 2, 2 )
 {
-  // setup default style
-  mChartBackgroundSymbol.reset( QgsPlotDefaultSettings::chartBackgroundSymbol() );
-  mChartBorderSymbol.reset( QgsPlotDefaultSettings::chartBorderSymbol() );
 }
 
 bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QgsPlot::writeXml( element, document, context );
+
+  element.setAttribute( QStringLiteral( "margins" ), mMargins.toString() );
+
+  return true;
+}
+
+bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  QgsPlot::readXml( element, context );
+
+  mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
+
+  return true;
+}
+
+void Qgs2DPlot::render( QgsRenderContext &context )
+{
+  QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
+  const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
+
+  const QRectF plotArea = interiorPlotArea( context );
+
+  // give subclasses a chance to draw their content
+  renderContent( context, plotArea );
+}
+
+void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF & )
+{
+}
+
+Qgs2DPlot::~Qgs2DPlot() = default;
+
+QSizeF Qgs2DPlot::size() const
+{
+  return mSize;
+}
+
+void Qgs2DPlot::setSize( QSizeF size )
+{
+  mSize = size;
+}
+
+QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext & ) const
+{
+  return QRectF( 0, 0, mSize.width(), mSize.height() );
+}
+
+const QgsMargins &Qgs2DPlot::margins() const
+{
+  return mMargins;
+}
+
+void Qgs2DPlot::setMargins( const QgsMargins &margins )
+{
+  mMargins = margins;
+}
+
+
+//
+// Qgs2DPlot
+//
+
+Qgs2DXyPlot::Qgs2DXyPlot()
+  : Qgs2DPlot()
+{
+  // setup default style
+  mChartBackgroundSymbol.reset( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBorderSymbol.reset( QgsPlotDefaultSettings::chartBorderSymbol() );
+}
+
+bool Qgs2DXyPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  Qgs2DPlot::writeXml( element, document, context );
 
   element.setAttribute( QStringLiteral( "minX" ), qgsDoubleToString( mMinX ) );
   element.setAttribute( QStringLiteral( "maxX" ), qgsDoubleToString( mMaxX ) );
@@ -197,14 +267,12 @@ bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, const Qg
   borderElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mChartBorderSymbol.get(), document, context ) );
   element.appendChild( borderElement );
 
-  element.setAttribute( QStringLiteral( "margins" ), mMargins.toString() );
-
   return true;
 }
 
-bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool Qgs2DXyPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsPlot::readXml( element, context );
+  Qgs2DPlot::readXml( element, context );
 
   mMinX = element.attribute( QStringLiteral( "minX" ) ).toDouble();
   mMaxX = element.attribute( QStringLiteral( "maxX" ) ).toDouble();
@@ -221,12 +289,10 @@ bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &
   const QDomElement borderElement = element.firstChildElement( QStringLiteral( "borderSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
   mChartBorderSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context );
 
-  mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
-
   return true;
 }
 
-void Qgs2DPlot::render( QgsRenderContext &context )
+void Qgs2DXyPlot::render( QgsRenderContext &context )
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -476,24 +542,9 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   mYAxis.gridMajorSymbol()->stopRender( context );
 }
 
-void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF & )
-{
+Qgs2DXyPlot::~Qgs2DXyPlot() = default;
 
-}
-
-Qgs2DPlot::~Qgs2DPlot() = default;
-
-QSizeF Qgs2DPlot::size() const
-{
-  return mSize;
-}
-
-void Qgs2DPlot::setSize( QSizeF size )
-{
-  mSize = size;
-}
-
-QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
+QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context ) const
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -608,7 +659,7 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
-void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
+void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context )
 {
   if ( !mSize.isValid() )
     return;
@@ -743,34 +794,24 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   }
 }
 
-QgsFillSymbol *Qgs2DPlot::chartBackgroundSymbol()
+QgsFillSymbol *Qgs2DXyPlot::chartBackgroundSymbol()
 {
   return mChartBackgroundSymbol.get();
 }
 
-void Qgs2DPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol )
+void Qgs2DXyPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol )
 {
   mChartBackgroundSymbol.reset( symbol );
 }
 
-QgsFillSymbol *Qgs2DPlot::chartBorderSymbol()
+QgsFillSymbol *Qgs2DXyPlot::chartBorderSymbol()
 {
   return mChartBorderSymbol.get();
 }
 
-void Qgs2DPlot::setChartBorderSymbol( QgsFillSymbol *symbol )
+void Qgs2DXyPlot::setChartBorderSymbol( QgsFillSymbol *symbol )
 {
   mChartBorderSymbol.reset( symbol );
-}
-
-const QgsMargins &Qgs2DPlot::margins() const
-{
-  return mMargins;
-}
-
-void Qgs2DPlot::setMargins( const QgsMargins &margins )
-{
-  mMargins = margins;
 }
 
 //
