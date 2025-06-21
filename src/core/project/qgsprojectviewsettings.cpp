@@ -26,7 +26,7 @@
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
-  , mLoadProjectExtent( false )
+  , mRestoreProjectExtentOnProjectLoad( false )
 {
 
 }
@@ -76,12 +76,12 @@ void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &
 
 void QgsProjectViewSettings::setMainCanvasOpensAtProjectExtent( bool state )
 {
-  mLoadProjectExtent = state;
+  mRestoreProjectExtentOnProjectLoad = state;
 }
 
 bool QgsProjectViewSettings::mainCanvasOpensAtProjectExtent( )
 {
-  return mLoadProjectExtent;
+  return mRestoreProjectExtentOnProjectLoad;
 }
 
 
@@ -212,7 +212,7 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
   }
 
   mDefaultRotation = element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble();
-  mLoadProjectExtent = element.attribute( QStringLiteral( "LoadProjectExtent" ), QStringLiteral( "0" ) ).toInt();
+  mRestoreProjectExtentOnProjectLoad = element.attribute( QStringLiteral( "LoadProjectExtent" ), QStringLiteral( "0" ) ).toInt();
 
   return true;
 }
@@ -222,7 +222,7 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
   QDomElement element = doc.createElement( QStringLiteral( "ProjectViewSettings" ) );
   element.setAttribute( QStringLiteral( "UseProjectScales" ), mUseProjectScales ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
-  element.setAttribute( QStringLiteral( "LoadProjectExtent" ), mLoadProjectExtent ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "LoadProjectExtent" ), mRestoreProjectExtentOnProjectLoad ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   element.setAttribute( QStringLiteral( "rotation" ), qgsDoubleToString( mDefaultRotation ) );
 
