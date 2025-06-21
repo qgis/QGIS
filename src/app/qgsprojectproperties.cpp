@@ -98,7 +98,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   setupUi( this );
 
-
   mExtentGroupBox->setObjectName( "mExtentGroupBox" );
   mExtentGroupBox->setCheckable( true );
 
