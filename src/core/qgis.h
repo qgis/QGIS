@@ -3254,6 +3254,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( PlotAxisSuffixPlacement )
 
+
+    /**
+     * Plots axis types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PlotAxisType
+    {
+      ValueType,
+      CategoryType,
+    };
+    Q_ENUM( PlotAxisType )
+
     /**
      * DpiMode enum
      * \since QGIS 3.26

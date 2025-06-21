@@ -25,6 +25,18 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractPlotSeries.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsXyPlotSeries.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsPlotData.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
     QgsPlotAxis.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
