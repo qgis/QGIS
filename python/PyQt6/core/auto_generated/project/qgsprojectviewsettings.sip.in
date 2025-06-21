@@ -97,7 +97,7 @@ should be calculated based on the layers in the project.
 .. versionadded:: 3.18
 %End
 
-    void setMainCanvasOpensAtProjectExtent( bool state );
+    void setRestoreProjectExtentOnProjectLoad( bool state );
 %Docstring
 Sets whether the project's preset full extent should be restored when
 the project is loaded.
