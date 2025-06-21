@@ -2674,6 +2674,7 @@ void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &descr
   QDomDocument sldDocument = this->exportSldStyleV3( sldContext );
   if ( !sldContext.errors().empty() )
   {
+    msgError = sldContext.errors().join( QStringLiteral( "\n" ) );
     return;
   }
   sldStyle = sldDocument.toString();
