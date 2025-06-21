@@ -199,7 +199,7 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
     //! If FALSE, no vertices will be added on intersections unless they exist in the original layers
-    bool mAddPointsOnIntersections = false;
+    bool mAddPointsOnIntersections = true;
     //! Holds the input layers' intersections. Only populated when mAddPointsOnIntersections == false
     QgsGeometry mIntersections;
 
