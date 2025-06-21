@@ -98,6 +98,7 @@ Converts ``input`` string to double value. It uses locale interpretation
 first and C locale interpretation as fallback
 %End
 
+
     void setBottom( double bottom );
 %Docstring
 Set top range limit
