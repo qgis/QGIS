@@ -242,7 +242,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     bool mUseProjectScales = false;
     QgsReferencedRectangle mDefaultViewExtent;
     QgsReferencedRectangle mPresetFullExtent;
-    bool mLoadProjectExtent;
+    bool mRestoreProjectExtentOnProjectLoad;
     double mDefaultRotation = 0;
 };
 
