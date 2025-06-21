@@ -30,10 +30,6 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_python.h
  )
 
-if (APPLE)
-  set_target_properties(qgispython PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-endif()
-
 install(TARGETS qgispython
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}

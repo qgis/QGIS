@@ -218,8 +218,27 @@ void QgsPythonUtilsImpl::init()
   }
 #endif
 
-  // initialize python
-  Py_Initialize();
+  PyConfig config;
+  PyConfig_InitPythonConfig( &config );
+
+#ifdef QGIS_MAC_BUNDLE
+  // If we package QGIS as a mac app, we deploy Qt plugins into [app]/Contents/PlugIns
+  if ( qgetenv( "PYTHONHOME" ).isNull() )
+  {
+    status = PyConfig_SetString( &config, &config.home, QgsApplication::libraryPath().toStdWString().c_str() );
+    if ( PyStatus_Exception( status ) )
+    {
+      qWarning() << "Failed to set python home";
+    }
+  }
+#endif
+
+  status = Py_InitializeFromConfig( &config );
+  if ( PyStatus_Exception( status ) )
+  {
+    qWarning() << "Failed to initialize from config";
+  }
+  PyConfig_Clear( &config );
 
   mPythonEnabled = true;
 
