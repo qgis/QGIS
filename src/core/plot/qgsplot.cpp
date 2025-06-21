@@ -52,8 +52,20 @@ QgsPlotAxis::QgsPlotAxis()
 
 QgsPlotAxis::~QgsPlotAxis() = default;
 
+
+Qgis::PlotAxisType QgsPlotAxis::type() const
+{
+  return mType;
+}
+
+void QgsPlotAxis::setType( Qgis::PlotAxisType type )
+{
+  mType = type;
+}
+
 bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
+  element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
   element.setAttribute( QStringLiteral( "gridIntervalMinor" ), qgsDoubleToString( mGridIntervalMinor ) );
   element.setAttribute( QStringLiteral( "gridIntervalMajor" ), qgsDoubleToString( mGridIntervalMajor ) );
   element.setAttribute( QStringLiteral( "labelInterval" ), qgsDoubleToString( mLabelInterval ) );
@@ -80,6 +92,7 @@ bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const 
 
 bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
+  mType = qgsEnumKeyToValue( element.attribute( QStringLiteral( "type" ) ), Qgis::PlotAxisType::ValueType );
   mGridIntervalMinor = element.attribute( QStringLiteral( "gridIntervalMinor" ) ).toDouble();
   mGridIntervalMajor = element.attribute( QStringLiteral( "gridIntervalMajor" ) ).toDouble();
   mLabelInterval = element.attribute( QStringLiteral( "labelInterval" ) ).toDouble();
@@ -189,7 +202,7 @@ bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &
   return true;
 }
 
-void Qgs2DPlot::render( QgsRenderContext &context )
+void Qgs2DPlot::render( QgsRenderContext &context, const QgsPlotData &plotData )
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -197,10 +210,10 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   const QRectF plotArea = interiorPlotArea( context );
 
   // give subclasses a chance to draw their content
-  renderContent( context, plotArea );
+  renderContent( context, plotArea, plotData );
 }
 
-void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF & )
+void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF &, const QgsPlotData & )
 {
 }
 
@@ -292,7 +305,7 @@ bool Qgs2DXyPlot::readXml( const QDomElement &element, const QgsReadWriteContext
   return true;
 }
 
-void Qgs2DXyPlot::render( QgsRenderContext &context )
+void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData )
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -522,7 +535,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context )
   }
 
   // give subclasses a chance to draw their content
-  renderContent( context, plotArea );
+  renderContent( context, plotArea, plotData );
 
   // border
   mChartBorderSymbol->renderPolygon( QPolygonF(
@@ -847,4 +860,76 @@ QgsFillSymbol *QgsPlotDefaultSettings::chartBorderSymbol()
 {
   auto chartBorder = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20 ), 0.1 );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartBorder.release() } ) );
+}
+
+//
+// QgsPlotData
+//
+
+QgsPlotData::~QgsPlotData()
+{
+  clearSeries();
+}
+
+QList<QgsAbstractPlotSeries *> QgsPlotData::series() const
+{
+  return mSeries;
+}
+
+void QgsPlotData::addSeries( QgsAbstractPlotSeries *series )
+{
+  if ( !mSeries.contains( series ) )
+  {
+    mSeries << series;
+  }
+}
+
+void QgsPlotData::clearSeries()
+{
+  qDeleteAll( mSeries );
+  mSeries.clear();
+}
+
+//
+// QgsAbstractPlotSeries
+//
+
+QString QgsAbstractPlotSeries::name() const
+{
+  return mName;
+}
+
+void QgsAbstractPlotSeries::setName( const QString &name )
+{
+  mName = name;
+}
+
+QgsSymbol *QgsAbstractPlotSeries::symbol() const
+{
+  return mSymbol;
+}
+
+void QgsAbstractPlotSeries::setSymbol( QgsSymbol *symbol )
+{
+  delete mSymbol;
+  mSymbol = symbol;
+}
+
+//
+// QgsXyPlotSeries
+//
+
+QList<std::pair<QVariant, double>> QgsXyPlotSeries::data() const
+{
+  return mData;
+}
+
+void QgsXyPlotSeries::append( const QVariant &x, const double &y )
+{
+  mData << std::make_pair( x, y );
+}
+
+void QgsXyPlotSeries::clear()
+{
+  mData.clear();
 }

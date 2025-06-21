@@ -55,7 +55,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
       mRenderer = renderer;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( mRenderer )
       {

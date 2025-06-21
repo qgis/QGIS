@@ -63,7 +63,7 @@ class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
       return mPlotArea;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 

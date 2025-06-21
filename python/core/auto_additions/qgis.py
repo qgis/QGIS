@@ -6072,6 +6072,19 @@ Qgis.PlotAxisSuffixPlacement.__doc__ = """Placement options for suffixes in the 
 # --
 Qgis.PlotAxisSuffixPlacement.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PlotAxisType.ValueType.__doc__ = ""
+Qgis.PlotAxisType.CategoryType.__doc__ = ""
+Qgis.PlotAxisType.__doc__ = """Plots axis types.
+
+.. versionadded:: 4.0
+
+* ``ValueType``: 
+* ``CategoryType``: 
+
+"""
+# --
+Qgis.PlotAxisType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
 Qgis.DpiMode.QGIS.__doc__ = "QGIS"
