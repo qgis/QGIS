@@ -105,14 +105,14 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     void setPresetFullExtent( const QgsReferencedRectangle &extent );
 
     /**
-     * Sets wheter the project's preset full extent should be loaded when the project is loaded.
+     * Sets whether the project's preset full extent should be restored when the project is loaded.
      *
      * \since QGIS 3.44
      */
     void setMainCanvasOpensAtProjectExtent( bool state );
 
     /**
-     * Returns wheter the project's preset full extent should be loaded when the project is loaded.
+     * Returns whether the project's preset full extent should be restored when the project is loaded.
      *
      * \since QGIS 3.44
      */
