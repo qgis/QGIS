@@ -32,7 +32,7 @@ class QgsElevationProfileCrossHairsItem;
 class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
 class QgsCurve;
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsProfileSnapContext;
 class QgsProfileIdentifyContext;
 class QgsProfileIdentifyResults;
@@ -192,12 +192,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \note Not available in Python bindings
      */
-    const Qgs2DPlot &plot() const SIP_SKIP;
+    const Qgs2DXyPlot &plot() const SIP_SKIP;
 
     /**
      * Renders a portion of the profile using the specified render \a context.
      */
-    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings );
 
     /**
      * Identify results visible at the specified plot point.

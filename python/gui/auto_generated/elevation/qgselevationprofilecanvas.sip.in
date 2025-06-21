@@ -189,7 +189,7 @@ Returns the elevation range currently visible in the plot.
 %End
 
 
-    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings );
 %Docstring
 Renders a portion of the profile using the specified render ``context``.
 %End

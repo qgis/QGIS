@@ -31,7 +31,7 @@
 
 ///@cond PRIVATE
 
-class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
+class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
 {
   public:
     explicit QgsAlgorithmElevationProfilePlotItem( int width, int height, int dpi )

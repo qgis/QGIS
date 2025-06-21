@@ -14,7 +14,7 @@ from qgis.PyQt.QtCore import QDir, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
-    Qgs2DPlot,
+    Qgs2DXyPlot,
     QgsBasicNumericFormat,
     QgsFillSymbol,
     QgsFontUtils,
@@ -40,7 +40,7 @@ class TestQgsPlot(QgisTestCase):
         return "plot"
 
     def testPlot(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -120,7 +120,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixAll(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -207,7 +207,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixFirst(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -294,7 +294,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixLast(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -381,7 +381,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotSuffixFirstAndLast(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -474,7 +474,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testPlotIntervals(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -546,7 +546,7 @@ class TestQgsPlot(QgisTestCase):
         assert self.image_check("plot_2d_intervals", "plot_2d_intervals", im)
 
     def testPlotDataDefinedProperties(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
@@ -651,7 +651,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertAlmostEqual(plot_rect.bottom(), 465.55, delta=1)
 
     def testOptimiseIntervals(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         font = QgsFontUtils.getStandardTestFont("Bold", 16)
@@ -732,7 +732,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertEqual(plot.xAxis().gridIntervalMajor(), 200000)
 
     def test_read_write(self):
-        plot = Qgs2DPlot()
+        plot = Qgs2DXyPlot()
         plot.setSize(QSizeF(600, 500))
 
         sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
@@ -812,7 +812,7 @@ class TestQgsPlot(QgisTestCase):
         elem = doc.createElement("test")
         plot.writeXml(elem, doc, QgsReadWriteContext())
 
-        res = Qgs2DPlot()
+        res = Qgs2DXyPlot()
         self.assertTrue(res.readXml(elem, QgsReadWriteContext()))
 
         self.assertEqual(res.xMinimum(), 3)
