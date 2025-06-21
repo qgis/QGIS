@@ -74,9 +74,9 @@ void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &
   emit presetFullExtentChanged();
 }
 
-void QgsProjectViewSettings::setMainCanvasOpensAtProjectExtent( bool state )
+void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectExtentCheckboxState )
 {
-  mRestoreProjectExtentOnProjectLoad = state;
+  mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState;
 }
 
 bool QgsProjectViewSettings::mainCanvasOpensAtProjectExtent( )

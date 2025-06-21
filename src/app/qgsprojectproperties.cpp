@@ -1367,7 +1367,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->viewSettings()->setPresetFullExtent( QgsReferencedRectangle() );
   }
 
-  QgsProject::instance()->viewSettings()->setMainCanvasOpensAtProjectExtent( mCheckBoxLoadProjectExtent->isChecked() );
+  QgsProject::instance()->viewSettings()->setRestoreProjectExtentOnProjectLoad( mCheckBoxLoadProjectExtent->isChecked() );
 
   bool isDirty = false;
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();

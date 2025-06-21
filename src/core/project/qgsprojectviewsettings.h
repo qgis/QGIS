@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      *
      * \since QGIS 3.44
      */
-    void setMainCanvasOpensAtProjectExtent( bool state );
+    void setRestoreProjectExtentOnProjectLoad( bool state );
 
     /**
      * Returns whether the project's preset full extent should be restored when the project is loaded.
