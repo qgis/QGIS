@@ -22,7 +22,10 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsogrproviderutils.h"
+#include "qgsattributeform.h"
+#include "qgseditformconfig.h"
 
+#include <QComboBox>
 
 class TestQgsValueMapConfigDlg : public QObject
 {
@@ -38,6 +41,7 @@ class TestQgsValueMapConfigDlg : public QObject
 
     void testLoadFromCSV();
     void testTestTrimValues();
+    void testValueMapAllowNull();
 };
 
 void TestQgsValueMapConfigDlg::initTestCase()
@@ -116,6 +120,63 @@ void TestQgsValueMapConfigDlg::testTestTrimValues()
   valueList[QStringLiteral( "33" )] = QStringLiteral( "Choice 33" );
   valueMapConfig->updateMap( valueList, false );
   QVERIFY( valueMapConfig->mValueMapErrorsLabel->text().contains( QStringLiteral( "trimmed" ) ) );
+}
+
+void TestQgsValueMapConfigDlg::testValueMapAllowNull()
+{
+  // make a temporary layer to check through
+  const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+  bool allowNull = true;
+  while( true )
+  {
+  // set default value
+  layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+
+  // build a form, set a feature
+  QgsFeature ft( layer->fields(), 1 );
+  QgsAttributeForm form( layer );
+  form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+  form.setFeature( ft );
+
+  // create a value map configuration
+  QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( QStringLiteral( "ValueMap" ), layer, 1, nullptr ) );
+  QVariantMap config = valueMapConfig->config();
+
+  // set allow null in value map configuration and apply it to the layer
+  config.remove(QStringLiteral("AllowNull"));
+  config.insert( QStringLiteral( "AllowNull" ), allowNull );
+  layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
+  //set value in col0:
+  QgsEditorWidgetWrapper *ww0;
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  ww0->setValue( 1 );
+
+  QComboBox *cb = form.findChild<QComboBox*>();
+  for (int i = 0; i<cb->count(); i++)
+    qDebug()<<"comboItem "<<i<<": "<<cb->itemText( i );
+
+  cb->setCurrentIndex(0);
+  if ( allowNull )
+  {
+    QCOMPARE( cb->currentText(), "(NULL)" );
+    cb->setCurrentIndex(1);
+    QCOMPARE( cb->currentText(), "(NULL)" );
+    cb->setCurrentIndex(2);
+    QCOMPARE( cb->currentText(), "(2)" );
+  }
+  else
+    QCOMPARE( cb->currentText(), "(2)" );
+
+  delete valueMapConfig;
+
+  if ( allowNull )
+    allowNull = false;
+  else
+    break;
+  }
 }
 
 QGSTEST_MAIN( TestQgsValueMapConfigDlg )
