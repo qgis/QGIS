@@ -250,6 +250,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     QDoubleSpinBox *mWMSDefaultMapUnitsPerMm = nullptr;
     QgsScaleWidget *mWMSDefaultMapUnitScale = nullptr;
+    QgsExtentWidget *mExtentWidget;
+
 
     QgsCoordinateReferenceSystem mCrs;
 
