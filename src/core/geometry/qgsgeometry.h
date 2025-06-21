@@ -67,7 +67,24 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
  * This type has full support for Z/M dimensions.
  *
  */
+#ifndef SIP_RUN
 typedef QgsPointSequence QgsPolyline;
+#else
+typedef QVector<QgsPoint> QgsPolyline;
+#endif
+
+/**
+ * Multi polyline represented as a vector of polylines.
+ *
+ * This type has full support for Z/M dimensions.
+ *
+ * \since QGIS 3.44
+ */
+#ifndef SIP_RUN
+typedef QVector<QgsPolyline> QgsMultiPolyline;
+#else
+typedef QVector<QVector< QgsPoint >> QgsMultiPolyline;
+#endif
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 #ifndef SIP_RUN
