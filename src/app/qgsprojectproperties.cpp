@@ -102,6 +102,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mExtentGroupBox->setObjectName( "mExtentGroupBox" );
   mExtentGroupBox->setCheckable( true );
 
+
+  mExtentWidget = new QgsExtentWidget( parent, QgsExtentWidget::ExpandedStyle );
+  QVBoxLayout *mExtentGroupBoxLayout = qobject_cast<QVBoxLayout *>( mExtentGroupBox->layout() );
+  mExtentGroupBoxLayout->insertWidget( 0, mExtentWidget );
+
   mExtentWidget->setMapCanvas( mapCanvas, false );
 
   mCheckBoxLoadProjectExtent->setObjectName( "mCheckBoxLoadProjectExtent" );

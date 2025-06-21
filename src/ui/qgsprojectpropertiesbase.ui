@@ -1016,9 +1016,6 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_30">
               <item>
-               <widget class="QgsExtentWidget" name="mExtentWidget" native="true"/>
-              </item>
-              <item>
                <widget class="QCheckBox" name="mCheckBoxLoadProjectExtent">
                 <property name="text">
                  <string>Use as extent for the main canvas when opening the project</string>
@@ -1135,8 +1132,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>528</width>
-                <height>85</height>
+                <width>685</width>
+                <height>791</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
