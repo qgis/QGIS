@@ -52,13 +52,16 @@ class QgsAbstractPlotSeries
   public:
 
     QgsAbstractPlotSeries();
-    ~QgsAbstractPlotSeries();
+    virtual ~QgsAbstractPlotSeries();
 
     QString name() const;
     void setName( const QString &name );
     QgsSymbol *symbol() const;
-    void setSymbol( QgsSymbol *symbol );
+    void setSymbol( QgsSymbol *symbol /Transfer/ );
+    virtual QList<QVariant> categories() const;
 
+  private:
+    QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
 };
 
 class QgsXyPlotSeries : QgsAbstractPlotSeries
@@ -72,9 +75,14 @@ class QgsXyPlotSeries : QgsAbstractPlotSeries
     QgsXyPlotSeries();
     ~QgsXyPlotSeries();
 
+    virtual QList<QVariant> categories() const;
+
+
     void append( const QVariant &x, const double &y );
     void clear();
 
+  private:
+    QgsXyPlotSeries( const QgsXyPlotSeries &other );
 };
 
 class QgsPlotData
@@ -89,7 +97,7 @@ class QgsPlotData
     ~QgsPlotData();
 
     QList<QgsAbstractPlotSeries *> series() const;
-    void addSeries( QgsAbstractPlotSeries *series );
+    void addSeries( QgsAbstractPlotSeries *series /Transfer/ );
     void clearSeries();
 
 };
