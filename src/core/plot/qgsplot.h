@@ -68,17 +68,21 @@ class CORE_EXPORT QgsAbstractPlotSeries
   public:
 
     QgsAbstractPlotSeries() = default;
-    ~QgsAbstractPlotSeries() = default;
+    virtual ~QgsAbstractPlotSeries() = default;
 
     QString name() const;
     void setName( const QString &name );
     QgsSymbol *symbol() const;
-    void setSymbol( QgsSymbol *symbol );
+    void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
+    virtual QList<QVariant> categories() const;
 
   private:
+#ifdef SIP_RUN
+    QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
+#endif
 
     QString mName;
-    QgsSymbol *mSymbol = nullptr;
+    std::unique_ptr<QgsSymbol> mSymbol;
 };
 
 class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
@@ -88,11 +92,16 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QgsXyPlotSeries() = default;
     ~QgsXyPlotSeries() = default;
 
+    QList<QVariant> categories() const override;
+
     QList<std::pair<QVariant, double>> data() const SIP_SKIP;
     void append( const QVariant &x, const double &y );
     void clear();
 
   private:
+#ifdef SIP_RUN
+    QgsXyPlotSeries( const QgsXyPlotSeries &other );
+#endif
 
     QList<std::pair<QVariant, double>> mData;
 };
@@ -105,7 +114,7 @@ class CORE_EXPORT QgsPlotData
     ~QgsPlotData();
 
     QList<QgsAbstractPlotSeries *> series() const;
-    void addSeries( QgsAbstractPlotSeries *series );
+    void addSeries( QgsAbstractPlotSeries *series SIP_TRANSFER );
     void clearSeries();
 
   private:

@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgschart.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsBarChart : Qgs2DXyPlot
+{
+%Docstring(signature="appended")
+A simple bar chart class.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgschart.h"
+%End
+  public:
+
+    QgsBarChart();
+    ~QgsBarChart();
+
+    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+
+
+};
+
+
+class QgsLineChart : Qgs2DXyPlot
+{
+%Docstring(signature="appended")
+A simple line chart class.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgschart.h"
+%End
+  public:
+
+    QgsLineChart();
+    ~QgsLineChart();
+
+    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgschart.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
