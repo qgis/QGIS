@@ -63,6 +63,11 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
       const QList<std::pair<double, double>> data = xySeries->data();
       for ( const std::pair<double, double> &pair : data )
       {
+        if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && ( pair.first < 0 || pair.first >= categories.size() ) )
+        {
+          continue;
+        }
+
         double x, y;
         if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
         {
@@ -155,25 +160,52 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
       int dataIndex = 0;
       for ( const std::pair<double, double> &pair : data )
       {
-        double x, y;
-        if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
+        if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && ( pair.first < 0 || pair.first >= categories.size() ) )
         {
-          x = ( pair.first - xMinimum() ) * xScale;
+          continue;
         }
-        else if ( xAxis().type() == Qgis::PlotAxisType::CategoryType )
-        {
-          x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
-        }
-        y = ( pair.second - yMinimum() ) * yScale;
 
-        values << pair.second;
-        points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, QPointF( plotArea.x() + x,
-                        plotArea.y() + plotArea.height() - y ) );
+        if ( !std::isnan( pair.second ) )
+        {
+          double x, y;
+          if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
+          {
+            x = ( pair.first - xMinimum() ) * xScale;
+          }
+          else if ( xAxis().type() == Qgis::PlotAxisType::CategoryType )
+          {
+            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
+          }
+          y = ( pair.second - yMinimum() ) * yScale;
+
+          points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, QPointF( plotArea.x() + x,
+                          plotArea.y() + plotArea.height() - y ) );
+          values << pair.second;
+        }
         dataIndex++;
       }
 
       chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), QVariant::fromValue( values ), true ) );
-      symbol->renderPolyline( QPolygonF( points ), nullptr, context );
+      QVector<QPointF> line;
+      for ( const QPointF &point : points )
+      {
+        if ( !point.isNull() )
+        {
+          line << point;
+        }
+        else
+        {
+          if ( !line.isEmpty() )
+          {
+            symbol->renderPolyline( QPolygonF( line ), nullptr, context );
+            line.clear();
+          }
+        }
+      }
+      if ( !line.isEmpty() )
+      {
+        symbol->renderPolyline( QPolygonF( line ), nullptr, context );
+      }
     }
 
     symbol->stopRender( context );
