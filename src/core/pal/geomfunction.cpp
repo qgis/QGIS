@@ -336,7 +336,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
     const bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
     return result;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     Q_NOWARN_UNREACHABLE_PUSH

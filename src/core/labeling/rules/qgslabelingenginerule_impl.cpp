@@ -226,7 +226,7 @@ bool QgsAbstractLabelingEngineRuleDistanceFromFeature::candidateExceedsTolerance
       return false;
 #endif
     }
-    catch ( GEOSException &e )
+    catch ( QgsGeosException &e )
     {
       QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
     }
@@ -457,7 +457,7 @@ bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::candidatesAreConflicting(
       return false;
 #endif
     }
-    catch ( GEOSException &e )
+    catch ( QgsGeosException &e )
     {
       QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
     }
@@ -609,7 +609,7 @@ bool QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::candidateIsIllegal( cons
       if ( GEOSPreparedIntersects_r( geosctxt, candidateGeos, featureCandidate.get() ) == 1 )
         return true;
     }
-    catch ( GEOSException &e )
+    catch ( QgsGeosException &e )
     {
       QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
     }
