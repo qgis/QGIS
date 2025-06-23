@@ -44,6 +44,8 @@ class CORE_EXPORT QgsBarChart : public Qgs2DXyPlot
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
+    static QgsBarChart *create();
+
   private:
 
 };
@@ -71,8 +73,9 @@ class CORE_EXPORT QgsLineChart : public Qgs2DXyPlot
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
-  private:
+    static QgsLineChart *create();
 
+  private:
 
 };
 
