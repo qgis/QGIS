@@ -1213,6 +1213,9 @@ void TestQgs3DCameraController::testResetViewRaster()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
+  // This ensures that the OpenGL context is properly created
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
   // compare raster layer + vector layer
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 2172, 1 );
@@ -1242,6 +1245,9 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   engine.setSize( QSize( winSize.x(), winSize.y() ) );
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
+
+  // This ensures that the OpenGL context is properly created
+  Qgs3DUtils::captureSceneImage( engine, scene );
 
   // compare virtual point cloud layer
   scene->viewZoomFull();
