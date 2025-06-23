@@ -448,7 +448,7 @@ windows.
 .. versionadded:: 4.0
 %End
 
-    virtual QString userFriendlyString( QVariant &value ) const;
+    virtual QString userFriendlyString( const QVariant &value ) const;
 %Docstring
 Returns a user-friendly string representation of the provided parameter
 ``value``.
@@ -2015,7 +2015,7 @@ A coordinate reference system parameter for processing algorithms.
 Constructor for QgsProcessingParameterCrs.
 %End
 
-    virtual QString userFriendlyString( QVariant &value ) const;
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     static QString typeName();
@@ -2191,7 +2191,7 @@ Sets the allow multipart geometries
 .. seealso:: :py:func:`allowMultipart`
 %End
 
-
+    QString userFriendlyString( const QVariant &value ) const;
 
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
@@ -2646,7 +2646,7 @@ Constructor for QgsProcessingParameterDistance.
 Returns the type name for the parameter class.
 %End
 
-    virtual QString userFriendlyString( QVariant &value ) const;
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     virtual QgsProcessingParameterDistance *clone() const /Factory/;
@@ -3136,7 +3136,7 @@ values.
 Constructor for QgsProcessingParameterEnum.
 %End
 
-    virtual QString userFriendlyString( QVariant &value ) const;
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     static QString typeName();
