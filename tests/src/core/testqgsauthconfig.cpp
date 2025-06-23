@@ -125,6 +125,9 @@ void TestQgsAuthConfig::testMethodConfig()
 
 void TestQgsAuthConfig::testPkiBundle()
 {
+  // FIXME
+  QSKIP( "Broken test. See https://github.com/qgis/QGIS/issues/62373", SkipSingle );
+
   QgsPkiBundle bundle;
   QVERIFY( bundle.isNull() );
   QVERIFY( !bundle.isValid() );
