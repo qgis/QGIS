@@ -621,9 +621,12 @@ void QgsAttributesAvailableWidgetsModel::populateLayerActions( const QList< QgsA
     }
   }
 
-  beginInsertRows( actionsIndex, 0, count );
-  populateActionItems( actions );
-  endInsertRows();
+  if ( count > 0 )
+  {
+    beginInsertRows( actionsIndex, 0, count - 1 );
+    populateActionItems( actions );
+    endInsertRows();
+  }
 }
 
 void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAction> actions )
