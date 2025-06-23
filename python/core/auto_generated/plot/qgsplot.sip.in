@@ -31,6 +31,8 @@ Base class for plot/chart/graphs.
 
     virtual ~QgsPlot();
 
+    virtual QString type() const;
+
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes the plot's properties into an XML ``element``.

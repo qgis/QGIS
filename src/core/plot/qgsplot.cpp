@@ -29,8 +29,9 @@
 
 QgsPlot::~QgsPlot() = default;
 
-bool QgsPlot::writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
+bool QgsPlot::writeXml( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
 {
+  element.setAttribute( QStringLiteral( "plotType" ), type() );
   return true;
 }
 
