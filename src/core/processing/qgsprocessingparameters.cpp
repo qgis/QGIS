@@ -3032,7 +3032,7 @@ QColor QgsProcessingParameterDefinition::modelColor() const
   return QgsProcessingParameterType::defaultModelColor();
 }
 
-QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) const
+QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &value ) const
 {
   if ( value.userType() == qMetaTypeId<QgsPointXY>() )
   {
@@ -3134,19 +3134,25 @@ QString QgsProcessingParameterDefinition::userFriendlyString( QVariant &value ) 
              .arg( dt.second() );
   }
 
-  else if ( value.userType() == QMetaType::QString )
-  {
-    // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
-    // rather than the possibly very long WKT payload
-    QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
-    if ( !g.isNull() )
-    {
-      return g.typeName();
-    }
-  }
+  // else if ( value.userType() == QMetaType::QString )
+  // {
+  //   // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
+  //   // rather than the possibly very long WKT payload
+  //   QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
+  //   if ( !g.isNull() )
+  //   {
+  //     return g.typeName();
+  //   }
+  // }
 
-  return value.toString();
+  // return value.toString();
+  return QStringLiteral( "%1 :: %2" )
+         .arg( value.userType() )
+         .arg( value.toString() );
+
+  // return value.userType()
 }
+
 
 QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val, QgsProcessingContext & ) const
 {
@@ -3307,10 +3313,17 @@ QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QStr
   return new QgsProcessingParameterCrs( name, description, definition.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
 }
 
-QString QgsProcessingParameterCrs::userFriendlyString( QVariant &value ) const
+
+QString QgsProcessingParameterCrs::userFriendlyString( const QVariant &value ) const
 {
-  return value.value<QgsCoordinateReferenceSystem>().authid();
+  QgsCoordinateReferenceSystem crs( value.toString() );
+  if ( crs.isValid() )
+    return crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString );
+
+  return QObject::tr( "Invalid CRS" );
 }
+
+
 
 QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, const QList<int> &types )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
@@ -3875,6 +3888,7 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
   return new QgsProcessingParameterPoint( name, description, definition, isOptional );
 }
 
+
 QgsProcessingParameterGeometry::QgsProcessingParameterGeometry( const QString &name, const QString &description,
     const QVariant &defaultValue, bool optional, const QList<int> &geometryTypes, bool allowMultipart )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional ),
@@ -4144,6 +4158,22 @@ bool QgsProcessingParameterGeometry::fromVariantMap( const QVariantMap &map )
 QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterGeometry( name, description, definition, isOptional );
+}
+
+QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &value ) const
+{
+  if ( value.isValid() && value.userType() == QMetaType::QString )
+  {
+    // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
+    // rather than the possibly very long WKT payload
+    QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
+    if ( !g.isNull() )
+    {
+      return g.typeName();
+    }
+  }
+
+  return QObject::tr( "Invalid geometry" );
 }
 
 QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Qgis::ProcessingFileParameterBehavior behavior, const QString &extension, const QVariant &defaultValue, bool optional, const QString &fileFilter )
@@ -5400,7 +5430,7 @@ QString QgsProcessingParameterEnum::asPythonString( const QgsProcessing::PythonO
   return QString();
 }
 
-QString QgsProcessingParameterEnum::userFriendlyString( QVariant &value ) const
+QString QgsProcessingParameterEnum::userFriendlyString( const QVariant &value ) const
 {
   return options().at( value.toInt() );
 }
@@ -7867,7 +7897,7 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
 }
 
 
-QString QgsProcessingParameterDistance::userFriendlyString( QVariant &value ) const
+QString QgsProcessingParameterDistance::userFriendlyString( const QVariant &value ) const
 {
   return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }

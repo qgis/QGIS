@@ -854,7 +854,7 @@ QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge, int index ) const
     // Getting the default value to append to the box name
     if ( const QgsProcessingParameterDefinition *paramDef = this->model()->parameterDefinition( parameter->parameterName() ) )
     {
-      QVariant paramValue = paramDef->defaultValue();
+      const QVariant paramValue = paramDef->defaultValue();
 
       if ( paramValue.isValid() )
       {
@@ -1311,7 +1311,7 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
 
             case Qgis::ProcessingModelChildParameterSource::StaticValue:
             default:
-              QVariant paramValue = paramSources[0].staticValue();
+              const QVariant paramValue = paramSources[0].staticValue();
               parameterValueAsString = QStringLiteral( ": %1" ).arg( param->userFriendlyString( paramValue ) );
           }
           title += parameterValueAsString;

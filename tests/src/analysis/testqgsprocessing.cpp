@@ -2995,6 +2995,9 @@ void TestQgsProcessing::parameterBoolean()
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
+  QCOMPARE( def->userFriendlyString( QVariant( true ) ), QString( "true" ) );
+  QCOMPARE( def->userFriendlyString( QVariant( false ) ), QString( "false" ) );
+
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterBoolean('non_optional_default_false', '', defaultValue=None)" ) );
 
@@ -3209,6 +3212,8 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( r1->id() ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( r1->id() ) ) );
+
+  QCOMPARE( def->userFriendlyString( QVariant( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QVariant( "EPSG:3857" ).toString() ).userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
 
   // using map layer
   QVariantMap params;
@@ -6393,6 +6398,10 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsPythonComment( 2, context ), QStringLiteral( "C" ) );
   QCOMPARE( def->valueAsPythonComment( QVariantList() << 1 << 2, context ), QStringLiteral( "B,C" ) );
   QCOMPARE( def->valueAsPythonComment( QStringLiteral( "1,2" ), context ), QStringLiteral( "B,C" ) );
+
+  QCOMPARE( def->userFriendlyString( QVariant( 0 ) ), QString( "A" ) );
+  QCOMPARE( def->userFriendlyString( QVariant( 1 ) ), QString( "B" ) );
+  QCOMPARE( def->userFriendlyString( QVariant( 2 ) ), QString( "C" ) );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=True, usesStaticStrings=False, defaultValue=5)" ) );

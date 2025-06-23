@@ -474,7 +474,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * The returned string is to be used for display purposes only, and should be translated as required.
      * \since QGIS 4.0
      */
-    virtual QString userFriendlyString( QVariant &value ) const;
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
     /**
      * Creates a clone of the parameter definition.
@@ -1828,7 +1828,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     QgsProcessingParameterCrs( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                bool optional = false );
 
-    QString userFriendlyString( QVariant &value ) const override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Returns the type name for the parameter class.
@@ -1978,7 +1978,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      */
     void setAllowMultipart( bool allowMultipart ) { mAllowMultipart = allowMultipart; }
 
-
+    QString userFriendlyString( const QVariant &value ) const;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2380,7 +2380,7 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
      */
     static QString typeName() { return QStringLiteral( "distance" ); } // cppcheck-suppress duplInheritedMember
 
-    QString userFriendlyString( QVariant &value ) const override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
     QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
 
@@ -2802,7 +2802,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
                                 bool optional = false,
                                 bool usesStaticStrings = false );
 
-    QString userFriendlyString( QVariant &value ) const override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Returns the type name for the parameter class.
