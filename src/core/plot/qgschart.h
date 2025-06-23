@@ -37,10 +37,14 @@ class CORE_EXPORT QgsBarChart : public Qgs2DXyPlot
     QgsBarChart() = default;
     ~QgsBarChart() = default;
 
+    QString type() const override { return QStringLiteral( "bar" ); }
+
     void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
 
-  private:
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
+  private:
 
 };
 
@@ -60,7 +64,12 @@ class CORE_EXPORT QgsLineChart : public Qgs2DXyPlot
     QgsLineChart() = default;
     ~QgsLineChart() = default;
 
+    QString type() const override { return QStringLiteral( "line" ); }
+
     void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
   private:
 

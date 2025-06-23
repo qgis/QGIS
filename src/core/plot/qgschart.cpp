@@ -92,6 +92,18 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
   context.painter()->restore();
 }
 
+bool QgsBarChart::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  Qgs2DXyPlot::writeXml( element, document, context );
+  return true;
+}
+
+bool QgsBarChart::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  Qgs2DXyPlot::readXml( element, context );
+  return true;
+}
+
 void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
 {
   const QList<QgsAbstractPlotSeries *> seriesList = plotData.series();
@@ -160,4 +172,16 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
   }
 
   context.painter()->restore();
+}
+
+bool QgsLineChart::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  Qgs2DXyPlot::writeXml( element, document, context );
+  return true;
+}
+
+bool QgsLineChart::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  Qgs2DXyPlot::readXml( element, context );
+  return true;
 }

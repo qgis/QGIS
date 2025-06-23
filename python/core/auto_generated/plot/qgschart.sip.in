@@ -29,7 +29,14 @@ A simple bar chart class.
     QgsBarChart();
     ~QgsBarChart();
 
+    virtual QString type() const;
+
     virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
 };
@@ -55,7 +62,14 @@ A simple line chart class.
     QgsLineChart();
     ~QgsLineChart();
 
+    virtual QString type() const;
+
     virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
 };

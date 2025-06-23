@@ -48,6 +48,8 @@ class CORE_EXPORT QgsPlot
 
     virtual ~QgsPlot();
 
+    virtual QString type() const { return QString(); }
+
     /**
      * Writes the plot's properties into an XML \a element.
      */

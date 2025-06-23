@@ -9,7 +9,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsPlot.__virtual_methods__ = ['writeXml', 'readXml']
+    QgsPlot.__virtual_methods__ = ['type', 'writeXml', 'readXml']
     QgsPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
