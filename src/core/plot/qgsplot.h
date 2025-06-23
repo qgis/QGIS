@@ -25,6 +25,7 @@
 #include <QSizeF>
 #include <memory>
 
+class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsRenderContext;
@@ -74,8 +75,13 @@ class CORE_EXPORT QgsAbstractPlotSeries
 
     QString name() const;
     void setName( const QString &name );
-    QgsSymbol *symbol() const;
-    void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
+    QgsMarkerSymbol *markerSymbol() const;
+    void setMarkerSymbol( QgsMarkerSymbol *markerSymbol SIP_TRANSFER );
+    QgsLineSymbol *lineSymbol() const;
+    void setLineSymbol( QgsLineSymbol *lineSymbol SIP_TRANSFER );
+    QgsFillSymbol *fillSymbol() const;
+    void setFillSymbol( QgsFillSymbol *fillSymbol SIP_TRANSFER );
 
   private:
 #ifdef SIP_RUN
@@ -83,7 +89,10 @@ class CORE_EXPORT QgsAbstractPlotSeries
 #endif
 
     QString mName;
-    std::unique_ptr<QgsSymbol> mSymbol;
+
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
 };
 
 class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries

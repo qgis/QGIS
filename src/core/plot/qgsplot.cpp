@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsplot.h"
+#include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
@@ -964,14 +965,34 @@ void QgsAbstractPlotSeries::setName( const QString &name )
   mName = name;
 }
 
-QgsSymbol *QgsAbstractPlotSeries::symbol() const
+QgsMarkerSymbol *QgsAbstractPlotSeries::markerSymbol() const
 {
-  return mSymbol.get();
+  return mMarkerSymbol.get();
 }
 
-void QgsAbstractPlotSeries::setSymbol( QgsSymbol *symbol )
+void QgsAbstractPlotSeries::setMarkerSymbol( QgsMarkerSymbol *markerSymbol )
 {
-  mSymbol.reset( symbol );
+  mMarkerSymbol.reset( markerSymbol );
+}
+
+QgsLineSymbol *QgsAbstractPlotSeries::lineSymbol() const
+{
+  return mLineSymbol.get();
+}
+
+void QgsAbstractPlotSeries::setLineSymbol( QgsLineSymbol *lineSymbol )
+{
+  mLineSymbol.reset( lineSymbol );
+}
+
+QgsFillSymbol *QgsAbstractPlotSeries::fillSymbol() const
+{
+  return mFillSymbol.get();
+}
+
+void QgsAbstractPlotSeries::setFillSymbol( QgsFillSymbol *fillSymbol )
+{
+  mFillSymbol.reset( fillSymbol );
 }
 
 //

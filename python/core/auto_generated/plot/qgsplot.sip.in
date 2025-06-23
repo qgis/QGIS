@@ -58,8 +58,13 @@ class QgsAbstractPlotSeries
 
     QString name() const;
     void setName( const QString &name );
-    QgsSymbol *symbol() const;
-    void setSymbol( QgsSymbol *symbol /Transfer/ );
+
+    QgsMarkerSymbol *markerSymbol() const;
+    void setMarkerSymbol( QgsMarkerSymbol *markerSymbol /Transfer/ );
+    QgsLineSymbol *lineSymbol() const;
+    void setLineSymbol( QgsLineSymbol *lineSymbol /Transfer/ );
+    QgsFillSymbol *fillSymbol() const;
+    void setFillSymbol( QgsFillSymbol *fillSymbol /Transfer/ );
 
   private:
     QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
