@@ -8208,18 +8208,18 @@ void QgisApp::saveAsLayerDefinition()
   if ( !node )
     return;
 
-  if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
+  if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
   {
-    QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>(node);
-    if (layerNode && layerNode->layer())
+    QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>( node );
+    if ( layerNode && layerNode->layer() )
     {
-      defaultFileName =  QStringLiteral( "/%1.qlr" ).arg( layerNode->layer()->name() );
+      defaultFileName = QStringLiteral( "/%1.qlr" ).arg( layerNode->layer()->name() );
     }
   }
-  else if (node->nodeType() == QgsLayerTreeNode::NodeGroup)
+  else if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    QgsLayerTreeGroup *groupNode = dynamic_cast<QgsLayerTreeGroup *>(node);
-    if (groupNode)
+    QgsLayerTreeGroup *groupNode = dynamic_cast<QgsLayerTreeGroup *>( node );
+    if ( groupNode )
     {
       defaultFileName = QStringLiteral( "/%1.qlr" ).arg( groupNode->name() );
     }
