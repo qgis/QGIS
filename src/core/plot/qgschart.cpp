@@ -30,8 +30,8 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
     return;
   }
 
-  const QList<QVariant> categories = seriesList.at( 0 )->categories();
-  if ( categories.isEmpty() )
+  const QStringList categories = plotData.categories();
+  if ( xAxis().type() == Qgis::PlotAxisType::ValueType && categories.isEmpty() )
   {
     return;
   }
@@ -60,17 +60,17 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
     const double barStartAdjustement = -( barsWidth / 2 ) + barWidth * seriesIndex;
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
-      const QList<std::pair<QVariant, double>> data = xySeries->data();
-      for ( const std::pair<QVariant, double> &pair : data )
+      const QList<std::pair<double, double>> data = xySeries->data();
+      for ( const std::pair<double, double> &pair : data )
       {
         double x, y;
         if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
         {
-          x = ( pair.first.toDouble() ) * xScale + barStartAdjustement;
+          x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
         }
         else if ( xAxis().type() == Qgis::PlotAxisType::CategoryType )
         {
-          x = ( categoriesWidth * categories.indexOf( pair.first ) ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+          x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
         }
         y = ( pair.second - yMinimum() ) * yScale;
 
@@ -100,8 +100,8 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
     return;
   }
 
-  const QList<QVariant> categories = seriesList.at( 0 )->categories();
-  if ( categories.isEmpty() )
+  const QStringList categories = plotData.categories();
+  if ( xAxis().type() == Qgis::PlotAxisType::ValueType && categories.isEmpty() )
   {
     return;
   }
@@ -127,26 +127,26 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
-      const QList<std::pair<QVariant, double>> data = xySeries->data();
+      const QList<std::pair<double, double>> data = xySeries->data();
       QVector<QPointF> points;
       QList<double> values;
       points.fill( QPointF(), xAxis().type() == Qgis::PlotAxisType::ValueType ? data.size() : categories.size() );
       int dataIndex = 0;
-      for ( const std::pair<QVariant, double> &pair : data )
+      for ( const std::pair<double, double> &pair : data )
       {
         double x, y;
         if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
         {
-          x = ( pair.first.toDouble() ) * xScale;
+          x = ( pair.first - xMinimum() ) * xScale;
         }
         else if ( xAxis().type() == Qgis::PlotAxisType::CategoryType )
         {
-          x = ( categoriesWidth * categories.indexOf( pair.first ) ) + ( categoriesWidth / 2 );
+          x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
         }
         y = ( pair.second - yMinimum() ) * yScale;
 
         values << pair.second;
-        points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : categories.indexOf( pair.first ), QPointF( plotArea.x() + x,
+        points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, QPointF( plotArea.x() + x,
                         plotArea.y() + plotArea.height() - y ) );
         dataIndex++;
       }

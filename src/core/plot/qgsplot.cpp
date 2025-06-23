@@ -335,12 +335,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
   QgsNumericFormatContext numericContext;
 
   // categories
-  QList<QVariant> categories;
-  const QList<QgsAbstractPlotSeries *> seriesList = plotData.series();
-  if ( !seriesList.isEmpty() )
-  {
-    categories = seriesList.at( 0 )->categories();
-  }
+  const QStringList categories = plotData.categories();
 
   // calculate text metrics
   double maxYAxisLabelWidth = 0;
@@ -386,8 +381,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
   {
     for ( int i = 0; i < categories.size(); i++ )
     {
-      const QString text = categories.at( i ).toString();
-      maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, mYAxis.textFormat(), { text } ) );
+      maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, mYAxis.textFormat(), { categories.at( i ) } ) );
     }
   }
 
@@ -521,9 +515,8 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
     {
       const double currentX = ( i * categoryWidth ) + categoryWidth / 2.0;
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), categories.at( i ), true ) );
-      const QString text = categories.at( i ).toString();
       QgsTextRenderer::drawText( QPointF( currentX + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), Qgis::RenderUnit::Millimeters ) ),
-                                 0, Qgis::TextHorizontalAlignment::Center, { text }, context, mXAxis.textFormat() );
+                                 0, Qgis::TextHorizontalAlignment::Center, { categories.at( i ) }, context, mXAxis.textFormat() );
     }
   }
 
@@ -582,12 +575,11 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
     {
       const double currentY = ( i * categoryHeight ) + categoryHeight / 2.0;
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), categories.at( i ), true ) );
-      const QString text = categories.at( i ).toString();
-      const double height = QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text } );
+      const double height = QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { categories.at( i ) } );
       QgsTextRenderer::drawText( QPointF(
                                    maxYAxisLabelWidth + context.convertToPainterUnits( mMargins.left(), Qgis::RenderUnit::Millimeters ),
                                    chartAreaBottom - currentY + height / 2 ),
-                                 0, Qgis::TextHorizontalAlignment::Right, { text }, context, mYAxis.textFormat(), false );
+                                 0, Qgis::TextHorizontalAlignment::Right, { categories.at( i ) }, context, mYAxis.textFormat(), false );
     }
   }
 
@@ -947,6 +939,16 @@ void QgsPlotData::clearSeries()
   mSeries.clear();
 }
 
+QStringList QgsPlotData::categories() const
+{
+  return mCategories;
+}
+
+void QgsPlotData::setCategories( const QStringList &categories )
+{
+  mCategories = categories;
+}
+
 //
 // QgsAbstractPlotSeries
 //
@@ -971,31 +973,16 @@ void QgsAbstractPlotSeries::setSymbol( QgsSymbol *symbol )
   mSymbol.reset( symbol );
 }
 
-QList<QVariant> QgsAbstractPlotSeries::categories() const
-{
-  return QList<QVariant>();
-}
-
 //
 // QgsXyPlotSeries
 //
 
-QList<QVariant> QgsXyPlotSeries::categories() const
-{
-  QList<QVariant> categories;
-  for ( const std::pair<QVariant, double> &pair : std::as_const( mData ) )
-  {
-    categories << pair.first;
-  }
-  return categories;
-}
-
-QList<std::pair<QVariant, double>> QgsXyPlotSeries::data() const
+QList<std::pair<double, double>> QgsXyPlotSeries::data() const
 {
   return mData;
 }
 
-void QgsXyPlotSeries::append( const QVariant &x, const double &y )
+void QgsXyPlotSeries::append( const double &x, const double &y )
 {
   mData << std::make_pair( x, y );
 }
