@@ -39,6 +39,8 @@ A simple bar chart class.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
+    static QgsBarChart *create();
+
 };
 
 
@@ -71,6 +73,8 @@ A simple line chart class.
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+
+    static QgsLineChart *create();
 
 };
 

@@ -519,6 +519,7 @@
 %Include auto_generated/painting/qgspainting.sip
 %Include auto_generated/pdf/qgspdfrenderer.sip
 %Include auto_generated/plot/qgschart.sip
+%Include auto_generated/plot/qgschartregistry.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
 %Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip

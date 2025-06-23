@@ -31,7 +31,7 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
   }
 
   const QStringList categories = plotData.categories();
-  if ( xAxis().type() == Qgis::PlotAxisType::ValueType && categories.isEmpty() )
+  if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && categories.isEmpty() )
   {
     return;
   }
@@ -104,6 +104,15 @@ bool QgsBarChart::readXml( const QDomElement &element, const QgsReadWriteContext
   return true;
 }
 
+QgsBarChart *QgsBarChart::create()
+{
+  return new QgsBarChart();
+}
+
+//
+// QgsLineChart
+//
+
 void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
 {
   const QList<QgsAbstractPlotSeries *> seriesList = plotData.series();
@@ -113,7 +122,7 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
   }
 
   const QStringList categories = plotData.categories();
-  if ( xAxis().type() == Qgis::PlotAxisType::ValueType && categories.isEmpty() )
+  if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && categories.isEmpty() )
   {
     return;
   }
@@ -184,4 +193,9 @@ bool QgsLineChart::readXml( const QDomElement &element, const QgsReadWriteContex
 {
   Qgs2DXyPlot::readXml( element, context );
   return true;
+}
+
+QgsLineChart *QgsLineChart::create()
+{
+  return new QgsLineChart();
 }

@@ -111,6 +111,7 @@ try:
     QgsApplication.defaultStyleModel = staticmethod(QgsApplication.defaultStyleModel)
     QgsApplication.fontManager = staticmethod(QgsApplication.fontManager)
     QgsApplication.sensorRegistry = staticmethod(QgsApplication.sensorRegistry)
+    QgsApplication.chartRegistry = staticmethod(QgsApplication.chartRegistry)
     QgsApplication.messageLog = staticmethod(QgsApplication.messageLog)
     QgsApplication.authManager = staticmethod(QgsApplication.authManager)
     QgsApplication.authConfigurationStorageRegistry = staticmethod(QgsApplication.authConfigurationStorageRegistry)

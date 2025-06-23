@@ -53,6 +53,7 @@
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscalloutsregistry.h"
+#include "qgschartregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
@@ -2537,6 +2538,11 @@ QgsSensorRegistry *QgsApplication::sensorRegistry()
   return members()->mSensorRegistry.get();
 }
 
+QgsChartRegistry *QgsApplication::chartRegistry()
+{
+  return members()->mChartRegistry.get();
+}
+
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry.get();
@@ -2836,6 +2842,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup chart registry" ) );
+    mChartRegistry = std::make_unique<QgsChartRegistry>();
+    mChartRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D symbol registry" ) );
     m3DSymbolRegistry = std::make_unique<Qgs3DSymbolRegistry>();
     profiler->end();
@@ -2909,6 +2921,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mPageSizeRegistry.reset();
   mAnnotationItemRegistry.reset();
   mSensorRegistry.reset();
+  mChartRegistry.reset();
   mLayoutItemRegistry.reset();
   mPointCloudRendererRegistry.reset();
   mTiledSceneRendererRegistry.reset();
