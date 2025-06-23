@@ -8202,9 +8202,12 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
 void QgisApp::saveAsLayerDefinition()
 {
-  QString defaultFileName = "";
+  QString defaultFileName;
 
   QgsLayerTreeNode *node = mLayerTreeView->currentNode();
+  if ( !node )
+    return;
+
   if (node->nodeType() == QgsLayerTreeNode::NodeLayer)
   {
     QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>(node);
