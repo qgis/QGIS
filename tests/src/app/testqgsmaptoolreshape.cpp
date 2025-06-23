@@ -27,6 +27,8 @@
 #include "qgsmapcanvastracer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+
 
 /**
  * \ingroup UnitTests
@@ -42,6 +44,7 @@ class TestQgsMapToolReshape : public QObject
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
+    void testReshapeNotEnoughPoints();
     void testReshapeNoChange();
     void testReshapeZ();
     void testTopologicalEditing();
@@ -218,6 +221,27 @@ void TestQgsMapToolReshape::cleanupTestCase()
   delete mCaptureTool;
   delete mCanvas;
   QgsApplication::exitQgis();
+}
+
+void TestQgsMapToolReshape::testReshapeNotEnoughPoints()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+  // no snapping for this test
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  const QSignalSpy editCommandSpy( mLayerLineZ, &QgsVectorLayer::editCommandStarted );
+
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::RightButton );
+
+  // activate back snapping
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( editCommandSpy.count(), 0 );
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 0 );
 }
 
 void TestQgsMapToolReshape::testReshapeNoChange()
