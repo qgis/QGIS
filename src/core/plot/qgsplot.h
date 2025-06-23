@@ -74,7 +74,6 @@ class CORE_EXPORT QgsAbstractPlotSeries
     void setName( const QString &name );
     QgsSymbol *symbol() const;
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
-    virtual QList<QVariant> categories() const;
 
   private:
 #ifdef SIP_RUN
@@ -92,10 +91,8 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QgsXyPlotSeries() = default;
     ~QgsXyPlotSeries() = default;
 
-    QList<QVariant> categories() const override;
-
-    QList<std::pair<QVariant, double>> data() const SIP_SKIP;
-    void append( const QVariant &x, const double &y );
+    QList<std::pair<double, double>> data() const SIP_SKIP;
+    void append( const double &x, const double &y );
     void clear();
 
   private:
@@ -103,7 +100,7 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QgsXyPlotSeries( const QgsXyPlotSeries &other );
 #endif
 
-    QList<std::pair<QVariant, double>> mData;
+    QList<std::pair<double, double>> mData;
 };
 
 class CORE_EXPORT QgsPlotData
@@ -117,9 +114,13 @@ class CORE_EXPORT QgsPlotData
     void addSeries( QgsAbstractPlotSeries *series SIP_TRANSFER );
     void clearSeries();
 
+    QStringList categories() const;
+    void setCategories( const QStringList &categories );
+
   private:
 
     QList<QgsAbstractPlotSeries *> mSeries;
+    QStringList mCategories;
 };
 
 /**
