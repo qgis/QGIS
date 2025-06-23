@@ -1011,7 +1011,24 @@ if (WITH_CORE)
     else()
       # UNIX
       set (DEFAULT_BIN_SUBDIR     bin)
-      set (DEFAULT_CGIBIN_SUBDIR  bin)
+
+      # From https://www.cyberciti.biz/faq/how-do-i-find-the-url-for-my-cgi-bin/
+      execute_process(COMMAND uname -a OUTPUT_VARIABLE UNAME_A)
+      if(EXISTS "/etc/fedora-release")
+        # in /var/www/cgi-bin
+        set (DEFAULT_CGIBIN_SUBDIR  www/cgi-bin)
+      elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD")
+        # in /usr/local/www/cgi-bin/
+        set (DEFAULT_CGIBIN_SUBDIR  www/cgi-bin)
+      elseif (${UNAME_A} MATCHES "Ubuntu" OR ${UNAME_A} MATCHES "Debian" OR ${UNAME_A} MATCHES "Mint")
+        # in /usr/lib/cgi-bin/
+        set (DEFAULT_CGIBIN_SUBDIR  lib/cgi-bin)
+      else()
+        # others: Red Hat/CentOS/Rocky/Alma Linux
+        # in /var/www/cgi-bin/
+        set (DEFAULT_CGIBIN_SUBDIR  www/cgi-bin)
+      endif()
+
       set (DEFAULT_LIB_SUBDIR     lib${LIB_SUFFIX})
       set (DEFAULT_DATA_SUBDIR    share/qgis)
       set (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
