@@ -21,6 +21,7 @@
 #include "qgssymbollayer.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
 {
@@ -50,12 +51,11 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    QgsFillSymbol *symbol = dynamic_cast<QgsFillSymbol *>( series->symbol() );
-    if ( !symbol )
+    if ( !series->fillSymbol() )
     {
       continue;
     }
-    symbol->startRender( context );
+    series->fillSymbol()->startRender( context );
 
     const double barStartAdjustement = -( barsWidth / 2 ) + barWidth * seriesIndex;
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
@@ -86,11 +86,11 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
                                   plotArea.y() + plotArea.height() - zero );
 
         chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
-        symbol->renderPolygon( QPolygonF( QRectF( topLeft, bottomRight ) ), nullptr, nullptr, context );
+        series->fillSymbol()->renderPolygon( QPolygonF( QRectF( topLeft, bottomRight ) ), nullptr, nullptr, context );
       }
     }
 
-    symbol->stopRender( context );
+    series->fillSymbol()->stopRender( context );
     seriesIndex++;
   }
 
@@ -144,18 +144,25 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    QgsLineSymbol *symbol = dynamic_cast<QgsLineSymbol *>( series->symbol() );
-    if ( !symbol )
+    if ( !series->lineSymbol() && !series->markerSymbol() )
     {
       continue;
     }
-    symbol->startRender( context );
+
+    if ( series->lineSymbol() )
+    {
+      series->lineSymbol()->startRender( context );
+    }
+
+    if ( series->markerSymbol() )
+    {
+      series->markerSymbol()->startRender( context );
+    }
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
       const QList<std::pair<double, double>> data = xySeries->data();
       QVector<QPointF> points;
-      QList<double> values;
       points.fill( QPointF(), xAxis().type() == Qgis::PlotAxisType::ValueType ? data.size() : categories.size() );
       int dataIndex = 0;
       for ( const std::pair<double, double> &pair : data )
@@ -178,37 +185,80 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
           }
           y = ( pair.second - yMinimum() ) * yScale;
 
-          points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, QPointF( plotArea.x() + x,
-                          plotArea.y() + plotArea.height() - y ) );
-          values << pair.second;
+          const QPointF point( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
+          points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, point );
         }
         dataIndex++;
       }
 
-      chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), QVariant::fromValue( values ), true ) );
-      QVector<QPointF> line;
-      for ( const QPointF &point : points )
+      if ( series->lineSymbol() )
       {
-        if ( !point.isNull() )
+        chartScope->removeVariable( QStringLiteral( "chart_value" ) );
+        QVector<QPointF> line;
+        for ( const QPointF &point : points )
         {
-          line << point;
-        }
-        else
-        {
-          if ( !line.isEmpty() )
+          if ( !point.isNull() )
           {
-            symbol->renderPolyline( QPolygonF( line ), nullptr, context );
-            line.clear();
+            line << point;
+          }
+          else
+          {
+            if ( !line.isEmpty() )
+            {
+              series->lineSymbol()->renderPolyline( QPolygonF( line ), nullptr, context );
+              line.clear();
+            }
           }
         }
+        if ( !line.isEmpty() )
+        {
+          series->lineSymbol()->renderPolyline( QPolygonF( line ), nullptr, context );
+        }
       }
-      if ( !line.isEmpty() )
+      if ( series->markerSymbol() )
       {
-        symbol->renderPolyline( QPolygonF( line ), nullptr, context );
+        int pointIndex = 0;
+        for ( const QPointF &point : points )
+        {
+          if ( !point.isNull() )
+          {
+            if ( series->markerSymbol() )
+            {
+              double value = 0;
+              if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
+              {
+                value = data.at( pointIndex ).second;
+              }
+              else
+              {
+                for ( const std::pair<double, double> &pair : data )
+                {
+                  if ( pair.first == pointIndex )
+                  {
+                    value = pair.second;
+                    break;
+                  }
+                }
+              }
+
+              chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), value, true ) );
+              series->markerSymbol()->renderPoint( point, nullptr, context );
+            }
+          }
+          pointIndex++;
+        }
       }
     }
 
-    symbol->stopRender( context );
+    if ( series->lineSymbol() )
+    {
+      series->lineSymbol()->stopRender( context );
+    }
+    if ( series->markerSymbol() )
+    {
+      series->markerSymbol()->stopRender( context );
+    }
+
     seriesIndex++;
   }
 
