@@ -2658,29 +2658,45 @@ bool QgsMapLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgE
 void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &description,
                                        bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
 {
+  saveStyleToDatabaseV2( name, description, useAsDefault, uiFileContent, msgError, categories );
+}
+
+QgsMapLayer::SaveStyleResults QgsMapLayer::saveStyleToDatabaseV2( const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsMapLayer::SaveStyleResults results;
 
   QString sldStyle, qmlStyle;
   QDomDocument qmlDocument;
   QgsReadWriteContext context;
   exportNamedStyle( qmlDocument, msgError, context, categories );
-  if ( !msgError.isNull() )
+  if ( !msgError.isEmpty() )
   {
-    return;
+    results.setFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed );
   }
-  qmlStyle = qmlDocument.toString();
+  else
+  {
+    qmlStyle = qmlDocument.toString();
+  }
 
   QgsSldExportContext sldContext;
   QDomDocument sldDocument = this->exportSldStyleV3( sldContext );
   if ( !sldContext.errors().empty() )
   {
-    return;
+    results.setFlag( QgsMapLayer::SaveStyleResult::SldGenerationFailed );
   }
-  sldStyle = sldDocument.toString();
+  else
+  {
+    sldStyle = sldDocument.toString();
+  }
 
-  QgsProviderRegistry::instance()->saveStyle( mProviderKey,
-      mDataSource, qmlStyle, sldStyle, name,
-      description, uiFileContent, useAsDefault, msgError );
+  if ( !QgsProviderRegistry::instance()->saveStyle( mProviderKey,
+       mDataSource, qmlStyle, sldStyle, name, description, uiFileContent, useAsDefault, msgError ) )
+  {
+    results.setFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed );
+  }
+  return results;
 }
 
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
