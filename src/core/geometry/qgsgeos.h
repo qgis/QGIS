@@ -945,10 +945,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 #ifndef SIP_RUN
 
-class GEOSException : public std::runtime_error
+class QgsGeosException : public std::runtime_error
 {
   public:
-    explicit GEOSException( const QString &message )
+    explicit QgsGeosException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
     {
     }

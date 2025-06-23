@@ -579,7 +579,7 @@ bool QgsTracer::initGraph()
 
     mpl = noded.asMultiPolyline();
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     // no big deal... we will just not have nicely noded linework, potentially
     // missing some intersections
