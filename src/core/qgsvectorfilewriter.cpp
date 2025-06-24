@@ -2442,14 +2442,60 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.clear();
       layerOptions.clear();
 
+      QStringList compressionMethods;
+
+      if ( GDALDriverH hParquetDrv = GDALGetDriverByName( "PARQUET" ) )
+      {
+        if ( auto *xml = GDALGetMetadataItem( hParquetDrv, GDAL_DS_LAYER_CREATIONOPTIONLIST, nullptr ) )
+        {
+          QDomDocument doc;
+          if ( doc.setContent( QString::fromUtf8( xml ) ) )
+          {
+            // Find the first <Option name="COMPRESSION">
+            QDomNodeList options = doc.elementsByTagName("Option");
+            for ( int i = 0; i < options.count(); ++i )
+            {
+              QDomElement e = options.at(i).toElement();
+              if ( e.attribute( "name" ) == "COMPRESSION" )
+              {
+                // Directly get all <Value> descendants
+                QDomNodeList values = e.elementsByTagName("Value");
+                for ( int j = 0; j < values.count(); ++j )
+                {
+                  compressionMethods << values.at(j).toElement().text().trimmed();
+                }
+                break; // Abort after "COMPRESSION"
+              }
+            }
+          }
+        }
+      }
+
       layerOptions.insert( QStringLiteral( "COMPRESSION" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Compression method." ),
-                             QStringList()
-                             << QStringLiteral( "UNCOMPRESSED" )
-                             << QStringLiteral( "SNAPPY" ),
-                             QStringLiteral( "SNAPPY" ), // Default value
+                             compressionMethods,
+                             QStringLiteral( "SNAPPY" ),
                              false // Allow None
                            ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+      layerOptions.insert( QStringLiteral( "COMPRESSION_LEVEL" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Compression level." ),
+                             1 // Default value
+                           ) );
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+      layerOptions.insert( QStringLiteral( "SORT_BY_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to sort by spatial location. Enables faster spatial filtering on reading." ),
+                             false // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "WRITE_COVERING_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to write the bounding box of geometries into columns." ),
+                             true // Default value
+                           ) );
+#endif
 
       layerOptions.insert( QStringLiteral( "GEOMETRY_ENCODING" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Geometry encoding." ),
