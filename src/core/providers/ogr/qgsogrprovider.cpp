@@ -3878,7 +3878,6 @@ QString  QgsOgrProvider::description() const
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
-  QgsCoordinateReferenceSystem srs;
   if ( !mValid || ( mOGRGeomType == wkbNone ) )
     return QgsCoordinateReferenceSystem();
 
