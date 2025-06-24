@@ -1135,13 +1135,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       {
         // current job was invalidated - start a new one
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
-        mBackgroundUpdateTimer->start( 1 );
+        mBackgroundUpdateTimer->start( 100 );
       }
       else if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
-        mBackgroundUpdateTimer->start( 1 );
+        mBackgroundUpdateTimer->start( 100 );
       }
       renderInProgress = true;
     }
@@ -1151,7 +1151,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       {
         // cache was invalidated - trigger a background update
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
-        mBackgroundUpdateTimer->start( 1 );
+        mBackgroundUpdateTimer->start( 100 );
         renderInProgress = true;
       }
 
