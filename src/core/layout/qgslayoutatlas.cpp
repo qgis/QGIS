@@ -122,7 +122,7 @@ bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &
   mFilterExpression = atlasElem.attribute( QStringLiteral( "featureFilter" ) );
 
   mLimitCoverageLayerRenderToCurrentFeature = atlasElem.attribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), QStringLiteral( "0" ) ).toInt();
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagLimitCoverageLayerRenderToCurrentFeature, mLimitCoverageLayerRenderToCurrentFeature );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature, mLimitCoverageLayerRenderToCurrentFeature );
   mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "0" ) ).toInt();
   mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, mHideCoverage );
 
@@ -499,7 +499,7 @@ void QgsLayoutAtlas::setHideCoverage( bool hide )
 
 void QgsLayoutAtlas::setLimitCoverageLayerRenderToCurrentFeature( bool limit )
 {
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagLimitCoverageLayerRenderToCurrentFeature, limit );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature, limit );
   if ( limit == mLimitCoverageLayerRenderToCurrentFeature )
     return;
 
