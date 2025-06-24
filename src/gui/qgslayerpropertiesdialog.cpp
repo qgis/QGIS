@@ -382,7 +382,7 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
           return;
         }
 
-        mLayer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
+        mLayer->saveStyleToDatabaseV2( QString(), QString(), true, QString(), errorMsg );
         if ( errorMsg.isNull() )
         {
           return;
@@ -457,7 +457,7 @@ void QgsLayerPropertiesDialog::saveStyleAs()
           return;
         }
 
-        mLayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, errorMessage, dlg.styleCategories() );
+        mLayer->saveStyleToDatabaseV2( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, errorMessage, dlg.styleCategories() );
 
         if ( !errorMessage.isNull() )
         {
