@@ -2912,6 +2912,7 @@ The development version
       LosslessImageRendering,
       SynchronousLegendGraphics,
       AlwaysUseGlobalMasks,
+      LimitCoverageLayerRenderToCurrentFeature,
     };
 
     typedef QFlags<Qgis::LayoutRenderFlag> LayoutRenderFlags;

@@ -10135,6 +10135,9 @@ QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUs
 QgsLayoutRenderContext.Flag.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
 QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.is_monkey_patched = True
 QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \n.. versionadded:: 3.38"
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature = Qgis.LayoutRenderFlag.LimitCoverageLayerRenderToCurrentFeature
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.is_monkey_patched = True
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.__doc__ = "Limit coverage layer rendering to the current atlas feature. \n.. versionadded:: 4.0"
 Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendered.
 
 .. note::
@@ -10199,6 +10202,10 @@ Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendere
 
 
   Available as ``QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks`` in older QGIS releases.
+
+* ``LimitCoverageLayerRenderToCurrentFeature``: Limit coverage layer rendering to the current atlas feature.
+
+  .. versionadded:: 4.0
 
 
 """

@@ -1582,7 +1582,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
 #endif
 
   QgsFeatureFilterProviderGroup jobFeatureFilter;
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
+  if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
   {
     jobFeatureFilter.addProvider( mAtlasFeatureFilterProvider.get() );
     if ( job.featureFilterProvider() )
@@ -1692,7 +1692,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   }
 
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLimitCoverageLayerRenderToCurrentFeature )
+  if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature )
   {
     mPainterJob->setFeatureFilterProvider( mAtlasFeatureFilterProvider.get() );
   }
