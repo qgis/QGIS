@@ -1582,7 +1582,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
 #endif
 
   QgsFeatureFilterProviderGroup jobFeatureFilter;
-  if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
+  if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
   {
     jobFeatureFilter.addProvider( mAtlasFeatureFilterProvider.get() );
     if ( job.featureFilterProvider() )
@@ -1692,7 +1692,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   }
 
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
-  if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature )
+  if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature )
   {
     mPainterJob->setFeatureFilterProvider( mAtlasFeatureFilterProvider.get() );
   }
@@ -2940,7 +2940,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
     return; // nothing to do
 
   QgsFeatureFilter *filter = new QgsFeatureFilter();
-  filter->setFilter( mLayout->reportContext().layer(), QgsExpression( QStringLiteral( "$id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
+  filter->setFilter( mLayout->reportContext().layer(), QgsExpression( QStringLiteral( "@id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
   mAtlasFeatureFilterProvider.reset( new QgsFeatureFilterProviderGroup() );
   mAtlasFeatureFilterProvider->addProvider( filter );
 
