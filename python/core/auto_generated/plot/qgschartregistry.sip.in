@@ -60,9 +60,6 @@ Registry of available chart types.
 :py:class:`QgsChartRegistry` is not usually directly created, but rather
 accessed through :py:func:`QgsApplication.chartRegistry()`.
 
-A companion class, :py:class:`QgsChartGuiRegistry`, handles the GUI
-behavior of charts.
-
 .. versionadded:: 4.0
 %End
 
