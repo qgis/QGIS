@@ -485,9 +485,10 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
             // this is not nice -- but needed to avoid an "overwrite" prompt messagebox from the provider! This api needs a rework to avoid this.
             const QVariant prevOverwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
             settings.setValue( QStringLiteral( "qgis/overwriteStyle" ), true );
-            res->saveStyleToDatabase( newLayer, QString(), true, QString(), errorMsg );
+            QgsMapLayer::SaveStyleResults saveStyleResults = res->saveStyleToDatabaseV2( newLayer, QString(), true, QString(), errorMsg );
             settings.setValue( QStringLiteral( "qgis/overwriteStyle" ), prevOverwriteStyle );
-            if ( !errorMsg.isEmpty() )
+            if ( saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed )
+                 || saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed ) )
             {
               feedback->reportError( QObject::tr( "Could not save layer style: %1 " ).arg( errorMsg ) );
             }
