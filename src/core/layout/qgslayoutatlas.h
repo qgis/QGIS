@@ -87,6 +87,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Returns TRUE if the atlas is set to limit rendering on the coverage layer to
      * the current feature.
      * \see setHideCoverage()
+     * \since QGIS 4.0
      */
     bool limitCoverageLayerRenderToCurrentFeature() const { return mLimitCoverageLayerRenderToCurrentFeature; }
 
@@ -94,6 +95,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Sets whether the rendering of the coverage layer should be limited to the
      * current feature.
      * \see hideCoverage()
+     * \since QGIS 4.0
      */
     void setLimitCoverageLayerRenderToCurrentFeature( bool limit );
 
