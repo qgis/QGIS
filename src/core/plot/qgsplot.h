@@ -49,6 +49,10 @@ class CORE_EXPORT QgsPlot
 
     virtual ~QgsPlot();
 
+    /**
+     * Returns the plot's type.
+     * \since QGIS 4.0
+     */
     virtual QString type() const { return QString(); }
 
     /**
@@ -66,6 +70,14 @@ class CORE_EXPORT QgsPlot
 
 };
 
+/**
+ * \brief An abstract class used to encapsulates the data and styling of a plot series.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 4.0
+ */
 class CORE_EXPORT QgsAbstractPlotSeries
 {
   public:
@@ -73,14 +85,50 @@ class CORE_EXPORT QgsAbstractPlotSeries
     QgsAbstractPlotSeries() = default;
     virtual ~QgsAbstractPlotSeries() = default;
 
+    /**
+     * Returns the series' name.
+     */
     QString name() const;
+
+    /**
+     * Sets the series' name.
+     */
     void setName( const QString &name );
 
+    /**
+     * Returns the marker symbol to be used by various chart types when
+     * rendering the series' data.
+     */
     QgsMarkerSymbol *markerSymbol() const;
+
+    /**
+     * Sets the marker symbol to be used by various chart types when
+     * rendering the series' data.
+     */
     void setMarkerSymbol( QgsMarkerSymbol *markerSymbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol to be used by various chart types when
+     * rendering the series' data.
+     */
     QgsLineSymbol *lineSymbol() const;
+
+    /**
+     * Sets the line symbol to be used by various chart types when
+     * rendering the series' data.
+     */
     void setLineSymbol( QgsLineSymbol *lineSymbol SIP_TRANSFER );
+
+    /**
+     * Returns the fill symbol to be used by various chart types when
+     * rendering the series' data.
+     */
     QgsFillSymbol *fillSymbol() const;
+
+    /**
+     * Sets the fill symbol to be used by various chart types when
+     * rendering the series' data.
+     */
     void setFillSymbol( QgsFillSymbol *fillSymbol SIP_TRANSFER );
 
   private:
@@ -95,6 +143,14 @@ class CORE_EXPORT QgsAbstractPlotSeries
     std::unique_ptr<QgsFillSymbol> mFillSymbol;
 };
 
+/**
+ * \brief Encapsulates the data and styling of an XY plot series.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 4.0
+ */
 class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
 {
   public:
@@ -102,8 +158,19 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QgsXyPlotSeries() = default;
     ~QgsXyPlotSeries() = default;
 
+    /**
+     * Returns the series' list of XY pairs of double.
+     */
     QList<std::pair<double, double>> data() const SIP_SKIP;
+
+    /**
+     * Appends a pair for of XY  double values to the series.
+     */
     void append( const double &x, const double &y );
+
+    /**
+     * Clears the series' data.
+     */
     void clear();
 
   private:
@@ -114,6 +181,14 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QList<std::pair<double, double>> mData;
 };
 
+/**
+ * \brief Encapsulates one or more plot series.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 4.0
+ */
 class CORE_EXPORT QgsPlotData
 {
   public:
@@ -121,8 +196,21 @@ class CORE_EXPORT QgsPlotData
     QgsPlotData() = default;
     ~QgsPlotData();
 
+    /**
+     * Returns the list of series forming the plot data.
+     * \note the series' ownership is retained by this object.
+     */
     QList<QgsAbstractPlotSeries *> series() const;
+
+    /**
+     * Adds a series to the plot data.
+     * \note the series' ownership is transferred to this object.
+     */
     void addSeries( QgsAbstractPlotSeries *series SIP_TRANSFER );
+
+    /**
+     * Clears all series from the plot data.
+     */
     void clearSeries();
 
     QStringList categories() const;

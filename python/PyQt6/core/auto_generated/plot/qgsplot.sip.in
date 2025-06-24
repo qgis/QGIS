@@ -32,6 +32,11 @@ Base class for plot/chart/graphs.
     virtual ~QgsPlot();
 
     virtual QString type() const;
+%Docstring
+Returns the plot's type.
+
+.. versionadded:: 4.0
+%End
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
@@ -47,6 +52,16 @@ Reads the plot's properties from an XML ``element``.
 
 class QgsAbstractPlotSeries
 {
+%Docstring(signature="appended")
+An abstract class used to encapsulates the data and styling of a plot
+series.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
 
 %TypeHeaderCode
 #include "qgsplot.h"
@@ -57,14 +72,50 @@ class QgsAbstractPlotSeries
     virtual ~QgsAbstractPlotSeries();
 
     QString name() const;
+%Docstring
+Returns the series' name.
+%End
+
     void setName( const QString &name );
+%Docstring
+Sets the series' name.
+%End
 
     QgsMarkerSymbol *markerSymbol() const;
+%Docstring
+Returns the marker symbol to be used by various chart types when
+rendering the series' data.
+%End
+
     void setMarkerSymbol( QgsMarkerSymbol *markerSymbol /Transfer/ );
+%Docstring
+Sets the marker symbol to be used by various chart types when rendering
+the series' data.
+%End
+
     QgsLineSymbol *lineSymbol() const;
+%Docstring
+Returns the line symbol to be used by various chart types when rendering
+the series' data.
+%End
+
     void setLineSymbol( QgsLineSymbol *lineSymbol /Transfer/ );
+%Docstring
+Sets the line symbol to be used by various chart types when rendering
+the series' data.
+%End
+
     QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the fill symbol to be used by various chart types when rendering
+the series' data.
+%End
+
     void setFillSymbol( QgsFillSymbol *fillSymbol /Transfer/ );
+%Docstring
+Sets the fill symbol to be used by various chart types when rendering
+the series' data.
+%End
 
   private:
     QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
@@ -72,6 +123,15 @@ class QgsAbstractPlotSeries
 
 class QgsXyPlotSeries : QgsAbstractPlotSeries
 {
+%Docstring(signature="appended")
+Encapsulates the data and styling of an XY plot series.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
 
 %TypeHeaderCode
 #include "qgsplot.h"
@@ -81,8 +141,16 @@ class QgsXyPlotSeries : QgsAbstractPlotSeries
     QgsXyPlotSeries();
     ~QgsXyPlotSeries();
 
+
     void append( const double &x, const double &y );
+%Docstring
+Appends a pair for of XY double values to the series.
+%End
+
     void clear();
+%Docstring
+Clears the series' data.
+%End
 
   private:
     QgsXyPlotSeries( const QgsXyPlotSeries &other );
@@ -90,6 +158,15 @@ class QgsXyPlotSeries : QgsAbstractPlotSeries
 
 class QgsPlotData
 {
+%Docstring(signature="appended")
+Encapsulates one or more plot series.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
 
 %TypeHeaderCode
 #include "qgsplot.h"
@@ -100,8 +177,27 @@ class QgsPlotData
     ~QgsPlotData();
 
     QList<QgsAbstractPlotSeries *> series() const;
+%Docstring
+Returns the list of series forming the plot data.
+
+.. note::
+
+   the series' ownership is retained by this object.
+%End
+
     void addSeries( QgsAbstractPlotSeries *series /Transfer/ );
+%Docstring
+Adds a series to the plot data.
+
+.. note::
+
+   the series' ownership is transferred to this object.
+%End
+
     void clearSeries();
+%Docstring
+Clears all series from the plot data.
+%End
 
     QStringList categories() const;
     void setCategories( const QStringList &categories );
