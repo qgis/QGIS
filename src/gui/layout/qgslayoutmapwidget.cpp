@@ -498,9 +498,8 @@ void QgsLayoutMapWidget::aboutToShowLayersMenu()
 
     QAction *action = new QAction( icon, text, mLayersMenu );
     action->setToolTip( tooltip );
-    connect( action, &QAction::triggered, this, [=] {
-      QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
-      if ( layer )
+    connect( action, &QAction::triggered, this, [this, layerId] {
+      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId ) )
       {
         setToCustomExtent( QgsReferencedRectangle( layer->extent(), layer->crs() ) );
       }
