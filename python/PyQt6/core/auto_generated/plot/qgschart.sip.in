@@ -40,6 +40,9 @@ A simple bar chart class.
 
 
     static QgsBarChart *create();
+%Docstring
+Returns a new bar chart.
+%End
 
 };
 
@@ -75,6 +78,9 @@ A simple line chart class.
 
 
     static QgsLineChart *create();
+%Docstring
+Returns a new line chart.
+%End
 
 };
 
