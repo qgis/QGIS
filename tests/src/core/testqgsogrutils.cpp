@@ -1057,18 +1057,18 @@ void TestQgsOgrUtils::testOgrUtilsStoredStyle()
 
     symbol->setColor( QColor( 255, 0, 0 ) );
     renderer->setSymbol( symbol );
-    vl.saveStyleToDatabase( "style1", "style1", false, QString(), error );
+    vl.saveStyleToDatabaseV2( "style1", "style1", false, QString(), error );
 
     // Default
     symbol = renderer->symbol()->clone();
     symbol->setColor( QColor( 0, 255, 0 ) );
     renderer->setSymbol( symbol );
-    vl.saveStyleToDatabase( "style2", "style2", true, QString(), error );
+    vl.saveStyleToDatabaseV2( "style2", "style2", true, QString(), error );
 
     symbol = renderer->symbol()->clone();
     symbol->setColor( QColor( 0, 0, 255 ) );
     renderer->setSymbol( symbol );
-    vl.saveStyleToDatabase( "style3", "style3", false, QString(), error );
+    vl.saveStyleToDatabaseV2( "style3", "style3", false, QString(), error );
   }
 
   gdal::ogr_datasource_unique_ptr hDS( OGROpen( testFile.toUtf8().constData(), false, nullptr ) );
