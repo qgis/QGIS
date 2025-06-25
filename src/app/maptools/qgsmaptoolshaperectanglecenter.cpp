@@ -70,7 +70,7 @@ bool QgsMapToolShapeRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
   }
   else if ( e->button() == Qt::RightButton )
   {
-    if ( mPoints.isEmpty() )
+    if ( !mRectangle.isValid() )
       return false;
 
     mPoints.append( point );
