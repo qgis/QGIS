@@ -64,9 +64,6 @@ void TestQgsAuthCertUtils::cleanupTestCase()
 
 void TestQgsAuthCertUtils::testValidationUtils()
 {
-  // FIXME
-  QSKIP( "Broken test. See https://github.com/qgis/QGIS/issues/62373", SkipSingle );
-
   // null cert
   QSslCertificate cert;
   QVERIFY( !QgsAuthCertUtils::certIsCurrent( cert ) );
