@@ -1052,7 +1052,7 @@ Install and initialize vcpkg
 Install build tools using [homebrew](https://brew.sh/)
 
 ```sh
-brew install git cmake flex bison automake autoconf libtool nasm ninja
+brew install git cmake flex bison automake autoconf autoconf-archive libtool nasm ninja
 ```
 
 Get the QGIS source code
@@ -1087,10 +1087,8 @@ cmake -S . \
       -D BUILD_WITH_QT6=ON \
       -D WITH_QTWEBKIT=OFF \
       -D WITH_BINDINGS=ON \
-      -D QGIS_MACAPP_FRAMEWORK=OFF \
       -D VCPKG_TARGET_TRIPLET="$TRIPLET" \
-      -D VCPKG_HOST_TRIPLET="$TRIPLET" \
-      -D CREATE_MACOSX_BUNDLE=OFF
+      -D VCPKG_HOST_TRIPLET="$TRIPLET"
 ```
 
 Build (switch the target to `Release` if you do not want to debug)
