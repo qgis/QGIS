@@ -200,34 +200,52 @@ void QgsMultiBandColorRendererWidget::onBandChanged( int index )
   emit widgetChanged();
 }
 
-void QgsMultiBandColorRendererWidget::mRedMinLineEdit_textChanged( const QString & )
+void QgsMultiBandColorRendererWidget::mRedMinLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
+  {
+    minMaxModified();
+  }
 }
 
-void QgsMultiBandColorRendererWidget::mRedMaxLineEdit_textChanged( const QString & )
+void QgsMultiBandColorRendererWidget::mRedMaxLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
+  {
+    minMaxModified();
+  }
 }
 
-void QgsMultiBandColorRendererWidget::mGreenMinLineEdit_textChanged( const QString & )
+void QgsMultiBandColorRendererWidget::mGreenMinLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
+  {
+    minMaxModified();
+  }
 }
 
-void QgsMultiBandColorRendererWidget::mGreenMaxLineEdit_textChanged( const QString & )
+void QgsMultiBandColorRendererWidget::mGreenMaxLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
+  {
+    minMaxModified();
+  }
 }
 
-void QgsMultiBandColorRendererWidget::mBlueMinLineEdit_textChanged( const QString & )
+void QgsMultiBandColorRendererWidget::mBlueMinLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
+  {
+    minMaxModified();
+  }
 }
 
-void QgsMultiBandColorRendererWidget::mBlueMaxLineEdit_textChanged( const QString & )
+void QgsMultiBandColorRendererWidget::mBlueMaxLineEdit_textChanged( const QString &value )
 {
-  minMaxModified();
+  if ( QgsDoubleValidator::isDoubleConversionSafe( value ) )
+  {
+    minMaxModified();
+  }
 }
 
 void QgsMultiBandColorRendererWidget::minMaxModified()
