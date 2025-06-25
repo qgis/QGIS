@@ -136,14 +136,14 @@ jobs:
 
       - name: Archive app
         run: |
-          gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
+          gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
         uses: actions/upload-artifact@v4
         with:
-          name: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}
+          name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
-            qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-${{ matrix.triplet }}.tar.gz
+            qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz
 
   schedule_download_comment:
     name: Create dmg
@@ -165,16 +165,16 @@ jobs:
       - name: 📤 Download app
         uses: actions/download-artifact@v4
         with:
-          pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-*
+          pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
             artifacts
 
       - name: Create universal app
         run: |
           mkdir -p x64
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-x64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-x64-osx-dynamic-release.tar.gz -C x64
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-x64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-x64-osx-dynamic-release.tar.gz -C x64
           mkdir -p arm64
-          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.display-name}}-arm64-osx-dynamic-release.tar.gz -C arm64
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-arm64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-arm64-osx-dynamic-release.tar.gz -C arm64
 
           pip install lipomerge
           lipomerge ./x64 ./arm64 universal
@@ -198,7 +198,7 @@ jobs:
         uses: actions/upload-artifact@v4
         id: artifact-mac-qt6
         with:
-          name: qgis-${{steps.workflow-artifact-ids.outputs.display-name}}-dmg
+          name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg
           path: |
             *.dmg
 
