@@ -231,6 +231,74 @@ double QgsVectorLayerEditUtils::getTopologicalSearchRadius( const QgsVectorLayer
   }
   return threshold;
 }
+
+void QgsVectorLayerEditUtils::addTopologicalPointsToLayers( const QgsGeometry &geom, QgsVectorLayer *vlayer, const QList<QgsMapLayer *> &layers, const QString &toolName )
+{
+  QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+  QgsFeature f;
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vectorLayer && vectorLayer->isEditable() && vectorLayer->isSpatial() && ( vectorLayer->geometryType() == Qgis::GeometryType::Line || vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
+    {
+      // boundingBox() is cached, it doesn't matter calling it in the loop
+      QgsRectangle bbox = geom.boundingBox();
+      QgsCoordinateTransform ct;
+      if ( vectorLayer->crs() != vlayer->crs() )
+      {
+        ct = QgsCoordinateTransform( vlayer->crs(), vectorLayer->crs(), vectorLayer->transformContext() );
+        try
+        {
+          bbox = ct.transformBoundingBox( bbox );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "Bounding box transformation failed, skipping topological points for layer %1" ).arg( vlayer->id() ) );
+          continue;
+        }
+      }
+      bbox.grow( getTopologicalSearchRadius( vectorLayer ) );
+      request.setFilterRect( bbox );
+
+      // We check that there is actually at least one feature intersecting our geometry in the layer to avoid creating an empty edit command and calling costly addTopologicalPoint
+      if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
+        continue;
+
+      vectorLayer->beginEditCommand( QObject::tr( "Topological points added by '%1'" ).arg( toolName ) );
+
+      int returnValue = 2;
+      if ( vectorLayer->crs() != vlayer->crs() )
+      {
+        try
+        {
+          // transform digitized geometry from vlayer crs to vectorLayer crs and add topological points
+          QgsGeometry transformedGeom( geom );
+          transformedGeom.transform( ct );
+          returnValue = vectorLayer->addTopologicalPoints( transformedGeom );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "transformation to vectorLayer coordinate failed" ) );
+        }
+      }
+      else
+      {
+        returnValue = vectorLayer->addTopologicalPoints( geom );
+      }
+
+      if ( returnValue == 0 )
+      {
+        vectorLayer->endEditCommand();
+      }
+      else
+      {
+        // the layer was not modified, leave the undo buffer intact
+        vectorLayer->destroyEditCommand();
+      }
+    }
+  }
+}
 ///@endcond
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )

@@ -1213,6 +1213,8 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * For singlepart point geometries, the result is equivalent to the bounding box of the geometry.
+     *
      * \see boundingBox()
      */
     QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
@@ -1224,6 +1226,7 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * For singlepart point geometries, the result is equivalent to the bounding box of the geometry.
      */
     QgsGeometry orientedMinimumBoundingBox() const SIP_SKIP;
 
@@ -2040,8 +2043,11 @@ class CORE_EXPORT QgsGeometry
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * MultiLineString geometry.
+     *
+     * Since QGIS 3.44 the optional \a parameters argument can be used to specify parameters which
+     * control the mergeLines results.
      */
-    QgsGeometry mergeLines() const;
+    QgsGeometry mergeLines( const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.

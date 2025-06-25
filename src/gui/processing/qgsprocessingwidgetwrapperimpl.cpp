@@ -4677,6 +4677,19 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
 void QgsProcessingFieldPanelWidget::setFields( const QgsFields &fields )
 {
   mFields = fields;
+
+  // ensure that after setting new fields the value does not contain fields
+  // which are not available anymore, see https://github.com/qgis/QGIS/issues/39351
+  QVariantList availableFields;
+  for ( const QgsField &field : std::as_const( mFields ) )
+  {
+    availableFields << field.name();
+  }
+  QList<QVariant>::iterator it = std::remove_if( mValue.begin(), mValue.end(), [&availableFields]( const QVariant &value ) { return !availableFields.contains( value ); } );
+  mValue.erase( it, mValue.end() );
+
+  updateSummaryText();
+  emit changed();
 }
 
 void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )

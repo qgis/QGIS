@@ -1336,6 +1336,19 @@ QgsBox3D QgsGeometry::boundingBox3D() const
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
   mLastError.clear();
+
+  if ( isNull() )
+    return QgsGeometry();
+
+  if ( type() == Qgis::GeometryType::Point && d->geometry->partCount() == 1 )
+  {
+    area = 0;
+    angle = 0;
+    width = 0;
+    height = 0;
+    return QgsGeometry::fromRect( d->geometry->boundingBox() );
+  }
+
   QgsInternalGeometryEngine engine( *this );
   const QgsGeometry res = engine.orientedMinimumBoundingBox( area, angle, width, height );
   if ( res.isNull() )
@@ -3086,7 +3099,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::mergeLines() const
+QgsGeometry QgsGeometry::mergeLines( const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry )
   {
@@ -3101,7 +3114,7 @@ QgsGeometry QgsGeometry::mergeLines() const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result( geos.mergeLines( &mLastError ) );
+  QgsGeometry result( geos.mergeLines( &mLastError, parameters ) );
   result.mLastError = mLastError;
   return result;
 }

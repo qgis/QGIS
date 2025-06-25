@@ -103,6 +103,13 @@ Duplicates an effect by creating a deep copy of the effect
 :return: clone of paint effect
 %End
 
+    virtual Qgis::PaintEffectFlags flags() const;
+%Docstring
+Returns flags which specify how the paint effect behaves.
+
+.. versionadded:: 3.44
+%End
+
     virtual QVariantMap properties() const = 0;
 %Docstring
 Returns the properties describing the paint effect encoded in a string
@@ -353,6 +360,8 @@ map.
 
 :return: new QgsDrawSourceEffect
 %End
+
+    virtual Qgis::PaintEffectFlags flags() const;
 
     virtual QString type() const;
     virtual QgsDrawSourceEffect *clone() const /Factory/;

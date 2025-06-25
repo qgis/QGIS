@@ -21,19 +21,20 @@ points using different strategies with Dijkstra's algorithm.
 #include "qgsgraphanalyzer.h"
 %End
   public:
-    static SIP_PYLIST  dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
+    static SIP_PYLIST  dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree /Out/ = 0, QVector<double> *resultCost /Out/ = 0 );
 %Docstring
 Solve shortest path problem using Dijkstra algorithm
 
 :param source: source graph
 :param startVertexIdx: index of the start vertex
 :param criterionNum: index of the optimization strategy
-:param resultTree: array that represents shortest path tree. resultTree[
-                   vertexIndex ] == inboundingArcIndex if vertex
-                   reachable, otherwise resultTree[ vertexIndex ] == -1.
-                   Note that the startVertexIdx will also have a value
-                   of -1 and may need special handling by callers.
-:param resultCost: array of the paths costs
+
+:return: - resultTree: array that represents shortest path tree.
+           resultTree[ vertexIndex ] == inboundingArcIndex if vertex
+           reachable, otherwise resultTree[ vertexIndex ] == -1. Note
+           that the startVertexIdx will also have a value of -1 and may
+           need special handling by callers.
+         - resultCost: array of the paths costs
 %End
 
 %MethodCode
