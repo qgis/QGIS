@@ -10,35 +10,68 @@
   </property>
   <property name="windowIcon">
    <iconset>
-     <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QgsMapLayerServerPropertiesWidget" name="mMapLayerServerPropertiesWidget" native="true"/>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="mComputeTimeDimension">
-     <property name="toolTip">
-      <string>When a GetCapabilities request is sent, QGIS server will return a TIME dimension computed as an union of all time dimension of its children recursively</string>
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="text">
-      <string>Compute TIME dimension from children</string>
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>272</width>
+        <height>83</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsMapLayerServerPropertiesWidget" name="mMapLayerServerPropertiesWidget" native="true"/>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mComputeTimeDimension">
+         <property name="toolTip">
+          <string>When a GetCapabilities request is sent, QGIS server will return a TIME dimension computed as an union of all time dimension of its children recursively</string>
+         </property>
+         <property name="text">
+          <string>Compute TIME dimension from children</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -51,6 +84,12 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsMapLayerServerPropertiesWidget</class>
    <extends>QWidget</extends>
