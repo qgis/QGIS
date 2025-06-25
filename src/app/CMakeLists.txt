@@ -511,21 +511,23 @@ endif()
 
 #############
 if (ANDROID)
-  add_library(${QGIS_APP_NAME} ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
+  add_library(qgis ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
 
   # require c++17
-  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
+  target_compile_features(qgis PRIVATE cxx_std_17)
 else()
-  add_executable(${QGIS_APP_NAME} WIN32 ${QGIS_APPMAIN_SRCS})
+  add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
   if(WIN32 AND BUILD_WITH_QT6)
-    qt_disable_unicode_defines(${QGIS_APP_NAME})
+    qt_disable_unicode_defines(qgis)
   endif()
 
   # require c++17
-  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
-  target_compile_definitions(${QGIS_APP_NAME} PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+  target_compile_features(qgis PRIVATE cxx_std_17)
+  target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 endif()
+
+set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
@@ -654,29 +656,29 @@ if(CLANG_TIDY_EXE)
 endif()
 
 if(NOT WIN32)
-  target_link_libraries(${QGIS_APP_NAME} qgis_app)
+  target_link_libraries(qgis qgis_app)
 endif()
 
 if (ANDROID)
-  target_link_libraries(${QGIS_APP_NAME} log)
+  target_link_libraries(qgis log)
 endif()
 
 if(WIN32)
   add_definitions(-DQWT_DLL)
   add_definitions(-DQSCINTILLA_DLL)
-  target_link_libraries(${QGIS_APP_NAME} dbghelp)
+  target_link_libraries(qgis dbghelp)
   target_link_libraries(qgis_app dbghelp)
 endif()
 
-target_link_libraries(${QGIS_APP_NAME} qgis_native)
+target_link_libraries(qgis qgis_native)
 
 if (NOT WIN32)
-target_link_libraries(${QGIS_APP_NAME} QTSignal)
+target_link_libraries(qgis QTSignal)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   find_library(EXECINFO_LIBRARY NAMES execinfo)
-  target_link_libraries(${QGIS_APP_NAME} ${EXECINFO_LIBRARY})
+  target_link_libraries(qgis ${EXECINFO_LIBRARY})
 endif()
 
 if (WITH_PDAL)
@@ -693,7 +695,7 @@ install(TARGETS qgis_app
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
   PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
-install(TARGETS ${QGIS_APP_NAME}
+install(TARGETS qgis
   BUNDLE DESTINATION ${QGIS_INSTALL_PREFIX}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}

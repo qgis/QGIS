@@ -67,11 +67,7 @@ set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINO
 set(RELEASE_NAME "Master")
 project(qgis VERSION ${COMPLETE_VERSION})
 
-if (APPLE)
-  set(QGIS_APP_NAME "QGIS" CACHE STRING "The main app name and bundle name")
-else()
-  set(QGIS_APP_NAME "qgis")
-endif()
+set(QGIS_APP_NAME "qgis" CACHE STRING "The main app name and bundle name")
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
