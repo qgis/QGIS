@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgsdimensionfilter.h
-                              -------------------
-  begin                : September 2021
-  copyright            : (C) 2021 Matthias Kuhn
-  email                : matthias@opengis.ch
+                              qgsfeaturefilter.h
+                              ------------------
+  begin                : 26-10-2017
+  copyright            : (C) 2017 by Patrick Valsecchi
+  email                : patrick dot valsecchi at camptocamp dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,39 +15,53 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDIMENSIONFILTER_H
-#define QGSDIMENSIONFILTER_H
-
-#define SIP_NO_FILE
+#ifndef QGSFEATUREFILTER_H
+#define QGSFEATUREFILTER_H
 
 #include "qgsfeaturefilterprovider.h"
 #include "qgis_server.h"
 
-#include <QHash>
+#include <QMap>
+
+class QgsExpression;
 
 /**
  * \ingroup server
- * \class QgsDimensionFilter
- * \brief A server filter to apply a dimension filter to a request
- * \since QGIS 3.22
+ * \class QgsFeatureFilter
+ * \brief A feature filter provider allowing to set filter expressions on a per-layer basis.
  */
-class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
+class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 {
   public:
-    /**
-     * Creates a new dimension filter object with a list of filters to be applied to
-     * vector layers.
-     */
-    QgsDimensionFilter( const QHash<const QgsVectorLayer *, QStringList> dimensionFilter );
+    //! Constructor
+    QgsFeatureFilter() = default;
 
     bool isFilterThreadSafe() const override { return false; }
 
+    /**
+     * Filter the features of the layer
+     * \param layer the layer to control
+     * \param filterFeatures the request to fill
+     */
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
+
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
-    QgsDimensionFilter *clone() const override;
+
+    /**
+     * Returns a clone of the object
+     * \returns A clone
+     */
+    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
+
+    /**
+     * Set a filter for the given layer.
+     * \param layer the layer to filter
+     * \param expression the filter expression
+     */
+    void setFilter( const QgsVectorLayer *layer, const QgsExpression &expression );
 
   private:
-    QHash<const QgsVectorLayer *, QStringList> mDimensionFilter;
+    QMap<QString, QString> mFilters;
 };
 
-#endif // QGSDIMENSIONFILTER_H
+#endif

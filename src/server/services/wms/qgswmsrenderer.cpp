@@ -1880,10 +1880,14 @@ namespace QgsWms
       fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( layerFilterGeom->asWkt() ) );
     }
 
+    Q_NOWARN_DEPRECATED_PUSH
     mFeatureFilter.filterFeatures( layer, fReq );
+    Q_NOWARN_DEPRECATED_POP
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+    Q_NOWARN_DEPRECATED_PUSH
     mContext.accessControl()->filterFeatures( layer, fReq );
+    Q_NOWARN_DEPRECATED_POP
 
     QStringList attributes;
     for ( const QgsField &field : fields )
@@ -3632,7 +3636,9 @@ namespace QgsWms
         auto expression = std::make_unique<QgsExpression>( exp );
         if ( expression )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           mFeatureFilter.setFilter( filteredLayer, *expression );
+          Q_NOWARN_DEPRECATED_POP
         }
       }
     }

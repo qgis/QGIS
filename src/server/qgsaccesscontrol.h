@@ -71,6 +71,8 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       return *this;
     }
 
+    bool isFilterThreadSafe() const override { return false; }
+
     /**
      * Resolve features' filter of layers
      * The method fetch filter's expressions returned from access control plugins and

@@ -366,7 +366,9 @@ namespace QgsWfs
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           accessControl->filterFeatures( vlayer, featureRequest );
+          Q_NOWARN_DEPRECATED_POP
         }
 #endif
         // get iterator

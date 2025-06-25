@@ -91,7 +91,16 @@ QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRender
   const QgsFeatureFilterProvider *featureFilterProvider = context.featureFilterProvider();
   if ( featureFilterProvider )
   {
-    featureFilterProvider->filterFeatures( qobject_cast<QgsVectorLayer *>( mLayer ), request );
+    if ( featureFilterProvider->isFilterThreadSafe() )
+    {
+      featureFilterProvider->filterFeatures( layerId(), request );
+    }
+    else
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      featureFilterProvider->filterFeatures( qobject_cast<QgsVectorLayer *>( mLayer ), request );
+      Q_NOWARN_DEPRECATED_POP
+    }
   }
   QgsFeatureIterator fit = mSource->getFeatures( request );
 

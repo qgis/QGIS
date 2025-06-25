@@ -350,7 +350,9 @@ namespace QgsWfs
                                << QgsExpressionContextUtils::projectScope( project )
                                << QgsExpressionContextUtils::layerScope( vlayer );
           accessControlRequest.setExpressionContext( accessControlContext );
+          Q_NOWARN_DEPRECATED_PUSH
           accessControl->filterFeatures( vlayer, accessControlRequest );
+          Q_NOWARN_DEPRECATED_POP
         }
         else
         {

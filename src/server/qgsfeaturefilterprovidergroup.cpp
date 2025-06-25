@@ -23,7 +23,9 @@ void QgsFeatureFilterProviderGroup::filterFeatures( const QgsVectorLayer *layer,
   for ( const QgsFeatureFilterProvider *provider : mProviders )
   {
     QgsFeatureRequest temp;
+    Q_NOWARN_DEPRECATED_PUSH
     provider->filterFeatures( layer, temp );
+    Q_NOWARN_DEPRECATED_POP
     if ( auto *lFilterExpression = temp.filterExpression() )
     {
       filterFeatures.combineFilterExpression( lFilterExpression->dump() );
