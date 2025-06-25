@@ -1016,16 +1016,20 @@ if (WITH_CORE)
       execute_process(COMMAND lsb_release -a OUTPUT_VARIABLE LSB_RELEASE_A)
       if(EXISTS "/etc/fedora-release")
         # in /var/www/cgi-bin
-        set (DEFAULT_CGIBIN_SUBDIR  www/cgi-bin)
-      elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "OpenBSD")
-        # in /usr/local/www/cgi-bin/
-        set (DEFAULT_CGIBIN_SUBDIR libexec/cgi-bin)
-      elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD")
+        set (DEFAULT_CGIBIN_SUBDIR www/cgi-bin)
+
+      elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
         # in /usr/local/www/cgi-bin/
         set (DEFAULT_CGIBIN_SUBDIR www/cgi-bin)
+
+      elseif (${CMAKE_HOST_SYSTEM_NAME} MATCHES "BSD")
+        # in /usr/local/libexec/cgi-bin/
+        set (DEFAULT_CGIBIN_SUBDIR libexec/cgi-bin)
+
       elseif (${LSB_RELEASE_A} MATCHES "Ubuntu" OR ${LSB_RELEASE_A} MATCHES "Debian" OR ${LSB_RELEASE_A} MATCHES "Mint")
         # in /usr/lib/cgi-bin/
         set (DEFAULT_CGIBIN_SUBDIR lib/cgi-bin)
+
       else()
         # others: Red Hat/CentOS/Rocky/Alma Linux
         # in /var/www/cgi-bin/
