@@ -1,9 +1,9 @@
 /***************************************************************************
-                       qgsfeaturefilterprovidergroup.h
+                       qgsgroupedfeaturefilterprovider.h
                        -------------------------------
-  begin                : 26-10-2017
-  copyright            : (C) 2017 by Patrick Valsecchi
-  email                : patrick dot valsecchi at camptocamp dot com
+  begin                : 2025-07-26
+  copyright            : (C) 2025 by Mathieu Pellerin
+  email                : mathieu at opengis dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATUREFILTERPROVIDERGROUP_H
-#define QGSFEATUREFILTERPROVIDERGROUP_H
+#ifndef QGSGROUPEDFEATUREFILTERPROVIDER_H
+#define QGSGROUPEDFEATUREFILTERPROVIDER_H
 
 #include "qgsfeaturefilterprovider.h"
 #include "qgis_core.h"
@@ -25,21 +25,32 @@
 
 /**
  * \ingroup core
- * \class QgsFeatureFilterProviderGroup
+ * \class QgsGroupedFeatureFilterProvider
  * \brief A filter filter provider grouping several filter providers.
+ * \since QGIS 4.0
  */
-class CORE_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvider
+class CORE_EXPORT QgsGroupedFeatureFilterProvider : public QgsFeatureFilterProvider
 {
   public:
     //! Constructor
-    QgsFeatureFilterProviderGroup() = default;
+    QgsGroupedFeatureFilterProvider() = default;
+
+    bool isFilterThreadSafe() const override;
 
     /**
      * Filter the features of the layer.
      * \param layer the layer to control
      * \param filterFeatures the request to fill
+     * \deprecated QGIS 4.0. Use the layer ID variant.
      */
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
+    Q_DECL_DEPRECATED void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override SIP_DEPRECATED;
+
+    /**
+     * Filter the features of the layer.
+     * \param layerId the layer ID to control
+     * \param filterFeatures the request to fill
+     */
+    void filterFeatures( const QString &layerId, QgsFeatureRequest &filterFeatures ) const override;
 
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
 
@@ -47,14 +58,14 @@ class CORE_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvide
      * Returns a clone of the object
      * \returns A clone
      */
-    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
+    QgsGroupedFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
      * Add another filter provider to the group
      * \param provider The provider to add
      * \return itself
      */
-    QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
+    QgsGroupedFeatureFilterProvider &addProvider( const QgsFeatureFilterProvider *provider );
 
 
   private:

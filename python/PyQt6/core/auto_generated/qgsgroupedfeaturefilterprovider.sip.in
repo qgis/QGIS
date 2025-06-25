@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsfeaturefilterprovidergroup.h                             *
+ * src/core/qgsgroupedfeaturefilterprovider.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -10,20 +10,25 @@
 
 
 
-class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
+class QgsGroupedFeatureFilterProvider : QgsFeatureFilterProvider
 {
 %Docstring(signature="appended")
 A filter filter provider grouping several filter providers.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
-#include "qgsfeaturefilterprovidergroup.h"
+#include "qgsgroupedfeaturefilterprovider.h"
 %End
   public:
-    QgsFeatureFilterProviderGroup();
+    QgsGroupedFeatureFilterProvider();
 %Docstring
 Constructor
 %End
+
+    virtual bool isFilterThreadSafe() const;
+
 
  virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const /Deprecated="Since 4.0. Use the layer ID variant."/;
 
@@ -45,14 +50,12 @@ Filter the features of the layer.
 
 :param layerId: the layer ID to control
 :param filterFeatures: the request to fill
-
-.. versionadded:: 4.0
 %End
 
     virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 
 
-    virtual QgsFeatureFilterProvider *clone() const /Factory/;
+    virtual QgsGroupedFeatureFilterProvider *clone() const /Factory/;
 
 %Docstring
 Returns a clone of the object
@@ -60,7 +63,7 @@ Returns a clone of the object
 :return: A clone
 %End
 
-    QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
+    QgsGroupedFeatureFilterProvider &addProvider( const QgsFeatureFilterProvider *provider );
 %Docstring
 Add another filter provider to the group
 
@@ -75,7 +78,7 @@ Add another filter provider to the group
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsfeaturefilterprovidergroup.h                             *
+ * src/core/qgsgroupedfeaturefilterprovider.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

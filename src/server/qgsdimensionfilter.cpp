@@ -17,6 +17,7 @@
 
 #include "qgsdimensionfilter.h"
 #include "qgsfeaturerequest.h"
+#include "qgsvectorlayer.h"
 
 QgsDimensionFilter::QgsDimensionFilter( const QHash<const QgsVectorLayer *, QStringList> dimensionFilter )
   : mDimensionFilter( dimensionFilter )

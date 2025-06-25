@@ -160,7 +160,9 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   QgsAccessControl *accessControl = context.serverInterface()->accessControls();
   if ( accessControl )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     accessControl->filterFeatures( vLayer, featureRequest );
+    Q_NOWARN_DEPRECATED_POP
   }
 #endif
 

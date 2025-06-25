@@ -475,14 +475,13 @@ set(QGIS_CORE_SRCS
   qgsfeature.cpp
   qgsfeaturepickermodel.cpp
   qgsfeaturepickermodelbase.cpp
+  qgsfeatureexpressionfilterprovider.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturesink.cpp
   qgsfeaturesource.cpp
   qgsfeaturestore.cpp
-  qgsfeaturefilter.cpp
   qgsfeaturefiltermodel.cpp
-  qgsfeaturefilterprovidergroup.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
   qgsfieldformatter.cpp
@@ -498,6 +497,7 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgroupedfeaturefilterprovider.cpp
   qgsgrouplayer.cpp
   qgsgrouplayerrenderer.cpp
   qgshistogram.cpp
@@ -1161,13 +1161,12 @@ set(QGIS_CORE_HDRS
   qgsexpressioncontextscopegenerator.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeatureexpressionfilterprovider.h
   qgsfeaturepickermodel.h
   qgsfeaturepickermodelbase.h
   qgsfeatureexpressionvaluesgatherer.h
-  qgsfeaturefilter.h
   qgsfeaturefiltermodel.h
   qgsfeaturefilterprovider.h
-  qgsfeaturefilterprovidergroup.h
   qgsfeatureid.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
@@ -1192,6 +1191,7 @@ set(QGIS_CORE_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgroupedfeaturefilterprovider.h
   qgsgrouplayer.h
   qgsgrouplayerrenderer.h
   qgshistogram.h

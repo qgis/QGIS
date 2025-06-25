@@ -302,7 +302,7 @@ int QgsLayoutAtlas::updateFeatures()
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
+    mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get()->id(), req );
   }
 #endif
 

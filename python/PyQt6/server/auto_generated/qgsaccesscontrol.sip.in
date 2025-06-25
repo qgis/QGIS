@@ -35,6 +35,8 @@ Constructor
     ~QgsAccessControl();
 
 
+    virtual bool isFilterThreadSafe() const;
+
     void resolveFilterFeatures( const QList<QgsMapLayer *> &layers );
 %Docstring
 Resolve features' filter of layers The method fetch filter's expressions

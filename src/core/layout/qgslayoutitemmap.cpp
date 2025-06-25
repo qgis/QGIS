@@ -40,8 +40,8 @@
 #include "qgslabelingresults.h"
 #include "qgsvectortileutils.h"
 #include "qgsunittypes.h"
-#include "qgsfeaturefilter.h"
-#include "qgsfeaturefilterprovidergroup.h"
+#include "qgsfeatureexpressionfilterprovider.h"
+#include "qgsgroupedfeaturefilterprovider.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -1581,7 +1581,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   job.setFeatureFilterProvider( mLayout->renderContext().featureFilterProvider() );
 #endif
 
-  QgsFeatureFilterProviderGroup jobFeatureFilter;
+  QgsGroupedFeatureFilterProvider jobFeatureFilter;
   if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
   {
     jobFeatureFilter.addProvider( mAtlasFeatureFilterProvider.get() );
@@ -2939,9 +2939,9 @@ void QgsLayoutItemMap::updateAtlasFeature()
   if ( !mLayout->reportContext().layer() || !mLayout->reportContext().feature().isValid() )
     return; // nothing to do
 
-  QgsFeatureFilter *filter = new QgsFeatureFilter();
-  filter->setFilter( mLayout->reportContext().layer(), QgsExpression( QStringLiteral( "@id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
-  mAtlasFeatureFilterProvider.reset( new QgsFeatureFilterProviderGroup() );
+  QgsFeatureExpressionFilterProvider *filter = new QgsFeatureExpressionFilterProvider();
+  filter->setFilter( mLayout->reportContext().layer()->id(), QgsExpression( QStringLiteral( "@id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
+  mAtlasFeatureFilterProvider.reset( new QgsGroupedFeatureFilterProvider() );
   mAtlasFeatureFilterProvider->addProvider( filter );
 
   if ( !atlasDriven() )
