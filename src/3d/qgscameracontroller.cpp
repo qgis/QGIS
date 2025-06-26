@@ -264,38 +264,41 @@ void QgsCameraController::setCameraPose( const QgsCameraPose &camPose, bool forc
 QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
 {
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
-  QgsVector3D centerPoint;
-  switch ( mScene->mapSettings()->sceneMode() )
-  {
-    case Qgis::SceneMode::Local:
-      centerPoint = mCameraPose.centerPoint();
-      break;
-    case Qgis::SceneMode::Globe:
-      // Save center point in map coordinates, since our world origin won't be
-      // the same on loading
-      centerPoint = mCameraPose.centerPoint() + mOrigin;
-      break;
-  }
-  elemCamera.setAttribute( QStringLiteral( "x" ), centerPoint.x() );
-  elemCamera.setAttribute( QStringLiteral( "y" ), centerPoint.z() );
-  elemCamera.setAttribute( QStringLiteral( "elev" ), centerPoint.y() );
+  // Save center point in map coordinates, since our world origin won't be
+  // the same on loading
+  QgsVector3D centerPoint = mCameraPose.centerPoint() + mOrigin;
+  elemCamera.setAttribute( QStringLiteral( "xMap" ), centerPoint.x() );
+  elemCamera.setAttribute( QStringLiteral( "yMap" ), centerPoint.z() );
+  elemCamera.setAttribute( QStringLiteral( "elevMap" ), centerPoint.y() );
   elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraPose.distanceFromCenterPoint() );
   elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraPose.pitchAngle() );
   elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraPose.headingAngle() );
   return elemCamera;
 }
 
-void QgsCameraController::readXml( const QDomElement &elem )
+void QgsCameraController::readXml( const QDomElement &elem, QgsVector3D savedOrigin )
 {
-  const float x = elem.attribute( QStringLiteral( "x" ) ).toFloat();
-  const float y = elem.attribute( QStringLiteral( "y" ) ).toFloat();
-  const float elev = elem.attribute( QStringLiteral( "elev" ) ).toFloat();
   const float dist = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
   const float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
   const float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
-  QgsVector3D centerPoint( x, elev, y );
-  if ( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
-    centerPoint = centerPoint - mOrigin;
+
+  QgsVector3D centerPoint;
+  if ( elem.hasAttribute( "xMap" ) )
+  {
+    // Prefer newer point saved in map coordinates ...
+    const float x = elem.attribute( QStringLiteral( "xMap" ) ).toFloat();
+    const float y = elem.attribute( QStringLiteral( "yMap" ) ).toFloat();
+    const float elev = elem.attribute( QStringLiteral( "elevMap" ) ).toFloat();
+    centerPoint = QgsVector3D( x, elev, y ) - mOrigin;
+  }
+  else
+  {
+    // ... but allow use of older origin-relative coordinates.
+    const float x = elem.attribute( QStringLiteral( "x" ) ).toFloat();
+    const float y = elem.attribute( QStringLiteral( "y" ) ).toFloat();
+    const float elev = elem.attribute( QStringLiteral( "elev" ) ).toFloat();
+    centerPoint = QgsVector3D( x, elev, y ) - savedOrigin + mOrigin;
+  }
   setLookingAtPoint( centerPoint, dist, pitch, yaw );
 }
 
