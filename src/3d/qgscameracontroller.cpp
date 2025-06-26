@@ -268,8 +268,8 @@ QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
   // the same on loading
   QgsVector3D centerPoint = mCameraPose.centerPoint() + mOrigin;
   elemCamera.setAttribute( QStringLiteral( "xMap" ), centerPoint.x() );
-  elemCamera.setAttribute( QStringLiteral( "yMap" ), centerPoint.z() );
-  elemCamera.setAttribute( QStringLiteral( "elevMap" ), centerPoint.y() );
+  elemCamera.setAttribute( QStringLiteral( "yMap" ), centerPoint.y() );
+  elemCamera.setAttribute( QStringLiteral( "zMap" ), centerPoint.z() );
   elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraPose.distanceFromCenterPoint() );
   elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraPose.pitchAngle() );
   elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraPose.headingAngle() );
@@ -286,17 +286,17 @@ void QgsCameraController::readXml( const QDomElement &elem, QgsVector3D savedOri
   if ( elem.hasAttribute( "xMap" ) )
   {
     // Prefer newer point saved in map coordinates ...
-    const float x = elem.attribute( QStringLiteral( "xMap" ) ).toFloat();
-    const float y = elem.attribute( QStringLiteral( "yMap" ) ).toFloat();
-    const float elev = elem.attribute( QStringLiteral( "elevMap" ) ).toFloat();
-    centerPoint = QgsVector3D( x, elev, y ) - mOrigin;
+    const double x = elem.attribute( QStringLiteral( "xMap" ) ).toDouble();
+    const double y = elem.attribute( QStringLiteral( "yMap" ) ).toDouble();
+    const double z = elem.attribute( QStringLiteral( "zMap" ) ).toDouble();
+    centerPoint = QgsVector3D( x, y, z ) - mOrigin;
   }
   else
   {
     // ... but allow use of older origin-relative coordinates.
-    const float x = elem.attribute( QStringLiteral( "x" ) ).toFloat();
-    const float y = elem.attribute( QStringLiteral( "y" ) ).toFloat();
-    const float elev = elem.attribute( QStringLiteral( "elev" ) ).toFloat();
+    const double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
+    const double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
+    const double elev = elem.attribute( QStringLiteral( "elev" ) ).toDouble();
     centerPoint = QgsVector3D( x, elev, y ) - savedOrigin + mOrigin;
   }
   setLookingAtPoint( centerPoint, dist, pitch, yaw );
