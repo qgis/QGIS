@@ -33,8 +33,7 @@ QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromUri( const QStri
   for ( auto it = mBackends.constBegin(); it != mBackends.constEnd(); ++it )
   {
     QgsProjectStorage *storage = it.value();
-    const QString scheme = storage->type() + ':';
-    if ( uri.startsWith( scheme ) )
+    if ( uri.startsWith( storage->type() + ':' ) || uri.startsWith( storage->type() + "%3A" ) )
       return storage;
   }
 
