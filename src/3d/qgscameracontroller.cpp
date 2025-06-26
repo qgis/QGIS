@@ -138,10 +138,10 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
   }
 }
 
-void QgsCameraController::rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint )
+void QgsCameraController::rotateCameraAroundPivot( QgsCameraPose &oldCamera, float newPitch, float newHeading, const QVector3D &pivotPoint )
 {
-  const float oldPitch = mCameraPose.pitchAngle();
-  const float oldHeading = mCameraPose.headingAngle();
+  const float oldPitch = oldCamera.pitchAngle();
+  const float oldHeading = oldCamera.headingAngle();
 
   newPitch = std::clamp( newPitch, 0.f, 180.f ); // prevent going over the head
 
@@ -168,7 +168,7 @@ void QgsCameraController::rotateCameraAroundPivot( float newPitch, float newHead
 
   const QQuaternion q = qNew * qOld.conjugated();
 
-  const QVector3D newViewCenter = q * ( mCamera->viewCenter() - pivotPoint ) + pivotPoint;
+  const QVector3D newViewCenter = q * ( oldCamera.centerPoint() - pivotPoint ).toVector3D() + pivotPoint;
 
   mCameraPose.setCenterPoint( newViewCenter );
   mCameraPose.setPitchAngle( newPitch );
@@ -573,13 +573,12 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
       if ( screenPointToWorldPos( mClickPoint, depth, worldPosition ) )
       {
         mRotationCenter = worldPosition;
-        mRotationDistanceFromCenter = ( mRotationCenter - mCameraBefore->position() ).length();
         emit cameraRotationCenterChanged( mRotationCenter );
         mRotationCenterCalculated = true;
       }
     }
 
-    rotateCameraAroundPivot( mRotationPitch + pitchDiff, mRotationYaw + yawDiff, mRotationCenter );
+    rotateCameraAroundPivot( mCameraPoseBefore, mRotationPitch + pitchDiff, mRotationYaw + yawDiff, mRotationCenter );
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
   {
@@ -723,13 +722,12 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
       if ( screenPointToWorldPos( mClickPoint, depth, worldPosition ) )
       {
         mRotationCenter = worldPosition;
-        mRotationDistanceFromCenter = ( mRotationCenter - mCameraBefore->position() ).length();
         emit cameraRotationCenterChanged( mRotationCenter );
         mRotationCenterCalculated = true;
       }
     }
 
-    rotateCameraAroundPivot( mRotationPitch + pitchDiff, mRotationYaw + yawDiff, mRotationCenter );
+    rotateCameraAroundPivot( mCameraPoseBefore, mRotationPitch + pitchDiff, mRotationYaw + yawDiff, mRotationCenter );
     return;
   }
 
@@ -1447,6 +1445,7 @@ void QgsCameraController::setMouseParameters( const MouseOperation &newOperation
   {
     mMousePressViewCenter = mCameraPose.centerPoint() + mOrigin;
     mCameraBefore = Qgs3DUtils::copyCamera( mCamera );
+    mCameraPoseBefore = mCameraPose;
 
     emit requestDepthBufferCapture();
   }
@@ -1462,6 +1461,7 @@ void QgsCameraController::setOrigin( const QgsVector3D &origin )
   mCameraBefore->setViewCenter( ( QgsVector3D( mCameraBefore->viewCenter() ) - diff ).toVector3D() );
   mDragPoint = ( QgsVector3D( mDragPoint ) - diff ).toVector3D();
   mRotationCenter = ( QgsVector3D( mRotationCenter ) - diff ).toVector3D();
+  mCameraPoseBefore.setCenterPoint( mCameraPoseBefore.centerPoint() - diff );
 
   mOrigin = origin;
 
