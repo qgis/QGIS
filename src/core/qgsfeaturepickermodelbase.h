@@ -424,7 +424,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     QString mFilterValue;
     QString mFilterExpression;
     QgsExpression mOrderExpression;
-    bool mOrderDescending;
+    bool mOrderDescending = false;
 
     QgsFeature mFormFeature;
     QgsFeature mParentFormFeature;
