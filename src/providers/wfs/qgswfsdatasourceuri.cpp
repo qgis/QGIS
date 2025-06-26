@@ -501,7 +501,6 @@ bool QgsWFSDataSourceURI::preferCoordinatesForWfst11() const
 
 bool QgsWFSDataSourceURI::skipInitialGetFeature() const
 {
-  return false;
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ) )
     return false;
   return mURI.param( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );

@@ -77,9 +77,9 @@ bool QgsWFSSharedData::initialGetFeatureIssued() const
   return mInitialGetFeatureIssued;
 }
 
-void QgsWFSSharedData::setInitialGetFeatureIssued( bool initialGetFeatureIssued )
+void QgsWFSSharedData::setInitialGetFeatureIssued( bool issued )
 {
-  mInitialGetFeatureIssued = initialGetFeatureIssued;
+  mInitialGetFeatureIssued = issued;
 }
 
 void QgsWFSSharedData::invalidateCacheBaseUnderLock()

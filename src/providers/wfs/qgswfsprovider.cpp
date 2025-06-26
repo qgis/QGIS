@@ -192,6 +192,8 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
 
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(), qOverload<QVector<QgsFeatureUniqueIdPair>>( &QgsFeatureDownloader::featureReceived ), this, [&]( QVector<QgsFeatureUniqueIdPair> list ) {
+      // Download was ok, set it as done
+      mShared->setInitialGetFeatureIssued( true );
       QgsWFSProvider::featureReceivedAnalyzeOneFeature( list, force );
     } );
 
