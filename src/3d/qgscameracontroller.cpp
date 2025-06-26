@@ -220,6 +220,8 @@ void QgsCameraController::frameTriggered( float dt )
   {
     emit cameraChanged();
     mCameraChanged = false;
+
+    refreshViewCenter();
   }
 }
 
@@ -421,6 +423,33 @@ QgsVector3D QgsCameraController::globeViewCenterLonLat()
   {
     QgsDebugError( QStringLiteral( "ECEF -> lat,lon transform failed!" ) );
     return {};
+  }
+}
+
+void QgsCameraController::refreshViewCenter()
+{
+  // Additive and multiplicative thresholds for change
+  const double DISTANCE_THRESHOLD = 10'000;
+  const double MULT_THRESHOLD = 0.8;
+  // Don't change the center point during an operation.
+  if ( mScene->mapSettings()->terrainRenderingEnabled() && mCurrentOperation == MouseOperation::None )
+  {
+    const QgsRayCastingUtils::Ray3D ray( mCamera->position(), mCamera->viewCenter() - mCamera->position(), mCamera->farPlane() );
+    const QVector<QgsRayCastingUtils::RayHit> hits = mScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
+    if ( !hits.isEmpty() )
+    {
+      const QgsVector3D newCenterPoint = hits[0].pos;
+      // Don't bother if the existing one is close enough to prevent spurious
+      // camera updates.
+      const double diff = newCenterPoint.distance( mCameraPose.centerPoint() );
+      const double diffMult = abs( ( newCenterPoint.distance( mCamera->position() ) ) / mCameraPose.distanceFromCenterPoint() );
+      if ( diff > DISTANCE_THRESHOLD && ( diffMult < MULT_THRESHOLD || diffMult > 1 / MULT_THRESHOLD ) )
+      {
+        mCameraPose.setDistanceFromCenterPoint( static_cast<float>( newCenterPoint.distance( mCamera->position() ) ) );
+        mCameraPose.setCenterPoint( newCenterPoint );
+        updateCameraFromPose();
+      }
+    }
   }
 }
 

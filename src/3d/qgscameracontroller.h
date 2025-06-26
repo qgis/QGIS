@@ -425,6 +425,12 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Get current camera view center in lon,lat,elev
     QgsVector3D globeViewCenterLonLat();
 
+    /*
+     * Raycast our view center to the current terrain, sometimes it ends up way
+     * below/above.
+     */
+    void refreshViewCenter();
+
     //! The 3d scene the controller uses
     Qgs3DMapScene *mScene = nullptr;
 
