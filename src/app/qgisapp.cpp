@@ -9120,7 +9120,10 @@ Qgs3DMapCanvasWidget *QgisApp::duplicate3DMapView( const QString &existingViewNa
     Qgs3DMapSettings *map = new Qgs3DMapSettings( *widget->mapCanvas3D()->mapSettings() );
     newCanvasWidget->setMapSettings( map );
 
-    newCanvasWidget->mapCanvas3D()->cameraController()->readXml( widget->mapCanvas3D()->cameraController()->writeXml( doc ) );
+    newCanvasWidget->mapCanvas3D()->cameraController()->readXml(
+      widget->mapCanvas3D()->cameraController()->writeXml( doc ),
+      widget->mapCanvas3D()->mapSettings()->origin()
+    );
     newCanvasWidget->animationWidget()->setAnimation( widget->animationWidget()->animation() );
 
     connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] {
@@ -16212,12 +16215,14 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
 
+  QgsVector3D savedOrigin = map->origin();
+
   widget->setMapSettings( map );
 
   QDomElement elemCamera = elem3DMap.firstChildElement( QStringLiteral( "camera" ) );
   if ( !elemCamera.isNull() )
   {
-    widget->mapCanvas3D()->cameraController()->readXml( elemCamera );
+    widget->mapCanvas3D()->cameraController()->readXml( elemCamera, savedOrigin );
   }
 
   QDomElement elemAnimation = elem3DMap.firstChildElement( QStringLiteral( "animation3d" ) );
