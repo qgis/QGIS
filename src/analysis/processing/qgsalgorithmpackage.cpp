@@ -61,6 +61,9 @@ void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_METADATA" ), QObject::tr( "Save layer metadata into GeoPackage" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Save only selected features" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "EXPORT_RELATED_LAYERS" ), QObject::tr( "Export related layers following relations defined in the project" ), false ) );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true );
+  extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
+  addParameter( extentParam.release() );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within new package" ) ) );
 }
 
@@ -309,6 +312,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       throw QgsProcessingException( QObject::tr( "Opening database %1 failed (OGR error: %2)" ).arg( packagePath, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
 
+  const bool validExtent = parameters.value( QStringLiteral( "EXTENT" ) ).isValid();
 
   bool errored = false;
 
@@ -335,12 +339,25 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 
     feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( mLayers.size() ).arg( layer ? layer->name() : QString() ) );
 
+    QgsRectangle extent;
+
     switch ( layer->type() )
     {
       case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer.get() );
-        if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, saveMetadata, selectedFeaturesOnly ) )
+
+        if ( validExtent )
+        {
+          if ( vectorLayer->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
+          {
+            feedback->pushWarning( QObject::tr( "No spatial index exists for layer %1, performance will be severely degraded" ).arg( vectorLayer->name() ) );
+          }
+
+          extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, layer->crs() );
+        }
+
+        if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, saveMetadata, selectedFeaturesOnly, extent ) )
           errored = true;
         else
           outputLayers.append( QStringLiteral( "%1|layername=%2" ).arg( packagePath, layer->name() ) );
@@ -408,7 +425,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   return outputs;
 }
 
-bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly )
+bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent )
 {
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = QStringLiteral( "GPKG" );
@@ -448,6 +465,11 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   {
     // fid was the only field
     options.skipAttributeCreation = true;
+  }
+
+  if ( !extent.isNull() )
+  {
+    options.filterExtent = extent;
   }
 
   QString error;
