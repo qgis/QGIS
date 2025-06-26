@@ -488,7 +488,7 @@ void TestQgsMapToolCircle::testDrawCircleFrom2TangentsNotEnoughPoints()
   QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
   mCanvas->setCurrentLayer( layer );
   layer->startEditing();
-  long long count = layer->featureCount();
+  const long long count = layer->featureCount();
 
   QgsMapToolShapeCircle2TangentsPointMetadata md;
   resetMapTool( &md );

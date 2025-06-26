@@ -178,6 +178,7 @@ void TestQgsMapToolCircularString::testAddCircularStringRadiusWithDeletedVertex(
 
 void TestQgsMapToolCircularString::testAddCircularStringRadiusNotEnoughPoints()
 {
+  const long long count = mLayer->featureCount();
   mLayer->startEditing();
 
   QgsMapToolShapeCircularStringRadiusMetadata md;
@@ -185,20 +186,20 @@ void TestQgsMapToolCircularString::testAddCircularStringRadiusNotEnoughPoints()
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
   utils.mouseClick( 0, 0, Qt::RightButton );
-  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayer->featureCount(), count );
 
   utils.keyClick( Qt::Key_Escape );
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseMove( 2, 2 );
   utils.mouseClick( 2, 2, Qt::RightButton );
-  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayer->featureCount(), count );
 
   utils.keyClick( Qt::Key_Escape );
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseMove( 1, 2 );
   utils.mouseClick( 1, 2, Qt::RightButton );
-  QCOMPARE( mLayer->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayer->featureCount(), count );
 
   mLayer->rollBack();
 }
