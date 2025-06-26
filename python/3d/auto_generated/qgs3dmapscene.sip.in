@@ -163,6 +163,15 @@ be useful to temporarily disable origin shifts.
 .. versionadded:: 3.44
 %End
 
+    void recomputeOrigin();
+%Docstring
+Recompute the origin if origin shifts are enabled and the camera is far
+enough away from the current origin, see
+:py:func:`~Qgs3DMapScene.hasSceneOriginShiftEnabled` for more details.
+
+.. versionadded:: 4.0
+%End
+
  static QMap<QString, Qgs3DMapScene *> openScenes() /Deprecated="Since 3.36. Use QgisAppInterface.mapCanvases3D() instead."/;
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.
