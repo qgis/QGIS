@@ -153,7 +153,7 @@ pointing towards north. The angle should range from 0 to 360.
 %Docstring
 Writes camera configuration to the given DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, QgsVector3D savedOrigin );
 %Docstring
 Reads camera configuration from the given DOM element
 %End

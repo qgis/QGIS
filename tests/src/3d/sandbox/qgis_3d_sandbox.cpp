@@ -139,12 +139,14 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
     map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
 
+    QgsVector3D savedOrigin = map->origin();
+
     canvas->setMapSettings( map );
 
     QDomElement elemCamera = viewXml.firstChildElement( QStringLiteral( "camera" ) );
     if ( !elemCamera.isNull() )
     {
-      canvas->cameraController()->readXml( elemCamera );
+      canvas->cameraController()->readXml( elemCamera, savedOrigin );
     }
   }
 
