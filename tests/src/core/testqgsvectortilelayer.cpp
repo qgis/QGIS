@@ -36,6 +36,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsvectortileloader.h"
+#include "qgsvectortilemvtdecoder.h"
 
 /**
  * \ingroup UnitTests
@@ -81,6 +82,8 @@ class TestQgsVectorTileLayer : public QgsTest
 
     void test_styleMinZoomBeyondTileMaxZoom();
     void test_filterRuleAllLayers();
+
+    void test_longIntAttributes();
 };
 
 
@@ -696,6 +699,35 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
   QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_filter_all_layers" ), QStringLiteral( "render_test_filter_all_layers" ), *mMapSettings, 0, 15 );
+}
+
+void TestQgsVectorTileLayer::test_longIntAttributes()
+{
+  // test using a filter with field access for an "all layers" rule
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "mbtiles" );
+  ds.setParam( "url", QString( "/%1/longint.mbtiles" ).arg( mDataDir ) );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  QVERIFY( layer->isValid() );
+
+  const QgsVectorTileRawData tile0 = layer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
+  const bool resDecode0 = decoder.decode( tile0 );
+  QVERIFY( resDecode0 );
+  const QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
+  QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
+
+  QgsFields fields;
+  fields.append( QgsField( "Value", QMetaType::Type::QString ) );
+  QMap<QString, QgsFields> perLayerFields;
+  perLayerFields["lines"] = fields;
+
+  QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+  QCOMPARE( features["lines"].count(), 1 );
+
+  QgsAttributes attrs = features["lines"][0].attributes();
+  QCOMPARE( attrs.count(), 1 );
+  QCOMPARE( attrs[0].toString(), "103097205262536" );
 }
 
 
