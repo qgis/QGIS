@@ -1026,7 +1026,7 @@ if (WITH_CORE)
         # in /usr/local/libexec/cgi-bin/
         set (DEFAULT_CGIBIN_SUBDIR libexec/cgi-bin)
 
-      elseif (${LSB_RELEASE_A} MATCHES "Ubuntu" OR ${LSB_RELEASE_A} MATCHES "Debian" OR ${LSB_RELEASE_A} MATCHES "Mint")
+      elseif ("${LSB_RELEASE_A}" MATCHES "Ubuntu" OR "${LSB_RELEASE_A}" MATCHES "Debian" OR "${LSB_RELEASE_A}" MATCHES "Mint")
         # in /usr/lib/cgi-bin/
         set (DEFAULT_CGIBIN_SUBDIR lib/cgi-bin)
 
