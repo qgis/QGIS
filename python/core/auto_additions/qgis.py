@@ -11404,10 +11404,10 @@ Qgis.MouseHandlesAction.ResizeLeftUp.__doc__ = "Resize left up (Top left handle)
 Qgis.MouseHandlesAction.ResizeRightUp.__doc__ = "Resize right up (Top right handle)"
 Qgis.MouseHandlesAction.ResizeLeftDown.__doc__ = "Resize left down (Bottom left handle)"
 Qgis.MouseHandlesAction.ResizeRightDown.__doc__ = "Resize right down (Bottom right handle)"
-Qgis.MouseHandlesAction.RotateLeftUp.__doc__ = "Rotate left up (Top left handle)"
-Qgis.MouseHandlesAction.RotateRightUp.__doc__ = "Rotate right up (Top right handle)"
-Qgis.MouseHandlesAction.RotateLeftDown.__doc__ = "Rotate left up (Bottom left handle)"
-Qgis.MouseHandlesAction.RotateRightDown.__doc__ = "Rotate right up (Bottom right handle)"
+Qgis.MouseHandlesAction.RotateLeftUp.__doc__ = "Rotate from top left handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateRightUp.__doc__ = "Rotate from top right handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateLeftDown.__doc__ = "Rotate from bottom left handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateRightDown.__doc__ = "Rotate right bottom right handle. \n.. versionadded:: 4.0"
 Qgis.MouseHandlesAction.SelectItem.__doc__ = "Select item"
 Qgis.MouseHandlesAction.NoAction.__doc__ = "No action"
 Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
@@ -11423,10 +11423,22 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 * ``ResizeRightUp``: Resize right up (Top right handle)
 * ``ResizeLeftDown``: Resize left down (Bottom left handle)
 * ``ResizeRightDown``: Resize right down (Bottom right handle)
-* ``RotateLeftUp``: Rotate left up (Top left handle)
-* ``RotateRightUp``: Rotate right up (Top right handle)
-* ``RotateLeftDown``: Rotate left up (Bottom left handle)
-* ``RotateRightDown``: Rotate right up (Bottom right handle)
+* ``RotateLeftUp``: Rotate from top left handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateRightUp``: Rotate from top right handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateLeftDown``: Rotate from bottom left handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateRightDown``: Rotate right bottom right handle.
+
+  .. versionadded:: 4.0
+
 * ``SelectItem``: Select item
 * ``NoAction``: No action
 

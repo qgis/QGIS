@@ -15,10 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgraphicsviewmousehandles.h"
 #include "moc_qgsgraphicsviewmousehandles.cpp"
-#include "qgsrendercontext.h"
+
 #include "qgis.h"
+#include "qgsgraphicsviewmousehandles.h"
+#include "qgslayoututils.h"
+#include "qgsrendercontext.h"
+
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -86,6 +89,7 @@ QRectF QgsGraphicsViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 
 void QgsGraphicsViewMouseHandles::rotateItem( QGraphicsItem *, double, double, double )
 {
+  QgsDebugError( QStringLiteral( "Rotation is not implemented for this class" ) );
 }
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
@@ -930,13 +934,7 @@ void QgsGraphicsViewMouseHandles::rotateMouseMove( QPointF currentPosition, bool
   mRotationDelta = mRotationCurrent - mRotationBegin;
   if ( snapToCommonAngles )
   {
-    const double commonAngles = 15;
-    double snappedRotationDelta = std::floor( std::abs( mRotationDelta ) / commonAngles ) * commonAngles;
-    if ( std::abs( std::fmod( mRotationDelta, commonAngles ) ) >= 10 )
-    {
-      snappedRotationDelta += commonAngles;
-    }
-    mRotationDelta = mRotationDelta >= 0 ? snappedRotationDelta : -snappedRotationDelta;
+    mRotationDelta = QgsLayoutUtils::snappedAngle( mRotationDelta );
   }
 
   const double itemRotationRadian = rotation() * M_PI / 180;
