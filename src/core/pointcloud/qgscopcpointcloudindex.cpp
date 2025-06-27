@@ -70,12 +70,15 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
       return;
     }
   }
-  mUri = urlString;
 
   if ( mAccessType == Qgis::PointCloudAccessType::Remote )
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
   else
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+
+  // now store the uri as it might have been updated due to redirects
+  mUri = url.toString();
+
   mIsValid = mLazInfo->isValid();
   if ( mIsValid )
   {
