@@ -302,7 +302,16 @@ int QgsLayoutAtlas::updateFeatures()
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get()->id(), req );
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get()->id(), req );
+    }
+    else
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
+    }
+    Q_NOWARN_DEPRECATED_POP
   }
 #endif
 

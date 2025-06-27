@@ -37,36 +37,10 @@ class CORE_EXPORT QgsFeatureExpressionFilterProvider : public QgsFeatureFilterPr
     //! Constructor
     QgsFeatureExpressionFilterProvider() = default;
 
-    /**
-     * Filter the features of the layer
-     * \param layer the layer to control
-     * \param filterFeatures the request to fill
-     * \deprecated QGIS 4.0. Use the layer ID variant.
-     */
     Q_DECL_DEPRECATED void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override SIP_DEPRECATED;
-
-    /**
-     * Filter the features of the layer
-     * \param layerId the layer ID to control
-     * \param filterFeatures the request to fill
-     */
     void filterFeatures( const QString &layerId, QgsFeatureRequest &filterFeatures ) const override;
-
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
-
-    /**
-     * Returns a clone of the object
-     * \returns A clone
-     */
     QgsFeatureExpressionFilterProvider *clone() const override SIP_FACTORY;
-
-    /**
-     * Set a filter for the given layer.
-     * \param layer the layer to filter
-     * \param expression the filter expression
-     * \deprecated QGIS 4.0. Use the layer ID variant.
-     */
-    Q_DECL_DEPRECATED void setFilter( const QgsVectorLayer *layer, const QgsExpression &expression ) SIP_DEPRECATED;
 
     /**
      * Set a filter for the given layer.

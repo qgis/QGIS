@@ -44,7 +44,7 @@ QStringList QgsFeatureFilterProviderGroup::layerAttributes( const QgsVectorLayer
   return allowedAttributes;
 }
 
-QgsFeatureFilterProvider *QgsFeatureFilterProviderGroup::clone() const
+QgsFeatureFilterProviderGroup *QgsFeatureFilterProviderGroup::clone() const
 {
   auto result = new QgsFeatureFilterProviderGroup();
   result->mProviders = mProviders;
