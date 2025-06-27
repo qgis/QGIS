@@ -426,6 +426,20 @@ class TestPackageLayers(QgisTestCase):
             {"region": {1, 2}, "province": {1, 2, 3, 4}, "city": {1, 2, 3, 4}},
         )
 
+        # Test no features intersecting extent
+        parameters["EXTENT"] = "2580700,2581500,1221800,1222000 [EPSG:2056]"
+        _test(
+            parameters,
+            {"region": set(), "province": set(), "city": set()},
+        )
+
+        # Test some layers with features not intersecting extent
+        parameters["EXTENT"] = "2581500,2582000,1220000,1222000 [EPSG:2056]"
+        _test(
+            parameters,
+            {"region": {2}, "province": {3, 4}, "city": set()},
+        )
+
         # Test all features intersecting extent
         parameters["EXTENT"] = "2580000,2582000,1220000,1222000 [EPSG:2056]"
         _test(
