@@ -210,11 +210,13 @@ void QgsWFSProvider::issueInitialGetFeature( bool force )
     mShared->setCurrentRect( QgsRectangle() );
   };
 
+  const Qgis::WkbType initialGeometryType = mShared->mWKBType;
+
   const auto TryToDetectGeometryType = [&]() {
     // try first without a BBOX, because some servers exhibit very poor
     // performance when being requested on a large extent
     GetGeometryTypeFromOneFeature( false );
-    if ( mShared->mWKBType == Qgis::WkbType::Unknown )
+    if ( initialGeometryType == Qgis::WkbType::Unknown )
     {
       bool noGeometryFound = ( mShared->mWKBType == Qgis::WkbType::NoGeometry );
       if ( noGeometryFound )
@@ -1001,7 +1003,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
   bool applyAxisInversion;
   QgsOgcUtils::GMLVersion gmlVersion;
 
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) || mShared->mWFSVersion.startsWith( QLatin1String( "2" ) ) )
   {
     // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
     if ( !mShared->mServerPrefersCoordinatesForTransactions_1_1 )
@@ -1013,7 +1015,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
       gmlVersion = QgsOgcUtils::GML_2_1_2;
     }
     // For servers like Geomedia and QGIS Server that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
-    // cpabilities useEPSGColumnFormat is set.
+    // capabilities useEPSGColumnFormat is set.
     // We follow GeoServer convention here which is to treat EPSG:4326 as lon/lat
     applyAxisInversion = ( crs().hasAxisInverted() && !mShared->mURI.ignoreAxisOrientation() && !mShared->mCaps.useEPSGColumnFormat )
                          || mShared->mURI.invertAxisOrientation();
@@ -2403,9 +2405,9 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
   const QString WfsVersion = mShared->mWFSVersion;
   // only 1.1.0 and 1.0.0 are supported
-  if ( WfsVersion == QLatin1String( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) || WfsVersion.startsWith( QLatin1String( "2." ) ) )
   {
-    transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
   }
   else
   {
@@ -2455,11 +2457,12 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
 
   const QString WfsVersion = mShared->mWFSVersion;
 
-  if ( WfsVersion == QLatin1String( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) || WfsVersion.startsWith( QLatin1String( "2." ) ) )
   {
     const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
     if ( transactionSummaryList.size() < 1 )
     {
+      QgsDebugMsgLevel( QStringLiteral( "TransactionSummary not found in response: %1" ).arg( serverResponse.toString() ), 4 );
       return false;
     }
 
@@ -2533,7 +2536,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
   // Handles WFS 1.1.0
   QString insertResultTagName;
-  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) )
+  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) || mShared->mWFSVersion.startsWith( QLatin1String( "2." ) ) )
   {
     insertResultTagName = QStringLiteral( "InsertResults" );
   }

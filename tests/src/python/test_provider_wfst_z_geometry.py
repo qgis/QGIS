@@ -246,27 +246,37 @@ class TestPyQgsWfsZGeometries(QgisTestCase):
 """
             )
 
-        response = """
-<wfs:WFS_TransactionResponse version="1.0.0" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:point_z">
-  <wfs:InsertResult>
-    <ogc:FeatureId fid="point_z.557"/>
-  </wfs:InsertResult>
-  <wfs:TransactionResult>
-    <wfs:Status>
-        <wfs:SUCCESS/>
-    </wfs:Status>
-  </wfs:TransactionResult>
-</wfs:WFS_TransactionResponse>
+        response_1_1 = """
+<wfs:TransactionResponse
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:wfs="http://www.opengis.net/wfs"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:ows="http://www.opengis.net/ows"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd">
+	<wfs:TransactionSummary>
+		<wfs:totalInserted>1</wfs:totalInserted>
+		<wfs:totalUpdated>0</wfs:totalUpdated>
+		<wfs:totalDeleted>0</wfs:totalDeleted>
+	</wfs:TransactionSummary>
+	<wfs:TransactionResults/>
+	<wfs:InsertResults>
+		<wfs:Feature>
+			<ogc:FeatureId fid="point_z.557"/>
+		</wfs:Feature>
+	</wfs:InsertResults>
+</wfs:TransactionResponse>
 """
 
         with open(
             sanitize(
                 transaction_endpoint,
-                '?SERVICE=WFS&REQUEST=Transaction&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:point_z" version="1.0.0" service="WFS"><Insert xmlns="http://www.opengis.net/wfs"><point_z xmlns="ws1"><name xmlns="ws1">point 1</name><geometry xmlns="ws1"><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:coordinates cs="," ts=" ">0.6109,-0.35210000000000002</gml:coordinates></gml:Point></geometry></point_z></Insert></Transaction>',
+                '?SERVICE=WFS&REQUEST=Transaction&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:point_z" version="1.1.0" service="WFS"><Insert xmlns="http://www.opengis.net/wfs"><point_z xmlns="ws1"><name xmlns="ws1">point 1</name><geometry xmlns="ws1"><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="3">-0.35210000000000002 0.6109 120</gml:pos></gml:Point></geometry></point_z></Insert></Transaction>',
             ),
             "wb",
         ) as f:
-            f.write(response.encode("UTF-8"))
+            f.write(response_1_1.encode("UTF-8"))
 
     @classmethod
     def tearDownClass(cls):
