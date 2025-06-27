@@ -528,14 +528,14 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
         );
         watchdogMsg->layout()->addWidget( btnIgnore );
 
-        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, myFullPath, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, true );
           loadCppPlugin( myFullPath );
           settings.remove( QStringLiteral( "/Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
-        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, false );
           settings.remove( "/Plugins/watchDogTimestamp/" + baseName );
@@ -628,7 +628,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
         );
         watchdogMsg->layout()->addWidget( btnIgnore );
 
-        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [this, packageName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, true );
           if ( checkPythonPlugin( packageName ) )
@@ -640,7 +640,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
-        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, packageName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, false );
           settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );

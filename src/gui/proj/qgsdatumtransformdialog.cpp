@@ -124,7 +124,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mCoordinateOperationsWidget->setSourceCrs( sourceCrs );
   mCoordinateOperationsWidget->setDestinationCrs( destinationCrs );
 
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
   } );
 
@@ -136,7 +136,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   deets.allowFallback = allowFallback;
   mCoordinateOperationsWidget->setSelectedOperation( deets );
 
-  connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [=] {
+  connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [this] {
     if ( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid()
          && mCoordinateOperationsWidget->selectedOperation().isAvailable )
       accept();

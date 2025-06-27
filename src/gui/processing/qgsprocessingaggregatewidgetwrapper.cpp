@@ -56,7 +56,7 @@ QgsProcessingAggregatePanelWidget::QgsProcessingAggregatePanelWidget( QWidget *p
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsAggregateMappingWidget::moveSelectedFieldsDown );
   connect( mLoadLayerFieldsButton, &QPushButton::clicked, this, &QgsProcessingAggregatePanelWidget::loadLayerFields );
 
-  connect( mFieldsView, &QgsAggregateMappingWidget::changed, this, [=] {
+  connect( mFieldsView, &QgsAggregateMappingWidget::changed, this, [this] {
     if ( !mBlockChangedSignal )
     {
       emit changed();
@@ -273,7 +273,7 @@ QWidget *QgsProcessingAggregateWidgetWrapper::createWidget()
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->registerExpressionContextGenerator( this );
 
-  connect( mPanel, &QgsProcessingAggregatePanelWidget::changed, this, [=] {
+  connect( mPanel, &QgsProcessingAggregatePanelWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
 
@@ -298,7 +298,7 @@ void QgsProcessingAggregateWidgetWrapper::postInitialize( const QList<QgsAbstrac
         if ( wrapper->parameterDefinition()->name() == static_cast<const QgsProcessingParameterAggregate *>( parameterDefinition() )->parentLayerParameterName() )
         {
           setParentLayerWrapperValue( wrapper );
-          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [=] {
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] {
             setParentLayerWrapperValue( wrapper );
           } );
           break;

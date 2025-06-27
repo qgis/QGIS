@@ -444,7 +444,7 @@ QWidget *QgsLayoutColumnSourceDelegate::createEditor( QWidget *parent, const QSt
   fieldExpression->registerExpressionContextGenerator( this );
 
   //listen out for field changes
-  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [=] { const_cast<QgsLayoutColumnSourceDelegate *>( this )->commitAndCloseEditor(); } );
+  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this] { const_cast<QgsLayoutColumnSourceDelegate *>( this )->commitAndCloseEditor(); } );
   return fieldExpression;
 }
 

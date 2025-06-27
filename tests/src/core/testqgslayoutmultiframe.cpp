@@ -437,7 +437,7 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 
   QCOMPARE( htmlItem->frameCount(), 1 );
 
-  auto dumpStack = [=] {
+  auto dumpStack = [] {
 #if 0 // for debugging
     // dump stack
     for ( int i = 0; i < mLayout->undoStack()->stack()->count(); ++i )

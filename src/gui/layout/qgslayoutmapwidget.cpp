@@ -543,7 +543,7 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
     }
     QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Name ) ).toString(), mBookmarkMenu );
     const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
-    connect( action, &QAction::triggered, this, [=] {
+    connect( action, &QAction::triggered, this, [this, extent] {
       setToCustomExtent( extent );
     } );
     destMenu->addAction( action );
@@ -2145,7 +2145,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
   mInvertSelectionButton->setEnabled( false );
   mRadioClipAllLayers->setChecked( true );
 
-  connect( mClipToAtlasCheckBox, &QGroupBox::toggled, this, [=]( bool active ) {
+  connect( mClipToAtlasCheckBox, &QGroupBox::toggled, this, [this]( bool active ) {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Toggle Atlas Clipping" ) );
@@ -2153,7 +2153,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mForceLabelsInsideCheckBox, &QCheckBox::toggled, this, [=]( bool active ) {
+  connect( mForceLabelsInsideCheckBox, &QCheckBox::toggled, this, [this]( bool active ) {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Change Atlas Clipping Label Behavior" ) );
@@ -2161,7 +2161,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mAtlasClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mAtlasClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Change Atlas Clipping Behavior" ) );
@@ -2170,7 +2170,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
     }
   } );
 
-  connect( mRadioClipSelectedLayers, &QCheckBox::toggled, this, [=]( bool active ) {
+  connect( mRadioClipSelectedLayers, &QCheckBox::toggled, this, [this]( bool active ) {
     if ( active && !mBlockUpdates )
     {
       mBlockUpdates = true;
@@ -2185,7 +2185,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
   connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsLayoutMapClippingWidget::deselectAll );
   connect( mInvertSelectionButton, &QPushButton::clicked, this, &QgsLayoutMapClippingWidget::invertSelection );
 
-  connect( mRadioClipAllLayers, &QCheckBox::toggled, this, [=]( bool active ) {
+  connect( mRadioClipAllLayers, &QCheckBox::toggled, this, [this]( bool active ) {
     if ( active && !mBlockUpdates )
     {
       mBlockUpdates = true;
@@ -2195,7 +2195,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mBlockUpdates = false;
     }
   } );
-  connect( mLayerModel, &QgsMapLayerModel::dataChanged, this, [=]( const QModelIndex &, const QModelIndex &, const QVector<int> &roles = QVector<int>() ) {
+  connect( mLayerModel, &QgsMapLayerModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> &roles = QVector<int>() ) {
     if ( !roles.contains( Qt::CheckStateRole ) )
       return;
 
@@ -2211,7 +2211,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
 
   // item clipping widgets
 
-  connect( mClipToItemCheckBox, &QGroupBox::toggled, this, [=]( bool active ) {
+  connect( mClipToItemCheckBox, &QGroupBox::toggled, this, [this]( bool active ) {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Toggle Map Clipping" ) );
@@ -2219,7 +2219,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mItemClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mItemClippingTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Change Map Clipping Behavior" ) );
@@ -2227,7 +2227,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mForceLabelsInsideItemCheckBox, &QCheckBox::toggled, this, [=]( bool active ) {
+  connect( mForceLabelsInsideItemCheckBox, &QCheckBox::toggled, this, [this]( bool active ) {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Change Map Clipping Label Behavior" ) );
@@ -2235,7 +2235,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
       mMapItem->endCommand();
     }
   } );
-  connect( mClipItemComboBox, &QgsLayoutItemComboBox::itemChanged, this, [=]( QgsLayoutItem *item ) {
+  connect( mClipItemComboBox, &QgsLayoutItemComboBox::itemChanged, this, [this]( QgsLayoutItem *item ) {
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Change Map Clipping Item" ) );

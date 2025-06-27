@@ -76,7 +76,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   outputFile->setDialogTitle( tr( "Destination File" ) );
   const QString lastDestinationFolder = settingLastDestinationFolder->value();
   outputFile->setDefaultRoot( lastDestinationFolder.isEmpty() ? QDir::homePath() : lastDestinationFolder );
-  connect( outputFile, &QgsFileWidget::fileChanged, this, [=] {
+  connect( outputFile, &QgsFileWidget::fileChanged, this, [outputFile] {
     settingLastDestinationFolder->setValue( QFileInfo( outputFile->filePath() ).absolutePath() );
   } );
 
@@ -85,7 +85,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   mPdfMap->setDialogTitle( tr( "Save Map File As" ) );
   const QString lastPdfFolder = settingLastPdfFolder->value();
   mPdfMap->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
-  connect( mPdfMap, &QgsFileWidget::fileChanged, this, [=] {
+  connect( mPdfMap, &QgsFileWidget::fileChanged, this, [this] {
     settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
@@ -93,7 +93,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   mPdfReport->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfReport->setDialogTitle( tr( "Save Report File As" ) );
   mPdfReport->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
-  connect( mPdfReport, &QgsFileWidget::fileChanged, this, [=] {
+  connect( mPdfReport, &QgsFileWidget::fileChanged, this, [this] {
     settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 

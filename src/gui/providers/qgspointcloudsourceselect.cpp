@@ -42,12 +42,12 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mPath = path;
     emit enableButtons( !mPath.isEmpty() );
   } );
 
-  connect( protocolURI, &QLineEdit::textChanged, this, [=]( const QString &path ) {
+  connect( protocolURI, &QLineEdit::textChanged, this, [this]( const QString &path ) {
     mPath = path;
     emit enableButtons( !mPath.isEmpty() );
   } );

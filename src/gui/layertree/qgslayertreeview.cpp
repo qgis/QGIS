@@ -92,7 +92,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
     return;
 
   if ( mMessageBar )
-    connect( treeModel, &QgsLayerTreeModel::messageEmitted, this, [=]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
+    connect( treeModel, &QgsLayerTreeModel::messageEmitted, this, [this]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
       Q_UNUSED( duration )
       mMessageBar->pushMessage( message, level );
     } );
@@ -542,7 +542,7 @@ void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewInd
   if ( !mIndicators[node].contains( indicator ) )
   {
     mIndicators[node].append( indicator );
-    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [=] {
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [this] {
       update();
       viewport()->repaint();
     } );
@@ -644,7 +644,7 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
     return;
 
   if ( mMessageBar )
-    connect( layerModel, &QgsLayerTreeModel::messageEmitted, this, [=]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
+    connect( layerModel, &QgsLayerTreeModel::messageEmitted, this, [this]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
       Q_UNUSED( duration )
       mMessageBar->pushMessage( message, level );
     } );

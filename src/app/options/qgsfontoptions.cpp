@@ -47,13 +47,13 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
     row++;
   }
 
-  connect( mButtonAddReplacement, &QToolButton::clicked, this, [=] {
+  connect( mButtonAddReplacement, &QToolButton::clicked, this, [this] {
     mTableReplacements->setRowCount( mTableReplacements->rowCount() + 1 );
     mTableReplacements->setFocus();
     mTableReplacements->setCurrentCell( mTableReplacements->rowCount() - 1, 0 );
   } );
 
-  connect( mButtonRemoveReplacement, &QToolButton::clicked, this, [=] {
+  connect( mButtonRemoveReplacement, &QToolButton::clicked, this, [this] {
     const QModelIndexList selection = mTableReplacements->selectionModel()->selectedRows();
     QList<int> selectedRows;
     for ( const QModelIndex &index : selection )
@@ -86,7 +86,7 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
     row++;
   }
 
-  connect( mButtonRemoveUserFont, &QToolButton::clicked, this, [=] {
+  connect( mButtonRemoveUserFont, &QToolButton::clicked, this, [this] {
     const QModelIndexList selection = mTableUserFonts->selectionModel()->selectedRows();
     QList<int> selectedRows;
     for ( const QModelIndex &index : selection )

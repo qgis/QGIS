@@ -39,7 +39,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     QMessageBox::critical( nullptr, tr( "Cannot Create New Tables" ), tr( "Error retrieving native types from the data provider: creation of new tables is not possible.\n"
                                                                           "Error message: %1" )
                                                                         .arg( ex.what() ) );
-    QTimer::singleShot( 0, this, [=] { reject(); } );
+    QTimer::singleShot( 0, this, [this] { reject(); } );
     return;
   }
 
@@ -48,7 +48,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   QgsGui::enableAutoGeometryRestore( this );
   setWindowTitle( tr( "New Table" ) );
 
-  auto updateTableNames = [=]( const QString &schema = QString() ) {
+  auto updateTableNames = [this, conn]( const QString &schema = QString() ) {
     mTableNames.clear();
     try
     {
@@ -67,7 +67,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   };
 
   // Validate on data changed
-  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [=]() {
+  connect( mFieldModel, &QgsNewVectorTableFieldModel::modelReset, this, [this]() {
     validate();
   } );
 
@@ -87,7 +87,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   if ( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
   {
     mSchemaCbo->addItems( mConnection->schemas() );
-    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [=]( const QString &schema ) {
+    connect( mSchemaCbo, &QComboBox::currentTextChanged, this, [updateTableNames]( const QString &schema ) {
       updateTableNames( schema );
     } );
   }
@@ -110,16 +110,16 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   updateTableNames( mSchemaCbo->currentText() );
 
   // Validators
-  connect( mTableName, &QLineEdit::textChanged, this, [=]( const QString & ) {
+  connect( mTableName, &QLineEdit::textChanged, this, [this]( const QString & ) {
     validate();
   } );
 
-  connect( mGeomColumn, &QLineEdit::textChanged, this, [=]( const QString & ) {
+  connect( mGeomColumn, &QLineEdit::textChanged, this, [this]( const QString & ) {
     validate();
   } );
 
   // Enable/disable geometry options and call validate
-  connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
+  connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
     const bool hasGeom { index != 0 };
     mGeomColumn->setEnabled( hasGeom );
     mGeomColumnLabel->setEnabled( hasGeom );
@@ -191,7 +191,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mDimensionsLabel->setVisible( false );
   }
 
-  connect( mFieldsTableView->selectionModel(), &QItemSelectionModel::selectionChanged, mFieldsTableView, [=]( const QItemSelection &selected, const QItemSelection & ) {
+  connect( mFieldsTableView->selectionModel(), &QItemSelectionModel::selectionChanged, mFieldsTableView, [this]( const QItemSelection &selected, const QItemSelection & ) {
     if ( !selected.isEmpty() )
     {
       mCurrentRow = selected.indexes().first().row();
@@ -204,7 +204,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   const QString defaultFieldTypeName { mFieldModel->nativeTypes().first().mTypeName };
 
   // Actions
-  connect( mAddFieldBtn, &QPushButton::clicked, this, [=] {
+  connect( mAddFieldBtn, &QPushButton::clicked, this, [this, defaultFieldType, defaultFieldTypeName] {
     QgsFields fieldList { fields() };
     QgsField newField { QStringLiteral( "new_field_name" ), defaultFieldType, defaultFieldTypeName };
     fieldList.append( newField );
@@ -212,7 +212,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     selectRow( fieldList.count() - 1 );
   } );
 
-  connect( mDeleteFieldBtn, &QPushButton::clicked, this, [=] {
+  connect( mDeleteFieldBtn, &QPushButton::clicked, this, [this] {
     QgsFields fieldList { fields() };
     if ( fieldList.exists( mCurrentRow ) )
     {
@@ -222,7 +222,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     }
   } );
 
-  connect( mFieldUpBtn, &QPushButton::clicked, this, [=] {
+  connect( mFieldUpBtn, &QPushButton::clicked, this, [this] {
     if ( fields().exists( mCurrentRow ) && fields().exists( mCurrentRow - 1 ) )
     {
       QgsFields fieldList;
@@ -243,7 +243,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     }
   } );
 
-  connect( mFieldDownBtn, &QPushButton::clicked, this, [=] {
+  connect( mFieldDownBtn, &QPushButton::clicked, this, [this] {
     if ( fields().exists( mCurrentRow ) && fields().exists( mCurrentRow + 1 ) )
     {
       QgsFields fieldList;

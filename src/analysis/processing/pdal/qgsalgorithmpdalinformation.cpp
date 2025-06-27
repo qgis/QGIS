@@ -73,10 +73,10 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   QStringList commandOutput;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba.trimmed() );
   } );
-  wrenchProcess.setStdOutHandler( [=, &commandOutput]( const QByteArray &ba ) {
+  wrenchProcess.setStdOutHandler( [feedback, &commandOutput]( const QByteArray &ba ) {
     feedback->pushConsoleInfo( ba.trimmed() );
     commandOutput << ba;
   } );

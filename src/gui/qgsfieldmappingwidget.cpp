@@ -58,8 +58,8 @@ QgsFieldMappingWidget::QgsFieldMappingWidget(
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), mTypeDelegate );
   updateColumns();
   // Make sure columns are updated when rows are added
-  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [=] { updateColumns(); } );
-  connect( mModel, &QgsFieldMappingModel::modelReset, this, [=] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [this] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::modelReset, this, [this] { updateColumns(); } );
   connect( mModel, &QgsFieldMappingModel::dataChanged, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
@@ -308,7 +308,7 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
   }
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
-  connect( editor, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, [=]( const QString &fieldName ) {
+  connect( editor, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, [this, editor]( const QString &fieldName ) {
     Q_UNUSED( fieldName )
     const_cast<QgsFieldMappingExpressionDelegate *>( this )->emit commitData( editor );
   } );
@@ -347,7 +347,7 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
   }
   else
   {
-    connect( editor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int currentIndex ) {
+    connect( editor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this, editor]( int currentIndex ) {
       Q_UNUSED( currentIndex )
       const_cast<QgsFieldMappingTypeDelegate *>( this )->emit commitData( editor );
     } );

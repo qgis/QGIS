@@ -53,7 +53,7 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent, Cap
   mFontButton->setShowNullFormat( true );
   mFontButton->setNoFormatString( tr( "Default" ) );
 
-  connect( mUseContinuousLegendCheckBox, &QCheckBox::stateChanged, this, [=]( bool checked ) {
+  connect( mUseContinuousLegendCheckBox, &QCheckBox::stateChanged, this, [this]( bool checked ) {
     mLayoutGroup->setEnabled( checked );
     mLabelsGroup->setEnabled( checked );
     onChanged();
@@ -127,7 +127,7 @@ void QgsColorRampLegendNodeWidget::changeNumberFormat()
   QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
   widget->setPanelTitle( tr( "Number Format" ) );
   widget->setFormat( mSettings.numericFormat() );
-  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
     mSettings.setNumericFormat( widget->format() );
     onChanged();
   } );
@@ -174,7 +174,7 @@ QgsColorRampLegendNodeDialog::QgsColorRampLegendNodeDialog( const QgsColorRampLe
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-legend-settings" ) );
   } );
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );

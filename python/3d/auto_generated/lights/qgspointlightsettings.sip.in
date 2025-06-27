@@ -95,7 +95,7 @@ Returns quadratic attenuation (A_2)
 Sets quadratic attenuation (A_2)
 %End
 
-    bool operator==( const QgsPointLightSettings &other );
+    bool operator==( const QgsPointLightSettings &other ) const;
 
 };
 

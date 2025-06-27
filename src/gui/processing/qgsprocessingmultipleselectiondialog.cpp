@@ -66,8 +66,8 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   mButtonToggleSelection = new QPushButton( tr( "Toggle Selection" ) );
   mButtonBox->addButton( mButtonToggleSelection, QDialogButtonBox::ActionRole );
 
-  connect( mButtonSelectAll, &QPushButton::clicked, this, [=] { selectAll( true ); } );
-  connect( mButtonClearSelection, &QPushButton::clicked, this, [=] { selectAll( false ); } );
+  connect( mButtonSelectAll, &QPushButton::clicked, this, [this] { selectAll( true ); } );
+  connect( mButtonClearSelection, &QPushButton::clicked, this, [this] { selectAll( false ); } );
   connect( mButtonToggleSelection, &QPushButton::clicked, this, &QgsProcessingMultipleSelectionPanelWidget::toggleSelection );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked );

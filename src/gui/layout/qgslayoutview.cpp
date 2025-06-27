@@ -108,17 +108,17 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   if ( mHorizontalRuler )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [this] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mHorizontalRuler, [this] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mHorizontalRuler, [this] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, mHorizontalRuler, [this] { mHorizontalRuler->update(); } );
   }
   if ( mVerticalRuler )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mVerticalRuler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mVerticalRuler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [=] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mVerticalRuler, [this] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mVerticalRuler, [this] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [this] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [this] { mVerticalRuler->update(); } );
   }
 
   //emit layoutSet, so that designer dialogs can update for the new layout
@@ -224,10 +224,10 @@ void QgsLayoutView::setHorizontalRuler( QgsLayoutRuler *ruler )
   ruler->setLayoutView( this );
   if ( QgsLayout *layout = currentLayout() )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [=] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [this] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [this] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [this] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [this] { mHorizontalRuler->update(); } );
   }
   viewChanged();
 }
@@ -238,10 +238,10 @@ void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
   ruler->setLayoutView( this );
   if ( QgsLayout *layout = currentLayout() )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [=] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [this] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [this] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [this] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [this] { mVerticalRuler->update(); } );
   }
   viewChanged();
 }

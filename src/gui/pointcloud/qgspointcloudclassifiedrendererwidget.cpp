@@ -445,7 +445,7 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
 
   viewCategories->setContextMenuPolicy( Qt::CustomContextMenu );
   viewCategories->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  connect( viewCategories, &QTreeView::customContextMenuRequested, this, [=]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
+  connect( viewCategories, &QTreeView::customContextMenuRequested, this, [this]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
 }
 
 QgsPointCloudRendererWidget *QgsPointCloudClassifiedRendererWidget::create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * )
@@ -646,7 +646,7 @@ void QgsPointCloudClassifiedRendererWidget::changeCategoryColor()
     colorWidget->setAllowOpacity( true );
     colorWidget->setPreviousColor( category.color() );
 
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &newColor ) {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this, categoryList]( const QColor &newColor ) {
       for ( int row : categoryList )
       {
         mModel->setCategoryColor( row, newColor );

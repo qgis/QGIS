@@ -116,7 +116,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
   setAnnotationDisplay( QsciScintilla::AnnotationBoxed );
 
-  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [=] {
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [this] {
     setSciWidget();
     initializeLexer();
   } );

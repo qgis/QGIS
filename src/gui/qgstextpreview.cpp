@@ -24,7 +24,7 @@ QgsTextPreview::QgsTextPreview( QWidget *parent )
   : QLabel( parent )
 {
   mScreenHelper = new QgsScreenHelper( this );
-  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [=]( double dpi ) {
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [this]( double dpi ) {
     mContext.setScaleFactor( dpi / 25.4 );
     updateContext();
   } );

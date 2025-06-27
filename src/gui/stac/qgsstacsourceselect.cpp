@@ -391,7 +391,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
     // Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
 #ifndef __clang_analyzer__
     // Let the results appear, then fetch more if there's no scrollbar
-    QTimer::singleShot( 100, this, [=] {
+    QTimer::singleShot( 100, this, [this] {
       if ( isVisible() && !mItemsView->verticalScrollBar()->isVisible() )
       {
         fetchNextResultPage();

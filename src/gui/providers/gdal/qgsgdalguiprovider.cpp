@@ -157,7 +157,7 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
         data.insert( QStringLiteral( "path" ), layerItem->name() );
         data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
         actionDeleteLayer->setData( data );
-        connect( actionDeleteLayer, &QAction::triggered, this, [=] { onDeletePostgresRasterLayer( context ); } );
+        connect( actionDeleteLayer, &QAction::triggered, this, [this, context] { onDeletePostgresRasterLayer( context ); } );
         menu->addAction( actionDeleteLayer );
       }
     }

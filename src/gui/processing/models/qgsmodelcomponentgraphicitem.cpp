@@ -273,7 +273,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
         if ( linkPointCount( Qt::TopEdge ) )
         {
           mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), QPointF( 0, 0 ) );
-          connect( mExpandTopButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [=]( bool folded ) { fold( Qt::TopEdge, folded ); } );
+          connect( mExpandTopButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [this]( bool folded ) { fold( Qt::TopEdge, folded ); } );
 
           for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
           {
@@ -283,7 +283,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
         if ( linkPointCount( Qt::BottomEdge ) )
         {
           mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), QPointF( 0, 0 ) );
-          connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [=]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
+          connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [this]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
 
           for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
           {

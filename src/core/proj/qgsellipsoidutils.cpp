@@ -173,7 +173,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   QString ellipsoid = e;
   // ensure ellipsoid database is populated when first called
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, []
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize ellipsoids" ) );
     ( void )definitions();

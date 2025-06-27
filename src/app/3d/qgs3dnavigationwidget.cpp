@@ -47,7 +47,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mZoomInButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       QgsCameraController *controller = m3DMapCanvas->cameraController();
       if ( m3DMapCanvas->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
         controller->globeZoom( ZOOM_FACTOR );
@@ -61,7 +61,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mZoomOutButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       QgsCameraController *controller = m3DMapCanvas->cameraController();
       if ( m3DMapCanvas->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
         controller->globeZoom( 1 / ZOOM_FACTOR );
@@ -75,7 +75,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mTiltUpButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       m3DMapCanvas->cameraController()->tiltUpAroundViewCenter( 1 );
     }
   );
@@ -85,7 +85,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mTiltDownButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       m3DMapCanvas->cameraController()->tiltUpAroundViewCenter( -1 );
     }
   );
@@ -98,7 +98,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mCompass,
     &QwtDial::valueChanged,
     m3DMapCanvas,
-    [=] {
+    [this] {
       m3DMapCanvas->cameraController()->setCameraHeadingAngle( float( mCompass->value() ) );
     }
   );
@@ -108,7 +108,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mMoveUpButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       QgsCameraController *controller = m3DMapCanvas->cameraController();
       if ( m3DMapCanvas->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
         controller->globeMoveCenterPoint( MOVE_FACTOR * controller->cameraPose().distanceFromCenterPoint(), 0 );
@@ -122,7 +122,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mMoveRightButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       QgsCameraController *controller = m3DMapCanvas->cameraController();
       if ( m3DMapCanvas->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
         controller->globeMoveCenterPoint( 0, MOVE_FACTOR * controller->cameraPose().distanceFromCenterPoint() );
@@ -136,7 +136,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mMoveDownButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       QgsCameraController *controller = m3DMapCanvas->cameraController();
       if ( m3DMapCanvas->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
         controller->globeMoveCenterPoint( -MOVE_FACTOR * controller->cameraPose().distanceFromCenterPoint(), 0 );
@@ -150,7 +150,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mMoveLeftButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [=] {
+    [this] {
       QgsCameraController *controller = m3DMapCanvas->cameraController();
       if ( m3DMapCanvas->mapSettings()->sceneMode() == Qgis::SceneMode::Globe )
         controller->globeMoveCenterPoint( 0, -MOVE_FACTOR * controller->cameraPose().distanceFromCenterPoint() );

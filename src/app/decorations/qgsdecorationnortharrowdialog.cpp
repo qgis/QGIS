@@ -52,7 +52,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinAngle->setEnabled( !mDeco.mAutomatic );
   sliderRotation->setEnabled( !mDeco.mAutomatic );
 
-  connect( cboxAutomatic, &QAbstractButton::toggled, this, [=]( bool checked ) {
+  connect( cboxAutomatic, &QAbstractButton::toggled, this, [this]( bool checked ) {
     spinAngle->setEnabled( !checked );
     sliderRotation->setEnabled( !checked );
   } );
@@ -66,7 +66,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     spinHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
@@ -87,7 +87,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   mSvgPathLineEdit->setText( mDeco.mSvgPath );
   connect( mSvgPathLineEdit, &QLineEdit::textChanged, this, &QgsDecorationNorthArrowDialog::updateSvgPath );
-  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [=] {
+  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [this] {
     QgsSvgSelectorDialog svgDlg( this );
     svgDlg.setWindowTitle( tr( "Select SVG file" ) );
     svgDlg.svgSelector()->setSvgPath( mSvgPathLineEdit->text().trimmed() );
@@ -109,8 +109,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
-  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawNorthArrow(); } );
-  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawNorthArrow(); } );
 
   drawNorthArrow();
 }

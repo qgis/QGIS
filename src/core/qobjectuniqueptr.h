@@ -324,7 +324,7 @@ class QObjectParentUniquePtr
       {
         QObject::disconnect( mParentDestroyedConnection );
       }
-      mParentDestroyedConnection = QObject::connect( parent, &QObject::destroyed, parent, [ = ]()
+      mParentDestroyedConnection = QObject::connect( parent, &QObject::destroyed, parent, [this]()
       {
         mParent = nullptr;
         // parent is being deleted BEFORE child, so it is responsible for deleting the child -- we don't need to delete it here!

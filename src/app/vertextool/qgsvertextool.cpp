@@ -2670,7 +2670,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     mSelectedVerticesMarkers.clear();
   }
 
-  auto createMarkerForVertex = [=]( const Vertex &vertex ) -> bool {
+  auto createMarkerForVertex = [this]( const Vertex &vertex ) -> bool {
     QgsGeometry geom = cachedGeometryForVertex( vertex );
     QgsVertexId vid;
     if ( !geom.vertexIdFromVertexNr( vertex.vertexId, vid ) )

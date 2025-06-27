@@ -38,11 +38,11 @@ QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer 
   mExtentBufferUnitSelectionWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mExtentBufferUnitSelectionWidget->setUnit( mSymbol->extentBufferSizeUnit() );
 
-  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]() {
+  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]() {
     emit widgetChanged();
   } );
 
-  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [=]() {
+  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [this]() {
     emit widgetChanged();
   } );
 
@@ -64,7 +64,7 @@ void QgsExtentBufferWidget::registerDataDefinedButton( QgsPropertyOverrideButton
   // pass in nullptr to avoid id, feature and geometry variables being added
   // since the buffer is not evaluated per-feature
   button->init( static_cast<int>( key ), mSymbol->dataDefinedProperties(), QgsSymbol::propertyDefinitions(), nullptr );
-  connect( button, &QgsPropertyOverrideButton::changed, this, [=]() {
+  connect( button, &QgsPropertyOverrideButton::changed, this, [this]() {
     emit widgetChanged();
   } );
 

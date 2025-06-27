@@ -328,7 +328,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QgsGui::enableAutoGeometryRestore( this );
 
   mScreenHelper = new QgsScreenHelper( this );
-  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [=]( double ) {
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [this]( double ) {
     updateStatusZoom();
   } );
 
@@ -418,7 +418,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionPageSetup->setVisible( false );
 #endif
 
-  connect( mActionOptions, &QAction::triggered, this, [=] {
+  connect( mActionOptions, &QAction::triggered, this, [this] {
     QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageComposer" ) );
   } );
 
@@ -448,12 +448,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   mDynamicTextMenu = new QMenu( tr( "Add Dynamic Text" ), this );
 
-  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [this] {
     mDynamicTextMenu->clear();
     if ( mLayout )
     {
       // we need to rebuild this on each show, as the content varies depending on other available items...
-      QgsLayoutLabelWidget::buildInsertDynamicTextMenu( mLayout, mDynamicTextMenu, [=]( const QString &expression ) {
+      QgsLayoutLabelWidget::buildInsertDynamicTextMenu( mLayout, mDynamicTextMenu, [this]( const QString &expression ) {
         activateNewItemCreationTool( QgsGui::layoutItemGuiRegistry()->metadataIdForItemType( QgsLayoutItemRegistry::LayoutLabel ), false );
         QVariantMap properties;
         properties.insert( QStringLiteral( "expression" ), expression );
@@ -574,28 +574,28 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
   mToolsActionGroup->addAction( mActionPan );
-  connect( mActionPan, &QAction::triggered, mPanTool, [=] { mView->setTool( mPanTool ); } );
+  connect( mActionPan, &QAction::triggered, mPanTool, [this] { mView->setTool( mPanTool ); } );
   mZoomTool = new QgsLayoutViewToolZoom( mView );
   mZoomTool->setAction( mActionZoomTool );
   mToolsActionGroup->addAction( mActionZoomTool );
-  connect( mActionZoomTool, &QAction::triggered, mZoomTool, [=] { mView->setTool( mZoomTool ); } );
+  connect( mActionZoomTool, &QAction::triggered, mZoomTool, [this] { mView->setTool( mZoomTool ); } );
   mSelectTool = new QgsLayoutViewToolSelect( mView );
   mSelectTool->setAction( mActionSelectMoveItem );
   mToolsActionGroup->addAction( mActionSelectMoveItem );
-  connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [=] { mView->setTool( mSelectTool ); } );
+  connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [this] { mView->setTool( mSelectTool ); } );
   // after creating an item with the add item tool, switch immediately to select tool
-  connect( mAddItemTool, &QgsLayoutViewToolAddItem::createdItem, this, [=] { mView->setTool( mSelectTool ); } );
-  connect( mAddNodeItemTool, &QgsLayoutViewToolAddNodeItem::createdItem, this, [=] { mView->setTool( mSelectTool ); } );
+  connect( mAddItemTool, &QgsLayoutViewToolAddItem::createdItem, this, [this] { mView->setTool( mSelectTool ); } );
+  connect( mAddNodeItemTool, &QgsLayoutViewToolAddNodeItem::createdItem, this, [this] { mView->setTool( mSelectTool ); } );
 
   mNodesTool = new QgsLayoutViewToolEditNodes( mView );
   mNodesTool->setAction( mActionEditNodesItem );
   mToolsActionGroup->addAction( mActionEditNodesItem );
-  connect( mActionEditNodesItem, &QAction::triggered, mNodesTool, [=] { mView->setTool( mNodesTool ); } );
+  connect( mActionEditNodesItem, &QAction::triggered, mNodesTool, [this] { mView->setTool( mNodesTool ); } );
 
   mMoveContentTool = new QgsLayoutViewToolMoveItemContent( mView );
   mMoveContentTool->setAction( mActionMoveItemContent );
   mToolsActionGroup->addAction( mActionMoveItemContent );
-  connect( mActionMoveItemContent, &QAction::triggered, mMoveContentTool, [=] { mView->setTool( mMoveContentTool ); } );
+  connect( mActionMoveItemContent, &QAction::triggered, mMoveContentTool, [this] { mView->setTool( mMoveContentTool ); } );
 
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
@@ -620,26 +620,26 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
 
   mActionPreviewModeOff->setChecked( true );
-  connect( mActionPreviewModeOff, &QAction::triggered, this, [=] {
+  connect( mActionPreviewModeOff, &QAction::triggered, this, [this] {
     mView->setPreviewModeEnabled( false );
   } );
-  connect( mActionPreviewModeMono, &QAction::triggered, this, [=] {
+  connect( mActionPreviewModeMono, &QAction::triggered, this, [this] {
     mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
     mView->setPreviewModeEnabled( true );
   } );
-  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [=] {
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [this] {
     mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
     mView->setPreviewModeEnabled( true );
   } );
-  connect( mActionPreviewProtanope, &QAction::triggered, this, [=] {
+  connect( mActionPreviewProtanope, &QAction::triggered, this, [this] {
     mView->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
     mView->setPreviewModeEnabled( true );
   } );
-  connect( mActionPreviewDeuteranope, &QAction::triggered, this, [=] {
+  connect( mActionPreviewDeuteranope, &QAction::triggered, this, [this] {
     mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
     mView->setPreviewModeEnabled( true );
   } );
-  connect( mActionPreviewTritanope, &QAction::triggered, this, [=] {
+  connect( mActionPreviewTritanope, &QAction::triggered, this, [this] {
     mView->setPreviewMode( QgsPreviewEffect::PreviewTritanope );
     mView->setPreviewModeEnabled( true );
   } );
@@ -673,61 +673,61 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionLowerItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lowerSelectedItems );
   connect( mActionMoveItemsToTop, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToTop );
   connect( mActionMoveItemsToBottom, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToBottom );
-  connect( mActionAlignLeft, &QAction::triggered, this, [=] {
+  connect( mActionAlignLeft, &QAction::triggered, this, [this] {
     mView->alignSelectedItems( QgsLayoutAligner::AlignLeft );
   } );
-  connect( mActionAlignHCenter, &QAction::triggered, this, [=] {
+  connect( mActionAlignHCenter, &QAction::triggered, this, [this] {
     mView->alignSelectedItems( QgsLayoutAligner::AlignHCenter );
   } );
-  connect( mActionAlignRight, &QAction::triggered, this, [=] {
+  connect( mActionAlignRight, &QAction::triggered, this, [this] {
     mView->alignSelectedItems( QgsLayoutAligner::AlignRight );
   } );
-  connect( mActionAlignTop, &QAction::triggered, this, [=] {
+  connect( mActionAlignTop, &QAction::triggered, this, [this] {
     mView->alignSelectedItems( QgsLayoutAligner::AlignTop );
   } );
-  connect( mActionAlignVCenter, &QAction::triggered, this, [=] {
+  connect( mActionAlignVCenter, &QAction::triggered, this, [this] {
     mView->alignSelectedItems( QgsLayoutAligner::AlignVCenter );
   } );
-  connect( mActionAlignBottom, &QAction::triggered, this, [=] {
+  connect( mActionAlignBottom, &QAction::triggered, this, [this] {
     mView->alignSelectedItems( QgsLayoutAligner::AlignBottom );
   } );
-  connect( mActionDistributeLeft, &QAction::triggered, this, [=] {
+  connect( mActionDistributeLeft, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeLeft );
   } );
-  connect( mActionDistributeHCenter, &QAction::triggered, this, [=] {
+  connect( mActionDistributeHCenter, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeHCenter );
   } );
-  connect( mActionDistributeHSpace, &QAction::triggered, this, [=] {
+  connect( mActionDistributeHSpace, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeHSpace );
   } );
-  connect( mActionDistributeRight, &QAction::triggered, this, [=] {
+  connect( mActionDistributeRight, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeRight );
   } );
-  connect( mActionDistributeTop, &QAction::triggered, this, [=] {
+  connect( mActionDistributeTop, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeTop );
   } );
-  connect( mActionDistributeVCenter, &QAction::triggered, this, [=] {
+  connect( mActionDistributeVCenter, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeVCenter );
   } );
-  connect( mActionDistributeVSpace, &QAction::triggered, this, [=] {
+  connect( mActionDistributeVSpace, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeVSpace );
   } );
-  connect( mActionDistributeBottom, &QAction::triggered, this, [=] {
+  connect( mActionDistributeBottom, &QAction::triggered, this, [this] {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeBottom );
   } );
-  connect( mActionResizeNarrowest, &QAction::triggered, this, [=] {
+  connect( mActionResizeNarrowest, &QAction::triggered, this, [this] {
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeNarrowest );
   } );
-  connect( mActionResizeWidest, &QAction::triggered, this, [=] {
+  connect( mActionResizeWidest, &QAction::triggered, this, [this] {
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeWidest );
   } );
-  connect( mActionResizeShortest, &QAction::triggered, this, [=] {
+  connect( mActionResizeShortest, &QAction::triggered, this, [this] {
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeShortest );
   } );
-  connect( mActionResizeTallest, &QAction::triggered, this, [=] {
+  connect( mActionResizeTallest, &QAction::triggered, this, [this] {
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeTallest );
   } );
-  connect( mActionResizeToSquare, &QAction::triggered, this, [=] {
+  connect( mActionResizeToSquare, &QAction::triggered, this, [this] {
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeToSquare );
   } );
 
@@ -749,16 +749,16 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionHidePanels->setChecked( !docksTitle.isEmpty() );
   connect( mActionHidePanels, &QAction::toggled, this, &QgsLayoutDesignerDialog::setPanelVisibility );
 
-  connect( mActionDeleteSelection, &QAction::triggered, this, [=] {
+  connect( mActionDeleteSelection, &QAction::triggered, this, [this] {
     if ( mView->tool() == mNodesTool )
       mNodesTool->deleteSelectedNode();
     else
       mView->deleteSelectedItems();
   } );
-  connect( mActionGroupItems, &QAction::triggered, this, [=] {
+  connect( mActionGroupItems, &QAction::triggered, this, [this] {
     mView->groupSelectedItems();
   } );
-  connect( mActionUngroupItems, &QAction::triggered, this, [=] {
+  connect( mActionUngroupItems, &QAction::triggered, this, [this] {
     mView->ungroupSelectedItems();
   } );
 
@@ -768,7 +768,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionCut->setShortcuts( QKeySequence::Cut );
   mActionCut->setStatusTip( tr( "Cut" ) );
   mActionCut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCut.svg" ) ) );
-  connect( mActionCut, &QAction::triggered, this, [=] {
+  connect( mActionCut, &QAction::triggered, this, [this] {
     mView->copySelectedItems( QgsLayoutView::ClipboardCut );
   } );
 
@@ -776,7 +776,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionCopy->setShortcuts( QKeySequence::Copy );
   mActionCopy->setStatusTip( tr( "Copy" ) );
   mActionCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
-  connect( mActionCopy, &QAction::triggered, this, [=] {
+  connect( mActionCopy, &QAction::triggered, this, [this] {
     mView->copySelectedItems( QgsLayoutView::ClipboardCopy );
   } );
 
@@ -854,7 +854,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mHorizontalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
   connect( mVerticalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
-  connect( mView, &QgsLayoutView::itemFocused, this, [=]( QgsLayoutItem *item ) {
+  connect( mView, &QgsLayoutView::itemFocused, this, [this]( QgsLayoutItem *item ) {
     showItemOptions( item, false );
   } );
 
@@ -880,7 +880,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mGeneralPropertiesStack = new QgsPanelWidgetStack();
   mGeneralDock->setWidget( mGeneralPropertiesStack );
   mPanelsMenu->addAction( mGeneralDock->toggleViewAction() );
-  connect( mActionLayoutProperties, &QAction::triggered, this, [=] {
+  connect( mActionLayoutProperties, &QAction::triggered, this, [this] {
     mGeneralDock->setUserVisible( true );
   } );
 
@@ -897,7 +897,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mGuideStack = new QgsPanelWidgetStack();
   mGuideDock->setWidget( mGuideStack );
   mPanelsMenu->addAction( mGuideDock->toggleViewAction() );
-  connect( mActionManageGuides, &QAction::triggered, this, [=] {
+  connect( mActionManageGuides, &QAction::triggered, this, [this] {
     mGuideDock->setUserVisible( true );
   } );
 
@@ -1132,7 +1132,7 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
 
   QObject *obj = dynamic_cast<QObject *>( mMasterLayout );
   if ( obj )
-    connect( obj, &QObject::destroyed, this, [=] {
+    connect( obj, &QObject::destroyed, this, [this] {
       this->close();
     } );
 
@@ -1241,7 +1241,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
     mLayoutToolbar->addAction( mRedoAction );
 
     connect( mLayout->undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems, this, &QgsLayoutDesignerDialog::undoRedoOccurredForItems );
-    connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [=] {
+    connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [this] {
       mLayout->guides().clear();
     } );
 
@@ -1370,7 +1370,7 @@ void QgsLayoutDesignerDialog::open()
     // zoomFull() does not work properly until window has fully shown.
     // It's not enough to just call show on it, because the view widget won't be fully
     // resized to its final size until a little later...!
-    QTimer::singleShot( 100, this, [=] {
+    QTimer::singleShot( 100, this, [this] {
       mView->zoomFull();
       mView->setPaintingEnabled( true );
     } );
@@ -2061,7 +2061,7 @@ void QgsLayoutDesignerDialog::showManager()
   // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
   // being deleted by user, but event loop tries to return to layout on manager close
   // (does not seem to be an issue for menu action)
-  QTimer::singleShot( 0, this, [=] {
+  QTimer::singleShot( 0, this, [] {
     QgisApp::instance()->showLayoutManager();
   } );
 }
@@ -3977,7 +3977,7 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
 
   mPanelsMenu->addAction( mAtlasDock->toggleViewAction() );
 
-  connect( atlas, &QgsLayoutAtlas::messagePushed, mStatusBar, [=]( const QString &message ) {
+  connect( atlas, &QgsLayoutAtlas::messagePushed, mStatusBar, [this]( const QString &message ) {
     mStatusBar->showMessage( message );
   } );
   connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutDesignerDialog::toggleAtlasControls );
