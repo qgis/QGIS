@@ -23,10 +23,12 @@ bool QgsGroupedFeatureFilterProvider::isFilterThreadSafe() const
 {
   for ( const QgsFeatureFilterProvider *provider : mProviders )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     if ( !provider->isFilterThreadSafe() )
     {
       return false;
     }
+    Q_NOWARN_DEPRECATED_POP
   }
   return true;
 }
@@ -36,16 +38,16 @@ void QgsGroupedFeatureFilterProvider::filterFeatures( const QgsVectorLayer *laye
   for ( const QgsFeatureFilterProvider *provider : mProviders )
   {
     QgsFeatureRequest temp;
+    Q_NOWARN_DEPRECATED_PUSH
     if ( provider->isFilterThreadSafe() )
     {
       provider->filterFeatures( layer->id(), temp );
     }
     else
     {
-      Q_NOWARN_DEPRECATED_PUSH
       provider->filterFeatures( layer, temp );
-      Q_NOWARN_DEPRECATED_POP
     }
+    Q_NOWARN_DEPRECATED_POP
     if ( auto *lFilterExpression = temp.filterExpression() )
     {
       filterFeatures.combineFilterExpression( lFilterExpression->dump() );

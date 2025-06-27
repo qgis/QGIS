@@ -29,6 +29,7 @@ class QgsExpression;
  * \ingroup server
  * \class QgsFeatureFilter
  * \brief A feature filter provider allowing to set filter expressions on a per-layer basis.
+ * \deprecated QGIS 3.4. Use QgsFeatureExpressionFilterProvider
  */
 class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 {
@@ -38,19 +39,8 @@ class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 
     bool isFilterThreadSafe() const override { return false; }
 
-    /**
-     * Filter the features of the layer
-     * \param layer the layer to control
-     * \param filterFeatures the request to fill
-     */
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
-
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
-
-    /**
-     * Returns a clone of the object
-     * \returns A clone
-     */
     QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**

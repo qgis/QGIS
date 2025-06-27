@@ -54,8 +54,9 @@ class CORE_EXPORT QgsFeatureFilterProvider
      * Returns TRUE if the filterFeature function is thread safe, which will lead to reliance on layer ID instead
      * of the raw layer pointer.
      * \since QGIS 4.0
+     * \deprecated QGIS 4.0
      */
-    virtual bool isFilterThreadSafe() const { return true; }
+    Q_DECL_DEPRECATED virtual bool isFilterThreadSafe() const SIP_DEPRECATED { return true; }
 
     /**
      * Add additional filters to the feature request to further restrict the features returned by the request.
@@ -75,6 +76,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
      * Derived classes must implement this method.
      * \param layerId the layer ID to filter
      * \param featureRequest the feature request to update
+     * \since QGIS 4.0
      */
     virtual void filterFeatures( const QString &layerId, QgsFeatureRequest &featureRequest ) const
     {

@@ -30,12 +30,14 @@ also available.
   public:
 
 
-    virtual bool isFilterThreadSafe() const;
+ virtual bool isFilterThreadSafe() const /Deprecated="Since 4.0. "/;
 %Docstring
 Returns ``True`` if the filterFeature function is thread safe, which
 will lead to reliance on layer ID instead of the raw layer pointer.
 
 .. versionadded:: 4.0
+
+.. deprecated:: 4.0
 %End
 
  virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const /Deprecated="Since 4.0. Use the layer ID variant."/;
@@ -60,6 +62,8 @@ method.
 
 :param layerId: the layer ID to filter
 :param featureRequest: the feature request to update
+
+.. versionadded:: 4.0
 %End
 
     virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const = 0;

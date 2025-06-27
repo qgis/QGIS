@@ -47,11 +47,6 @@ QgsFeatureExpressionFilterProvider *QgsFeatureExpressionFilterProvider::clone() 
   return filter;
 }
 
-void QgsFeatureExpressionFilterProvider::setFilter( const QgsVectorLayer *layer, const QgsExpression &filter )
-{
-  setFilter( layer->id(), filter );
-}
-
 void QgsFeatureExpressionFilterProvider::setFilter( const QString &layerId, const QgsExpression &filter )
 {
   mFilters[layerId] = filter.dump();
