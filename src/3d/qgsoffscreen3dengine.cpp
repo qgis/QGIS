@@ -104,7 +104,6 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   mOffscreenSurface->create();
 
   mFrameGraph = new QgsFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
-  mFrameGraph->setRenderCaptureEnabled( true );
   mFrameGraph->shadowRenderView().setEnabled( false );
   // Set this frame graph to be in use.
   // the render settings also sets itself as the parent of mSurfaceSelector

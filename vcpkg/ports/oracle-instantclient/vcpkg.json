@@ -1,0 +1,6 @@
+{
+  "name": "oracle-instantclient",
+  "description": "Oracle Instant Client",
+  "homepage": "https://www.oracle.com/database/technologies/instant-client.html",
+  "version-string": "23.3.0.23.09"
+}

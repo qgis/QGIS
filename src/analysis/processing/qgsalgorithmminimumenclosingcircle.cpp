@@ -65,6 +65,11 @@ QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
+QString QgsMinimumEnclosingCircleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the minimum enclosing circle which covers each feature in an input layer." );
+}
+
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
 {
   return new QgsMinimumEnclosingCircleAlgorithm();

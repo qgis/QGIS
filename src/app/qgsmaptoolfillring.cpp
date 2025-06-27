@@ -25,6 +25,8 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsmapmouseevent.h"
 #include "qgscurvepolygon.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <limits>
 
@@ -135,7 +137,24 @@ void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureI
     QgsFeature ft { QgsVectorLayerUtils::makeFeatureCompatible( ft1, vlayer ).at( 0 ) };
 
     bool res = false;
-    if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
+
+    //show the dialog to enter attribute values
+    //only show if enabled in settings
+    bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value();
+    // override application-wide setting with any layer setting
+    switch ( vlayer->editFormConfig().suppress() )
+    {
+      case Qgis::AttributeFormSuppression::On:
+        isDisabledAttributeValuesDlg = true;
+        break;
+      case Qgis::AttributeFormSuppression::Off:
+        isDisabledAttributeValuesDlg = false;
+        break;
+      case Qgis::AttributeFormSuppression::Default:
+        break;
+    }
+
+    if ( isDisabledAttributeValuesDlg || QApplication::keyboardModifiers() == Qt::ControlModifier )
     {
       res = vlayer->addFeature( ft );
     }

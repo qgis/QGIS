@@ -32,6 +32,7 @@ class QgsTinMeshCreationAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QStringList tags() const override;
     QString name() const override;
     QString displayName() const override;
     bool canExecute( QString *errorMessage ) const override;

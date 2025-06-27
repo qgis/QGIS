@@ -428,7 +428,7 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   QMetaObject::invokeMethod( mDock, [this] {
     if (mIsDockFloating && sSettingsDockGeometry->exists( mSettingKeyDockId ) )
         mDock->restoreGeometry( sSettingsDockGeometry->value( mSettingKeyDockId ).toByteArray() );
-    else
+    else if ( mIsDockFloating )
       mDock->setGeometry( mDockGeometry ); }, Qt::QueuedConnection );
 }
 

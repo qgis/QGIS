@@ -37,7 +37,7 @@ QString QgsGeometryCheckSelfIntersectionAlgorithm::displayName() const
 
 QString QgsGeometryCheckSelfIntersectionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect self-intersecting geometries" );
+  return QObject::tr( "Detects self-intersecting geometries." );
 }
 
 QStringList QgsGeometryCheckSelfIntersectionAlgorithm::tags() const

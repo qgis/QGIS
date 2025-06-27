@@ -39,6 +39,7 @@ class QgsSegmentizeByMaximumDistanceAlgorithm : public QgsProcessingFeatureBased
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSegmentizeByMaximumDistanceAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
@@ -69,6 +70,7 @@ class QgsSegmentizeByMaximumAngleAlgorithm : public QgsProcessingFeatureBasedAlg
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSegmentizeByMaximumAngleAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;

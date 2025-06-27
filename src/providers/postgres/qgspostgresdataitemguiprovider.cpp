@@ -16,6 +16,7 @@
 #include "qgspostgresdataitemguiprovider.h"
 #include "moc_qgspostgresdataitemguiprovider.cpp"
 
+#include "qgsapplication.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgspostgresdataitems.h"
 #include "qgspgnewconnection.h"
@@ -273,7 +274,7 @@ QString QgsPostgresDataItemGuiProvider::typeNameFromLayer( const QgsPostgresLaye
 
 void QgsPostgresDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsPgNewConnection nc( nullptr );
+  QgsPgNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     item->refresh();
@@ -283,7 +284,7 @@ void QgsPostgresDataItemGuiProvider::newConnection( QgsDataItem *item )
 void QgsPostgresDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   QgsPgNewConnection nc( nullptr, item->name() );
-  nc.setWindowTitle( tr( "Edit PostGIS Connection" ) );
+  nc.setWindowTitle( tr( "Edit PostgreSQL Connection" ) );
   if ( nc.exec() )
   {
     // the parent should be updated
@@ -668,7 +669,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
         // this is gross - TODO - find a way to get access to messageBar from data items
-        QMessageBox::information( nullptr, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
+        QMessageBox::information( nullptr, tr( "Import to PostgreSQL database" ), tr( "Import was successful." ) );
         if ( connectionItemPointer )
           connectionItemPointer->refreshSchema( toSchema );
       } );
@@ -678,7 +679,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
         if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-          output->setTitle( tr( "Import to PostGIS database" ) );
+          output->setTitle( tr( "Import to PostgreSQL database" ) );
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
@@ -698,7 +699,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
   if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( tr( "Import to PostGIS database" ) );
+    output->setTitle( tr( "Import to PostgreSQL database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
@@ -729,7 +730,7 @@ bool QgsPostgresDataItemGuiProvider::handleDropUri( QgsPGConnectionItem *connect
     }
   };
 
-  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "PostGIS Import" ), tr( "Import to PostGIS database" ), QVariantMap(), onSuccess, onFailure, this );
+  return QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::move( databaseConnection ), sourceUri, toSchema, context, tr( "PostgreSQL Import" ), tr( "Import to PostgreSQL database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *connectionItem, const QString &toSchema, QgsDataItemGuiContext context )
@@ -758,7 +759,7 @@ void QgsPostgresDataItemGuiProvider::handleImportVector( QgsPGConnectionItem *co
     }
   };
 
-  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "PostGIS Import" ), tr( "Import to PostGIS database" ), QVariantMap(), onSuccess, onFailure, this );
+  QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::move( databaseConnection ), toSchema, context, tr( "PostgreSQL Import" ), tr( "Import to PostgreSQL database" ), QVariantMap(), onSuccess, onFailure, this );
 }
 
 void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
@@ -824,7 +825,7 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
 
 void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ) );
+  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name() );
   dlg.setWindowTitle( tr( "Rename Project" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
     return;
@@ -893,7 +894,7 @@ void QgsPostgresDataItemGuiProvider::deleteProject( QgsPGProjectItem *projectIte
 
 void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "Project “%1”" ).arg( projectItem->name() ) );
+  QgsNewNameDialog dlg( tr( "Project “%1”" ).arg( projectItem->name() ), projectItem->name() );
   dlg.setWindowTitle( tr( "Duplicate Project" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
     return;

@@ -37,7 +37,7 @@ QString QgsGeometryCheckFollowBoundariesAlgorithm::displayName() const
 
 QString QgsGeometryCheckFollowBoundariesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect polygons that do not follow boundaries defined by a reference polygon layer" );
+  return QObject::tr( "Detects polygons that do not follow boundaries defined by a reference polygon layer." );
 }
 
 QStringList QgsGeometryCheckFollowBoundariesAlgorithm::tags() const

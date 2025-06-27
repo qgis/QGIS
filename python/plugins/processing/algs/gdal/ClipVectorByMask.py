@@ -21,6 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
     QgsProcessing,
+    QgsProcessingException,
     QgsProcessingAlgorithm,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterString,
@@ -94,6 +95,12 @@ class ClipVectorByMask(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+
+        if input_details.layer_name is None:
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
+
         mask_details = self.getOgrCompatibleSource(
             self.MASK, parameters, context, feedback, executing
         )

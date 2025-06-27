@@ -39,6 +39,7 @@ class QgsExportLayersInformationAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExportLayersInformationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

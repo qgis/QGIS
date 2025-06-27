@@ -8,7 +8,6 @@ ADD_FLEX_BISON_DEPENDENCY(QgsRasterCalcLexer QgsRasterCalcParser)
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
-
   ${FLEX_QgsRasterCalcLexer_OUTPUTS}
   ${BISON_QgsRasterCalcParser_OUTPUTS}
 
@@ -96,6 +95,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmclimb.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconcavehull.cpp
+  processing/qgsalgorithmconcavehullbyfeature.cpp
   processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconverttocurves.cpp
@@ -151,6 +151,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfilterbygeometry.cpp
   processing/qgsalgorithmfiltervertices.cpp
+  processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
   processing/qgsalgorithmforcerhr.cpp
@@ -553,13 +554,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   )
 endif()
 
-# install headers
-
-if(HAVE_OPENCL)
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
-endif()
-
-
 
 #############################################################
 # qgis_analysis library
@@ -586,13 +580,10 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external/tinygltf
-
   ${CMAKE_BINARY_DIR}/src/analysis
-
-  if (WITH_PDAL AND NOT PDAL_2_5_OR_HIGHER)
-     ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
-  endif()
+  ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
 )
+
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis
@@ -601,31 +592,6 @@ GENERATE_EXPORT_HEADER(
 )
 
 set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_analysis.h)
-
-if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  install(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-else()
-  set_target_properties(qgis_analysis PROPERTIES
-    # no moc headers, messes up PROPERTIES syntax
-    CLEAN_DIRECT_OUTPUT 1
-    FRAMEWORK 1
-    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_analysis
-    BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_ANALYSIS_HDRS}"
-    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
-  )
-  # generated export header does not get copied with PUBLIC_HEADER files
-  add_custom_command(TARGET qgis_analysis
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy qgis_analysis.h
-            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_analysis.framework/Headers"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS qgis_analysis.h
-  )
-endif()
 
 #generate unversioned libs for android
 if (NOT ANDROID)
@@ -663,18 +629,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_ANALYSIS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_analysis
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-# Mac dev frameworks
-
-if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  install(TARGETS qgis_analysis FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_analysis\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
-  install(CODE "execute_process(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
-endif()
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

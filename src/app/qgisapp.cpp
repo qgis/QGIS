@@ -4373,6 +4373,9 @@ void QgisApp::setupConnections()
 
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
+  // When default project CRS is set to "no projection" and new project is created we need to update
+  // mOnTheFlyProjectionStatusButton with the correct icon, see https://github.com/qgis/QGIS/issues/53768
+  connect( QgsProject::instance(), &QgsProject::cleared, this, &QgisApp::updateCrsStatusBar );
 
   connect( QgsProject::instance()->viewSettings(), &QgsProjectViewSettings::mapScalesChanged, this, [=] { mScaleWidget->updateScales(); } );
 
@@ -4834,9 +4837,11 @@ void QgisApp::toggleLogMessageIcon( bool hasLogMessage )
   }
 }
 
-void QgisApp::openMessageLog()
+void QgisApp::openMessageLog( const QString &tabName )
 {
   mLogDock->setUserVisible( true );
+  if ( !tabName.isEmpty() )
+    mLogViewer->showTab( tabName );
 }
 
 void QgisApp::addUserInputWidget( QWidget *widget )
@@ -8197,10 +8202,33 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
 void QgisApp::saveAsLayerDefinition()
 {
+  QString defaultFileName;
+
+  QgsLayerTreeNode *node = mLayerTreeView->currentNode();
+  if ( !node )
+    return;
+
+  if ( node->nodeType() == QgsLayerTreeNode::NodeLayer )
+  {
+    QgsLayerTreeLayer *layerNode = dynamic_cast<QgsLayerTreeLayer *>( node );
+    if ( layerNode && layerNode->layer() )
+    {
+      defaultFileName = QStringLiteral( "/%1.qlr" ).arg( layerNode->layer()->name() );
+    }
+  }
+  else if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
+  {
+    QgsLayerTreeGroup *groupNode = dynamic_cast<QgsLayerTreeGroup *>( node );
+    if ( groupNode )
+    {
+      defaultFileName = QStringLiteral( "/%1.qlr" ).arg( groupNode->name() );
+    }
+  }
+
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
 
-  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
+  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), QStringLiteral( "%1%2" ).arg( lastUsedDir, defaultFileName ), QStringLiteral( "*.qlr" ) );
   QgsDebugMsgLevel( path, 2 );
   if ( path.isEmpty() )
     return;
@@ -9490,7 +9518,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QSet<int> toSkip = d.skippedAttributeIndexes();
 
   bool firstFeature = true;
-  const auto constSelectedFeatureIds = vl->selectedFeatureIds();
+  const QgsFeatureIds constSelectedFeatureIds = vl->selectedFeatureIds();
   for ( QgsFeatureId fid : constSelectedFeatureIds )
   {
     for ( int i = 0; i < merged.count(); ++i )
@@ -9669,7 +9697,13 @@ void QgisApp::mergeSelectedFeatures()
   //merge the attributes together
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
   d.setWindowTitle( tr( "Merge Features" ) );
-  if ( d.exec() == QDialog::Rejected )
+
+  // don't open dialog if there are no attributes to edit
+  if ( vl->fields().isEmpty() )
+  {
+    d.setAllToSkip();
+  }
+  else if ( d.exec() == QDialog::Rejected )
   {
     return;
   }
@@ -13279,7 +13313,13 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
-    map->setLayers( mMapCanvas->layers( true ) );
+
+    const QList<QgsMapLayer *> layers = mMapCanvas->layers( true );
+    const bool has3DBasemap = std::any_of( layers.begin(), layers.end(), []( QgsMapLayer *layer ) {
+      return layer->properties().testFlag( Qgis::MapLayerProperty::Is3DBasemapLayer );
+    } );
+
+    map->setLayers( layers );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
     Qgis::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), Qgis::NavigationMode::TerrainBased, QgsSettings::App );
@@ -13328,6 +13368,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
           map->setCrs( QgsCoordinateReferenceSystem::createGeocentricCrs( prj->ellipsoid() ) );
 
         map->configureTerrainFromProject( QgsProject::instance()->elevationProperties(), QgsRectangle() );
+        if ( has3DBasemap )
+        {
+          // disable globe terrain by default if project has a 3d basemap
+          map->setTerrainRenderingEnabled( false );
+        }
 
         // 3D axis is not very useful with geocentric CRS: disable it by default
         Qgs3DAxisSettings axis;
@@ -13411,6 +13456,7 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
   }
 #else
   Q_UNUSED( name );
+  Q_UNUSED( sceneMode );
 #endif
   return nullptr;
 }
@@ -15096,6 +15142,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
       bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, Qgis::MapLayerActionTarget::AllActions, createMapLayerActionContext() ).isEmpty();
       bool isSpatial = vlayer->isSpatial();
+      bool layerHasFields = !vlayer->fields().isEmpty();
 
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
@@ -15182,7 +15229,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         {
           mActionMergeFeatures->setEnabled( layerHasSelection && canDeleteFeatures && canAddFeatures );
           mMenuEditAttributes->setEnabled( layerHasSelection );
-          mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
+          mActionMergeFeatureAttributes->setEnabled( layerHasSelection && layerHasFields );
           mActionMultiEditAttributes->setEnabled( layerHasSelection );
         }
         else
@@ -16197,6 +16244,8 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   {
     widget->mapCanvas3D()->cameraController()->readXml( elemCamera );
   }
+  // not nice hack to ensure camera navigation mode is correctly setup to previous mode
+  widget->mapCanvas3D()->mapSettings()->emit cameraNavigationModeChanged();
 
   QDomElement elemAnimation = elem3DMap.firstChildElement( QStringLiteral( "animation3d" ) );
   if ( !elemAnimation.isNull() )

@@ -37,6 +37,7 @@ class QgsShortestPathLayerToPointAlgorithm : public QgsNetworkAnalysisAlgorithmB
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsShortestPathLayerToPointAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

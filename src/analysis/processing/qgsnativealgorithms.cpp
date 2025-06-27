@@ -77,6 +77,7 @@
 #include "qgsalgorithmclimb.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconcavehull.h"
+#include "qgsalgorithmconcavehullbyfeature.h"
 #include "qgsalgorithmconditionalbranch.h"
 #include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconverttocurves.h"
@@ -132,6 +133,7 @@
 #include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfilterbygeometry.h"
 #include "qgsalgorithmfiltervertices.h"
+#include "qgsalgorithmfindprojection.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmflattenrelationships.h"
 #include "qgsalgorithmforcerhr.h"
@@ -388,6 +390,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
   addAlgorithm( new QgsConcaveHullAlgorithm() );
+  addAlgorithm( new QgsConcaveHullByFeatureAlgorithm() );
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvertToCurvesAlgorithm() );
@@ -449,6 +452,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterByLayerTypeAlgorithm() );
   addAlgorithm( new QgsFilterVerticesByM() );
   addAlgorithm( new QgsFilterVerticesByZ() );
+  addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );

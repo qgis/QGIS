@@ -71,12 +71,18 @@ void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsLineDensityAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The line density interpolation algorithm calculates a density measure of linear features "
+  return QObject::tr( "This algorithm calculates a density measure of linear features "
                       "which is obtained in a circular neighborhood within each raster cell. "
                       "First, the length of the segment of each line that is intersected by the circular neighborhood "
                       "is multiplied with the lines weight factor. In a second step, all length values are summed and "
                       "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
   );
+}
+
+QString QgsLineDensityAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates a density measure of linear features "
+                      "which is obtained in a circular neighborhood within each raster cell." );
 }
 
 QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const

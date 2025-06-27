@@ -69,6 +69,11 @@ QString QgsPackageAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm collects a number of existing layers and packages them together into a single GeoPackage database." );
 }
 
+QString QgsPackageAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Packages a number of existing layers together into a single GeoPackage database." );
+}
+
 QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
 {
   return new QgsPackageAlgorithm();
@@ -480,9 +485,10 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
             // this is not nice -- but needed to avoid an "overwrite" prompt messagebox from the provider! This api needs a rework to avoid this.
             const QVariant prevOverwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
             settings.setValue( QStringLiteral( "qgis/overwriteStyle" ), true );
-            res->saveStyleToDatabase( newLayer, QString(), true, QString(), errorMsg );
+            QgsMapLayer::SaveStyleResults saveStyleResults = res->saveStyleToDatabaseV2( newLayer, QString(), true, QString(), errorMsg );
             settings.setValue( QStringLiteral( "qgis/overwriteStyle" ), prevOverwriteStyle );
-            if ( !errorMsg.isEmpty() )
+            if ( saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed )
+                 || saveStyleResults.testFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed ) )
             {
               feedback->reportError( QObject::tr( "Could not save layer style: %1 " ).arg( errorMsg ) );
             }

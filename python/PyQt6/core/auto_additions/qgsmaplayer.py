@@ -37,6 +37,26 @@ QgsMapLayer.FlagTrustLayerMetadata = QgsMapLayer.ReadFlag.FlagTrustLayerMetadata
 QgsMapLayer.FlagReadExtentFromXml = QgsMapLayer.ReadFlag.FlagReadExtentFromXml
 QgsMapLayer.FlagForceReadOnly = QgsMapLayer.ReadFlag.FlagForceReadOnly
 QgsMapLayer.ReadFlags = lambda flags=0: QgsMapLayer.ReadFlag(flags)
+# monkey patching scoped based enum
+QgsMapLayer.SaveStyleResult.Success.__doc__ = "Both QML and SLD formats were successfully written to the database."
+QgsMapLayer.SaveStyleResult.QmlGenerationFailed.__doc__ = "Generation of the QML failed, and was not written to the database."
+QgsMapLayer.SaveStyleResult.SldGenerationFailed.__doc__ = "Generation of the SLD failed, and was not written to the database."
+QgsMapLayer.SaveStyleResult.DatabaseWriteFailed.__doc__ = "An error occurred when attempting to write to the database."
+QgsMapLayer.SaveStyleResult.__doc__ = """Results of saving styles to database.
+
+.. versionadded:: 4.0
+
+* ``Success``: Both QML and SLD formats were successfully written to the database.
+* ``QmlGenerationFailed``: Generation of the QML failed, and was not written to the database.
+* ``SldGenerationFailed``: Generation of the SLD failed, and was not written to the database.
+* ``DatabaseWriteFailed``: An error occurred when attempting to write to the database.
+
+"""
+# --
+QgsMapLayer.SaveStyleResult.baseClass = QgsMapLayer
+QgsMapLayer.SaveStyleResults = lambda flags=0: QgsMapLayer.SaveStyleResult(flags)
+QgsMapLayer.SaveStyleResults.baseClass = QgsMapLayer
+SaveStyleResults = QgsMapLayer  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 

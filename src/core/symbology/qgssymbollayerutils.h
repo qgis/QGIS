@@ -467,12 +467,28 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns TRUE if the ExternalGraphic element is found and the optionally specified format matches.
      * \since QGIS 3.30
      */
-    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+    static bool hasExternalGraphicV2( const QDomElement &element, const QString format = QString() );
 
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
-    static bool needSvgMarker( QDomElement &element );
+
+    /**
+     * Checks if \a element contains an ExternalGraphic element that should translate to an SVG marker.
+     *
+     * \returns TRUE if the ExternalGraphic element is found and is of type SVG.
+     */
+    static bool needSvgMarker( const QDomElement &element );
+
+    /**
+     * Checks if \a element contains an ExternalGraphic element that should translate to a raster marker.
+     *
+     * This is the case for any type of ExternalGraphic that is not an SVG.
+     *
+     * \returns TRUE if the ExternalGraphic element is found and is not of type SVG.
+     * \since QGIS 3.44
+     */
+    static bool needRasterMarker( const QDomElement &element );
     static bool needEllipseMarker( QDomElement &element );
     static bool needMarkerLine( QDomElement &element );
     static bool needLinePatternFill( QDomElement &element );

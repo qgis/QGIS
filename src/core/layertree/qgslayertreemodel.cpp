@@ -1554,10 +1554,11 @@ QgsRenderContext *QgsLayerTreeModel::createTemporaryRenderContext() const
 
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview );
+  context->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
+  context->setFlag( Qgis::RenderContextFlag::RenderLayerTree, true );
   return validData ? context.release() : nullptr;
 }
-
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::index2legendNode( const QModelIndex &index )
 {

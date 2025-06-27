@@ -20,6 +20,8 @@
 
 #define SIP_NO_FILE
 
+#include <memory>
+
 #include <QPaintDevice>
 
 #include "qgis_core.h"

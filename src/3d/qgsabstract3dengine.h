@@ -111,21 +111,6 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     QgsFrameGraph *frameGraph() { return mFrameGraph; }
 
     /**
-     * Sets whether it will be possible to render to an image
-     *
-     * \note for QgsWindow3DEngine render capture will be disabled by default
-     *  and for QgsOffscreen3DEngine it is enabled by default
-     * \since QGIS 3.18
-     */
-    void setRenderCaptureEnabled( bool enabled );
-
-    /**
-     * Returns whether it will be possible to render to an image
-     * \since QGIS 3.18
-     */
-    bool renderCaptureEnabled() const;
-
-    /**
      * Dump the current frame graph and scene graph to the console
      */
     void dumpFrameGraphToConsole() const;

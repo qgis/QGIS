@@ -16,29 +16,34 @@
 #include "qgsnetworkspeedstrategy.h"
 
 QgsNetworkSpeedStrategy::QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor )
+  : mAttributeId( attributeId )
+  , mDefaultValue( defaultValue )
+  , mToMetricFactor( toMetricFactor )
 {
-  mAttributeId = attributeId;
-  mDefaultValue = defaultValue;
-  mToMetricFactor = toMetricFactor;
 }
 
 QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature &f ) const
 {
+  double speed = mDefaultValue;
   const QgsAttributes attrs = f.attributes();
+  if ( mAttributeId >= 0 && mAttributeId < attrs.count() )
+  {
+    const QVariant value = attrs.at( mAttributeId );
+    if ( !QgsVariantUtils::isNull( value ) )
+    {
+      speed = attrs.at( mAttributeId ).toDouble();
+      if ( speed < 0 )
+        speed = mDefaultValue;
+    }
+  }
 
-  if ( mAttributeId < 0 || mAttributeId >= attrs.count() )
-    return QVariant( distance / ( mDefaultValue * mToMetricFactor ) );
-
-  const double val = distance / ( attrs.at( mAttributeId ).toDouble() * mToMetricFactor );
-  if ( val <= 0.0 )
-    return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
-
-  return QVariant( val );
+  return distance / ( speed * mToMetricFactor );
 }
 
 QSet<int> QgsNetworkSpeedStrategy::requiredAttributes() const
 {
   QSet<int> l;
-  l.insert( mAttributeId );
+  if ( mAttributeId >= 0 )
+    l.insert( mAttributeId );
   return l;
 }

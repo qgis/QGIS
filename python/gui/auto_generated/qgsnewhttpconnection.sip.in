@@ -125,6 +125,12 @@ Triggers a resync of the GUI widgets for the service specific settings
 (i.e. WFS and WMS related settings).
 %End
 
+    virtual void showEvent( QShowEvent *event );
+
+%Docstring
+Adjust height of dialog to fit the content.
+%End
+
 };
 
 QFlags<QgsNewHttpConnection::ConnectionType> operator|(QgsNewHttpConnection::ConnectionType f1, QFlags<QgsNewHttpConnection::ConnectionType> f2);

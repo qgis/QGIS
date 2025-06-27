@@ -22,6 +22,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
 #include "qgsrasterlayerelevationproperties.h"
+#include "qgscopcprovider.h"
 
 #include <QRegularExpression>
 
@@ -279,6 +280,48 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   }
 
   return outputs;
+}
+
+QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
+{
+  QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
+
+  // if layer or its data provider are empty return nullptr
+  if ( !layer || !layer->dataProvider() )
+    return nullptr;
+
+  // if COPC provider, return as it is
+  if ( layer->dataProvider()->name() == QStringLiteral( "copc" ) )
+  {
+    return layer;
+  }
+
+  // if source is remote file, use it as it is
+  const QUrl url = QUrl( layer->source() );
+  if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
+  {
+    return layer;
+  }
+
+  // for local files try to find COPC index file
+  const QString copcFileName = QgsPdalAlgorithmBase::copcIndexFile( layer->source() );
+
+  if ( QFileInfo::exists( copcFileName ) )
+  {
+    QgsPointCloudLayer *copcLayer = new QgsPointCloudLayer( copcFileName, layer->name(), "copc" );
+    if ( copcLayer && copcLayer->isValid() )
+      return copcLayer;
+  }
+
+  return layer;
+}
+
+QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
+{
+  const QFileInfo fi( filename );
+  const QDir directory = fi.absoluteDir();
+  const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.completeBaseName() );
+  return outputFile;
 }
 
 ///@endcond

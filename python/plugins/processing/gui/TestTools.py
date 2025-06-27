@@ -15,9 +15,7 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "February 2013"
-__copyright__ = "(C) 2013, Victor Olaya"
+from typing import Tuple
 
 import os
 import posixpath
@@ -51,6 +49,7 @@ from qgis.core import (
     QgsProcessingParameterVectorDestination,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterEnum,
+    QgsProperty,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
@@ -128,20 +127,22 @@ def parseParameters(command):
         pos = m.end(0)
 
 
-def splitAlgIdAndParameters(command):
+def splitAlgIdAndParameters(command: str) -> tuple[str, dict]:
     """
     Extracts the algorithm ID and input parameter list from a processing runalg command
     """
     exp = re.compile(r"""['"](.*?)['"]\s*,\s*(.*)""")
     m = exp.search(command[len("processing.run(") : -1])
     alg_id = m.group(1)
-    params = m.group(2)
+    param_string = m.group(2)
 
     # replace QgsCoordinateReferenceSystem('EPSG:4325') with just string value
     exp = re.compile(r"""QgsCoordinateReferenceSystem\((['"].*?['"])\)""")
-    params = exp.sub("\\1", params)
+    param_string = exp.sub("\\1", param_string)
+    exp = re.compile(r"""(QgsProperty.from[a-zA-Z]+\(.*?\))([,}])""")
+    param_string = exp.sub("'''\\1'''\\2", param_string)
 
-    return alg_id, ast.literal_eval(params)
+    return alg_id, ast.literal_eval(param_string)
 
 
 def createTest(text):
@@ -177,7 +178,17 @@ def createTest(text):
         ):
             continue
 
-        if isinstance(
+        if isinstance(token, str) and token.startswith("QgsProperty"):
+            # dynamic property
+            match = re.match(
+                r"""QgsProperty.fromExpression\(\s*['"](.*)['"]\s*\)""", token
+            )
+            if match:
+                p = {"type": "property", "expression": match.group(1)}
+                params[param.name()] = p
+            else:
+                assert False, "Only expression based properties currently handled"
+        elif isinstance(
             param,
             (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource),
         ):

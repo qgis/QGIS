@@ -33,13 +33,20 @@ start_app()
 class test_filter(QgsLocatorFilter):
 
     def __init__(
-        self, identifier, prefix=None, groupResult=False, groupScore=False, parent=None
+        self,
+        identifier,
+        prefix=None,
+        groupResult=False,
+        groupScore=False,
+        resultScore=False,
+        parent=None,
     ):
         super().__init__(parent)
         self.identifier = identifier
         self._prefix = prefix
         self.groupResult = groupResult
         self.groupScore = groupScore
+        self.resultScore = resultScore
 
     def clone(self):
         return test_filter(
@@ -47,6 +54,7 @@ class test_filter(QgsLocatorFilter):
             prefix=self.prefix,
             groupResult=self.groupResult,
             groupScore=self.groupScore,
+            resultScore=self.resultScore,
         )
 
     def name(self):
@@ -78,6 +86,8 @@ class test_filter(QgsLocatorFilter):
                     result.group = "group b"
                     if self.groupScore:
                         result.groupScore = 10
+            if self.resultScore:
+                result.score = (i + 1) / n
             self.resultFetched.emit(result)
 
     def triggerResult(self, result):
@@ -437,6 +447,9 @@ class TestQgsLocator(QgisTestCase):
         self.assertEqual(
             p.data(p.index(1, 0), QgsLocatorModel.CustomRole.ResultType), 2
         )
+        self.assertEqual(
+            p.data(p.index(1, 0), QgsLocatorModel.CustomRole.ResultScore), 0.5
+        )
         self.assertEqual(p.data(p.index(2, 0)), "a1")
         self.assertEqual(
             p.data(p.index(2, 0), QgsLocatorModel.CustomRole.ResultType), 2
@@ -516,8 +529,8 @@ class TestQgsLocator(QgisTestCase):
         # test with groups and group score
         m.clear()
         self.assertEqual(p.rowCount(), 0)
-        filter_b = test_filter("c", None, groupResult=True, groupScore=True)
-        l.registerFilter(filter_b)
+        filter_c = test_filter("c", None, groupResult=True, groupScore=True)
+        l.registerFilter(filter_c)
         l.fetchResults("c", context)
         for i in range(200):
             sleep(0.002)
@@ -599,6 +612,24 @@ class TestQgsLocator(QgisTestCase):
         self.assertEqual(
             p.data(p.index(27, 0), QgsLocatorModel.CustomRole.ResultFilterGroupScore),
             QgsLocatorModel.NoGroup,
+        )
+        m.clear()
+
+        l.deregisterFilter(filter_a)
+        l.deregisterFilter(filter_b)
+        l.deregisterFilter(filter_c)
+
+        filter_d = test_filter("d", resultScore=True)
+        l.registerFilter(filter_d)
+        l.fetchResults("d", context)
+        for i in range(200):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(p.rowCount(), 4)
+        self.assertEqual(p.data(p.index(0, 0)), "test_d")
+        self.assertEqual(p.data(p.index(1, 0)), "d2")
+        self.assertEqual(
+            p.data(p.index(1, 0), QgsLocatorModel.CustomRole.ResultScore), 1
         )
 
     def testAutoModel(self):

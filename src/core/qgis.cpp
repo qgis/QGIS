@@ -279,7 +279,7 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs )
     }
 
     default:
-      return QString::localeAwareCompare( lhs.toString(), rhs.toString() );
+      return std::clamp( QString::localeAwareCompare( lhs.toString(), rhs.toString() ), -1, 1 );
   }
 }
 

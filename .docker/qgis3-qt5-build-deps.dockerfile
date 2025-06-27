@@ -112,6 +112,7 @@ RUN  apt-get update \
     requests \
     six \
     hdbcli \
+    shapely  \
   && apt-get clean
 
 # Node.js and Yarn for server landingpage webapp

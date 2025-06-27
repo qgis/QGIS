@@ -59,6 +59,11 @@ QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
          + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
 }
 
+QString QgsPromoteToMultipartAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a vector layer in which all geometries are multipart." );
+}
+
 QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
 {
   return new QgsPromoteToMultipartAlgorithm();

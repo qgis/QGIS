@@ -42,6 +42,7 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
+    QString shortDescription() const override;
     QgsGeometryByExpressionAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 

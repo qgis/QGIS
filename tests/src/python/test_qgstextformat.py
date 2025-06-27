@@ -1069,6 +1069,42 @@ class PyQgsTextFormat(QgisTestCase):
         t.shadow().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         self.assertFalse(t.containsAdvancedEffects())
 
+    def testHasNonDefaultCompositionMode(self):
+        t = QgsTextFormat()
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
+        self.assertTrue(t.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.buffer().setBlendMode(
+            QPainter.CompositionMode.CompositionMode_DestinationAtop
+        )
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+        t.buffer().setEnabled(True)
+        self.assertTrue(t.hasNonDefaultCompositionMode())
+        t.buffer().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.background().setBlendMode(
+            QPainter.CompositionMode.CompositionMode_DestinationAtop
+        )
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+        t.background().setEnabled(True)
+        self.assertTrue(t.hasNonDefaultCompositionMode())
+        t.background().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.shadow().setBlendMode(
+            QPainter.CompositionMode.CompositionMode_DestinationAtop
+        )
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+        t.shadow().setEnabled(True)
+        self.assertTrue(t.hasNonDefaultCompositionMode())
+        t.shadow().setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        self.assertFalse(t.hasNonDefaultCompositionMode())
+
     def testRestoringAndSavingMissingFont(self):
         # test that a missing font on text format load will still save with the same missing font unless manually changed
         document = QDomDocument()

@@ -32,6 +32,11 @@ QString QgsPolygonizeAlgorithm::displayName() const
 
 QString QgsPolygonizeAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm creates a polygon layer from the input lines layer." );
+}
+
+QString QgsPolygonizeAlgorithm::shortDescription() const
+{
   return QObject::tr( "Creates a polygon layer from the input lines layer." );
 }
 

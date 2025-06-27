@@ -36,6 +36,7 @@ class QgsFilterVerticesAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override final;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override final;
     QString shortHelpString() const override final;
+    QString shortDescription() const override;
 
   protected:
     QString outputName() const override final;

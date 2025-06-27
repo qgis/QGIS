@@ -16,8 +16,7 @@
 #ifndef QGSSTACOBJECT_H
 #define QGSSTACOBJECT_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsstaclink.h"
 
@@ -27,23 +26,38 @@
 
 /**
  * \ingroup core
- * \brief Abstract base class for storing a STAC objects
+ * \brief Abstract base class for storing STAC objects.
  *
- * \note Not available in python bindings
- *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacObject
 {
-  public:
-    //! Available types of stac objects
-    enum Type
+    //SIP_TYPEHEADER_INCLUDE( "qgsstacitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsstaccollection.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsstaccatalog.h" );
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsStacItem *item = dynamic_cast< QgsStacItem * >( sipCpp ) )
     {
-      Unknown, //!< Type is not known
-      Catalog, //!< STAC catalog
-      Collection, //!< STAC collection
-      Item, //!< STAC item
-    };
+      sipType = sipType_QgsStacItem;
+    }
+    else if ( QgsStacCollection *item = dynamic_cast< QgsStacCollection * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCollection;
+    }
+    else if ( QgsStacCatalog *item = dynamic_cast< QgsStacCatalog * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCatalog;
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
+
+  public:
 
     //! Default constructor is used for creating invalid objects
     QgsStacObject() = delete;
@@ -55,7 +69,7 @@ class CORE_EXPORT QgsStacObject
     virtual ~QgsStacObject() = default;
 
     //! Returns the \a Type of the STAC object
-    virtual Type type() const = 0;
+    virtual Qgis::StacObjectType type() const = 0;
 
     //! Returns an HTML representation of the STAC object
     virtual QString toHtml() const = 0;
@@ -95,7 +109,7 @@ class CORE_EXPORT QgsStacObject
 
 
   protected:
-    Type mType = Type::Unknown;
+    Qgis::StacObjectType mType = Qgis::StacObjectType::Unknown;
     QString mId;
     QString mStacVersion;
     QStringList mStacExtensions;

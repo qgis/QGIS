@@ -1,0 +1,210 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccontroller.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsStacController : QObject
+{
+%Docstring(signature="appended")
+The :py:class:`QgsStacController` class handles STAC requests.
+
+Contains methods to generate STAC objects from local and remote urls.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstaccontroller.h"
+%End
+  public:
+    explicit QgsStacController();
+%Docstring
+Default constructor
+%End
+
+    ~QgsStacController();
+
+    std::unique_ptr< QgsStacCatalog > openLocalCatalog( const QString &fileName ) const;
+%Docstring
+Returns a STAC Catalog by parsing a local file The caller takes
+ownership of the returned catalog
+%End
+
+    std::unique_ptr< QgsStacCollection > openLocalCollection( const QString &fileName ) const;
+%Docstring
+Returns a STAC Collection by parsing a local file The caller takes
+ownership of the returned collection
+%End
+
+    std::unique_ptr< QgsStacItem > openLocalItem( const QString &fileName ) const;
+%Docstring
+Returns a STAC Item by parsing a local file The caller takes ownership
+of the returned item
+%End
+
+
+    std::unique_ptr< QgsStacItemCollection > fetchItemCollection( const QUrl &url, QString *error = 0 );
+%Docstring
+Fetches a feature collection from ``url`` using a blocking network
+request. An optional ``error`` parameter will be populated with any
+network error information. The caller takes ownership of the returned
+feature collection
+%End
+
+    std::unique_ptr< QgsStacCollectionList > fetchCollections( const QUrl &url, QString *error = 0 );
+%Docstring
+Fetches collections from ``url`` using a blocking network request. An
+optional ``error`` parameter will be populated with any network error
+information. The caller takes ownership of the returned feature
+collection
+%End
+
+    int fetchStacObjectAsync( const QUrl &url );
+%Docstring
+Initiates an asynchronous request for a STAC object using the ``url``
+and returns an associated request id. When the request is completed, the
+:py:func:`~QgsStacController.finishedStacObjectRequest` signal is fired
+and the stac object can be accessed with
+:py:func:`~QgsStacController.takeStacObject`
+%End
+
+    int fetchItemCollectionAsync( const QUrl &url );
+%Docstring
+Initiates an asynchronous request for a feature collection using the
+``url`` and returns an associated request id. When the request is
+completed, the
+:py:func:`~QgsStacController.finishedItemCollectionRequest` signal is
+fired and the feature collection can be accessed with
+:py:func:`~QgsStacController.takeItemCollection`
+%End
+
+    int fetchCollectionsAsync( const QUrl &url );
+%Docstring
+Initiates an asynchronous request for a Collections collection using the
+``url`` and returns an associated request id. When the request is
+completed, the :py:func:`~QgsStacController.finishedCollectionsRequest`
+signal is fired and the collections can be accessed with
+:py:func:`~QgsStacController.takeCollections`
+
+.. versionadded:: 3.42
+%End
+
+    void cancelPendingAsyncRequests();
+%Docstring
+Cancels all pending async requests
+
+.. versionadded:: 3.42
+%End
+
+
+    std::unique_ptr< QgsStacItemCollection > takeItemCollection( int requestId );
+%Docstring
+Returns the feature collection fetched with the specified ``requestId``
+It should be used after the finishedItemCollectionRequest signal is
+fired to get the fetched STAC item collection. Returns ``None`` if the
+requestId was not found, request was canceled, request failed or parsing
+the STAC object failed. The caller takes ownership of the returned
+feature collection
+
+.. seealso:: :py:func:`fetchItemCollectionAsync`
+
+.. seealso:: :py:func:`finishedItemCollectionRequest`
+%End
+
+    std::unique_ptr< QgsStacCollectionList > takeCollections( int requestId );
+%Docstring
+Returns the collections collection fetched with the specified
+``requestId`` It should be used after the finishedCollectionsRequest
+signal is fired to get the fetched STAC collections. Returns ``None`` if
+the requestId was not found, request was canceled, request failed or
+parsing the STAC object failed. The caller takes ownership of the
+returned collections
+
+.. seealso:: :py:func:`fetchCollectionsAsync`
+
+.. seealso:: :py:func:`finishedCollectionsRequest`
+
+.. versionadded:: 3.42
+%End
+
+    QString authCfg() const;
+%Docstring
+Returns the authentication config id which will be used during the
+request.
+
+.. seealso:: :py:func:`setAuthCfg`
+%End
+
+    void setAuthCfg( const QString &authCfg );
+%Docstring
+Sets the authentication config id which should be used during the
+request.
+
+.. seealso:: :py:func:`authCfg`
+%End
+
+  signals:
+
+    void finishedStacObjectRequest( int id, QString errorMessage );
+%Docstring
+This signal is fired when an async request initiated with
+fetchStacObjectAsync is finished. The parsed STAC object can be
+retrieved using takeStacObject
+
+:param id: The requestId attribute of the finished request
+:param errorMessage: Reason the request or parsing of the STAC object
+                     may have failed
+
+.. seealso:: :py:func:`fetchStacObjectAsync`
+
+.. seealso:: :py:func:`takeStacObject`
+%End
+
+    void finishedItemCollectionRequest( int id, QString errorMessage );
+%Docstring
+This signal is fired when an async request initiated with
+fetchItemCollectionAsync is finished. The parsed STAC item collection
+can be retrieved using takeItemCollection
+
+:param id: The requestId attribute of the finished request
+:param errorMessage: Reason the request or parsing of the STAC item
+                     collection may have failed
+
+.. seealso:: :py:func:`fetchItemCollectionAsync`
+
+.. seealso:: :py:func:`takeItemCollection`
+%End
+
+    void finishedCollectionsRequest( int id, QString errorMessage );
+%Docstring
+This signal is fired when an async request initiated with
+fetchCollectionsAsync is finished. The parsed STAC collections
+collection can be retrieved using takeCollections
+
+:param id: The requestId attribute of the finished request
+:param errorMessage: Reason the request or parsing of the STAC
+                     collections may have failed
+
+.. seealso:: :py:func:`fetchCollectionsAsync`
+
+.. seealso:: :py:func:`takeCollections`
+
+.. versionadded:: 3.42
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccontroller.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

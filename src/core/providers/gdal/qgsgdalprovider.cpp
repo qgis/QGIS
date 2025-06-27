@@ -2961,7 +2961,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   QgsDebugMsgLevel( "Raster filter list built: " + fileFiltersString, 2 );
   QgsDebugMsgLevel( "Raster extension list built: " + extensions.join( ' ' ), 2 );
-}                               // buildSupportedRasterFileFilter_()
+}
 
 bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QString &retErrMsg )
 {
@@ -4429,12 +4429,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
     // get supported extensions
     static std::once_flag initialized;
-    std::call_once( initialized, [ = ]
-    {
-      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-      QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
-      QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
-    } );
+    std::call_once( initialized, buildSupportedRasterFileFilterAndExtensions, sFilterString, sExtensions, sWildcards );
 
     const QString suffix = uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
                            ? pathInfo.suffix().toLower()

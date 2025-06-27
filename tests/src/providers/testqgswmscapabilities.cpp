@@ -596,6 +596,44 @@ class TestQgsWmsCapabilities : public QObject
       QCOMPARE( res.end(), range.end() );
       QCOMPARE( static_cast<int>( resFormat ), format );
     }
+
+    void wmtsWithRedundantSpaces()
+    {
+      QgsWmsCapabilities capabilities;
+      const QgsWmsParserSettings config;
+
+      // Note: Redundant spaces in the coordinate tuples
+      const QByteArray configData( R"""(<Capabilities>
+      <Contents>
+          <Layer>
+            <ows:Identifier>Layer1</ows:Identifier>
+            <ows:WGS84BoundingBox>
+              <ows:LowerCorner>109.999000 -45.081000</ows:LowerCorner>
+              <ows:UpperCorner>155.005000 -9.978000</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+          </Layer>
+          <TileMatrixSet>
+            <ows:Identifier>WholeWorld_CRS_84</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+            <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GlobalCRS84Pixel</WellKnownScaleSet>
+            <TileMatrix>
+              <ows:Identifier>1g</ows:Identifier>
+              <ScaleDenominator>397569609.975977</ScaleDenominator>
+              <TopLeftCorner>-180  90</TopLeftCorner>
+              <TileWidth>320</TileWidth>
+              <TileHeight>200</TileHeight>
+              <MatrixWidth>2</MatrixWidth>
+              <MatrixHeight>1</MatrixHeight>
+            </TileMatrix>
+          </TileMatrixSet>
+      </Contents>
+</Capabilities>)""" );
+
+      QVERIFY( capabilities.parseResponse( configData, config ) );
+      QCOMPARE( capabilities.supportedTileMatrixSets().size(), 1 );
+      QgsWmtsTileLayer layer = capabilities.supportedTileLayers().at( 0 );
+      QCOMPARE( layer.boundingBoxes.first().box, QgsRectangle( 109.999, -45.081, 155.005, -9.978 ) );
+    }
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

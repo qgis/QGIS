@@ -35,7 +35,7 @@ QString QgsFixGeometryGapAlgorithm::displayName() const
 
 QString QgsFixGeometryGapAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Fill gaps detected with the \"Small gaps\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Fills gaps detected with the \"Small gaps\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryGapAlgorithm::tags() const

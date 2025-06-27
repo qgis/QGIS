@@ -513,6 +513,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       AddRelationship = 1 << 28,                      //!< Can add new relationships to the database via addRelationship() \since QGIS 3.30
       UpdateRelationship = 1 << 29,                   //!< Can update existing relationships in the database via updateRelationship() \since QGIS 3.30
       DeleteRelationship = 1 << 30,                   //!< Can delete existing relationships from the database via deleteRelationship() \since QGIS 3.30
+      MoveTableToSchema = 1u << 31,                    //!< Can move table to another schema via moveTableToAnotherSchema() \since QGIS 3.44
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -1046,6 +1047,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.32
      */
     virtual void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Move table to a different schema.
+     *
+     * \param sourceSchema name of the source schema.
+     * \param tableName name of the table.
+     * \param targetSchema name of the target schema to move table to.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.44
+     */
+    virtual void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const SIP_THROW( QgsProviderConnectionException );
+
 
     /**
      * Returns a list of relationship cardinalities which are supported by the provider.

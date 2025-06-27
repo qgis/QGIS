@@ -166,7 +166,7 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
     mLayerField = grassLayer( mLayerName );
     if ( mLayerField == -1 )
     {
-      QgsDebugError( QString( "Invalid layer name, no underscore found: %1" ).arg( mLayerName ) );
+      QgsDebugError( QString( "Invalid layer name, no underscore found: \"%1\"" ).arg( mLayerName ) );
       return;
     }
 

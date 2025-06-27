@@ -72,14 +72,19 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRoundRasterValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm rounds the cell values of a raster dataset according to the specified number of decimals.\n "
+  return QObject::tr( "This algorithm rounds the cell values of a raster dataset to the specified number of decimals.\n "
                       "Alternatively, a negative number of decimal places may be used to round values to powers of a base n "
                       "(specified in the advanced parameter Base n). For example, with a Base value n of 10 and Decimal places of -1 "
                       "the algorithm rounds cell values to multiples of 10, -2 rounds to multiples of 100, and so on. Arbitrary base values "
                       "may be chosen, the algorithm applies the same multiplicative principle. Rounding cell values to multiples of "
                       "a base n may be used to generalize raster layers.\n"
                       "The algorithm preserves the data type of the input raster. Therefore byte/integer rasters can only be rounded "
-                      "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster" );
+                      "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster." );
+}
+
+QString QgsRoundRasterValuesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Rounds the cell values of a raster dataset to a specified number of decimals." );
 }
 
 QgsRoundRasterValuesAlgorithm *QgsRoundRasterValuesAlgorithm::createInstance() const

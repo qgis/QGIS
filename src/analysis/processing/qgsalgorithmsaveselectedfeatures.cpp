@@ -57,6 +57,11 @@ QString QgsSaveSelectedFeatures::shortHelpString() const
                       "If the selected layer has no selected features, the newly created layer will be empty." );
 }
 
+QString QgsSaveSelectedFeatures::shortDescription() const
+{
+  return QObject::tr( "Creates a layer with all the selected features in a given vector layer." );
+}
+
 QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
 {
   return new QgsSaveSelectedFeatures();

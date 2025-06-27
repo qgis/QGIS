@@ -85,8 +85,9 @@
 
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
-#include "qgsshadowrenderview.h"
 #include "qgsforwardrenderview.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgspostprocessingentity.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -1005,18 +1006,12 @@ void Qgs3DMapScene::onSkyboxSettingsChanged()
 
 void Qgs3DMapScene::onShadowSettingsChanged()
 {
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  frameGraph->updateShadowSettings( mMap.shadowSettings(), mMap.lightSources() );
+  mEngine->frameGraph()->updateShadowSettings( mMap.shadowSettings(), mMap.lightSources() );
 }
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
-  QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  QgsAmbientOcclusionSettings ambientOcclusionSettings = mMap.ambientOcclusionSettings();
-  frameGraph->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
-  frameGraph->setAmbientOcclusionRadius( ambientOcclusionSettings.radius() );
-  frameGraph->setAmbientOcclusionIntensity( ambientOcclusionSettings.intensity() );
-  frameGraph->setAmbientOcclusionThreshold( ambientOcclusionSettings.threshold() );
+  mEngine->frameGraph()->updateAmbientOcclusionSettings( mMap.ambientOcclusionSettings() );
 }
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
@@ -1037,10 +1032,7 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
-  bool edlEnabled = mMap.eyeDomeLightingEnabled();
-  double edlStrength = mMap.eyeDomeLightingStrength();
-  double edlDistance = mMap.eyeDomeLightingDistance();
-  mEngine->frameGraph()->setupEyeDomeLighting( edlEnabled, edlStrength, edlDistance );
+  mEngine->frameGraph()->updateEyeDomeSettings( mMap );
 }
 
 void Qgs3DMapScene::onCameraMovementSpeedChanged()

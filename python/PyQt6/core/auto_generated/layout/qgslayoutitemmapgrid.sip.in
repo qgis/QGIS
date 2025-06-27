@@ -890,7 +890,7 @@ Enable/disable ticks rotation for rotated or reprojected grids.
 .. versionadded:: 3.16
 %End
 
-    double rotatedTicksEnabled() const;
+    bool rotatedTicksEnabled() const;
 %Docstring
 Gets whether ticks rotation for rotated or reprojected grids is enabled.
 
@@ -964,7 +964,7 @@ Enable/disable annotations rotation for rotated or reprojected grids.
 .. versionadded:: 3.16
 %End
 
-    double rotatedAnnotationsEnabled() const;
+    bool rotatedAnnotationsEnabled() const;
 %Docstring
 Gets whether annotations rotation for rotated or reprojected grids is
 enabled.

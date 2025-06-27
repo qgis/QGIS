@@ -245,7 +245,7 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MiddleButton )
+    if ( event->button() == Qt::MiddleButton && mTool != mSpacePanTool && mTool != mSpaceZoomTool )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -343,7 +343,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() && mTool != mMidMouseButtonPanTool )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {

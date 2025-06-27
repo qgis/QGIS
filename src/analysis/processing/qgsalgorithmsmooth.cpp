@@ -67,6 +67,11 @@ QString QgsSmoothAlgorithm::shortHelpString() const
                       "geometry will retain the same dimensionality as the input geometry." );
 }
 
+QString QgsSmoothAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Smooths the geometries in a line or polygon layer by adding vertices and rounding corners." );
+}
+
 QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const
 {
   return new QgsSmoothAlgorithm();

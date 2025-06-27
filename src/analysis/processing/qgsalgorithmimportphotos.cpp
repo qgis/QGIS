@@ -65,10 +65,15 @@ void QgsImportPhotosAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsImportPhotosAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates a point layer corresponding to the geotagged locations from JPEG or HEIF/HEIC images from a source folder. Optionally the folder can be recursively scanned.\n\n"
+  return QObject::tr( "This algorithm creates a point layer corresponding to the geotagged locations from JPEG or HEIF/HEIC images from a source folder. Optionally the folder can be recursively scanned.\n\n"
                       "The point layer will contain a single PointZ feature per input file from which the geotags could be read. Any altitude information from the geotags will be used "
                       "to set the point's Z value.\n\n"
                       "Optionally, a table of unreadable or non-geotagged photos can also be created." );
+}
+
+QString QgsImportPhotosAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point layer corresponding to the geotagged locations from JPEG or HEIF/HEIC images from a source folder." );
 }
 
 QgsImportPhotosAlgorithm *QgsImportPhotosAlgorithm::createInstance() const

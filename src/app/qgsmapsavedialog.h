@@ -78,6 +78,8 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
 
+    void accept() override;
+
   private slots:
     void onAccepted();
 

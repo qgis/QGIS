@@ -124,9 +124,9 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     Q_NOWARN_DEPRECATED_PUSH
     // no longer required, but left set for api stability
-    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::UseAdvancedEffects );
     mSettings.setDpi( dpi );
-    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagSynchronousLegendGraphics );
+    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::SynchronousLegendGraphics );
     Q_NOWARN_DEPRECATED_POP
   }
   if ( mMap && mLayout )
@@ -1216,18 +1216,20 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QgsLayerTreeFilterSettings filterSettings( mapSettings );
 
     QList<QgsMapLayer *> layersToClip;
-    if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
+    if ( mMap )
     {
-      layersToClip = mMap->atlasClippingSettings()->layersToClip();
-      for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+      if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
       {
-        QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
-        mapLayers.removeAll( layer );
-        filterSettings.mapSettings().setLayers( mapLayers );
-        filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+        layersToClip = mMap->atlasClippingSettings()->layersToClip();
+        for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+        {
+          QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
+          mapLayers.removeAll( layer );
+          filterSettings.mapSettings().setLayers( mapLayers );
+          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+        }
       }
     }
-
 
     if ( !linkedFilterMaps.empty() )
     {

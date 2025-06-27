@@ -48,8 +48,13 @@ QString QgsPixelCentroidsFromPolygonsAlgorithm::groupId() const
 
 QString QgsPixelCentroidsFromPolygonsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates pixel centroids for the raster area falling inside polygons. Used to generate points "
+  return QObject::tr( "This algorithm generates pixel centroids for the raster area falling inside polygons. Used to generate points "
                       "for further raster sampling." );
+}
+
+QString QgsPixelCentroidsFromPolygonsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates pixel centroids for the raster area falling inside polygons." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsPixelCentroidsFromPolygonsAlgorithm::documentationFlags() const

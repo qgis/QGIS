@@ -110,7 +110,7 @@ QString QgsJoinByLocationSummaryAlgorithm::shortHelpString() const
 
 QString QgsJoinByLocationSummaryAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculate summaries of attributes from one vector layer to another by location." );
+  return QObject::tr( "Calculates summaries of attributes from one vector layer to another by location." );
 }
 
 QIcon QgsJoinByLocationSummaryAlgorithm::icon() const

@@ -2848,6 +2848,141 @@
                 <number>0</number>
                </property>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mCoordinateDisplayGroup">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Measurements, Coordinate and Bearing Display</string>
+                 </property>
+                 <property name="syncGroup">
+                  <string notr="true">projgeneral</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="textLabel1_11">
+                    <property name="text">
+                     <string>Default distance units for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="label_72">
+                    <property name="text">
+                     <string>Default coordinate format for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="2">
+                   <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
+                    <property name="text">
+                     <string>Customize…</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2">
+                   <widget class="QComboBox" name="mDistanceUnitsComboBox"/>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Decimal places</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QgsSpinBox" name="mDecimalPlacesSpinBox"/>
+                  </item>
+                  <item row="5" column="2">
+                   <widget class="QComboBox" name="mAreaUnitsComboBox"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_13">
+                    <property name="toolTip">
+                     <string>If unchecked large numbers will be converted from m. to km. and from ft. to miles</string>
+                    </property>
+                    <property name="text">
+                     <string>Keep base unit</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="textLabel1_14">
+                    <property name="text">
+                     <string>Default area units for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="label_69">
+                    <property name="text">
+                     <string>Default bearing format for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1">
+                   <spacer name="horizontalSpacer_11">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Maximum</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="8" column="2">
+                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                    <property name="text">
+                     <string>Customize…</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="3">
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="mAngleUnitsLabel">
+                    <property name="toolTip">
+                     <string>Specifies the angle unit to use in the current and new projects.</string>
+                    </property>
+                    <property name="text">
+                     <string>Preferred angle units</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="mAngleUnitsComboBox"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mIdentifyGroupBox">
                  <property name="title">
                   <string>Identify</string>
@@ -2994,25 +3129,8 @@
                   <string>Measure Tool</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_21">
-                  <item row="5" column="0">
-                   <widget class="QLabel" name="mAngleUnitsLabel">
-                    <property name="text">
-                     <string>Preferred angle units</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="textLabel1_14">
-                    <property name="text">
-                     <string>Preferred area units</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1" colspan="3">
-                   <widget class="QComboBox" name="mAngleUnitsComboBox"/>
-                  </item>
-                  <item row="0" column="2" colspan="2">
-                   <spacer>
+                  <item row="0" column="2">
+                   <spacer name="horizontalSpacer_12">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
@@ -3023,9 +3141,6 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>
-                  <item row="3" column="1" colspan="3">
-                   <widget class="QComboBox" name="mDistanceUnitsComboBox"/>
                   </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_10">
@@ -3059,235 +3174,123 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="textLabel1_11">
-                    <property name="text">
-                     <string>Preferred distance units</string>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QgsCollapsibleGroupBox" name="mMeasureToolCopySettingsGroupBox">
+                    <property name="title">
+                     <string>Copy Settings</string>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Decimal places</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_13">
-                    <property name="toolTip">
-                     <string>If unchecked large numbers will be converted from m. to km. and from ft. to miles</string>
-                    </property>
-                    <property name="text">
-                     <string>Keep base unit</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QgsSpinBox" name="mDecimalPlacesSpinBox"/>
-                  </item>
-                  <item row="4" column="1" colspan="3">
-                   <widget class="QComboBox" name="mAreaUnitsComboBox"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mMeasureToolCopySettingsGroupBox">
-                 <property name="title">
-                  <string>Measure Tool Copy Settings</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_22">
-                    <property name="text">
-                     <string>Include header</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_23">
-                    <property name="text">
-                     <string>Separator</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QCheckBox" name="mAlwaysUseDecimalPoint">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <layout class="QGridLayout" name="gridLayout_6">
-                    <item row="0" column="0">
-                     <widget class="QRadioButton" name="mSeparatorComma">
-                      <property name="text">
-                       <string>Comma</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QRadioButton" name="mSeparatorSpace">
-                      <property name="text">
-                       <string>Space</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QRadioButton" name="mSeparatorColon">
-                      <property name="text">
-                       <string>Colon</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QRadioButton" name="mSeparatorSemicolon">
-                      <property name="text">
-                       <string>Semicolon</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QRadioButton" name="mSeparatorTab">
-                      <property name="text">
-                       <string>Tab</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <layout class="QHBoxLayout" name="horizontalLayout_3">
-                      <item>
-                       <widget class="QRadioButton" name="mSeparatorOther">
-                        <property name="text">
-                         <string>Other</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QLineEdit" name="mSeparatorCustom">
-                        <property name="enabled">
-                         <bool>false</bool>
-                        </property>
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="maxLength">
-                         <number>3</number>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QCheckBox" name="mIncludeHeader">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_24">
-                    <property name="toolTip">
-                     <string>Use a dot as the decimal separator, even if the current locale uses a different character</string>
-                    </property>
-                    <property name="text">
-                     <string>Always use decimal point</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mCoordinateDisplayGroup">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Coordinate and Bearing Display</string>
-                 </property>
-                 <property name="syncGroup">
-                  <string notr="true">projgeneral</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
-                  <item row="1" column="2">
-                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
-                    <property name="text">
-                     <string>Customize…</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_69">
-                    <property name="text">
-                     <string>Default bearing format for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="3">
-                   <spacer name="horizontalSpacer_10">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="1" column="1">
-                   <spacer name="horizontalSpacer_11">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Maximum</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_72">
-                    <property name="text">
-                     <string>Default coordinate format for new projects</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QPushButton" name="mCustomizeCoordinateFormatButton">
-                    <property name="text">
-                     <string>Customize…</string>
-                    </property>
+                    <layout class="QGridLayout" name="gridLayout_20">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_22">
+                       <property name="text">
+                        <string>Include header</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_23">
+                       <property name="text">
+                        <string>Separator</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="mAlwaysUseDecimalPoint">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <layout class="QGridLayout" name="gridLayout_6">
+                       <item row="0" column="0">
+                        <widget class="QRadioButton" name="mSeparatorComma">
+                         <property name="text">
+                          <string>Comma</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QRadioButton" name="mSeparatorSpace">
+                         <property name="text">
+                          <string>Space</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QRadioButton" name="mSeparatorColon">
+                         <property name="text">
+                          <string>Colon</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QRadioButton" name="mSeparatorSemicolon">
+                         <property name="text">
+                          <string>Semicolon</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QRadioButton" name="mSeparatorTab">
+                         <property name="text">
+                          <string>Tab</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <layout class="QHBoxLayout" name="horizontalLayout_3">
+                         <item>
+                          <widget class="QRadioButton" name="mSeparatorOther">
+                           <property name="text">
+                            <string>Other</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QLineEdit" name="mSeparatorCustom">
+                           <property name="enabled">
+                            <bool>false</bool>
+                           </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maxLength">
+                            <number>3</number>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QCheckBox" name="mIncludeHeader">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_24">
+                       <property name="toolTip">
+                        <string>Use a dot as the decimal separator, even if the current locale uses a different character</string>
+                       </property>
+                       <property name="text">
+                        <string>Always use decimal point</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -3307,7 +3310,35 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
+                   <spacer name="horizontalSpacer_110">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Maximum</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>50</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
                    <widget class="QgsSpinBox" name="spinZoomFactor">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>110</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
                     <property name="toolTip">
                      <string>Specifies the change in zoom level with each move of the mouse wheel.
 The bigger the number, the faster zooming with the mouse wheel will be.</string>
@@ -3332,6 +3363,19 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="0" column="3">
+                   <spacer name="horizontalSpacer_100">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_21">
                     <property name="text">
@@ -3339,7 +3383,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
+                  <item row="1" column="2">
                    <widget class="QCheckBox" name="reverseWheelZoom">
                     <property name="text">
                      <string/>
@@ -5426,6 +5470,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsTreeView</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>grpLocale</tabstop>
@@ -5495,6 +5540,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
+  <tabstop>cbxAutosizeAttributeTable</tabstop>
   <tabstop>mComboCopyFeatureFormat</tabstop>
   <tabstop>cmbAttrTableBehavior</tabstop>
   <tabstop>mAttrTableViewComboBox</tabstop>
@@ -5522,6 +5568,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
+  <tabstop>mLayerTreeInsertionMethod</tabstop>
   <tabstop>mShowFeatureCountByDefaultCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
@@ -5530,19 +5577,29 @@ p, li { white-space: pre-wrap; }
   <tabstop>mMapTipsDelaySpinBox</tabstop>
   <tabstop>mRespectScreenDpiCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
+  <tabstop>mDecimalPlacesSpinBox</tabstop>
+  <tabstop>mKeepBaseUnitCheckBox</tabstop>
+  <tabstop>mAngleUnitsComboBox</tabstop>
+  <tabstop>mDistanceUnitsComboBox</tabstop>
+  <tabstop>mAreaUnitsComboBox</tabstop>
+  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
+  <tabstop>mCustomizeBearingFormatButton</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
   <tabstop>mIdentifyHighlightBufferSpinBox</tabstop>
   <tabstop>mIdentifyHighlightMinWidthSpinBox</tabstop>
   <tabstop>pbnMeasureColor</tabstop>
-  <tabstop>mDecimalPlacesSpinBox</tabstop>
-  <tabstop>mKeepBaseUnitCheckBox</tabstop>
-  <tabstop>mDistanceUnitsComboBox</tabstop>
-  <tabstop>mAreaUnitsComboBox</tabstop>
-  <tabstop>mAngleUnitsComboBox</tabstop>
-  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
-  <tabstop>mCustomizeBearingFormatButton</tabstop>
+  <tabstop>mIncludeHeader</tabstop>
+  <tabstop>mAlwaysUseDecimalPoint</tabstop>
+  <tabstop>mSeparatorComma</tabstop>
+  <tabstop>mSeparatorSemicolon</tabstop>
+  <tabstop>mSeparatorTab</tabstop>
+  <tabstop>mSeparatorColon</tabstop>
+  <tabstop>mSeparatorSpace</tabstop>
+  <tabstop>mSeparatorOther</tabstop>
+  <tabstop>mSeparatorCustom</tabstop>
   <tabstop>spinZoomFactor</tabstop>
+  <tabstop>reverseWheelZoom</tabstop>
   <tabstop>mListGlobalScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
@@ -5597,9 +5654,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOffsetXSpinBox</tabstop>
   <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mSnapToleranceSpinBox</tabstop>
+  <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mBtnAddTemplatePath</tabstop>
   <tabstop>mBtnRemoveTemplatePath</tabstop>
-  <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
@@ -5612,6 +5669,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBrowseCacheDirectory</tabstop>
   <tabstop>mCacheSize</tabstop>
   <tabstop>mClearCache</tabstop>
+  <tabstop>mAutoClearAccessCache</tabstop>
+  <tabstop>mClearAccessCache</tabstop>
   <tabstop>grpProxy</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
@@ -5622,23 +5681,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
-  <tabstop>mAutoClearAccessCache</tabstop>
-  <tabstop>mClearAccessCache</tabstop>
-  <tabstop>mLayerTreeInsertionMethod</tabstop>
-  <tabstop>mAlwaysUseDecimalPoint</tabstop>
-  <tabstop>mSeparatorComma</tabstop>
-  <tabstop>mSeparatorSpace</tabstop>
-  <tabstop>mSeparatorColon</tabstop>
-  <tabstop>mSeparatorSemicolon</tabstop>
-  <tabstop>mSeparatorTab</tabstop>
-  <tabstop>mSeparatorOther</tabstop>
-  <tabstop>mSeparatorCustom</tabstop>
-  <tabstop>mIncludeHeader</tabstop>
-  <tabstop>reverseWheelZoom</tabstop>
-  <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

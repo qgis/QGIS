@@ -36,7 +36,7 @@ QString QgsGeometryCheckDegeneratePolygonAlgorithm::displayName() const
 
 QString QgsGeometryCheckDegeneratePolygonAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect polygons with less than 3 points" );
+  return QObject::tr( "Detects polygons with less than 3 points." );
 }
 
 QStringList QgsGeometryCheckDegeneratePolygonAlgorithm::tags() const

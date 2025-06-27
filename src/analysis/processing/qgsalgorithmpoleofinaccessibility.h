@@ -38,6 +38,7 @@ class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingFeatureBasedAlgori
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QString svgIconPath() const override;
     QIcon icon() const override;
     QList<int> inputLayerTypes() const override;

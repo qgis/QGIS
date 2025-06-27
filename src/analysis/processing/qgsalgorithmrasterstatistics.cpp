@@ -50,6 +50,11 @@ QString QgsRasterStatisticsAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm computes basic statistics from the values in a given band of the raster layer." );
 }
 
+QString QgsRasterStatisticsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes basic statistics from the values in a given band of the raster layer." );
+}
+
 QgsRasterStatisticsAlgorithm *QgsRasterStatisticsAlgorithm::createInstance() const
 {
   return new QgsRasterStatisticsAlgorithm();

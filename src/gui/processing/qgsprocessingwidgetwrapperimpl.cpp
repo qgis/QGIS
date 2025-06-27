@@ -1119,7 +1119,14 @@ void QgsProcessingDistanceWidgetWrapper::setUnits( Qgis::DistanceUnit units )
   }
   else
   {
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( units ) ) );
+    // Only reset the combo if the base units have changed
+    // or we might loose any user-set unit when changing layer.
+    // See issue #61470
+    if ( mBaseUnit != units )
+    {
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( units ) ) );
+    }
+
     mUnitsCombo->show();
     mLabel->hide();
   }
@@ -4670,6 +4677,19 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
 void QgsProcessingFieldPanelWidget::setFields( const QgsFields &fields )
 {
   mFields = fields;
+
+  // ensure that after setting new fields the value does not contain fields
+  // which are not available anymore, see https://github.com/qgis/QGIS/issues/39351
+  QVariantList availableFields;
+  for ( const QgsField &field : std::as_const( mFields ) )
+  {
+    availableFields << field.name();
+  }
+  QList<QVariant>::iterator it = std::remove_if( mValue.begin(), mValue.end(), [&availableFields]( const QVariant &value ) { return !availableFields.contains( value ); } );
+  mValue.erase( it, mValue.end() );
+
+  updateSummaryText();
+  emit changed();
 }
 
 void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )
@@ -7097,7 +7117,8 @@ void QgsProcessingMultipleLayerLineEdit::dropEvent( QDropEvent *event )
   const QStringList uris = QgsProcessingMultipleInputPanelWidget::compatibleUrisFromMimeData( mParam, event->mimeData(), {} );
   if ( !uris.isEmpty() )
   {
-    event->acceptProposedAction();
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
     QVariantList uriList;
     uriList.reserve( uris.size() );
     for ( const QString &uri : uris )

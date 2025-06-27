@@ -55,6 +55,11 @@ QString QgsNearestNeighbourAnalysisAlgorithm::shortHelpString() const
                       "Output is generated as an HTML file with the computed statistical values." );
 }
 
+QString QgsNearestNeighbourAnalysisAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Performs nearest neighbor analysis for a point layer." );
+}
+
 QString QgsNearestNeighbourAnalysisAlgorithm::svgIconPath() const
 {
   return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNearestNeighbour.svg" ) );

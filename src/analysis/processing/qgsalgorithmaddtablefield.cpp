@@ -34,7 +34,12 @@ QString QgsAddTableFieldAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm adds a new attribute to a vector layer.\n\n"
                       "The name and characteristics of the attribute are defined as parameters. The new attribute "
-                      "is not added to the input layer but a new layer is generated instead.\n\n" );
+                      "is not added to the input layer but a new layer is generated instead." );
+}
+
+QString QgsAddTableFieldAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Adds a new attribute to a vector layer." );
 }
 
 QStringList QgsAddTableFieldAlgorithm::tags() const

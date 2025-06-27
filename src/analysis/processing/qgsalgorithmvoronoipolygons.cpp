@@ -49,6 +49,11 @@ QString QgsVoronoiPolygonsAlgorithm::groupId() const
 
 QString QgsVoronoiPolygonsAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm generates a polygon layer containing the Voronoi diagram corresponding to input points." );
+}
+
+QString QgsVoronoiPolygonsAlgorithm::shortDescription() const
+{
   return QObject::tr( "Generates a polygon layer containing the Voronoi diagram corresponding to input points." );
 }
 
@@ -163,7 +168,8 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
     std::unique_ptr<QgsGeometryEngine> engine;
     std::unique_ptr<QgsGeometryEngine> extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
     const QVector<QgsGeometry> collection = voronoiDiagram.asGeometryCollection();
-    for ( int i = 0; i < collection.length(); i++ )
+    int i = 0;
+    for ( const QgsGeometry &collectionPart : collection )
     {
       if ( feedback->isCanceled() )
       {
@@ -171,21 +177,28 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       }
       QgsFeature f;
       f.setFields( fields );
-      f.setGeometry( QgsGeometry( extentEngine->intersection( collection[i].constGet() ) ) );
-      const QList<QgsFeatureId> intersected = index.intersects( collection[i].boundingBox() );
-      engine.reset( QgsGeometry::createGeometryEngine( collection[i].constGet() ) );
-      engine->prepareGeometry();
-      for ( const QgsFeatureId id : intersected )
+
+      QgsGeometry voronoiClippedToExtent = QgsGeometry( extentEngine->intersection( collectionPart.constGet() ) );
+      voronoiClippedToExtent.convertGeometryCollectionToSubclass( Qgis::GeometryType::Polygon );
+      if ( !voronoiClippedToExtent.isEmpty() )
       {
-        if ( engine->intersects( index.geometry( id ).constGet() ) )
+        f.setGeometry( QgsGeometry( voronoiClippedToExtent.constGet()->simplifiedTypeRef()->clone() ) );
+        const QList<QgsFeatureId> intersected = index.intersects( collectionPart.boundingBox() );
+        engine.reset( QgsGeometry::createGeometryEngine( collectionPart.constGet() ) );
+        engine->prepareGeometry();
+        for ( const QgsFeatureId id : intersected )
         {
-          f.setAttributes( attributeCache.value( id ) );
-          break;
+          if ( engine->intersects( index.geometry( id ).constGet() ) )
+          {
+            f.setAttributes( attributeCache.value( id ) );
+            break;
+          }
         }
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
-      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       feedback->setProgress( 50 + i * step );
+      i++;
     }
   }
 

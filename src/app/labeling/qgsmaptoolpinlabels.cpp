@@ -404,12 +404,12 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   else
   {
     vlayer->beginEditCommand( tr( "Unpinned label" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString() ) );
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString() ) ) )
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant() );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant() ) )
       writeFailed = true;
     if ( hasRCol && !preserveRot )
     {
-      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant( QString() ) ) )
+      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant() ) )
         writeFailed = true;
     }
     vlayer->endEditCommand();
@@ -489,8 +489,8 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
   else
   {
     vlayer->beginEditCommand( tr( "Unpinned diagram" ) + QStringLiteral( " '%1'" ).arg( labelText ) );
-    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString() ) );
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant( QString() ) ) )
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant() );
+    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant() ) )
       writeFailed = true;
     vlayer->endEditCommand();
   }

@@ -66,6 +66,7 @@
 #include <QStandardPaths>
 #include <QUuid>
 #include <QRegularExpression>
+#include <QXmlStreamReader>
 
 #include <sqlite3.h>
 
@@ -121,8 +122,8 @@ QgsMapLayer::~QgsMapLayer()
     project()->removeAttachedFile( mDataSource );
   }
 
-  delete m3DRenderer;
-  delete mLegend;
+
+
 
 }
 
@@ -2292,14 +2293,32 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   QDomDocument myDocument;
 
   // location of problem associated with errorMsg
-  int line, column;
+  int line = 0, column = 0;
   QString myErrorMessage;
 
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
     // read file
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
+    QXmlStreamReader xmlReader( &myFile );
+    xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "sld" ), QStringLiteral( "http://www.opengis.net/sld" ) ) );
+    xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "fes" ), QStringLiteral( "http://www.opengis.net/fes/2.0" ) ) );
+    xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( QStringLiteral( "ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) ) );
+    const QDomDocument::ParseResult result = myDocument.setContent( &xmlReader, QDomDocument::ParseOption::UseNamespaceProcessing );
+    if ( result )
+    {
+      resultFlag = true;
+    }
+    else
+    {
+      myErrorMessage = result.errorMessage;
+      line = result.errorLine;
+      column = result.errorColumn;
+    }
+#else
     resultFlag = myDocument.setContent( &myFile, true, &myErrorMessage, &line, &column );
+#endif
     if ( !resultFlag )
       myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
     myFile.close();
@@ -2639,29 +2658,45 @@ bool QgsMapLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgE
 void QgsMapLayer::saveStyleToDatabase( const QString &name, const QString &description,
                                        bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
 {
+  saveStyleToDatabaseV2( name, description, useAsDefault, uiFileContent, msgError, categories );
+}
+
+QgsMapLayer::SaveStyleResults QgsMapLayer::saveStyleToDatabaseV2( const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  QgsMapLayer::SaveStyleResults results;
 
   QString sldStyle, qmlStyle;
   QDomDocument qmlDocument;
   QgsReadWriteContext context;
   exportNamedStyle( qmlDocument, msgError, context, categories );
-  if ( !msgError.isNull() )
+  if ( !msgError.isEmpty() )
   {
-    return;
+    results.setFlag( QgsMapLayer::SaveStyleResult::QmlGenerationFailed );
   }
-  qmlStyle = qmlDocument.toString();
+  else
+  {
+    qmlStyle = qmlDocument.toString();
+  }
 
   QgsSldExportContext sldContext;
   QDomDocument sldDocument = this->exportSldStyleV3( sldContext );
   if ( !sldContext.errors().empty() )
   {
-    return;
+    results.setFlag( QgsMapLayer::SaveStyleResult::SldGenerationFailed );
   }
-  sldStyle = sldDocument.toString();
+  else
+  {
+    sldStyle = sldDocument.toString();
+  }
 
-  QgsProviderRegistry::instance()->saveStyle( mProviderKey,
-      mDataSource, qmlStyle, sldStyle, name,
-      description, uiFileContent, useAsDefault, msgError );
+  if ( !QgsProviderRegistry::instance()->saveStyle( mProviderKey,
+       mDataSource, qmlStyle, sldStyle, name, description, uiFileContent, useAsDefault, msgError ) )
+  {
+    results.setFlag( QgsMapLayer::SaveStyleResult::DatabaseWriteFailed );
+  }
+  return results;
 }
 
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
@@ -2779,16 +2814,16 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( legend == mLegend )
+  if ( legend == mLegend.get() )
     return;
 
-  delete mLegend;
-  mLegend = legend;
+  mLegend.reset( legend );
+
 
   if ( mLegend )
   {
     mLegend->setParent( this );
-    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
+    connect( mLegend.get(), &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
   }
 
   emit legendChanged();
@@ -2798,7 +2833,7 @@ QgsMapLayerLegend *QgsMapLayer::legend() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mLegend;
+  return mLegend.get();
 }
 
 QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
@@ -2812,11 +2847,11 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( renderer == m3DRenderer )
+  if ( renderer == m3DRenderer.get() )
     return;
 
-  delete m3DRenderer;
-  m3DRenderer = renderer;
+  m3DRenderer.reset( renderer );
+
   emit renderer3DChanged();
   emit repaintRequested();
   trigger3DUpdate();
@@ -2826,7 +2861,7 @@ QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return m3DRenderer;
+  return m3DRenderer.get();
 }
 
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )

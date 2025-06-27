@@ -14,9 +14,11 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
 #include "moc_qgshanadataitemguiprovider.cpp"
+#include "qgsapplication.h"
 #include "qgshananewconnection.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanasourceselect.h"
@@ -203,7 +205,7 @@ QWidget *QgsHanaDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDa
 
 void QgsHanaDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsHanaNewConnection nc( nullptr );
+  QgsHanaNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     item->refresh();

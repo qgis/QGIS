@@ -55,7 +55,7 @@ QString QgsSetLayerEncodingAlgorithm::shortHelpString() const
 
 QString QgsSetLayerEncodingAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Sets the encoding used for reading a layer's attributes" );
+  return QObject::tr( "Sets the encoding used for reading a layer's attributes." );
 }
 
 QgsSetLayerEncodingAlgorithm *QgsSetLayerEncodingAlgorithm::createInstance() const

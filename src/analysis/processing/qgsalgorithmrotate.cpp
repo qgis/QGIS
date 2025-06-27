@@ -51,9 +51,14 @@ QString QgsRotateFeaturesAlgorithm::outputName() const
 
 QString QgsRotateFeaturesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm rotates feature geometries, by the specified angle clockwise" )
+  return QObject::tr( "This algorithm rotates feature geometries by the specified angle clockwise." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Optionally, the rotation can occur around a preset point. If not set the rotation occurs around each feature's centroid." );
+}
+
+QString QgsRotateFeaturesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Rotates feature geometries by a specified angle clockwise." );
 }
 
 QgsRotateFeaturesAlgorithm *QgsRotateFeaturesAlgorithm::createInstance() const

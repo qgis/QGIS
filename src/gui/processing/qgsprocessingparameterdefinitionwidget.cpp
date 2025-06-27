@@ -57,7 +57,7 @@ void QgsProcessingAbstractParameterDefinitionWidget::registerProcessingContextGe
 
 QgsExpressionContext QgsProcessingAbstractParameterDefinitionWidget::createExpressionContext() const
 {
-  return QgsProcessingGuiUtils::createExpressionContext( mContextGenerator, mWidgetContext, nullptr, nullptr );
+  return QgsProcessingWidgetWrapperUtils::createExpressionContext( mContextGenerator, mWidgetContext, nullptr, nullptr );
 }
 
 //

@@ -16,6 +16,7 @@
 #include "qgscameracontroller.h"
 #include "moc_qgscameracontroller.cpp"
 #include "qgseventtracing.h"
+#include "qgsraycastingutils_p.h"
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
@@ -27,6 +28,7 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput>
 #include <QStringLiteral>
+#include <QQuaternion>
 #include <cmath>
 
 #include "qgslogger.h"
@@ -46,11 +48,6 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::pressed, this, &QgsCameraController::onMousePressed );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::released, this, &QgsCameraController::onMouseReleased );
   addComponent( mMouseHandler );
-
-  mKeyboardHandler->setSourceDevice( new Qt3DInput::QKeyboardDevice() );
-  connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::pressed, this, &QgsCameraController::onKeyPressed );
-  connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::released, this, &QgsCameraController::onKeyReleased );
-  addComponent( mKeyboardHandler );
 
   // Disable the handlers when the entity is disabled
   connect( this, &Qt3DCore::QEntity::enabledChanged, mMouseHandler, &Qt3DInput::QMouseHandler::setEnabled );
@@ -104,30 +101,53 @@ void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversion 
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
 {
-  const float oldPitch = mCameraPose.pitchAngle();
-  const float oldHeading = mCameraPose.headingAngle();
-  float newPitch = oldPitch + diffPitch;
-  float newHeading = oldHeading + diffHeading;
+  float newPitch = mCameraPose.pitchAngle() + diffPitch;
+  float newHeading = mCameraPose.headingAngle() + diffHeading;
 
   newPitch = std::clamp( newPitch, 0.f, 180.f ); // prevent going over the head
 
-  // First undo the previously applied rotation, then apply the new rotation
-  // (We can't just apply our euler angles difference because the camera may be already rotated)
-  const QQuaternion qNew = Qgs3DUtils::rotationFromPitchHeadingAngles( newPitch, newHeading );
-  const QQuaternion qOld = Qgs3DUtils::rotationFromPitchHeadingAngles( oldPitch, oldHeading );
-  const QQuaternion q = qNew * qOld.conjugated();
+  switch ( mScene->mapSettings()->sceneMode() )
+  {
+    case Qgis::SceneMode::Globe:
+    {
+      // When on a globe, we need to calculate "where is up" (the normal of a tangent plane).
+      // Also it uses different axes than the standard plane-based view.
+      // See QgsCameraPose::updateCameraGlobe(), we basically want to make sure
+      // that after an update, the camera stays in the same spot.
+      QgsVector3D viewCenterLatLon;
+      try
+      {
+        viewCenterLatLon = mGlobeCrsToLatLon.transform( mCameraPose.centerPoint() + mOrigin );
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( QStringLiteral( "rotateCamera: ECEF -> lat,lon transform failed!" ) );
+        return;
+      }
+      QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( viewCenterLatLon.x() ) )
+                            * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( viewCenterLatLon.y() ) );
+      QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), newHeading )
+                                  * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), newPitch );
+      QVector3D newCameraToCenter = ( qLatLon * qPitchHeading * QVector3D( -1, 0, 0 ) ) * mCameraPose.distanceFromCenterPoint();
 
-  // get camera's view vector, rotate it to get new view center
-  const QVector3D position = mCamera->position();
-  QVector3D viewCenter = mCamera->viewCenter();
-  const QVector3D viewVector = viewCenter - position;
-  const QVector3D cameraToCenter = q * viewVector;
-  viewCenter = position + cameraToCenter;
+      mCameraPose.setCenterPoint( mCamera->position() + newCameraToCenter );
+      mCameraPose.setPitchAngle( newPitch );
+      mCameraPose.setHeadingAngle( newHeading );
+      updateCameraFromPose();
+      return;
+    }
 
-  mCameraPose.setCenterPoint( viewCenter );
-  mCameraPose.setPitchAngle( newPitch );
-  mCameraPose.setHeadingAngle( newHeading );
-  updateCameraFromPose();
+    case Qgis::SceneMode::Local:
+    {
+      QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( newPitch, newHeading );
+      QVector3D newCameraToCenter = q * QVector3D( 0, 0, -mCameraPose.distanceFromCenterPoint() );
+      mCameraPose.setCenterPoint( mCamera->position() + newCameraToCenter );
+      mCameraPose.setPitchAngle( newPitch );
+      mCameraPose.setHeadingAngle( newHeading );
+      updateCameraFromPose();
+      return;
+    }
+  }
 }
 
 void QgsCameraController::rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint )
@@ -873,50 +893,7 @@ void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
   setMouseParameters( MouseOperation::None );
 }
 
-void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
-{
-  if ( !mInputHandlersEnabled )
-    return;
-
-  if ( event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_QuoteLeft )
-  {
-    // switch navigation mode
-    switch ( mCameraNavigationMode )
-    {
-      case Qgis::NavigationMode::Walk:
-        setCameraNavigationMode( mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased );
-        break;
-      case Qgis::NavigationMode::TerrainBased:
-      case Qgis::NavigationMode::GlobeTerrainBased:
-        setCameraNavigationMode( Qgis::NavigationMode::Walk );
-        break;
-    }
-    return;
-  }
-
-  switch ( mCameraNavigationMode )
-  {
-    case Qgis::NavigationMode::Walk:
-    {
-      onKeyPressedFlyNavigation( event );
-      break;
-    }
-
-    case Qgis::NavigationMode::TerrainBased:
-    {
-      onKeyPressedTerrainNavigation( event );
-      break;
-    }
-
-    case Qgis::NavigationMode::GlobeTerrainBased:
-    {
-      onKeyPressedGlobeTerrainNavigation( event );
-      break;
-    }
-  }
-}
-
-void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *event )
+bool QgsCameraController::onKeyPressedTerrainNavigation( QKeyEvent *event )
 {
   const bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
   const bool hasCtrl = ( event->modifiers() & Qt::ControlModifier );
@@ -944,6 +921,8 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
     case Qt::Key_PageUp:
       tElev += 1;
       break;
+    default:
+      break;
   }
 
   if ( tx || ty )
@@ -965,6 +944,7 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
       const float diffYaw = -tx;  // right key = rotating camera to the right
       rotateCamera( diffPitch, diffYaw );
     }
+    return true;
   }
 
   if ( tElev )
@@ -972,11 +952,14 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
     QgsVector3D center = mCameraPose.centerPoint();
     center.set( center.x(), center.y(), center.z() + tElev * 10 );
     mCameraPose.setCenterPoint( center );
+    return true;
     updateCameraFromPose();
   }
+
+  return false;
 }
 
-void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEvent *event )
+bool QgsCameraController::onKeyPressedGlobeTerrainNavigation( QKeyEvent *event )
 {
   // both move factor and zoom factor are just empirically picked numbers
   // that seem to work well (providing steps that are not too big / not too small)
@@ -992,37 +975,53 @@ void QgsCameraController::onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEve
         globeUpdateHeadingAngle( -5 );
       else
         globeMoveCenterPoint( 0, -MOVE_FACTOR * mCameraPose.distanceFromCenterPoint() );
-      break;
+      return true;
     case Qt::Key_Right:
       if ( hasShift )
         globeUpdateHeadingAngle( 5 );
       else
         globeMoveCenterPoint( 0, MOVE_FACTOR * mCameraPose.distanceFromCenterPoint() );
-      break;
+      return true;
     case Qt::Key_Up:
       if ( hasShift )
         globeUpdatePitchAngle( -5 );
       else
         globeMoveCenterPoint( MOVE_FACTOR * mCameraPose.distanceFromCenterPoint(), 0 );
-      break;
+      return true;
     case Qt::Key_Down:
       if ( hasShift )
         globeUpdatePitchAngle( 5 );
       else
         globeMoveCenterPoint( -MOVE_FACTOR * mCameraPose.distanceFromCenterPoint(), 0 );
-      break;
+      return true;
     case Qt::Key_PageDown:
       globeZoom( ZOOM_FACTOR );
-      break;
+      return true;
     case Qt::Key_PageUp:
       globeZoom( 1 / ZOOM_FACTOR );
-      break;
+      return true;
     default:
       break;
   }
+  return false;
 }
 
-void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event )
+static const QSet<int> walkNavigationSavedKeys = {
+  Qt::Key_Left,
+  Qt::Key_A,
+  Qt::Key_Right,
+  Qt::Key_D,
+  Qt::Key_Up,
+  Qt::Key_W,
+  Qt::Key_Down,
+  Qt::Key_S,
+  Qt::Key_PageUp,
+  Qt::Key_E,
+  Qt::Key_PageDown,
+  Qt::Key_Q,
+};
+
+bool QgsCameraController::onKeyPressedFlyNavigation( QKeyEvent *event )
 {
   switch ( event->key() )
   {
@@ -1039,7 +1038,8 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
       {
         qApp->restoreOverrideCursor();
       }
-      return;
+      event->accept();
+      return true;
     }
 
     case Qt::Key_Escape:
@@ -1050,19 +1050,25 @@ void QgsCameraController::onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event
         mCaptureFpsMouseMovements = false;
         mIgnoreNextMouseMove = true;
         qApp->restoreOverrideCursor();
-        return;
+        event->accept();
+        return true;
       }
       break;
     }
-
     default:
       break;
   }
 
-  if ( event->isAutoRepeat() )
-    return;
-
-  mDepressedKeys.insert( event->key() );
+  if ( walkNavigationSavedKeys.contains( event->key() ) )
+  {
+    if ( !event->isAutoRepeat() )
+    {
+      mDepressedKeys.insert( event->key() );
+    }
+    event->accept();
+    return true;
+  }
+  return false;
 }
 
 void QgsCameraController::walkView( double tx, double ty, double tz )
@@ -1091,6 +1097,9 @@ void QgsCameraController::walkView( double tx, double ty, double tz )
 
 void QgsCameraController::applyFlyModeKeyMovements()
 {
+  if ( mCameraNavigationMode != Qgis::NavigationMode::Walk )
+    return;
+
   // shift = "run", ctrl = "slow walk"
   const bool shiftPressed = mDepressedKeys.contains( Qt::Key_Shift );
   const bool ctrlPressed = mDepressedKeys.contains( Qt::Key_Control );
@@ -1221,17 +1230,6 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
   }
 }
 
-void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
-{
-  if ( !mInputHandlersEnabled )
-    return;
-
-  if ( event->isAutoRepeat() )
-    return;
-
-  mDepressedKeys.remove( event->key() );
-}
-
 void QgsCameraController::tiltUpAroundViewCenter( float deltaPitch )
 {
   // Tilt up the view by deltaPitch around the view center (camera moves)
@@ -1275,76 +1273,84 @@ void QgsCameraController::moveView( float tx, float ty )
   updateCameraFromPose();
 }
 
-bool QgsCameraController::willHandleKeyEvent( QKeyEvent *event )
+bool QgsCameraController::keyboardEventFilter( QKeyEvent *event )
 {
-  if ( event->key() == Qt::Key_QuoteLeft )
-    return true;
+  if ( !mInputHandlersEnabled )
+    return false;
 
-  switch ( mCameraNavigationMode )
+  if ( event->type() == QKeyEvent::Type::KeyRelease )
   {
-    case Qgis::NavigationMode::Walk:
+    if ( !event->isAutoRepeat() && mDepressedKeys.contains( event->key() ) )
+    {
+      mDepressedKeys.remove( event->key() );
+      return true;
+    }
+  }
+  else if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( event->modifiers() & Qt::ControlModifier )
     {
       switch ( event->key() )
       {
-        case Qt::Key_Left:
-        case Qt::Key_A:
-        case Qt::Key_Right:
-        case Qt::Key_D:
-        case Qt::Key_Up:
-        case Qt::Key_W:
-        case Qt::Key_Down:
-        case Qt::Key_S:
-        case Qt::Key_PageUp:
-        case Qt::Key_E:
-        case Qt::Key_PageDown:
-        case Qt::Key_Q:
+        case Qt::Key_QuoteLeft:
+        {
+          // switch navigation mode
+          switch ( mCameraNavigationMode )
+          {
+            case Qgis::NavigationMode::Walk:
+              setCameraNavigationMode(
+                mScene->mapSettings()->sceneMode() == Qgis::SceneMode::Globe
+                  ? Qgis::NavigationMode::GlobeTerrainBased
+                  : Qgis::NavigationMode::TerrainBased
+              );
+              break;
+            case Qgis::NavigationMode::TerrainBased:
+            case Qgis::NavigationMode::GlobeTerrainBased:
+              setCameraNavigationMode( Qgis::NavigationMode::Walk );
+              break;
+          }
+          event->accept();
           return true;
+        }
 
-        case Qt::Key_Escape:
-          if ( mCaptureFpsMouseMovements )
-            return true;
-          break;
+        // Make sure to sync the key combinations with strings in Qgs3DAxis::createMenu()!
+        case Qt::Key_8:
+          rotateCameraToNorth();
+          return true;
+        case Qt::Key_6:
+          rotateCameraToEast();
+          return true;
+        case Qt::Key_2:
+          rotateCameraToSouth();
+          return true;
+        case Qt::Key_4:
+          rotateCameraToWest();
+          return true;
+        case Qt::Key_9:
+          rotateCameraToTop();
+          return true;
+        case Qt::Key_3:
+          rotateCameraToBottom();
+          return true;
+        case Qt::Key_5:
+          rotateCameraToHome();
+          return true;
 
         default:
           break;
       }
-      break;
     }
 
-    case Qgis::NavigationMode::TerrainBased:
+    switch ( mCameraNavigationMode )
     {
-      switch ( event->key() )
-      {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
-          return true;
+      case Qgis::NavigationMode::Walk:
+        return onKeyPressedFlyNavigation( event );
 
-        default:
-          break;
-      }
-      break;
-    }
+      case Qgis::NavigationMode::TerrainBased:
+        return onKeyPressedTerrainNavigation( event );
 
-    case Qgis::NavigationMode::GlobeTerrainBased:
-    {
-      switch ( event->key() )
-      {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
-          return true;
-
-        default:
-          break;
-      }
-      break;
+      case Qgis::NavigationMode::GlobeTerrainBased:
+        return onKeyPressedGlobeTerrainNavigation( event );
     }
   }
   return false;
@@ -1425,4 +1431,29 @@ void QgsCameraController::setOrigin( const QgsVector3D &origin )
   mOrigin = origin;
 
   updateCameraFromPose();
+}
+
+void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
+{
+  QgsVector3D pos = lookingAtPoint();
+  double elevation = 0.0;
+  if ( mScene->mapSettings()->terrainRenderingEnabled() )
+  {
+    QgsDebugMsgLevel( "Checking elevation from terrain...", 2 );
+    QVector3D camPos = mCamera->position();
+    QgsRayCastingUtils::Ray3D ray( camPos, pos.toVector3D() - camPos, mCamera->farPlane() );
+    const QVector<QgsRayCastingUtils::RayHit> hits = mScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
+    if ( !hits.isEmpty() )
+    {
+      elevation = hits.at( 0 ).pos.z();
+      QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
+    }
+    else
+    {
+      QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
+    }
+  }
+  pos.set( pos.x(), pos.y(), elevation + mScene->terrainEntity()->terrainElevationOffset() );
+
+  setLookingAtPoint( pos, ( mCamera->position() - pos.toVector3D() ).length(), pitch, yaw );
 }

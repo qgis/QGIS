@@ -1732,6 +1732,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         while not re.match(r"^#endif", CONTEXT.current_line):
             CONTEXT.current_line = read_line()
 
+    using_match = re.match(r"(\s*)using\s+(.*?)\s*=\s*(.*);", CONTEXT.current_line)
+    if using_match:
+        CONTEXT.current_line = f"{using_match.group(1)}typedef {using_match.group(3)} {using_match.group(2)};"
+
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
         r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
@@ -2072,7 +2076,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         # Inheritance
         if class_pattern_match.group("domain"):
             m = class_pattern_match.group("domain")
-            m = re.sub(r"public +(\w+, *)*(Ui::\w+,? *)+", "", m)
+            dbg_info(f"class: {CONTEXT.classname[-1]} domain is {m}")
+            m = re.sub(r"(?:(?:,\s*)?public|(?:,\s*)?protected|,)\s+Ui::\w+\s*", "", m)
             m = re.sub(r"public +", "", m)
             m = re.sub(r"[,:]?\s*private +\w+(::\w+)?", "", m)
 

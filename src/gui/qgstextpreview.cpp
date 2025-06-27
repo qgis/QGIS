@@ -35,7 +35,7 @@ QgsTextPreview::QgsTextPreview( QWidget *parent )
   mContext.setMapToPixel( newCoordXForm );
 
   mContext.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
-  mContext.setUseAdvancedEffects( true );
+  mContext.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
 
   mContext.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 

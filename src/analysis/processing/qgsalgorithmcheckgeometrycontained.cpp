@@ -37,7 +37,7 @@ QString QgsGeometryCheckContainedAlgorithm::displayName() const
 
 QString QgsGeometryCheckContainedAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect features contained inside polygons from a list of polygon layers" );
+  return QObject::tr( "Detects features contained inside polygons from a list of polygon layers." );
 }
 
 QStringList QgsGeometryCheckContainedAlgorithm::tags() const

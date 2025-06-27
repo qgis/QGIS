@@ -264,7 +264,7 @@ QStringList QgsRasterFrequencyByEqualOperatorAlgorithm::tags() const
 
 QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Equal to frequency algorithm evaluates on a cell-by-cell basis the frequency "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are equal "
                       "to the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
@@ -274,6 +274,12 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
                       "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
+}
+
+QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the frequency (number of times) "
+                      "the values of an input stack of rasters are equal to the value of a value raster." );
 }
 
 QgsRasterFrequencyByEqualOperatorAlgorithm *QgsRasterFrequencyByEqualOperatorAlgorithm::createInstance() const
@@ -307,7 +313,7 @@ QStringList QgsRasterFrequencyByGreaterThanOperatorAlgorithm::tags() const
 
 QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Greater than frequency algorithm evaluates on a cell-by-cell basis the frequency "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are greater than "
                       "the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
@@ -317,6 +323,12 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() cons
                       "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
+}
+
+QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the frequency (number of times) "
+                      "the values of an input stack of rasters are greater than the value of a value raster." );
 }
 
 QgsRasterFrequencyByGreaterThanOperatorAlgorithm *QgsRasterFrequencyByGreaterThanOperatorAlgorithm::createInstance() const
@@ -350,7 +362,7 @@ QStringList QgsRasterFrequencyByLessThanOperatorAlgorithm::tags() const
 
 QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The Less than frequency algorithm evaluates on a cell-by-cell basis the frequency "
+  return QObject::tr( "This algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are less than "
                       "the value of a value raster. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
@@ -360,6 +372,12 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
                       "in the output raster if the ignore NoData parameter is not checked. "
                       "The output NoData value can be set manually. The output rasters extent and resolution "
                       "is defined by the input raster layer and is always of int32 type." );
+}
+
+QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Evaluates on a cell-by-cell basis the frequency (number of times) "
+                      "the values of an input stack of rasters are less than the value of a value raster." );
 }
 
 QgsRasterFrequencyByLessThanOperatorAlgorithm *QgsRasterFrequencyByLessThanOperatorAlgorithm::createInstance() const

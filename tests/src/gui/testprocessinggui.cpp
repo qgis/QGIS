@@ -30,6 +30,7 @@
 #include "qgstest.h"
 #include "qgsconfig.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
@@ -106,6 +107,7 @@
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsgeometrywidget.h"
+#include "qgsmemoryproviderutils.h"
 
 
 class TestParamDefinition : public QgsProcessingParameterDefinition
@@ -422,6 +424,7 @@ void TestProcessingGui::init()
 
 void TestProcessingGui::cleanup()
 {
+  QgsProject::instance()->removeAllMapLayers();
 }
 
 void TestProcessingGui::testModelUndo()
@@ -2225,7 +2228,7 @@ void TestProcessingGui::testDistanceWrapper()
 
   TestProcessingContextGenerator generator( context );
   wrapper.registerProcessingContextGenerator( &generator );
-  wrapper.setUnitParameterValue( id );
+  wrapper.setUnitParameterValue( QVariant::fromValue( id ) );
   QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
   QVERIFY( !wrapper.mWarningLabel->isVisible() );
   QVERIFY( wrapper.mUnitsCombo->isVisible() );
@@ -2240,10 +2243,20 @@ void TestProcessingGui::testDistanceWrapper()
   wrapper.setParameterValue( 2, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
 
-  wrapper.setUnitParameterValue( id );
-  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
+  // Changing to a layer with a CRS that has compatible units won't change the units
+  wrapper.setUnitParameterValue( QVariant::fromValue( id ) );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
   wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5000.0 );
+  QCOMPARE( wrapper.mUnitsCombo->currentIndex(), wrapper.mUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Kilometers ) ) );
+
+  // Changing to a layer with 4326 projection will reset the units
+  const QString id2 = vl2->id();
+  QgsProject::instance()->addMapLayer( vl2.release() );
+  wrapper.setUnitParameterValue( QVariant::fromValue( id2 ) );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+  wrapper.setParameterValue( 2, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
 
   delete w;
 
@@ -3577,6 +3590,21 @@ void TestProcessingGui::testFieldSelectionPanel()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.value().toList(), QVariantList() );
   QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 field(s) selected" ) );
+
+  // ensure that settings fields invalidates value and removes values that don't
+  // exists in the fields, see https://github.com/qgis/QGIS/issues/39351
+  w.setValue( QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "bb,aa,cc" ) );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "aa" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "cc" ), QMetaType::Type::Int ) );
+  w.setFields( fields );
+  QCOMPARE( spy.count(), 5 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "aa,cc" ) );
 }
 
 void TestProcessingGui::testFieldWrapper()
@@ -8791,6 +8819,35 @@ void TestProcessingGui::testFieldMapWidget()
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( "'abc' || \"def\"" ) );
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "alias" ) ).toString(), QStringLiteral( "my alias" ) );
   QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "comment" ) ).toString(), QStringLiteral( "my comment" ) );
+
+  // Test load fields from memory layer, see issue GH #62019
+  QgsFields templateFields;
+  templateFields.append( QgsField( QStringLiteral( "template_field_1" ), QMetaType::Type::QString ) );
+  std::unique_ptr<QgsVectorLayer> templateLayer( QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "source" ), templateFields, Qgis::WkbType::Point ) );
+
+  QgsFields sourceFields;
+  sourceFields.append( QgsField( QStringLiteral( "source_field_1" ), QMetaType::Type::QString ) );
+  std::unique_ptr<QgsVectorLayer> sourceLayer( QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "template" ), sourceFields, Qgis::WkbType::Point ) );
+
+  widget.setLayer( sourceLayer.get() );
+  widget.loadFieldsFromLayer();
+
+  // Check fields
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "source_field_1" ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast<int>( QMetaType::Type::QString ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( R"("source_field_1")" ) );
+
+  QgsProject project;
+  project.addMapLayer( sourceLayer.get(), false, false );
+  project.addMapLayer( templateLayer.get(), false, false );
+  widget.mLayerCombo->setProject( &project );
+
+  widget.mLayerCombo->setLayer( templateLayer.get() );
+  widget.loadLayerFields();
+
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "template_field_1" ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast<int>( QMetaType::Type::QString ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( R"("source_field_1")" ) );
 }
 
 void TestProcessingGui::testFieldMapWrapper()

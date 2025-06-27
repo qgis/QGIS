@@ -274,9 +274,9 @@ void TestQgsLayoutItem::shouldDrawDebug()
   QgsProject p;
   QgsLayout l( &p );
   TestItem *item = new TestItem( &l );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, true );
   QVERIFY( item->shouldDrawDebugRect() );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, false );
   QVERIFY( !item->shouldDrawDebugRect() );
   delete item;
 }
@@ -286,9 +286,9 @@ void TestQgsLayoutItem::shouldDrawAntialiased()
   QgsProject p;
   QgsLayout l( &p );
   TestItem *item = new TestItem( &l );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, false );
   QVERIFY( !item->shouldDrawAntialiased() );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, true );
   QVERIFY( item->shouldDrawAntialiased() );
   delete item;
 }
@@ -305,10 +305,10 @@ void TestQgsLayoutItem::preparePainter()
   QImage image( QSize( 100, 100 ), QImage::Format_ARGB32 );
   QPainter painter;
   painter.begin( &image );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, false );
   item->preparePainter( &painter );
   QVERIFY( !( painter.renderHints() & QPainter::Antialiasing ) );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, true );
   item->preparePainter( &painter );
   QVERIFY( painter.renderHints() & QPainter::Antialiasing );
   delete item;
@@ -323,7 +323,7 @@ void TestQgsLayoutItem::debugRect()
   item->setPos( 100, 100 );
   item->setRect( 0, 0, 200, 200 );
   l.setSceneRect( 0, 0, 400, 400 );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, true );
   QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
   image.fill( 0 );
   QPainter painter( &image );
@@ -343,7 +343,7 @@ void TestQgsLayoutItem::draw()
   item->setPos( 100, 100 );
   item->setRect( 0, 0, 200, 200 );
   l.setSceneRect( 0, 0, 400, 400 );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, false ); //disable antialiasing to limit cross platform differences
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, false ); //disable antialiasing to limit cross platform differences
   QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
   image.fill( 0 );
   QPainter painter( &image );
@@ -1648,7 +1648,7 @@ void TestQgsLayoutItem::rotation()
   l.addItem( item );
   item->setItemRotation( 45 );
   l.setSceneRect( 0, 0, 400, 400 );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, true );
   QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
   image.fill( 0 );
   QPainter painter( &image );
@@ -1938,9 +1938,14 @@ void TestQgsLayoutItem::blendMode()
   // can't use caching when blend modes are active
   QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
   QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 

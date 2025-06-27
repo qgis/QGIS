@@ -60,6 +60,11 @@ QgsFeatureSink::SinkFlags QgsPointOnSurfaceAlgorithm::sinkFlags() const
 
 QString QgsPointOnSurfaceAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm returns a point guaranteed to lie on the surface of a geometry." );
+}
+
+QString QgsPointOnSurfaceAlgorithm::shortDescription() const
+{
   return QObject::tr( "Returns a point guaranteed to lie on the surface of a geometry." );
 }
 

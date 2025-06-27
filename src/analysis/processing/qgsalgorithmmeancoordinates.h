@@ -43,6 +43,7 @@ class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsMeanCoordinatesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

@@ -32,6 +32,7 @@ RUN dnf -y --refresh install \
     libxml2-devel \
     libzip-devel \
     libzstd-devel \
+    libaio \
     mold \
     netcdf-devel \
     ninja-build \
@@ -112,6 +113,7 @@ RUN dnf -y install \
     python3-gdal \
     python3-nose2 \
     python3-psycopg2 \
-    python3-pyyaml
+    python3-pyyaml \
+    python3-shapely
 
 FROM binary-only

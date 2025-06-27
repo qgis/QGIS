@@ -92,10 +92,10 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "<p>This algorithm creates a point layer, with points placed randomly "
+  return QObject::tr( "<p>This algorithm creates a point layer with points placed randomly "
                       "on the lines of the <i>Input line layer</i>. "
                       "The default behavior is that the generated point features inherit "
-                      "the attributes of the line feature on which they were was generated.</p>"
+                      "the attributes of the line feature on which they were generated.</p>"
                       "<p>Parameters / options:</p> "
                       "<ul> "
                       "<li>For each feature in the <i><b>Input line layer</b></i>, the "
@@ -138,6 +138,10 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsRandomPointsOnLinesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point layer with points placed randomly on the lines of an input layer." );
+}
 
 QgsRandomPointsOnLinesAlgorithm *QgsRandomPointsOnLinesAlgorithm::createInstance() const
 {

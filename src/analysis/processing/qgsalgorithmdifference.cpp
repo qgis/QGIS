@@ -57,6 +57,11 @@ QString QgsDifferenceAlgorithm::shortHelpString() const
                         "be manually updated." );
 }
 
+QString QgsDifferenceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Extracts features from an input layer that fall outside, or partially overlap, features in an overlay layer." );
+}
+
 bool QgsDifferenceAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
   const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );

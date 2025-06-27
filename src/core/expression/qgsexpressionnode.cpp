@@ -29,8 +29,7 @@ QVariant QgsExpressionNode::eval( QgsExpression *parent, const QgsExpressionCont
   }
   else
   {
-    QVariant res = evalNode( parent, context );
-    return res;
+    return evalNode( parent, context );
   }
 }
 

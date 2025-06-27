@@ -48,6 +48,12 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
     .arg( componentString() );
 }
 
+QString QgsFilterVerticesAlgorithmBase::shortDescription() const
+{
+  return QObject::tr( "Filters away vertices based on their %1 value." )
+    .arg( componentString() );
+}
+
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
   auto min = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MIN" ), QObject::tr( "Minimum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );

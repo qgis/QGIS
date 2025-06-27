@@ -37,6 +37,11 @@ QString QgsPointToLayerAlgorithm::shortHelpString() const
                       "a layer based input." );
 }
 
+QString QgsPointToLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that contains a single feature with geometry matching a point parameter." );
+}
+
 QgsPointToLayerAlgorithm *QgsPointToLayerAlgorithm::createInstance() const
 {
   return new QgsPointToLayerAlgorithm();

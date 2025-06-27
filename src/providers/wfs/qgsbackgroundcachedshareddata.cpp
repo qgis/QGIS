@@ -588,7 +588,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
     }
     else
     {
-      cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString() ) );
+      cachedFeature.setAttribute( hexwkbGeomIdx, QVariant() );
     }
 
     const QString &uniqueId = featPair.second;

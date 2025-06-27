@@ -66,6 +66,7 @@ class TestQgsMapSettings : public QObject
     void testComputeScaleForExtent();
     void testLayersWithGroupLayers();
     void testMaskRenderSettings();
+    void testDeprecatedFlagsRasterizePolicy();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -807,6 +808,33 @@ void TestQgsMapSettings::testMaskRenderSettings()
 
   QgsMapSettings settings3( settings );
   QCOMPARE( settings3.maskSettings().simplifyTolerance(), 11 );
+}
+
+void TestQgsMapSettings::testDeprecatedFlagsRasterizePolicy()
+{
+  QgsMapSettings settings;
+
+  // test translation of rasterize policies to flags
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  QVERIFY( !settings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+  QVERIFY( !settings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) );
+  QVERIFY( settings.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) );
+
+  settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::PreferVector );
+  settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
+  QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::Default );
+
+  settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
+  settings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
+  QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

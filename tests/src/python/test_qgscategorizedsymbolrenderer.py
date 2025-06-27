@@ -1478,6 +1478,82 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
 
         self.assertEqual(renderer.maximumExtentBuffer(QgsRenderContext()), 20)
 
+    def test_layer_counts_default_category_null(self):
+        layer = QgsVectorLayer("Point?field=test_field:string", "test_layer", "memory")
+        self.assertTrue(layer.isValid())
+        fields = layer.fields()
+        layer.startEditing()
+        self.assertEqual(fields[0].type(), QVariant.String)
+
+        # add test values
+        for attr_value in ["a"] * 3 + ["b"] * 2 + [None]:
+            f = QgsFeature(fields)
+            if attr_value is not None:
+                f.setAttributes([attr_value])
+            self.assertTrue(layer.addFeature(f))
+
+        self.assertEqual(layer.featureCount(), 6)
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("test_field")
+
+        renderer.addCategory(QgsRendererCategory("a", createMarkerSymbol(), "a"))
+        cat_a_id = renderer.categories()[-1].uuid()
+        renderer.addCategory(QgsRendererCategory("b", createMarkerSymbol(), "b"))
+        cat_b_id = renderer.categories()[-1].uuid()
+        # add default category
+        renderer.addCategory(QgsRendererCategory(None, createMarkerSymbol(), "nulls"))
+        cat_default_id = renderer.categories()[-1].uuid()
+
+        self.assertEqual(renderer.legendKeys(), {cat_a_id, cat_b_id, cat_default_id})
+
+        layer.setRenderer(renderer)
+
+        counter = layer.countSymbolFeatures()
+        counter.waitForFinished()
+
+        self.assertEqual(layer.featureCount(cat_a_id), 3)
+        self.assertEqual(layer.featureCount(cat_b_id), 2)
+        self.assertEqual(layer.featureCount(cat_default_id), 1)
+
+    def test_layer_counts_default_category_empty_string(self):
+        layer = QgsVectorLayer("Point?field=test_field:string", "test_layer", "memory")
+        self.assertTrue(layer.isValid())
+        fields = layer.fields()
+        layer.startEditing()
+        self.assertEqual(fields[0].type(), QVariant.String)
+
+        # add test values
+        for attr_value in ["a"] * 3 + ["b"] * 2 + [None]:
+            f = QgsFeature(fields)
+            if attr_value is not None:
+                f.setAttributes([attr_value])
+            self.assertTrue(layer.addFeature(f))
+
+        self.assertEqual(layer.featureCount(), 6)
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("test_field")
+
+        renderer.addCategory(QgsRendererCategory("a", createMarkerSymbol(), "a"))
+        cat_a_id = renderer.categories()[-1].uuid()
+        renderer.addCategory(QgsRendererCategory("b", createMarkerSymbol(), "b"))
+        cat_b_id = renderer.categories()[-1].uuid()
+        # add default category
+        renderer.addCategory(QgsRendererCategory("", createMarkerSymbol(), "nulls"))
+        cat_default_id = renderer.categories()[-1].uuid()
+
+        self.assertEqual(renderer.legendKeys(), {cat_a_id, cat_b_id, cat_default_id})
+
+        layer.setRenderer(renderer)
+
+        counter = layer.countSymbolFeatures()
+        counter.waitForFinished()
+
+        self.assertEqual(layer.featureCount(cat_a_id), 3)
+        self.assertEqual(layer.featureCount(cat_b_id), 2)
+        self.assertEqual(layer.featureCount(cat_default_id), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

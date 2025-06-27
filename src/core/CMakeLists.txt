@@ -365,7 +365,7 @@ set(QGIS_CORE_SRCS
   stac/qgsstacasset.cpp
   stac/qgsstaccatalog.cpp
   stac/qgsstaccollection.cpp
-  stac/qgsstaccollections.cpp
+  stac/qgsstaccollectionlist.cpp
   stac/qgsstacconnection.cpp
   stac/qgsstaccontroller.cpp
   stac/qgsstacdataitems.cpp
@@ -1044,15 +1044,12 @@ if (WITH_INTERNAL_POLY2TRI)
 endif ()
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
-  string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
-endif()
 string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
   COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-  DEPENDS ${JSON_HELP_FILES}
+  DEPENDS ${JSON_HELP_FILES} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
@@ -1970,7 +1967,7 @@ set(QGIS_CORE_HDRS
   stac/qgsstacasset.h
   stac/qgsstaccatalog.h
   stac/qgsstaccollection.h
-  stac/qgsstaccollections.h
+  stac/qgsstaccollectionlist.h
   stac/qgsstacconnection.h
   stac/qgsstaccontroller.h
   stac/qgsstacdataitems.h
@@ -2210,8 +2207,6 @@ if (NOT MSVC)
 endif()
 
 # install headers
-# install qgsconfig.h and plugin.h here so they can get into
-# the OS X framework target
 
 if (HAVE_OPENCL)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2220,7 +2215,6 @@ if (HAVE_OPENCL)
     set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
         qgsopenclutils.h
     )
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if (WITH_EPT)
@@ -2487,36 +2481,12 @@ endif()
 
 if(HAVE_OPENCL)
   target_link_libraries(qgis_core ${OpenCL_LIBRARY})
+  target_include_directories(qgis_core PUBLIC ${OpenCL_INCLUDE_DIRS})
 endif()
 
-
-if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-
-  if(WITH_INTERNAL_NLOHMANN_JSON)
-    install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
-  endif()
-else()
-
-  set_target_properties(qgis_core PROPERTIES
-    CLEAN_DIRECT_OUTPUT 1
-    FRAMEWORK 1
-    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_core
-    BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_CORE_HDRS}"
-    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
-  )
-  # generated export header does not get copied with PUBLIC_HEADER files
-  add_custom_command(TARGET qgis_core
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy qgis_core.h
-            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS qgis_core.h
-  )
+if(WITH_INTERNAL_NLOHMANN_JSON)
+  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
+  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/detail/abi_macros.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann/detail)
 endif()
 
 #generate unversioned libs for android
@@ -2677,17 +2647,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-# Mac dev frameworks
-
-if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  install(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
-endif()
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

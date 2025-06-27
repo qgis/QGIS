@@ -111,10 +111,21 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
 
   mDockToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
+  mLayersMenu = new QMenu( this );
+  QToolButton *btnLayers = new QToolButton( this );
+  btnLayers->setAutoRaise( true );
+  btnLayers->setToolTip( tr( "Set Map Extent to Layer Extent" ) );
+  btnLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLayers.svg" ) ) );
+  btnLayers->setPopupMode( QToolButton::InstantPopup );
+  btnLayers->setMenu( mLayersMenu );
+
+  mDockToolbar->insertWidget( mActionMoveContent, btnLayers );
+  connect( mLayersMenu, &QMenu::aboutToShow, this, &QgsLayoutMapWidget::aboutToShowLayersMenu );
+
   mBookmarkMenu = new QMenu( this );
   QToolButton *btnBookmarks = new QToolButton( this );
   btnBookmarks->setAutoRaise( true );
-  btnBookmarks->setToolTip( tr( "Bookmarks" ) );
+  btnBookmarks->setToolTip( tr( "Set Map Extent to Bookmark Extent" ) );
   btnBookmarks->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
   btnBookmarks->setPopupMode( QToolButton::InstantPopup );
   btnBookmarks->setMenu( mBookmarkMenu );
@@ -459,6 +470,44 @@ void QgsLayoutMapWidget::switchToMoveContentTool()
     mInterface->activateTool( QgsLayoutDesignerInterface::ToolMoveItemContent );
 }
 
+void QgsLayoutMapWidget::aboutToShowLayersMenu()
+{
+  mLayersMenu->clear();
+
+  if ( !mMapLayerModel )
+  {
+    mMapLayerModel = new QgsMapLayerProxyModel( this );
+    mMapLayerModel->setFilters( Qgis::LayerFilter::SpatialLayer );
+  }
+
+  if ( mMapLayerModel->rowCount() == 0 )
+  {
+    QAction *action = new QAction( tr( "No spatial layers available" ) );
+    action->setEnabled( false );
+    mLayersMenu->addAction( action );
+    return;
+  }
+
+  for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
+  {
+    const QModelIndex index = mMapLayerModel->index( i, 0 );
+    const QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
+    const QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
+    const QString tooltip = mMapLayerModel->data( index, Qt::ToolTipRole ).toString();
+    const QString layerId = mMapLayerModel->data( index, static_cast<int>( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
+
+    QAction *action = new QAction( icon, text, mLayersMenu );
+    action->setToolTip( tooltip );
+    connect( action, &QAction::triggered, this, [this, layerId] {
+      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId ) )
+      {
+        setToCustomExtent( QgsReferencedRectangle( layer->extent(), layer->crs() ) );
+      }
+    } );
+    mLayersMenu->addAction( action );
+  }
+}
+
 void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
 {
   mBookmarkMenu->clear();
@@ -466,7 +515,17 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
   // query the bookmarks now? or once during widget creation... Hmm. Either way, there's potentially a
   // delay if there's LOTS of bookmarks. Let's avoid the cost until bookmarks are actually required.
   if ( !mBookmarkModel )
+  {
     mBookmarkModel = new QgsBookmarkManagerProxyModel( QgsApplication::bookmarkManager(), QgsProject::instance()->bookmarkManager(), this );
+  }
+
+  if ( mBookmarkModel->rowCount() == 0 )
+  {
+    QAction *action = new QAction( tr( "No bookmarks available" ) );
+    action->setEnabled( false );
+    mBookmarkMenu->addAction( action );
+    return;
+  }
 
   QMap<QString, QMenu *> groupMenus;
   for ( int i = 0; i < mBookmarkModel->rowCount(); ++i )
@@ -485,32 +544,7 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
     QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Name ) ).toString(), mBookmarkMenu );
     const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
     connect( action, &QAction::triggered, this, [=] {
-      if ( !mMapItem )
-      {
-        return;
-      }
-
-      QgsRectangle newExtent = extent;
-
-      //transform?
-      if ( extent.crs() != mMapItem->crs() )
-      {
-        try
-        {
-          QgsCoordinateTransform xForm( extent.crs(), mMapItem->crs(), QgsProject::instance() );
-          xForm.setBallparkTransformsAreAppropriate( true );
-          newExtent = xForm.transformBoundingBox( newExtent );
-        }
-        catch ( QgsCsException & )
-        {
-          //transform failed, better not proceed
-          return;
-        }
-      }
-
-      mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Extent" ) );
-      mMapItem->zoomToExtent( newExtent );
-      mMapItem->layout()->undoStack()->endCommand();
+      setToCustomExtent( extent );
     } );
     destMenu->addAction( action );
   }
@@ -524,6 +558,34 @@ void QgsLayoutMapWidget::aboutToShowBookmarkMenu()
     else
       mBookmarkMenu->addMenu( groupMenus.value( groupKeys.at( i ) ) );
   }
+}
+
+void QgsLayoutMapWidget::setToCustomExtent( const QgsReferencedRectangle &referencedExtent )
+{
+  if ( !mMapItem || referencedExtent.isEmpty() )
+  {
+    return;
+  }
+
+  QgsRectangle extent = referencedExtent;
+  if ( referencedExtent.crs() != mMapItem->crs() )
+  {
+    try
+    {
+      QgsCoordinateTransform coordinateTransform( referencedExtent.crs(), mMapItem->crs(), QgsProject::instance() );
+      coordinateTransform.setBallparkTransformsAreAppropriate( true );
+      extent = coordinateTransform.transformBoundingBox( extent );
+    }
+    catch ( QgsCsException & )
+    {
+      //transform failed, better not proceed
+      return;
+    }
+  }
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Extent" ) );
+  mMapItem->zoomToExtent( extent );
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::mTemporalCheckBox_toggled( bool checked )

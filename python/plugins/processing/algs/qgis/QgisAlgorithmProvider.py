@@ -30,7 +30,6 @@ from .BoxPlot import BoxPlot
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
-from .FindProjection import FindProjection
 from .Heatmap import Heatmap
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
@@ -90,7 +89,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             EliminateSelection(),
             ExecuteSQL(),
             FieldsPyculator(),
-            FindProjection(),
             Heatmap(),
             HubDistanceLines(),
             HubDistancePoints(),

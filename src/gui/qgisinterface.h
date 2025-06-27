@@ -1058,9 +1058,11 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     /**
-     * Opens the message log dock widget.
+     * Opens the message log dock widget, and optionally activates a specific tab by name.
+     *
+     * \param tabName Name of the tab to be activated (since QGIS 3.44)
      */
-    virtual void openMessageLog() = 0;
+    virtual void openMessageLog( const QString &tabName = QString() ) = 0;
 
     //! Adds a widget to the user input tool bar.
     virtual void addUserInputWidget( QWidget *widget ) = 0;

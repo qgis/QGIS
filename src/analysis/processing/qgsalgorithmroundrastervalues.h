@@ -45,6 +45,7 @@ class QgsRoundRasterValuesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRoundRasterValuesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

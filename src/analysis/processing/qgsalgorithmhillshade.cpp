@@ -53,6 +53,11 @@ QString QgsHillshadeAlgorithm::shortHelpString() const
          + QObject::tr( "The shading of the layer is calculated according to the sun position (azimuth and elevation)." );
 }
 
+QString QgsHillshadeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the hillshade of a Digital Terrain Model." );
+}
+
 QgsHillshadeAlgorithm *QgsHillshadeAlgorithm::createInstance() const
 {
   return new QgsHillshadeAlgorithm();

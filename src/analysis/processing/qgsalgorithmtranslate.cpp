@@ -57,6 +57,11 @@ QString QgsTranslateAlgorithm::shortHelpString() const
          + QObject::tr( "Z and M values present in the geometry can also be translated." );
 }
 
+QString QgsTranslateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Moves the geometries within a layer, by offsetting them with a specified x, y, z or m displacement." );
+}
+
 QgsTranslateAlgorithm *QgsTranslateAlgorithm::createInstance() const
 {
   return new QgsTranslateAlgorithm();
@@ -148,13 +153,12 @@ QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature,
 Qgis::WkbType QgsTranslateAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
   Qgis::WkbType wkb = inputWkbType;
-  if ( mDeltaZ != 0.0 )
+  if ( mDynamicDeltaZ || mDeltaZ != 0.0 )
     wkb = QgsWkbTypes::addZ( wkb );
-  if ( mDeltaM != 0.0 )
+  if ( mDynamicDeltaM || mDeltaM != 0.0 )
     wkb = QgsWkbTypes::addM( wkb );
   return wkb;
 }
-
 
 bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
@@ -173,4 +177,5 @@ bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
   const Qgis::WkbType inPlaceWkbType = layer->wkbType();
   return inPlaceWkbType == outputWkbType( inPlaceWkbType );
 }
+
 ///@endcond

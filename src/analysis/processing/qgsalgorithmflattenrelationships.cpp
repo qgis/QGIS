@@ -49,7 +49,7 @@ QString QgsFlattenRelationshipsAlgorithm::groupId() const
 
 QString QgsFlattenRelationshipsAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Flatten a relationship for a vector layer." );
+  return QObject::tr( "Flattens a relationship for a vector layer." );
 }
 
 QString QgsFlattenRelationshipsAlgorithm::shortHelpString() const

@@ -39,6 +39,7 @@ class QgsExtentFromLayerAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QString svgIconPath() const override;
     QIcon icon() const override;
     QgsExtentFromLayerAlgorithm *createInstance() const override SIP_FACTORY;

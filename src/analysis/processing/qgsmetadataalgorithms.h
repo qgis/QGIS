@@ -38,6 +38,7 @@ class QgsCopyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsCopyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -62,6 +63,7 @@ class QgsApplyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsApplyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -86,6 +88,7 @@ class QgsExportLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsExportLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -109,6 +112,7 @@ class QgsAddHistoryMetadataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsAddHistoryMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -133,6 +137,7 @@ class QgsUpdateLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsUpdateLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -158,6 +163,7 @@ class QgsSetMetadataFieldsAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsSetMetadataFieldsAlgorithm *createInstance() const override SIP_FACTORY;
 

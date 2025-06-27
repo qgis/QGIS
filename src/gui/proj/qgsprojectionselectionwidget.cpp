@@ -49,6 +49,10 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
     mProjectCrs.updateDefinition();
     mDefaultCrs.updateDefinition();
   } );
+
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [=] {
+    mProjectCrs = QgsProject::instance()->crs();
+  } );
 }
 
 Qt::ItemFlags StandardCoordinateReferenceSystemsModel::flags( const QModelIndex &index ) const
@@ -75,11 +79,11 @@ QVariant StandardCoordinateReferenceSystemsModel::data( const QModelIndex &index
       switch ( option )
       {
         case QgsProjectionSelectionWidget::ProjectCrs:
-          return tr( "Project CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Project CRS: %1" ).arg( mProjectCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::DefaultCrs:
-          return tr( "Default CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Default CRS: %1" ).arg( mDefaultCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::LayerCrs:
-          return tr( "Layer CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Layer CRS: %1" ).arg( mLayerCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::CrsNotSet:
           return mNotSetText;
         case QgsProjectionSelectionWidget::CurrentCrs:

@@ -2017,6 +2017,7 @@ void QgsProjectProperties::updateGuiForMapUnits()
       mAreaUnitsCombo->setItemText( idx, mapUnitString );
     }
   }
+  updateGuiForCoordinateType();
 }
 
 void QgsProjectProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )

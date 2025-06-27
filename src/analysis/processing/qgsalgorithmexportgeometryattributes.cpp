@@ -49,11 +49,16 @@ QString QgsExportGeometryAttributesAlgorithm::groupId() const
 
 QString QgsExportGeometryAttributesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Computes geometric properties of the features in a vector layer. Algorithm generates a new "
+  return QObject::tr( "This algorithm computes geometric properties of the features in a vector layer. The algorithm generates a new "
                       "vector layer with the same content as the input one, but with additional attributes in its "
                       "attributes table, containing geometric measurements.\n\n"
                       "Depending on the geometry type of the vector layer, the attributes added to the table will "
                       "be different." );
+}
+
+QString QgsExportGeometryAttributesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes geometric properties of the features in a vector layer." );
 }
 
 QgsExportGeometryAttributesAlgorithm *QgsExportGeometryAttributesAlgorithm::createInstance() const

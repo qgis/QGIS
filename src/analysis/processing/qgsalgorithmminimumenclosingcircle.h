@@ -38,6 +38,7 @@ class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgor
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsMinimumEnclosingCircleAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;

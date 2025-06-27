@@ -21,9 +21,6 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
-///@cond PRIVATE
-#define SIP_NO_FILE
-
 #include <QStringList>
 
 #include "qgsabstractproviderconnection.h"
@@ -36,7 +33,6 @@ class QgsSettingsEntryVariantMap;
  * \brief Represents connections to STAC catalogs.
  *
  * \ingroup core
- * \note Not available in Python bindings.
  *
  * \since QGIS 3.40
  */
@@ -105,7 +101,5 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
     //! Saves name of the last used connection
     static void setSelectedConnection( const QString &connName );
 };
-
-///@endcond
 
 #endif // QGSSTACCONNECTION_H

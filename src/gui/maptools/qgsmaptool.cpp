@@ -237,7 +237,7 @@ double QgsMapTool::searchRadiusMM()
 
 double QgsMapTool::searchRadiusMU( const QgsRenderContext &context )
 {
-  return searchRadiusMM() * context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
+  return context.convertToMapUnits( searchRadiusMM(), Qgis::RenderUnit::Millimeters );
 }
 
 double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
@@ -248,7 +248,7 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
   }
   const QgsMapSettings mapSettings = canvas->mapSettings();
   const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  return searchRadiusMU( context );
+  return searchRadiusMU( context ) / mapSettings.magnificationFactor();
 }
 
 

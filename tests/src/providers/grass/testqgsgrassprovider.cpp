@@ -127,13 +127,13 @@ QString TestQgsGrassCommand::toString() const
     {
       if ( grassFeature.hasGeometry() )
       {
-        string += "<br>grass: " + grassFeature.geometry().asWkt( 1 );
+        string += "grass: " + grassFeature.geometry().asWkt( 1 );
       }
     }
 
     if ( expectedFeature.hasGeometry() )
     {
-      string += "<br>expected: " + expectedFeature.geometry().asWkt( 1 );
+      string += "expected: " + expectedFeature.geometry().asWkt( 1 );
     }
   }
   else if ( command == DeleteFeature )
@@ -243,11 +243,16 @@ class TestQgsGrassProvider : public QgsTest
 
 void TestQgsGrassProvider::reportRow( const QString &message )
 {
-  mReport += message + "<br>\n";
+  for ( const QString &line : message.split( '\n' ) )
+  {
+    qDebug() << line;
+  }
 }
 void TestQgsGrassProvider::reportHeader( const QString &message )
 {
-  mReport += "<h2>" + message + "</h2>\n";
+  qDebug() << "------";
+  qDebug() << message;
+  qDebug() << "------";
 }
 
 //runs before all tests
@@ -264,8 +269,8 @@ void TestQgsGrassProvider::initTestCase()
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( QLatin1String( "\n" ), QLatin1String( "<br />\n" ) );
-  mReport += QStringLiteral( "<h1>GRASS %1 provider tests</h1>\n" ).arg( GRASS_BUILD_VERSION );
-  mReport += "<p>" + mySettings + "</p>\n";
+  reportHeader( QStringLiteral( "<h1>GRASS %1 provider tests</h1>\n" ).arg( GRASS_BUILD_VERSION ) );
+  reportRow( mySettings );
 
 #ifndef Q_OS_WIN
   reportRow( "LD_LIBRARY_PATH: " + QString( getenv( "LD_LIBRARY_PATH" ) ) );
@@ -1163,7 +1168,7 @@ void TestQgsGrassProvider::edit()
 
     Q_FOREACH ( const TestQgsGrassCommand &command, commandGroup.commands )
     {
-      reportRow( "<br>command: " + command.toString() );
+      reportRow( "command: " + command.toString() );
       bool commandOk = true;
 
       if ( command.command == TestQgsGrassCommand::StartEditing )
@@ -1388,7 +1393,7 @@ void TestQgsGrassProvider::edit()
         {
           for ( int j = editCommands.size() - 1; j >= 0; j-- )
           {
-            reportRow( "<br>undo command: " + editCommands[j].toString() );
+            reportRow( "undo command: " + editCommands[j].toString() );
             grassLayer->undoStack()->undo();
             expectedLayer->undoStack()->undo();
             if ( !compare( expectedLayers, ok ) )
@@ -1418,7 +1423,7 @@ void TestQgsGrassProvider::edit()
         {
           for ( int j = 0; j < editCommands.size(); j++ )
           {
-            reportRow( "<br>redo command: " + editCommands[j].toString() );
+            reportRow( "redo command: " + editCommands[j].toString() );
             grassLayer->undoStack()->redo();
             expectedLayer->undoStack()->redo();
             if ( !compare( expectedLayers, ok ) )

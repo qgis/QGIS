@@ -742,6 +742,15 @@ class CORE_EXPORT QgsTextFormat
     bool containsAdvancedEffects() const;
 
     /**
+     * Returns TRUE if any component of the font format requires a non-default composition mode.
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    bool hasNonDefaultCompositionMode() const;
+
+    /**
      * Returns TRUE if the specified font was found on the system, or FALSE
      * if the font was not found and a replacement was used instead.
      * \see resolvedFontFamily()

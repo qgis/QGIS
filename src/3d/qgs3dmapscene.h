@@ -55,7 +55,6 @@ class QgsChunkedEntity;
 class QgsSkyboxEntity;
 class QgsSkyboxSettings;
 class Qgs3DMapExportSettings;
-class QgsPostprocessingEntity;
 class QgsChunkNode;
 class QgsDoubleRange;
 class Qgs3DMapSceneEntity;

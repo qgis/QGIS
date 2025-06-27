@@ -29,6 +29,6 @@ QgsNewHttpConnection.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _fo
 QgsNewHttpConnection.Flag.__or__ = lambda flag1, flag2: QgsNewHttpConnection.Flag(_force_int(flag1) | _force_int(flag2))
 try:
     QgsNewHttpConnection.__virtual_methods__ = ['validate', 'wfsSettingsKey', 'wmsSettingsKey']
-    QgsNewHttpConnection.__overridden_methods__ = ['accept']
+    QgsNewHttpConnection.__overridden_methods__ = ['accept', 'showEvent']
 except (NameError, AttributeError):
     pass

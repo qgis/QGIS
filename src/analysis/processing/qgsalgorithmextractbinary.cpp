@@ -39,7 +39,7 @@ QString QgsExtractBinaryFieldAlgorithm::shortHelpString() const
 
 QString QgsExtractBinaryFieldAlgorithm::shortDescription() const
 {
-  return QObject::tr( "This algorithm extracts contents from a binary field, saving them to individual files." );
+  return QObject::tr( "Extracts contents from a binary field, saving them to individual files." );
 }
 
 QStringList QgsExtractBinaryFieldAlgorithm::tags() const

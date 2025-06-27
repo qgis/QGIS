@@ -115,7 +115,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
     QWidget *mainWindow() override;
     QgsMessageBar *messageBar() override;
-    void openMessageLog() override;
+    void openMessageLog( const QString &tabName = QString() ) override;
     void addUserInputWidget( QWidget *widget ) override;
     void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;

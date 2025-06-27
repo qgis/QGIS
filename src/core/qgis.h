@@ -2229,6 +2229,7 @@ class CORE_EXPORT Qgis
     {
       UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \since QGIS 3.22
       IsBasemapLayer = 1 << 1, //!< Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest \since QGIS 3.26
+      Is3DBasemapLayer = 1 << 2, //!< Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data \since QGIS 3.44
     };
     //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
@@ -2258,6 +2259,7 @@ class CORE_EXPORT Qgis
       IsBasemapSource = 1 << 1, //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
       FastExtent2D = 1 << 2, //!< Provider's 2D extent retrieval via QgsDataProvider::extent() is always guaranteed to be trivial/fast to calculate \since QGIS 3.38
       FastExtent3D = 1 << 3, //!< Provider's 3D extent retrieval via QgsDataProvider::extent3D() is always guaranteed to be trivial/fast to calculate \since QGIS 3.38
+      Is3DBasemapSource = 1 << 4, //!< Associated source should be considered a '3D basemap' layer. See Qgis::MapLayerProperty::Is3DBasemapLayer. \since QGIS 3.44
     };
     //! Data provider flags
     Q_DECLARE_FLAGS( DataProviderFlags, DataProviderFlag )
@@ -2643,6 +2645,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( CoordinateTransformationFlags )
 
     /**
+     * Policies controlling when rasterisation of content during renders is permitted.
+     *
+     * \since QGIS 3.44
+     */
+    enum class RasterizedRenderingPolicy : int
+    {
+      Default, //!< Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+      PreferVector, //!< Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
+      ForceVector, //!< Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
+    };
+    Q_ENUM( RasterizedRenderingPolicy )
+
+    /**
      * Flags which adjust the way maps are rendered.
      *
      * \since QGIS 3.22
@@ -2651,8 +2666,8 @@ class CORE_EXPORT Qgis
     {
       Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
+      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images. \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
+      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
       DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
@@ -2682,8 +2697,8 @@ class CORE_EXPORT Qgis
     enum class RenderContextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
+      ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
+      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
       UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
@@ -2703,6 +2718,7 @@ class CORE_EXPORT Qgis
       RecordProfile            = 0x80000, //!< Enable run-time profiling while rendering \since QGIS 3.34
       AlwaysUseGlobalMasks     = 0x100000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
       DisableSymbolClippingToExtent = 0x200000, //!< Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable. \since QGIS 3.40
+      RenderLayerTree = 0x400000        //!< The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \since QGIS 3.44
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
@@ -2729,6 +2745,25 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( MapLayerRendererFlags, MapLayerRendererFlag )
     Q_FLAG( MapLayerRendererFlags )
+
+    /**
+     * Flags which control how paint effects behave.
+     *
+     * \since QGIS 3.44
+     */
+    enum class PaintEffectFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RequiresRasterization = 1 << 0, //!< The effect requires raster-based rendering.
+    };
+    Q_ENUM( PaintEffectFlag )
+
+    /**
+     * Flags which control how paint effects behave.
+     *
+     * \since QGIS 3.44
+     */
+    Q_DECLARE_FLAGS( PaintEffectFlags, PaintEffectFlag )
+    Q_FLAG( PaintEffectFlags )
 
     // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
     // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
@@ -5073,6 +5108,40 @@ class CORE_EXPORT Qgis
     Q_ENUM( LayoutUnitType )
 
     /**
+     * Flags for controlling how a layout is rendered.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsLayoutRenderContext::Flag
+     *
+     * \since QGIS 3.44
+    */
+    enum class LayoutRenderFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Debug SIP_MONKEYPATCH_COMPAT_NAME( FlagDebug ) = 1 << 1,  //!< Debug/testing mode, items are drawn as solid rectangles.
+      OutlineOnly SIP_MONKEYPATCH_COMPAT_NAME( FlagOutlineOnly ) = 1 << 2, //!< Render items as outlines only.
+      Antialiasing SIP_MONKEYPATCH_COMPAT_NAME( FlagAntialiasing ) = 1 << 3, //!< Use antialiasing when drawing items.
+      UseAdvancedEffects SIP_MONKEYPATCH_COMPAT_NAME( FlagUseAdvancedEffects ) = 1 << 4, //!< Enable advanced effects such as blend modes. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      ForceVectorOutput SIP_MONKEYPATCH_COMPAT_NAME( FlagForceVectorOutput ) = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      HideCoverageLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagHideCoverageLayer ) = 1 << 6, //!< Hide coverage layer in outputs
+      DrawSelection SIP_MONKEYPATCH_COMPAT_NAME( FlagDrawSelection ) = 1 << 7, //!< Draw selection
+      DisableTiledRasterLayerRenders SIP_MONKEYPATCH_COMPAT_NAME( FlagDisableTiledRasterLayerRenders ) = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+      RenderLabelsByMapLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagRenderLabelsByMapLayer ) = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+      LosslessImageRendering SIP_MONKEYPATCH_COMPAT_NAME( FlagLosslessImageRendering ) = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+      SynchronousLegendGraphics SIP_MONKEYPATCH_COMPAT_NAME( FlagSynchronousLegendGraphics ) = 1 << 11, //!< Query legend graphics synchronously.
+      AlwaysUseGlobalMasks SIP_MONKEYPATCH_COMPAT_NAME( FlagAlwaysUseGlobalMasks ) = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
+    };
+    Q_ENUM( LayoutRenderFlag )
+
+    /**
+     * Flags for controlling how a layout is rendered.
+     *
+     * \note Prior to QGIS 3.44 this was available as QgsLayoutRenderContext::Flags
+     *
+     * \since QGIS 3.44
+    */
+    Q_DECLARE_FLAGS( LayoutRenderFlags, LayoutRenderFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLayoutRenderContext, Flags )
+    Q_FLAG( LayoutRenderFlags )
+
+    /**
      * Picture formats.
      *
      * \note Prior to QGIS 3.40 this was available as QgsLayoutItemPicture::Format.
@@ -5895,6 +5964,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( SegmentCalculationMethod )
 
     /**
+    * Available types of stac objects
+    * \since QGIS 3.44
+    */
+    enum class StacObjectType : int
+    {
+      Unknown,      //!< Type is not known
+      Catalog,      //!< STAC catalog
+      Collection,   //!< STAC collection
+      Item,         //!< STAC item
+    };
+    Q_ENUM( StacObjectType )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6113,6 +6195,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PaintEffectFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
@@ -6146,6 +6229,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorRenderingSimplificationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
+Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -6601,9 +6686,9 @@ template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultVal
       const int intValue = keys.toInt( &canConvert );
       if ( canConvert )
       {
-        const QByteArray keys = metaEnum.valueToKeys( intValue );
-        const int intValueCheck = metaEnum.keysToValue( keys );
-        if ( intValue == intValueCheck )
+        const QByteArray keyArray = metaEnum.valueToKeys( intValue );
+        const int intValueCheck = metaEnum.keysToValue( keyArray );
+        if ( !keyArray.isEmpty() && intValue == intValueCheck )
         {
           if ( returnOk )
           {

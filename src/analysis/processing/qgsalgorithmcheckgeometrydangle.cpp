@@ -37,7 +37,7 @@ QString QgsGeometryCheckDangleAlgorithm::displayName() const
 
 QString QgsGeometryCheckDangleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect lines with a dangle end" );
+  return QObject::tr( "Detects lines with a dangle end." );
 }
 
 QStringList QgsGeometryCheckDangleAlgorithm::tags() const

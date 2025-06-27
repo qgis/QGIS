@@ -80,6 +80,10 @@ QString QgsGridAlgorithm::shortHelpString() const
                       "selected spacing, that is not true for the other points that define that extent."
   );
 }
+QString QgsGridAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer with a grid covering a given extent." );
+}
 
 QgsGridAlgorithm *QgsGridAlgorithm::createInstance() const
 {

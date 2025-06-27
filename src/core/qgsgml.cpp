@@ -633,8 +633,18 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
             ( LOCALNAME_EQUALS( "pos" ) || LOCALNAME_EQUALS( "posList" ) ) )
   {
     mParseModeStack.push( QgsGmlStreamingParser::PosList );
+    if ( mCoorMode == QgsGmlStreamingParser::PosList )
+    {
+      if ( !mStringCash.isEmpty() )
+      {
+        mStringCash.append( QLatin1Char( ' ' ) );
+      }
+    }
+    else
+    {
+      mStringCash.clear();
+    }
     mCoorMode = QgsGmlStreamingParser::PosList;
-    mStringCash.clear();
     if ( elDimension == 0 )
     {
       const QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
@@ -654,6 +664,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mParseModeStack.push( QgsGmlStreamingParser::Geometry );
     mFoundUnhandledGeometryElement = false;
     mGeometryString.clear();
+    mStringCash.clear();
   }
   //else if ( mParseModeStack.size() == 0 && elementName == mGMLNameSpaceURI + NS_SEPARATOR + "boundedBy" )
   else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "boundedBy" ) )
@@ -1064,7 +1075,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   const ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  const int lastDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
+  const int lastDimension = mDimensionStack.isEmpty() ? 2 : mDimensionStack.pop();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
@@ -1204,7 +1215,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   }
   else if ( parseMode == LowerCorner && isGMLNS && LOCALNAME_EQUALS( "lowerCorner" ) )
   {
-    QList<QgsPointXY> points;
+    QList<QgsPoint> points;
     pointsFromPosListString( points, mStringCash, 2 );
     if ( points.size() == 1 )
     {
@@ -1215,7 +1226,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   }
   else if ( parseMode == UpperCorner && isGMLNS && LOCALNAME_EQUALS( "upperCorner" ) )
   {
-    QList<QgsPointXY> points;
+    QList<QgsPoint> points;
     pointsFromPosListString( points, mStringCash, 2 );
     if ( points.size() == 1 )
     {
@@ -1268,11 +1279,14 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   }
   else if ( !mAttributeValIsNested && isGMLNS && LOCALNAME_EQUALS( "Point" ) )
   {
-    QList<QgsPointXY> pointList;
-    if ( pointsFromString( pointList, mStringCash ) != 0 )
+    QList<QgsPoint> pointList;
+    int dimension = 0;
+    if ( pointsFromString( pointList, mStringCash, &dimension ) != 0 )
     {
       //error
     }
+    mStringCash.clear();
+    mDimension = dimension;
 
     if ( pointList.isEmpty() )
       return;  // error
@@ -1280,20 +1294,21 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     if ( parseMode == QgsGmlStreamingParser::Geometry )
     {
       //directly add WKB point to the feature
-      if ( getPointWKB( mCurrentWKB, *( pointList.constBegin() ) ) != 0 )
+      if ( getPointWKB( mCurrentWKB, *( pointList.constBegin() ), dimension ) != 0 )
       {
         //error
       }
 
-      if ( mWkbType != Qgis::WkbType::MultiPoint ) //keep multitype in case of geometry type mix
+      if ( QgsWkbTypes::flatType( mWkbType ) != Qgis::WkbType::MultiPoint ) //keep multitype in case of geometry type mix
       {
-        mWkbType = Qgis::WkbType::Point;
+        mWkbType = dimension > 2 ? Qgis::WkbType::PointZ : Qgis::WkbType::Point;
       }
+
     }
     else //multipoint, add WKB as fragment
     {
       QByteArray wkbPtr;
-      if ( getPointWKB( wkbPtr, *( pointList.constBegin() ) ) != 0 )
+      if ( getPointWKB( wkbPtr, *( pointList.constBegin() ), dimension ) != 0 )
       {
         //error
       }
@@ -1312,30 +1327,40 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   {
     //add WKB point to the feature
 
-    QList<QgsPointXY> pointList;
-    if ( pointsFromString( pointList, mStringCash ) != 0 )
+    QList<QgsPoint> pointList;
+    int dimension = 0;
+    if ( pointsFromString( pointList, mStringCash, &dimension ) != 0 )
     {
       //error
     }
+    mStringCash.clear();
+    mDimension = dimension;
+
     if ( parseMode == QgsGmlStreamingParser::Geometry )
     {
-      if ( getLineWKB( mCurrentWKB, pointList ) != 0 )
+      if ( getLineWKB( mCurrentWKB, pointList, dimension ) != 0 )
       {
         //error
       }
 
-      if ( mWkbType != Qgis::WkbType::MultiLineString )//keep multitype in case of geometry type mix
+      if ( QgsWkbTypes::flatType( mWkbType ) != Qgis::WkbType::MultiLineString )//keep multitype in case of geometry type mix
       {
-        mWkbType = Qgis::WkbType::LineString;
+        mWkbType = dimension > 2 ? Qgis::WkbType::LineStringZ : Qgis::WkbType::LineString;
       }
+      else if ( dimension > 2 )
+      {
+        mWkbType = Qgis::WkbType::MultiLineStringZ;
+      }
+      mDimension = dimension;
     }
     else //multiline, add WKB as fragment
     {
       QByteArray wkbPtr;
-      if ( getLineWKB( wkbPtr, pointList ) != 0 )
+      if ( getLineWKB( wkbPtr, pointList, dimension ) != 0 )
       {
         //error
       }
+      mDimension = dimension;
       if ( !mCurrentWKBFragments.isEmpty() )
       {
         mCurrentWKBFragments.last().push_back( wkbPtr );
@@ -1349,14 +1374,17 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( ( parseMode == Geometry || parseMode == MultiPolygon ) &&
             isGMLNS && LOCALNAME_EQUALS( "LinearRing" ) )
   {
-    QList<QgsPointXY> pointList;
-    if ( pointsFromString( pointList, mStringCash ) != 0 )
+    QList<QgsPoint> pointList;
+    int dimension = 0;
+    if ( pointsFromString( pointList, mStringCash, &dimension ) != 0 )
     {
       //error
     }
+    mStringCash.clear();
+    mDimension = dimension;
 
     QByteArray wkbPtr;
-    if ( getRingWKB( wkbPtr, pointList ) != 0 )
+    if ( getRingWKB( wkbPtr, pointList, dimension ) != 0 )
     {
       //error
     }
@@ -1373,9 +1401,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( ( parseMode == Geometry || parseMode == MultiPolygon ) && isGMLNS &&
             LOCALNAME_EQUALS( "Polygon" ) )
   {
-    if ( mWkbType != Qgis::WkbType::MultiPolygon )//keep multitype in case of geometry type mix
+    if ( QgsWkbTypes::flatType( mWkbType ) != Qgis::WkbType::MultiPolygon ) //keep multitype in case of geometry type mix
     {
-      mWkbType = Qgis::WkbType::Polygon;
+      mWkbType = mDimension > 2 ? Qgis::WkbType::PolygonZ : Qgis::WkbType::Polygon;
     }
 
     if ( parseMode == Geometry )
@@ -1386,21 +1414,21 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   else if ( parseMode == MultiPoint &&  isGMLNS &&
             LOCALNAME_EQUALS( "MultiPoint" ) )
   {
-    mWkbType = Qgis::WkbType::MultiPoint;
+    mWkbType = mDimension > 2 ? Qgis::WkbType::MultiPointZ : Qgis::WkbType::MultiPoint;
     mParseModeStack.pop();
     createMultiPointFromFragments();
   }
   else if ( parseMode == MultiLine && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiLineString" )  || LOCALNAME_EQUALS( "MultiCurve" ) ) )
   {
-    mWkbType = Qgis::WkbType::MultiLineString;
+    mWkbType = mDimension > 2 ? Qgis::WkbType::MultiLineStringZ : Qgis::WkbType::MultiLineString;
     mParseModeStack.pop();
     createMultiLineFromFragments();
   }
   else if ( parseMode == MultiPolygon && isGMLNS &&
             ( LOCALNAME_EQUALS( "MultiPolygon" )  || LOCALNAME_EQUALS( "MultiSurface" ) ) )
   {
-    mWkbType = Qgis::WkbType::MultiPolygon;
+    mWkbType = mDimension > 2 ? Qgis::WkbType::MultiPolygonZ : Qgis::WkbType::MultiPolygon;
     mParseModeStack.pop();
     createMultiPolygonFromFragments();
   }
@@ -1569,7 +1597,7 @@ QString QgsGmlStreamingParser::readAttribute( const QString &attributeName, cons
 
 bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, const QString &coordString ) const
 {
-  QList<QgsPointXY> points;
+  QList<QgsPoint> points;
   if ( pointsFromCoordinateString( points, coordString ) != 0 )
   {
     return false;
@@ -1585,18 +1613,25 @@ bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, con
   return true;
 }
 
-int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const
+int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString, int *dimension ) const
 {
   //tuples are separated by space, x/y by ','
   const QStringList tuples = coordString.split( mTupleSeparator, Qt::SkipEmptyParts );
   QStringList tuples_coordinates;
-  double x, y;
+  double x, y, z;
   bool conversionSuccess;
+
+  if ( dimension )
+    *dimension = 0;
 
   QStringList::const_iterator tupleIterator;
   for ( tupleIterator = tuples.constBegin(); tupleIterator != tuples.constEnd(); ++tupleIterator )
   {
     tuples_coordinates = tupleIterator->split( mCoordinateSeparator, Qt::SkipEmptyParts );
+    if ( dimension )
+    {
+      *dimension = std::max( *dimension, static_cast<int>( tuples_coordinates.size() ) );
+    }
     if ( tuples_coordinates.size() < 2 )
     {
       continue;
@@ -1611,12 +1646,30 @@ int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points
     {
       continue;
     }
-    points.push_back( ( mInvertAxisOrientation ) ? QgsPointXY( y, x ) : QgsPointXY( x, y ) );
+    if ( tuples_coordinates.size() > 2 )
+    {
+      z = tuples_coordinates.at( 2 ).toDouble( &conversionSuccess );
+      if ( !conversionSuccess )
+      {
+        continue;
+      }
+    }
+    else
+    {
+      z = std::numeric_limits<double>::quiet_NaN(); // no Z coordinate
+    }
+    points.push_back( ( mInvertAxisOrientation ) ? QgsPoint( y, x, z ) : QgsPoint( x, y, z ) );
   }
+
+  if ( dimension && *dimension == 0 )
+  {
+    *dimension = 2; // default dimension is 2D
+  }
+
   return 0;
 }
 
-int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const
+int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPoint> &points, const QString &coordString, int dimension ) const
 {
   // coordinates separated by spaces
   const QStringList coordinates = coordString.split( ' ', Qt::SkipEmptyParts );
@@ -1640,66 +1693,91 @@ int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, c
     {
       continue;
     }
-    points.append( ( mInvertAxisOrientation ) ? QgsPointXY( y, x ) : QgsPointXY( x, y ) );
+    double z = std::numeric_limits<double>::quiet_NaN();
+    if ( dimension > 2 )
+    {
+      z = coordinates.value( i * dimension + 2 ).toDouble( &conversionSuccess );
+      if ( !conversionSuccess )
+      {
+        continue;
+      }
+    }
+    points.append( mInvertAxisOrientation ? QgsPoint( y, x, z ) : QgsPoint( x, y, z ) );
   }
   return 0;
 }
 
-int QgsGmlStreamingParser::pointsFromString( QList<QgsPointXY> &points, const QString &coordString ) const
+int QgsGmlStreamingParser::pointsFromString( QList<QgsPoint> &points, const QString &coordString, int *dimension ) const
 {
   if ( mCoorMode == QgsGmlStreamingParser::Coordinate )
   {
-    return pointsFromCoordinateString( points, coordString );
+    return pointsFromCoordinateString( points, coordString, dimension );
   }
   else if ( mCoorMode == QgsGmlStreamingParser::PosList )
   {
+    if ( dimension )
+    {
+      *dimension = mDimension ? mDimension : 2; // default dimension is 2D
+    }
     return pointsFromPosListString( points, coordString, mDimension ? mDimension : 2 );
   }
   return 1;
 }
 
-int QgsGmlStreamingParser::getPointWKB( QByteArray &wkbPtr, const QgsPointXY &point ) const
+int QgsGmlStreamingParser::getPointWKB( QByteArray &wkbPtr, const QgsPoint &point, int dimension ) const
 {
-  const int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
+  const int wkbSize = 1 + static_cast<int>( sizeof( int ) ) + dimension * static_cast<int>( sizeof( double ) );
   wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
-  fillPtr << mEndian << Qgis::WkbType::Point << point.x() << point.y();
-
-  return 0;
-}
-
-int QgsGmlStreamingParser::getLineWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const
-{
-  const int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
-  wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
-
-  QgsWkbPtr fillPtr( wkbPtr );
-
-  fillPtr << mEndian << Qgis::WkbType::LineString << lineCoordinates.size();
-
-  QList<QgsPointXY>::const_iterator iter;
-  for ( iter = lineCoordinates.constBegin(); iter != lineCoordinates.constEnd(); ++iter )
+  fillPtr << mEndian << ( dimension > 2 ? Qgis::WkbType::PointZ : Qgis::WkbType::Point ) << point.x() << point.y();
+  if ( dimension > 2 )
   {
-    fillPtr << iter->x() << iter->y();
+    fillPtr << point.z(); // add Z coordinate if available
   }
 
   return 0;
 }
 
-int QgsGmlStreamingParser::getRingWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const
+int QgsGmlStreamingParser::getLineWKB( QByteArray &wkbPtr, const QList<QgsPoint> &lineCoordinates, int dimension ) const
 {
-  const int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
+  const int wkbSize = 1 + 2 * static_cast<int>( sizeof( int ) ) + static_cast<int>( lineCoordinates.size() ) * dimension * static_cast<int>( sizeof( double ) );
+  wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
+
+  QgsWkbPtr fillPtr( wkbPtr );
+
+  fillPtr << mEndian << ( dimension > 2 ? Qgis::WkbType::LineStringZ : Qgis::WkbType::LineString ) << lineCoordinates.size();
+
+  QList<QgsPoint>::const_iterator iter;
+  for ( iter = lineCoordinates.constBegin(); iter != lineCoordinates.constEnd(); ++iter )
+  {
+    fillPtr << iter->x() << iter->y();
+    if ( dimension > 2 )
+    {
+      fillPtr << iter->z(); // add Z coordinate if available
+    }
+  }
+
+  return 0;
+}
+
+int QgsGmlStreamingParser::getRingWKB( QByteArray &wkbPtr, const QList<QgsPoint> &ringCoordinates, int dimension ) const
+{
+  const int wkbSize = static_cast<int>( sizeof( int ) ) + static_cast<int>( ringCoordinates.size() ) * dimension * static_cast<int>( sizeof( double ) );
   wkbPtr = QByteArray( wkbSize, Qt::Uninitialized );
 
   QgsWkbPtr fillPtr( wkbPtr );
 
   fillPtr << ringCoordinates.size();
 
-  QList<QgsPointXY>::const_iterator iter;
+  QList<QgsPoint>::const_iterator iter;
   for ( iter = ringCoordinates.constBegin(); iter != ringCoordinates.constEnd(); ++iter )
   {
     fillPtr << iter->x() << iter->y();
+    if ( dimension > 2 )
+    {
+      fillPtr << iter->z(); // add Z coordinate if available
+    }
   }
 
   return 0;
@@ -1707,12 +1785,12 @@ int QgsGmlStreamingParser::getRingWKB( QByteArray &wkbPtr, const QList<QgsPointX
 
 int QgsGmlStreamingParser::createMultiLineFromFragments()
 {
-  const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) + totalWKBFragmentSize();
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
 
-  wkbPtr << mEndian << Qgis::WkbType::MultiLineString << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << ( mDimension > 2 ? Qgis::WkbType::MultiLineStringZ : Qgis::WkbType::MultiLineString ) << mCurrentWKBFragments.constBegin()->size();
 
   //copy (and delete) all the wkb fragments
   auto wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
@@ -1723,17 +1801,17 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = Qgis::WkbType::MultiLineString;
+  mWkbType = mDimension > 2 ? Qgis::WkbType::MultiLineStringZ : Qgis::WkbType::MultiLineString;
   return 0;
 }
 
 int QgsGmlStreamingParser::createMultiPointFromFragments()
 {
-  const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) + totalWKBFragmentSize();
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << Qgis::WkbType::MultiPoint << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << ( mDimension > 2 ? Qgis::WkbType::MultiPointZ : Qgis::WkbType::MultiPoint ) << mCurrentWKBFragments.constBegin()->size();
 
   auto wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
@@ -1743,18 +1821,18 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = Qgis::WkbType::MultiPoint;
+  mWkbType = mDimension > 2 ? Qgis::WkbType::MultiPointZ : Qgis::WkbType::MultiPoint;
   return 0;
 }
 
 
 int QgsGmlStreamingParser::createPolygonFromFragments()
 {
-  const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) + totalWKBFragmentSize();
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << mEndian << Qgis::WkbType::Polygon << mCurrentWKBFragments.constBegin()->size();
+  wkbPtr << mEndian << ( mDimension > 2 ? Qgis::WkbType::PolygonZ : Qgis::WkbType::Polygon ) << mCurrentWKBFragments.constBegin()->size();
 
   auto wkbIt = mCurrentWKBFragments.constBegin()->constBegin();
   for ( ; wkbIt != mCurrentWKBFragments.constBegin()->constEnd(); ++wkbIt )
@@ -1764,21 +1842,21 @@ int QgsGmlStreamingParser::createPolygonFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = Qgis::WkbType::Polygon;
+  mWkbType = mDimension > 2 ? Qgis::WkbType::PolygonZ : Qgis::WkbType::Polygon;
   return 0;
 }
 
 int QgsGmlStreamingParser::createMultiPolygonFromFragments()
 {
   int size = 0;
-  size += 1 + 2 * sizeof( int );
+  size += 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) );
   size += totalWKBFragmentSize();
-  size += mCurrentWKBFragments.size() * ( 1 + 2 * sizeof( int ) ); //fragments are just the rings
+  size += mCurrentWKBFragments.size() * ( 1 + ( mDimension > 2 ? mDimension : 2 ) * static_cast<int>( sizeof( int ) ) ); //fragments are just the rings
 
   mCurrentWKB = QByteArray( size, Qt::Uninitialized );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
-  wkbPtr << ( char ) mEndian << Qgis::WkbType::MultiPolygon << mCurrentWKBFragments.size();
+  wkbPtr << ( char ) mEndian << ( mDimension > 2 ? Qgis::WkbType::MultiPolygonZ : Qgis::WkbType::MultiPolygon ) << mCurrentWKBFragments.size();
 
   //have outer and inner iterators
   auto outerWkbIt = mCurrentWKBFragments.constBegin();
@@ -1786,7 +1864,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   for ( ; outerWkbIt != mCurrentWKBFragments.constEnd(); ++outerWkbIt )
   {
     //new polygon
-    wkbPtr << ( char ) mEndian << Qgis::WkbType::Polygon << outerWkbIt->size();
+    wkbPtr << ( char ) mEndian << ( mDimension > 2 ? Qgis::WkbType::PolygonZ : Qgis::WkbType::Polygon ) << outerWkbIt->size();
 
     auto innerWkbIt = outerWkbIt->constBegin();
     for ( ; innerWkbIt != outerWkbIt->constEnd(); ++innerWkbIt )
@@ -1797,7 +1875,7 @@ int QgsGmlStreamingParser::createMultiPolygonFromFragments()
   }
 
   mCurrentWKBFragments.clear();
-  mWkbType = Qgis::WkbType::MultiPolygon;
+  mWkbType =  mDimension > 2 ? Qgis::WkbType::MultiPolygonZ : Qgis::WkbType::MultiPolygon;
   return 0;
 }
 

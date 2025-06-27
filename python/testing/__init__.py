@@ -335,6 +335,8 @@ class QgisTestCase(unittest.TestCase):
                     "glx: failed to create drisw screen",
                     "failed to load driver: zink",
                     "QML debugging is enabled. Only use this in a safe environment.",
+                    "<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute",
+                    "<frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute",
                 )
                 and not "LC_ALL: cannot change locale" in e
             ]

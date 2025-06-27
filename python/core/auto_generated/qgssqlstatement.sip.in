@@ -9,6 +9,7 @@
 
 
 
+
 class QgsSQLStatement
 {
 %Docstring(signature="appended")

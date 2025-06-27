@@ -641,9 +641,21 @@ bool QgsRasterLayerRenderer::forceRasterRender() const
 
   if ( QgsRasterRenderer *renderer = mPipe->renderer() )
   {
-    if ( !( renderer->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling )
-         && renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) ) )
-      return true;
+    if ( !( renderer->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling ) )
+    {
+      switch ( renderContext()->rasterizedRenderingPolicy() )
+      {
+        case Qgis::RasterizedRenderingPolicy::Default:
+        case Qgis::RasterizedRenderingPolicy::PreferVector:
+          break;
+
+        case Qgis::RasterizedRenderingPolicy::ForceVector:
+          return false;
+      }
+
+      if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+        return true;
+    }
   }
 
   return false;

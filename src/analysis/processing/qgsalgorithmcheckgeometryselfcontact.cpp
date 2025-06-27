@@ -37,7 +37,7 @@ QString QgsGeometryCheckSelfContactAlgorithm::displayName() const
 
 QString QgsGeometryCheckSelfContactAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect self contact points in the geometry (line or polygon)" );
+  return QObject::tr( "Detects self contact points in the geometry (line or polygon)." );
 }
 
 QStringList QgsGeometryCheckSelfContactAlgorithm::tags() const

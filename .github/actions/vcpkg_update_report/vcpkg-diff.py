@@ -10,7 +10,7 @@ def extract_packages(data):
     for line in lines:
         # Regex to match the package format and capture features inside brackets
         match = re.match(
-            r"\s*\*\s+([^\[\]:]+)(?:\[(.*?)\])?:([^\[\]@]+)@([^\s]+)\s+--", line
+            r"\s*\*?\s+([^\[\]:]+)(?:\[(.*?)\])?:([^\[\]@]+)@([^\s]+)\s+--", line
         )
         if match:
             package_name = match.group(1)

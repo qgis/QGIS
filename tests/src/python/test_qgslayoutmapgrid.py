@@ -25,6 +25,9 @@ from qgis.core import (
     QgsProperty,
     QgsRectangle,
     QgsTextFormat,
+    QgsLineSymbol,
+    QgsProperty,
+    QgsSymbolLayer,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1098,6 +1101,114 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().refresh()
 
         self.assertTrue(self.render_layout_check("composermap_dynamic_5_10_4", layout))
+
+    def test_data_defined_symbol_no_transform(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 200))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(255, 255, 255))
+        layout.addLayoutItem(map)
+        myRectangle = QgsRectangle(781662.375, 3335523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setEnabled(True)
+        map.grid().setUnits(QgsLayoutItemMapGrid.GridUnit.MapUnit)
+        map.grid().setIntervalX(1000)
+        map.grid().setIntervalY(1000)
+
+        symbol = QgsLineSymbol.createSimple({})
+        symbol.setWidth(3)
+        symbol.setColor(QColor(0, 0, 0))
+        symbol[0].setDataDefinedProperty(
+            QgsSymbolLayer.Property.StrokeColor,
+            QgsProperty.fromExpression(
+                "case when @grid_axis='x' and @grid_number % 5000 = 0 then 'red' when @grid_axis='y' and @grid_number %4000 = 0 then 'green' end"
+            ),
+        )
+
+        map.grid().setLineSymbol(symbol)
+
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.updateBoundingRect()
+
+        map.grid().refresh()
+
+        self.assertTrue(
+            self.render_layout_check("datadefined_symbol_no_transform", layout)
+        )
+
+    def test_data_defined_symbol_transform(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 200))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(255, 255, 255))
+        layout.addLayoutItem(map)
+        map.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        myRectangle = QgsRectangle(
+            12397416.413, -6129001.091, 18972629.404, -1697998.508
+        )
+        map.setExtent(myRectangle)
+        map.grid().setEnabled(True)
+        map.grid().setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        map.grid().setUnits(QgsLayoutItemMapGrid.GridUnit.MapUnit)
+        map.grid().setIntervalX(4)
+        map.grid().setIntervalY(4)
+
+        symbol = QgsLineSymbol.createSimple({})
+        symbol.setWidth(3)
+        symbol.setColor(QColor(0, 0, 0))
+        symbol[0].setDataDefinedProperty(
+            QgsSymbolLayer.Property.StrokeColor,
+            QgsProperty.fromExpression(
+                "case when @grid_axis='x' and @grid_number % 2 = 0 then 'red' when @grid_axis='y' and @grid_number %3 = 0 then 'green' end"
+            ),
+        )
+
+        map.grid().setLineSymbol(symbol)
+
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.HideAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.updateBoundingRect()
+
+        map.grid().refresh()
+
+        self.assertTrue(
+            self.render_layout_check("datadefined_symbol_transform", layout)
+        )
 
     def testCrsChanged(self):
         """

@@ -17,6 +17,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldataitemguiprovider.h"
 #include "moc_qgsmssqldataitemguiprovider.cpp"
+#include "qgsapplication.h"
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlsourceselect.h"
@@ -188,7 +189,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
 
 void QgsMssqlDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsMssqlNewConnection nc( nullptr );
+  QgsMssqlNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     item->refreshConnections();

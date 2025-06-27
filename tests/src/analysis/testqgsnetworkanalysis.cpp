@@ -24,6 +24,7 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsgraphbuilder.h"
 #include "qgsgraph.h"
 #include "qgsgraphanalyzer.h"
+#include "qgsnetworkspeedstrategy.h"
 
 class TestQgsNetworkAnalysis : public QgsTest
 {
@@ -45,6 +46,7 @@ class TestQgsNetworkAnalysis : public QgsTest
     void dijkkjkjkskkjsktra();
     void testRouteFail();
     void testRouteFail2();
+    void testSpeedStrategy();
 
   private:
     std::unique_ptr<QgsVectorLayer> buildNetwork();
@@ -563,6 +565,45 @@ void TestQgsNetworkAnalysis::testRouteFail2()
   QCOMPARE( resultCost.at( startVertexIdx ), 0.0 );
   QVERIFY( resultTree.at( endVertexIdx ) != -1 );
   QCOMPARE( resultCost.at( endVertexIdx ), 9.01 );
+}
+
+void TestQgsNetworkAnalysis::testSpeedStrategy()
+{
+  constexpr double DISTANCE_IN_FEET { 100 };
+  constexpr double FEET_TO_METERS { 0.3048 };
+  constexpr double DISTANCE_IN_METERS { DISTANCE_IN_FEET * FEET_TO_METERS };
+
+  QgsNetworkSpeedStrategy fixedSpeedStrategy( -1, 60, FEET_TO_METERS );
+  QVERIFY( fixedSpeedStrategy.requiredAttributes().isEmpty() );
+  QgsFeature f;
+  f.initAttributes( 2 );
+  f.setAttributes( QgsAttributes() << 5 << 10 );
+  // attributes should be ignored, default speed (60) will be used
+  QCOMPARE( fixedSpeedStrategy.cost( DISTANCE_IN_METERS, f ).toDouble(), DISTANCE_IN_FEET / 60 );
+
+  QgsFeature featureWithNullAttributes;
+  featureWithNullAttributes.initAttributes( 2 );
+  featureWithNullAttributes.setAttributes( QgsAttributes() << QVariant() << QVariant() );
+
+  QgsFeature featureWithNegativeAttributes;
+  featureWithNegativeAttributes.initAttributes( 2 );
+  featureWithNegativeAttributes.setAttributes( QgsAttributes() << -5 << -10 );
+
+  QgsNetworkSpeedStrategy strategyAttribute0( 0, 60, FEET_TO_METERS );
+  QCOMPARE( strategyAttribute0.requiredAttributes(), { 0 } );
+  QCOMPARE( strategyAttribute0.cost( DISTANCE_IN_METERS, f ).toDouble(), DISTANCE_IN_FEET / 5 );
+  // should use default speed for null attributes values
+  QCOMPARE( strategyAttribute0.cost( DISTANCE_IN_METERS, featureWithNullAttributes ).toDouble(), DISTANCE_IN_FEET / 60 );
+  // should use default speed for negative values
+  QCOMPARE( strategyAttribute0.cost( DISTANCE_IN_METERS, featureWithNegativeAttributes ).toDouble(), DISTANCE_IN_FEET / 60 );
+
+  QgsNetworkSpeedStrategy strategyAttribute1( 1, 60, FEET_TO_METERS );
+  QCOMPARE( strategyAttribute1.requiredAttributes(), { 1 } );
+  QCOMPARE( strategyAttribute1.cost( DISTANCE_IN_METERS, f ).toDouble(), DISTANCE_IN_FEET / 10 );
+  // should use default speed for null attributes values
+  QCOMPARE( strategyAttribute1.cost( DISTANCE_IN_METERS, featureWithNullAttributes ).toDouble(), DISTANCE_IN_FEET / 60 );
+  // should use default speed for negative values
+  QCOMPARE( strategyAttribute1.cost( DISTANCE_IN_METERS, featureWithNegativeAttributes ).toDouble(), DISTANCE_IN_FEET / 60 );
 }
 
 

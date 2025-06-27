@@ -78,6 +78,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
   FeatureFilter filter;
   QgsPointLocator::Match match;
+  mIsModified = false;
 
   switch ( mStep )
   {
@@ -110,20 +111,17 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
       QgsMapLayer *currentLayer = mCanvas->currentLayer();
       if ( !currentLayer )
       {
-        mIsModified = false;
         break;
       }
 
       mVlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( !mVlayer )
       {
-        mIsModified = false;
         break;
       }
 
       if ( !mVlayer->isEditable() )
       {
-        mIsModified = false;
         break;
       }
 
@@ -133,13 +131,17 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
       if ( match.isValid() )
       {
         if ( match.layer() != mVlayer )
+        {
           break;
+        }
 
         QgsPointXY p1, p2;
         match.edgePoints( p1, p2 );
 
         if ( !getPoints( match, pExtend1, pExtend2 ) )
+        {
           break;
+        }
 
         QgsCoordinateTransform transform( mLimitLayer->crs(), mVlayer->crs(), mCanvas->mapSettings().transformContext() );
 
@@ -157,7 +159,9 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
         // No need to trim/extend if segments are continuous
         if ( ( ( pLimit1Projected == pExtend1 ) || ( pLimit1Projected == pExtend2 ) ) || ( ( pLimit2Projected == pExtend1 ) || ( pLimit2Projected == pExtend2 ) ) )
+        {
           break;
+        }
 
         mSegmentIntersects = QgsGeometryUtils::segmentIntersection( pLimit1Projected, pLimit2Projected, pExtend1, pExtend2, mIntersection, mIsIntersection, 1e-8, true );
 

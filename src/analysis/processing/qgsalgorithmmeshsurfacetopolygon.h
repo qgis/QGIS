@@ -30,6 +30,7 @@ class QgsMeshSurfaceToPolygonAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsMeshSurfaceToPolygonAlgorithm() = default;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QString name() const override;
     QString displayName() const override;

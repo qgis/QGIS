@@ -60,6 +60,11 @@ QString QgsSplitWithLinesAlgorithm::shortHelpString() const
                       "Intersection between geometries in both layers are considered as split points." );
 }
 
+QString QgsSplitWithLinesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Splits the lines or polygons in one layer using the lines or polygon rings in another layer to define the breaking points." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitWithLinesAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;

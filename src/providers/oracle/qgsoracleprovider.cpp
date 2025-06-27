@@ -1054,7 +1054,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
 {
   QgsOracleConn *conn = connectionRO();
   if ( !conn )
-    return QVariant( QString() );
+    return QVariant();
 
   try
   {
@@ -1073,7 +1073,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
-      return QVariant( QString() );
+      return QVariant();
     }
 
     if ( qry.next() )
@@ -1085,7 +1085,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
   {
     ;
   }
-  return QVariant( QString() );
+  return QVariant();
 }
 
 // Returns the list of unique values of an attribute
@@ -1163,7 +1163,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     if ( !LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
-      return QVariant( QString() );
+      return QVariant();
     }
 
     if ( qry.next() )
@@ -1176,7 +1176,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     ;
   }
 
-  return QVariant( QString() );
+  return QVariant();
 }
 
 
@@ -1396,7 +1396,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         QgsField fld = field( fieldId[i] );
         if ( ( QgsVariantUtils::isNull( value ) && mPrimaryKeyAttrs.contains( i ) && !defaultValues.at( i ).isEmpty() )
              || ( value.toString() == defaultValues[i] )
-             || value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+             || QgsVariantUtils::isUnsetAttributeValue( value ) )
         {
           value = evaluateDefaultExpression( defaultValues[i], fld.type() );
         }
@@ -1862,7 +1862,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
             QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
             continue;
           }
-          if ( siter.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          if ( QgsVariantUtils::isUnsetAttributeValue( siter.value() ) )
           {
             continue;
           }

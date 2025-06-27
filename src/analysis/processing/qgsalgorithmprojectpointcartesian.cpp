@@ -56,6 +56,11 @@ QString QgsProjectPointCartesianAlgorithm::shortHelpString() const
                       "The distance is specified in layer units, and the bearing in degrees clockwise from North." );
 }
 
+QString QgsProjectPointCartesianAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point layer with geometries projected by a specified distance and bearing (azimuth)." );
+}
+
 QList<int> QgsProjectPointCartesianAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );

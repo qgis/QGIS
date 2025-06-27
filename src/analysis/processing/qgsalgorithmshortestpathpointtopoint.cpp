@@ -41,6 +41,11 @@ QString QgsShortestPathPointToPointAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between given start and end points." );
 }
 
+QString QgsShortestPathPointToPointAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes optimal (shortest or fastest) route between given start and end points." );
+}
+
 QgsShortestPathPointToPointAlgorithm *QgsShortestPathPointToPointAlgorithm::createInstance() const
 {
   return new QgsShortestPathPointToPointAlgorithm();

@@ -134,6 +134,15 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QString name( const QString &widgetId );
 
     /**
+     * Gets the widget's read-only flag
+     *
+     * \param widgetId The widget type to get the read-only flag for
+     *
+     * \since QGIS 3.44
+     */
+    bool isReadOnly( const QString &widgetId );
+
+    /**
      * Gets access to all registered factories
      *
      * \returns All ids and factories

@@ -40,6 +40,7 @@ class QgsSplitVectorLayerAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
     QgsSplitVectorLayerAlgorithm *createInstance() const override SIP_FACTORY;

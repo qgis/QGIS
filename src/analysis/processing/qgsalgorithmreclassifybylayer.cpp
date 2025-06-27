@@ -192,6 +192,11 @@ QString QgsReclassifyByLayerAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm reclassifies a raster band by assigning new class values based on the ranges specified in a vector table." );
 }
 
+QString QgsReclassifyByLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Reclassifies a raster band by assigning new class values based on the ranges specified in a vector table." );
+}
+
 QgsReclassifyByLayerAlgorithm *QgsReclassifyByLayerAlgorithm::createInstance() const
 {
   return new QgsReclassifyByLayerAlgorithm();
@@ -299,6 +304,11 @@ QStringList QgsReclassifyByTableAlgorithm::tags() const
 QString QgsReclassifyByTableAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm reclassifies a raster band by assigning new class values based on the ranges specified in a fixed table." );
+}
+
+QString QgsReclassifyByTableAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Reclassifies a raster band by assigning new class values based on the ranges specified in a fixed table." );
 }
 
 QgsReclassifyByTableAlgorithm *QgsReclassifyByTableAlgorithm::createInstance() const

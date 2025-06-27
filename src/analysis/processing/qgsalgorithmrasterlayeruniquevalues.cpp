@@ -69,6 +69,11 @@ QString QgsRasterLayerUniqueValuesReportAlgorithm::shortHelpString() const
                       "The area calculation is done in the area unit of the layer's CRS." );
 }
 
+QString QgsRasterLayerUniqueValuesReportAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Returns the count and area of each unique value in a given raster layer." );
+}
+
 QgsRasterLayerUniqueValuesReportAlgorithm *QgsRasterLayerUniqueValuesReportAlgorithm::createInstance() const
 {
   return new QgsRasterLayerUniqueValuesReportAlgorithm();

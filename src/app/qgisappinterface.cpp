@@ -427,9 +427,9 @@ QgsMessageBar *QgisAppInterface::messageBar()
   return qgis->messageBar();
 }
 
-void QgisAppInterface::openMessageLog()
+void QgisAppInterface::openMessageLog( const QString &tabName )
 {
-  qgis->openMessageLog();
+  qgis->openMessageLog( tabName );
 }
 
 

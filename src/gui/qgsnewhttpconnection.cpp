@@ -149,21 +149,21 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mWmsOptionsGroupBox->setTitle( tr( "WCS Options" ) );
 
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
-      mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+      mWmsOptionsGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
 
       sbFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( sbFeatureCount );
+      mWmsOptionsGroupBox->layout()->removeWidget( sbFeatureCount );
       lblFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblFeatureCount );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblFeatureCount );
 
       cmbDpiMode->setVisible( false );
-      mGroupBox->layout()->removeWidget( cmbDpiMode );
+      mWmsOptionsGroupBox->layout()->removeWidget( cmbDpiMode );
       lblDpiMode->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblDpiMode );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblDpiMode );
       cmbTilePixelRatio->setVisible( false );
-      mGroupBox->layout()->removeWidget( cmbTilePixelRatio );
+      mWmsOptionsGroupBox->layout()->removeWidget( cmbTilePixelRatio );
       lblTilePixelRatio->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblTilePixelRatio );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
 
@@ -178,10 +178,6 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mAuthGroupBox->hide();
     mGroupBox->layout()->removeWidget( mAuthGroupBox );
   }
-  // Adjust height
-  const int w = width();
-  adjustSize();
-  resize( w, height() );
 
   connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
   connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
@@ -366,6 +362,11 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ) ) ) );
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
+}
+
+void QgsNewHttpConnection::showEvent( QShowEvent *event )
+{
+  QDialog::showEvent( event );
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const

@@ -70,7 +70,7 @@ QString QgsFilterByGeometryAlgorithm::shortHelpString() const
 
 QString QgsFilterByGeometryAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filters features by geometry type" );
+  return QObject::tr( "Filters features by geometry type." );
 }
 
 QgsFilterByGeometryAlgorithm *QgsFilterByGeometryAlgorithm::createInstance() const
@@ -273,7 +273,7 @@ QString QgsFilterByLayerTypeAlgorithm::shortHelpString() const
 
 QString QgsFilterByLayerTypeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Filters layers by type" );
+  return QObject::tr( "Filters layers by type." );
 }
 
 QgsFilterByLayerTypeAlgorithm *QgsFilterByLayerTypeAlgorithm::createInstance() const

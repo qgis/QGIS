@@ -37,7 +37,7 @@ QString QgsFixGeometryDuplicateNodesAlgorithm::displayName() const
 
 QString QgsFixGeometryDuplicateNodesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Delete duplicated vertices detected with the \"Duplicated vertices\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Deletes duplicated vertices detected with the \"Duplicated vertices\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryDuplicateNodesAlgorithm::tags() const

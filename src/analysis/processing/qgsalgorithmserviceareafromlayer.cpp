@@ -39,11 +39,18 @@ QStringList QgsServiceAreaFromLayerAlgorithm::tags() const
 
 QString QgsServiceAreaFromLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of "
+  return QObject::tr( "This algorithm creates a new vector layer with all the edges or parts of "
                       "edges of a network line layer that can be reached within a distance "
                       "or a time, starting from features of a point layer. The distance and "
                       "the time (both referred to as \"travel cost\") must be specified "
                       "respectively in the network layer units or in hours." );
+}
+
+QString QgsServiceAreaFromLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer with all the edges or parts of "
+                      "edges of a network line layer that can be reached within a distance "
+                      "or a time, starting from features of a point layer." );
 }
 
 QgsServiceAreaFromLayerAlgorithm *QgsServiceAreaFromLayerAlgorithm::createInstance() const
@@ -58,9 +65,13 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto travelCost = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   travelCost->setFlags( travelCost->flags() | Qgis::ProcessingParameterFlag::Hidden );
-  addParameter( travelCost.release() );
+  addParameter( std::move( travelCost ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
+  auto travelCost2 = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
+  travelCost2->setIsDynamic( true );
+  travelCost2->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Travel Cost" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsPropertyDefinition::DoublePositive ) );
+  travelCost2->setDynamicLayerParameterName( QStringLiteral( "START_POINTS" ) );
+  addParameter( std::move( travelCost2 ) );
 
   auto includeBounds = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
   includeBounds->setFlags( includeBounds->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -89,17 +100,24 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
 {
   loadCommonParams( parameters, context, feedback );
 
-  std::unique_ptr<QgsFeatureSource> startPoints( parameterAsSource( parameters, QStringLiteral( "START_POINTS" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> startPoints( parameterAsSource( parameters, QStringLiteral( "START_POINTS" ), context ) );
   if ( !startPoints )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
 
   // use older deprecated travel cost style if specified, to maintain old api
   const bool useOldTravelCost = parameters.value( QStringLiteral( "TRAVEL_COST" ) ).isValid();
-  double travelCost = parameterAsDouble( parameters, useOldTravelCost ? QStringLiteral( "TRAVEL_COST" ) : QStringLiteral( "TRAVEL_COST2" ), context );
+  const double defaultTravelCost = parameterAsDouble( parameters, useOldTravelCost ? QStringLiteral( "TRAVEL_COST" ) : QStringLiteral( "TRAVEL_COST2" ), context );
 
-  int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
-  if ( strategy && !useOldTravelCost )
-    travelCost *= mMultiplier;
+  const bool dynamicTravelCost = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "TRAVEL_COST2" ) );
+  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, startPoints.get() );
+  QgsProperty travelCostProperty;
+  if ( dynamicTravelCost )
+  {
+    travelCostProperty = parameters.value( QStringLiteral( "TRAVEL_COST2" ) ).value<QgsProperty>();
+  }
+
+  const int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
+  const double multiplier = ( strategy && !useOldTravelCost ) ? mMultiplier : 1;
 
   bool includeBounds = true; // default to true to maintain 3.0 API
   if ( parameters.contains( QStringLiteral( "INCLUDE_BOUNDS" ) ) )
@@ -108,8 +126,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   }
 
   QVector<QgsPointXY> points;
-  QHash<int, QgsAttributes> sourceAttributes;
-  loadPoints( startPoints.get(), points, sourceAttributes, context, feedback );
+  QHash<int, QgsFeature> sourceFeatures;
+  loadPoints( startPoints.get(), &points, nullptr, context, feedback, &sourceFeatures );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
   QVector<QgsPointXY> snappedPoints;
@@ -118,9 +136,10 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   feedback->pushInfo( QObject::tr( "Calculating service areas…" ) );
   std::unique_ptr<QgsGraph> graph( mBuilder->takeGraph() );
 
-  QgsFields fields = startPoints->fields();
-  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  QgsFields fields = QgsProcessingUtils::combineFields( startPoints->fields(), newFields );
 
   QString pointsSinkId;
   std::unique_ptr<QgsFeatureSink> pointsSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, pointsSinkId, fields, Qgis::WkbType::MultiPoint, mNetwork->sourceCrs() ) );
@@ -153,6 +172,14 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       break;
     }
 
+    double travelCost = defaultTravelCost;
+    if ( dynamicTravelCost )
+    {
+      expressionContext.setFeature( sourceFeatures.value( i + 1 ) );
+      travelCost = travelCostProperty.valueAsDouble( expressionContext, travelCost );
+    }
+    travelCost *= multiplier;
+
     const QgsPointXY snappedPoint = snappedPoints.at( i );
     const QgsPointXY originalPoint = points.at( i );
 
@@ -174,7 +201,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         if ( nonRoutableSink )
         {
           feat.setGeometry( QgsGeometry::fromPointXY( originalPoint ) );
-          attributes = sourceAttributes.value( i + 1 );
+          attributes = sourceFeatures.value( i + 1 ).attributes();
           feat.setAttributes( attributes );
           if ( !nonRoutableSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
             throw QgsProcessingException( writeFeatureError( nonRoutableSink.get(), parameters, QStringLiteral( "OUTPUT_NON_ROUTABLE" ) ) );
@@ -252,7 +279,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     {
       QgsGeometry geomPoints = QgsGeometry::fromMultiPointXY( areaPoints );
       feat.setGeometry( geomPoints );
-      attributes = sourceAttributes.value( i + 1 );
+      attributes = sourceFeatures.value( i + 1 ).attributes();
       attributes << QStringLiteral( "within" ) << originalPointString;
       feat.setAttributes( attributes );
       if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
@@ -289,14 +316,14 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         QgsGeometry geomLower = QgsGeometry::fromMultiPointXY( lowerBoundary );
 
         feat.setGeometry( geomUpper );
-        attributes = sourceAttributes.value( i + 1 );
+        attributes = sourceFeatures.value( i + 1 ).attributes();
         attributes << QStringLiteral( "upper" ) << originalPointString;
         feat.setAttributes( attributes );
         if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
         feat.setGeometry( geomLower );
-        attributes = sourceAttributes.value( i + 1 );
+        attributes = sourceFeatures.value( i + 1 ).attributes();
         attributes << QStringLiteral( "lower" ) << originalPointString;
         feat.setAttributes( attributes );
         if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
@@ -308,7 +335,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     {
       QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
       feat.setGeometry( geomLines );
-      attributes = sourceAttributes.value( i + 1 );
+      attributes = sourceFeatures.value( i + 1 ).attributes();
       attributes << QStringLiteral( "lines" ) << originalPointString;
       feat.setAttributes( attributes );
       if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )

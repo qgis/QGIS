@@ -120,13 +120,13 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         """Test help about python function."""
         QgsExpression.registerFunction(self.help_with_variable)
         html = (
-            "<h3>help_with_variable function</h3><br>" "The help comes from a variable."
+            "<h3>function help_with_variable</h3>\n" "The help comes from a variable."
         )
         self.assertEqual(self.help_with_variable.helpText(), html)
 
         QgsExpression.registerFunction(self.help_with_docstring)
         html = (
-            "<h3>help_with_docstring function</h3><br>"
+            "<h3>function help_with_docstring</h3>\n"
             "The help comes from the python docstring."
         )
         self.assertEqual(self.help_with_docstring.helpText(), html)

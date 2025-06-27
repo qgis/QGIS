@@ -48,7 +48,7 @@ QString QgsCheckValidityAlgorithm::groupId() const
 
 QString QgsCheckValidityAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Performs a validity check on the geometries of a vector layer.\n\n"
+  return QObject::tr( "This algorithm performs a validity check on the geometries of a vector layer.\n\n"
                       "The geometries are classified in three groups (valid, invalid and error), and a vector layer "
                       "is generated with the features in each of these categories.\n\n"
                       "By default the algorithm uses the strict OGC definition of polygon validity, where a polygon "
@@ -58,6 +58,12 @@ QString QgsCheckValidityAlgorithm::shortHelpString() const
                       "The GEOS method is faster and performs better on larger geometries, but is limited to only "
                       "returning the first error encountered in a geometry. The QGIS method will be slower but "
                       "reports all errors encountered in the geometry, not just the first." );
+}
+
+QString QgsCheckValidityAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Performs a validity check on the geometries of a vector layer "
+                      "and classifies them in three groups (valid, invalid and error)." );
 }
 
 QgsCheckValidityAlgorithm *QgsCheckValidityAlgorithm::createInstance() const

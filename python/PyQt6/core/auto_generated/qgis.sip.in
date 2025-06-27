@@ -1302,6 +1302,7 @@ The development version
     {
       UsersCannotToggleEditing,
       IsBasemapLayer,
+      Is3DBasemapLayer,
     };
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
@@ -1318,6 +1319,7 @@ The development version
       IsBasemapSource,
       FastExtent2D,
       FastExtent3D,
+      Is3DBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
@@ -1544,6 +1546,13 @@ The development version
     typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
 
 
+    enum class RasterizedRenderingPolicy /BaseType=IntEnum/
+    {
+      Default,
+      PreferVector,
+      ForceVector,
+    };
+
     enum class MapSettingsFlag /BaseType=IntFlag/
     {
       Antialiasing,
@@ -1593,6 +1602,7 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
+      RenderLayerTree
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -1605,6 +1615,14 @@ The development version
     };
 
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
+
+
+    enum class PaintEffectFlag /BaseType=IntFlag/
+    {
+      RequiresRasterization,
+    };
+
+    typedef QFlags<Qgis::PaintEffectFlag> PaintEffectFlags;
 
 
 
@@ -2880,6 +2898,25 @@ The development version
       ScreenUnits
     };
 
+    enum class LayoutRenderFlag /BaseType=IntFlag/
+    {
+      Debug,
+      OutlineOnly,
+      Antialiasing,
+      UseAdvancedEffects,
+      ForceVectorOutput,
+      HideCoverageLayer,
+      DrawSelection,
+      DisableTiledRasterLayerRenders,
+      RenderLabelsByMapLayer,
+      LosslessImageRendering,
+      SynchronousLegendGraphics,
+      AlwaysUseGlobalMasks,
+    };
+
+    typedef QFlags<Qgis::LayoutRenderFlag> LayoutRenderFlags;
+
+
     enum class PictureFormat /BaseType=IntEnum/
       {
       SVG,
@@ -3347,6 +3384,14 @@ The development version
       ConstantDensity
     };
 
+    enum class StacObjectType /BaseType=IntEnum/
+    {
+      Unknown,
+      Catalog,
+      Collection,
+      Item,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3555,6 +3600,8 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 
+QFlags<Qgis::PaintEffectFlag> operator|(Qgis::PaintEffectFlag f1, QFlags<Qgis::PaintEffectFlag> f2);
+
 QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
@@ -3620,6 +3667,8 @@ QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFla
 QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
 
 QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
+
+QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
 
 
 

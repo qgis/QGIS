@@ -638,12 +638,143 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     }
   }
 
-  // delegate logic to proj if version >= 8.2 available
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=2)
-
   QgsScopedProjSilentLogger errorLogger;
 
   QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
+
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
+  const auto legacyImplementation = [this, &rect, xMin, yMin, yMax, direction, handle180Crossover]()
+  {
+    // this logic is buggy! See https://github.com/qgis/QGIS/issues/59821
+
+    // 64 points (<=2.12) is not enough, see #13665, for EPSG:4326 -> EPSG:3574 (say that it is a hard one),
+    // are decent result from about 500 points and more. This method is called quite often, but
+    // even with 1000 points it takes < 1ms.
+    // TODO: how to effectively and precisely reproject bounding box?
+    const int nPoints = 1000;
+    const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+    const int nXPoints = static_cast<int>( std::clamp( std::ceil( rect.width() / dst ) + 1, 3.0, 1000.0 ) );
+    const int nYPoints = static_cast<int>( std::clamp( std::ceil( ( yMax - yMin ) / dst ) + 1, 3.0, 1000.0 ) );
+
+    QgsRectangle bb_rect;
+    bb_rect.setNull();
+
+    std::vector<double> x( nXPoints * static_cast< std::size_t >( nYPoints ) );
+    std::vector<double> y( nXPoints * static_cast< std::size_t >( nYPoints ) );
+    std::vector<double> z( nXPoints * static_cast< std::size_t >( nYPoints ) );
+
+    // Populate the vectors
+
+    const double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
+    const double dy = ( yMax - yMin ) / static_cast< double >( nYPoints - 1 );
+
+    double pointY = yMin;
+
+    for ( int i = 0; i < nYPoints ; i++ )
+    {
+
+      // Start at right edge
+      double pointX = xMin;
+
+      for ( int j = 0; j < nXPoints; j++ )
+      {
+        x[( i * nXPoints ) + j] = pointX;
+        y[( i * nXPoints ) + j] = pointY;
+        // and the height...
+        z[( i * nXPoints ) + j] = 0.0;
+        // QgsDebugMsgLevel(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]), 2);
+        pointX += dx;
+      }
+      pointY += dy;
+    }
+
+    // Do transformation. Any exception generated must
+    // be handled in above layers.
+    try
+    {
+      transformCoords( nXPoints * nYPoints, x.data(), y.data(), z.data(), direction );
+    }
+    catch ( const QgsCsException & )
+    {
+      // rethrow the exception
+      QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
+      throw;
+    }
+
+    // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
+    bool doHandle180Crossover = false;
+    if ( nXPoints > 0 )
+    {
+      const double xMin = std::fmod( x[0], 180.0 );
+      const double xMax = std::fmod( x[nXPoints - 1], 180.0 );
+      if ( handle180Crossover
+           && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+                ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+           && xMin > 0.0 && xMin <= 180.0 && xMax < 0.0 && xMax >= -180.0 )
+      {
+        doHandle180Crossover = true;
+      }
+    }
+
+    // Calculate the bounding box and use that for the extent
+    for ( int i = 0; i < nXPoints * nYPoints; i++ )
+    {
+      if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) )
+      {
+        continue;
+      }
+
+      if ( doHandle180Crossover )
+      {
+        //if crossing the date line, temporarily add 360 degrees to -ve longitudes
+        bb_rect.combineExtentWith( x[i] >= 0.0 ? x[i] : x[i] + 360.0, y[i] );
+      }
+      else
+      {
+        bb_rect.combineExtentWith( x[i], y[i] );
+      }
+    }
+
+    if ( bb_rect.isNull() )
+    {
+      // something bad happened when reprojecting the filter rect... no finite points were left!
+      throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
+    }
+
+    if ( doHandle180Crossover )
+    {
+      //subtract temporary addition of 360 degrees from longitudes
+      if ( bb_rect.xMinimum() > 180.0 )
+        bb_rect.setXMinimum( bb_rect.xMinimum() - 360.0 );
+      if ( bb_rect.xMaximum() > 180.0 )
+        bb_rect.setXMaximum( bb_rect.xMaximum() - 360.0 );
+    }
+
+    QgsDebugMsgLevel( "Projected extent: " + bb_rect.toString(), 4 );
+
+    if ( bb_rect.isEmpty() )
+    {
+      QgsDebugMsgLevel( "Original extent: " + rect.toString(), 4 );
+    }
+
+    return bb_rect;
+  };
+#endif
+
+  // delegate logic to proj if version >= 8.2 available
+#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=2)
+
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
+  if ( !( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
+          ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) ) )
+  {
+    // PROJ < 9.7 has for example issues from world coverage in EPSG:4326
+    // to Spilhaus. But do not use the legacy implementation when going through
+    // geographic as the proj_trans_bounds() heuristics to detect anti-meridian
+    // crossing is better
+    return legacyImplementation();
+  }
+#endif
 
   ProjData projData = d->threadLocalProjData();
   PJ_CONTEXT *projContext = QgsProjContext::get();
@@ -664,6 +795,17 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     srcCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( srcCrs.get() );
     destCrsHorizontal = QgsProjUtils::crsToHorizontalCrs( destCrs.get() );
     transform2D.reset( proj_create_crs_to_crs_from_pj( projContext, srcCrsHorizontal.get(), destCrsHorizontal.get(), nullptr, nullptr ) );
+    if ( !transform2D )
+    {
+      const QString err = QStringLiteral( "proj_create_crs_to_crs_from_pj(horizontalCrs(%1), horizontalCrs(%2)) failed" ).arg( d->mSourceCRS.authid(), d->mSourceCRS.authid() );
+      throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS: %1" ).arg( err ) );
+    }
+    transform2D.reset( proj_normalize_for_visualization( projContext, transform2D.get() ) );
+    if ( !transform2D )
+    {
+      const QString err = QStringLiteral( "Cannot normalize transform between horizontalCrs(%1) and horizontalCrs(%2)" ).arg( d->mSourceCRS.authid(), d->mDestCRS.authid() );
+      throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS: %1" ).arg( err ) );
+    }
     projData = transform2D.get();
   }
 #endif
@@ -674,8 +816,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   double transYMax = 0;
 
   proj_errno_reset( projData );
-  // proj documentation recommends 21 points for densification
-  constexpr int DENSIFY_POINTS = 21;
+  // proj documentation recommends 21 points for densification, bump to
+  // 30 for higher accuracy in some situations
+  constexpr int DENSIFY_POINTS = 30;
   int projResult = proj_trans_bounds( projContext, projData, ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
                                       xMin, yMin, xMax, yMax,
                                       &transXMin, &transYMin, &transXMax, &transYMax, DENSIFY_POINTS );
@@ -703,6 +846,12 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
        || !std::isfinite( transYMin )
        || !std::isfinite( transYMax ) )
   {
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
+    // proj_trans_bounds() of PROJ < 9.7 may fail if the transform passed to it
+    // has been directly instantiated from a PROJ pipeline string.
+    // Cf https://github.com/OSGeo/PROJ/pull/4512
+    return legacyImplementation();
+#else
     const QString projErr = QString::fromUtf8( proj_context_errno_string( projContext, proj_errno( projData ) ) );
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
     const QString msg = QObject::tr( "%1 (%2 to %3) of bounding box failed: %4" )
@@ -713,11 +862,11 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     QgsDebugError( msg );
 
     throw QgsCsException( msg );
+#endif
   }
 
-  // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
   bool doHandle180Crossover = false;
-
+  // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
   if ( handle180Crossover
        && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
             ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
@@ -756,122 +905,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   }
 
   return boundingBoxRect;
-#else
-  // this logic is buggy! See https://github.com/qgis/QGIS/issues/59821
-
-  // 64 points (<=2.12) is not enough, see #13665, for EPSG:4326 -> EPSG:3574 (say that it is a hard one),
-  // are decent result from about 500 points and more. This method is called quite often, but
-  // even with 1000 points it takes < 1ms.
-  // TODO: how to effectively and precisely reproject bounding box?
-  const int nPoints = 1000;
-  const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / dst ) ) + 1, 1000 );
-  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
-
-  QgsRectangle bb_rect;
-  bb_rect.setNull();
-
-  std::vector<double> x( nXPoints * static_cast< std::size_t >( nYPoints ) );
-  std::vector<double> y( nXPoints * static_cast< std::size_t >( nYPoints ) );
-  std::vector<double> z( nXPoints * static_cast< std::size_t >( nYPoints ) );
-
-  QgsDebugMsgLevel( QStringLiteral( "Entering transformBoundingBox..." ), 4 );
-
-  // Populate the vectors
-
-  const double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
-  const double dy = ( yMax - yMin ) / static_cast< double >( nYPoints - 1 );
-
-  double pointY = yMin;
-
-  for ( int i = 0; i < nYPoints ; i++ )
-  {
-
-    // Start at right edge
-    double pointX = xMin;
-
-    for ( int j = 0; j < nXPoints; j++ )
-    {
-      x[( i * nXPoints ) + j] = pointX;
-      y[( i * nXPoints ) + j] = pointY;
-      // and the height...
-      z[( i * nXPoints ) + j] = 0.0;
-      // QgsDebugMsgLevel(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]), 2);
-      pointX += dx;
-    }
-    pointY += dy;
-  }
-
-  // Do transformation. Any exception generated must
-  // be handled in above layers.
-  try
-  {
-    transformCoords( nXPoints * nYPoints, x.data(), y.data(), z.data(), direction );
-  }
-  catch ( const QgsCsException & )
-  {
-    // rethrow the exception
-    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
-    throw;
-  }
-
-  // check if result bbox is geographic and is crossing 180/-180 line: ie. min X is before the 180° and max X is after the -180°
-  bool doHandle180Crossover = false;
-  if ( nXPoints > 0 )
-  {
-    const double xMin = std::fmod( x[0], 180.0 );
-    const double xMax = std::fmod( x[nXPoints - 1], 180.0 );
-    if ( handle180Crossover
-         && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
-              ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
-         && xMin > 0.0 && xMin <= 180.0 && xMax < 0.0 && xMax >= -180.0 )
-    {
-      doHandle180Crossover = true;
-    }
-  }
-
-  // Calculate the bounding box and use that for the extent
-  for ( int i = 0; i < nXPoints * nYPoints; i++ )
-  {
-    if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) )
-    {
-      continue;
-    }
-
-    if ( doHandle180Crossover )
-    {
-      //if crossing the date line, temporarily add 360 degrees to -ve longitudes
-      bb_rect.combineExtentWith( x[i] >= 0.0 ? x[i] : x[i] + 360.0, y[i] );
-    }
-    else
-    {
-      bb_rect.combineExtentWith( x[i], y[i] );
-    }
-  }
-
-  if ( bb_rect.isNull() )
-  {
-    // something bad happened when reprojecting the filter rect... no finite points were left!
-    throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
-  }
-
-  if ( doHandle180Crossover )
-  {
-    //subtract temporary addition of 360 degrees from longitudes
-    if ( bb_rect.xMinimum() > 180.0 )
-      bb_rect.setXMinimum( bb_rect.xMinimum() - 360.0 );
-    if ( bb_rect.xMaximum() > 180.0 )
-      bb_rect.setXMaximum( bb_rect.xMaximum() - 360.0 );
-  }
-
-  QgsDebugMsgLevel( "Projected extent: " + bb_rect.toString(), 4 );
-
-  if ( bb_rect.isEmpty() )
-  {
-    QgsDebugMsgLevel( "Original extent: " + rect.toString(), 4 );
-  }
-
-  return bb_rect;
+#endif
+#if PROJ_VERSION_MAJOR< 9 || (PROJ_VERSION_MAJOR==9 && PROJ_VERSION_MINOR<7)
+  return legacyImplementation();
 #endif
 }
 

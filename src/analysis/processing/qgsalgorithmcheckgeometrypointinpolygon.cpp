@@ -37,7 +37,7 @@ QString QgsGeometryCheckPointInPolygonAlgorithm::displayName() const
 
 QString QgsGeometryCheckPointInPolygonAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect points that are not in polygons from the polygon layer list" );
+  return QObject::tr( "Detects points that are not in polygons from the polygon layer list." );
 }
 
 QStringList QgsGeometryCheckPointInPolygonAlgorithm::tags() const

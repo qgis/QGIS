@@ -124,6 +124,12 @@ Sets a ``filter`` string, used to filter out the contents of the view to
 matching algorithms.
 %End
 
+    virtual void reset();
+
+%Docstring
+Expands the tree view if a filter string is set after the view is reset.
+%End
+
   protected:
     virtual void keyPressEvent( QKeyEvent *event );
 

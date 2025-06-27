@@ -811,6 +811,14 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 1)
 
+        # now start from an empty layer and check extent after adding the first feature
+        layer = createEmptyLayerWithFields()
+        feat = QgsFeature(layer.fields())
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+        layer.startEditing()
+        self.assertTrue(layer.addFeature(feat))
+        checkAfter()
+
     # ADD FEATURES
 
     def test_AddFeatures(self):
@@ -4163,7 +4171,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.displayExpression(), '"NAME"')
         self.assertEqual(layer.displayField(), "NAME")
         layer = QgsVectorLayer(
-            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string",
+            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=ALT_NAME:string",
             "vl",
             "memory",
         )

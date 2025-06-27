@@ -777,12 +777,15 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
 
   if ( error.isEmpty() )
   {
-    QgsDebugError( "error = " + error );
     int index = mTableFields.indexFromName( field.name() );
     if ( index != -1 )
     {
       mTableFields.remove( index );
     }
+  }
+  else
+  {
+    QgsDebugError( "error = " + error );
   }
 }
 

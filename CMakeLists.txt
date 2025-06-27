@@ -1,6 +1,6 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.23.0)
+cmake_minimum_required(VERSION 3.22.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
@@ -24,6 +24,7 @@ set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
+set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
 set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
@@ -46,10 +47,11 @@ endif()
 
 
 if(WITH_VCPKG)
+  set(TARGET_SYSROOT "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}")
   if(WIN32)
-    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/Scripts/")
+    list(APPEND CMAKE_PROGRAM_PATH "${TARGET_SYSROOT}/tools/python3/Scripts/")
   else()
-    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/bin")
+    list(APPEND CMAKE_PROGRAM_PATH "${TARGET_SYSROOT}/bin")
   endif()
   set(PREFER_INTERNAL_LIBS FALSE)
 else()
@@ -59,38 +61,19 @@ endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "43")
+set(CPACK_PACKAGE_VERSION_MINOR "99")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
 project(qgis VERSION ${COMPLETE_VERSION})
 
-if (APPLE)
-  set(QGIS_APP_NAME "QGIS")
-else()
-  set(QGIS_APP_NAME "qgis")
-endif()
+set(QGIS_APP_NAME "qgis" CACHE STRING "The main app name and bundle name")
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
-
-#############################################################
-if (APPLE)
-  # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
-  # they can be downloaded from https://download.qgis.org/downloads/macos/deps/
-  # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
-  set (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
-
-  # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
-  # find_packages to look for these libraries instead of system libraries
-  if ( QGIS_MAC_DEPS_DIR )
-    set(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
-    list(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
-  endif()
-endif()
 
 #############################################################
 # Configure OpenCL if available
@@ -349,7 +332,6 @@ if(WITH_CORE)
       set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
   endif()
 
-  set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   if(WITH_ORACLE)
     set(HAVE_ORACLE TRUE)
     set(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
@@ -873,6 +855,8 @@ if(MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17 /permissive-")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+  # Increase our stack size to 8MB to give us a bit more room and avoid stackoverflow crashes
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:8388608")
   # disable macros that offend std::numeric_limits<T>::min()/max()
   add_definitions(-DNOMINMAX)
 endif()
@@ -911,6 +895,27 @@ if( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
   include("cmake/modules/linker.cmake")
 endif()
 
+set(MIN_PYTHON_VERSION "3.11")
+set(Python_FIND_FRAMEWORK "LAST")
+
+if (WITH_BINDINGS)
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+else()
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
+endif()
+
+# Fix python site-packages for Fedora
+# See https://github.com/qgis/QGIS/issues/54348#issuecomment-1694216152
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  if(EXISTS "/etc/fedora-release")
+    EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "import sysconfig;print(sysconfig.get_path(\"platlib\", \"rpm_prefix\"), end=\"\")" OUTPUT_VARIABLE Python_SITEARCH)
+  endif()
+endif()
+
+message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
+message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python site-packages: ${Python_SITEARCH}")
+
 #############################################################
 # platform specific stuff
 if (WITH_CORE)
@@ -948,64 +953,29 @@ if (WITH_CORE)
   else()
 
     if(APPLE)
-        set(QGIS_MACAPP_FRAMEWORK TRUE CACHE BOOL "Build as a framework on OSX")
+      set(QGIS_MAC_BUNDLE TRUE CACHE BOOL "Install into a mac bundle")
     endif()
 
-    if (APPLE AND QGIS_MACAPP_FRAMEWORK)
-      if (POLICY CMP0042) # in CMake 3.0.0+
-        set (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
-      endif()
-      if (POLICY CMP0068) # in CMake 3.9.0+
-        cmake_policy(SET CMP0068 NEW)
-      endif()
-      # for Mac OS X, everything is put inside an application bundle
-      # save the root install prefix for the app later
-      set (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-      set (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
-      # common prefix for components, let cmake handle it
-      set (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-      # 5 bundling levels, each includes previous
-      #  -1  nothing
-      #   0  fixup the library paths for all QGIS libraries with @loader_path
-      #   1  Qt frameworks
-      #   2  non-system libraries, "standard"
-      #   3  non-system frameworks, "standalone"
-      set (QGIS_MACAPP_BUNDLE 1 CACHE STRING "What to bundle into app package")
-      set (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
-      set (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
-      set (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
+    if (APPLE AND QGIS_MAC_BUNDLE)
+      set(CMAKE_MACOSX_RPATH ON) # If this is off, the path will be stripped (completely) at install time, we want to preserve the `@rpath` prefix
+      set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 
-      set (DEFAULT_BIN_SUBDIR      bin)
-      set (QGIS_BIN_SUBDIR_REV     ..)
-      set (DEFAULT_CGIBIN_SUBDIR   fcgi-bin)
-      set (QGIS_CGIBIN_SUBDIR_REV  ..)
-      set (DEFAULT_LIB_SUBDIR      lib)
-      set (QGIS_LIB_SUBDIR_REV     ..)
-      set (QGIS_FW_SUBDIR          ../Frameworks)
-      set (QGIS_FW_SUBDIR_REV      ../MacOS)
-      set (DEFAULT_DATA_SUBDIR     ../Resources)
-      set (QGIS_DATA_SUBDIR_REV    ../MacOS)
-      set (DEFAULT_LIBEXEC_SUBDIR  lib/qgis)
-      set (QGIS_LIBEXEC_SUBDIR_REV ../..)
-      set (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
-      set (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
-      set (DEFAULT_INCLUDE_SUBDIR  include/qgis)
-      set (DEFAULT_QML_SUBDIR     qml)
+      set(APP_CONTENTS_DIR "Contents")
+      set(APP_MACOS_DIR "${APP_CONTENTS_DIR}/MacOS")
+      set(APP_FRAMEWORKS_DIR "${APP_CONTENTS_DIR}/Frameworks")
+      set(APP_RESOURCES_DIR "${APP_CONTENTS_DIR}/Resources")
+      set(APP_PLUGINS_DIR "${APP_CONTENTS_DIR}/PlugIns")
 
-      # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
-      set (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
+      cmake_path(RELATIVE_PATH Python_SITEARCH BASE_DIRECTORY "${TARGET_SYSROOT}" OUTPUT_VARIABLE _RELATIVE_SITEARCH)
 
-      # path for framework references when running from build directory
-      # changed later to reference in-app resources upon install
-      set (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-      # recent cmakes force SDKs, recent SDKs don't have user symlinks
-      # need to find non-system frameworks
-      # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
-      # a framework, so these need to be manually handled with LINK_FLAGS options
-      set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -F/Library/Frameworks")
-      set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -F/Library/Frameworks")
-      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -F/Library/Frameworks")
-
+      set(DEFAULT_BIN_SUBDIR      ${APP_MACOS_DIR})
+      set(DEFAULT_LIB_SUBDIR      ${APP_FRAMEWORKS_DIR})
+      set(DEFAULT_DATA_SUBDIR     ${APP_RESOURCES_DIR}/qgis)
+      set(DEFAULT_LIBEXEC_SUBDIR  ${APP_MACOS_DIR})
+      set(DEFAULT_PLUGIN_SUBDIR   ${APP_PLUGINS_DIR}/qgis)
+      set(DEFAULT_INCLUDE_SUBDIR  include/qgis)
+      set(DEFAULT_QML_SUBDIR      ${APP_RESOURCES_DIR}/qgis/qml)
+      set(DEFAULT_PYTHON_SUBDIR   ${APP_FRAMEWORKS_DIR}/${_RELATIVE_SITEARCH})
     else()
       # UNIX
       set (DEFAULT_BIN_SUBDIR     bin)
@@ -1018,13 +988,6 @@ if (WITH_CORE)
       set (DEFAULT_QML_SUBDIR     qml)
 
       set (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
-
-      # QGIS_MACAPP_FRAMEWORK=FALSE
-      if(APPLE)
-        set (QGIS_MACAPP_BUNDLE -1)
-        set (CMAKE_FRAMEWORK FALSE)
-        set (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-      endif()
     endif()
 
   endif()
@@ -1132,28 +1095,6 @@ option(ENABLE_UNITY_BUILDS "Enable Unity builds, that is compiling several .cpp 
 #############################################################
 # Python
 
-set(MIN_PYTHON_VERSION "3.9")
-set(Python_FIND_FRAMEWORK "LAST")
-
-
-if (WITH_BINDINGS)
-  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
-else()
-  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
-endif()
-
-# Fix python site-packages for Fedora
-# See https://github.com/qgis/QGIS/issues/54348#issuecomment-1694216152
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  if(EXISTS "/etc/fedora-release")
-    EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "import sysconfig;print(sysconfig.get_path(\"platlib\", \"rpm_prefix\"), end=\"\")" OUTPUT_VARIABLE Python_SITEARCH)
-  endif()
-endif()
-
-message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
-message("-- Python library: ${Python_LIBRARIES}")
-message("-- Python site-packages: ${Python_SITEARCH}")
-
 if (WITH_CORE AND WITH_BINDINGS)
   set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
   set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
@@ -1184,10 +1125,14 @@ if (WITH_CORE AND WITH_BINDINGS)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 20)
+  set(SIP_CONCAT_PARTS 25)
 
-  if (NOT BINDINGS_GLOBAL_INSTALL)
-    set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
+  if(BINDINGS_GLOBAL_INSTALL)
+    set(QGIS_PYTHON_INSTALL_DIR ${Python_SITEARCH})
+  elseif(DEFINED DEFAULT_PYTHON_SUBDIR)
+    set(QGIS_PYTHON_INSTALL_DIR ${DEFAULT_PYTHON_SUBDIR})
+  else()
+    set(QGIS_PYTHON_INSTALL_DIR ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
@@ -1244,22 +1189,6 @@ if (WITH_CORE)
     add_subdirectory(python)
   endif()
 
-  if (APPLE)
-    # must be last for install, so install_name_tool can do its work
-    add_subdirectory(mac)
-
-    # allow QGIS to be run directly from build directory and to run unit tests
-    execute_process(COMMAND /bin/mkdir -p "${QGIS_OUTPUT_DIRECTORY}/lib")
-    execute_process(
-      COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass6.framework lib/
-      WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
-    )
-    execute_process(
-      COMMAND /bin/ln -fs ../../Plugins/qgis/qgisgrass7.framework lib/
-      WORKING_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}"
-    )
-  endif()
-
   # manual page - makes sense only on unix systems
   if (UNIX AND NOT APPLE)
     install (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
@@ -1299,8 +1228,8 @@ endif()
 #############################################################
 # Enable packaging
 if (WITH_CORE)
-  include(Bundle)
   include(VcpkgInstallDeps)
+  include(Bundle)
 endif()
 
 if (UNIX AND NOT APPLE)

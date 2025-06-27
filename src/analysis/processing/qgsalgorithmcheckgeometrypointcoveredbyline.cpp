@@ -37,7 +37,7 @@ QString QgsGeometryCheckPointCoveredByLineAlgorithm::displayName() const
 
 QString QgsGeometryCheckPointCoveredByLineAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect points that are not along lines from another layer" );
+  return QObject::tr( "Detects points that are not along lines from another layer." );
 }
 
 QStringList QgsGeometryCheckPointCoveredByLineAlgorithm::tags() const

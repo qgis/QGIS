@@ -54,6 +54,11 @@ QString QgsSetZValueAlgorithm::shortHelpString() const
                       "the initial Z value for all geometries." );
 }
 
+QString QgsSetZValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Sets the Z value for geometries in a layer." );
+}
+
 QString QgsSetZValueAlgorithm::outputName() const
 {
   return QObject::tr( "Z Added" );

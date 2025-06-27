@@ -65,6 +65,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   if ( vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Join || vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression || vl->fields().field( fieldIdx ).isReadOnly() )
   {
     isFieldEditableCheckBox->setEnabled( false );
+    mEditableExpressionButton->setEnabled( false );
   }
 
   mExpressionWidget->registerExpressionContextGenerator( this );
@@ -236,6 +237,21 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forc
     }
   }
 
+  // "Editable" and "Reuse last entered value" checkboxes should be disabled for read-only widgets like JsonEdit
+  // see https://github.com/qgis/QGIS/issues/47755
+  if ( QgsGui::editorWidgetRegistry()->isReadOnly( type ) )
+  {
+    isFieldEditableCheckBox->setEnabled( false );
+    mEditableExpressionButton->setEnabled( false );
+    reuseLastValuesCheckBox->setEnabled( false );
+  }
+  else
+  {
+    isFieldEditableCheckBox->setEnabled( true );
+    mEditableExpressionButton->setEnabled( true );
+    reuseLastValuesCheckBox->setEnabled( true );
+  }
+
   //update default expression preview
   defaultExpressionChanged();
 }
@@ -371,7 +387,6 @@ int QgsAttributeTypeDialog::fieldIdx() const
 {
   return mFieldIdx;
 }
-
 
 QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
 {

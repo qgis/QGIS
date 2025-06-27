@@ -1177,7 +1177,7 @@ bool QgsOgrProviderUtils::IsLocalFile( const QString &path )
 #else
   QStorageInfo info( dirName );
   const QString fileSystem( info.fileSystemType() );
-  bool isLocal = path != QLatin1String( "nfs" ) && path != QLatin1String( "smbfs" );
+  bool isLocal = fileSystem != QLatin1String( "nfs" ) && fileSystem != QLatin1String( "smbfs" );
   if ( !isLocal )
     QgsDebugMsgLevel( QStringLiteral( "Filesystem for %1 is %2" ).arg( path, fileSystem ), 2 );
   return isLocal;

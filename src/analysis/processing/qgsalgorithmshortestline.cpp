@@ -48,6 +48,11 @@ QString QgsShortestLineAlgorithm::groupId() const
   return QStringLiteral( "vectoranalysis" );
 }
 
+QString QgsShortestLineAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the shortest lines between features in source and destination layers." );
+}
+
 QString QgsShortestLineAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a line layer as the "
@@ -107,7 +112,10 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
     mKNeighbors = mDestination->featureCount();
 
   QgsFields fields = QgsProcessingUtils::combineFields( mSource->fields(), mDestination->fields() );
-  fields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
+
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
+  fields = QgsProcessingUtils::combineFields( fields, newFields );
 
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::MultiLineString, mSource->sourceCrs() ) );

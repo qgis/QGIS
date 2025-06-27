@@ -36,7 +36,7 @@ QString QgsFixGeometryMissingVertexAlgorithm::displayName() const
 
 QString QgsFixGeometryMissingVertexAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Add missing vertices along borders detected with the \"Missing vertices along borders\" algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Adds missing vertices along borders detected with the \"Missing vertices along borders\" algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryMissingVertexAlgorithm::tags() const

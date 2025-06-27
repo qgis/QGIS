@@ -26,8 +26,6 @@ template CORE_EXPORT QList<int> SIP_SKIP;
 template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
 #endif
 
-SIP_NO_FILE
-
 class QgsMeshEditingError;
 class QgsMeshVertexCirculator;
 
@@ -36,11 +34,11 @@ class QgsMeshVertexCirculator;
  *
  * \brief Wraps a QgsMesh to ensure the consistency of the mesh during editing and helps to access elements from other elements.
  *
- *  A topological face need to:
+ * A topological face must:
  *
  * - be convex
- * - counter clock wise
- * - not share an unique vertex with another face
+ * - be oriented counter-clockwise
+ * - not share a unique vertex with another face
  *
  * \since QGIS 3.22
  */
@@ -55,7 +53,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \brief Contains independent faces and topological information about these faces.
      *
-     * This class supports unique shared vertex between faces
+     * This class supports unique shared vertices between faces.
      *
      * \since QGIS 3.22
      */
@@ -63,14 +61,21 @@ class CORE_EXPORT QgsTopologicalMesh
     {
       public:
 
-        //! Returns faces
-        QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
+        /**
+         * Returns faces.
+         * \note Not available in Python bindings.
+         */
+        SIP_SKIP QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
 
         //! Clears all data contained in the instance.
         void clear();
 
-        //! Returns the face neighborhood of the faces, indexing is local
-        QVector<FaceNeighbors> facesNeighborhood() const;
+        /**
+         * Returns the face neighborhood of the faces, indexing is local.
+         *
+         * \note Not available in Python bindings.
+         */
+        SIP_SKIP QVector<FaceNeighbors> facesNeighborhood() const;
 
         //! Returns a face linked to the vertices with index \a vertexIndex
         int vertexToFace( int vertexIndex ) const;
@@ -97,17 +102,29 @@ class CORE_EXPORT QgsTopologicalMesh
     {
       public:
 
-        //! Returns the face that are added with this changes
-        QVector<QgsMeshFace> addedFaces() const;
+        /**
+         * Returns the face that are added with this changes.
+         *
+         * \note Not available in Python bindings.
+         */
+        SIP_SKIP QVector<QgsMeshFace> addedFaces() const;
 
-        //! Returns the faces that are removed with this changes
-        QVector<QgsMeshFace> removedFaces() const;
+        /**
+         * Returns the faces that are removed with this changes.
+         *
+         * \note Not available in Python bindings.
+         */
+        SIP_SKIP QVector<QgsMeshFace> removedFaces() const;
 
         //! Returns the indexes of the faces that are removed with this changes
         QList<int> removedFaceIndexes() const;
 
         //! Returns the added vertices with this changes
+#ifndef SIP_RUN
         QVector<QgsMeshVertex> addedVertices() const;
+#else
+        QVector<QgsPoint> addedVertices() const;
+#endif
 
         //! Returns the indexes of vertices to remove
         QList<int> verticesToRemoveIndexes() const;
@@ -169,8 +186,12 @@ class CORE_EXPORT QgsTopologicalMesh
      */
     static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error );
 
-    //! Creates new topological faces that are not yet included in the mesh
-    static TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, bool uniqueSharedVertexAllowed, QgsMeshEditingError &error );
+    /**
+     * Creates new topological faces that are not yet included in the mesh.
+     *
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP static TopologicalFaces createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, bool uniqueSharedVertexAllowed, QgsMeshEditingError &error );
 
     //----------- access element methods
 
@@ -195,8 +216,12 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Returns a list of vertices are not linked to any faces
     QList<int> freeVerticesIndexes() const;
 
-    //! Returns a vertex circulator linked to this mesh around the vertex with index \a vertexIndex
-    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
+    /**
+     * Returns a vertex circulator linked to this mesh around the vertex with index \a vertexIndex.
+     *
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
 
     //----------- editing methods
 
@@ -318,9 +343,10 @@ class CORE_EXPORT QgsTopologicalMesh
      * Checks the topology of the \a vertices as they are contained in a face and returns indication on direction.
      * If the face is clockwise, \a clockwise is TRUE
      *
+     * \note Not available in Python bindings
      * \since QGIS 3.30
      */
-    static QgsMeshEditingError checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise );
+    SIP_SKIP static QgsMeshEditingError checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, bool &clockwise );
 
     /**
      * Reindexes faces and vertices, after this operation, the topological
@@ -394,10 +420,14 @@ class CORE_EXPORT QgsTopologicalMesh
 
 };
 
+#ifndef SIP_RUN
+
 /**
  * \ingroup core
  *
  * \brief Convenience class that turns around a vertex and provides information about faces and vertices.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.22
  */
@@ -466,5 +496,6 @@ class CORE_EXPORT QgsMeshVertexCirculator
 
     int positionInCurrentFace() const;
 };
+#endif
 
 #endif // QGSTOPOLOGICALMESH_H

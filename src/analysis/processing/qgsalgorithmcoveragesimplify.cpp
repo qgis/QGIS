@@ -61,7 +61,7 @@ void QgsCoverageSimplifyAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsCoverageSimplifyAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Simplifies a coverage of polygon features while retaining valid coverage" );
+  return QObject::tr( "Simplifies a coverage of polygon features while retaining valid coverage." );
 }
 
 QString QgsCoverageSimplifyAlgorithm::shortHelpString() const

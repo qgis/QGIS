@@ -25,6 +25,7 @@
 #include "qgsproviderregistry.h"
 #include <QPushButton>
 #include <QItemSelectionModel>
+#include <QMenu>
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )
@@ -59,6 +60,34 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   connect( mDeleteButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::removeSelectedFields );
   connect( mUpButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsUp );
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsFieldMappingWidget::moveSelectedFieldsDown );
+
+  mEditButton->setPopupMode( QToolButton::InstantPopup ); // Show menu on button click
+
+  // Create a menu for the dropdown
+  QMenu *menu = new QMenu( mEditButton );
+
+  // Add menu items
+  menu->addAction( tr( "Convert All Field Names to Lowercase" ), this, [=]() {
+    QgsFieldMappingModel *model = mFieldsView->model();
+    for ( int i = 0; i < model->rowCount(); i++ )
+    {
+      const QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      const QString name = model->data( index, Qt::EditRole ).toString();
+      model->setData( index, name.toLower(), Qt::EditRole );
+    }
+  } );
+
+  menu->addAction( tr( "Convert All Field Names to Uppercase" ), this, [=]() {
+    QgsFieldMappingModel *model = mFieldsView->model();
+    for ( int i = 0; i < model->rowCount(); i++ )
+    {
+      const QModelIndex index = model->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationName ) );
+      const QString name = model->data( index, Qt::EditRole ).toString();
+      model->setData( index, name.toUpper(), Qt::EditRole );
+    }
+  } );
+
+  mEditButton->setMenu( menu );
 
   const bool supportsSchemas = mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Schemas );
   if ( supportsSchemas )

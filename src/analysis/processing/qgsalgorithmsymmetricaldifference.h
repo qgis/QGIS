@@ -35,6 +35,7 @@ class QgsSymmetricalDifferenceAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
 
   protected:
