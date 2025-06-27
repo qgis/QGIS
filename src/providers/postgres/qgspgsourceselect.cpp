@@ -451,7 +451,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
 
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::setLayerType, this, &QgsPgSourceSelect::setLayerType );
   connect( mColumnTypeThread, &QThread::finished, this, &QgsPgSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress, mColumnTypeTask, [=]( int i, int n ) {
+  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress, mColumnTypeTask, [this]( int i, int n ) {
     mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
   } );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progressMessage, this, &QgsPgSourceSelect::progressMessage );

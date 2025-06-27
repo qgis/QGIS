@@ -56,7 +56,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mConnectAction->setCheckable( true );
   addAction( mConnectAction );
 
-  connect( mConnectAction, &QAction::toggled, this, [=]( bool connect ) {
+  connect( mConnectAction, &QAction::toggled, this, [this]( bool connect ) {
     if ( connect )
       mConnection->connectGps();
     else
@@ -68,7 +68,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mRecenterAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) );
   mRecenterAction->setEnabled( false );
 
-  connect( mRecenterAction, &QAction::triggered, this, [=] {
+  connect( mRecenterAction, &QAction::triggered, this, [this] {
     if ( mConnection->lastValidLocation().isEmpty() )
       return;
 
@@ -143,7 +143,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mCreateFeatureAction->setEnabled( false );
   mAddTrackVertexAction->setEnabled( false );
   mResetFeatureAction->setEnabled( false );
-  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [=]( Qgis::DeviceConnectionStatus status ) {
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [this]( Qgis::DeviceConnectionStatus status ) {
     switch ( status )
     {
       case Qgis::DeviceConnectionStatus::Disconnected:
@@ -185,7 +185,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
 
   connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationLayerChanged, this, &QgsGpsToolBar::destinationLayerChanged );
 
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [=]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [this]( bool enabled ) { setAddVertexButtonEnabled( !enabled ); } );
   setAddVertexButtonEnabled( !QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
 
   adjustSize();
@@ -408,7 +408,7 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
   followAction->setCheckable( true );
   followAction->setChecked( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() );
 
-  connect( followAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( followAction, &QAction::toggled, this, []( bool checked ) {
     if ( checked && !QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
     {
       QgsProject::instance()->gpsSettings()->setDestinationFollowsActiveLayer( true );
@@ -431,7 +431,7 @@ void QgsGpsToolBar::destinationMenuAboutToShow()
     if ( actionLayerId == currentLayerId && !QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
       layerAction->setChecked( true );
 
-    connect( layerAction, &QAction::toggled, this, [=]( bool checked ) {
+    connect( layerAction, &QAction::toggled, this, [actionLayerId]( bool checked ) {
       if ( checked )
       {
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( actionLayerId ) );
@@ -475,7 +475,7 @@ void QgsGpsToolBar::createLocationWidget()
     showComponentAction->setChecked( visibleComponents & component );
     locationMenu->addAction( showComponentAction );
 
-    connect( showComponentAction, &QAction::toggled, this, [=]( bool checked ) {
+    connect( showComponentAction, &QAction::toggled, this, [this, component]( bool checked ) {
       const Qgis::GpsInformationComponents currentVisibleComponents = settingShowInToolbar->value();
       if ( checked )
       {

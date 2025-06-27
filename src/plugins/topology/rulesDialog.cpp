@@ -40,14 +40,14 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   mContextMenu = new QMenu( this );
 
   QAction *selectAllAction = new QAction( tr( "Select All" ), this );
-  connect( selectAllAction, &QAction::triggered, this, [=] {
+  connect( selectAllAction, &QAction::triggered, this, [this] {
     mRulesTable->setRangeSelected( QTableWidgetSelectionRange( 0, 0, mRulesTable->rowCount() - 1, mRulesTable->columnCount() - 1 ), true );
   } );
   mContextMenu->addAction( selectAllAction );
   mContextMenu->addSeparator();
 
   QAction *enableAction = new QAction( tr( "Activate" ), this );
-  connect( enableAction, &QAction::triggered, this, [=] {
+  connect( enableAction, &QAction::triggered, this, [this] {
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
@@ -57,7 +57,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
   mContextMenu->addAction( enableAction );
   QAction *disableAction = new QAction( tr( "Deactivate" ), this );
-  connect( disableAction, &QAction::triggered, this, [=] {
+  connect( disableAction, &QAction::triggered, this, [this] {
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
@@ -67,7 +67,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
   mContextMenu->addAction( disableAction );
   QAction *toggleAction = new QAction( tr( "Toggle Activation" ), this );
-  connect( toggleAction, &QAction::triggered, this, [=] {
+  connect( toggleAction, &QAction::triggered, this, [this] {
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
@@ -82,7 +82,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( deleteAction, &QAction::triggered, this, &rulesDialog::deleteTests );
   mContextMenu->addAction( deleteAction );
 
-  connect( mContextMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mContextMenu, &QMenu::aboutToShow, this, [this, selectAllAction, enableAction, disableAction, toggleAction, deleteAction] {
     selectAllAction->setEnabled( mRulesTable->rowCount() > 0 );
     const bool hasSelectedItems = !mRulesTable->selectionModel()->selectedIndexes().isEmpty();
     enableAction->setEnabled( hasSelectedItems );
@@ -92,7 +92,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
 
   mRulesTable->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [=] {
+  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [this] {
     mContextMenu->exec( QCursor::pos() );
   } );
 
@@ -110,7 +110,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( mAddTestButton, &QAbstractButton::clicked, this, &rulesDialog::addRule );
   connect( mAddTestButton, &QAbstractButton::clicked, mRulesTable, &QTableView::resizeColumnsToContents );
 
-  connect( mRulesTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
+  connect( mRulesTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, [this]() {
     bool enabled = !mRulesTable->selectionModel()->selectedIndexes().isEmpty();
     mDeleteTestButton->setEnabled( enabled );
   } );

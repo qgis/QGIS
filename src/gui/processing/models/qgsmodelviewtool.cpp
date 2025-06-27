@@ -24,7 +24,7 @@ QgsModelViewTool::QgsModelViewTool( QgsModelGraphicsView *view, const QString &n
   , mView( view )
   , mToolName( name )
 {
-  connect( mView, &QgsModelGraphicsView::willBeDeleted, this, [=] {
+  connect( mView, &QgsModelGraphicsView::willBeDeleted, this, [this] {
     mView = nullptr;
   } );
 }

@@ -193,7 +193,7 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   mFilename->setConfirmOverwrite( false );
-  connect( mFilename, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );

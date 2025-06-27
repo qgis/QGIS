@@ -74,23 +74,23 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mEditableExpressionButton->registerExpressionContextGenerator( this );
   mEditableExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Editable ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Editable ), vl->editFormConfig().propertyDefinitions(), vl );
   mEditableExpressionButton->registerLinkedWidget( isFieldEditableCheckBox );
-  connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [=] {
+  connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Editable, mEditableExpressionButton->toProperty() );
   } );
 
   mAliasExpressionButton->registerExpressionContextGenerator( this );
   mAliasExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Alias ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Alias ), vl->editFormConfig().propertyDefinitions(), vl );
-  connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [=] {
+  connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
   } );
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
-  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mCheckBoxEnforceUnique->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceUnique->setChecked( false );
   } );
-  connect( notNullCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( notNullCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mCheckBoxEnforceNotNull->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceNotNull->setChecked( false );

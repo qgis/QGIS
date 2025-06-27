@@ -70,7 +70,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     populateAuthMethods();
 
     connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stkwAuthMethods, &QStackedWidget::setCurrentIndex );
-    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] { validateAuth(); } );
+    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { validateAuth(); } );
 
     connect( authCfgEdit, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
 

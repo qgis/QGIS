@@ -215,7 +215,7 @@ void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
   mOpenAfterRunningCheck->setEnabled( !outputIsSkipped() );
   gridLayout->addWidget( mOpenAfterRunningCheck, 1, 0, 1, 2 );
 
-  connect( this, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged, this, [=]( bool skipped ) {
+  connect( this, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged, this, [this]( bool skipped ) {
     bool enabled = !skipped;
     mOpenAfterRunningCheck->setEnabled( enabled );
     mOpenAfterRunningCheck->setChecked( enabled );
@@ -291,7 +291,7 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
       if ( mUseRemapping )
       {
         QAction *editMappingAction = new QAction( tr( "Edit Field Mapping…" ), this );
-        connect( editMappingAction, &QAction::triggered, this, [=] {
+        connect( editMappingAction, &QAction::triggered, this, [this] {
           setAppendDestination( value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), mRemapDefinition.destinationFields() );
         } );
         mMenu->addAction( editMappingAction );
@@ -489,7 +489,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
 
     panel->openPanel( widget );
 
-    auto changed = [=] {
+    auto changed = [this, widget] {
       mUseTemporary = false;
       mUseRemapping = false;
 
@@ -519,11 +519,11 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
       emit destinationChanged();
     };
 
-    connect( widget, &QgsNewDatabaseTableNameWidget::tableNameChanged, this, [=] { changed(); } );
-    connect( widget, &QgsNewDatabaseTableNameWidget::schemaNameChanged, this, [=] { changed(); } );
-    connect( widget, &QgsNewDatabaseTableNameWidget::validationChanged, this, [=] { changed(); } );
-    connect( widget, &QgsNewDatabaseTableNameWidget::providerKeyChanged, this, [=] { changed(); } );
-    connect( widget, &QgsNewDatabaseTableNameWidget::accepted, this, [=] {
+    connect( widget, &QgsNewDatabaseTableNameWidget::tableNameChanged, this, [changed] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::schemaNameChanged, this, [changed] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::validationChanged, this, [changed] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::providerKeyChanged, this, [changed] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::accepted, this, [changed, widget] {
       changed();
       widget->acceptPanel();
     } );
@@ -539,10 +539,10 @@ void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [=]( const QgsMimeDataUtils::Uri & ) {
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [widget]( const QgsMimeDataUtils::Uri & ) {
       widget->acceptPanel();
     } );
-    connect( widget, &QgsPanelWidget::panelAccepted, this, [=]() {
+    connect( widget, &QgsPanelWidget::panelAccepted, this, [this, widget]() {
       if ( widget->uri().uri.isEmpty() )
         setValue( QVariant() );
       else
@@ -580,7 +580,7 @@ void QgsProcessingLayerOutputDestinationWidget::setAppendDestination( const QStr
 
       panel->openPanel( widget );
 
-      connect( widget, &QgsPanelWidget::panelAccepted, this, [=]() {
+      connect( widget, &QgsPanelWidget::panelAccepted, this, [this, outputProps, widget, destFields, uri]() {
         QgsProcessingOutputLayerDefinition def( uri );
         QgsRemappingSinkDefinition remap;
         remap.setSourceCrs( outputProps.crs );

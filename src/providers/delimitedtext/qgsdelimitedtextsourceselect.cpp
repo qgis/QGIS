@@ -94,12 +94,12 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
-  connect( mBooleanTrue, &QLineEdit::textChanged, mBooleanFalse, [=] {
+  connect( mBooleanTrue, &QLineEdit::textChanged, mBooleanFalse, [this] {
     mBooleanFalse->setEnabled( !mBooleanTrue->text().isEmpty() );
     updateFieldsAndEnable();
   } );
 
-  connect( mBooleanFalse, &QLineEdit::textChanged, mBooleanFalse, [=] {
+  connect( mBooleanFalse, &QLineEdit::textChanged, mBooleanFalse, [this] {
     updateFieldsAndEnable();
   } );
 
@@ -524,7 +524,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDate ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), "date" );
     typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QTime ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), "time" );
     typeCombo->addItem( QgsFields::iconForFieldType( QMetaType::Type::QDateTime ), QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), "datetime" );
-    connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+    connect( typeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this, column, typeCombo]( int ) {
       mOverriddenFields.insert( column, typeCombo->currentData().toString() );
     } );
     tblSample->setCellWidget( 0, column, typeCombo );
@@ -539,24 +539,24 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   mScanTask = new QgsDelimitedTextFileScanTask( url( mFile, /* skip overridden types */ true ) );
   mCancelButton->show();
-  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [=]( const QgsFields &fields ) {
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanCompleted, this, [this]( const QgsFields &fields ) {
     updateFieldTypes( fields );
     mScanWidget->hide();
   } );
 
-  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [=]( const QgsFields &fields ) {
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::scanStarted, this, [this]( const QgsFields &fields ) {
     updateFieldTypes( fields );
   } );
 
   connect( mCancelButton, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::cancelScanTask );
 
-  connect( mScanTask, &QgsDelimitedTextFileScanTask::processedCountChanged, this, [=]( unsigned long long recordsScanned ) {
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::processedCountChanged, this, [this]( unsigned long long recordsScanned ) {
     mScanWidget->show();
     mProgressLabel->setText( tr( "Column types detection in progress: %L1 records read" ).arg( static_cast<unsigned long long>( recordsScanned ) ) );
   } );
 
   // This is required because QgsTask emits a progress changed 100 when done
-  connect( mScanTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [=] {
+  connect( mScanTask, &QgsDelimitedTextFileScanTask::taskCompleted, this, [this] {
     mScanWidget->hide();
   } );
 

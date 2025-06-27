@@ -107,7 +107,7 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
   mQuadraticAttenuation = elem.attribute( QStringLiteral( "attenuation-2" ) ).toDouble();
 }
 
-bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other )
+bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other ) const
 {
   return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity && mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation && mQuadraticAttenuation == other.mQuadraticAttenuation;
 }

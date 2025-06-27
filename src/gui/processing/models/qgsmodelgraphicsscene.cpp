@@ -513,7 +513,7 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
 {
   QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, detailsButton, [=] {
+  connect( detailsButton, &QPushButton::clicked, detailsButton, [detailsButton, title, longMessage] {
     QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
     dialog->setTitle( title );
     dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );

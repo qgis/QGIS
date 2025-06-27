@@ -259,7 +259,7 @@ void QgsWFSProvider::issueInitialGetFeature()
     // Try to see if gml:description, gml:identifier, gml:name attributes are
     // present. So insert them temporarily in mShared->mFields so that the
     // GML parser can detect them.
-    const auto addGMLFields = [=]( bool forceAdd ) {
+    const auto addGMLFields = [this]( bool forceAdd ) {
       if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0 && ( forceAdd || mSampleFeatureHasDescription ) )
         mShared->mFields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
       if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0 && ( forceAdd || mSampleFeatureHasIdentifier ) )

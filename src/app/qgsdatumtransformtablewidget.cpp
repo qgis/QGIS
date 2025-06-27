@@ -175,7 +175,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
-  connect( mEditButton, &QToolButton::clicked, this, [=] {
+  connect( mEditButton, &QToolButton::clicked, this, [this] {
     const QModelIndexList selectedIndexes = mTableView->selectionModel()->selectedIndexes();
     if ( selectedIndexes.count() > 0 )
     {
@@ -185,7 +185,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
 
-  connect( mTableView, &QTableView::doubleClicked, this, [=]( const QModelIndex &index ) {
+  connect( mTableView, &QTableView::doubleClicked, this, [this]( const QModelIndex &index ) {
     editDatumTransform( index );
   } );
   mEditButton->setEnabled( false );

@@ -81,7 +81,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonFixWithDefault, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithDefault );
   connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
   connect( ui.pushButtonErrorResolutionSettings, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::setDefaultResolutionMethods );
-  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, [=] { QgsGeometryCheckerResultTab::highlightErrors(); } );
+  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, [this] { QgsGeometryCheckerResultTab::highlightErrors(); } );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 

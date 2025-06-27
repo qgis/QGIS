@@ -1092,7 +1092,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( originalUriLayerIdWasSpecified )
   {
     // remove non-matching, unwanted layers by layer id
-    res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
+    res.erase( std::remove_if( res.begin(), res.end(), [uriLayerId]( const QgsProviderSublayerDetails & sublayer )
     {
       return sublayer.layerNumber() != uriLayerId;
     } ), res.end() );
@@ -1101,7 +1101,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( originalUriGeometryTypeWasSpecified )
   {
     // remove non-matching, unwanted layers by geometry type
-    res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
+    res.erase( std::remove_if( res.begin(), res.end(), [originalGeometryTypeFilter]( const QgsProviderSublayerDetails & sublayer )
     {
       return sublayer.wkbType() != originalGeometryTypeFilter;
     } ), res.end() );

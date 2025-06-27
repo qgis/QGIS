@@ -167,7 +167,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   {
     QShortcut *replaceShortcut = new QShortcut( QKeySequence::StandardKey::Replace, this );
     replaceShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
-    connect( replaceShortcut, &QShortcut::activated, this, [=] {
+    connect( replaceShortcut, &QShortcut::activated, this, [this] {
       // shortcut toggles bar visibility
       const bool show = mLineEditReplace->isHidden();
       setReplaceBarVisible( show );

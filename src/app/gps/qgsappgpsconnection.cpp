@@ -241,7 +241,7 @@ void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
   QgisApp::instance()->statusBarIface()->clearMessage();
   mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
-  connect( configureButton, &QPushButton::clicked, configureButton, [=] {
+  connect( configureButton, &QPushButton::clicked, configureButton, [] {
     QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
   } );
   mConnectionMessageItem->layout()->addWidget( configureButton );

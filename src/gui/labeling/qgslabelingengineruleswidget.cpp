@@ -349,7 +349,7 @@ void QgsLabelingEngineRulesWidget::editRule( const QModelIndex &index )
   {
     widget->setPanelTitle( rule->name().isEmpty() ? tr( "Configure Rule" ) : rule->name() );
     widget->setRule( rule );
-    connect( widget, &QgsLabelingEngineRuleWidget::changed, this, [=] {
+    connect( widget, &QgsLabelingEngineRuleWidget::changed, this, [this, widget, index] {
       std::unique_ptr<QgsAbstractLabelingEngineRule> updatedRule( widget->rule() );
       mModel->changeRule( index, updatedRule );
       emit changed();
@@ -417,7 +417,7 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labeling-rules" ) );
   } );
 }

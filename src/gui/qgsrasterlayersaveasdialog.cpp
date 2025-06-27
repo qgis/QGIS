@@ -197,7 +197,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
 
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
-  connect( mFilename, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastRasterFileDir" ), tmplFileInfo.absolutePath() );

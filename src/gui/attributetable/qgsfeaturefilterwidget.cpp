@@ -227,7 +227,7 @@ void QgsFeatureFilterWidget::columnBoxInit()
       QAction *filterAction = new QAction( icon, alias, mFilterButton );
       filterAction->setData( field.name() );
 
-      connect( filterAction, &QAction::triggered, this, [=] { filterColumnChanged( filterAction ); } );
+      connect( filterAction, &QAction::triggered, this, [this, filterAction] { filterColumnChanged( filterAction ); } );
       mFilterColumnsMenu->addAction( filterAction );
     }
   }
@@ -261,7 +261,7 @@ void QgsFeatureFilterWidget::storedFilterExpressionBoxInit()
   for ( const QgsStoredExpression &storedExpression : storedExpressions )
   {
     QAction *storedExpressionAction = new QAction( storedExpression.name, mFilterButton );
-    connect( storedExpressionAction, &QAction::triggered, this, [=]() {
+    connect( storedExpressionAction, &QAction::triggered, this, [this, storedExpression]() {
       setFilterExpression( storedExpression.expression, QgsAttributeForm::ReplaceFilter, true );
     } );
     mStoredFilterExpressionMenu->addAction( storedExpressionAction );

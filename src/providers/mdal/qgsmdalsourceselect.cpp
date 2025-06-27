@@ -31,7 +31,7 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setDialogTitle( tr( "Open MDAL Supported Mesh Dataset(s)" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mMeshPath = path;
     emit enableButtons( !mMeshPath.isEmpty() );
   } );

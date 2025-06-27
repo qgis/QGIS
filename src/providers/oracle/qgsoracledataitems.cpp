@@ -201,7 +201,7 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 
     if ( QgsOracleRootItem::sMainWindow )
     {
-      connect( mColumnTypeTask, &QgsOracleColumnTypeTask::progressMessage, QgsOracleRootItem::sMainWindow->statusBar(), [=]( const QString &message ) {
+      connect( mColumnTypeTask, &QgsOracleColumnTypeTask::progressMessage, QgsOracleRootItem::sMainWindow->statusBar(), []( const QString &message ) {
         QgsOracleRootItem::sMainWindow->statusBar()->showMessage( message );
       } );
     }
@@ -378,7 +378,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
       std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ), QStringLiteral( "oracle" ), srcLayer->crs() ) );
 
       // when export is successful:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [this]() {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to Oracle database" ), tr( "Import was successful." ) );
         if ( state() == Qgis::BrowserItemState::Populated )
@@ -388,7 +388,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
       } );
 
       // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [this]( Qgis::VectorExportResult error, const QString &errorMessage ) {
         if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();

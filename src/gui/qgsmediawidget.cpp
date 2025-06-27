@@ -72,11 +72,11 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   mMediaPlayer.setVideoOutput( mVideoWidget );
 
   connect( &mMediaPlayer, &QMediaPlayer::mediaStatusChanged, this, &QgsMediaWidget::mediaStatusChanged );
-  connect( &mMediaPlayer, &QMediaPlayer::positionChanged, this, [=]() {
+  connect( &mMediaPlayer, &QMediaPlayer::positionChanged, this, [this]() {
     mPositionSlider->setValue( static_cast<int>( mMediaPlayer.position() / 1000 ) );
   } );
 
-  connect( mPlayButton, &QAbstractButton::clicked, this, [=]() {
+  connect( mPlayButton, &QAbstractButton::clicked, this, [this]() {
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     if ( mMediaPlayer.playbackState() == QMediaPlayer::PlayingState )
 #else
@@ -90,7 +90,7 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
       mMediaPlayer.play();
     }
   } );
-  connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [=]() {
+  connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [this]() {
     mMediaPlayer.setPosition( static_cast<qint64>( mPositionSlider->value() ) * 1000 );
   } );
 }

@@ -239,7 +239,7 @@ bool QgsQptDataItem::handleDoubleClick()
 QList<QAction *> QgsQptDataItem::actions( QWidget *parent )
 {
   QAction *newLayout = new QAction( tr( "New Layout from Template" ), parent );
-  connect( newLayout, &QAction::triggered, this, [=] {
+  connect( newLayout, &QAction::triggered, this, [this] {
     QgisApp::instance()->openTemplate( path() );
   } );
   return QList<QAction *>() << newLayout;
@@ -283,11 +283,11 @@ bool QgsPyDataItem::handleDoubleClick()
 QList<QAction *> QgsPyDataItem::actions( QWidget *parent )
 {
   QAction *runScript = new QAction( tr( "&Run Script" ), parent );
-  connect( runScript, &QAction::triggered, this, [=] {
+  connect( runScript, &QAction::triggered, this, [this] {
     QgisApp::instance()->runScript( path() );
   } );
   QAction *editScript = new QAction( tr( "Open in External &Editor" ), this );
-  connect( editScript, &QAction::triggered, this, [=] {
+  connect( editScript, &QAction::triggered, this, [this] {
     QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
   } );
   return QList<QAction *>() << runScript << editScript;
@@ -634,7 +634,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
 
-  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [=]( const QString &id ) {
+  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [this]( const QString &id ) {
     const QgsBookmark newDetails = mManager->bookmarkById( id );
     if ( newDetails.group().isEmpty() )
       addChildItem( new QgsBookmarkItem( this, newDetails.name(), newDetails, mManager ), true );
@@ -652,7 +652,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
       }
     }
   } );
-  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [=]( const QString &id ) {
+  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [this]( const QString &id ) {
     const QgsBookmark newDetails = mManager->bookmarkById( id );
 
     // have to do a deep dive to find the old item...!
@@ -730,7 +730,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
       }
     }
   } );
-  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [=]( const QString &id ) {
+  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [this]( const QString &id ) {
     const QgsBookmark b = mManager->bookmarkById( id );
     if ( !b.group().isEmpty() )
     {
@@ -970,23 +970,23 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   if ( qobject_cast<QgsBookmarksItem *>( item ) )
   {
     QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
-    connect( addBookmark, &QAction::triggered, this, [=] {
+    connect( addBookmark, &QAction::triggered, this, [] {
       QgisApp::instance()->newBookmark();
     } );
     menu->addAction( addBookmark );
     QAction *showBookmarksPanel = new QAction( tr( "Show Spatial Bookmarks Manager" ), menu );
-    connect( showBookmarksPanel, &QAction::triggered, this, [=] {
+    connect( showBookmarksPanel, &QAction::triggered, this, [] {
       QgisApp::instance()->showBookmarkManager( true );
     } );
     menu->addAction( showBookmarksPanel );
     menu->addSeparator();
     QAction *importBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ), tr( "Import Spatial Bookmarks…" ), menu );
-    connect( importBookmarks, &QAction::triggered, this, [=] {
+    connect( importBookmarks, &QAction::triggered, this, [this, context] {
       importBookmarksToManager( QgsApplication::bookmarkManager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
-    connect( exportBookmarks, &QAction::triggered, this, [=] {
+    connect( exportBookmarks, &QAction::triggered, this, [this, context] {
       exportBookmarksFromManagers( QList<const QgsBookmarkManager *>() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager(), context.messageBar() );
     } );
     menu->addAction( exportBookmarks );
@@ -995,19 +995,19 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
   {
     QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
     const bool inProject = managerItem->manager() != QgsApplication::bookmarkManager();
-    connect( addBookmark, &QAction::triggered, this, [=] {
+    connect( addBookmark, &QAction::triggered, this, [inProject] {
       QgisApp::instance()->newBookmark( inProject );
     } );
     menu->addAction( addBookmark );
     menu->addSeparator();
     QAction *importBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ), tr( "Import Spatial Bookmarks…" ), menu );
-    connect( importBookmarks, &QAction::triggered, this, [=] {
+    connect( importBookmarks, &QAction::triggered, this, [this, managerItem, context] {
       importBookmarksToManager( managerItem->manager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
 
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
-    connect( exportBookmarks, &QAction::triggered, this, [=] {
+    connect( exportBookmarks, &QAction::triggered, this, [this, managerItem, context] {
       exportBookmarksFromManagers( QList<const QgsBookmarkManager *>() << managerItem->manager(), context.messageBar() );
     } );
     menu->addAction( exportBookmarks );
@@ -1089,7 +1089,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 
     // Export bookmarks
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
-    connect( exportBookmarks, &QAction::triggered, this, [=] {
+    connect( exportBookmarks, &QAction::triggered, this, [this, groupItem, context] {
       exportBookmarksFromManagers( QList<const QgsBookmarkManager *>() << groupItem->manager(), context.messageBar(), groupItem->group() );
     } );
     menu->addAction( exportBookmarks );
@@ -1097,7 +1097,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     // Add spatial bookmark
     QAction *addBookmarkToGroup = new QAction( tr( "New Spatial Bookmark…" ), menu );
     const bool inProject = manager != QgsApplication::bookmarkManager();
-    connect( addBookmarkToGroup, &QAction::triggered, this, [=] {
+    connect( addBookmarkToGroup, &QAction::triggered, this, [inProject, groupItem] {
       QgisApp::instance()->newBookmark( inProject, groupItem->group() );
     } );
     menu->addAction( addBookmarkToGroup );
@@ -1299,7 +1299,7 @@ bool QgsHtmlDataItem::handleDoubleClick()
 QList<QAction *> QgsHtmlDataItem::actions( QWidget *parent )
 {
   QAction *openAction = new QAction( tr( "&Open File…" ), parent );
-  connect( openAction, &QAction::triggered, this, [=] {
+  connect( openAction, &QAction::triggered, this, [this] {
     QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
   } );
   return QList<QAction *>() << openAction;

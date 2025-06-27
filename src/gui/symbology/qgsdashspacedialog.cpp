@@ -49,7 +49,7 @@ QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWi
   connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mRemoveButton_clicked );
   connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [this] { emit widgetChanged(); } );
 
-  connect( this, &QgsPanelWidget::widgetChanged, this, [=] {
+  connect( this, &QgsPanelWidget::widgetChanged, this, [this] {
     const QVector<qreal> pattern = dashDotVector();
     double total = 0;
     for ( qreal part : pattern )

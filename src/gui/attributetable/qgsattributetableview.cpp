@@ -60,7 +60,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   verticalHeader()->viewport()->installEventFilter( this );
 
-  connect( verticalHeader(), &QHeaderView::sectionPressed, this, [=]( int row ) { selectRow( row, true ); } );
+  connect( verticalHeader(), &QHeaderView::sectionPressed, this, [this]( int row ) { selectRow( row, true ); } );
   connect( verticalHeader(), &QHeaderView::sectionEntered, this, &QgsAttributeTableView::_q_selectRow );
   connect( horizontalHeader(), &QHeaderView::sectionResized, this, &QgsAttributeTableView::columnSizeChanged );
   connect( horizontalHeader(), &QHeaderView::sortIndicatorChanged, this, &QgsAttributeTableView::showHorizontalSortIndicator );

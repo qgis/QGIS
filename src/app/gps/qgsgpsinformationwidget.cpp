@@ -188,7 +188,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsInformationWidget::displayGPSInformation );
   connect( mConnection, &QgsAppGpsConnection::fixStatusChanged, this, &QgsGpsInformationWidget::setStatusIndicator );
 
-  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [=]( Qgis::DeviceConnectionStatus status ) {
+  connect( mConnection, &QgsAppGpsConnection::statusChanged, this, [this]( Qgis::DeviceConnectionStatus status ) {
     switch ( status )
     {
       case Qgis::DeviceConnectionStatus::Disconnected:

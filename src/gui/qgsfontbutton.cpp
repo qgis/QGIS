@@ -59,7 +59,7 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
 
   mScreenHelper = new QgsScreenHelper( this );
-  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [=] { updatePreview(); } );
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [this] { updatePreview(); } );
 }
 
 QSize QgsFontButton::minimumSizeHint() const
@@ -577,7 +577,7 @@ void QgsFontButton::prepareMenu()
   sizeSpin->setMaximum( 1e+9 );
   sizeSpin->setShowClearButton( false );
   sizeSpin->setValue( mMode == ModeTextRenderer ? mFormat.size() : mFont.pointSizeF() );
-  connect( sizeSpin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( sizeSpin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     switch ( mMode )
     {
       case ModeTextRenderer:
@@ -693,7 +693,7 @@ void QgsFontButton::prepareMenu()
     alphaRamp->setColor( alphaColor );
     QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
     alphaAction->setDismissOnColorSelection( false );
-    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [=]( const QColor &color ) {
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [this]( const QColor &color ) {
       const double opacity = color.alphaF();
       mFormat.setOpacity( opacity );
       updatePreview();

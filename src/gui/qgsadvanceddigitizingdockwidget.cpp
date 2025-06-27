@@ -118,12 +118,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mRepeatingLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockZButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockMButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
-  connect( mAngleLineEdit, &QLineEdit::returnPressed, this, [=]() { lockConstraint(); } );
-  connect( mDistanceLineEdit, &QLineEdit::returnPressed, this, [=]() { lockConstraint(); } );
-  connect( mXLineEdit, &QLineEdit::returnPressed, this, [=]() { lockConstraint(); } );
-  connect( mYLineEdit, &QLineEdit::returnPressed, this, [=]() { lockConstraint(); } );
-  connect( mZLineEdit, &QLineEdit::returnPressed, this, [=]() { lockConstraint(); } );
-  connect( mMLineEdit, &QLineEdit::returnPressed, this, [=]() { lockConstraint(); } );
+  connect( mAngleLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mDistanceLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mXLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mYLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mZLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mMLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
   connect( mAngleLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mDistanceLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mXLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
@@ -133,13 +133,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   //also watch for focus out events on these widgets
   QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
   connect( angleWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
-  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [=]() {
+  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [this]() {
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mAngleLineEdit->text(), Qgis::CadConstraintType::Angle ) };
     whileBlocking( mAngleLineEdit )->setText( cleanedInputValue );
   } );
   QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
   connect( distanceWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
-  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [=]() {
+  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [this]() {
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mDistanceLineEdit->text(), Qgis::CadConstraintType::Distance ) };
     whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
   } );
@@ -176,7 +176,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     snappingPriorityActionGroup->addAction( anglesAction );
     snappingPriorityMenu->addAction( anglesAction );
     snappingPriorityMenu->addAction( featuresAction );
-    connect( anglesAction, &QAction::changed, this, [=] {
+    connect( anglesAction, &QAction::changed, this, [this, featuresAction] {
       mSnappingPrioritizeFeatures = featuresAction->isChecked();
       settingsCadSnappingPriorityPrioritizeFeature->setValue( featuresAction->isChecked() );
     } );
@@ -205,13 +205,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mRecordConstructionGuides->setCheckable( true );
   mRecordConstructionGuides->setChecked( settingsCadRecordConstructionGuides->value() );
   constructionSettingsMenu->addAction( mRecordConstructionGuides );
-  connect( mRecordConstructionGuides, &QAction::triggered, this, [=]() { settingsCadRecordConstructionGuides->setValue( mRecordConstructionGuides->isChecked() ); } );
+  connect( mRecordConstructionGuides, &QAction::triggered, this, [this]() { settingsCadRecordConstructionGuides->setValue( mRecordConstructionGuides->isChecked() ); } );
 
   mShowConstructionGuides = new QAction( tr( "Show Construction Guides" ), constructionSettingsMenu );
   mShowConstructionGuides->setCheckable( true );
   mShowConstructionGuides->setChecked( settingsCadShowConstructionGuides->value() );
   constructionSettingsMenu->addAction( mShowConstructionGuides );
-  connect( mShowConstructionGuides, &QAction::triggered, this, [=]() {
+  connect( mShowConstructionGuides, &QAction::triggered, this, [this]() {
     settingsCadShowConstructionGuides->setValue( mShowConstructionGuides->isChecked() );
     updateCadPaintItem();
   } );
@@ -220,13 +220,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mSnapToConstructionGuides->setCheckable( true );
   mSnapToConstructionGuides->setChecked( settingsCadSnapToConstructionGuides->value() );
   constructionSettingsMenu->addAction( mSnapToConstructionGuides );
-  connect( mSnapToConstructionGuides, &QAction::triggered, this, [=]() { settingsCadSnapToConstructionGuides->setValue( mSnapToConstructionGuides->isChecked() ); } );
+  connect( mSnapToConstructionGuides, &QAction::triggered, this, [this]() { settingsCadSnapToConstructionGuides->setValue( mSnapToConstructionGuides->isChecked() ); } );
 
   constructionSettingsMenu->addSeparator();
 
   mClearConstructionGuides = new QAction( tr( "Clear Construction Guides" ), constructionSettingsMenu );
   constructionSettingsMenu->addAction( mClearConstructionGuides );
-  connect( mClearConstructionGuides, &QAction::triggered, this, [=]() {
+  connect( mClearConstructionGuides, &QAction::triggered, this, [this]() {
     resetConstructionGuides();
     updateCadPaintItem();
   } );
@@ -238,14 +238,14 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   // Tools
   QMenu *toolsMenu = new QMenu( this );
-  connect( toolsMenu, &QMenu::aboutToShow, this, [=]() {
+  connect( toolsMenu, &QMenu::aboutToShow, this, [this, toolsMenu]() {
     toolsMenu->clear();
     const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
     for ( const QString &name : toolMetadataNames )
     {
       QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
       QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), toolsMenu );
-      connect( toolAction, &QAction::triggered, this, [=]() {
+      connect( toolAction, &QAction::triggered, this, [this, toolMetadata]() {
         setTool( toolMetadata->createTool( mMapCanvas, this ) );
       } );
       toolsMenu->addAction( toolAction );
@@ -337,7 +337,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     action->setCheckable( true );
     action->setChecked( mFloater->active() );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setActive( checked );
       mFloaterAction->setChecked( checked );
     } );
@@ -349,7 +349,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show distance" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
     } );
     const bool isDistanceChecked = QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool();
@@ -362,7 +362,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked );
     } );
     const bool isAngleChecked = QgsSettings().value( QStringLiteral( "/Cad/AngleShowInFloater" ), true ).toBool();
@@ -375,7 +375,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show XY coordinates" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, checked );
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
     } );
@@ -392,7 +392,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show Z value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked && mTargetLayerSupportsZ );
     } );
     const bool isZCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/ZCoordinateShowInFloater" ), true ).toBool();
@@ -406,7 +406,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show M value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked && mTargetLayerSupportsM );
     } );
     const bool isMCoordinateChecked = QgsSettings().value( QStringLiteral( "/Cad/MCoordinateShowInFloater" ), true ).toBool();
@@ -420,7 +420,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show bearing/azimuth" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked );
     } );
     const bool isBearingChecked = QgsSettings().value( QStringLiteral( "/Cad/BearingShowInFloater" ), false ).toBool();
@@ -434,7 +434,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show common snapping angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [=]( bool checked ) {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
     } );
     const bool isCommonAngleSnappingChecked = QgsSettings().value( QStringLiteral( "/Cad/CommonAngleSnappingShowInFloater" ), false ).toBool();
@@ -445,12 +445,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   }
 
   updateCapacity( true );
-  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [=] { updateCapacity( true ); } );
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [this] { updateCapacity( true ); } );
 
-  connect( QgsProject::instance(), &QgsProject::cleared, this, [=]() {
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [this]() {
     mConstructionGuidesLayer.reset();
   } );
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] { updateConstructionGuidesCrs(); } );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] { updateConstructionGuidesCrs(); } );
 
   disable();
 }

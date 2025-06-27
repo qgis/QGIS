@@ -166,13 +166,13 @@ QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
   QList<QAction *> res;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy SQL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [=] {
+  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [this] {
     QApplication::clipboard()->setText( mSql );
   } );
   res << copyUrlAction;
 
   QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
-  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [=] {
+  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [this] {
     const QVariant value = toVariant();
     const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
     QApplication::clipboard()->setText( json );
