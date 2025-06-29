@@ -359,6 +359,23 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   }
 }
 
+bool QgsCodeEditor::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event ) )
+    {
+      if ( keyEvent->key() == Qt::Key_F1 )
+      {
+        // If the user pressed F1, we want to prevent the main help dialog to show
+        // and handle the event in QgsCodeEditor::keyPressEvent
+        keyEvent->accept();
+        return true;
+      }
+    }
+  }
+  return QsciScintilla::event( event );
+}
 
 bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 {
