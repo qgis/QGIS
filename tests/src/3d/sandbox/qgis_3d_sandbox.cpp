@@ -280,7 +280,7 @@ int main( int argc, char *argv[] )
   container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   Qgs3DDebugWidget *debugWidget = new Qgs3DDebugWidget( canvas );
   debugWidget->setMapSettings( canvas->mapSettings() );
-  debugWidget->setVisible( false );
+  debugWidget->setVisible( canvas->mapSettings()->showDebugPanel() );
   QObject::connect( canvas->mapSettings(), &Qgs3DMapSettings::showDebugPanelChanged, windowWidget, [=]( const bool enabled ) {
     debugWidget->setVisible( enabled );
   } );
