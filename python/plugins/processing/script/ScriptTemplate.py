@@ -109,7 +109,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             "Input layer",
             [QgsProcessing.SourceType.TypeVectorAnyGeometry],
         )
-        input_layer.setHelp("A descriptive, translated string explaining the parameter’s behavior and use in depth.")
+        input_layer.setHelp(
+            "A descriptive, translated string explaining the parameter’s behavior and use in depth."
+        )
         self.addParameter(input_layer)
 
         # We add a feature sink in which to store our processed features (this
