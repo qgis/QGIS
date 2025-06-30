@@ -414,6 +414,16 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     bool addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata SIP_TRANSFER );
 
     /**
+     * Unregisters the gui metadata for a layout item type.
+     */
+    bool removeLayoutItemGuiMetadata( int type );
+
+    /**
+     * Unregisters the gui metadata for a layout item type.
+     */
+    bool removeLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata );
+
+    /**
      * Registers a new item group with the registry. This must be done before calling
      * addLayoutItemGuiMetadata() for any item types associated with the group.
      *
@@ -423,6 +433,13 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * \see itemGroup()
      */
     bool addItemGroup( const QgsLayoutItemGuiGroup &group );
+
+    /**
+     * Unregisters a item group from the registry. This must be done after calling
+     * removeLayoutItemGuiMetadata() for every item types associated with the group.
+     *
+     */
+    bool removeItemGroup( const QString &id );
 
     /**
      * Returns a reference to the item group with matching \a id.
@@ -508,6 +525,17 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * \a metadataId.
      */
     void typeAdded( int metadataId );
+
+    /**
+     * Emitted whenever an item type is removed from the registry, with the specified
+     * \a metadataId.
+     */
+    void typeRemoved( int metadataId );
+
+    /**
+     * Emitted whenever an item group is removed from the registry
+     */
+    void groupRemoved( QString groupId );
 
   private:
 #ifdef SIP_RUN

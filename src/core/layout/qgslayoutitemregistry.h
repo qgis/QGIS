@@ -429,6 +429,26 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
+     * Unregisters a layout item type
+     */
+    bool removeLayoutItemType( int typeId );
+
+    /**
+     * Unregisters a layout item type
+     */
+    bool removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata );
+
+    /**
+     * Unregisters a layout multiframe type
+     */
+    bool removeLayoutMultiFrameType( int typeId );
+
+    /**
+     * Unregisters a layout multiframe type
+     */
+    bool removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata );
+
+    /**
      * Registers a new layout multiframe type. Takes ownership of the metadata instance.
      * \see addLayoutItemType()
      */
@@ -465,6 +485,12 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      * \a type and visible \a name.
      */
     void typeAdded( int type, const QString &name );
+
+    /**
+     * Emitted whenever an item type is removed from the registry with the specified
+     * \a type
+     */
+    void typeRemoved( int type );
 
     /**
      * Emitted whenever a new multiframe type is added to the registry, with the specified

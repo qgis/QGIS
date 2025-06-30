@@ -246,6 +246,26 @@ instance.
 .. seealso:: :py:func:`addLayoutMultiFrameType`
 %End
 
+    bool removeLayoutItemType( int typeId );
+%Docstring
+Unregisters a layout item type
+%End
+
+    bool removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata );
+%Docstring
+Unregisters a layout item type
+%End
+
+    bool removeLayoutMultiFrameType( int typeId );
+%Docstring
+Unregisters a layout multiframe type
+%End
+
+    bool removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata );
+%Docstring
+Unregisters a layout multiframe type
+%End
+
     bool addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new layout multiframe type. Takes ownership of the metadata
@@ -288,6 +308,12 @@ Returns a map of available item types to translated name.
 %Docstring
 Emitted whenever a new item type is added to the registry, with the
 specified ``type`` and visible ``name``.
+%End
+
+    void typeRemoved( int type );
+%Docstring
+Emitted whenever an item type is removed from the registry with the
+specified ``type``
 %End
 
     void multiFrameTypeAdded( int type, const QString &name );
