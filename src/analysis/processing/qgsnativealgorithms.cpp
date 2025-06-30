@@ -107,6 +107,8 @@
 #include "qgsalgorithmexecutespatialitequery.h"
 #include "qgsalgorithmexecutespatialitequeryregistered.h"
 #include "qgsalgorithmexportmesh.h"
+#include "qgsalgorithmexporttospatialite.h"
+#include "qgsalgorithmexporttospatialiteregistered.h"
 #include "qgsalgorithmexporttospreadsheet.h"
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
@@ -423,11 +425,13 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExportGeometryAttributesAlgorithm() );
   addAlgorithm( new QgsExportLayersInformationAlgorithm() );
   addAlgorithm( new QgsExportLayerMetadataAlgorithm() );
-  addAlgorithm( new QgsExportMeshVerticesAlgorithm );
-  addAlgorithm( new QgsExportMeshFacesAlgorithm );
-  addAlgorithm( new QgsExportMeshEdgesAlgorithm );
-  addAlgorithm( new QgsExportMeshOnGridAlgorithm );
-  addAlgorithm( new QgsExportToPostgresqlAlgorithm );
+  addAlgorithm( new QgsExportMeshVerticesAlgorithm() );
+  addAlgorithm( new QgsExportMeshFacesAlgorithm() );
+  addAlgorithm( new QgsExportMeshEdgesAlgorithm() );
+  addAlgorithm( new QgsExportMeshOnGridAlgorithm() );
+  addAlgorithm( new QgsExportToPostgresqlAlgorithm() );
+  addAlgorithm( new QgsExportToRegisteredSpatialiteAlgorithm() );
+  addAlgorithm( new QgsExportToSpatialiteAlgorithm() );
   addAlgorithm( new QgsExportToSpreadsheetAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentFromLayerAlgorithm() );
@@ -498,9 +502,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMergeLinesAlgorithm() );
   addAlgorithm( new QgsMergeVectorAlgorithm() );
   addAlgorithm( new QgsMeshRasterizeAlgorithm );
-  addAlgorithm( new QgsMeshContoursAlgorithm );
-  addAlgorithm( new QgsMeshExportCrossSection );
-  addAlgorithm( new QgsMeshExportTimeSeries );
+  addAlgorithm( new QgsMeshContoursAlgorithm() );
+  addAlgorithm( new QgsMeshExportCrossSection() );
+  addAlgorithm( new QgsMeshExportTimeSeries() );
   addAlgorithm( new QgsMeshSurfaceToPolygonAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultiDifferenceAlgorithm() );

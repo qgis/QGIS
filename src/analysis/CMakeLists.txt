@@ -130,6 +130,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexportlayersinformation.cpp
   processing/qgsalgorithmexportmesh.cpp
   processing/qgsalgorithmexporttopostgresql.cpp
+  processing/qgsalgorithmexporttospatialiteregistered.cpp
+  processing/qgsalgorithmexporttospatialite.cpp
   processing/qgsalgorithmexporttospreadsheet.cpp
   processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextentfromlayer.cpp
