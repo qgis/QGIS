@@ -411,10 +411,10 @@ Qt::CursorShape QgsGraphicsViewMouseHandles::cursorForPosition( QPointF itemCoor
     case Qgis::MouseHandlesAction::SelectItem:
       return Qt::ArrowCursor;
 
-    case Qgis::MouseHandlesAction::RotateLeftUp:
-    case Qgis::MouseHandlesAction::RotateRightUp:
-    case Qgis::MouseHandlesAction::RotateLeftDown:
-    case Qgis::MouseHandlesAction::RotateRightDown:
+    case Qgis::MouseHandlesAction::RotateTopLeft:
+    case Qgis::MouseHandlesAction::RotateTopRight:
+    case Qgis::MouseHandlesAction::RotateBottomLeft:
+    case Qgis::MouseHandlesAction::RotateBottomRight:
       return Qt::PointingHandCursor;
   }
 
@@ -515,19 +515,19 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForPosition( QP
   }
   else if ( nearLeftInner && nearUpperInner )
   {
-    return Qgis::MouseHandlesAction::RotateLeftUp;
+    return Qgis::MouseHandlesAction::RotateTopLeft;
   }
   else if ( nearRightInner && nearUpperInner )
   {
-    return Qgis::MouseHandlesAction::RotateRightUp;
+    return Qgis::MouseHandlesAction::RotateTopRight;
   }
   else if ( nearLeftInner && nearLowerInner )
   {
-    return Qgis::MouseHandlesAction::RotateLeftDown;
+    return Qgis::MouseHandlesAction::RotateBottomLeft;
   }
   else if ( nearRightInner && nearLowerInner )
   {
-    return Qgis::MouseHandlesAction::RotateRightDown;
+    return Qgis::MouseHandlesAction::RotateBottomRight;
   }
 
   //find out if cursor position is over a selected item
@@ -655,10 +655,10 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
       mCursorOffset = calcCursorEdgeOffset( mMouseMoveStartPos );
       break;
 
-    case Qgis::MouseHandlesAction::RotateLeftUp:
-    case Qgis::MouseHandlesAction::RotateRightUp:
-    case Qgis::MouseHandlesAction::RotateLeftDown:
-    case Qgis::MouseHandlesAction::RotateRightDown:
+    case Qgis::MouseHandlesAction::RotateTopLeft:
+    case Qgis::MouseHandlesAction::RotateTopRight:
+    case Qgis::MouseHandlesAction::RotateBottomLeft:
+    case Qgis::MouseHandlesAction::RotateBottomRight:
       mIsRotating = true;
       mRotationCenter = sceneTransform().map( rect().center() );
       mRotationBegin = std::atan2( mMouseMoveStartPos.y() - mRotationCenter.y(), mMouseMoveStartPos.x() - mRotationCenter.x() ) * 180 / M_PI;
@@ -1217,10 +1217,10 @@ void QgsGraphicsViewMouseHandles::resizeMouseMove( QPointF currentPosition, bool
       break;
     }
 
-    case Qgis::MouseHandlesAction::RotateLeftUp:
-    case Qgis::MouseHandlesAction::RotateRightUp:
-    case Qgis::MouseHandlesAction::RotateLeftDown:
-    case Qgis::MouseHandlesAction::RotateRightDown:
+    case Qgis::MouseHandlesAction::RotateTopLeft:
+    case Qgis::MouseHandlesAction::RotateTopRight:
+    case Qgis::MouseHandlesAction::RotateBottomLeft:
+    case Qgis::MouseHandlesAction::RotateBottomRight:
     case Qgis::MouseHandlesAction::MoveItem:
     case Qgis::MouseHandlesAction::SelectItem:
     case Qgis::MouseHandlesAction::NoAction:
@@ -1335,10 +1335,10 @@ QSizeF QgsGraphicsViewMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
     case Qgis::MouseHandlesAction::ResizeLeftDown:
       return QSizeF( sceneMousePos.x(), sceneMousePos.y() - rect().height() );
 
-    case Qgis::MouseHandlesAction::RotateLeftUp:
-    case Qgis::MouseHandlesAction::RotateRightUp:
-    case Qgis::MouseHandlesAction::RotateLeftDown:
-    case Qgis::MouseHandlesAction::RotateRightDown:
+    case Qgis::MouseHandlesAction::RotateTopLeft:
+    case Qgis::MouseHandlesAction::RotateTopRight:
+    case Qgis::MouseHandlesAction::RotateBottomLeft:
+    case Qgis::MouseHandlesAction::RotateBottomRight:
     case Qgis::MouseHandlesAction::MoveItem:
     case Qgis::MouseHandlesAction::SelectItem:
     case Qgis::MouseHandlesAction::NoAction:
