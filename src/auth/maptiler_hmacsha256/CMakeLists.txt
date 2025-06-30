@@ -25,8 +25,8 @@ add_library(authmethod_maptilerhmacsha256_a STATIC ${AUTH_MAPTILER_HMACSHA256_SR
 
 target_include_directories(authmethod_maptilerhmacsha256_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/hmacsha256/core)
 
-# require c++17
-target_compile_features(authmethod_maptilerhmacsha256_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(authmethod_maptilerhmacsha256_a PRIVATE cxx_std_20)
 
 target_link_libraries(authmethod_maptilerhmacsha256_a qgis_core)
 
@@ -47,8 +47,8 @@ else()
   # dynamically loaded module
   add_library(authmethod_maptilerhmacsha256 MODULE ${AUTH_MAPTILER_HMACSHA256_SRCS} ${AUTH_MAPTILER_HMACSHA256_HDRS} ${AUTH_MAPTILER_HMACSHA256_UIS_H})
 
-  # require c++17
-  target_compile_features(authmethod_maptilerhmacsha256 PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(authmethod_maptilerhmacsha256 PRIVATE cxx_std_20)
 
   target_link_libraries(authmethod_maptilerhmacsha256 qgis_core)
 

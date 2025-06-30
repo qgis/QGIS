@@ -13,8 +13,8 @@ set(VRP_HDRS
 
 add_library (provider_virtualraster MODULE ${VRP_SRCS} ${VRP_HDRS})
 
-# require c++17
-target_compile_features(provider_virtualraster PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_virtualraster PRIVATE cxx_std_20)
 
 target_link_libraries (provider_virtualraster
   qgis_core

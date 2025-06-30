@@ -38,8 +38,8 @@ include_directories(
 
 add_library(provider_mssql MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
 
-# require c++17
-target_compile_features(provider_mssql PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_mssql PRIVATE cxx_std_20)
 
 target_compile_definitions(provider_mssql PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
@@ -61,8 +61,8 @@ endif()
 # static library
 add_library (provider_mssql_a STATIC ${MSSQL_SRCS} ${MSSQL_HDRS})
 
-# require c++17
-target_compile_features(provider_mssql_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_mssql_a PRIVATE cxx_std_20)
 
 # We use private headers from core that need this
 target_compile_definitions(provider_mssql_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
