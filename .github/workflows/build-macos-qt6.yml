@@ -134,6 +134,17 @@ jobs:
           cmake --build build
           cmake --build build --target bundle
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: 🧪 Test
+        run: |
+          python3 -m pip install termcolor
+          cd build
+          python3 ../.ci/ctest2ci.py ctest
+
       - name: Archive app
         run: |
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
