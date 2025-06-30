@@ -21,7 +21,7 @@ import tempfile
 import threading
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
-os.environ["QT_HASH_SEED"] = "1"
+os.environ["QT_HASH_SEED"] = "0"
 
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from utilities import compareWkt
@@ -146,6 +146,7 @@ class TestPyQgsWfsZGeometries(QgisTestCase):
         ) as f:
             f.write(
                 b"""
+
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ws1="ws1" elementFormDefault="qualified" targetNamespace="ws1">
   <xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://localhost:8080/geoserver/schemas/gml/3.2.1/gml.xsd"/>
   <xsd:complexType name="point_zType">
@@ -272,7 +273,7 @@ class TestPyQgsWfsZGeometries(QgisTestCase):
         with open(
             sanitize(
                 transaction_endpoint,
-                '?SERVICE=WFS&REQUEST=Transaction&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ws1="ws1" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:point_z" version="1.1.0" service="WFS"><Insert xmlns="http://www.opengis.net/wfs"><point_z xmlns="ws1"><name xmlns="ws1">point 1</name><geometry xmlns="ws1"><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="3">-0.35210000000000002 0.6109 120</gml:pos></gml:Point></geometry></point_z></Insert></Transaction>',
+                '?SERVICE=WFS&REQUEST=Transaction&POSTDATA=<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="ws1 http://fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:point_z" xmlns:ws1="ws1" xmlns:gml="http://www.opengis.net/gml" version="1.1.0"><Insert xmlns="http://www.opengis.net/wfs"><point_z xmlns="ws1"><name xmlns="ws1">point 1</name><geometry xmlns="ws1"><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="3">-0.35210000000000002 0.6109 120</gml:pos></gml:Point></geometry></point_z></Insert></Transaction>',
             ),
             "wb",
         ) as f:
