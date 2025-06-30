@@ -311,6 +311,8 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
         drv = ogr.GetDriverByName("GPKG")
         ds = drv.CreateDataSource(cls.temporary_path + "/test_z.gpkg")
         layer_names = []
+        sr = ogr.osr.SpatialReference()
+        sr.ImportFromEPSG(4326)
         for wkb_type_name in ["Point", "LineString", "Polygon"]:
             for prefix in ["", "Multi"]:
                 wkb_type_name = prefix + wkb_type_name
@@ -319,7 +321,7 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
                 layer_names.append(layer_name)
                 layer = ds.CreateLayer(
                     layer_name,
-                    srs=ogr.osr.SpatialReference("EPSG:4326"),
+                    srs=sr,
                     geom_type=wkb_type,
                     options=["GEOMETRY_NAME=geom"],
                 )
