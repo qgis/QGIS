@@ -23,8 +23,8 @@ if (QGISPOSTFIX)
   set_target_properties(qgis_process PROPERTIES RUNTIME_OUTPUT_NAME qgis_process${QGISPOSTFIX})
 endif()
 
-# require c++17
-target_compile_features(qgis_process PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_process PRIVATE cxx_std_20)
 
 target_include_directories(qgis_process PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}

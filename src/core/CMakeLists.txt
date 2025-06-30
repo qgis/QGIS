@@ -2410,8 +2410,8 @@ else()
   target_link_libraries(qgis_core meshoptimizer::meshoptimizer)
 endif()
 
-# require c++17
-target_compile_features(qgis_core PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_core PRIVATE cxx_std_20)
 
 # Exiv still uses std::auto_ptr
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")

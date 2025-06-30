@@ -24,8 +24,8 @@ target_link_libraries(provider_delimitedtext_a
   qgis_core
 )
 
-# require c++17
-target_compile_features(provider_delimitedtext_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_delimitedtext_a PRIVATE cxx_std_20)
 
 target_compile_definitions(provider_delimitedtext_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -42,8 +42,8 @@ if (WITH_GUI)
     qgis_gui
   )
 
-  # require c++17
-  target_compile_features(provider_delimitedtext_gui_a PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_delimitedtext_gui_a PRIVATE cxx_std_20)
 
   target_compile_definitions(provider_delimitedtext_gui_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -59,8 +59,8 @@ if (FORCE_STATIC_LIBS)
 else()
   add_library(provider_delimitedtext MODULE ${DTEXT_SRCS} ${DTEXT_GUI_SRCS})
   
-  # require c++17
-  target_compile_features(provider_delimitedtext PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_delimitedtext PRIVATE cxx_std_20)
   
   target_link_libraries(provider_delimitedtext
     qgis_core

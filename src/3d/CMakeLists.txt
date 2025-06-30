@@ -287,8 +287,8 @@ endif()
 
 set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-# require c++17
-target_compile_features(qgis_3d PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_3d PRIVATE cxx_std_20)
 
 if (BUILD_WITH_QT6)
   target_include_directories(qgis_3d SYSTEM PUBLIC

@@ -42,8 +42,8 @@ foreach(_library_type MODULE STATIC)
 
   add_library(${_library_name} ${_library_type} ${WMS_SRCS} ${WMS_HDRS})
 
-  # require c++17
-  target_compile_features(${_library_name} PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(${_library_name} PRIVATE cxx_std_20)
 
   target_include_directories(${_library_name} PUBLIC
     ${CMAKE_SOURCE_DIR}/src/server

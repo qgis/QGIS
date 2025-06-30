@@ -53,8 +53,8 @@ if(QGISPOSTFIX)
 endif()
 
 
-# require c++17
-target_compile_features(qgis_quick PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_quick PRIVATE cxx_std_20)
 
 target_link_libraries(qgis_quick
     ${QT_VERSION_BASE}::Quick
