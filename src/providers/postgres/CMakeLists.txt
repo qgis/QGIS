@@ -50,8 +50,8 @@ target_include_directories(provider_postgres_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
 )
 
-# require c++17
-target_compile_features(provider_postgres_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_postgres_a PRIVATE cxx_std_20)
 target_compile_definitions(provider_postgres_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries (provider_postgres_a
@@ -70,8 +70,8 @@ if (WITH_GUI)
     ${CMAKE_BINARY_DIR}/src/providers/postgres
   )
 
-  # require c++17
-  target_compile_features(provider_postgres_gui_a PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_postgres_gui_a PRIVATE cxx_std_20)
   target_compile_definitions(provider_postgres_gui_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_link_libraries(provider_postgres_gui_a
@@ -101,8 +101,8 @@ target_include_directories(provider_postgresraster_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
 )
 
-# require c++17
-target_compile_features(provider_postgresraster_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_postgresraster_a PRIVATE cxx_std_20)
 target_compile_definitions(provider_postgresraster_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries (provider_postgresraster_a
@@ -138,9 +138,9 @@ else()
     ${CMAKE_SOURCE_DIR}/src/providers/postgres
   )
 
-  # require c++17
-  target_compile_features(provider_postgres PRIVATE cxx_std_17)
-  target_compile_features(provider_postgresraster PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_postgres PRIVATE cxx_std_20)
+  target_compile_features(provider_postgresraster PRIVATE cxx_std_20)
   target_compile_definitions(provider_postgres PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   target_compile_definitions(provider_postgresraster PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 

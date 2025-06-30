@@ -30,8 +30,8 @@ target_include_directories(provider_arcgisfeatureserver_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
 )
 
-# require c++17
-target_compile_features(provider_arcgisfeatureserver_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_arcgisfeatureserver_a PRIVATE cxx_std_20)
 
 # We use private headers from core that need this
 target_compile_definitions(provider_arcgisfeatureserver_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
@@ -48,8 +48,8 @@ if (WITH_GUI)
 
   set_target_properties(provider_arcgisfeatureserver_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-  # require c++17
-  target_compile_features(provider_arcgisfeatureserver_gui_a PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_arcgisfeatureserver_gui_a PRIVATE cxx_std_20)
 
   target_link_libraries(provider_arcgisfeatureserver_a
     qgis_gui
@@ -82,8 +82,8 @@ else()
     ${QCA_LIBRARY}
   )
 
-  # require c++17
-  target_compile_features(provider_arcgisfeatureserver PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_arcgisfeatureserver PRIVATE cxx_std_20)
 
   # We use private headers from core that need this
   target_compile_definitions(provider_arcgisfeatureserver PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
@@ -113,8 +113,8 @@ target_include_directories(provider_arcgismapserver_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
 )
 
-# require c++17
-target_compile_features(provider_arcgismapserver_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_arcgismapserver_a PRIVATE cxx_std_20)
 
 # We use private headers from core that need this
 target_compile_definitions(provider_arcgismapserver_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
@@ -130,8 +130,8 @@ if (FORCE_STATIC_LIBS)
 else()
   add_library(provider_arcgismapserver MODULE ${AMS_SRCS})
 
-  # require c++17
-  target_compile_features(provider_arcgismapserver PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_arcgismapserver PRIVATE cxx_std_20)
   # We use private headers from core that need this
   target_compile_definitions(provider_arcgismapserver PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 

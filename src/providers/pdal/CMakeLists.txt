@@ -174,7 +174,7 @@ include_directories(
 )
 
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
-target_compile_features(untwine PRIVATE cxx_std_17)
+target_compile_features(untwine PRIVATE cxx_std_20)
 
 set_target_properties(untwine PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
@@ -195,7 +195,7 @@ endif()
 
 if (PDAL_2_5_OR_HIGHER)
   add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
-  target_compile_features(pdal_wrench PRIVATE cxx_std_17)
+  target_compile_features(pdal_wrench PRIVATE cxx_std_20)
 
   set_target_properties(pdal_wrench PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
@@ -218,7 +218,7 @@ endif()
 
 add_library (provider_pdal MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
-target_compile_features(provider_pdal PRIVATE cxx_std_17)
+target_compile_features(provider_pdal PRIVATE cxx_std_20)
 
 target_link_libraries (provider_pdal
   qgis_core
@@ -243,8 +243,8 @@ endif()
 # static library
 add_library (provider_pdal_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
 
-# require c++17
-target_compile_features(provider_pdal_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(provider_pdal_a PRIVATE cxx_std_20)
 
 target_link_libraries (provider_pdal_a
   ${PDAL_LIBRARIES}
@@ -260,8 +260,8 @@ target_link_libraries (provider_pdal_a
 if (WITH_GUI)
   add_library (provider_pdal_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
-  # require c++17
-  target_compile_features(provider_pdal_gui_a PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(provider_pdal_gui_a PRIVATE cxx_std_20)
 
   target_link_libraries (provider_pdal_gui_a
     ${PDAL_LIBRARIES}

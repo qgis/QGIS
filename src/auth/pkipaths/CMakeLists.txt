@@ -24,8 +24,8 @@ add_library(authmethod_pkipaths_a STATIC ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_H
 
 target_include_directories(authmethod_pkipaths_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/pkipaths/core)
 
-# require c++17
-target_compile_features(authmethod_pkipaths_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(authmethod_pkipaths_a PRIVATE cxx_std_20)
 
 target_link_libraries(authmethod_pkipaths_a qgis_core)
 
@@ -48,8 +48,8 @@ else()
   # dynamically loaded module
   add_library(authmethod_pkipaths MODULE ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_UIS_H})
 
-  # require c++17
-  target_compile_features(authmethod_pkipaths PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(authmethod_pkipaths PRIVATE cxx_std_20)
 
   target_link_libraries(authmethod_pkipaths qgis_core)
 
