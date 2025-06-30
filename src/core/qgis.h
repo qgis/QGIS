@@ -5896,10 +5896,10 @@ class CORE_EXPORT Qgis
       ResizeRightUp, //!< Resize right up (Top right handle)
       ResizeLeftDown, //!< Resize left down (Bottom left handle)
       ResizeRightDown, //!< Resize right down (Bottom right handle)
-      RotateLeftUp, //!< Rotate from top left handle. \since QGIS 4.0
-      RotateRightUp, //!< Rotate from top right handle. \since QGIS 4.0
-      RotateLeftDown, //!< Rotate from bottom left handle. \since QGIS 4.0
-      RotateRightDown, //!< Rotate right bottom right handle. \since QGIS 4.0
+      RotateTopLeft, //!< Rotate from top left handle. \since QGIS 4.0
+      RotateTopRight, //!< Rotate from top right handle. \since QGIS 4.0
+      RotateBottomLeft, //!< Rotate from bottom left handle. \since QGIS 4.0
+      RotateBottomRight, //!< Rotate right bottom right handle. \since QGIS 4.0
       SelectItem, //!< Select item
       NoAction //!< No action
     };
