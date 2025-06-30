@@ -279,6 +279,16 @@ class TestPyQgsWfsZGeometries(QgisTestCase):
         ) as f:
             f.write(response_1_1.encode("UTF-8"))
 
+        # QT6
+        with open(
+            sanitize(
+                transaction_endpoint,
+                '?SERVICE=WFS&REQUEST=Transaction&POSTDATA=<Transaction xmlns="http:__www.opengis.net_wfs" service="WFS" version="1.1.0" xmlns:gml="http:__www.opengis.net_gml" xmlns:ws1="ws1" xmlns:xsi="http:__www.w3.org_2001_XMLSchema-instance" xsi:schemaLocation="ws1 http:__fake_qgis_http_endpoint?REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=ws1:point_z"><Insert xmlns="http:__www.opengis.net_wfs"><point_z xmlns="ws1"><name xmlns="ws1">point 1<_name><geometry xmlns="ws1"><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos srsDimension="3">-0.35210000000000002 0.6109 120<_gml:pos><_gml:Point><_geometry><_point_z><_Insert><_Transaction>',
+            ),
+            "wb",
+        ) as f:
+            f.write(response_1_1.encode("UTF-8"))
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
