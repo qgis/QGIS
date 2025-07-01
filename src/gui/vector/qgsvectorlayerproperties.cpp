@@ -1206,7 +1206,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
               return;
             }
 
-            mLayer->saveStyleToDatabase( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError, dlg.styleCategories() );
+            mLayer->saveStyleToDatabaseV2( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError, dlg.styleCategories() );
 
             if ( !msgError.isNull() )
             {
