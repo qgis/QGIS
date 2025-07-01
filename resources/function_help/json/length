@@ -23,7 +23,7 @@
     }],
     "examples": [{
       "expression": "length(@geometry)",
-      "returns": "current geometry length"
+      "returns": "length of the current feature's geometry"
     },{
       "expression": "length(geom_from_wkt('LINESTRING(0 0, 4 0)'))",
       "returns": "4.0"
