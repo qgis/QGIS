@@ -92,11 +92,11 @@ void QgsPostprocessingRenderView::setOffScreenRenderCaptureEnabled( bool enabled
 
 Qt3DRender::QRenderTarget *QgsPostprocessingRenderView::buildRenderCaptureTextures( QSize mSize )
 {
-  // =============== v NEEDED ONLY DURING UNIT TEST v
-  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget( mRenderCaptureTargetSelector );
+  // =============== v NEEDED ONLY FOR OFFSCREEN ENGINE v
+  Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
 
   // Create a render target output for rendering color.
-  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
+  Qt3DRender::QRenderTargetOutput *colorOutput = new Qt3DRender::QRenderTargetOutput;
   colorOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
 
   // Create a texture to render into.
@@ -111,7 +111,7 @@ Qt3DRender::QRenderTarget *QgsPostprocessingRenderView::buildRenderCaptureTextur
   colorOutput->setTexture( mRenderCaptureColorTexture );
   renderTarget->addOutput( colorOutput );
 
-  Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput( renderTarget );
+  Qt3DRender::QRenderTargetOutput *depthOutput = new Qt3DRender::QRenderTargetOutput;
 
   depthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
   mRenderCaptureDepthTexture = new Qt3DRender::QTexture2D( depthOutput );
@@ -127,7 +127,7 @@ Qt3DRender::QRenderTarget *QgsPostprocessingRenderView::buildRenderCaptureTextur
   renderTarget->addOutput( depthOutput );
 
   return renderTarget;
-  // =============== ^ NEEDED ONLY DURING UNIT TEST ^
+  // =============== ^ NEEDED ONLY FOR OFFSCREEN ENGINE ^
 }
 
 Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructPostprocessingMainPass( QSize mSize )
