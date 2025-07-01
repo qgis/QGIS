@@ -572,8 +572,21 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
     mWriterStream.reset( new QDataStream( &mWriterByteArray, QIODevice::WriteOnly ) );
   }
   const auto constList = list;
+  const Qgis::WkbType expectedType { mShared->mWKBType };
+  bool errorRaised = false;
   for ( const QgsFeatureUniqueIdPair &pair : constList )
   {
+    if ( !errorRaised && expectedType != pair.first.geometry().wkbType() )
+    {
+      if ( QgsWkbTypes::hasZ( pair.first.geometry().wkbType() ) && !QgsWkbTypes::hasZ( expectedType ) )
+      {
+        mShared->pushError( QStringLiteral( "Received feature geometry has Z values but the layer type (%1) does not. Please check the WFS connection setting 'Force initial GetFeature'." ).arg( QgsWkbTypes::displayString( expectedType ) ) );
+      }
+      else
+      {
+        mShared->pushError( QStringLiteral( "Received feature with geometry type %1, expected %2" ).arg( QgsWkbTypes::displayString( pair.first.geometry().wkbType() ), QgsWkbTypes::displayString( expectedType ) ) );
+      }
+    }
     *mWriterStream << pair.first;
   }
   if ( !mWriterFile && mWriterByteArray.size() > mWriteTransferThreshold )
