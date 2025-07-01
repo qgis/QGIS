@@ -8,6 +8,9 @@
     "description": "line geometry object"
   }],
   "examples": [{
+      "expression": "length3D(@geometry)",
+      "returns": "3D length of the current feature's geometry"
+    },{
     "expression": "length3D(geom_from_wkt('LINESTRINGZ(0 0 0, 3 0 4)'))",
     "returns": "5.0"
   }],
