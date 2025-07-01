@@ -245,7 +245,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   details.setWkbType( provider.wkbType() );
   res << details;
 
-  // Always issue a GetFeature because the guessed type can't be trusted,
+  // If set: always issue a GetFeature because the guessed type can't be trusted,
   // for example when dealing with Z geometries identified as 2D.
   const bool forceInitialGetFeature = dsUri.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
                                       && dsUri.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QStringLiteral( "TRUE" );
