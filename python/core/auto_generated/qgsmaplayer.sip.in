@@ -837,7 +837,7 @@ Deletes a style from the database
  virtual void saveStyleToDatabase( const QString &name, const QString &description,
         bool useAsDefault, const QString &uiFileContent,
         QString &msgError /Out/,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) /Deprecated="Since 4.0. Use saveStyleToDatabaseV2() instead."/;
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) /Deprecated/;
 %Docstring
 Saves QML and SLD representations of the layer's style to a table in the
 database.
