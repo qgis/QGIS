@@ -321,7 +321,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [=] {
+      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature] {
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
@@ -333,7 +333,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [=]( int index ) {
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [qmlCode]( int index ) {
         qmlCode->clear();
         switch ( index )
         {
@@ -416,13 +416,13 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
 
-      connect( addFieldButton, &QAbstractButton::clicked, this, [=] {
+      connect( addFieldButton, &QAbstractButton::clicked, this, [expressionWidget, qmlCode] {
         QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
         if ( !expression.isEmpty() )
           qmlCode->insertText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
       } );
 
-      connect( editExpressionButton, &QAbstractButton::clicked, this, [=] {
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [this, qmlCode] {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( qmlCode, QStringLiteral( "expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)" ) );
         expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
@@ -466,7 +466,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
         QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
       } );
 
@@ -516,7 +516,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( htmlCode, &QgsCodeEditorHTML::textChanged, this, [=] {
+      connect( htmlCode, &QgsCodeEditorHTML::textChanged, this, [htmlWrapper, htmlCode, previewFeature] {
         htmlWrapper->setHtmlCode( htmlCode->text() );
         htmlWrapper->reinitWidget();
         htmlWrapper->setFeature( previewFeature );
@@ -533,13 +533,13 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
 
-      connect( addFieldButton, &QAbstractButton::clicked, this, [=] {
+      connect( addFieldButton, &QAbstractButton::clicked, this, [expressionWidget, htmlCode] {
         QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
         if ( !expression.isEmpty() )
           htmlCode->insertText( QStringLiteral( "<script>document.write(expression.evaluate(\"%1\"));</script>" ).arg( expression ) );
       } );
 
-      connect( editExpressionButton, &QAbstractButton::clicked, this, [=] {
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [this, htmlCode] {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, QStringLiteral( "<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>" ) );
         expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
@@ -578,7 +578,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
         QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
       } );
 
@@ -624,7 +624,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( text, &QgsCodeEditorExpression::textChanged, this, [=] {
+      connect( text, &QgsCodeEditorExpression::textChanged, this, [textWrapper, previewFeature, text] {
         textWrapper->setText( text->text() );
         textWrapper->reinitWidget();
         textWrapper->setFeature( previewFeature );
@@ -641,12 +641,12 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
 
-      connect( addFieldButton, &QAbstractButton::clicked, this, [=] {
+      connect( addFieldButton, &QAbstractButton::clicked, this, [expressionWidget, text] {
         QString expression = expressionWidget->expression().trimmed();
         if ( !expression.isEmpty() )
           text->insertText( QStringLiteral( "[%%1%]" ).arg( expression ) );
       } );
-      connect( editExpressionButton, &QAbstractButton::clicked, this, [=] {
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [this, text] {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( text );
 
         QgsExpressionContext context = createExpressionContext();
@@ -685,7 +685,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
         QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
       } );
 
@@ -728,7 +728,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [] {
         QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
       } );
 
