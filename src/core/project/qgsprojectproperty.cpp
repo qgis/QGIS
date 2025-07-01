@@ -233,14 +233,14 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 
 // keyElement is created by parent QgsProjectPropertyKey
 bool QgsProjectPropertyValue::writeXml( QString const &nodeName,
-                                        QDomElement    &keyElement,
-                                        QDomDocument   &document )
+                                        QDomElement &keyElement,
+                                        QDomDocument &document )
 {
-  QDomElement valueElement = document.createElement( nodeName );
+  QDomElement valueElement = document.createElement( QStringLiteral( "properties" ) );
 
   // remember the type so that we can rebuild it when the project is read in
+  valueElement.setAttribute( QStringLiteral( "name" ), nodeName );
   valueElement.setAttribute( QStringLiteral( "type" ), mValue.typeName() );
-
 
   // we handle string lists differently from other types in that we
   // create a sequence of repeated elements to cover all the string list
@@ -362,33 +362,41 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
 
   while ( i < subkeys.count() )
   {
+    const QDomNode subkey = subkeys.item( i );
+    QString name;
+
+    if ( subkey.nodeName() == QStringLiteral( "properties" ) &&
+         subkey.hasAttributes() && // if we have attributes
+         subkey.isElement() && // and we're an element
+         subkey.toElement().hasAttribute( QStringLiteral( "name" ) ) ) // and we have a "name" attribute
+      name = subkey.toElement().attribute( QStringLiteral( "name" ) );
+    else
+      name = subkey.nodeName();
+
     // if the current node is an element that has a "type" attribute,
     // then we know it's a leaf node; i.e., a subkey _value_, and not
     // a subkey
-    if ( subkeys.item( i ).hasAttributes() && // if we have attributes
-         subkeys.item( i ).isElement() && // and we're an element
-         subkeys.item( i ).toElement().hasAttribute( QStringLiteral( "type" ) ) ) // and we have a "type" attribute
+    if ( subkey.hasAttributes() && // if we have attributes
+         subkey.isElement() && // and we're an element
+         subkey.toElement().hasAttribute( QStringLiteral( "type" ) ) ) // and we have a "type" attribute
     {
       // then we're a key value
-      delete mProperties.take( subkeys.item( i ).nodeName() );
-      mProperties.insert( subkeys.item( i ).nodeName(), new QgsProjectPropertyValue );
+      //
+      delete mProperties.take( name );
+      mProperties.insert( name, new QgsProjectPropertyValue );
 
-      QDomNode subkey = subkeys.item( i );
-
-      if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
+      if ( !mProperties[name]->readXml( subkey ) )
       {
-        QgsDebugError( QStringLiteral( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
+        QgsDebugError( QStringLiteral( "unable to parse key value %1" ).arg( name ) );
       }
     }
     else // otherwise it's a subkey, so just recurse on down the remaining keys
     {
-      addKey( subkeys.item( i ).nodeName() );
+      addKey( name );
 
-      QDomNode subkey = subkeys.item( i );
-
-      if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
+      if ( !mProperties[name]->readXml( subkey ) )
       {
-        QgsDebugError( QStringLiteral( "unable to parse subkey %1" ).arg( subkeys.item( i ).nodeName() ) );
+        QgsDebugError( QStringLiteral( "unable to parse subkey %1" ).arg( name ) );
       }
     }
 
@@ -408,7 +416,8 @@ bool QgsProjectPropertyKey::writeXml( QString const &nodeName, QDomElement &elem
   // If it's an _empty_ node (i.e., one with no properties) we need to emit
   // an empty place holder; else create new Dom elements as necessary.
 
-  QDomElement keyElement = document.createElement( nodeName ); // Dom element for this property key
+  QDomElement keyElement = document.createElement( "properties" ); // Dom element for this property key
+  keyElement.toElement().setAttribute( QStringLiteral( "name" ), nodeName );
 
   if ( ! mProperties.isEmpty() )
   {
