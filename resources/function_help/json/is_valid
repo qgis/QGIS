@@ -8,6 +8,9 @@
     "description": "a geometry"
   }],
   "examples": [{
+    "expression": "is_valid(@geometry)",
+    "returns": "checks if the current feature's geometry is valid"
+  },{
     "expression": "is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))",
     "returns": "TRUE"
   }, {
