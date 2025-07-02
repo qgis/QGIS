@@ -576,16 +576,10 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
   bool errorRaised = false;
   for ( const QgsFeatureUniqueIdPair &pair : constList )
   {
-    if ( !errorRaised && expectedType != pair.first.geometry().wkbType() )
+    if ( !errorRaised && QgsWkbTypes::hasZ( pair.first.geometry().wkbType() ) && !QgsWkbTypes::hasZ( expectedType ) )
     {
-      if ( QgsWkbTypes::hasZ( pair.first.geometry().wkbType() ) && !QgsWkbTypes::hasZ( expectedType ) )
-      {
-        mShared->pushError( QStringLiteral( "Received feature geometry has Z values but the layer type (%1) does not. Please check the WFS connection setting 'Force initial GetFeature'." ).arg( QgsWkbTypes::displayString( expectedType ) ) );
-      }
-      else
-      {
-        mShared->pushError( QStringLiteral( "Received feature with geometry type %1, expected %2" ).arg( QgsWkbTypes::displayString( pair.first.geometry().wkbType() ), QgsWkbTypes::displayString( expectedType ) ) );
-      }
+      mShared->pushError( QStringLiteral( "Received feature geometry has Z values but the layer type (%1) does not. Please check the WFS connection setting 'Force initial GetFeature'." ).arg( QgsWkbTypes::displayString( expectedType ) ) );
+      errorRaised = true;
     }
     *mWriterStream << pair.first;
   }
