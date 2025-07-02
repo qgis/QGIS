@@ -429,22 +429,34 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
-     * Unregisters a layout item type
+     * Unregisters a layout item type.
+     *
+     * \since QGIS 4.0
      */
     bool removeLayoutItemType( int typeId );
 
     /**
-     * Unregisters a layout item type
+     * Unregisters a layout item type.
+     *
+     * The \a metadata object will be deleted and should not be used after this call.
+     *
+     * \since QGIS 4.0
      */
     bool removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata );
 
     /**
-     * Unregisters a layout multiframe type
+     * Unregisters a layout multiframe type.
+     *
+     * \since QGIS 4.0
      */
     bool removeLayoutMultiFrameType( int typeId );
 
     /**
-     * Unregisters a layout multiframe type
+     * Unregisters a layout multiframe type.
+     *
+     * The \a metadata object will be deleted and should not be used after this call.
+     *
+     * \since QGIS 4.0
      */
     bool removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata );
 
@@ -488,7 +500,9 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
     /**
      * Emitted whenever an item type is removed from the registry with the specified
-     * \a type
+     * \a type.
+     *
+     * \since QGIS 4.0
      */
     void typeRemoved( int type );
 
@@ -497,6 +511,14 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      * \a type and visible \a name.
      */
     void multiFrameTypeAdded( int type, const QString &name );
+
+    /**
+     * Emitted whenever an multiframe type is removed from the registry with the specified
+     * \a type.
+     *
+     * \since QGIS 4.0
+     */
+    void multiFrameTypeRemoved( int type );
 
   private:
 #ifdef SIP_RUN
