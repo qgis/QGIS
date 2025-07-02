@@ -4565,7 +4565,23 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
 
     // get geometry type, dim and srid
     int dim = 2;
-    long srid = srs.postgisSrid();
+    long srid;
+
+    // get srid from PostGIS
+
+    if ( !srs.authid().isEmpty() )
+    {
+      QStringList authId_list = srs.authid().split(':');
+
+      sql = QStringLiteral( "SELECT srid FROM public.spatial_ref_sys WHERE auth_name = %1 AND auth_srid = %2" )
+              .arg( quotedValue( authId_list[0] ) )
+              .arg( quotedValue( authId_list[1] ) );
+
+      result = conn->LoggedPQexec( "QgsPostgresProvider", sql );
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+        throw PGException( result );
+      srid = result.PQgetvalue( 0, 0 ).toLong();
+    }
 
     postgisGeometryType( wkbType, geometryType, dim );
 
