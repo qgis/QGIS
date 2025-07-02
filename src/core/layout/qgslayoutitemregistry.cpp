@@ -115,7 +115,7 @@ bool QgsLayoutItemRegistry::removeLayoutItemType( int typeId )
   if ( !mMetadata.contains( typeId ) )
     return false;
   mMetadata.remove( typeId );
-  emit typeRemoved( typeId );
+  emit multiFrameTypeRemoved( typeId );
   return true;
 }
 

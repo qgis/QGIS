@@ -220,18 +220,25 @@ Returns -1 if no matching metadata is found in the GUI registry.
 
     bool addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata /Transfer/ );
 %Docstring
-Registers the gui metadata for a new layout item type. Takes ownership
+Registers the GUI metadata for a new layout item type. Takes ownership
 of the metadata instance.
 %End
 
     bool removeLayoutItemGuiMetadata( int type );
 %Docstring
-Unregisters the gui metadata for a layout item type.
+Unregisters the GUI metadata for a layout item type.
+
+.. versionadded:: 4.0
 %End
 
     bool removeLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata );
 %Docstring
-Unregisters the gui metadata for a layout item type.
+Unregisters the GUI metadata for a layout item type.
+
+The ``metadata`` object will be deleted and should not be used after
+this call.
+
+.. versionadded:: 4.0
 %End
 
     bool addItemGroup( const QgsLayoutItemGuiGroup &group );
@@ -248,9 +255,13 @@ added (e.g. due to duplicate id value).
 
     bool removeItemGroup( const QString &id );
 %Docstring
-Unregisters a item group from the registry. This must be done after
-calling :py:func:`~QgsLayoutItemGuiRegistry.removeLayoutItemGuiMetadata`
-for every item types associated with the group.
+Unregisters an item group from the registry.
+
+This must be done after calling
+:py:func:`~QgsLayoutItemGuiRegistry.removeLayoutItemGuiMetadata` for
+every item types associated with the group.
+
+.. versionadded:: 4.0
 %End
 
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
@@ -306,11 +317,15 @@ specified ``metadataId``.
 %Docstring
 Emitted whenever an item type is removed from the registry, with the
 specified ``metadataId``.
+
+.. versionadded:: 4.0
 %End
 
     void groupRemoved( QString groupId );
 %Docstring
-Emitted whenever an item group is removed from the registry
+Emitted whenever an item group is removed from the registry.
+
+.. versionadded:: 4.0
 %End
 
   private:
