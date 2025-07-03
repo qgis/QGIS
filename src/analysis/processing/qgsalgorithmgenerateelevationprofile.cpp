@@ -180,7 +180,7 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
   QList<QgsAbstractProfileSource *> sources;
   for ( QgsMapLayer *layer : layers )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
       sources.append( source );
   }
 
