@@ -233,8 +233,10 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     dsUri.uri( false ),
     QgsDataProvider::ProviderOptions(), caps
   );
+
   if ( provider.metadataRetrievalCanceled() )
     return res;
+
   QgsProviderSublayerDetails details;
   details.setType( Qgis::LayerType::Vector );
   details.setProviderKey( QgsWFSProvider::WFS_PROVIDER_KEY );
@@ -243,12 +245,24 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   details.setWkbType( provider.wkbType() );
   res << details;
 
+  // If set: always issue a GetFeature because the guessed type can't be trusted,
+  // for example when dealing with Z geometries identified as 2D.
+  const bool forceInitialGetFeature = dsUri.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
+                                      && dsUri.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QStringLiteral( "TRUE" );
+
   if ( wfsUri.hasGeometryTypeFilter() || !caps.supportsGeometryTypeFilters() )
   {
-    if ( provider.wkbType() == Qgis::WkbType::Unknown )
-      provider.issueInitialGetFeature();
-    details.setWkbType( provider.wkbType() );
+    if ( provider.wkbType() == Qgis::WkbType::Unknown || forceInitialGetFeature )
+      provider.issueInitialGetFeature( forceInitialGetFeature );
+
+    res.last().setWkbType( provider.wkbType() );
     return res;
+  }
+
+  if ( forceInitialGetFeature )
+  {
+    provider.issueInitialGetFeature( true );
+    res.last().setWkbType( provider.wkbType() );
   }
 
   if ( ( provider.wkbType() == Qgis::WkbType::Unknown || ( provider.wkbType() != Qgis::WkbType::NoGeometry && provider.geometryMaybeMissing() ) ) && provider.sharedData()->layerProperties().size() == 1 )
@@ -382,8 +396,8 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       {
         QgsDebugMsgLevel( QString( "%1 declares geometry filters, but they are not working. Guessing the geometry type from one sample" ).arg( uri ), 2 );
         provider.issueInitialGetFeature();
-        details.setWkbType( provider.wkbType() );
-        details.setFeatureCount( featureCounts[INDEX_ALL] );
+        res.last().setWkbType( provider.wkbType() );
+        res.last().setFeatureCount( featureCounts[INDEX_ALL] );
         return res;
       }
 

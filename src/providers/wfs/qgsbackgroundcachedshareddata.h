@@ -188,6 +188,9 @@ class QgsBackgroundCachedSharedData
     //! Called when an error must be raised to the provider
     virtual void pushError( const QString &errorMsg ) const = 0;
 
+    //! Geometry type of the features in this layer (used by WFS only)
+    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
+
   protected:
     //////////// Input members. Implementations should define them to meaningful values
 

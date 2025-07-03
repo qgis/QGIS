@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>920</width>
-        <height>862</height>
+        <y>-74</y>
+        <width>855</width>
+        <height>659</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -320,26 +320,6 @@
             <string>WFS Options</string>
            </property>
            <layout class="QGridLayout" name="gridLayout1">
-            <item row="7" column="0" colspan="3">
-             <widget class="QCheckBox" name="cbxWfsInvertAxisOrientation">
-              <property name="text">
-               <string>Invert axis orientation</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="cmbVersion"/>
-            </item>
-            <item row="3" column="1" colspan="2">
-             <widget class="QComboBox" name="cmbFeaturePaging"/>
-            </item>
-            <item row="4" column="1" colspan="2">
-             <widget class="QLineEdit" name="txtPageSize">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request when paging is enabled. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QLabel" name="lblFeaturePaging">
               <property name="sizePolicy">
@@ -350,29 +330,6 @@
               </property>
               <property name="text">
                <string>Feature paging</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lblMaxNumFeatures">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Max. number of features</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="0">
-             <widget class="QCheckBox" name="cbxWfsUseGml2EncodingForTransactions">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This might be necessary on some &lt;span style=&quot; font-weight:600;&quot;&gt;broken&lt;/span&gt; ESRI map servers when using WFS-T 1.1.0.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="text">
-               <string>Use GML2 encoding for transactions</string>
               </property>
              </widget>
             </item>
@@ -399,20 +356,16 @@
             <item row="1" column="1" colspan="2">
              <widget class="QComboBox" name="mComboHttpMethod"/>
             </item>
-            <item row="6" column="0" colspan="3">
-             <widget class="QCheckBox" name="cbxWfsIgnoreAxisOrientation">
-              <property name="text">
-               <string>Ignore axis orientation (WFS 1.1/WFS 2.0)</string>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblVersion">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-             </widget>
-            </item>
-            <item row="5" column="1" colspan="2">
-             <widget class="QComboBox" name="mComboWfsFeatureMode"/>
-            </item>
-            <item row="2" column="1" colspan="2">
-             <widget class="QLineEdit" name="txtMaxNumFeatures">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved per feature request. If let to empty, no limit is set.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <property name="text">
+               <string>Version</string>
               </property>
              </widget>
             </item>
@@ -429,6 +382,43 @@
               </property>
              </widget>
             </item>
+            <item row="5" column="1" colspan="2">
+             <widget class="QComboBox" name="mComboWfsFeatureMode"/>
+            </item>
+            <item row="6" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxWfsIgnoreAxisOrientation">
+              <property name="text">
+               <string>Ignore axis orientation (WFS 1.1/WFS 2.0)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="2">
+             <widget class="QLineEdit" name="txtMaxNumFeatures">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved per feature request. If let to empty, no limit is set.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" colspan="2">
+             <widget class="QLineEdit" name="txtPageSize">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request when paging is enabled. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" colspan="2">
+             <widget class="QComboBox" name="cmbFeaturePaging"/>
+            </item>
+            <item row="7" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxWfsInvertAxisOrientation">
+              <property name="text">
+               <string>Invert axis orientation</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="cmbVersion"/>
+            </item>
             <item row="5" column="0">
              <widget class="QLabel" name="lblFeatureMode">
               <property name="sizePolicy">
@@ -442,20 +432,7 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lblVersion">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Version</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0" colspan="3">
+            <item row="10" column="0" colspan="3">
              <spacer name="verticalSpacer_3">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -467,6 +444,39 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="lblMaxNumFeatures">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Max. number of features</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0">
+             <widget class="QCheckBox" name="cbxWfsUseGml2EncodingForTransactions">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This might be necessary on some &lt;span style=&quot; font-weight:600;&quot;&gt;broken&lt;/span&gt; ESRI map servers when using WFS-T 1.1.0.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Use GML2 encoding for transactions</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QCheckBox" name="cbxWfsForceInitialGetFeature">
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When checked, an initial GetFeature call will always be issued in order to determine the geometry type from the first downloaded feature.&lt;/p&gt;&lt;p&gt;This option can be used if the layer contains features with Z axis coordinates that are otherwise not correctly identified.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string>Force initial GetFeature</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

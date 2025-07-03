@@ -191,6 +191,7 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_PAGE_SIZE,
     QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
     QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
+    QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE,
     QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
     QgsWFSConstants::URI_PARAM_SQL,
     QgsWFSConstants::URI_PARAM_HTTPMETHOD,
@@ -407,6 +408,12 @@ void QgsWFSDataSourceURI::setFilter( const QString &filter )
   {
     mURI.setParam( QgsWFSConstants::URI_PARAM_FILTER, filter );
   }
+}
+
+bool QgsWFSDataSourceURI::forceInitialGetFeature() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
+         && mURI.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
 }
 
 bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
