@@ -3879,6 +3879,10 @@ void TestQgsProcessing::parameterExtent()
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QVariant( QStringLiteral( "LineString (10 10, 20 20)" ) ) );
 
+  QCOMPARE( def->userFriendlyString( QgsReferencedRectangle( QgsRectangle( 11, 12, 13, 14 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "[EPSG:4326] Polygon" ) );
+  QCOMPARE( def->userFriendlyString( QgsRectangle( 11, 12, 13, 14 ) ), QStringLiteral( "Polygon" ) );
+  QCOMPARE( def->userFriendlyString( QVariant( "1,2,3,4" ) ), QStringLiteral( "1,2,3,4" ) );
+
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
   QVERIFY( ok );
@@ -4119,6 +4123,12 @@ void TestQgsProcessing::parameterPoint()
   QCOMPARE( def->valueAsJsonObject( QgsPointXY( 11, 12 ), context ), QVariant( QStringLiteral( "11,12" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context ), QVariant( QStringLiteral( "11,12 [EPSG:4326]" ) ) );
   QCOMPARE( def->valueAsJsonObject( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QVariant( QStringLiteral( "LineString (10 10, 20 20)" ) ) );
+
+  QCOMPARE( def->userFriendlyString( QgsReferencedPointXY( QgsPointXY( 11, 12 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "[EPSG:4326] 11, 12" ) );
+  QCOMPARE( def->userFriendlyString( QgsPointXY( 11, 12 ) ), QStringLiteral( "11, 12" ) );
+
+  QCOMPARE( def->userFriendlyString( QgsReferencedPointXY( QgsPointXY( 11.1, 12.2 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ) ), QStringLiteral( "[EPSG:4326] 11.1, 12.2" ) );
+  QCOMPARE( def->userFriendlyString( QgsPointXY( 11.1, 12.2 ) ), QStringLiteral( "11.1, 12.2" ) );
 
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
