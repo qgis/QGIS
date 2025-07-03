@@ -1978,7 +1978,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      */
     void setAllowMultipart( bool allowMultipart ) { mAllowMultipart = allowMultipart; }
 
-    QString userFriendlyString( const QVariant &value ) const;
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2501,6 +2501,7 @@ class CORE_EXPORT QgsProcessingParameterArea : public QgsProcessingParameterNumb
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
   private:
 
@@ -2584,6 +2585,7 @@ class CORE_EXPORT QgsProcessingParameterVolume : public QgsProcessingParameterNu
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
   private:
 
@@ -2640,6 +2642,7 @@ class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameter
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
   private:
 
@@ -4289,6 +4292,7 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString userFriendlyString( const QVariant &value ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
