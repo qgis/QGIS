@@ -165,6 +165,74 @@ onto the canvas. If the aspect ratio isn't fixed, the width and height
 will be set to zero.
 %End
 
+    void setSnapToGrid( bool snapToGrid, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY );
+%Docstring
+Sets whether the extent should be snapped to the grid of a reference
+raster layer.
+
+:param snapToGrid: Whether the extent should be snapped to the grid
+:param rasterXRes: The X resolution of the reference raster
+:param rasterYRes: The Y resolution of the reference raster
+:param rasterMinX: The minimum X coordinate of the reference raster
+:param rasterMinY: The minimum Y coordinate of the reference raster
+
+.. seealso:: :py:func:`snapToGrid`
+
+.. versionadded:: 3.46
+%End
+
+    bool snapToGrid() const;
+%Docstring
+Returns whether the extent should be snapped to the grid of a reference
+raster layer.
+
+:return: ``True`` if the extent should be snapped to the grid
+
+.. seealso:: :py:func:`setSnapToGrid`
+
+.. versionadded:: 3.46
+%End
+
+    double rasterXRes() const;
+%Docstring
+Returns the X resolution of the reference raster used for snapping to
+grid.
+
+.. seealso:: :py:func:`setSnapToGrid`
+
+.. versionadded:: 3.46
+%End
+
+    double rasterYRes() const;
+%Docstring
+Returns the Y resolution of the reference raster used for snapping to
+grid.
+
+.. seealso:: :py:func:`setSnapToGrid`
+
+.. versionadded:: 3.46
+%End
+
+    double rasterMinX() const;
+%Docstring
+Returns the minimum X coordinate of the reference raster used for
+snapping to grid.
+
+.. seealso:: :py:func:`setSnapToGrid`
+
+.. versionadded:: 3.46
+%End
+
+    double rasterMinY() const;
+%Docstring
+Returns the minimum Y coordinate of the reference raster used for
+snapping to grid.
+
+.. seealso:: :py:func:`setSnapToGrid`
+
+.. versionadded:: 3.46
+%End
+
   public slots:
 
     void setOutputExtentFromOriginal();
