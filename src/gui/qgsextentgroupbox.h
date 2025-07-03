@@ -158,6 +158,54 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      */
     QSize ratio() const;
 
+    /**
+     * Sets whether the extent should be snapped to the grid of a reference raster layer.
+     * \param snapToGrid Whether the extent should be snapped to the grid
+     * \param rasterXRes The X resolution of the reference raster
+     * \param rasterYRes The Y resolution of the reference raster
+     * \param rasterMinX The minimum X coordinate of the reference raster
+     * \param rasterMinY The minimum Y coordinate of the reference raster
+     * \see snapToGrid()
+     * \since QGIS 3.46
+     */
+    void setSnapToGrid( bool snapToGrid, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY );
+
+    /**
+     * Returns whether the extent should be snapped to the grid of a reference raster layer.
+     * \returns TRUE if the extent should be snapped to the grid
+     * \see setSnapToGrid()
+     * \since QGIS 3.46
+     */
+    bool snapToGrid() const { return mSnapToGrid; }
+
+    /**
+     * Returns the X resolution of the reference raster used for snapping to grid.
+     * \see setSnapToGrid()
+     * \since QGIS 3.46
+     */
+    double rasterXRes() const { return mRasterXRes; }
+
+    /**
+     * Returns the Y resolution of the reference raster used for snapping to grid.
+     * \see setSnapToGrid()
+     * \since QGIS 3.46
+     */
+    double rasterYRes() const { return mRasterYRes; }
+
+    /**
+     * Returns the minimum X coordinate of the reference raster used for snapping to grid.
+     * \see setSnapToGrid()
+     * \since QGIS 3.46
+     */
+    double rasterMinX() const { return mRasterMinX; }
+
+    /**
+     * Returns the minimum Y coordinate of the reference raster used for snapping to grid.
+     * \see setSnapToGrid()
+     * \since QGIS 3.46
+     */
+    double rasterMinY() const { return mRasterMinY; }
+
   public slots:
 
     /**
@@ -220,6 +268,21 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 
     //! Base part of the title used for the extent
     QString mTitleBase;
+    
+    //! Whether to snap the extent to the grid of a reference raster
+    bool mSnapToGrid = false;
+    
+    //! X resolution of the reference raster for snapping to grid
+    double mRasterXRes = 1.0;
+    
+    //! Y resolution of the reference raster for snapping to grid
+    double mRasterYRes = 1.0;
+    
+    //! Minimum X coordinate of the reference raster for snapping to grid
+    double mRasterMinX = 0.0;
+    
+    //! Minimum Y coordinate of the reference raster for snapping to grid
+    double mRasterMinY = 0.0;
 };
 
 #endif // QGSEXTENTGROUPBOX_H
