@@ -99,6 +99,18 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile)
         last.push_back(filterExpr);
     }
 
+    // this is a special case for merging COPC files
+    // writers.copc does not support multiple inputs
+    //  merge step is necessary before writing the output
+    if (ends_with(tile->outputFilename, ".copc.laz"))
+    {
+        Stage *merge = &manager->makeFilter("filters.merge");
+        for (Stage *stage : last)
+            merge->setInput(*stage);
+        last.clear();
+        last.push_back(merge);
+    }
+
     pdal::Options options;
     options.add(pdal::Option("forward", "all"));
     Stage* writer = &manager->makeWriter(tile->outputFilename, "", options);
@@ -138,8 +150,10 @@ void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipe
 
             VirtualPointCloud vpc;
             if (!vpc.read(inputFile))
+            {
                 std::cerr << "could not open input VPC: " << inputFile << std::endl;
                 return;
+            }
             
             for (const VirtualPointCloud::File& vpcSingleFile : vpc.files)
             {
