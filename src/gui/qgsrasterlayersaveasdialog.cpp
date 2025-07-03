@@ -189,11 +189,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // Initialize the snap to grid parameters from the input raster
   if ( mDataProvider )
   {
-    // Get the raster grid parameters
-    double xRes = mDataProvider->extent().width() / mDataProvider->xSize();
-    double yRes = mDataProvider->extent().height() / mDataProvider->ySize();
-    double minX = mDataProvider->extent().xMinimum();
-    double minY = mDataProvider->extent().yMinimum();
+    // Raster grid parameters are set in snapToGridCheckBoxToggled
     
     // Enable snapping to grid by default
     snapToGridCheckBoxToggled( mSnapToGridCheckBox->isChecked() );
