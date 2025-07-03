@@ -3101,23 +3101,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
            );
   }
 
-  else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
-  {
-    const QgsGeometry g = value.value<QgsGeometry>();
-    return g.typeName();
-  }
-
-  else if ( value.userType() == qMetaTypeId<QgsReferencedGeometry>() )
-  {
-    const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
-    if ( !g.isNull() )
-    {
-      return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
-    }
-    return g.typeName();
-  }
-
-  if ( value.userType() == qMetaTypeId<QgsRectangle>() )
+  else if ( value.userType() == qMetaTypeId<QgsRectangle>() )
   {
     const QgsGeometry g = QgsGeometry::fromRect( value.value<QgsRectangle>() );
     return g.typeName();
@@ -3146,63 +3130,8 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
       return fromVar.sink.asExpression();
     }
   }
-  else if ( value.userType() == QMetaType::Type::QDateTime )
-  {
-    const QDateTime dt = value.toDateTime();
-    if ( !dt.isValid() )
-      return QObject::tr( "Invalid datetime" );
-    else
-      return QStringLiteral( "%1-%2-%3T%4:%5:%6" )
-             .arg( dt.date().year() )
-             .arg( dt.date().month() )
-             .arg( dt.date().day() )
-             .arg( dt.time().hour() )
-             .arg( dt.time().minute() )
-             .arg( dt.time().second() );
-  }
-
-  else if ( value.userType() == QMetaType::Type::QDate )
-  {
-    const QDate dt = value.toDate();
-    if ( !dt.isValid() )
-      return QObject::tr( "Invalid date" );
-    else
-      return QStringLiteral( "%1-%2-%3" )
-             .arg( dt.year() )
-             .arg( dt.month() )
-             .arg( dt.day() );
-  }
-
-  else if ( value.userType() == QMetaType::Type::QTime )
-  {
-    const QTime dt = value.toTime();
-    if ( !dt.isValid() )
-      return QObject::tr( "Invalid time" );
-    else
-      return QStringLiteral( "%4:%5:%6" )
-             .arg( dt.hour() )
-             .arg( dt.minute() )
-             .arg( dt.second() );
-  }
-
-  // else if ( value.userType() == QMetaType::QString )
-  // {
-  //   // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
-  //   // rather than the possibly very long WKT payload
-  //   QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
-  //   if ( !g.isNull() )
-  //   {
-  //     return g.typeName();
-  //   }
-  // }
 
   return value.toString();
-
-  // return QStringLiteral( "%1 :: %2" )
-  //        .arg( value.userType() )
-  //        .arg( value.toString() );
-
-  // return value.userType()
 }
 
 
@@ -4234,14 +4163,34 @@ QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( 
 
 QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &value ) const
 {
-  if ( value.isValid() && value.userType() == QMetaType::QString )
+  if ( value.isValid() )
   {
-    // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
-    // rather than the possibly very long WKT payload
-    QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
-    if ( !g.isNull() )
+
+    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
     {
+      const QgsGeometry g = value.value<QgsGeometry>();
       return g.typeName();
+    }
+
+    else if ( value.userType() == qMetaTypeId<QgsReferencedGeometry>() )
+    {
+      const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
+      if ( !g.isNull() )
+      {
+        return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
+      }
+      return g.typeName();
+    }
+
+    else if ( value.userType() == QMetaType::QString )
+    {
+      // In the case of a WKT-(string) encoded geometry, the type of geometry is going to be displayed
+      // rather than the possibly very long WKT payload
+      QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
+      if ( !g.isNull() )
+      {
+        return g.typeName();
+      }
     }
   }
 
@@ -8041,7 +7990,6 @@ QString QgsProcessingParameterDistance::userFriendlyString( const QVariant &valu
 }
 
 
-
 //
 // QgsProcessingParameterArea
 //
@@ -8122,6 +8070,11 @@ bool QgsProcessingParameterArea::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
+
+QString QgsProcessingParameterArea::userFriendlyString( const QVariant &value ) const
+{
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toString( defaultUnit() ) );
+}
 
 
 //
@@ -8204,6 +8157,10 @@ bool QgsProcessingParameterVolume::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
+QString QgsProcessingParameterVolume::userFriendlyString( const QVariant &value ) const
+{
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toString( defaultUnit() ) );
+}
 
 //
 // QgsProcessingParameterDuration
@@ -8259,6 +8216,11 @@ bool QgsProcessingParameterDuration::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterNumber::fromVariantMap( map );
   mDefaultUnit = static_cast< Qgis::TemporalUnit>( map.value( QStringLiteral( "default_unit" ), static_cast< int >( Qgis::TemporalUnit::Days ) ).toInt() );
   return true;
+}
+
+QString QgsProcessingParameterDuration::userFriendlyString( const QVariant &value ) const
+{
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }
 
 
@@ -9118,6 +9080,49 @@ QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( 
 }
 
 
+QString QgsProcessingParameterDateTime:: userFriendlyString( const QVariant &value ) const
+{
+  if ( value.userType() == QMetaType::Type::QDateTime )
+  {
+    const QDateTime dt = value.toDateTime();
+    if ( !dt.isValid() )
+      return QObject::tr( "Invalid datetime" );
+    else
+      return QStringLiteral( "%1-%2-%3T%4:%5:%6" )
+             .arg( dt.date().year() )
+             .arg( dt.date().month() )
+             .arg( dt.date().day() )
+             .arg( dt.time().hour() )
+             .arg( dt.time().minute() )
+             .arg( dt.time().second() );
+  }
+
+  else if ( value.userType() == QMetaType::Type::QDate )
+  {
+    const QDate dt = value.toDate();
+    if ( !dt.isValid() )
+      return QObject::tr( "Invalid date" );
+    else
+      return QStringLiteral( "%1-%2-%3" )
+             .arg( dt.year() )
+             .arg( dt.month() )
+             .arg( dt.day() );
+  }
+
+  else if ( value.userType() == QMetaType::Type::QTime )
+  {
+    const QTime dt = value.toTime();
+    if ( !dt.isValid() )
+      return QObject::tr( "Invalid time" );
+    else
+      return QStringLiteral( "%4:%5:%6" )
+             .arg( dt.hour() )
+             .arg( dt.minute() )
+             .arg( dt.second() );
+  }
+
+  return value.toString();
+}
 
 //
 // QgsProcessingParameterProviderConnection
