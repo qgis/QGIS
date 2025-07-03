@@ -3094,10 +3094,10 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
   else if ( value.userType() == qMetaTypeId<QgsReferencedPointXY>() )
   {
     const QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
-    return QStringLiteral( "[%1] %1, %3" ).arg(
+    return QStringLiteral( "[%1] %2, %3" ).arg(
              r.crs().authid(),
-             qgsDoubleToString( r.x() ),
-             qgsDoubleToString( r.y() )
+             qgsDoubleToString( r.x(), 4 ),
+             qgsDoubleToString( r.y(), 4 )
            );
   }
 
@@ -3128,6 +3128,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
     const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedRect( value.value<QgsReferencedRectangle>() );
     if ( !g.isNull() )
     {
+
       return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
     }
     return g.typeName();
@@ -3195,10 +3196,11 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
   //   }
   // }
 
-  // return value.toString();
-  return QStringLiteral( "%1 :: %2" )
-         .arg( value.userType() )
-         .arg( value.toString() );
+  return value.toString();
+
+  // return QStringLiteral( "%1 :: %2" )
+  //        .arg( value.userType() )
+  //        .arg( value.toString() );
 
   // return value.userType()
 }
