@@ -246,7 +246,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
 QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 {
-  if ( value == QgsApplication::nullRepresentation() )
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE || value == QgsApplication::nullRepresentation() )
   {
     return value;
   }
