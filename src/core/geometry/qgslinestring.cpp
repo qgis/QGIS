@@ -1532,7 +1532,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
-  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
