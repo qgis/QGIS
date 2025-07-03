@@ -2191,7 +2191,8 @@ Sets the allow multipart geometries
 .. seealso:: :py:func:`allowMultipart`
 %End
 
-    QString userFriendlyString( const QVariant &value ) const;
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
@@ -2787,6 +2788,8 @@ Sets the default area ``unit`` for the parameter.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
 };
 
@@ -2877,6 +2880,8 @@ Sets the default volume ``unit`` for the parameter.
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
+    virtual QString userFriendlyString( const QVariant &value ) const;
+
 
 };
 
@@ -2935,6 +2940,8 @@ Sets the default duration ``unit`` for the parameter.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
 };
@@ -4894,6 +4901,8 @@ Sets the acceptable data ``type`` for the parameter.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     static QgsProcessingParameterDateTime *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
