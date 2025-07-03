@@ -134,6 +134,15 @@ void QgsExtentGroupBox::setRatio( QSize ratio )
   mWidget->setRatio( ratio );
 }
 
+void QgsExtentGroupBox::setSnapToGrid( bool snapToGrid, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY )
+{
+  mSnapToGrid = snapToGrid;
+  mRasterXRes = rasterXRes;
+  mRasterYRes = rasterYRes;
+  mRasterMinX = rasterMinX;
+  mRasterMinY = rasterMinY;
+}
+
 void QgsExtentGroupBox::groupBoxClicked()
 {
   if ( !isCheckable() )
@@ -168,7 +177,24 @@ QgsRectangle QgsExtentGroupBox::outputExtent() const
   if ( isCheckable() && !isChecked() )
     return QgsRectangle();
 
-  return mWidget->outputExtent();
+  QgsRectangle extent = mWidget->outputExtent();
+  
+  // Apply snap to grid if enabled
+  if ( mSnapToGrid && mRasterXRes > 0 && mRasterYRes > 0 )
+  {
+    // Using the logic from GDAL's -tap option as described in the issue
+    double xmin = mRasterMinX + std::floor( ( extent.xMinimum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double ymin = mRasterMinY + std::floor( ( extent.yMinimum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    double xmax = mRasterMinX + std::ceil( ( extent.xMaximum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double ymax = mRasterMinY + std::ceil( ( extent.yMaximum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    
+    extent.setXMinimum( xmin );
+    extent.setYMinimum( ymin );
+    extent.setXMaximum( xmax );
+    extent.setYMaximum( ymax );
+  }
+  
+  return extent;
 }
 
 QgsCoordinateReferenceSystem QgsExtentGroupBox::outputCrs() const

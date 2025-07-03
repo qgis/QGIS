@@ -178,6 +178,26 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
+  
+  // Create and add the "Snap to grid" checkbox below the extent group box
+  mSnapToGridCheckBox = new QCheckBox( tr( "Snap to grid (align to pixels)" ) );
+  mSnapToGridCheckBox->setToolTip( tr( "Align the export extent to the input raster pixels (similar to GDAL's -tap option)" ) );
+  mSnapToGridCheckBox->setChecked( true );  // Enabled by default as requested
+  mScrollArea->widget()->layout()->addWidget( mSnapToGridCheckBox );
+  connect( mSnapToGridCheckBox, &QCheckBox::toggled, this, &QgsRasterLayerSaveAsDialog::snapToGridCheckBoxToggled );
+  
+  // Initialize the snap to grid parameters from the input raster
+  if ( mDataProvider )
+  {
+    // Get the raster grid parameters
+    double xRes = mDataProvider->extent().width() / mDataProvider->xSize();
+    double yRes = mDataProvider->extent().height() / mDataProvider->ySize();
+    double minX = mDataProvider->extent().xMinimum();
+    double minY = mDataProvider->extent().yMinimum();
+    
+    // Enable snapping to grid by default
+    snapToGridCheckBoxToggled( mSnapToGridCheckBox->isChecked() );
+  }
 
   recalcResolutionSize();
 
@@ -475,6 +495,21 @@ QStringList QgsRasterLayerSaveAsDialog::creationOptions() const
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
   return mExtentGroupBox->outputExtent();
+}
+
+void QgsRasterLayerSaveAsDialog::snapToGridCheckBoxToggled( bool checked )
+{
+  if ( !mDataProvider )
+    return;
+    
+  // Get the raster grid parameters
+  double xRes = mDataProvider->extent().width() / mDataProvider->xSize();
+  double yRes = mDataProvider->extent().height() / mDataProvider->ySize();
+  double minX = mDataProvider->extent().xMinimum();
+  double minY = mDataProvider->extent().yMinimum();
+  
+  // Set snap to grid parameters in the extent group box
+  mExtentGroupBox->setSnapToGrid( checked, xRes, yRes, minX, minY );
 }
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
