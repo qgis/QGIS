@@ -246,6 +246,7 @@ class TestQgsExtentGroupBox(QgisTestCase):
         self.assertEqual(
             w.outputExtent().toString(4), QgsRectangle(1, 2, 3, 4).toString(4)
         )
+        
 
 
 if __name__ == "__main__":
