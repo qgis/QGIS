@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
+      "baseline": "f75c836a67777a86a2c1116a28b179827f028b66",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "a4bdac4fe806307844ddc5c663620ea919ffdf4c",
+        "baseline": "bceab4650d942b31b8d13e484b4096e85546e697",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -33,6 +33,7 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
+    "duckdb",
     {
       "name": "exiv2",
       "features": [
@@ -43,9 +44,12 @@
     {
       "name": "gdal",
       "features": [
+        "arrow-adbc",
         "freexl",
         "kea",
-        "poppler"
+        "parquet",
+        "poppler",
+        "tools"
       ]
     },
     "geos",
@@ -73,9 +77,17 @@
         "ossl"
       ]
     },
-    "qtbase",
+    {
+      "name": "qtbase",
+      "features": [
+        "sql-odbc"
+      ]
+    },
+    "qtdeclarative",
+    "qtimageformats",
     "qtkeychain-qt6",
     "qtlocation",
+    "qtquickcontrols2",
     "qtsvg",
     "qttools",
     "zlib"
@@ -98,6 +110,7 @@
         },
         "py-autopep8",
         "py-dateutil",
+        "py-duckdb",
         "py-isort",
         "py-jinja2",
         "py-lxml",
@@ -105,8 +118,18 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-psycopg",
         "py-psycopg2",
-        "py-pyqt6",
+        "py-pydantic",
+        {
+          "name": "py-pyqt6",
+          "features": [
+            "qt3d",
+            "qt5compat",
+            "qtcharts",
+            "qtdeclarative"
+          ]
+        },
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
@@ -129,11 +152,10 @@
         "opencl"
       ]
     },
-    "quick": {
-      "description": "Build the QGIS quick components for mobile interfaces",
+    "oracle": {
+      "description": "Build with oracle support",
       "dependencies": [
-        "qtdeclarative",
-        "qtquickcontrols2"
+        "oracle-instantclient"
       ]
     },
     "server": {

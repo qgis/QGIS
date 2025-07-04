@@ -52,7 +52,7 @@ add_custom_target (translations ALL DEPENDS ${QM_FILES} ${MD_FILES})
 
 # first compile sources, then compile translations
 if (WITH_DESKTOP)
-  add_dependencies (translations ${QGIS_APP_NAME})
+  add_dependencies (translations qgis)
 endif()
 
 install (FILES ${QM_FILES}

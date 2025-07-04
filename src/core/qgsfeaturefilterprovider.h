@@ -51,12 +51,38 @@ class CORE_EXPORT QgsFeatureFilterProvider
 #endif
 
     /**
+     * Returns TRUE if the filterFeature function is thread safe, which will lead to reliance on layer ID instead
+     * of the raw layer pointer.
+     * \since QGIS 4.0
+     * \deprecated QGIS 4.0
+     */
+    Q_DECL_DEPRECATED virtual bool isFilterThreadSafe() const SIP_DEPRECATED { return true; }
+
+    /**
      * Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.
      * \param layer the layer to filter
      * \param featureRequest the feature request to update
+     * \deprecated QGIS 4.0. Use the layer ID variant.
      */
-    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
+    Q_DECL_DEPRECATED virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const SIP_DEPRECATED
+    {
+      Q_UNUSED( layer )
+      Q_UNUSED( featureRequest )
+    };
+
+    /**
+     * Add additional filters to the feature request to further restrict the features returned by the request.
+     * Derived classes must implement this method.
+     * \param layerId the layer ID to filter
+     * \param featureRequest the feature request to update
+     * \since QGIS 4.0
+     */
+    virtual void filterFeatures( const QString &layerId, QgsFeatureRequest &featureRequest ) const
+    {
+      Q_UNUSED( layerId )
+      Q_UNUSED( featureRequest )
+    };
 
     /**
      * Returns the list of visible attribute names from a list of \a attributes names for the given \a layer

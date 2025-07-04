@@ -179,11 +179,16 @@ bool QgsOapifProvider::init()
     mShared->mServerSupportsFilterCql2Text = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2" ) ) ) && ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter" ) ) ) && ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter" ) ) ) && implementsCql2Text;
     mShared->mServerSupportsLikeBetweenIn = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators" ) ) );
     mShared->mServerSupportsCaseI = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison" ) ) );
-    mShared->mServerSupportsBasicSpatialOperators = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
+    mShared->mServerSupportsBasicSpatialFunctions = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions" ) ) ||
+                                                      // Two below names are deprecated
+                                                      conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
     implementsSchemas = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas" ) );
   }
 
-  mLayerMetadata = collectionRequest->collection().mLayerMetadata;
+  const QgsOapifCollection &collectionDesc = collectionRequest->collection();
+
+  mLayerMetadata = collectionDesc.mLayerMetadata;
+  mFeatureCount = collectionDesc.mFeatureCount;
 
   QString srsName = mShared->mURI.SRSName();
   if ( implementsPart2 && !srsName.isEmpty() )
@@ -206,12 +211,12 @@ bool QgsOapifProvider::init()
       QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
     );
   }
-  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+  mShared->mCapabilityExtent = collectionDesc.mBbox;
 
   // Reproject extent of /collection request to the layer CRS
-  if ( !mShared->mCapabilityExtent.isNull() && collectionRequest->collection().mBboxCrs != mShared->mSourceCrs )
+  if ( !mShared->mCapabilityExtent.isNull() && collectionDesc.mBboxCrs != mShared->mSourceCrs )
   {
-    QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
+    QgsCoordinateTransform ct( collectionDesc.mBboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
     try
@@ -347,6 +352,11 @@ long long QgsOapifProvider::featureCount() const
   // If no filter is set try the fast way of retrieving the feature count
   if ( mSubsetString.isEmpty() )
   {
+    if ( mShared->mServerFilter.isEmpty() && mFeatureCount >= 0 )
+    {
+      return mFeatureCount;
+    }
+
     QString url = mShared->mItemsUrl;
     url += QLatin1String( "?limit=1" );
     url = mShared->appendExtraQueryParameters( url );
@@ -912,7 +922,7 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mServerSupportsFilterCql2Text = mServerSupportsFilterCql2Text;
   copy->mServerSupportsLikeBetweenIn = mServerSupportsLikeBetweenIn;
   copy->mServerSupportsCaseI = mServerSupportsCaseI;
-  copy->mServerSupportsBasicSpatialOperators = mServerSupportsBasicSpatialOperators;
+  copy->mServerSupportsBasicSpatialFunctions = mServerSupportsBasicSpatialFunctions;
   copy->mQueryables = mQueryables;
   QgsBackgroundCachedSharedData::copyStateToClone( copy );
 
@@ -1139,7 +1149,7 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifProvi
     const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
     QgsOapifCql2TextExpressionCompiler compiler(
       mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
-      mServerSupportsBasicSpatialOperators, invertAxisOrientation
+      mServerSupportsBasicSpatialFunctions, invertAxisOrientation
     );
     QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
     if ( res == QgsOapifCql2TextExpressionCompiler::Fail )

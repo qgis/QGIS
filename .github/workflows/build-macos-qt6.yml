@@ -1,12 +1,13 @@
 ---
 name: 🍎 Build - MacOS Qt6
 on:
-  # push:
-  #   branches:
-  #     - main
-  # pull_request:
-  # release:
-  #   types: ['published']
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+  release:
+    types: ['published']
   workflow_dispatch:
 
 concurrency:
@@ -18,9 +19,9 @@ jobs:
     strategy:
       matrix:
         include:
-#          - os: macos-13
-#            triplet: x64-osx
-#            deployment-target: "10.15"
+          - os: macos-13
+            triplet: x64-osx-dynamic-release
+            deployment-target: "10.15"
           - os: macos-14
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
@@ -32,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@ea004816823209b8d1211e47b216185caee12cc5 # latest
+        uses: lukka/get-cmake@6b3e96a9bc9976b8b546346fdd102effedae0ca8 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -42,9 +43,13 @@ jobs:
         id: setup-vcpkg
         uses: ./.github/actions/setup-vcpkg
 
+      - name: 🎲 Get artifact ids
+        id: workflow-artifact-ids
+        uses: ./.github/actions/get-workflow-artifact-ids
+
       - name: 🔨 Prepare build env
         run: |
-          brew install automake bison flex gnu-sed create-dmg autoconf-archive nasm libtool fdupes
+          brew install automake bison flex gnu-sed autoconf-archive nasm libtool fdupes
           echo $(brew --prefix bison)/bin >> $GITHUB_PATH
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
@@ -58,7 +63,22 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: 🛍️ Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: 500M
+          key: build-ccache-${{ matrix.triplet }}-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          save: ${{ github.event_name == 'push' }}
+
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          # To make ccache work properly with precompiled headers
+          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
+
       - name: 🌱 Install dependencies and generate project files
+        env:
+          X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
         run: |
           echo "VCPKG_ROOT: ${VCPKG_ROOT}"
 
@@ -67,18 +87,22 @@ jobs:
           cmake -S . \
                 -G Ninja \
                 -B build \
+                -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
                 -D BUILD_WITH_QT6=ON \
                 -D WITH_QTWEBKIT=OFF \
                 -D WITH_BINDINGS=ON \
-                -D QGIS_MACAPP_FRAMEWORK=OFF \
+                -D WITH_ORACLE=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
+                -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
+                -D ENABLE_UNITY_BUILDS=ON \
                 -D NUGET_USERNAME=${{ github.actor }} \
+                -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
 
-                fdupes -r -1 build/vcpkg_installed/arm64-osx-dynamic/lib | grep libQt | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
+                fdupes -q -r -1 build/vcpkg_installed/${{ matrix.triplet }}/lib | grep libQt | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
 
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
@@ -99,10 +123,100 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v4
         with:
-          name: kadas-albireo2-sdk-${{ matrix.triplet }}
+          name: qgis-sdk-${{ matrix.triplet }}
           path: |
             sdk/vcpkg-export-*.zip
 
       - name: 🌋 Build
         run: |
+          # We make sure the target "all" is built before bundling
+          # Ideally, we would specify each target that is required to be installed, but this workaround is sufficient for now
           cmake --build build
+          cmake --build build --target bundle
+
+      - name: Archive app
+        run: |
+          gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
+
+      - name: 📤 Upload app
+        uses: actions/upload-artifact@v4
+        with:
+          name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
+          path: |
+            qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz
+
+  schedule_download_comment:
+    name: Create dmg
+    runs-on: macos-latest
+    needs: build
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔨 Prepare build env
+        run: |
+          brew install create-dmg
+
+
+      - name: 🎲 Get artifact ids
+        id: workflow-artifact-ids
+        uses: ./.github/actions/get-workflow-artifact-ids
+
+      - name: 📤 Download app
+        uses: actions/download-artifact@v4
+        with:
+          pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
+          path: |
+            artifacts
+
+      - name: Create universal app
+        run: |
+          mkdir -p x64
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-x64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-x64-osx-dynamic-release.tar.gz -C x64
+          mkdir -p arm64
+          gtar --strip-components=5 -zxf ./artifacts/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-arm64-osx-dynamic-release/qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-arm64-osx-dynamic-release.tar.gz -C arm64
+
+          pip install lipomerge
+          lipomerge ./x64 ./arm64 universal
+
+      - name: Create dmg
+        run: |
+          QGIS_APP_NAME=QGIS-"${{steps.workflow-artifact-ids.outputs.display-name}}"
+          create-dmg --volname "${QGIS_APP_NAME} Installer" \
+            --hide-extension ${QGIS_APP_NAME}.app \
+            --volicon "$(pwd)/images/icons/mac/qgis.icns" \
+            --background "$(pwd)/platform/macos/installer_background.png" \
+            --window-pos 200 120 \
+            --window-size 512 320 \
+            --icon-size 100 \
+            --icon "${QGIS_APP_NAME}.app" 130 160 \
+            --app-drop-link 400 155 \
+            ${QGIS_APP_NAME}-Installer.dmg \
+            universal/*/*.app
+
+      - name: 📤 Upload app
+        uses: actions/upload-artifact@v4
+        id: artifact-mac-qt6
+        with:
+          name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg
+          path: |
+            *.dmg
+
+      - name: Upload release assets
+        uses: AButler/upload-release-assets@v3.0
+        if: ${{ github.event_name == 'release' }}
+        with:
+          files: '*.dmg'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Schedule download comment
+        uses: ./.github/actions/post_sticky_comment
+        if: github.event_name == 'pull_request'
+        with:
+          marker: macos-qt6
+          body: |
+            ### 🍎 MacOS Qt6 builds
+            Download [MacOS Qt6 builds of this PR for testing](${{ steps.artifact-mac-qt6.outputs.artifact-url }}).
+            _This installer is not signed, `control`+click > `open` the app to avoid the warning_
+            *(Built from commit ${{ github.event.pull_request.head.sha }})*
+          pr: ${{ github.event.number }}

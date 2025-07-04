@@ -63,7 +63,7 @@ QString QgsGeometryCheckSliverPolygonAlgorithm::shortHelpString() const
                       "The thinness value is between 1 and +infinity.\n"
                       "If a polygon has an area higher than the maximum area, it is skipped (a maximum area value of 0 means no area check).\n\n"
                       "Polygons having a thinness higher than the maximum thinness are errors.\n\n"
-                      "To fix sliver polygons, use the \"Fix geometry (Area)\" processing." );
+                      "To fix sliver polygons, use the \"Fix small polygons\" algorithm." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckSliverPolygonAlgorithm::flags() const

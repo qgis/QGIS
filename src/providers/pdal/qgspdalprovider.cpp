@@ -469,7 +469,7 @@ void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()
 {
   // get supported extensions
   static std::once_flag initialized;
-  std::call_once( initialized, [=] {
+  std::call_once( initialized, [] {
     const pdal::StageFactory f;
     pdal::PluginManager<pdal::Stage>::loadAll();
     const pdal::StringList stages = pdal::PluginManager<pdal::Stage>::names();

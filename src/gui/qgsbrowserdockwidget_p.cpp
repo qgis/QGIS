@@ -154,7 +154,7 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   mMapCanvas->setMapTool( new QgsMapToolPan( mMapCanvas ) );
   mMapCanvas->freeze( true );
 
-  connect( mTabWidget, &QTabWidget::currentChanged, this, [=] {
+  connect( mTabWidget, &QTabWidget::currentChanged, this, [this] {
     if ( mTabWidget->currentWidget() == mPreviewTab && mMapCanvas->isFrozen() )
     {
       mMapCanvas->freeze( false );

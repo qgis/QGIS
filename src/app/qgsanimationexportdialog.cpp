@@ -71,7 +71,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
-  connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [=] {
+  connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "ExportAnimation/fileNameTemplate" ), mTemplateLineEdit->text() );
   } );
@@ -82,7 +82,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   mOutputDirFileWidget->setDefaultRoot( settings.value( QStringLiteral( "ExportAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
   mOutputDirFileWidget->setFilePath( settings.value( QStringLiteral( "ExportAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
 
-  connect( mOutputDirFileWidget, &QgsFileWidget::fileChanged, this, [=] {
+  connect( mOutputDirFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "ExportAnimation/lastDir" ), mOutputDirFileWidget->filePath(), QgsSettings::App );
   } );
@@ -114,18 +114,18 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   mFrameDurationSpinBox->setValue( QgsProject::instance()->timeSettings()->timeStep() );
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( static_cast<int>( QgsProject::instance()->timeSettings()->timeStepUnit() ) ) );
 
-  connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [=] { updateOutputWidth( mOutputWidthSpinBox->value() ); } );
-  connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [=] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
+  connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputWidth( mOutputWidthSpinBox->value() ); } );
+  connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsAnimationExportDialog::updateExtent );
   connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsAnimationExportDialog::lockChanged );
 
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsAnimationExportDialog::setToProjectTime );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#maptimecontrol" ) );
   } );
 
-  connect( buttonBox, &QDialogButtonBox::accepted, this, [=] {
+  connect( buttonBox, &QDialogButtonBox::accepted, this, [this] {
     emit startExport();
     accept();
   } );

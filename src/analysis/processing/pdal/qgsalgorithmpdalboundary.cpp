@@ -52,6 +52,11 @@ QString QgsPdalBoundaryAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports a polygon file containing point cloud layer boundary. It may contain holes and it may be a multi-part polygon." );
 }
 
+QString QgsPdalBoundaryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a polygon layer containing a point cloud's boundary." );
+}
+
 QgsPdalBoundaryAlgorithm *QgsPdalBoundaryAlgorithm::createInstance() const
 {
   return new QgsPdalBoundaryAlgorithm();

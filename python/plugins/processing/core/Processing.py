@@ -123,6 +123,20 @@ class Processing:
                     # no 3d library available
                     pass
 
+            # add PDAL provider if available and not already added
+            if "pdal" not in [
+                p.id() for p in QgsApplication.processingRegistry().providers()
+            ]:
+                try:
+                    from qgis.analysis import QgsPdalAlgorithms
+
+                    QgsApplication.processingRegistry().addProvider(
+                        QgsPdalAlgorithms(QgsApplication.processingRegistry())
+                    )
+                except ImportError:
+                    # no PDAL library available
+                    pass
+
             # Add the basic providers
             basic_providers = [
                 QgisAlgorithmProvider,

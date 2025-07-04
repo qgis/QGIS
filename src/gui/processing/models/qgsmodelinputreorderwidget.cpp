@@ -34,7 +34,7 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
   mInputsList->setDragEnabled( true );
   mInputsList->setDragDropMode( QAbstractItemView::InternalMove );
 
-  connect( mButtonUp, &QPushButton::clicked, this, [=] {
+  connect( mButtonUp, &QPushButton::clicked, this, [this] {
     int currentRow = mInputsList->currentIndex().row();
     if ( currentRow == 0 )
       return;
@@ -43,7 +43,7 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
     mInputsList->setCurrentIndex( mItemModel->index( currentRow - 1, 0 ) );
   } );
 
-  connect( mButtonDown, &QPushButton::clicked, this, [=] {
+  connect( mButtonDown, &QPushButton::clicked, this, [this] {
     int currentRow = mInputsList->currentIndex().row();
     if ( currentRow == mItemModel->rowCount() - 1 )
       return;

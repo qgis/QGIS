@@ -85,8 +85,8 @@ void QgsGeometryCheckAreaAlgorithm::initAlgorithm( const QVariantMap &configurat
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
-  addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "AREATHRESHOLD" ), QObject::tr( "Area threshold" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
+  addParameter( new QgsProcessingParameterArea(
+    QStringLiteral( "AREATHRESHOLD" ), QObject::tr( "Area threshold" ), 0, QStringLiteral( "INPUT" )
   ) );
 
   // outputs

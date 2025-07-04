@@ -73,7 +73,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   mDefaultSymbolToolButton->setLayer( mLayer );
   mDefaultSymbolToolButton->registerExpressionContextGenerator( this );
 
-  connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [this] {
     mRenderer->setDefaultSymbol( mDefaultSymbolToolButton->symbol()->clone() );
     emit widgetChanged();
   } );

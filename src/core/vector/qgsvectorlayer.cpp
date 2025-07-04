@@ -572,13 +572,22 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
     defaultContext.emplace( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
     context = &defaultContext.value();
   }
+  else
+  {
+    context->appendScope( QgsExpressionContextUtils::layerScope( this ) );
+  }
+
+  QgsExpression exp( expression );
+  exp.prepare( context );
 
   if ( behavior == Qgis::SelectBehavior::SetSelection || behavior == Qgis::SelectBehavior::AddToSelection )
   {
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
-                                .setExpressionContext( *context )
-                                .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                .setNoAttributes();
+                                .setExpressionContext( *context );
+    request.setSubsetOfAttributes( exp.referencedColumns(), fields() );
+
+    if ( !exp.needsGeometry() )
+      request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
     QgsFeatureIterator features = getFeatures( request );
 
@@ -595,8 +604,6 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   }
   else if ( behavior == Qgis::SelectBehavior::IntersectSelection || behavior == Qgis::SelectBehavior::RemoveFromSelection )
   {
-    QgsExpression exp( expression );
-    exp.prepare( context );
 
     QgsFeatureIds oldSelection = selectedFeatureIds();
     QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( oldSelection );
@@ -1033,6 +1040,10 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !isSpatial() )
     return rect;
+
+  // Don't do lazy extent if the layer is currently in edit mode
+  if ( mLazyExtent2D && isEditable() )
+    mLazyExtent2D = false;
 
   if ( mDataProvider && mDataProvider->isValid() && ( mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent2D ) )
   {

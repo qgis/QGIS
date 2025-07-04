@@ -46,6 +46,7 @@ class TestQgsDistanceArea : public QObject
     void emptyPolygon();
     void regression14675();
     void regression16820();
+    void regression61299();
 };
 
 void TestQgsDistanceArea::initTestCase()
@@ -53,7 +54,7 @@ void TestQgsDistanceArea::initTestCase()
   //
   // Runs once before any tests are run
   //
-  // init QGIS's paths - true means that all path will be inited from prefix
+  // init QGIS's paths true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
@@ -391,6 +392,68 @@ void TestQgsDistanceArea::regression16820()
   const QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) ).release() );
   QGSCOMPARENEAR( calc.measureArea( geom ), 43.201092, 0.001 );
 }
+
+void TestQgsDistanceArea::regression61299()
+{
+  // Create custom CRS from WKT
+  const QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromWkt( R"WKT(
+PROJCRS["Hanseong PCS",
+   BASEGEOGCRS["WGS 84",
+       DATUM["World Geodetic System 1984",
+           ELLIPSOID["WGS 84",6378137,298.257223563,
+               LENGTHUNIT["metre",1]],
+           ID["EPSG",6326]],
+       PRIMEM["Greenwich",0,
+           ANGLEUNIT["Degree",0.0174532925199433],
+           ID["EPSG",8901]]],
+   CONVERSION["unnamed",
+       METHOD["Mercator (variant B)",
+           ID["EPSG",9805]],
+       PARAMETER["Latitude of 1st standard parallel",37.5,
+           ANGLEUNIT["Degree",0.0174532925199433],
+           ID["EPSG",8823]],
+       PARAMETER["Longitude of natural origin",100,
+           ANGLEUNIT["Degree",0.0174532925199433],
+           ID["EPSG",8802]],
+       PARAMETER["False easting",0,
+           LENGTHUNIT["metre",1],
+           ID["EPSG",8806]],
+       PARAMETER["False northing",0,
+           LENGTHUNIT["metre",1],
+           ID["EPSG",8807]]],
+   CS[Cartesian,2],
+       AXIS["(E)",east,
+           ORDER[1],
+           LENGTHUNIT["metre",1,
+               ID["EPSG",9001]]],
+       AXIS["(N)",north,
+           ORDER[2],
+           LENGTHUNIT["metre",1,
+               ID["EPSG",9001]]]]
+
+)WKT" );
+
+  QVERIFY( userCrs.isValid() );
+  QgsProject::instance()->setCrs( userCrs, false );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:6378137:6356752.3142451793" ) );
+
+  QgsDistanceArea calc;
+  QVERIFY( calc.setEllipsoid( QgsProject::instance()->ellipsoid() ) );
+  calc.setSourceCrs( userCrs, QgsProject::instance()->transformContext() );
+  QgsPointXY pt1( 110, 38 );
+  QgsPointXY pt2( 111, 38 );
+  // Transform to the user CRS
+  QgsCoordinateTransform transform( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), userCrs, QgsProject::instance()->transformContext() );
+  pt1 = transform.transform( pt1 );
+  pt2 = transform.transform( pt2 );
+
+  // This will fail if the ellipsoid is not set correctly
+  QVERIFY( calc.ellipsoidCrs().isValid() );
+
+  const double result = calc.measureLine( pt1, pt2 );
+  QVERIFY( !std::isnan( result ) );
+}
+
 
 QGSTEST_MAIN( TestQgsDistanceArea )
 #include "testqgsdistancearea.moc"

@@ -322,6 +322,7 @@ void TestQgsTracer::testAddPointsOnIntersections()
 
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
+  tracer.setAddPointsOnIntersectionsEnabled( false );
 
   QgsPolylineXY points = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
 

@@ -594,8 +594,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
+     * \param parameters can be used to specify parameters which control the mergeLines results (since QGIS 3.44)
      */
-    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns the closest point on the geometry to the other geometry.
@@ -944,10 +945,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 #ifndef SIP_RUN
 
-class GEOSException : public std::runtime_error
+class QgsGeosException : public std::runtime_error
 {
   public:
-    explicit GEOSException( const QString &message )
+    explicit QgsGeosException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
     {
     }

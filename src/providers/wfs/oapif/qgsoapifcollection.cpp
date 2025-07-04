@@ -364,6 +364,15 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     mCrsList.append( crs.authid() );
   }
 
+  if ( j.contains( "itemCount" ) )
+  {
+    json jItemCount = j["itemCount"];
+    if ( jItemCount.is_number() )
+    {
+      mFeatureCount = jItemCount.get<int64_t>();
+    }
+  }
+
   return true;
 }
 

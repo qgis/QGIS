@@ -121,6 +121,9 @@
 #include <QScreen>
 #include <QAuthenticator>
 #include <QRecursiveMutex>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QImageReader>
+#endif
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() );
 
@@ -216,7 +219,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
   if ( platformName != QLatin1String( "desktop" ) )
   {
-    mApplicationMembers = new ApplicationMembers();
+    mApplicationMembers = std::make_unique<ApplicationMembers>();
     mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
   }
   else
@@ -298,7 +301,7 @@ void QgsApplication::init( QString profileFolder )
   // Initialize application members in desktop app (at this point, profile folder is known)
   if ( platform() == QLatin1String( "desktop" ) )
   {
-    instance()->mApplicationMembers = new ApplicationMembers();
+    instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
     instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
   }
 
@@ -355,8 +358,11 @@ void QgsApplication::init( QString profileFolder )
     {
       if ( sPrefixPath()->isNull() )
       {
-#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) && !defined(QGIS_MAC_BUNDLE)
         setPrefixPath( applicationDirPath(), true );
+#elif defined(QGIS_MAC_BUNDLE)
+        QDir myDir( applicationDirPath() + QLatin1String( "/../.." ) );
+        setPrefixPath( myDir.absolutePath(), true );
 #elif defined(ANDROID)
         // this is "/data/data/org.qgis.qgis" in android
         QDir myDir( QDir::homePath() );
@@ -456,6 +462,11 @@ void QgsApplication::init( QString profileFolder )
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  // the default of 256 is not enough for QGIS
+  QImageReader::setAllocationLimit( 512 );
+#endif
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );
@@ -559,9 +570,6 @@ QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
     mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
-
-  delete mDataItemProviderRegistry;
-  delete mApplicationMembers;
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -806,7 +814,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
   QIcon icon;
   const bool colorBased = fillColor.isValid() || strokeColor.isValid();
 
-  auto iconFromColoredSvg = [ = ]( const QString & path ) -> QIcon
+  auto iconFromColoredSvg = [fillColor, strokeColor, cacheKey]( const QString & path ) -> QIcon
   {
     // sizes are unused here!
     const QByteArray svgContent = QgsApplication::svgCache()->svgContent( path, 16, fillColor, strokeColor, 1, 1 );
@@ -2459,9 +2467,9 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
   {
     if ( !instance()->mDataItemProviderRegistry )
     {
-      lInstance->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+      lInstance->mDataItemProviderRegistry = std::make_unique<QgsDataItemProviderRegistry>();
     }
-    return lInstance->mDataItemProviderRegistry;
+    return lInstance->mDataItemProviderRegistry.get();
   }
   else
   {
@@ -2932,7 +2940,7 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
 {
   if ( auto *lInstance = instance() )
   {
-    return lInstance->mApplicationMembers;
+    return lInstance->mApplicationMembers.get();
   }
   else
   {

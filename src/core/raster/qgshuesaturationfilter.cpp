@@ -113,10 +113,9 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  auto outputBlock = std::make_unique<QgsRasterBlock>();
   if ( !mInput )
   {
-    return outputBlock.release();
+    return nullptr;
   }
 
   // At this moment we know that we read rendered image
@@ -125,7 +124,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
-    return outputBlock.release();
+    return nullptr;
   }
 
   if ( !mInvertColors && mSaturation == 0 && mGrayscaleMode == GrayscaleOff && !mColorizeOn )
@@ -134,87 +133,101 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
     return inputBlock.release();
   }
 
+  auto outputBlock = std::make_unique<QgsRasterBlock>();
+
   if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
-    return outputBlock.release();
+    return nullptr;
   }
 
   // adjust image
-  QRgb myNoDataColor = qRgba( 0, 0, 0, 0 );
-  QRgb myRgb;
-  QColor myColor;
+  const QRgb myNoDataColor = qRgba( 0, 0, 0, 0 );
   int h, s, l;
-  int r, g, b, alpha;
+  int r, g, b;
   double alphaFactor = 1.0;
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  const QRgb *inputColorData = inputBlock->colorData();
+  const int imageHeight = inputBlock->image().height();
+  const int imageWidth = inputBlock->image().width();
+
+  QRgb *outputColorData = outputBlock->colorData();
+
+  for ( int row = 0; row < height; ++row )
   {
-    if ( inputBlock->color( i ) == myNoDataColor )
+    if ( feedback->isCanceled() )
+      return nullptr;
+
+    for ( int col = 0; col < width; ++col )
     {
-      outputBlock->setColor( i, myNoDataColor );
-      continue;
-    }
+      const qgssize i = static_cast< qgssize >( row ) * width + static_cast< qgssize >( col );
 
-    myRgb = inputBlock->color( i );
-    myColor = QColor( myRgb );
+      if ( !inputColorData || row >= imageHeight || col >= imageWidth || inputColorData[i] == myNoDataColor )
+      {
+        outputColorData[i] = myNoDataColor;
+        continue;
+      }
 
-    // Alpha must be taken from QRgb, since conversion from QRgb->QColor loses alpha
-    alpha = qAlpha( myRgb );
+      const QRgb inputColor = inputColorData[i];
+      QColor myColor = QColor( inputColor );
 
-    if ( alpha == 0 )
-    {
-      // totally transparent, no changes required
-      outputBlock->setColor( i, myRgb );
-      continue;
-    }
+      // Alpha must be taken from QRgb, since conversion from QRgb->QColor loses alpha
+      const int alpha = qAlpha( inputColor );
 
-    // Get rgb for color
-    myColor.getRgb( &r, &g, &b );
+      if ( alpha == 0 )
+      {
+        // totally transparent, no changes required
+        outputColorData[i] = inputColor;
+        continue;
+      }
 
-    if ( mInvertColors || alpha != 255 )
-    {
+      // Get rgb for color
+      myColor.getRgb( &r, &g, &b );
+
+      if ( mInvertColors || alpha != 255 )
+      {
+        if ( alpha != 255 )
+        {
+          // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::DataType::ARGB32_Premultiplied
+          // and color values have been premultiplied by alpha
+          alphaFactor = alpha / 255.;
+          r /= alphaFactor;
+          g /= alphaFactor;
+          b /= alphaFactor;
+        }
+        if ( mInvertColors )
+        {
+          r = 255 - r;
+          g = 255 - g;
+          b = 255 - b;
+        }
+        myColor = QColor::fromRgb( r, g, b );
+      }
+
+      myColor.getHsl( &h, &s, &l );
+
+      // Changing saturation?
+      if ( ( mGrayscaleMode != GrayscaleOff ) || ( mSaturationScale != 1 ) )
+      {
+        processSaturation( r, g, b, h, s, l );
+      }
+
+      // Colorizing?
+      if ( mColorizeOn )
+      {
+        processColorization( r, g, b, h, s, l );
+      }
+
+      // Convert back to rgb
       if ( alpha != 255 )
       {
-        // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::DataType::ARGB32_Premultiplied
-        // and color values have been premultiplied by alpha
-        alphaFactor = alpha / 255.;
-        r /= alphaFactor;
-        g /= alphaFactor;
-        b /= alphaFactor;
+        // Transparent pixel, need to premultiply color components
+        r *= alphaFactor;
+        g *= alphaFactor;
+        b *= alphaFactor;
       }
-      if ( mInvertColors )
-      {
-        r = 255 - r;
-        g = 255 - g;
-        b = 255 - b;
-      }
-      myColor = QColor::fromRgb( r, g, b );
+
+      outputColorData[i] = qRgba( r, g, b, alpha );
     }
-
-    myColor.getHsl( &h, &s, &l );
-
-    // Changing saturation?
-    if ( ( mGrayscaleMode != GrayscaleOff ) || ( mSaturationScale != 1 ) )
-    {
-      processSaturation( r, g, b, h, s, l );
-    }
-
-    // Colorizing?
-    if ( mColorizeOn )
-    {
-      processColorization( r, g, b, h, s, l );
-    }
-
-    // Convert back to rgb
-    if ( alpha != 255 )
-    {
-      // Transparent pixel, need to premultiply color components
-      r *= alphaFactor;
-      g *= alphaFactor;
-      b *= alphaFactor;
-    }
-
-    outputBlock->setColor( i, qRgba( r, g, b, alpha ) );
   }
 
   return outputBlock.release();

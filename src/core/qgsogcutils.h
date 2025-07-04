@@ -311,8 +311,12 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry geometryFromGMLMultiPoint( const QDomElement &geometryElement );
     //! Static method that creates geometry from GML MultiLineString
     static QgsGeometry geometryFromGMLMultiLineString( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML MultiCurve
+    static QgsGeometry geometryFromGMLMultiCurve( const QDomElement &geometryElement );
     //! Static method that creates geometry from GML MultiPolygon
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML using GDAL GML parser
+    static QgsGeometry geometryFromGMLUsingGdal( const QDomElement &geometryElement );
 
     /**
      * Creates an empty \verbatim <Filter> \endverbatim QDomElement
@@ -330,7 +334,7 @@ class CORE_EXPORT QgsOgcUtils
      * \param elem the \verbatim <gml:coordinates> \endverbatim element
      * \returns boolean FALSE on success
     */
-    static bool readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem );
+    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
 
     /**
      * Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
@@ -340,8 +344,7 @@ class CORE_EXPORT QgsOgcUtils
      *              \verbatim <gml:posList> \endverbatim element
      * \returns boolean FALSE on success
      */
-    static bool readGMLPositions( QgsPolylineXY &coords, const QDomElement &elem );
-
+    static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
 
     /**
      * Create a GML coordinates element from a point list.
@@ -378,6 +381,8 @@ class CORE_EXPORT QgsOgcUtils
     //! handles \verbatim <PropertyIsNull> \endverbatim tag
     static QgsExpressionNodeBinaryOperator *nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage );
 };
+
+
 
 #ifndef SIP_RUN
 

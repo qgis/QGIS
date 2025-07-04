@@ -197,6 +197,7 @@ class TestQgsProcessingModelAlgorithm : public QgsTest
     void internalVersion();
     void modelChildOrderWithVariables();
     void flags();
+    void modelWithDuplicateNames();
 
   private:
 };
@@ -1563,6 +1564,32 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
                                       .arg( Qgis::versionInt() )
                                       .split( '\n' );
   QCOMPARE( actualParts, expectedParts );
+}
+
+void TestQgsProcessingModelAlgorithm::modelWithDuplicateNames()
+{
+  // test that same name are correctly made unique when exporting in python
+  QgsProcessingModelAlgorithm model;
+
+  // load model with duplicate names
+  QVERIFY( model.fromFile( TEST_DATA_DIR + QStringLiteral( "/duplicate_names.model3" ) ) );
+
+  const QStringList actualParts = model.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, 2 );
+
+  const QRegularExpression re( "outputs\\['([^']*)'\\] = processing.run\\('native:buffer'" );
+  QVERIFY( re.isValid() );
+  QStringList names;
+  for ( QString part : actualParts )
+  {
+    const QRegularExpressionMatch match = re.match( part );
+    if ( match.hasMatch() )
+    {
+      names << match.captured( 1 );
+    }
+  }
+
+  names.sort();
+  QCOMPARE( names, QStringList() << "Tampon" << "Tampon_2" );
 }
 
 

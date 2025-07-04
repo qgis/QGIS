@@ -59,7 +59,7 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
   mStackedWidget->setCurrentWidget( mPageFlat );
-  connect( mComboTerrainType, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mComboTerrainType, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     const QString terrainType = mComboTerrainType->currentData().toString();
     if ( terrainType == QLatin1String( "flat" ) )
     {

@@ -338,7 +338,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( btnAddLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::addLayer );
   connect( btnRemoveLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::removeLayer );
   connect( mLockColorAction, &QAction::toggled, this, &QgsSymbolSelectorWidget::lockLayer );
-  connect( mLockSelectionColorAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mLockSelectionColorAction, &QAction::toggled, this, [this]( bool checked ) {
     QgsSymbolLayer *layer = currentLayer();
     if ( !layer )
       return;

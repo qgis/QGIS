@@ -31,9 +31,9 @@ QgsStacItem::QgsStacItem( const QString &id,
 {
 }
 
-QgsStacObject::Type QgsStacItem::type() const
+Qgis::StacObjectType QgsStacItem::type() const
 {
-  return QgsStacObject::Type::Item;
+  return Qgis::StacObjectType::Item;
 }
 
 QString QgsStacItem::toHtml() const

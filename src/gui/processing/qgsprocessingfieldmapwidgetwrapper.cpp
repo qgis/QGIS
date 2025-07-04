@@ -58,7 +58,7 @@ QgsProcessingFieldMapPanelWidget::QgsProcessingFieldMapPanelWidget( QWidget *par
   connect( mLoadLayerFieldsButton, &QPushButton::clicked, this, &QgsProcessingFieldMapPanelWidget::loadLayerFields );
 
 
-  connect( mFieldsView, &QgsFieldMappingWidget::changed, this, [=] {
+  connect( mFieldsView, &QgsFieldMappingWidget::changed, this, [this] {
     if ( !mBlockChangedSignal )
     {
       emit changed();
@@ -199,7 +199,6 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 {
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
   {
-    mFieldsView->setSourceFields( vl->fields() );
     mFieldsView->setDestinationFields( vl->fields() );
   }
 }
@@ -291,7 +290,7 @@ QWidget *QgsProcessingFieldMapWidgetWrapper::createWidget()
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->registerExpressionContextGenerator( this );
 
-  connect( mPanel, &QgsProcessingFieldMapPanelWidget::changed, this, [=] {
+  connect( mPanel, &QgsProcessingFieldMapPanelWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
 
@@ -316,7 +315,7 @@ void QgsProcessingFieldMapWidgetWrapper::postInitialize( const QList<QgsAbstract
         if ( wrapper->parameterDefinition()->name() == static_cast<const QgsProcessingParameterFieldMapping *>( parameterDefinition() )->parentLayerParameterName() )
         {
           setParentLayerWrapperValue( wrapper );
-          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [=] {
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] {
             setParentLayerWrapperValue( wrapper );
           } );
           break;

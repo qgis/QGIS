@@ -51,11 +51,11 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   setPanelTitle( tr( "Elevation Profile Properties" ) );
 
   mCopyFromDockMenu = new QMenu( this );
-  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [this] {
     sBuildCopyMenuFunction( this, mCopyFromDockMenu );
   } );
 
-  connect( mActionRefresh, &QAction::triggered, this, [=] {
+  connect( mActionRefresh, &QAction::triggered, this, [this] {
     if ( !mProfile )
     {
       return;
@@ -81,7 +81,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
 
   mSpinTolerance->setClearValue( 0 );
-  connect( mSpinTolerance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinTolerance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -92,7 +92,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mCheckControlledByAtlas, &QCheckBox::toggled, this, [=] {
+  connect( mCheckControlledByAtlas, &QCheckBox::toggled, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -105,7 +105,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   // subsections indicator
   mSubsectionsSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mSubsectionsSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mSubsectionsSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -117,7 +117,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mSubsectionsSymbolButton->setDefaultSymbol( QgsProfilePlotRenderer::defaultSubSectionsSymbol().release() );
 
-  connect( mSubsectionsActivateCheck, &QGroupBox::toggled, this, [=] {
+  connect( mSubsectionsActivateCheck, &QGroupBox::toggled, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -132,7 +132,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinMinDistance->setClearValue( 0 );
-  connect( mSpinMinDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMinDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -143,7 +143,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mSpinMaxDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMaxDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -155,7 +155,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinMinElevation->setClearValue( 0 );
-  connect( mSpinMinElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMinElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -166,7 +166,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mSpinMaxElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMaxElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -178,7 +178,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mDistanceAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mDistanceAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mDistanceAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -191,7 +191,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
   mDistanceAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -203,7 +203,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
-  connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -214,7 +214,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mDistanceAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mDistanceAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -225,7 +225,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mDistanceAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mDistanceAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -237,7 +237,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mElevationAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mElevationAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mElevationAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -250,7 +250,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
   mElevationAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -262,7 +262,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
-  connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -273,7 +273,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mElevationAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mElevationAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -284,7 +284,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mElevationAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mElevationAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -296,7 +296,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mChartBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  connect( mChartBackgroundSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mChartBackgroundSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -309,7 +309,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -321,14 +321,14 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
 
-  connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [=] {
+  connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
     widget->setPanelTitle( tr( "Distance Number Format" ) );
     widget->setFormat( mProfile->plot()->xAxis().numericFormat() );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mProfile->beginCommand( tr( "Change Profile Chart Distance Format" ), QgsLayoutItem::UndoElevationProfileDistanceFormat );
       mProfile->plot()->xAxis().setNumericFormat( widget->format() );
       mProfile->invalidateCache();
@@ -338,14 +338,14 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     openPanel( widget );
   } );
 
-  connect( mElevationAxisLabelFormatButton, &QPushButton::clicked, this, [=] {
+  connect( mElevationAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
     widget->setPanelTitle( tr( "Elevation Number Format" ) );
     widget->setFormat( mProfile->plot()->yAxis().numericFormat() );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mProfile->beginCommand( tr( "Change Profile Chart Elevation Format" ), QgsLayoutItem::UndoElevationProfileElevationFormat );
       mProfile->plot()->yAxis().setNumericFormat( widget->format() );
       mProfile->invalidateCache();
@@ -360,7 +360,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceAxisLabelFontButton->setMode( QgsFontButton::ModeTextRenderer );
   mElevationAxisLabelFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
-  connect( mDistanceAxisLabelFontButton, &QgsFontButton::changed, this, [=] {
+  connect( mDistanceAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -371,7 +371,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
   } );
 
-  connect( mElevationAxisLabelFontButton, &QgsFontButton::changed, this, [=] {
+  connect( mElevationAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -383,7 +383,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinLeftMargin->setClearValue( 0 );
-  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -397,7 +397,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinRightMargin->setClearValue( 0 );
-  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -411,7 +411,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinTopMargin->setClearValue( 0 );
-  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -425,7 +425,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinBottomMargin->setClearValue( 0 );
-  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -464,7 +464,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mDistanceUnitCombo->addItem( title, QVariant::fromValue( unit ) );
   }
 
-  connect( mDistanceUnitCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mDistanceUnitCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -480,7 +480,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceLabelsCombo->addItem( tr( "First Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstLabel ) );
   mDistanceLabelsCombo->addItem( tr( "Last Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::LastLabel ) );
   mDistanceLabelsCombo->addItem( tr( "First and Last Values" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels ) );
-  connect( mDistanceLabelsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mDistanceLabelsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -543,7 +543,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   if ( mProfile->layout() )
   {
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [=]( QgsVectorLayer *layer ) {
+    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [this]( QgsVectorLayer *layer ) {
       mSubsectionsSymbolButton->setLayer( layer );
       mDistanceAxisMajorLinesSymbolButton->setLayer( layer );
       mDistanceAxisMinorLinesSymbolButton->setLayer( layer );

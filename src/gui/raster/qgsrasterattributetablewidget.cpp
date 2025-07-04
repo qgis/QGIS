@@ -42,7 +42,7 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
-  connect( mActionToggleEditing, &QAction::triggered, this, [=]( bool editable ) {
+  connect( mActionToggleEditing, &QAction::triggered, this, [this]( bool editable ) {
     setEditable( editable );
   } );
 
@@ -137,15 +137,15 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
     mModel.reset( new QgsRasterAttributeTableModel( mAttributeTableBuffer.get() ) );
     mModel->setEditable( mEditable );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [=]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {
+    connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {
       updateButtons();
     } );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [=]( const QModelIndex &, int, int ) {
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [this]( const QModelIndex &, int, int ) {
       setDelegates();
     } );
 
-    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [=]( const QModelIndex &, int, int ) {
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [this]( const QModelIndex &, int, int ) {
       setDelegates();
     } );
 

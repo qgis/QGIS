@@ -49,8 +49,8 @@ QgsOpacityWidget::QgsOpacityWidget( QWidget *parent )
 
   setFocusProxy( mSpinBox );
 
-  connect( mSlider, &QSlider::valueChanged, this, [=]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
-  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) { whileBlocking( mSlider )->setValue( value * 10 ); } );
+  connect( mSlider, &QSlider::valueChanged, this, [this]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
+  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) { whileBlocking( mSlider )->setValue( value * 10 ); } );
   connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsOpacityWidget::spinChanged );
 }
 

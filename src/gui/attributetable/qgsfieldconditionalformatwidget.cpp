@@ -79,7 +79,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     ruleWidget->setRule( QStringLiteral( "@value " ) );
   }
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::panelAccepted, this, [=] {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::panelAccepted, this, [this, ruleWidget] {
     if ( mPanelHandled )
     {
       // already handled the result of the panel, and the panel is being dismissed as a result
@@ -112,16 +112,16 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
     emit rulesUpdated( fieldName );
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleSaved, this, [=] {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleSaved, this, [ruleWidget] {
     ruleWidget->acceptPanel();
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::canceled, this, [=] {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::canceled, this, [this, ruleWidget] {
     mPanelHandled = true;
     ruleWidget->acceptPanel();
   } );
 
-  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleDeleted, this, [=] {
+  connect( ruleWidget, &QgsEditConditionalFormatRuleWidget::ruleDeleted, this, [this, ruleWidget] {
     deleteCurrentRule();
     mPanelHandled = true;
     ruleWidget->acceptPanel();

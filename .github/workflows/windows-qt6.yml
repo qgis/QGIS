@@ -33,7 +33,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@ea004816823209b8d1211e47b216185caee12cc5
+        uses: lukka/get-cmake@6b3e96a9bc9976b8b546346fdd102effedae0ca8
         with:
           cmakeVersion: 3.31.6
 
@@ -66,6 +66,8 @@ jobs:
 
       - name: 🌱 Install dependencies and generate project files
         shell: bash
+        env:
+          X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
         run: |
           BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
           SOURCE_DIR=$( cygpath "${{ github.workspace }}" )

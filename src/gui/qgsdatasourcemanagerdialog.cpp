@@ -66,7 +66,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   QDialogButtonBox *browserButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help, browserWidgetWrapper );
   browserWidgetWrapper->layout()->addWidget( browserButtonBox );
 
-  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-browser-panel" ) );
   } );
   connect( browserButtonBox, &QDialogButtonBox::rejected, this, &QgsDataSourceManagerDialog::reject );
@@ -94,7 +94,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
     addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon(), provider->toolTip() );
   }
 
-  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerAdded, this, [=]( const QString &name ) {
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerAdded, this, [this]( const QString &name ) {
     if ( QgsSourceSelectProvider *provider = QgsGui::sourceSelectProviderRegistry()->providerByName( name ) )
     {
       QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
@@ -107,7 +107,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
     }
   } );
 
-  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [=]( const QString &name ) {
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [this]( const QString &name ) {
     removeProviderDialog( name );
   } );
 
@@ -125,7 +125,7 @@ void QgsDataSourceManagerDialog::openPage( const QString &pageName )
   const int pageIdx = mPageProviderKeys.indexOf( pageName );
   if ( pageIdx != -1 )
   {
-    QTimer::singleShot( 0, this, [=] { setCurrentPage( pageIdx ); } );
+    QTimer::singleShot( 0, this, [this, pageIdx] { setCurrentPage( pageIdx ); } );
   }
 }
 
@@ -237,7 +237,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( dlg, &QgsAbstractDataSourceWidget::addDatabaseLayers, this, &QgsDataSourceManagerDialog::addDatabaseLayers );
   connect( dlg, &QgsAbstractDataSourceWidget::progressMessage, this, &QgsDataSourceManagerDialog::showStatusMessage );
 
-  connect( dlg, &QgsAbstractDataSourceWidget::addLayer, this, [=]( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addLayer, this, [this]( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey ) {
     Q_UNUSED( url )
     Q_UNUSED( baseName )
     Q_UNUSED( providerKey )
@@ -264,7 +264,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
 
   // Vector
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [=]( const QString &vectorLayerPath, const QString &baseName, const QString &specifiedProvider ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [this, providerKey]( const QString &vectorLayerPath, const QString &baseName, const QString &specifiedProvider ) {
     const QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
     emit addLayer( Qgis::LayerType::Vector, vectorLayerPath, baseName, key );
   } );
@@ -274,7 +274,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
 
   // Raster
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayer, this, [=]( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayer, this, [this]( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) {
     emit addLayer( Qgis::LayerType::Raster, rasterLayerPath, baseName, providerKey );
   } );
   Q_NOWARN_DEPRECATED_POP
@@ -282,19 +282,19 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
 
   // Mesh
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, [=]( const QString &url, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, [this]( const QString &url, const QString &baseName, const QString &providerKey ) {
     emit addLayer( Qgis::LayerType::Mesh, url, baseName, providerKey );
   } );
   Q_NOWARN_DEPRECATED_POP
   // Vector tile
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, [=]( const QString &url, const QString &baseName ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, [this]( const QString &url, const QString &baseName ) {
     emit addLayer( Qgis::LayerType::VectorTile, url, baseName, QString() );
   } );
   Q_NOWARN_DEPRECATED_POP
   // Point Cloud
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addPointCloudLayer, this, [=]( const QString &url, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addPointCloudLayer, this, [this]( const QString &url, const QString &baseName, const QString &providerKey ) {
     emit addLayer( Qgis::LayerType::PointCloud, url, baseName, providerKey );
   } );
   Q_NOWARN_DEPRECATED_POP
@@ -305,7 +305,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( this, &QgsDataSourceManagerDialog::providerDialogsRefreshRequested, dlg, &QgsAbstractDataSourceWidget::refresh, Qt::ConnectionType::QueuedConnection );
 
   // Message
-  connect( dlg, &QgsAbstractDataSourceWidget::pushMessage, this, [=]( const QString &title, const QString &message, const Qgis::MessageLevel level ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::pushMessage, this, [this]( const QString &title, const QString &message, const Qgis::MessageLevel level ) {
     mMessageBar->pushMessage( title, message, level );
   } );
 }

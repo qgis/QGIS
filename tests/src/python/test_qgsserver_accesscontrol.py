@@ -39,6 +39,7 @@ XML_NS = (
     'xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" '
     'xmlns:gml="http://www.opengis.net/gml" '
     'xmlns:ows="http://www.opengis.net/ows" '
+    'xmlns:qgs="http://qgis.org" '
 )
 
 

@@ -86,7 +86,7 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MIN_ANGLE" ), QObject::tr( "Minimum angle" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
+    QStringLiteral( "MIN_ANGLE" ), QObject::tr( "Minimum angle (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
   ) );
 
   // outputs

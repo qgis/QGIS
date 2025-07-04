@@ -37,6 +37,26 @@ QgsMapLayer.FlagTrustLayerMetadata = QgsMapLayer.ReadFlag.FlagTrustLayerMetadata
 QgsMapLayer.FlagReadExtentFromXml = QgsMapLayer.ReadFlag.FlagReadExtentFromXml
 QgsMapLayer.FlagForceReadOnly = QgsMapLayer.ReadFlag.FlagForceReadOnly
 QgsMapLayer.ReadFlags = lambda flags=0: QgsMapLayer.ReadFlag(flags)
+# monkey patching scoped based enum
+QgsMapLayer.SaveStyleResult.Success.__doc__ = "Both QML and SLD formats were successfully written to the database."
+QgsMapLayer.SaveStyleResult.QmlGenerationFailed.__doc__ = "Generation of the QML failed, and was not written to the database."
+QgsMapLayer.SaveStyleResult.SldGenerationFailed.__doc__ = "Generation of the SLD failed, and was not written to the database."
+QgsMapLayer.SaveStyleResult.DatabaseWriteFailed.__doc__ = "An error occurred when attempting to write to the database."
+QgsMapLayer.SaveStyleResult.__doc__ = """Results of saving styles to database.
+
+.. versionadded:: 4.0
+
+* ``Success``: Both QML and SLD formats were successfully written to the database.
+* ``QmlGenerationFailed``: Generation of the QML failed, and was not written to the database.
+* ``SldGenerationFailed``: Generation of the SLD failed, and was not written to the database.
+* ``DatabaseWriteFailed``: An error occurred when attempting to write to the database.
+
+"""
+# --
+QgsMapLayer.SaveStyleResult.baseClass = QgsMapLayer
+QgsMapLayer.SaveStyleResults = lambda flags=0: QgsMapLayer.SaveStyleResult(flags)
+QgsMapLayer.SaveStyleResults.baseClass = QgsMapLayer
+SaveStyleResults = QgsMapLayer  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 
@@ -61,7 +81,7 @@ try:
     QgsMapLayer.formatLayerName = staticmethod(QgsMapLayer.formatLayerName)
     QgsMapLayer.generateId = staticmethod(QgsMapLayer.generateId)
     QgsMapLayer.providerReadFlags = staticmethod(QgsMapLayer.providerReadFlags)
-    QgsMapLayer.__virtual_methods__ = ['properties', 'dataProvider', 'setOpacity', 'opacity', 'reload', 'extent', 'extent3D', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'supportsEditing', 'isEditable', 'isModified', 'isSpatial', 'isTemporary', 'resolveReferences', 'listStylesInDatabase', 'getStyleFromDatabase', 'deleteStyleFromDatabase', 'saveStyleToDatabase', 'loadNamedStyle', 'error', 'metadataUri', 'saveDefaultMetadata', 'loadNamedMetadata', 'loadDefaultMetadata', 'styleURI', 'loadDefaultStyle', 'loadNamedStyleFromDatabase', 'importNamedStyle', 'exportNamedStyle', 'exportSldStyle', 'exportSldStyleV2', 'exportSldStyleV3', 'saveDefaultStyle', 'saveNamedStyle', 'saveSldStyle', 'saveSldStyleV2', 'loadSldStyle', 'readSld', 'readSymbology', 'readStyle', 'writeSymbology', 'writeStyle', 'setMetadata', 'htmlMetadata', 'timestamp', 'dependencies', 'accept', 'selectionProperties', 'temporalProperties', 'elevationProperties', 'hasMapTips', 'setDependencies', 'setExtent', 'setExtent3D', 'readXml', 'writeXml', 'encodedSource', 'decodedSource']
+    QgsMapLayer.__virtual_methods__ = ['properties', 'dataProvider', 'setOpacity', 'opacity', 'reload', 'extent', 'extent3D', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'supportsEditing', 'isEditable', 'isModified', 'isSpatial', 'isTemporary', 'resolveReferences', 'listStylesInDatabase', 'getStyleFromDatabase', 'deleteStyleFromDatabase', 'saveStyleToDatabase', 'loadNamedStyle', 'error', 'metadataUri', 'saveDefaultMetadata', 'loadNamedMetadata', 'loadDefaultMetadata', 'styleURI', 'loadDefaultStyle', 'loadNamedStyleFromDatabase', 'importNamedStyle', 'exportNamedStyle', 'exportSldStyle', 'exportSldStyleV2', 'exportSldStyleV3', 'saveDefaultStyle', 'saveNamedStyle', 'saveSldStyle', 'saveSldStyleV2', 'loadSldStyle', 'readSld', 'readSymbology', 'readStyle', 'writeSymbology', 'writeStyle', 'setMetadata', 'htmlMetadata', 'timestamp', 'dependencies', 'accept', 'selectionProperties', 'temporalProperties', 'elevationProperties', 'profileSource', 'hasMapTips', 'setDependencies', 'setExtent', 'setExtent3D', 'readXml', 'writeXml', 'encodedSource', 'decodedSource']
     QgsMapLayer.__abstract_methods__ = ['clone', 'createMapRenderer', 'readSymbology', 'writeSymbology', 'setTransformContext']
     QgsMapLayer.__signal_arguments__ = {'beforeResolveReferences': ['project: QgsProject'], 'statusChanged': ['status: str'], 'idChanged': ['id: str'], 'repaintRequested': ['deferredUpdate: bool = False'], 'blendModeChanged': ['blendMode: QPainter.CompositionMode'], 'opacityChanged': ['opacity: float'], 'autoRefreshIntervalChanged': ['interval: int'], 'styleLoaded': ['categories: QgsMapLayer.StyleCategories'], 'customPropertyChanged': ['key: str']}
 except (NameError, AttributeError):

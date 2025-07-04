@@ -14,7 +14,7 @@
   integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
   crossorigin="">
   </script>
-  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
   <link rel="points" type="application/json" href="../resources/data/contributors.json">
 </head>
 <body>
@@ -22,7 +22,7 @@
   <script>
   var developersMapTiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZooom: 18,
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
   });
 
   $.getJSON($('link[rel="points"]').attr("href"), function(data) {

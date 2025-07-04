@@ -84,6 +84,12 @@ class CORE_EXPORT QgsVariantUtils
      */
     static QVariant::Type metaTypeToVariantType( QMetaType::Type metaType ) SIP_SKIP;
 
+    /**
+     *  Check if the \a variant is a QgsUnsetAttributeValue
+     *  \note Not available in Python bindings
+     *  \since QGIS 3.44
+     */
+    static bool isUnsetAttributeValue( const QVariant &variant ) SIP_SKIP;
 
     // TODO QGIS 4 remove this method
 

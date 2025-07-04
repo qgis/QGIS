@@ -54,7 +54,14 @@ class TestQgsOgcUtils : public QObject
     }
 
     void testGeometryFromGML();
+
+    void testGeometryFromGMLWithZ_data();
+    void testGeometryFromGMLWithZ();
+
     void testGeometryToGML();
+
+    void testGeometryZToGML();
+    void testGeometryZToGML_data();
 
     void testExpressionFromOgcFilter();
     void testExpressionFromOgcFilter_data();
@@ -108,6 +115,82 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geomBox = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
   QVERIFY( !geomBox.isNull() );
   QVERIFY( geomBox.wkbType() == Qgis::WkbType::Polygon );
+
+  // Test point GML3 Z
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::PointZ );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POINTZ(0 1 2)" ) ) ) );
+
+  // Test polygon GML3 Z
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210 0 0 1200</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)GML" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::PolygonZ );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" ) ) ) );
+
+  // Test linestring GML3 Z
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:LineString srsName="EPSG:4326"><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString>)GML" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::LineStringZ );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" ) ) ) );
+}
+
+void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<Qgis::WkbType>( "type" );
+  QTest::addColumn<QString>( "WKT" );
+
+  QTest::newRow( "PointZ" )
+    << QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>" )
+    << Qgis::WkbType::PointZ
+    << QStringLiteral( "POINTZ( 0 1 2)" );
+
+  QTest::newRow( "LineStringZ" )
+    << QStringLiteral( R"GML(<gml:LineString srsName="EPSG:4326"><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString>)GML" )
+    << Qgis::WkbType::LineStringZ
+    << QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" );
+
+  QTest::newRow( "PolygonZ" )
+    << QStringLiteral( R"GML(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210 0 0 1200</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)GML" )
+    << Qgis::WkbType::PolygonZ
+    << QStringLiteral( "POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" );
+
+  // Test multipoint GML3 Z
+  QTest::newRow( "MultiPointZ" )
+    << QStringLiteral( R"GML(<gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:pos srsDimension="3">0 1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos srsDimension="3">3 4 5</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>)GML" )
+    << Qgis::WkbType::MultiPointZ
+    << QStringLiteral( "MULTIPOINTZ((0 1 2), (3 4 5))" );
+
+  // Test multilinestring GML2 Z
+  QTest::newRow( "MultiLineStringZ GML2" )
+    << QStringLiteral( R"GML(<gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>0,0,1200 0,1,1250 1,1,1230 1,0,1210</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:coordinates>2,2,2200 2,3,2250 3,3,2230 3,2,2210</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>)GML" )
+    << Qgis::WkbType::MultiLineStringZ
+    << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+
+  QTest::newRow( "MultiLineStringZ no curve" )
+    << QStringLiteral( R"GML(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:LineString><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:LineString><gml:posList srsDimension="3">2 2 2200 2 3 2250 3 3 2230 3 2 2210</gml:posList></gml:LineString></gml:curveMember></gml:MultiCurve>)GML" )
+    << Qgis::WkbType::MultiLineStringZ
+    << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+
+  // Test multilinestring GML3 Z
+  QTest::newRow( "MultiLineStringZ" )
+    << QStringLiteral( R"GML(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">2 2 2200 2 3 2250 3 3 2230 3 2 2210</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>)GML" )
+    << Qgis::WkbType::MultiLineStringZ
+    << QStringLiteral( "MULTILINESTRINGZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+}
+
+
+void TestQgsOgcUtils::testGeometryFromGMLWithZ()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( Qgis::WkbType, type );
+  QFETCH( QString, WKT );
+
+  QgsGeometry geom = QgsOgcUtils::geometryFromGML( xmlText );
+  QVERIFY( !geom.isNull() );
+  QCOMPARE( geom.wkbType(), type );
+  QVERIFY( geom.equals( QgsGeometry::fromWkt( WKT ) ) );
 }
 
 static QDomElement comparableElement( const QString &xmlText )
@@ -174,6 +257,51 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.removeChild( elemLine );
 }
 
+void TestQgsOgcUtils::testGeometryZToGML_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+
+  QTest::newRow( "PointZ" ) << QStringLiteral( "POINT Z(0 1 2)" );
+  QTest::newRow( "LineStringZ" ) << QStringLiteral( "LINESTRING Z(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" );
+  QTest::newRow( "PolygonZ" ) << QStringLiteral( "POLYGON Z((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" );
+
+  // Multi
+  QTest::newRow( "MultiPointZ" ) << QStringLiteral( "MULTIPOINT Z((0 1 2), (3 4 5))" );
+  QTest::newRow( "MultiLineStringZ" ) << QStringLiteral( "MULTILINESTRING Z((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210), (2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210))" );
+  QTest::newRow( "MultiPolygonZ" ) << QStringLiteral( "MULTIPOLYGON Z(((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200)), ((2 2 2200, 2 3 2250, 3 3 2230, 3 2 2210, 2 2 2200)))" );
+}
+
+void TestQgsOgcUtils::testGeometryZToGML()
+{
+  // Round trip test
+
+  QFETCH( QString, wkt );
+
+  const QgsGeometry geom( QgsGeometry::fromWkt( wkt ) );
+
+  QVERIFY( !geom.isNull() );
+  QVERIFY( QgsWkbTypes::hasZ( geom.wkbType() ) );
+
+  // Test GML3
+  QDomDocument doc;
+  QDomElement elem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ) );
+  QVERIFY( !elem.isNull() );
+
+  // Dump element to string
+  QString str;
+  QTextStream stream( &str );
+  elem.save( stream, 0 /*indent*/ );
+
+  QCOMPARE( QgsOgcUtils::geometryFromGML( str ).asWkt(), geom.asWkt() );
+
+  //  Test GML2
+  elem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML2" ) );
+  QVERIFY( !elem.isNull() );
+  str.clear();
+  elem.save( stream, 0 /*indent*/ );
+  QCOMPARE( QgsOgcUtils::geometryFromGML( str ).asWkt(), geom.asWkt() );
+}
+
 void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()
 {
   QTest::addColumn<QString>( "xmlText" );
@@ -227,8 +355,8 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
   std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
+  //qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  //qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
     qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
@@ -432,8 +560,8 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
+  //qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  //qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
     qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
@@ -485,8 +613,8 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
   std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
+  //qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  //qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
     qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
@@ -514,8 +642,8 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
+  //qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  //qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
 
   QDomElement xmlElem = comparableElement( xmlText );
@@ -702,9 +830,9 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
-  qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
+  //qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  //qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
+  //qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
 
   QDomElement xmlElem = comparableElement( xmlText );
@@ -771,9 +899,9 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
-  qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
+  //qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  //qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
+  //qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
@@ -920,7 +1048,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
   const QgsSQLStatement statement( statementText );
   if ( !statement.hasParserError() )
   {
-    qDebug( "%s", statement.parserErrorString().toLatin1().data() );
+    //qDebug( "%s", statement.parserErrorString().toLatin1().data() );
     QVERIFY( !statement.hasParserError() );
   }
 
@@ -940,6 +1068,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
 
   doc.appendChild( filterElem );
 
+#if 0
   qDebug( "SQL:    %s", statement.statement().toLatin1().data() );
   qDebug( "GML:    %s", gmlVersion == QgsOgcUtils::GML_2_1_2 ? "2.1.2" : gmlVersion == QgsOgcUtils::GML_3_1_0 ? "3.1.0"
                                                                        : gmlVersion == QgsOgcUtils::GML_3_2_1 ? "3.2.1"
@@ -948,6 +1077,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
                                                                                  : filterVersion == QgsOgcUtils::FILTER_FES_2_0 ? "FES 2.0"
                                                                                                                                 : "unknown" );
   qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
+#endif
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
@@ -1245,7 +1375,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWithXPath()
 
   QDomElement xmlElem = comparableElement( QStringLiteral( "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\"><fes:PropertyIsEqualTo><fes:ValueReference xmlns:otherns=\"https://otherns\" xmlns:myns=\"https://myns\">myns:foo/myns:bar/otherns:a</fes:ValueReference><fes:Literal>1</fes:Literal></fes:PropertyIsEqualTo></fes:Filter>" ) );
   doc.appendChild( filterElem );
-  qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
+  //qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
   QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );
@@ -1283,7 +1413,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilterWithXPath()
 
   QDomElement xmlElem = comparableElement( QStringLiteral( "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\"><fes:PropertyIsEqualTo><fes:ValueReference xmlns:otherns=\"https://otherns\" xmlns:myns=\"https://myns\">myns:foo/myns:bar/otherns:a</fes:ValueReference><fes:Literal>1</fes:Literal></fes:PropertyIsEqualTo></fes:Filter>" ) );
   doc.appendChild( filterElem );
-  qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
+  //qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
   QVERIFY( QgsTestUtils::compareDomElements( xmlElem, ogcElem ) );

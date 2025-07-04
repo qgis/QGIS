@@ -112,7 +112,7 @@ void QgsNumericFormatSelectorWidget::populateTypes()
 {
   QStringList ids = QgsApplication::numericFormatRegistry()->formats();
 
-  std::sort( ids.begin(), ids.end(), [=]( const QString &a, const QString &b ) -> bool {
+  std::sort( ids.begin(), ids.end(), []( const QString &a, const QString &b ) -> bool {
     if ( QgsApplication::numericFormatRegistry()->sortKey( a ) < QgsApplication::numericFormatRegistry()->sortKey( b ) )
       return true;
     else if ( QgsApplication::numericFormatRegistry()->sortKey( a ) > QgsApplication::numericFormatRegistry()->sortKey( b ) )

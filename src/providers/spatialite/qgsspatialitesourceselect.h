@@ -61,6 +61,8 @@ class QgsSpatiaLiteSourceSelect : public QgsAbstractDbSourceSelect
     // Store the selected database
     void dbChanged();
 
+    QString settingPath() const override;
+
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed

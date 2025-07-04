@@ -101,7 +101,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mShowLocationMarkerAction = new QAction( tr( "Show Location Marker" ), this );
   mShowLocationMarkerAction->setCheckable( true );
   mShowLocationMarkerAction->setChecked( showLocationMarker );
-  connect( mShowLocationMarkerAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mShowLocationMarkerAction, &QAction::toggled, this, [this]( bool checked ) {
     emit locationMarkerToggled( checked );
     QgsGpsMarker::settingShowLocationMarker->setValue( checked );
   } );
@@ -111,7 +111,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mShowBearingLineAction = new QAction( tr( "Show Bearing Line" ), this );
   mShowBearingLineAction->setCheckable( true );
   mShowBearingLineAction->setChecked( showBearingLine );
-  connect( mShowBearingLineAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mShowBearingLineAction, &QAction::toggled, this, [this]( bool checked ) {
     emit bearingLineToggled( checked );
     QgsGpsCanvasBridge::settingShowBearingLine->setValue( checked );
   } );
@@ -122,7 +122,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mRotateMapAction = new QAction( tr( "Rotate Map to Match GPS Direction" ), this );
   mRotateMapAction->setCheckable( true );
   mRotateMapAction->setChecked( rotateMap );
-  connect( mRotateMapAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mRotateMapAction, &QAction::toggled, this, [this]( bool checked ) {
     QgsGpsCanvasBridge::settingRotateMap->setValue( checked );
     emit rotateMapToggled( checked );
   } );
@@ -148,7 +148,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
       break;
   }
 
-  connect( mRadioAlwaysRecenter, &QRadioButton::toggled, this, [=]( bool checked ) {
+  connect( mRadioAlwaysRecenter, &QRadioButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       QgsGpsCanvasBridge::settingMapCenteringMode->setValue( Qgis::MapRecenteringMode::Always );
@@ -156,7 +156,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
     }
   } );
 
-  connect( mRadioRecenterWhenOutside, &QRadioButton::toggled, this, [=]( bool checked ) {
+  connect( mRadioRecenterWhenOutside, &QRadioButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       QgsGpsCanvasBridge::settingMapCenteringMode->setValue( Qgis::MapRecenteringMode::WhenOutsideVisibleExtent );
@@ -164,7 +164,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
     }
   } );
 
-  connect( mRadioNeverRecenter, &QRadioButton::toggled, this, [=]( bool checked ) {
+  connect( mRadioNeverRecenter, &QRadioButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       QgsGpsCanvasBridge::settingMapCenteringMode->setValue( Qgis::MapRecenteringMode::Never );
@@ -180,7 +180,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mAutoAddTrackVerticesAction = new QAction( tr( "Automatically Add Track Vertices" ), this );
   mAutoAddTrackVerticesAction->setCheckable( true );
   mAutoAddTrackVerticesAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
-  connect( mAutoAddTrackVerticesAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mAutoAddTrackVerticesAction, &QAction::toggled, this, []( bool checked ) {
     if ( checked != QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() )
     {
       QgsProject::instance()->gpsSettings()->setAutomaticallyAddTrackVertices( checked );
@@ -194,7 +194,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
   mAutoSaveAddedFeatureAction = new QAction( tr( "Automatically Save Added Feature" ), this );
   mAutoSaveAddedFeatureAction->setCheckable( true );
   mAutoSaveAddedFeatureAction->setChecked( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() );
-  connect( mAutoSaveAddedFeatureAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mAutoSaveAddedFeatureAction, &QAction::toggled, this, []( bool checked ) {
     if ( checked != QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
     {
       QgsProject::instance()->gpsSettings()->setAutomaticallyCommitFeatures( checked );
@@ -217,7 +217,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   mActionGpkgLog = new QAction( tr( "Log to GeoPackage/Spatialite…" ), this );
   mActionGpkgLog->setCheckable( true );
-  connect( mActionGpkgLog, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mActionGpkgLog, &QAction::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       const QString lastGpkgLog = QgsAppGpsLogging::settingLastGpkgLog->value();
@@ -246,7 +246,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   mActionNmeaLog = new QAction( tr( "Log NMEA Sentences…" ), this );
   mActionNmeaLog->setCheckable( true );
-  connect( mActionNmeaLog, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mActionNmeaLog, &QAction::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       const QString lastLogFolder = QgsAppGpsLogging::settingLastLogFolder->value();
@@ -277,7 +277,7 @@ QgsAppGpsSettingsMenu::QgsAppGpsSettingsMenu( QWidget *parent )
 
   QAction *settingsAction = new QAction( tr( "GPS Settings…" ), this );
   settingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-  connect( settingsAction, &QAction::triggered, this, [=] {
+  connect( settingsAction, &QAction::triggered, this, [] {
     QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
   } );
 
@@ -344,7 +344,7 @@ void QgsAppGpsSettingsMenu::timeStampMenuAboutToShow()
       foundPreviousField = true;
       fieldAction->setChecked( currentTimeStampField == fieldName );
     }
-    connect( fieldAction, &QAction::triggered, this, [=]() {
+    connect( fieldAction, &QAction::triggered, this, [fieldName]() {
       if ( QgsProject::instance()->gpsSettings()->destinationTimeStampField() != fieldName )
       {
         QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( QgsProject::instance()->gpsSettings()->destinationLayer(), fieldName );

@@ -40,5 +40,4 @@ PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsServerAccessControlWFSTransactional
 ProcessingQgisAlgorithmsTestPt4

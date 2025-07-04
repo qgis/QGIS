@@ -21,7 +21,7 @@
 #include "qgsstaccontroller.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 #include "qgsstacconnection.h"
 #include "qgsstacconnectiondialog.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -297,10 +297,16 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     for ( auto &l : cat->links() )
     {
       // collections endpoint should have a "data" relation according to spec but some servers don't
-      // so let's be less strict and only check the href
-      if ( l.href().endsWith( "/collections" ) )
+      // so let's be less strict and only check the href and optionally the media type
+      if ( QUrl( l.href() ).path().endsWith( "/collections" ) &&     // allow query parameters in the url
+           ( l.mediaType().isEmpty() ||                              // media type is optional
+             l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
+             l.mediaType() == QLatin1String( "application/geo+json" ) ) )
         collectionsUrl = l.href();
-      else if ( l.relation() == "search" )
+      else if ( l.relation() == "search" &&                               // relation needs to be "search" according to spec
+                ( l.mediaType().isEmpty() ||                              // media type is optional
+                  l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
+                  l.mediaType() == QLatin1String( "application/geo+json" ) ) )
         mSearchUrl = l.href();
 
       if ( !collectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
@@ -323,7 +329,7 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
 void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished collections request %1" ).arg( requestId ), 2 );
-  std::unique_ptr<QgsStacCollections> cols( mStac->takeCollections( requestId ) );
+  std::unique_ptr<QgsStacCollectionList> cols( mStac->takeCollections( requestId ) );
 
   if ( !cols )
   {
@@ -385,7 +391,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
     // Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
 #ifndef __clang_analyzer__
     // Let the results appear, then fetch more if there's no scrollbar
-    QTimer::singleShot( 100, this, [=] {
+    QTimer::singleShot( 100, this, [this] {
       if ( isVisible() && !mItemsView->verticalScrollBar()->isVisible() )
       {
         fetchNextResultPage();

@@ -44,7 +44,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mFixedRangeStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
   mFixedRangeEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
 
-  auto handleOperation = [=]( Qgis::PlaybackOperation operation ) {
+  auto handleOperation = [this]( Qgis::PlaybackOperation operation ) {
     switch ( operation )
     {
       case Qgis::PlaybackOperation::SkipToStart:
@@ -79,13 +79,13 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mAnimationController, &QgsPlaybackControllerWidget::operationTriggered, this, handleOperation );
   connect( mMovieController, &QgsPlaybackControllerWidget::operationTriggered, this, handleOperation );
 
-  connect( mAnimationLoopingCheckBox, &QCheckBox::toggled, this, [=]( bool state ) { mNavigationObject->setLooping( state ); mMovieLoopingCheckBox->setChecked( state ); } );
-  connect( mMovieLoopingCheckBox, &QCheckBox::toggled, this, [=]( bool state ) { mNavigationObject->setLooping( state );  mAnimationLoopingCheckBox->setChecked( state ); } );
+  connect( mAnimationLoopingCheckBox, &QCheckBox::toggled, this, [this]( bool state ) { mNavigationObject->setLooping( state ); mMovieLoopingCheckBox->setChecked( state ); } );
+  connect( mMovieLoopingCheckBox, &QCheckBox::toggled, this, [this]( bool state ) { mNavigationObject->setLooping( state );  mAnimationLoopingCheckBox->setChecked( state ); } );
 
   setWidgetStateFromNavigationMode( mNavigationObject->navigationMode() );
   connect( mNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsTemporalControllerWidget::setWidgetStateFromNavigationMode );
   connect( mNavigationObject, &QgsTemporalNavigationObject::temporalExtentsChanged, this, &QgsTemporalControllerWidget::setDates );
-  connect( mNavigationObject, &QgsTemporalNavigationObject::temporalFrameDurationChanged, this, [=]( const QgsInterval &timeStep ) {
+  connect( mNavigationObject, &QgsTemporalNavigationObject::temporalFrameDurationChanged, this, [this]( const QgsInterval &timeStep ) {
     if ( mBlockFrameDurationUpdates )
       return;
 
@@ -98,7 +98,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mNavigationAnimated, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationAnimated_clicked );
   connect( mNavigationMovie, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationMovie_clicked );
 
-  connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [=]( Qgis::AnimationState state ) {
+  connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [this]( Qgis::AnimationState state ) {
     mAnimationController->setState( state );
     mMovieController->setState( state );
   } );
@@ -112,7 +112,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mAnimationSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
   connect( mMovieSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
 
-  connect( mTotalFramesSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int frames ) {
+  connect( mTotalFramesSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int frames ) {
     mNavigationObject->setTotalMovieFrames( frames );
   } );
 
@@ -238,7 +238,7 @@ void QgsTemporalControllerWidget::aboutToShowRangeMenu()
     if ( range.begin().isValid() && range.end().isValid() )
     {
       QAction *action = new QAction( icon, text, mRangeLayersSubMenu.get() );
-      connect( action, &QAction::triggered, this, [=] {
+      connect( action, &QAction::triggered, this, [this, range] {
         setDates( range );
         saveRangeToProject();
       } );
@@ -523,13 +523,13 @@ void QgsTemporalControllerWidget::settings_clicked()
   settingsWidget->setFrameRateValue( mNavigationObject->framesPerSecond() );
   settingsWidget->setIsTemporalRangeCumulative( mNavigationObject->temporalRangeCumulative() );
 
-  connect( settingsWidget, &QgsTemporalMapSettingsWidget::frameRateChanged, this, [=]( double rate ) {
+  connect( settingsWidget, &QgsTemporalMapSettingsWidget::frameRateChanged, this, [this]( double rate ) {
     // save new settings into project
     QgsProject::instance()->timeSettings()->setFramesPerSecond( rate );
     mNavigationObject->setFramesPerSecond( rate );
   } );
 
-  connect( settingsWidget, &QgsTemporalMapSettingsWidget::temporalRangeCumulativeChanged, this, [=]( bool state ) {
+  connect( settingsWidget, &QgsTemporalMapSettingsWidget::temporalRangeCumulativeChanged, this, [this]( bool state ) {
     // save new settings into project
     QgsProject::instance()->timeSettings()->setIsTemporalRangeCumulative( state );
     mNavigationObject->setTemporalRangeCumulative( state );

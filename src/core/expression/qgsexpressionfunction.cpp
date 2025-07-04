@@ -96,6 +96,7 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   {
     int arg = 0;
     const QList< QgsExpressionNode * > argList = args->list();
+    argValues.reserve( argList.size() );
     for ( QgsExpressionNode *n : argList )
     {
       QVariant v;
@@ -8008,7 +8009,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   // Helper functions for geometry tests
 
   // Test function for linestring geometries, returns TRUE if test passes
-  auto testLinestring = [ = ]( const QgsGeometry intersection, double & overlapValue ) -> bool
+  auto testLinestring = [minOverlap, requireMeasures]( const QgsGeometry intersection, double & overlapValue ) -> bool
   {
     bool testResult { false };
     // For return measures:
@@ -8045,7 +8046,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   };
 
   // Test function for polygon geometries, returns TRUE if test passes
-  auto testPolygon = [ = ]( const QgsGeometry intersection, double & radiusValue, double & overlapValue ) -> bool
+  auto testPolygon = [minOverlap, requireMeasures, minInscribedCircleRadius]( const QgsGeometry intersection, double & radiusValue, double & overlapValue ) -> bool
   {
     // overlap and inscribed circle tests must be checked both (if the values are != -1)
     bool testResult { false };

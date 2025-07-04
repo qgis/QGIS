@@ -1,0 +1,167 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacitem.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsStacItem : QgsStacObject
+{
+%Docstring(signature="appended")
+Class for storing a STAC Item's data.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacitem.h"
+%End
+  public:
+
+    QgsStacItem( const QString &id,
+                 const QString &version,
+                 const QgsGeometry &geometry,
+                 const QVariantMap &properties,
+                 const QVector< QgsStacLink > &links,
+                 const QMap< QString, QgsStacAsset > &assets,
+                 const QgsBox3D &bbox );
+%Docstring
+Constructs a valid QgsStacItem
+
+:param id: Provider identifier. The ID should be unique within the
+           Collection that contains the Item.
+:param version: The STAC version the Item implements.
+:param geometry: The full footprint of the asset represented by this
+                 item, in WGS84
+:param properties: A dictionary of additional metadata for the Item.
+:param links: List of link objects to resources and related URLs.
+:param assets: Dictionary of asset objects that can be downloaded, each
+               with a unique key.
+:param bbox: Bounding Box of the asset represented by this Item.
+             Required if geometry is not null
+%End
+
+    virtual Qgis::StacObjectType type() const;
+
+    virtual QString toHtml() const;
+
+
+    QgsGeometry geometry() const;
+%Docstring
+Returns the full footprint of the asset represented by this item, in
+WGS84
+%End
+
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+Sets the full footprint of the asset represented by this item, in WGS84
+%End
+
+    QgsBox3D boundingBox() const;
+%Docstring
+Returns the STAC item's spatial extent in WGS84 coordinates
+%End
+
+    void setBoundingBox( const QgsBox3D &bbox );
+%Docstring
+Sets the STAC item's spatial extent in WGS84 coordinates to ``bbox``
+%End
+
+    QVariantMap properties() const;
+%Docstring
+Returns a dictionary of additional metadata for the Item.
+%End
+
+    void setProperties( const QVariantMap &properties );
+%Docstring
+Sets the item's additional metadata to ``properties``
+%End
+
+    QMap< QString, QgsStacAsset > assets() const;
+%Docstring
+Returns a dictionary of asset objects that can be downloaded, each with
+a unique key.
+%End
+
+    void setAssets( const QMap< QString, QgsStacAsset > &assets );
+%Docstring
+Sets the ``asset`` objects that can be downloaded, each with a unique
+key.
+%End
+
+    QString collection() const;
+%Docstring
+Returns the id of the STAC Collection this Item references to
+%End
+
+    void setCollection( const QString &collection );
+%Docstring
+Sets the id of the STAC Collection this Item references to
+%End
+
+    QDateTime dateTime() const;
+%Docstring
+Returns the single nominal date/time for the item, stored in the item's
+``properties``(). If a temporal interval is more appropriate for this
+item then a null QDateTime is returned and the interval may be retrieved
+with :py:func:`~QgsStacItem.dateTimeRange`
+
+.. seealso:: :py:func:`hasDateTimeRange`
+
+.. seealso:: :py:func:`dateTimeRange`
+%End
+
+    bool hasDateTimeRange() const;
+%Docstring
+Returns ``True`` if a temporal interval is available for this item,
+``False`` if a single QDateTime is available.
+
+.. seealso:: :py:func:`hasDateTimeRange`
+
+.. seealso:: :py:func:`dateTime`
+%End
+
+    QgsDateTimeRange dateTimeRange() const;
+%Docstring
+Returns the temporal interval stored in the item's ``properties``()
+
+.. seealso:: :py:func:`hasDateTimeRange`
+
+.. seealso:: :py:func:`dateTime`
+%End
+
+    QString title() const;
+%Docstring
+Returns an optional human readable title describing the Item.
+
+.. versionadded:: 3.42
+%End
+
+    QString description() const;
+%Docstring
+Returns a Detailed multi-line description to fully explain the Item.
+CommonMark 0.29 syntax may be used for rich text representation.
+
+.. versionadded:: 3.42
+%End
+
+    QgsMimeDataUtils::UriList uris() const;
+%Docstring
+Returns a list of uris of all assets that have a cloud optimized format
+like COG or COPC
+
+.. versionadded:: 3.42
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacitem.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

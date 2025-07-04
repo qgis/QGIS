@@ -51,6 +51,7 @@
 %Include auto_generated/qgsexpressioncontextscopegenerator.sip
 %Include auto_generated/qgsexpressionfieldbuffer.sip
 %Include auto_generated/qgsfeature.sip
+%Include auto_generated/qgsfeatureexpressionfilterprovider.sip
 %Include auto_generated/qgsfeaturepickermodel.sip
 %Include auto_generated/qgsfeaturepickermodelbase.sip
 %Include auto_generated/qgsfeaturefiltermodel.sip
@@ -77,6 +78,7 @@
 %Include auto_generated/qgsgeometryvalidator.sip
 %Include auto_generated/qgsgml.sip
 %Include auto_generated/qgsgmlschema.sip
+%Include auto_generated/qgsgroupedfeaturefilterprovider.sip
 %Include auto_generated/qgsgrouplayer.sip
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
@@ -500,6 +502,7 @@
 %Include auto_generated/mesh/qgsmeshtimesettings.sip
 %Include auto_generated/mesh/qgsmeshtracerenderer.sip
 %Include auto_generated/mesh/qgsmeshcalculator.sip
+%Include auto_generated/mesh/qgstopologicalmesh.sip
 %Include auto_generated/mesh/qgsmeshadvancedediting.sip
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
 %Include auto_generated/mesh/qgsmeshlayerlabeling.sip
@@ -691,6 +694,19 @@
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgssteppedlinescalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip
+%Include auto_generated/stac/qgsstacasset.sip
+%Include auto_generated/stac/qgsstaccatalog.sip
+%Include auto_generated/stac/qgsstaccollection.sip
+%Include auto_generated/stac/qgsstaccollectionlist.sip
+%Include auto_generated/stac/qgsstacconnection.sip
+%Include auto_generated/stac/qgsstaccontroller.sip
+%Include auto_generated/stac/qgsstacextent.sip
+%Include auto_generated/stac/qgsstacitemcollection.sip
+%Include auto_generated/stac/qgsstacitem.sip
+%Include auto_generated/stac/qgsstaclink.sip
+%Include auto_generated/stac/qgsstacobject.sip
+%Include auto_generated/stac/qgsstacparser.sip
+%Include auto_generated/stac/qgsstacprovider.sip
 %Include auto_generated/symbology/qgs25drenderer.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip

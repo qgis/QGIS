@@ -825,12 +825,24 @@ Deletes a style from the database
          - msgError: a descriptive error message if any occurs
 %End
 
-    virtual void saveStyleToDatabase( const QString &name, const QString &description,
-                                      bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError /Out/,
-                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    enum class SaveStyleResult
+    {
+      Success,
+      QmlGenerationFailed,
+      SldGenerationFailed,
+      DatabaseWriteFailed,
+    };
+
+    typedef QFlags<QgsMapLayer::SaveStyleResult> SaveStyleResults;
+
+
+ virtual void saveStyleToDatabase( const QString &name, const QString &description,
+        bool useAsDefault, const QString &uiFileContent,
+        QString &msgError /Out/,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) /Deprecated="Since 4.0. Use saveStyleToDatabaseV2() instead."/;
 %Docstring
-Saves named and sld style of the layer to the style table in the db.
+Saves QML and SLD representations of the layer's style to a table in the
+database.
 
 :param name: Style name
 :param description: A description of the style
@@ -847,9 +859,33 @@ Saves named and sld style of the layer to the style table in the db.
    Use :py:func:`QgsProviderRegistry.styleExists()` to test in advance if a style already exists and handle this appropriately
    in your client code.
 
-:return: a descriptive error message if any occurs
+:return: - msgError: a descriptive error message if any occurs
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsMapLayer.saveStyleToDatabaseV2` instead.
 %End
 
+    QgsMapLayer::SaveStyleResults saveStyleToDatabaseV2( const QString &name, const QString &description,
+        bool useAsDefault, const QString &uiFileContent,
+        QString &msgError /Out/,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+%Docstring
+Saves QML and SLD representations of the layer's style to a table in the
+database.
+
+:param name: Style name
+:param description: A description of the style
+:param useAsDefault: Set to ``True`` if style should be used as the
+                     default style for the layer
+:param uiFileContent: 
+:param categories: the style categories to be saved.
+
+:return: - flags representing whether QML or SLD storing was successful
+         - msgError: a descriptive error message if any occurs
+
+.. versionadded:: 4.0
+%End
 
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
@@ -1894,6 +1930,15 @@ Returns the layer's elevation properties. This may be ``None``,
 depending on the layer type.
 
 .. versionadded:: 3.18
+%End
+
+
+    virtual QgsAbstractProfileSource *profileSource();
+%Docstring
+Returns the layer's profile source if it has profile capabilities. This
+may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.44
 %End
 
     QString legendPlaceholderImage() const;

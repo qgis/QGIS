@@ -152,19 +152,19 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
 {
   QList<QAction *> res;
   QAction *openUrlAction = new QAction( QObject::tr( "Open URL" ), parent );
-  QObject::connect( openUrlAction, &QAction::triggered, openUrlAction, [=] {
+  QObject::connect( openUrlAction, &QAction::triggered, openUrlAction, [this] {
     QDesktopServices::openUrl( mUrl );
   } );
   res << openUrlAction;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy URL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, openUrlAction, [=] {
+  QObject::connect( copyUrlAction, &QAction::triggered, openUrlAction, [this] {
     QApplication::clipboard()->setText( mUrl.url() );
   } );
   res << copyUrlAction;
 
   QAction *copyAsCurlAction = new QAction( QObject::tr( "Copy As cURL" ), parent );
-  QObject::connect( copyAsCurlAction, &QAction::triggered, copyAsCurlAction, [=] {
+  QObject::connect( copyAsCurlAction, &QAction::triggered, copyAsCurlAction, [this] {
     QString curlHeaders;
     for ( const QPair<QString, QString> &header : std::as_const( mHeaders ) )
       curlHeaders += QStringLiteral( "-H '%1: %2' " ).arg( header.first, header.second );
@@ -211,7 +211,7 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
   res << copyAsCurlAction;
 
   QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
-  QObject::connect( copyJsonAction, &QAction::triggered, openUrlAction, [=] {
+  QObject::connect( copyJsonAction, &QAction::triggered, openUrlAction, [this] {
     const QVariant value = toVariant();
     const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
     QApplication::clipboard()->setText( json );

@@ -115,6 +115,11 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
+ifneq (,$(filter $(DISTRIBUTION),sid trixie plucky))
+	CMAKE_OPTS += \
+		-DWITH_QTWEBKIT=FALSE
+endif
+
 ifneq (,$(findstring $(DISTRIBUTION),"trixie sid kinetic lunar mantic noble oracular plucky"))
 	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif

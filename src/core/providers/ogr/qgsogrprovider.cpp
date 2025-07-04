@@ -830,6 +830,20 @@ void QgsOgrProvider::loadFields()
     QMutexLocker locker( mutex );
     mOGRGeomType = getOgrGeomType( mGDALDriverName, ogrLayer );
   }
+
+  mCrs = QgsCoordinateReferenceSystem();
+  if ( mOGRGeomType != wkbNone )
+  {
+    if ( OGRSpatialReferenceH spatialRefSys = mOgrLayer->GetSpatialRef() )
+    {
+      mCrs = QgsOgrUtils::OGRSpatialReferenceToCrs( spatialRefSys );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "no spatial reference found" ), 2 );
+    }
+  }
+
   QgsOgrFeatureDefn &fdef = mOgrLayer->GetLayerDefn();
 
   // Expose the OGR FID if it comes from a "real" column (typically GPKG)
@@ -2952,7 +2966,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
       int f = it2.key();
-      if ( it2->userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( it2.value() ) )
         continue;
 
       if ( mFirstFieldIsFid )
@@ -3864,20 +3878,10 @@ QString  QgsOgrProvider::description() const
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
-  QgsCoordinateReferenceSystem srs;
   if ( !mValid || ( mOGRGeomType == wkbNone ) )
-    return srs;
+    return QgsCoordinateReferenceSystem();
 
-  if ( OGRSpatialReferenceH spatialRefSys = mOgrLayer->GetSpatialRef() )
-  {
-    srs = QgsOgrUtils::OGRSpatialReferenceToCrs( spatialRefSys );
-  }
-  else
-  {
-    QgsDebugMsgLevel( QStringLiteral( "no spatial reference found" ), 2 );
-  }
-
-  return srs;
+  return mCrs;
 }
 
 QString QgsOgrProvider::dataComment() const

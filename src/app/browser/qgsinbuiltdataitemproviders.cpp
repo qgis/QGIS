@@ -93,7 +93,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QgsSettings settings;
 
   QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-  connect( actionRefresh, &QAction::triggered, this, [=] { directoryItem->refresh(); } );
+  connect( actionRefresh, &QAction::triggered, this, [directoryItem] { directoryItem->refresh(); } );
   menu->addAction( actionRefresh );
 
   menu->addSeparator();
@@ -101,7 +101,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QMenu *newMenu = new QMenu( tr( "New" ), menu );
 
   QAction *createFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewFolder.svg" ) ), tr( "Directory…" ), menu );
-  connect( createFolder, &QAction::triggered, this, [=] {
+  connect( createFolder, &QAction::triggered, this, [directoryItem, context] {
     bool ok = false;
 
     const QString name = QInputDialog::getText( QgisApp::instance(), tr( "Create Directory" ), tr( "Directory name" ), QLineEdit::Normal, QString(), &ok );
@@ -126,7 +126,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QAction *createGpkg = new QAction( tr( "GeoPackage…" ), newMenu );
   createGpkg->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGeoPackageLayer.svg" ) ) );
-  connect( createGpkg, &QAction::triggered, this, [=] {
+  connect( createGpkg, &QAction::triggered, this, [directoryItem, context] {
     QDir dir( directoryItem->dirPath() );
     QString newName = tr( "New GeoPackage.gpkg" );
     int i = 1;
@@ -175,7 +175,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QAction *createShp = new QAction( tr( "ShapeFile…" ), newMenu );
   createShp->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewVectorLayer.svg" ) ) );
-  connect( createShp, &QAction::triggered, this, [=] {
+  connect( createShp, &QAction::triggered, this, [directoryItem, item, context] {
     QString enc;
     QDir dir( directoryItem->dirPath() );
     QString error;
@@ -195,7 +195,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   QAction *createFgdb = new QAction( tr( "ESRI FileGeodatabase…" ), newMenu );
   createFgdb->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewFileGeodatabase.svg" ) ) );
-  connect( createFgdb, &QAction::triggered, this, [=] {
+  connect( createFgdb, &QAction::triggered, this, [directoryItem, context] {
     QDir dir( directoryItem->dirPath() );
     QString newName = tr( "New File Geodatabase.gdb" );
     int i = 1;
@@ -254,7 +254,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QAction *addAsFavorite = new QAction( tr( "Add as a Favorite" ), menu );
     addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) ) );
     menu->addAction( addAsFavorite );
-    connect( addAsFavorite, &QAction::triggered, this, [=] {
+    connect( addAsFavorite, &QAction::triggered, this, [this, directoryItem] {
       addFavorite( directoryItem );
     } );
   }
@@ -263,13 +263,13 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     if ( QgsFavoriteItem *favoriteItem = qobject_cast<QgsFavoriteItem *>( item ) )
     {
       QAction *actionRename = new QAction( tr( "Rename Favorite…" ), menu );
-      connect( actionRename, &QAction::triggered, this, [=] {
+      connect( actionRename, &QAction::triggered, this, [this, favoriteItem] {
         renameFavorite( favoriteItem );
       } );
       menu->addAction( actionRename );
 
       QAction *removeFavoriteAction = new QAction( tr( "Remove Favorite" ), menu );
-      connect( removeFavoriteAction, &QAction::triggered, this, [=] {
+      connect( removeFavoriteAction, &QAction::triggered, this, [this, favoriteItem] {
         removeFavorite( favoriteItem );
       } );
       menu->addAction( removeFavoriteAction );
@@ -277,7 +277,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     }
   }
   QAction *hideAction = new QAction( tr( "Hide from Browser" ), menu );
-  connect( hideAction, &QAction::triggered, this, [=] {
+  connect( hideAction, &QAction::triggered, this, [this, directoryItem] {
     hideDirectory( directoryItem );
   } );
   menu->addAction( hideAction );
@@ -289,7 +289,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   for ( const QString &path : hiddenPathList )
   {
     QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
-    connect( action, &QAction::triggered, this, [=] {
+    connect( action, &QAction::triggered, this, [path] {
       QgsSettings s;
       QStringList pathsList = s.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
       pathsList.removeAll( path );
@@ -321,7 +321,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     hiddenMenu->addSeparator();
 
     QAction *moreAction = new QAction( tr( "Show More…" ), hiddenMenu );
-    connect( moreAction, &QAction::triggered, this, [=] {
+    connect( moreAction, &QAction::triggered, this, [] {
       QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mOptionsPageDataSources" ) );
     } );
     hiddenMenu->addAction( moreAction );
@@ -337,14 +337,14 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     const QPixmap icon = QgsColorButton::createMenuIcon( directoryItem->iconColor(), true );
     actionSetIconColor->setIcon( icon );
   }
-  connect( actionSetIconColor, &QAction::triggered, this, [=] {
+  connect( actionSetIconColor, &QAction::triggered, this, [this, directoryItem] {
     changeDirectoryColor( directoryItem );
   } );
   menu->addAction( actionSetIconColor );
   if ( directoryItem->iconColor().isValid() )
   {
     QAction *actionClearIconColor = new QAction( tr( "Clear Custom Color" ), menu );
-    connect( actionClearIconColor, &QAction::triggered, this, [=] {
+    connect( actionClearIconColor, &QAction::triggered, this, [this, directoryItem] {
       clearDirectoryColor( directoryItem );
     } );
     menu->addAction( actionClearIconColor );
@@ -353,7 +353,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QMenu *scanningMenu = new QMenu( tr( "Scanning" ), menu );
 
   QAction *monitorAction = new QAction( tr( "Monitor for Changes" ), scanningMenu );
-  connect( monitorAction, &QAction::triggered, this, [=] {
+  connect( monitorAction, &QAction::triggered, this, [this, directoryItem] {
     toggleMonitor( directoryItem );
   } );
   monitorAction->setCheckable( true );
@@ -361,7 +361,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   scanningMenu->addAction( monitorAction );
 
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), scanningMenu );
-  connect( fastScanAction, &QAction::triggered, this, [=] {
+  connect( fastScanAction, &QAction::triggered, this, [this, directoryItem] {
     toggleFastScan( directoryItem );
   } );
   fastScanAction->setCheckable( true );
@@ -373,7 +373,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   menu->addSeparator();
 
   QAction *openFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ), tr( "Open Directory…" ), menu );
-  connect( openFolder, &QAction::triggered, this, [=] {
+  connect( openFolder, &QAction::triggered, this, [directoryItem] {
     QDesktopServices::openUrl( QUrl::fromLocalFile( directoryItem->dirPath() ) );
   } );
   menu->addAction( openFolder );
@@ -381,7 +381,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
   {
     QAction *openTerminal = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ), tr( "Open in Terminal…" ), menu );
-    connect( openTerminal, &QAction::triggered, this, [=] {
+    connect( openTerminal, &QAction::triggered, this, [directoryItem] {
       QgsGui::nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() );
     } );
     menu->addAction( openTerminal );
@@ -389,7 +389,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   }
 
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
-  connect( propertiesAction, &QAction::triggered, this, [=] {
+  connect( propertiesAction, &QAction::triggered, this, [this, directoryItem, context] {
     showProperties( directoryItem, context );
   } );
   menu->addAction( propertiesAction );
@@ -513,7 +513,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     if ( !sourceSelectProviders.isEmpty() && sourceSelectProviders.first()->capabilities().testFlag( QgsSourceSelectProvider::Capability::ConfigureFromUri ) )
     {
       openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
-      connect( openDataSourceManagerAction, &QAction::triggered, this, [=] {
+      connect( openDataSourceManagerAction, &QAction::triggered, this, [layerItem] {
         QString pageName { layerItem->providerKey() };
         // GPKG special handling
         if ( qobject_cast<QgsGeoPackageVectorLayerItem *>( layerItem ) )
@@ -537,7 +537,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     {
       const QgsProviderSublayerDetails &sublayer { sublayers.first() };
       openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
-      connect( openDataSourceManagerAction, &QAction::triggered, this, [=] {
+      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer, layerItem] {
         QString pageName { sublayer.providerKey() };
         // GPKG special handling
         if ( sublayer.driverName() == QLatin1String( "GeoPackage" ) )
@@ -587,7 +587,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         if ( fi.suffix().compare( ext, Qt::CaseInsensitive ) == 0 )
         {
           QAction *viewAction = new QAction( tr( "Open %1 Externally…" ).arg( name ), menu );
-          connect( viewAction, &QAction::triggered, this, [=] {
+          connect( viewAction, &QAction::triggered, this, [filename] {
             QDesktopServices::openUrl( QUrl::fromLocalFile( filename ) );
           } );
 
@@ -646,7 +646,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       {
         const QString renameText = tr( "Rename “%1”…" ).arg( fi.fileName() );
         QAction *renameAction = new QAction( renameText, menu );
-        connect( renameAction, &QAction::triggered, this, [=] {
+        connect( renameAction, &QAction::triggered, this, [this, selectedFiles, context, selectedParents, menu] {
           const QString oldPath = selectedFiles.value( 0 );
           const QStringList existingNames = QFileInfo( oldPath ).dir().entryList();
 
@@ -670,7 +670,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       const QString deleteText = selectedFiles.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() )
                                                             : tr( "Delete Selected Files…" );
       QAction *deleteAction = new QAction( deleteText, menu );
-      connect( deleteAction, &QAction::triggered, this, [=] {
+      connect( deleteAction, &QAction::triggered, this, [selectedFiles, selectedParents, context] {
         // Check if the files correspond to paths in the project
         QList<QgsMapLayer *> layersList;
         for ( const QString &path : std::as_const( selectedFiles ) )
@@ -810,12 +810,12 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
           menu->addSeparator();
 
         QAction *showInFilesAction = menu->addAction( tr( "Show in Files" ) );
-        connect( showInFilesAction, &QAction::triggered, this, [=] {
+        connect( showInFilesAction, &QAction::triggered, this, [item] {
           QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( item->path() );
         } );
 
         QAction *filePropertiesAction = menu->addAction( tr( "File Properties…" ) );
-        connect( filePropertiesAction, &QAction::triggered, this, [=] {
+        connect( filePropertiesAction, &QAction::triggered, this, [item] {
           QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
         } );
       }
@@ -939,7 +939,7 @@ void QgsProjectHomeItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     menu->insertSeparator( menu->actions().at( 0 ) );
 
   QAction *setHome = new QAction( tr( "Set Project Home…" ), menu );
-  connect( setHome, &QAction::triggered, this, [=] {
+  connect( setHome, &QAction::triggered, this, [] {
     QString oldHome = QgsProject::instance()->homePath();
     QString newPath = QFileDialog::getExistingDirectory( QgisApp::instance(), tr( "Select Project Home Directory" ), oldHome );
     if ( !newPath.isEmpty() )
@@ -970,7 +970,7 @@ void QgsFavoritesItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     return;
 
   QAction *addAction = new QAction( tr( "Add a Directory…" ), menu );
-  connect( addAction, &QAction::triggered, this, [=] {
+  connect( addAction, &QAction::triggered, this, [] {
     QString directory = QFileDialog::getExistingDirectory( QgisApp::instance(), tr( "Add Directory to Favorites" ) );
     if ( !directory.isEmpty() )
     {
@@ -1065,7 +1065,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer “%1”…" ).arg( layerItem->name() )
                                                                        : tr( "Delete Selected Layers…" );
     QAction *deleteAction = new QAction( deleteText, menu );
-    connect( deleteAction, &QAction::triggered, this, [=] {
+    connect( deleteAction, &QAction::triggered, this, [this, selectedDeletableItemPaths, context] {
       deleteLayers( selectedDeletableItemPaths, context );
     } );
 
@@ -1095,7 +1095,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" )
                                                      : tr( "Add Selected Layers to Project" );
   QAction *addAction = new QAction( addText, menu );
-  connect( addAction, &QAction::triggered, this, [=] {
+  connect( addAction, &QAction::triggered, this, [this, selectedItems] {
     addLayersFromItems( selectedItems );
   } );
   menu->addAction( addAction );
@@ -1117,7 +1117,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   }
 
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
-  connect( propertiesAction, &QAction::triggered, this, [=] {
+  connect( propertiesAction, &QAction::triggered, this, [this, layerItem, context] {
     showPropertiesForItem( layerItem, context );
   } );
   menu->addAction( propertiesAction );
@@ -1860,10 +1860,11 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       } );
     }
 
-    if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
+    // Move to schema should not be available for connections and schemata
+    const bool isTable = qobject_cast<QgsLayerItem *>( item );
+    if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
       QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
-      menu->addAction( moveToSchemaAction );
 
       // this action should sit in the Manage menu. If one does not exist, create it now
       bool foundExistingManageMenu = false;
@@ -2076,13 +2077,13 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
           mainTask->addSubTask( exportTask );
           hasSubTasks = true;
           // when export is successful:
-          connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [=]() {
+          connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [item, context]() {
             notify( tr( "Import to database" ), tr( "Import was successful." ), context, Qgis::MessageLevel::Success );
             item->refresh();
           } );
 
           // when an error occurs:
-          connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+          connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, []( Qgis::VectorExportResult error, const QString &errorMessage ) {
             if ( error != Qgis::VectorExportResult::UserCanceled )
             {
               QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
@@ -2296,7 +2297,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         {
           QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
           createFieldDomainMenu->addAction( rangeDomainAction );
-          connect( rangeDomainAction, &QAction::triggered, this, [=] {
+          connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
             createDomain( Qgis::FieldDomainType::Range );
           } );
         }
@@ -2305,7 +2306,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         {
           QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
           createFieldDomainMenu->addAction( codedDomainAction );
-          connect( codedDomainAction, &QAction::triggered, this, [=] {
+          connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
             createDomain( Qgis::FieldDomainType::Coded );
           } );
         }
@@ -2314,7 +2315,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         {
           QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
           createFieldDomainMenu->addAction( globDomainAction );
-          connect( globDomainAction, &QAction::triggered, this, [=] {
+          connect( globDomainAction, &QAction::triggered, this, [createDomain] {
             createDomain( Qgis::FieldDomainType::Glob );
           } );
         }
@@ -2579,7 +2580,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( editRelationshipAction, &QAction::triggered, this, [=] {
+          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer, relation, connectionUri, context] {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
             QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );

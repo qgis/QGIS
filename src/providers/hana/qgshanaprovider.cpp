@@ -750,7 +750,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QgsVariantUtils::createNullVariant( QMetaType::Type::LongLong );
 
         // no default value clause handling supported in this provider, best we can do for now is set to NULL
-        if ( attrValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        if ( QgsVariantUtils::isUnsetAttributeValue( attrValue ) )
           attrValue = QVariant();
 
         if ( pkFields[i] )
@@ -1180,7 +1180,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         if ( field.name.isEmpty() || field.isAutoIncrement )
           continue;
 
-        if ( it2->userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        if ( QgsVariantUtils::isUnsetAttributeValue( it2.value() ) )
           continue;
 
         pkChanged = pkChanged || mPrimaryKeyAttrs.contains( fieldIndex );
@@ -1211,7 +1211,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
           continue;
 
         const QVariant attrValue = *attrIt;
-        if ( attrValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        if ( QgsVariantUtils::isUnsetAttributeValue( attrValue ) )
           continue;
 
         setStatementValue( stmtUpdate, paramIndex, field, attrValue );

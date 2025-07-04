@@ -287,7 +287,7 @@ int QgsAbstractProcessingParameterWidgetWrapper::stretch() const
 
 QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
 {
-  QgsExpressionContext context = QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
+  QgsExpressionContext context = QgsProcessingWidgetWrapperUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
   if ( mParameterDefinition && !mParameterDefinition->additionalExpressionContextVariables().isEmpty() )
   {
     auto paramScope = std::make_unique<QgsExpressionContextScope>();
@@ -420,11 +420,11 @@ Qgis::ProcessingModelChildParameterSource QgsProcessingParameterWidgetFactoryInt
 }
 
 //
-// QgsProcessingGuiUtils
+// QgsProcessingWidgetWrapperUtils
 //
 
 ///@cond PRIVATE
-QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingAlgorithm *algorithm, const QgsVectorLayer *linkedLayer )
+QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingAlgorithm *algorithm, const QgsVectorLayer *linkedLayer )
 {
   // Get a processing context to start with
   QgsProcessingContext *context = nullptr;

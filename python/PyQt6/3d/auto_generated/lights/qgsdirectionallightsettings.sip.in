@@ -62,7 +62,7 @@ Returns intensity of the light
 Sets intensity of the light
 %End
 
-    bool operator==( const QgsDirectionalLightSettings &other );
+    bool operator==( const QgsDirectionalLightSettings &other ) const;
 
 };
 

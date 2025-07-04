@@ -128,7 +128,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   restoreSectionWidths();
 
-  connect( mContextMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mContextMenu, &QMenu::aboutToShow, this, [this] {
     std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
     mPasteSymbolAction->setEnabled( static_cast<bool>( tempSymbol ) );
   } );
@@ -454,7 +454,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=]() {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
       setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
     } );
     panel->openPanel( widget );
@@ -766,8 +766,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mFilterRadio, &QRadioButton::toggled, this, [=]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [=]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) ); } );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) ); } );
 }
 
 #include "qgsvscrollarea.h"

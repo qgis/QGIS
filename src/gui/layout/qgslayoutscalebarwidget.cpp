@@ -56,7 +56,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMinWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
-  connect( mScaleMethodWidget, &QgsScaleMethodWidget::methodChanged, this, [=] {
+  connect( mScaleMethodWidget, &QgsScaleMethodWidget::methodChanged, this, [this] {
     if ( !mScalebar )
     {
       return;
@@ -486,7 +486,7 @@ void QgsLayoutScaleBarWidget::changeNumberFormat()
   QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
   widget->setPanelTitle( tr( "Number Format" ) );
   widget->setFormat( mScalebar->numericFormat() );
-  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
     mScalebar->beginCommand( tr( "Set Scalebar Number Format" ) );
     disconnectUpdateSignal();
     mScalebar->setNumericFormat( widget->format() );

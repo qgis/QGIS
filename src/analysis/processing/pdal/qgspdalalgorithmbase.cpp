@@ -189,10 +189,10 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   QString buffer;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba.trimmed() );
   } );
-  wrenchProcess.setStdOutHandler( [=, &progress, &buffer]( const QByteArray &ba ) {
+  wrenchProcess.setStdOutHandler( [feedback, &progress, &buffer]( const QByteArray &ba ) {
     QString data( ba );
 
     QRegularExpression re( "\\.*(\\d+)?\\.*$" );

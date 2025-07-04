@@ -907,7 +907,7 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
   QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
-  auto _chk = [=]( const QString &formula, const std::vector<float> &values, bool useOpenCL ) {
+  auto _chk = [extent, crs, entries]( const QString &formula, const std::vector<float> &values, bool useOpenCL ) {
     qDebug() << formula;
 
 #ifdef HAVE_OPENCL

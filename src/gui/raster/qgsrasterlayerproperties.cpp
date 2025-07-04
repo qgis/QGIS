@@ -213,7 +213,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   connect( mRasterLayer, &QgsRasterLayer::rendererChanged, this, &QgsRasterLayerProperties::updateRasterAttributeTableOptionsPage );
 
-  connect( mCreateRasterAttributeTableButton, &QPushButton::clicked, this, [=] {
+  connect( mCreateRasterAttributeTableButton, &QPushButton::clicked, this, [this] {
     if ( mRasterLayer->canCreateRasterAttributeTable() )
     {
       // Create the attribute table from the renderer
@@ -226,7 +226,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     }
   } );
 
-  connect( mLoadRasterAttributeTableFromFileButton, &QPushButton::clicked, this, [=] {
+  connect( mLoadRasterAttributeTableFromFileButton, &QPushButton::clicked, this, [this] {
     // Load the attribute table from a VAT.DBF file
     QgsLoadRasterAttributeTableDialog dlg { mRasterLayer };
     dlg.setOpenWhenDoneVisible( false );
@@ -241,7 +241,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // Handles window modality raising canvas
   if ( mCanvas && mRasterTransparencyWidget->pixelSelectorTool() )
   {
-    connect( mRasterTransparencyWidget->pixelSelectorTool(), &QgsMapToolEmitPoint::deactivated, this, [=] {
+    connect( mRasterTransparencyWidget->pixelSelectorTool(), &QgsMapToolEmitPoint::deactivated, this, [this] {
       hide();
       setModal( true );
       show();
@@ -249,7 +249,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       activateWindow();
     } );
 
-    connect( mRasterTransparencyWidget->pbnAddValuesFromDisplay, &QPushButton::clicked, this, [=] {
+    connect( mRasterTransparencyWidget->pbnAddValuesFromDisplay, &QPushButton::clicked, this, [this] {
       hide();
       setModal( false );
 
@@ -276,7 +276,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mContext << QgsExpressionContextUtils::mapLayerPositionScope( mRasterLayer->extent().center() );
   mContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
 
-  connect( mInsertExpressionButton, &QAbstractButton::clicked, this, [=] {
+  connect( mInsertExpressionButton, &QAbstractButton::clicked, this, [this] {
     // Get the linear indexes if the start and end of the selection
     int selectionStart = mMapTipWidget->selectionStart();
     int selectionEnd = mMapTipWidget->selectionEnd();
@@ -717,7 +717,7 @@ void QgsRasterLayerProperties::sync()
         mSourceGroupBox->setTitle( mSourceWidget->groupTitle() );
       mSourceGroupBox->show();
 
-      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [=]( bool isValid ) {
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [this]( bool isValid ) {
         buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
         buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
       } );

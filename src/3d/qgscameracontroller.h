@@ -174,7 +174,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Writes camera configuration to the given DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads camera configuration from the given DOM element
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, QgsVector3D savedOrigin );
 
     //! Zoom the map by \a factor
     void zoom( float factor );
@@ -217,11 +217,10 @@ class _3D_EXPORT QgsCameraController : public QObject
     void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
 
     /**
-     * Returns TRUE if the camera controller will handle the specified key \a event,
-     * preventing it from being instead handled by parents of the 3D window before
-     * the controller ever receives it.
+     * If the event is relevant, handles the event and returns TRUE, otherwise FALSE.
+     * \since QGIS 3.44
      */
-    bool willHandleKeyEvent( QKeyEvent *event );
+    bool keyboardEventFilter( QKeyEvent *event );
 
     /**
      * Reacts to the shift of origin of the scene, updating camera pose and
@@ -283,6 +282,22 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     const QgsVector3D origin() const { return mOrigin; }
 
+    // Convenience methods to set camera view to standard positions
+    //! Rotate to diagonal view. \since QGIS 3.44
+    void rotateCameraToHome() { rotateToRespectingTerrain( 45.0f, 45.0f ); }
+    //! Rotate to top-down view. \since QGIS 3.44
+    void rotateCameraToTop() { rotateToRespectingTerrain( 0.0f, 90.0f ); }
+    //! Rotate to view from the north. \since QGIS 3.44
+    void rotateCameraToNorth() { rotateToRespectingTerrain( 90.0f, 180.0f ); }
+    //! Rotate to view from the east. \since QGIS 3.44
+    void rotateCameraToEast() { rotateToRespectingTerrain( 90.0f, 90.0f ); }
+    //! Rotate to view from the south. \since QGIS 3.44
+    void rotateCameraToSouth() { rotateToRespectingTerrain( 90.0f, 0.0f ); }
+    //! Rotate to view from the west. \since QGIS 3.44
+    void rotateCameraToWest() { rotateToRespectingTerrain( 90.0f, -90.0f ); }
+    //! Rotate to bottom-up view. \since QGIS 3.44
+    void rotateCameraToBottom() { rotateToRespectingTerrain( 180.0f, 0.0f ); }
+
   public slots:
 
     /**
@@ -333,6 +348,13 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     void setMouseParameters( const MouseOperation &newOperation, const QPoint &clickPoint = QPoint() );
 
+    /**
+     * Rotate the camera to the given orientation while raycasting the
+     * looking-at point to the terrain.
+     * \since QGIS 3.44
+     */
+    void rotateToRespectingTerrain( float pitch, float yaw );
+
   signals:
     //! Emitted when camera has been updated
     void cameraChanged();
@@ -368,14 +390,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     void onWheel( Qt3DInput::QWheelEvent *wheel );
     void onMousePressed( Qt3DInput::QMouseEvent *mouse );
     void onMouseReleased( Qt3DInput::QMouseEvent *mouse );
-    void onKeyPressed( Qt3DInput::QKeyEvent *event );
-    void onKeyReleased( Qt3DInput::QKeyEvent *event );
     void applyFlyModeKeyMovements();
 
   private:
-    void onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event );
-    void onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *event );
-    void onKeyPressedGlobeTerrainNavigation( Qt3DInput::QKeyEvent *event );
+    // All three methods return true if event is handled
+    bool onKeyPressedFlyNavigation( QKeyEvent *event );
+    bool onKeyPressedTerrainNavigation( QKeyEvent *event );
+    bool onKeyPressedGlobeTerrainNavigation( QKeyEvent *event );
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedGlobeTerrainNavigation( Qt3DInput::QMouseEvent *mouse );

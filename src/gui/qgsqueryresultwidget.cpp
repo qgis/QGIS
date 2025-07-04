@@ -89,7 +89,7 @@ QgsQueryResultPanelWidget::QgsQueryResultPanelWidget( QWidget *parent, QgsAbstra
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultPanelWidget::executeQuery );
 
-  connect( mLoadLayerPushButton, &QPushButton::pressed, this, [=] {
+  connect( mLoadLayerPushButton, &QPushButton::pressed, this, [this] {
     if ( mConnection )
     {
       const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options = sqlVectorLayerOptions();
@@ -115,10 +115,10 @@ QgsQueryResultPanelWidget::QgsQueryResultPanelWidget( QWidget *parent, QgsAbstra
   } );
   connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultPanelWidget::updateButtons );
 
-  connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [=] {
+  connect( mSqlEditor, &QgsCodeEditorSQL::selectionChanged, this, [this] {
     mExecuteButton->setText( mSqlEditor->selectedText().isEmpty() ? tr( "Execute" ) : tr( "Execute Selection" ) );
   } );
-  connect( mFilterToolButton, &QToolButton::pressed, this, [=] {
+  connect( mFilterToolButton, &QToolButton::pressed, this, [this] {
     if ( mConnection )
     {
       try
@@ -143,7 +143,7 @@ QgsQueryResultPanelWidget::QgsQueryResultPanelWidget( QWidget *parent, QgsAbstra
 
   mLoadAsNewLayerGroupBox->setCollapsed( true );
 
-  connect( mLoadAsNewLayerGroupBox, &QgsCollapsibleGroupBox::collapsedStateChanged, this, [=]( bool collapsed ) {
+  connect( mLoadAsNewLayerGroupBox, &QgsCollapsibleGroupBox::collapsedStateChanged, this, [this, connection]( bool collapsed ) {
     if ( !collapsed )
     {
       // Configure the load layer interface
@@ -257,7 +257,7 @@ void QgsQueryResultPanelWidget::executeQuery()
     mProgressBar->setRange( 0, 0 );
     mSqlErrorMessage.clear();
 
-    connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [=] {
+    connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [this] {
       mStatusLabel->setText( tr( "Stopped" ) );
       mFeedback->cancel();
       mProgressBar->hide();
@@ -267,7 +267,7 @@ void QgsQueryResultPanelWidget::executeQuery()
     // Create model when result is ready
     connect( &mQueryResultWatcher, &QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult>::finished, this, &QgsQueryResultPanelWidget::startFetching, Qt::ConnectionType::UniqueConnection );
 
-    QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [=]() -> QgsAbstractDatabaseProviderConnection::QueryResult {
+    QFuture<QgsAbstractDatabaseProviderConnection::QueryResult> future = QtConcurrent::run( [this, sql]() -> QgsAbstractDatabaseProviderConnection::QueryResult {
       try
       {
         return mConnection->execSql( sql, mFeedback.get() );
@@ -306,7 +306,7 @@ void QgsQueryResultPanelWidget::showCellContextMenu( QPoint point )
     QMenu *menu = new QMenu();
     menu->setAttribute( Qt::WA_DeleteOnClose );
 
-    menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [=] { copySelection(); }, QKeySequence::Copy );
+    menu->addAction( QgsApplication::getThemeIcon( "mActionEditCopy.svg" ), tr( "Copy" ), this, [this] { copySelection(); }, QKeySequence::Copy );
 
     menu->exec( mQueryResultsTableView->viewport()->mapToGlobal( point ) );
   }
@@ -423,18 +423,18 @@ void QgsQueryResultPanelWidget::startFetching()
       }
       mProgressBar->hide();
       mModel = std::make_unique<QgsQueryResultModel>( mQueryResultWatcher.result() );
-      connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [=] {
+      connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [this] {
         mModel->cancel();
         mWasCanceled = true;
       } );
 
-      connect( mModel.get(), &QgsQueryResultModel::fetchMoreRows, this, [=]( long long maxRows ) {
+      connect( mModel.get(), &QgsQueryResultModel::fetchMoreRows, this, [this]( long long maxRows ) {
         mFetchedRowsBatchCount = 0;
         mProgressBar->setRange( 0, maxRows );
         mProgressBar->show();
       } );
 
-      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [=]( const QModelIndex &, int first, int last ) {
+      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [this]( const QModelIndex &, int first, int last ) {
         if ( !mFirstRowFetched )
         {
           emit firstResultBatchFetched();
@@ -453,7 +453,7 @@ void QgsQueryResultPanelWidget::startFetching()
       mQueryResultsTableView->setModel( mModel.get() );
       mQueryResultsTableView->show();
 
-      connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [=] {
+      connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [this] {
         bool ok = false;
         const QgsHistoryEntry currentHistoryEntry = QgsGui::historyProviderRegistry()->entry( mCurrentHistoryEntryId, ok );
         QVariantMap entryDetails = currentHistoryEntry.entry;
@@ -695,7 +695,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   connect( mActionShowHistory, &QAction::toggled, this, &QgsQueryResultWidget::showHistoryPanel );
 
-  connect( mActionClear, &QAction::triggered, this, [=] {
+  connect( mActionClear, &QAction::triggered, this, [this] {
     mQueryWidget->sqlEditor()->setText( QString() );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );

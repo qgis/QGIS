@@ -278,7 +278,7 @@ class QgsGlobeChunkLoader : public QgsChunkLoader
       , mTextureGenerator( textureGenerator )
       , mGlobeCrsToLatLon( globeCrsToLatLon )
     {
-      connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [=]( int job, const QImage &img ) {
+      connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this]( int job, const QImage &img ) {
         if ( job == mJobId )
         {
           mTexture = img;
@@ -436,7 +436,7 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
       QgsTerrainTextureImage *terrainTexImage = qobject_cast<QgsTerrainTextureImage *>( texImages[0] );
       Q_ASSERT( terrainTexImage );
 
-      connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [=]( int jobId, const QImage &image ) {
+      connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this, terrainTexImage]( int jobId, const QImage &image ) {
         if ( mJobId == jobId )
         {
           terrainTexImage->setImage( image );
@@ -487,7 +487,7 @@ class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
 {
-  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [=] {
+  connect( mapSettings, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, [this, mapSettings] {
     setShowBoundingBoxes( mapSettings->showTerrainBoundingBoxes() );
   } );
   connect( mapSettings, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsGlobeEntity::invalidateMapImages );

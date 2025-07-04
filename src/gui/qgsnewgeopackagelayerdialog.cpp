@@ -133,7 +133,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mFileName->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File…" ) );
   mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   mFileName->setConfirmOverwrite( false );
-  connect( mFileName, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     const QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );

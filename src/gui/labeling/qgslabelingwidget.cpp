@@ -258,7 +258,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           mSimpleSettings->obstacleSettings().setIsObstacle( true );
           mSimpleSettings->drawLabels = false;
 
-          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
+          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [this, obstacleWidget] {
             mSimpleSettings->setObstacleSettings( obstacleWidget->settings() );
             obstacleWidget->updateDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );
             emit widgetChanged();

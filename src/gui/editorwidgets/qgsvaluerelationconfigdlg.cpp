@@ -39,7 +39,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mDescriptionExpression, &QgsFieldExpressionWidget::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsValueRelationConfigDlg::layerChanged );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
-  connect( mOrderByField, &QAbstractButton::toggled, mOrderByFieldName, [=]( bool enabled ) {
+  connect( mOrderByField, &QAbstractButton::toggled, mOrderByFieldName, [this]( bool enabled ) {
     mOrderByFieldName->setEnabled( enabled );
   } );
 
@@ -52,7 +52,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsEditorConfigWidget::changed );
   connect( mKeyColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mValueColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( mGroupColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
+  connect( mGroupColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
     mDisplayGroupName->setEnabled( index != 0 );
     emit changed();
   } );
@@ -62,12 +62,12 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mUseCompleter, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mAllowMulti, &QAbstractButton::toggled, this, [=]( bool checked ) {
+  connect( mAllowMulti, &QAbstractButton::toggled, this, [this]( bool checked ) {
     label_nofColumns->setEnabled( checked );
     mNofColumns->setEnabled( checked );
   } );
 
-  connect( mUseCompleter, &QCheckBox::stateChanged, this, [=]( int state ) {
+  connect( mUseCompleter, &QCheckBox::stateChanged, this, [this]( int state ) {
     mCompleterMatchFromStart->setEnabled( static_cast<Qt::CheckState>( state ) == Qt::CheckState::Checked );
   } );
 
