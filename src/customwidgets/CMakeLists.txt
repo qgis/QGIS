@@ -103,6 +103,13 @@ include_directories(SYSTEM
 
 add_library(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
+if(QGISPOSTFIX)
+  set_target_properties(qgis_customwidgets PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_customwidgets${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_customwidgets${QGISPOSTFIX}
+  )
+endif()
+
 set_target_properties(qgis_customwidgets PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 # require c++17

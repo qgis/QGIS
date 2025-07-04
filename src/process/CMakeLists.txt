@@ -16,6 +16,9 @@ endif()
 # Build
 
 add_executable (qgis_process ${QGIS_PROCESS_SRCS})
+if (QGISPOSTFIX)
+  set_target_properties(qgis_process PROPERTIES RUNTIME_OUTPUT_NAME qgis_process${QGISPOSTFIX})
+endif()
 
 # require c++17
 target_compile_features(qgis_process PRIVATE cxx_std_17)
@@ -28,6 +31,12 @@ target_include_directories(qgis_process PUBLIC
 if (UNIX AND NOT ANDROID)
   include_directories(SYSTEM
     ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
+  )
+endif()
+
+if (WITH_PDAL)
+  target_include_directories(qgis_process PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
   )
 endif()
 

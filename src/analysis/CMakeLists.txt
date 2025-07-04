@@ -559,6 +559,12 @@ endif()
 # qgis_analysis library
 
 add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_analysis PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_analysis${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_analysis${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_analysis PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
@@ -581,9 +587,13 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external/tinygltf
   ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
 )
 
+if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
+  target_include_directories(qgis_analysis PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+  )
+endif()
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis
