@@ -33,7 +33,8 @@
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
 #include "qgsdatums.h"
-
+#include <QCheckBox>
+#include <cmath>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
@@ -177,6 +178,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
+
+  // Snap to grid checkbox (added for #43915)
+  mSnapToGridCheckBox = new QCheckBox( tr( "Snap to grid" ) );
+mSnapToGridCheckBox->setToolTip( tr( "Align the extent to the source raster grid, "
+                                     "ensuring the coordinates are exact multiples of the source pixel size." ) );
+mSnapToGridCheckBox->setChecked( false );
+mExtentGroupBox->layout()->addWidget( mSnapToGridCheckBox );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
   
   // Create and add the "Snap to grid" checkbox below the extent group box
@@ -490,7 +498,12 @@ QStringList QgsRasterLayerSaveAsDialog::creationOptions() const
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
-  return mExtentGroupBox->outputExtent();
+  QgsRectangle rect = mExtentGroupBox->outputExtent();
+  if ( mSnapToGridCheckBox && mSnapToGridCheckBox->isChecked() )
+  {
+    return snapExtentToGrid( rect );
+  }
+  return rect;
 }
 
 void QgsRasterLayerSaveAsDialog::snapToGridCheckBoxToggled( bool checked )
@@ -1023,4 +1036,33 @@ void QgsRasterLayerSaveAsDialog::accept()
 void QgsRasterLayerSaveAsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+}
+QgsRectangle QgsRasterLayerSaveAsDialog::snapExtentToGrid( const QgsRectangle &rect ) const
+{
+  if ( !mDataProvider || rect.isNull() )
+    return rect;
+
+  // Ensure provider reports size capability
+  if ( !( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
+    return rect;
+
+  const QgsRectangle rasterRect = mDataProvider->extent();
+  const int xSize = mDataProvider->xSize();
+  const int ySize = mDataProvider->ySize();
+  if ( xSize <= 0 || ySize <= 0 )
+    return rect;
+
+  const double xRes = rasterRect.width() / static_cast< double >( xSize );
+  const double yRes = rasterRect.height() / static_cast< double >( ySize );
+
+  // Avoid division by zero
+  if ( xRes == 0 || yRes == 0 )
+    return rect;
+
+  const double xmin = rasterRect.xMinimum() + std::floor( ( rect.xMinimum() - rasterRect.xMinimum() ) / xRes ) * xRes;
+  const double ymin = rasterRect.yMinimum() + std::floor( ( rect.yMinimum() - rasterRect.yMinimum() ) / yRes ) * yRes;
+  const double xmax = rasterRect.xMinimum() + std::ceil(  ( rect.xMaximum() - rasterRect.xMinimum() ) / xRes ) * xRes;
+  const double ymax = rasterRect.yMinimum() + std::ceil(  ( rect.yMaximum() - rasterRect.yMinimum() ) / yRes ) * yRes;
+
+  return QgsRectangle( xmin, ymin, xmax, ymax );
 }
