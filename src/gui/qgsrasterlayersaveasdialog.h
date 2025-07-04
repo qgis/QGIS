@@ -25,7 +25,7 @@
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
-
+class QCheckBox;
 /**
  * \ingroup gui
  * \class QgsRasterLayerSaveAsDialog
@@ -196,7 +196,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
-
+    QCheckBox *mSnapToGridCheckBox = nullptr;
     friend class TestQgsRasterLayerSaveAsDialog;
 };
 
