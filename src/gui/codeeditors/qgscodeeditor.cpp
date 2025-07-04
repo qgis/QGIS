@@ -25,6 +25,7 @@
 #include "qgsstringutils.h"
 #include "qgsfontutils.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsshortcutsmanager.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -252,25 +253,44 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-  const bool altModifier = event->modifiers() & Qt::AltModifier;
-
   // Ctrl+Alt+F: reformat code
   const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
-  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  if ( !isReadOnly() && canReformat )
   {
-    event->accept();
-    reformatCode();
-    return;
+    QKeySequence reformatCodeSequence( QStringLiteral( "Ctrl+Alt+F" ) );
+    if ( QAction *action = QgsGui::shortcutsManager()->actionByName( QStringLiteral( "mEditorReformatCode" ) ) )
+    {
+      if ( !action->shortcut().isEmpty() )
+      {
+        reformatCodeSequence = action->shortcut();
+      }
+    }
+    if ( reformatCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      reformatCode();
+      return;
+    }
   }
 
-  // Toggle comment when user presses  Ctrl+:
+  // Toggle comment when user presses  Ctrl+/
   const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
-  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  if ( !isReadOnly() && canToggle )
   {
-    event->accept();
-    toggleComment();
-    return;
+    QKeySequence toggleCommentSequence( QStringLiteral( "Ctrl+/" ) );
+    if ( QAction *action = QgsGui::shortcutsManager()->actionByName( QStringLiteral( "mEditorToggleComment" ) ) )
+    {
+      if ( !action->shortcut().isEmpty() )
+      {
+        toggleCommentSequence = action->shortcut();
+      }
+    }
+    if ( toggleCommentSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      toggleComment();
+      return;
+    }
   }
 
   QsciScintilla::keyPressEvent( event );
@@ -298,8 +318,17 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
 
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
       {
+        QKeySequence reformatCodeSequence( QStringLiteral( "Ctrl+Alt+F" ) );
+        if ( QAction *action = QgsGui::shortcutsManager()->actionByName( QStringLiteral( "mEditorReformatCode" ) ) )
+        {
+          if ( !action->shortcut().isEmpty() )
+          {
+            reformatCodeSequence = action->shortcut();
+          }
+        }
+
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
-        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
+        reformatAction->setShortcut( reformatCodeSequence );
         reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
@@ -316,8 +345,16 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
 
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
       {
+        QKeySequence toggleCommentSequence( QStringLiteral( "Ctrl+/" ) );
+        if ( QAction *action = QgsGui::shortcutsManager()->actionByName( QStringLiteral( "mEditorToggleComment" ) ) )
+        {
+          if ( !action->shortcut().isEmpty() )
+          {
+            toggleCommentSequence = action->shortcut();
+          }
+        }
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
-        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
+        toggleCommentAction->setShortcut( toggleCommentSequence );
         toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), palette().color( QPalette::ColorRole::WindowText ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );

@@ -33,7 +33,7 @@ from operator import itemgetter
 from pathlib import Path
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
-from qgis.gui import QgsCodeEditorPython, QgsCodeEditorWidget, QgsMessageBar
+from qgis.gui import QgsCodeEditorPython, QgsCodeEditorWidget, QgsGui, QgsMessageBar
 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import (
@@ -269,8 +269,24 @@ class Editor(QgsCodeEditorPython):
             menu,
         )
         toggle_comment_action.triggered.connect(self.toggleComment)
-        toggle_comment_action.setShortcut("Ctrl+:")
+        toggle_comment_action.setShortcut(
+            self.shortcut("mEditorToggleComment", "Ctrl+/")
+        )
         menu.addAction(toggle_comment_action)
+
+        reformat_code_action = QAction(
+            QgsApplication.getThemeIcon(
+                "console/iconFormatCode.svg",
+                self.palette().color(QPalette.ColorRole.WindowText),
+            ),
+            QCoreApplication.translate("PythonConsole", "Reformat Code"),
+            menu,
+        )
+        reformat_code_action.triggered.connect(self.reformatCode)
+        toggle_comment_action.setShortcut(
+            self.shortcut("mEditorReformatCode", "Ctrl+Alt+F")
+        )
+        menu.addAction(reformat_code_action)
 
         menu.addSeparator()
         gist_menu = QMenu(self)
@@ -540,6 +556,12 @@ class Editor(QgsCodeEditorPython):
         self, text: str, title: str | None = None, level=Qgis.MessageLevel.Info
     ):
         self.editor_tab.showMessage(text, level, title=title)
+
+    def shortcut(self, key, default):
+        action = QgsGui.shortcutsManager().actionByName(key)
+        if action:
+            return action.shortcut()
+        return QKeySequence(default)
 
 
 class EditorTab(QWidget):
