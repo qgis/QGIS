@@ -196,6 +196,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
+    
+    /**
+     * Aligns the given rectangle to the source raster grid.
+     * This ensures that coordinates are exact multiples of the source pixel size.
+     * \since QGIS 3.99
+     */
+    QgsRectangle snapExtentToGrid(const QgsRectangle &rect) const;
     QCheckBox *mSnapToGridCheckBox = nullptr;
     friend class TestQgsRasterLayerSaveAsDialog;
 };
