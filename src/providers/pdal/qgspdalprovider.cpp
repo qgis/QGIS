@@ -298,16 +298,10 @@ bool QgsPdalProvider::load( const QString &uri )
         options.add( pdal::Option( "filename", uri.toStdString() ) );
         reader->setOptions( std::move( options ) );
       }
-      pdal::PointTable table;
-      reader->prepare( table );
-
-      const std::string tableMetadata = pdal::Utils::toJSON( table.metadata() );
-      const QVariantMap readerMetadata = QgsJsonUtils::parseJson( tableMetadata ).toMap().value( QStringLiteral( "root" ) ).toMap();
-      // source metadata is only value present here!
-      if ( !readerMetadata.empty() )
-        mOriginalMetadata = readerMetadata.constBegin().value().toMap();
-
       const pdal::QuickInfo quickInfo( reader->preview() );
+      const std::string readerMetadata = pdal::Utils::toJSON( reader->getMetadata() );
+      mOriginalMetadata = QgsJsonUtils::parseJson( readerMetadata ).toMap();
+
       const double xmin = quickInfo.m_bounds.minx;
       const double xmax = quickInfo.m_bounds.maxx;
       const double ymin = quickInfo.m_bounds.miny;
