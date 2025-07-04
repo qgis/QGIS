@@ -79,6 +79,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
   if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
   {
+    mIsVpc = true;
     mAverageSubIndexWidth = vpcProvider->averageSubIndexWidth();
     mAverageSubIndexHeight = vpcProvider->averageSubIndexHeight();
     mOverviewIndex = vpcProvider->overview();
@@ -201,7 +202,7 @@ bool QgsPointCloudLayerRenderer::render()
   {
     canceled = !renderIndex( mIndex );
   }
-  else if ( mOverviewIndex )
+  else if ( mIsVpc )
   {
     QVector< QgsPointCloudSubIndex > visibleIndexes;
     for ( const QgsPointCloudSubIndex &si : mSubIndexes )
@@ -214,7 +215,7 @@ bool QgsPointCloudLayerRenderer::render()
     const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth ||
                            renderExtent.height() > mAverageSubIndexHeight;
     // if the overview of virtual point cloud exists, and we are zoomed out, we render just overview
-    if ( mOverviewIndex && zoomedOut &&
+    if ( mOverviewIndex && mOverviewIndex->isValid() && zoomedOut &&
          mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )
     {
       renderIndex( *mOverviewIndex );
@@ -223,7 +224,7 @@ bool QgsPointCloudLayerRenderer::render()
     {
       // if the overview of virtual point cloud exists, and we are zoomed out, but we want both overview and extents,
       // we render overview
-      if ( mOverviewIndex && zoomedOut &&
+      if ( mOverviewIndex && mOverviewIndex->isValid() && zoomedOut &&
            mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents )
       {
         renderIndex( *mOverviewIndex );
