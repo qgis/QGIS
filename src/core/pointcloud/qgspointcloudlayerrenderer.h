@@ -96,6 +96,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsGeometry mCloudExtent;
     QList< QgsMapClippingRegion > mClippingRegions;
 
+    bool mIsVpc = false;
     const QVector< QgsPointCloudSubIndex > mSubIndexes;
     std::optional<QgsPointCloudIndex> mOverviewIndex;
     double mAverageSubIndexWidth = 0;
