@@ -174,8 +174,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     ResolutionState mResolutionState;
     QVector<bool> mNoDataToEdited;
 
-    //! Checkbox for snap to grid option
-    QCheckBox *mSnapToGridCheckBox = nullptr;
+    
 
     void setValidators();
     void toggleResolutionSize();
@@ -200,7 +199,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     /**
      * Aligns the given rectangle to the source raster grid.
      * This ensures that coordinates are exact multiples of the source pixel size.
-     * \since QGIS 3.99
+     * \since QGIS 3.40
      */
     QgsRectangle snapExtentToGrid(const QgsRectangle &rect) const;
     QCheckBox *mSnapToGridCheckBox = nullptr;
