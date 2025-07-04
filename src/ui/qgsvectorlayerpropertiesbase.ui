@@ -19,10 +19,6 @@
   <property name="windowTitle">
    <string>Layer Properties</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../../images/images.qrc">
-    <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout_26">
    <item>
     <widget class="QSplitter" name="mOptionsSplitter">
