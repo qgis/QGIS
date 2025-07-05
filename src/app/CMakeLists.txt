@@ -456,7 +456,8 @@ if (WIN32)
     set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff -i <SOURCE> -o <OBJECT>")
     set(QGIS_RC_LIBS -mwindows)
   endif()
-  set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+
+  gen_win32_version_info("QGIS Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -529,6 +530,7 @@ endif()
 
 set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
 
+gen_win32_version_info("QGIS App Library" "qgis_app" QGIS_APP_SRCS)
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
