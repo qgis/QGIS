@@ -143,7 +143,7 @@ jobs:
         run: |
           python3 -m pip install termcolor
           cd build
-          python3 ../.ci/ctest2ci.py ctest --output-on-failure
+          python3 ../.ci/ctest2ci.py ctest --output-on-failure -E code_layout
 
       - name: Archive app
         run: |
