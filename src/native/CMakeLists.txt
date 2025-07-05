@@ -65,7 +65,7 @@ add_library(qgis_native ${LIBRARY_TYPE} ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
 set_property(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # require c++17
-target_compile_features(qgis_native PRIVATE cxx_std_17)
+target_compile_features(qgis_native PRIVATE cxx_std_20)
 
 target_include_directories(qgis_native PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}

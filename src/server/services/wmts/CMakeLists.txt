@@ -20,8 +20,8 @@ set (WMTS_HDRS
 
 add_library (wmts MODULE ${WMTS_SRCS} ${WMTS_HDRS})
 
-# require c++17
-target_compile_features(wmts PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(wmts PRIVATE cxx_std_20)
 
 include_directories(
 
