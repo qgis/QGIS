@@ -243,7 +243,7 @@ class TestQgsValueMapEditWidget(QgisTestCase):
         reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget("ValueMap", layer, 0, None)
 
-        config = {
+        config = {"AllowNull":True,
             "map": [
                 {"two": "2"},
                 {"twoandhalf": "2.5"},
@@ -267,7 +267,7 @@ class TestQgsValueMapEditWidget(QgisTestCase):
         self.assertTrue(layer.isValid())
         QgsProject.instance().addMapLayer(layer)
 
-        config = {"map": [{"AAAAA": "a"}, {"BBBB": "b"}]}
+        config = {"AllowNull":True, "map": [{"AAAAA": "a"}, {"BBBB": "b"}]}
         wrapper = QgsGui.editorWidgetRegistry().create(
             "ValueMap", layer, 0, config, None, None
         )
@@ -301,7 +301,7 @@ class TestQgsValueMapEditWidget(QgisTestCase):
         QgsProject.instance().addMapLayer(layer)
 
         config = {
-            "map": [{"AAAAA": "a"}, {"BBBB": "b"}, {"nothing": self.VALUEMAP_NULL_TEXT}]
+            "AllowNull":True, "map": [{"AAAAA": "a"}, {"BBBB": "b"}, {"nothing": self.VALUEMAP_NULL_TEXT}]
         }
         wrapper = QgsGui.editorWidgetRegistry().create(
             "ValueMap", layer, 0, config, None, None
