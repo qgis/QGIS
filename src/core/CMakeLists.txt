@@ -1045,7 +1045,9 @@ if (WITH_INTERNAL_POLY2TRI)
   include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
 endif ()
 
-gen_win32_version_info("QGIS Core Library" "qgis_core" QGIS_CORE_SRCS)
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  gen_win32_version_info("QGIS Core Library" "qgis_core" QGIS_CORE_SRCS)
+endif()
 
 file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
 string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")

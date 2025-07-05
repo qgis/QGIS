@@ -84,7 +84,9 @@ if (WITH_SERVER_PLUGINS)
   )
 endif()
 
-gen_win32_version_info("QGIS Server Core" "qgis_server" QGIS_SERVER_SRCS)
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  gen_win32_version_info("QGIS Server Core" "qgis_server" QGIS_SERVER_SRCS)
+endif()
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
 
