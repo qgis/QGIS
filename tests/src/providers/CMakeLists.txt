@@ -101,13 +101,6 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${OPTIONAL_QTWEBKIT}
     qgis_core
   )
-
-  install (TARGETS test_provider_wcs
-    BUNDLE DESTINATION ${QGIS_BIN_DIR}
-    RUNTIME DESTINATION ${QGIS_BIN_DIR}
-  )
-  install(FILES wcs-servers.json DESTINATION ${QGIS_DATA_DIR}/resources)
-
 endif()
 
 add_subdirectory(grass)
