@@ -75,39 +75,6 @@ message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
-# Add the win32 resource for the QGIS icon
-# Only runs for WIN32 when called
-function(win32_icon SRC_LIST)
-  if(NOT WIN32)
-    return()
-  endif()
-
-  set(OUT "${PROJECT_SOURCE_DIR}/ms-windows/rc/icon.rc")
-  list(APPEND ${SRC_LIST} "${OUT}")
-  message(DEBUG "Win32 Icon Resource")
-
-  set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
-endfunction()
-
-# Function to create win32 VERSIONINFO and resource blocks
-# Only runs for WIN32 when called
-function(win32_version_info desc filename SRC_LIST)
-  if(NOT WIN32)
-    return()
-  endif()
-
-  set(WIN32_VI_DESC ${desc})
-  set(WIN32_VI_FILENAME ${filename})
-  set(WIN32_VI_COMPANY "The QGIS Team. Made with love.")
-  set(WIN32_VI_PRODUCT "QGIS")
-  set(OUT "${CMAKE_CURRENT_BINARY_DIR}/${filename}_version.rc")
-  configure_file("${PROJECT_SOURCE_DIR}/ms-windows/rc/version.rc.in" "${OUT}" @ONLY)
-  list(APPEND ${SRC_LIST} "${OUT}")
-  message(DEBUG "Win32 Version Gen: ${desc} (${filename})")
-
-  set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
-endfunction()
-
 #############################################################
 # Configure OpenCL if available
 set(HAVE_OPENCL FALSE)
