@@ -111,10 +111,10 @@ QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantM
   feedback->pushCommandInfo( QObject::tr( "Conversion command: " ) + babelPath + ' ' + logArgs.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( babelPath, processArgs );
-  babelProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba );
   } );
-  babelProcess.setStdOutHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
     feedback->pushDebugInfo( ba );
   } );
 
@@ -355,10 +355,10 @@ QVariantMap QgsConvertGpsDataAlgorithm::processAlgorithm( const QVariantMap &par
   feedback->pushCommandInfo( QObject::tr( "Conversion command: " ) + logCommand.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( processCommand.value( 0 ), processCommand.mid( 1 ) );
-  babelProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba );
   } );
-  babelProcess.setStdOutHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
     feedback->pushDebugInfo( ba );
   } );
 
@@ -576,10 +576,10 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   feedback->pushCommandInfo( QObject::tr( "Download command: " ) + logCommand.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( processCommand.value( 0 ), processCommand.mid( 1 ) );
-  babelProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba );
   } );
-  babelProcess.setStdOutHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
     feedback->pushDebugInfo( ba );
   } );
 
@@ -796,10 +796,10 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   feedback->pushCommandInfo( QObject::tr( "Upload command: " ) + logCommand.join( ' ' ) );
 
   QgsBlockingProcess babelProcess( processCommand.value( 0 ), processCommand.mid( 1 ) );
-  babelProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba );
   } );
-  babelProcess.setStdOutHandler( [=]( const QByteArray &ba ) {
+  babelProcess.setStdOutHandler( [feedback]( const QByteArray &ba ) {
     feedback->pushDebugInfo( ba );
   } );
 

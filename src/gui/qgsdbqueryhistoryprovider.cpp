@@ -167,7 +167,7 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
         QAction *executeAction = new QAction(
           QObject::tr( "Execute SQL Command…" ), menu
         );
-        QObject::connect( executeAction, &QAction::triggered, menu, [=] {
+        QObject::connect( executeAction, &QAction::triggered, menu, [this, queryHistoryWidget] {
           queryHistoryWidget->emitSqlTriggered( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
         } );
         menu->addAction( executeAction );
@@ -177,7 +177,7 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
         QObject::tr( "Copy SQL Command" ), menu
       );
       copyAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
-      QObject::connect( copyAction, &QAction::triggered, menu, [=] {
+      QObject::connect( copyAction, &QAction::triggered, menu, [this] {
         QMimeData *m = new QMimeData();
         m->setText( mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
         QApplication::clipboard()->setMimeData( m );

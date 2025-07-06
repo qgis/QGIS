@@ -72,12 +72,12 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   mDynamicTextMenu = new QMenu( this );
   mDynamicTextButton->setMenu( mDynamicTextMenu );
 
-  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [this] {
     mDynamicTextMenu->clear();
     if ( mLabel->layout() )
     {
       // we need to rebuild this on each show, as the content varies depending on other available items...
-      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [=]( const QString &expression ) {
+      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [this]( const QString &expression ) {
         mLabel->beginCommand( tr( "Insert dynamic text" ) );
         mTextEdit->insertPlainText( "[%" + expression.trimmed() + "%]" );
         mLabel->endCommand();

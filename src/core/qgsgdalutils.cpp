@@ -763,7 +763,7 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
   // get supported extensions
   static std::once_flag initialized;
   static QStringList SUPPORTED_DB_LAYERS_EXTENSIONS;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, []
   {
     // iterate through all of the supported drivers, adding the corresponding file extensions for
     // types which advertise multilayer support
@@ -909,7 +909,7 @@ QList<QgsGdalUtils::VsiNetworkFileSystemDetails> QgsGdalUtils::vsiNetworkFileSys
   // get supported extensions
   static std::once_flag initialized;
   static QList<QgsGdalUtils::VsiNetworkFileSystemDetails> VSI_FILE_SYSTEM_DETAILS;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, []
   {
     if ( char **papszPrefixes = VSIGetFileSystemsPrefixes() )
     {

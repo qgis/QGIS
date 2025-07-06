@@ -88,7 +88,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   mQueryEdit->setLineNumbersVisible( true );
 
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
-  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [=] { addLayerPrivate( true ); } );
+  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [this] { addLayerPrivate( true ); } );
   connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::removeLayer );
   connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::importLayer );
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );

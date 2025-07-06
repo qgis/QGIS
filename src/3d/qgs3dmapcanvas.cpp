@@ -66,7 +66,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
-  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [=]( const QImage &image ) {
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [this]( const QImage &image ) {
     if ( image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() ) )
     {
       emit savedAsImage( mCaptureFileName );
@@ -169,7 +169,7 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 
   resetView();
 
-  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [=]( QPoint point ) {
+  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [this]( QPoint point ) {
     QCursor::setPos( mapToGlobal( point ) );
   } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMapSettings, &Qgs3DMapSettings::setCameraMovementSpeed );
@@ -216,7 +216,7 @@ void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFo
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [=]( float ) {
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [this, screenCaptureFrameAction]( float ) {
     mEngine->requestCaptureImage();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();
@@ -232,7 +232,7 @@ void Qgs3DMapCanvas::captureDepthBuffer()
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [=]( float ) {
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [this, screenCaptureFrameAction]( float ) {
     mEngine->requestDepthBufferCapture();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();

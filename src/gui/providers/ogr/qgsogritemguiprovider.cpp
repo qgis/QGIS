@@ -66,7 +66,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
         data.insert( QStringLiteral( "name" ), layerItem->name() );
         data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
         actionDeleteLayer->setData( data );
-        connect( actionDeleteLayer, &QAction::triggered, this, [=] { onDeleteLayer( context ); } );
+        connect( actionDeleteLayer, &QAction::triggered, this, [this, context] { onDeleteLayer( context ); } );
         actionDeleteLayer->setEnabled( canDeleteLayers );
         manageLayerMenu->addAction( actionDeleteLayer );
 
@@ -88,7 +88,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
       data.insert( QStringLiteral( "path" ), collectionItem->path() );
       data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer<QgsDataItem>( collectionItem->parent() ) ) );
       actionDeleteCollection->setData( data );
-      connect( actionDeleteCollection, &QAction::triggered, this, [=] { deleteCollection( context ); } );
+      connect( actionDeleteCollection, &QAction::triggered, this, [this, context] { deleteCollection( context ); } );
       menu->addAction( actionDeleteCollection );
     }
   }

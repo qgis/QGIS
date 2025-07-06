@@ -75,6 +75,26 @@ layouts.
 .. seealso:: :py:func:`hideCoverage`
 %End
 
+    bool limitCoverageLayerRenderToCurrentFeature() const;
+%Docstring
+Returns ``True`` if the atlas is set to limit rendering on the coverage
+layer to the current feature.
+
+.. seealso:: :py:func:`setHideCoverage`
+
+.. versionadded:: 4.0
+%End
+
+    void setLimitCoverageLayerRenderToCurrentFeature( bool limit );
+%Docstring
+Sets whether the rendering of the coverage layer should be limited to
+the current feature.
+
+.. seealso:: :py:func:`hideCoverage`
+
+.. versionadded:: 4.0
+%End
+
     QString filenameExpression() const;
 %Docstring
 Returns the filename expression used for generating output filenames for

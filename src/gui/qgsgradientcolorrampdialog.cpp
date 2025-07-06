@@ -66,7 +66,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
   mStopDirection->setEnabled( hasDirection( static_cast<QColor::Spec>( mStopColorSpec->currentData().toInt() ) ) );
 
-  connect( mStopColorSpec, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mStopColorSpec, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     const QColor::Spec colorSpec = static_cast<QColor::Spec>( mStopColorSpec->currentData().toInt() );
     mStopDirection->setEnabled( hasDirection( colorSpec ) );
 
@@ -81,7 +81,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
     mStopEditor->setSelectedStopColorSpec( colorSpec );
   } );
 
-  connect( mStopDirection, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mStopDirection, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mBlockChanges )
       return;
 

@@ -100,7 +100,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QgsMapCan
   mOutputLayer->setStorageMode( QgsFileWidget::SaveFile );
   mOutputLayer->setDialogTitle( tr( "Enter Result File" ) );
   mOutputLayer->setDefaultRoot( settings.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
-  connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [=]() { setAcceptButtonState(); } );
+  connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [this]() { setAcceptButtonState(); } );
 
   connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsRasterCalcDialog::setOutputToVirtual );
 

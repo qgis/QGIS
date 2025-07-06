@@ -58,7 +58,7 @@ class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
     void setIntensity( float intensity ) { mIntensity = intensity; }
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsDirectionalLightSettings &other );
+    bool operator==( const QgsDirectionalLightSettings &other ) const;
 
   private:
     QgsVector3D mDirection { -0.32, 0.27, -0.91 };

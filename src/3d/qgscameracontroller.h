@@ -174,7 +174,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Writes camera configuration to the given DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads camera configuration from the given DOM element
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, QgsVector3D savedOrigin );
 
     //! Zoom the map by \a factor
     void zoom( float factor );

@@ -45,7 +45,7 @@ QgsLabelingEngineRuleDialog::QgsLabelingEngineRuleDialog( QgsLabelingEngineRuleW
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labeling-rules" ) );
   } );
 }

@@ -59,7 +59,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "lastComposerTemplateDir" ), QString(), QgsSettings::App ).toString() );
   mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "ComposerManager/templatePath" ), QString(), QgsSettings::App ).toString() );
 
-  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [=] {
+  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "ComposerManager/templatePath" ), mTemplateFileWidget->filePath(), QgsSettings::App );
     QFileInfo tmplFileInfo( mTemplateFileWidget->filePath() );

@@ -163,14 +163,20 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     }
   }
 
-  if ( !mShared->mURI.skipInitialGetFeature() )
+  if ( !mShared->mURI.skipInitialGetFeature() || mShared->mURI.forceInitialGetFeature() )
   {
-    issueInitialGetFeature();
+    issueInitialGetFeature( mShared->mURI.forceInitialGetFeature() );
   }
 }
 
-void QgsWFSProvider::issueInitialGetFeature()
+void QgsWFSProvider::issueInitialGetFeature( bool force )
 {
+  // Skip if already issued
+  if ( mShared->initialGetFeatureIssued() )
+  {
+    return;
+  }
+
   const auto GetGeometryTypeFromOneFeature = [&]( bool includeBbox ) {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = std::make_unique<QgsFeatureDownloader>();
@@ -185,7 +191,12 @@ void QgsWFSProvider::issueInitialGetFeature()
     }
 
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
-    connect( downloader.get(), qOverload<QVector<QgsFeatureUniqueIdPair>>( &QgsFeatureDownloader::featureReceived ), this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
+    connect( downloader.get(), qOverload<QVector<QgsFeatureUniqueIdPair>>( &QgsFeatureDownloader::featureReceived ), this, [&]( QVector<QgsFeatureUniqueIdPair> list ) {
+      // Download was ok, set it as done
+      mShared->setInitialGetFeatureIssued( true );
+      QgsWFSProvider::featureReceivedAnalyzeOneFeature( list, force );
+    } );
+
     if ( requestMadeFromMainThread )
     {
       auto processEvents = []() {
@@ -199,9 +210,9 @@ void QgsWFSProvider::issueInitialGetFeature()
     mShared->setCurrentRect( QgsRectangle() );
   };
 
-  const auto TryToDetectGeometryType = [&]() {
-    const Qgis::WkbType initialGeometryType = mShared->mWKBType;
+  const Qgis::WkbType initialGeometryType = mShared->mWKBType;
 
+  const auto TryToDetectGeometryType = [&]() {
     // try first without a BBOX, because some servers exhibit very poor
     // performance when being requested on a large extent
     GetGeometryTypeFromOneFeature( false );
@@ -233,10 +244,6 @@ void QgsWFSProvider::issueInitialGetFeature()
       if ( noGeometryFound && mShared->mWKBType == Qgis::WkbType::Unknown )
         mShared->mWKBType = Qgis::WkbType::NoGeometry;
     }
-    else
-    {
-      mShared->mWKBType = initialGeometryType;
-    }
   };
 
   // For WFS = 1.0, issue a GetFeature on one feature to check
@@ -259,7 +266,7 @@ void QgsWFSProvider::issueInitialGetFeature()
     // Try to see if gml:description, gml:identifier, gml:name attributes are
     // present. So insert them temporarily in mShared->mFields so that the
     // GML parser can detect them.
-    const auto addGMLFields = [=]( bool forceAdd ) {
+    const auto addGMLFields = [this]( bool forceAdd ) {
       if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0 && ( forceAdd || mSampleFeatureHasDescription ) )
         mShared->mFields.append( QgsField( QStringLiteral( "description" ), QMetaType::Type::QString, QStringLiteral( "xsd:string" ) ) );
       if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0 && ( forceAdd || mSampleFeatureHasIdentifier ) )
@@ -821,9 +828,11 @@ void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
   pushError( errorMsg );
 }
 
-void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> list )
+void QgsWFSProvider::featureReceivedAnalyzeOneFeature( const QVector<QgsFeatureUniqueIdPair> &list, bool force )
 {
-  if ( list.size() != 0 && mShared->mWKBType == Qgis::WkbType::Unknown )
+  const Qgis::WkbType originalType { mShared->mWKBType };
+
+  if ( list.size() != 0 && ( force || originalType == Qgis::WkbType::Unknown ) )
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
@@ -882,6 +891,7 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
       }
     }
   }
+
   if ( list.size() != 0 )
   {
     QgsFeature feat = list[0].first;
@@ -889,6 +899,12 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
     mSampleFeatureHasDescription = !feat.attribute( "description" ).isNull();
     mSampleFeatureHasIdentifier = !feat.attribute( "identifier" ).isNull();
     mSampleFeatureHasName = !feat.attribute( "name" ).isNull();
+  }
+
+  // Re-assign the original type if type was not determined and force was set
+  if ( force && mShared->mWKBType == Qgis::WkbType::Unknown )
+  {
+    mShared->mWKBType = originalType;
   }
 }
 
@@ -987,7 +1003,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
   bool applyAxisInversion;
   QgsOgcUtils::GMLVersion gmlVersion;
 
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) || mShared->mWFSVersion.startsWith( QLatin1String( "2" ) ) )
   {
     // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
     if ( !mShared->mServerPrefersCoordinatesForTransactions_1_1 )
@@ -999,7 +1015,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
       gmlVersion = QgsOgcUtils::GML_2_1_2;
     }
     // For servers like Geomedia and QGIS Server that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
-    // cpabilities useEPSGColumnFormat is set.
+    // capabilities useEPSGColumnFormat is set.
     // We follow GeoServer convention here which is to treat EPSG:4326 as lon/lat
     applyAxisInversion = ( crs().hasAxisInverted() && !mShared->mURI.ignoreAxisOrientation() && !mShared->mCaps.useEPSGColumnFormat )
                          || mShared->mURI.invertAxisOrientation();
@@ -2389,9 +2405,9 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
   const QString WfsVersion = mShared->mWFSVersion;
   // only 1.1.0 and 1.0.0 are supported
-  if ( WfsVersion == QLatin1String( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) || WfsVersion.startsWith( QLatin1String( "2." ) ) )
   {
-    transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
   }
   else
   {
@@ -2441,11 +2457,12 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
 
   const QString WfsVersion = mShared->mWFSVersion;
 
-  if ( WfsVersion == QLatin1String( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) || WfsVersion.startsWith( QLatin1String( "2." ) ) )
   {
     const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
     if ( transactionSummaryList.size() < 1 )
     {
+      QgsDebugMsgLevel( QStringLiteral( "TransactionSummary not found in response: %1" ).arg( serverResponse.toString() ), 4 );
       return false;
     }
 
@@ -2519,7 +2536,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
   // Handles WFS 1.1.0
   QString insertResultTagName;
-  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) )
+  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) || mShared->mWFSVersion.startsWith( QLatin1String( "2." ) ) )
   {
     insertResultTagName = QStringLiteral( "InsertResults" );
   }

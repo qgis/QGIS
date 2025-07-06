@@ -142,7 +142,7 @@ void QgsLabelingGui::showObstacleSettings()
   widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
-  auto applySettings = [=] {
+  auto applySettings = [this, widget] {
     mObstacleSettings = widget->settings();
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
@@ -152,7 +152,7 @@ void QgsLabelingGui::showObstacleSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] {
       applySettings();
     } );
     panel->openPanel( widget );
@@ -162,7 +162,7 @@ void QgsLabelingGui::showObstacleSettings()
     QgsLabelSettingsWidgetDialog dialog( widget, this );
 
     dialog.buttonBox()->addButton( QDialogButtonBox::Help );
-    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [=] {
+    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
       QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#obstacles" ) );
     } );
 
@@ -195,7 +195,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
-  auto applySettings = [=] {
+  auto applySettings = [this, widget] {
     const QgsLabelLineSettings widgetSettings = widget->settings();
     mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
     mLineSettings.setAnchorType( widgetSettings.anchorType() );
@@ -209,7 +209,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] {
       applySettings();
     } );
     panel->openPanel( widget );
@@ -219,7 +219,7 @@ void QgsLabelingGui::showLineAnchorSettings()
     QgsLabelSettingsWidgetDialog dialog( widget, this );
 
     dialog.buttonBox()->addButton( QDialogButtonBox::Help );
-    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [=] {
+    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
       QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#placement-for-line-layers" ) );
     } );
 
@@ -247,7 +247,7 @@ void QgsLabelingGui::showDuplicateSettings()
   widget->setGeometryType( vectorLayer ? vectorLayer->geometryType() : Qgis::GeometryType::Unknown );
   widget->setContext( symbolContext );
 
-  auto applySettings = [=] {
+  auto applySettings = [this, widget] {
     mThinningSettings = widget->settings();
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
@@ -257,7 +257,7 @@ void QgsLabelingGui::showDuplicateSettings()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
+    connect( widget, &QgsLabelSettingsWidgetBase::changed, this, [applySettings] {
       applySettings();
     } );
     panel->openPanel( widget );

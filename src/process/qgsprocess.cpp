@@ -250,7 +250,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 {
   mFlags = flags;
 
-  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level )>( &QgsMessageLog::messageReceived ), QgsApplication::instance(), [=]( const QString &message, const QString &, Qgis::MessageLevel level ) {
+  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level )>( &QgsMessageLog::messageReceived ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level ) {
     if ( level == Qgis::MessageLevel::Critical )
     {
       if ( !message.contains( QLatin1String( "DeprecationWarning:" ) ) )

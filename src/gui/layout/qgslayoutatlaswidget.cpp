@@ -36,6 +36,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   connect( mUseAtlasCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mUseAtlasCheckBox_stateChanged );
   connect( mAtlasFilenamePatternEdit, &QLineEdit::editingFinished, this, &QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished );
   connect( mAtlasFilenameExpressionButton, &QToolButton::clicked, this, &QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked );
+  connect( mAtlasLimitCoverageLayerRenderCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasLimitCoverageLayerRenderCheckBox_stateChanged );
   connect( mAtlasHideCoverageCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged );
   connect( mAtlasSingleFileCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged );
   connect( mAtlasSortFeatureCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged );
@@ -66,7 +67,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   {
     mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
   }
-  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { changeFileFormat(); } );
+  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { changeFileFormat(); } );
 
   updateGuiElements();
 }
@@ -176,16 +177,30 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
   }
 }
 
+void QgsLayoutAtlasWidget::mAtlasLimitCoverageLayerRenderCheckBox_stateChanged( int state )
+{
+  if ( !mLayout )
+    return;
+
+  mBlockUpdates = true;
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Limit Atlas Layer Rendering to Current Feature" ) );
+  mAtlas->setLimitCoverageLayerRenderToCurrentFeature( state == Qt::Checked );
+  mLayout->undoStack()->endCommand();
+  mBlockUpdates = false;
+}
+
 void QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged( int state )
 {
   if ( !mLayout )
     return;
 
   mBlockUpdates = true;
-  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Layer" ) );
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Layer Visibility" ) );
   mAtlas->setHideCoverage( state == Qt::Checked );
   mLayout->undoStack()->endCommand();
   mBlockUpdates = false;
+
+  mAtlasLimitCoverageLayerRenderCheckBox->setEnabled( state != Qt::Checked );
 }
 
 void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
@@ -396,6 +411,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasSortExpressionWidget->setField( mAtlas->sortExpression() );
 
   mAtlasFilenamePatternEdit->setText( mAtlas->filenameExpression() );
+  mAtlasLimitCoverageLayerRenderCheckBox->setCheckState( mAtlas->limitCoverageLayerRenderToCurrentFeature() ? Qt::Checked : Qt::Unchecked );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
   const bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ) ).toBool();
@@ -428,6 +444,7 @@ void QgsLayoutAtlasWidget::blockAllSignals( bool b )
   mPageNameWidget->blockSignals( b );
   mAtlasSortExpressionWidget->blockSignals( b );
   mAtlasFilenamePatternEdit->blockSignals( b );
+  mAtlasLimitCoverageLayerRenderCheckBox->blockSignals( b );
   mAtlasHideCoverageCheckBox->blockSignals( b );
   mAtlasSingleFileCheckBox->blockSignals( b );
   mAtlasSortFeatureCheckBox->blockSignals( b );

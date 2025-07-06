@@ -2912,6 +2912,7 @@ The development version
       LosslessImageRendering,
       SynchronousLegendGraphics,
       AlwaysUseGlobalMasks,
+      LimitCoverageLayerRenderToCurrentFeature,
     };
 
     typedef QFlags<Qgis::LayoutRenderFlag> LayoutRenderFlags;
@@ -3346,6 +3347,10 @@ The development version
       ResizeRightUp,
       ResizeLeftDown,
       ResizeRightDown,
+      RotateTopLeft,
+      RotateTopRight,
+      RotateBottomLeft,
+      RotateBottomRight,
       SelectItem,
       NoAction
     };

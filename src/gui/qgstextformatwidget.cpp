@@ -284,7 +284,7 @@ void QgsTextFormatWidget::initWidget()
   mSpinStretch->setClearValue( 100 );
   mTabStopDistanceSpin->setMinimum( 0 );
 
-  connect( mLineHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mLineHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLineHeightUnitWidget->unit() == Qgis::RenderUnit::Percentage )
       mFontLineHeightSpinBox->setClearValue( 100.0 );
     else
@@ -603,19 +603,19 @@ void QgsTextFormatWidget::initWidget()
   connect( mQuadrantBtnGrp, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
 
   connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateBufferFrameStatus );
-  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, this, [=]( int ) {
+  connect( mBufferDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) {
     updateBufferFrameStatus();
   } );
   connect( mShapeDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateShapeFrameStatus );
-  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, this, [=]( int ) {
+  connect( mShapeDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) {
     updateShapeFrameStatus();
   } );
   connect( mShadowDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateShadowFrameStatus );
-  connect( mShadowDrawChkBx, &QCheckBox::stateChanged, this, [=]( int ) {
+  connect( mShadowDrawChkBx, &QCheckBox::stateChanged, this, [this]( int ) {
     updateShadowFrameStatus();
   } );
   connect( mCalloutDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updateCalloutFrameStatus );
-  connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [=]( int ) {
+  connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [this]( int ) {
     updateCalloutFrameStatus();
   } );
 
@@ -2283,7 +2283,7 @@ void QgsTextFormatWidget::configureTabStops()
     widget->setPanelTitle( tr( "Tab Positions" ) );
     widget->setPositions( mTabPositions );
     widget->setUnit( mTabDistanceUnitWidget->unit() );
-    connect( widget, &QgsTabPositionWidget::positionsChanged, this, [=]( const QList<QgsTextFormat::Tab> &positions ) {
+    connect( widget, &QgsTabPositionWidget::positionsChanged, this, [this]( const QList<QgsTextFormat::Tab> &positions ) {
       mTabPositions = positions;
       mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
       emit widgetChanged();
@@ -2406,7 +2406,7 @@ QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format,
   : QgsPanelWidgetWrapper( new QgsTextFormatWidget( format, mapCanvas, nullptr, layer ), parent )
 {
   mFormatWidget = qobject_cast<QgsTextFormatWidget *>( widget() );
-  connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [=] {
+  connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [this] {
     if ( !mBlockSignals )
       emit widgetChanged();
   } );

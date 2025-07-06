@@ -67,7 +67,7 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
   QMenu *menu = new QMenu( mEditButton );
 
   // Add menu items
-  menu->addAction( tr( "Convert All Field Names to Lowercase" ), this, [=]() {
+  menu->addAction( tr( "Convert All Field Names to Lowercase" ), this, [this]() {
     QgsFieldMappingModel *model = mFieldsView->model();
     for ( int i = 0; i < model->rowCount(); i++ )
     {
@@ -77,7 +77,7 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     }
   } );
 
-  menu->addAction( tr( "Convert All Field Names to Uppercase" ), this, [=]() {
+  menu->addAction( tr( "Convert All Field Names to Uppercase" ), this, [this]() {
     QgsFieldMappingModel *model = mFieldsView->model();
     for ( int i = 0; i < model->rowCount(); i++ )
     {

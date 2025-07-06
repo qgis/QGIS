@@ -168,25 +168,25 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     mSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization );
     mSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [=] {
+    connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
       mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
       refresh();
     } );
     mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-    connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [=] {
+    connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
       mSettings.setTransformContext( QgsProject::instance()->transformContext() );
       emit transformContextChanged();
       refresh();
     } );
 
     mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
-    connect( QgsProject::instance(), &QgsProject::scaleMethodChanged, this, [=] {
+    connect( QgsProject::instance(), &QgsProject::scaleMethodChanged, this, [this] {
       mSettings.setScaleMethod( QgsProject::instance()->scaleMethod() );
       updateScale();
       refresh();
     } );
 
-    connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
+    connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this] {
       QgsCoordinateReferenceSystem crs = mSettings.destinationCrs();
       crs.updateDefinition();
       if ( mSettings.destinationCrs() != crs )
@@ -1277,7 +1277,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   }
   copyCoordinateMenu->addSeparator();
   QAction *setCustomCrsAction = new QAction( tr( "Set Custom CRS…" ), &menu );
-  connect( setCustomCrsAction, &QAction::triggered, this, [=] {
+  connect( setCustomCrsAction, &QAction::triggered, this, [this, customCrsString] {
     QgsProjectionSelectionDialog selector( this );
     selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
     if ( selector.exec() )
@@ -1412,7 +1412,7 @@ void QgsMapCanvas::setMapController( QgsAbstract2DMapController *controller )
 
 #if 0
   // connect high level signals to the canvas, e.g.
-  connect( mMapController, &QgsAbstract2DMapController::zoomMap, this, [ = ]( double factor ) { zoomByFactor( factor ); } );
+  connect( mMapController, &QgsAbstract2DMapController::zoomMap, this, []( double factor ) { zoomByFactor( factor ); } );
 #endif
 }
 
@@ -3620,7 +3620,7 @@ void QgsMapCanvas::schedulePreviewJob( int number )
   mPreviewTimer.setSingleShot( true );
   mPreviewTimer.setInterval( Qgis::PREVIEW_JOB_DELAY_MS );
   disconnect( mPreviewTimerConnection );
-  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [=]() {
+  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [this, number]() {
     startPreviewJob( number );
   } );
   mPreviewTimer.start();

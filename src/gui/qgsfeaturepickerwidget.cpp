@@ -70,8 +70,8 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
 
   connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFeaturePickerWidget::onCurrentIndexChanged );
 
-  connect( mPreviousButton, &QToolButton::clicked, this, [=]() { browseFeatures( -1 ); } );
-  connect( mNextButton, &QToolButton::clicked, this, [=]() { browseFeatures( 1 ); } );
+  connect( mPreviousButton, &QToolButton::clicked, this, [this]() { browseFeatures( -1 ); } );
+  connect( mNextButton, &QToolButton::clicked, this, [this]() { browseFeatures( 1 ); } );
 
   mLineEdit = new QgsFilterLineEdit( nullptr, QgsApplication::nullRepresentation() );
   mLineEdit->setSelectOnFocus( true );

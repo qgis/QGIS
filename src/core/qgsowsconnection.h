@@ -110,6 +110,7 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsPagesize;
     static const QgsSettingsEntryString *settingsPagingEnabled;
     static const QgsSettingsEntryString *settingsWfsFeatureMode;
+    static const QgsSettingsEntryBool *settingsWfsForceInitialGetFeature;
     static const QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11;
     static const QgsSettingsEntryBool *settingsIgnoreAxisOrientation;
     static const QgsSettingsEntryBool *settingsInvertAxisOrientation;

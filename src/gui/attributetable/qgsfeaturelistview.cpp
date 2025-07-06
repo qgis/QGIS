@@ -90,7 +90,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
   connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )( const QModelIndexList &indexes )>( &QgsFeatureListView::repaintRequested ) );
   connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
   connect( mCurrentEditSelectionModel, &QItemSelectionModel::selectionChanged, this, &QgsFeatureListView::editSelectionChanged );
-  connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [=] { repaintRequested(); } );
+  connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [this] { repaintRequested(); } );
   connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, [this]() { ensureEditSelection(); } );
   connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, [this]() { ensureEditSelection(); } );
   connect( featureListModel, &QgsFeatureListModel::modelReset, this, [this]() { ensureEditSelection(); } );

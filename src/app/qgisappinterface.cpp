@@ -913,7 +913,7 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 void QgisAppInterface::preloadForm( const QString &uifile )
 {
-  QTimer::singleShot( 0, this, [=] {
+  QTimer::singleShot( 0, this, [this, uifile] {
     cacheloadForm( uifile );
   } );
 }

@@ -33,7 +33,7 @@ QgsExternalStorageRegistry::~QgsExternalStorageRegistry()
 
 QgsExternalStorage *QgsExternalStorageRegistry::externalStorageFromType( const QString &type ) const
 {
-  auto it = std::find_if( mBackends.begin(), mBackends.end(), [ = ]( QgsExternalStorage * storage )
+  auto it = std::find_if( mBackends.begin(), mBackends.end(), [type]( QgsExternalStorage * storage )
   {
     return storage->type() == type;
   } );

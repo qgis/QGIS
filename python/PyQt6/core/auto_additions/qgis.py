@@ -10135,6 +10135,9 @@ QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUs
 QgsLayoutRenderContext.Flag.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
 QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.is_monkey_patched = True
 QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \n.. versionadded:: 3.38"
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature = Qgis.LayoutRenderFlag.LimitCoverageLayerRenderToCurrentFeature
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.is_monkey_patched = True
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.__doc__ = "Limit coverage layer rendering to the current atlas feature. \n.. versionadded:: 4.0"
 Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendered.
 
 .. note::
@@ -10199,6 +10202,10 @@ Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendere
 
 
   Available as ``QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks`` in older QGIS releases.
+
+* ``LimitCoverageLayerRenderToCurrentFeature``: Limit coverage layer rendering to the current atlas feature.
+
+  .. versionadded:: 4.0
 
 
 """
@@ -11498,6 +11505,10 @@ Qgis.MouseHandlesAction.ResizeLeftUp.__doc__ = "Resize left up (Top left handle)
 Qgis.MouseHandlesAction.ResizeRightUp.__doc__ = "Resize right up (Top right handle)"
 Qgis.MouseHandlesAction.ResizeLeftDown.__doc__ = "Resize left down (Bottom left handle)"
 Qgis.MouseHandlesAction.ResizeRightDown.__doc__ = "Resize right down (Bottom right handle)"
+Qgis.MouseHandlesAction.RotateTopLeft.__doc__ = "Rotate from top left handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateTopRight.__doc__ = "Rotate from top right handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateBottomLeft.__doc__ = "Rotate from bottom left handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateBottomRight.__doc__ = "Rotate right bottom right handle. \n.. versionadded:: 4.0"
 Qgis.MouseHandlesAction.SelectItem.__doc__ = "Select item"
 Qgis.MouseHandlesAction.NoAction.__doc__ = "No action"
 Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
@@ -11513,6 +11524,22 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 * ``ResizeRightUp``: Resize right up (Top right handle)
 * ``ResizeLeftDown``: Resize left down (Bottom left handle)
 * ``ResizeRightDown``: Resize right down (Bottom right handle)
+* ``RotateTopLeft``: Rotate from top left handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateTopRight``: Rotate from top right handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateBottomLeft``: Rotate from bottom left handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateBottomRight``: Rotate right bottom right handle.
+
+  .. versionadded:: 4.0
+
 * ``SelectItem``: Select item
 * ``NoAction``: No action
 

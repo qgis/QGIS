@@ -60,7 +60,7 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
       mAutoScroll = false;
   } );
 
-  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [=] {
+  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [this] {
     if ( mLogger->rowCount() > ( QgsNetworkLogger::MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
     {
       // never trim expanded nodes
@@ -185,11 +185,11 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   connect( mActionShowSuccessful, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowSuccessful );
   connect( mActionShowCached, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowCached );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsNetworkLogger::clear );
-  connect( mActionRecord, &QAction::toggled, this, [=]( bool enabled ) {
+  connect( mActionRecord, &QAction::toggled, this, [this]( bool enabled ) {
     QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
     mLogger->enableLogging( enabled );
   } );
-  connect( mActionSaveLog, &QAction::triggered, this, [=]() {
+  connect( mActionSaveLog, &QAction::triggered, this, [this]() {
     if ( QMessageBox::warning( this, tr( "Save Network Log" ), tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
       return;
 
@@ -228,7 +228,7 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
   mToolbar->addSeparator();
   QCheckBox *disableCacheCheck = new QCheckBox( tr( "Disable cache" ) );
-  connect( disableCacheCheck, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( disableCacheCheck, &QCheckBox::toggled, this, []( bool checked ) {
     // note -- we deliberately do NOT store this as a permanent setting in QSettings
     // as it is designed to be a temporary debugging tool only and we don't want
     // users to accidentally leave this enabled and cause unnecessary server load...

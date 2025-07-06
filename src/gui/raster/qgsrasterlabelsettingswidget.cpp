@@ -234,7 +234,7 @@ void QgsRasterLabelSettingsWidget::changeNumberFormat()
     widget->setPanelTitle( tr( "Number Format" ) );
     widget->setFormat( mNumberFormat.get() );
     widget->registerExpressionContextGenerator( this );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       if ( !mBlockChangesSignal )
       {
         mNumberFormat.reset( widget->format() );

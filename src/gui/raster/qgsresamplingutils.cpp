@@ -53,7 +53,7 @@ void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer, QComboBox *zo
     addExtraEarlyResamplingMethodsToCombos();
   }
 
-  QObject::connect( mCbEarlyResampling, &QCheckBox::toggled, this, [=]( bool state ) {
+  QObject::connect( mCbEarlyResampling, &QCheckBox::toggled, this, [this]( bool state ) {
     if ( state )
       addExtraEarlyResamplingMethodsToCombos();
     else

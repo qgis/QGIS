@@ -84,7 +84,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::clampingChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::bindingChanged );
-  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     switch ( static_cast<Qgis::VectorProfileType>( mTypeComboBox->currentData().toInt() ) )
     {
       case Qgis::VectorProfileType::IndividualFeatures:
@@ -97,7 +97,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
     onChanged();
   } );
 
-  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     switch ( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) )
     {
       case Qgis::ProfileSurfaceSymbology::Line:

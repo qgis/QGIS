@@ -67,7 +67,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   connect( mLayer, &QgsVectorLayer::editCommandStarted, this, &QgsAttributeTableModel::bulkEditCommandStarted );
   connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsAttributeTableModel::bulkEditCommandStarted );
-  connect( mLayer, &QgsVectorLayer::afterRollBack, this, [=] {
+  connect( mLayer, &QgsVectorLayer::afterRollBack, this, [this] {
     mIsCleaningUpAfterRollback = true;
     bulkEditCommandEnded();
     mIsCleaningUpAfterRollback = false;
@@ -75,7 +75,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   connect( mLayer, &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
   connect( mLayerCache, &QgsVectorLayerCache::attributeValueChanged, this, &QgsAttributeTableModel::attributeValueChanged );
-  connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, [=]( QgsFeatureId id ) { featureAdded( id ); } );
+  connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, [this]( QgsFeatureId id ) { featureAdded( id ); } );
   connect( mLayerCache, &QgsVectorLayerCache::cachedLayerDeleted, this, &QgsAttributeTableModel::layerDeleted );
 }
 

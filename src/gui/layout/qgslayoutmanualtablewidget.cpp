@@ -210,7 +210,7 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
   if ( parent )
     connect( parent, &QWidget::destroyed, sEditorDialog, &QMainWindow::close );
 
-  connect( sEditorDialog, &QgsTableEditorDialog::tableChanged, table, [=] {
+  connect( sEditorDialog, &QgsTableEditorDialog::tableChanged, table, [table] {
     table->beginCommand( tr( "Change Table Contents" ) );
     table->setTableContents( sEditorDialog->tableContents() );
 
@@ -249,7 +249,7 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
     table->endCommand();
   } );
 
-  connect( sEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [=]( bool included ) {
+  connect( sEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [table]( bool included ) {
     table->beginCommand( tr( "Change Table Header" ) );
     table->setIncludeTableHeader( included );
     table->endCommand();

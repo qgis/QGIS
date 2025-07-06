@@ -50,7 +50,7 @@ QgsMapThemes::QgsMapThemes()
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
   mActionRenameCurrentPreset = mMenu->addAction( tr( "Rename Current Theme…" ), this, &QgsMapThemes::renameCurrentPreset );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [=] { addPreset(); } );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [this] { addPreset(); } );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, &QgsMapThemes::removeCurrentPreset );

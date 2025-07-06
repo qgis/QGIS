@@ -145,12 +145,12 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
   mDialog = new QgsProfileMeasureResultsDialog();
 
   connect( this, &QgsElevationProfileToolMeasure::cleared, mDialog, &QDialog::hide );
-  connect( this, &QgsElevationProfileToolMeasure::measureChanged, mDialog, [=]( double totalDistance, double deltaCurve, double deltaElevation ) {
+  connect( this, &QgsElevationProfileToolMeasure::measureChanged, mDialog, [this]( double totalDistance, double deltaCurve, double deltaElevation ) {
     mDialog->setCrs( mElevationCanvas->crs() );
     mDialog->setMeasures( totalDistance, deltaCurve, deltaElevation );
     mDialog->show();
   } );
-  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [=] {
+  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [this] {
     clear();
   } );
 }

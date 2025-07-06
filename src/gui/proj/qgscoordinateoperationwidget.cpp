@@ -44,7 +44,7 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   mInstallGridButton->hide();
 
   connect( mInstallGridButton, &QPushButton::clicked, this, &QgsCoordinateOperationWidget::installGrid );
-  connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [=] {
+  connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [this] {
     if ( !mBlockSignals )
       emit operationChanged();
   } );
@@ -58,7 +58,7 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   mShowSupersededCheckBox->setVisible( true );
   mLabelDstDescription->hide();
 
-  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [=] { loadAvailableOperations(); } );
+  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [this] { loadAvailableOperations(); } );
   connect( mShowSupersededCheckBox, &QCheckBox::toggled, this, &QgsCoordinateOperationWidget::showSupersededToggled );
   connect( mCoordinateOperationTableWidget, &QTableWidget::currentItemChanged, this, &QgsCoordinateOperationWidget::tableCurrentItemChanged );
   connect( mCoordinateOperationTableWidget, &QTableWidget::itemDoubleClicked, this, &QgsCoordinateOperationWidget::operationDoubleClicked );

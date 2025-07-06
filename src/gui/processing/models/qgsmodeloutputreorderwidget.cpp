@@ -34,7 +34,7 @@ QgsModelOutputReorderWidget::QgsModelOutputReorderWidget( QWidget *parent )
   mOutputsList->setDragEnabled( true );
   mOutputsList->setDragDropMode( QAbstractItemView::InternalMove );
 
-  connect( mButtonUp, &QPushButton::clicked, this, [=] {
+  connect( mButtonUp, &QPushButton::clicked, this, [this] {
     int currentRow = mOutputsList->currentIndex().row();
     if ( currentRow == 0 )
       return;
@@ -43,7 +43,7 @@ QgsModelOutputReorderWidget::QgsModelOutputReorderWidget( QWidget *parent )
     mOutputsList->setCurrentIndex( mItemModel->index( currentRow - 1, 0 ) );
   } );
 
-  connect( mButtonDown, &QPushButton::clicked, this, [=] {
+  connect( mButtonDown, &QPushButton::clicked, this, [this] {
     int currentRow = mOutputsList->currentIndex().row();
     if ( currentRow == mItemModel->rowCount() - 1 )
       return;
