@@ -85,7 +85,7 @@ if (WITH_SERVER_PLUGINS)
 endif()
 
 if(NOT LIBRARY_TYPE EQUAL STATIC)
-  gen_win32_version_info("QGIS Server Core" "qgis_server" QGIS_SERVER_SRCS)
+  win32_version_info("QGIS Server Core" "qgis_server" QGIS_SERVER_SRCS)
 endif()
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
@@ -156,11 +156,13 @@ install(TARGETS qgis_server
 set(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
 
 SET(QGIS_SERVER_EX_SRCS qgis_map_serv.cpp)
-gen_win32_version_info("QGIS Server" "qgis_mapserv.fcgi" QGIS_SERVER_EX_SRCS)
+win32_icon(QGIS_SERVER_EX_SRCS)
+win32_version_info("QGIS Server" "qgis_mapserv.fcgi" QGIS_SERVER_EX_SRCS)
 add_executable(qgis_mapserv.fcgi ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
 
 SET(QGIS_SERVER_EX_SRCS qgis_mapserver.cpp)
-gen_win32_version_info("QGIS Server (Development Server)" "qgis_mapserver" QGIS_SERVER_EX_SRCS)
+win32_icon(QGIS_SERVER_EX_SRCS)
+win32_version_info("QGIS Server (Development Server)" "qgis_mapserver" QGIS_SERVER_EX_SRCS)
 add_executable(qgis_mapserver ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
 
 # require c++17

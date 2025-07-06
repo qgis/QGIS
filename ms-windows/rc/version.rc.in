@@ -1,5 +1,3 @@
-IDI_ICON1               ICON    DISCARDABLE     "@PROJECT_SOURCE_DIR@/ms-windows/rc/qgis.ico"
-
 #include <windows.h>
 
 #define VERSION          @CPACK_PACKAGE_VERSION_MAJOR@,@CPACK_PACKAGE_VERSION_MINOR@,@CPACK_PACKAGE_VERSION_PATCH@,0

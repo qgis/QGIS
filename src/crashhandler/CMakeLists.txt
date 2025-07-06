@@ -13,7 +13,8 @@ if(WIN32 AND NOT MINGW)
 endif()
 
 set (SRCS main.cpp)
-gen_win32_version_info("QGIS Crash Handler" "qgiscrashhandler" SRCS)
+win32_icon(SRCS)
+win32_version_info("QGIS Crash Handler" "qgiscrashhandler" SRCS)
 add_executable(qgiscrashhandler WIN32
   ${SRCS}
   ${CRASH_UIS_H}

@@ -15,7 +15,8 @@ endif()
 ########################################################
 # Build
 
-gen_win32_version_info("QGIS Process Command Tool" "qgis_process" QGIS_PROCESS_SRCS)
+win32_icon(QGIS_PROCESS_SRCS)
+win32_version_info("QGIS Process Command Tool" "qgis_process" QGIS_PROCESS_SRCS)
 
 add_executable (qgis_process ${QGIS_PROCESS_SRCS})
 
