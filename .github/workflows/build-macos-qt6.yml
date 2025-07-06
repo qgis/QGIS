@@ -141,8 +141,19 @@ jobs:
 
       - name: 🧪 Test
         run: |
+          # Install termcolor for the environment python (used in ctest2ci.py)
           python3 -m pip install termcolor
+
+          # Install test font
+          mkdir -p ~/Library/Fonts
+          cp tests/testdata/font/QGIS-Vera/* ~/Library/Fonts
+
           cd build
+
+          # Install nose2 using qgis bundled python
+          ./vcpkg_installed/${{ matrix.triplet }}/tools/python3/python3.11 -m pip install nose2 --user
+
+          # Run tests
           python3 ../.ci/ctest2ci.py ctest --output-on-failure -E code_layout
 
       - name: Archive app
