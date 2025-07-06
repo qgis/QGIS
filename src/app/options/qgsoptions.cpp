@@ -182,15 +182,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
   // to validate widgets before allowing dialog to be closed
   disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [=] {
-    for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
-    {
-      if ( !widget->isValid() )
-      {
-        setCurrentPage( widget->objectName() );
-        return;
-      }
-    }
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [this] {
+    saveOptions();
     accept();
   } );
 
@@ -200,7 +193,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( cmbIconSize, qOverload<int>( &QComboBox::highlighted ), this, &QgsOptions::iconSizeChanged );
   connect( cmbIconSize, &QComboBox::editTextChanged, this, &QgsOptions::iconSizeChanged );
 
-  connect( this, &QDialog::accepted, this, &QgsOptions::saveOptions );
   connect( this, &QDialog::rejected, this, &QgsOptions::rejectOptions );
 
   QStringList styles = QStyleFactory::keys();
