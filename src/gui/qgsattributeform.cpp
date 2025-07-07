@@ -1568,8 +1568,38 @@ void QgsAttributeForm::synchronizeState()
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+
     if ( eww )
     {
+      QComboBox *combo = this->findChild<QComboBox*>( eww->field().name() );
+      if( combo )
+      {
+        if ( combo->count() == 0 )
+        {
+          ww->setEnabled( false );
+          combo->setToolTip( tr( "No values available" ) );
+          if ( eww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+            combo->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+          combo->setStyleSheet("QComboBox { color: black; }");
+        }
+        else if ( combo->count() == 1 )
+        {
+          ww->setEnabled( false );
+          combo->setToolTip( tr( "No other values available" ) );
+          if ( eww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+            combo->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+          combo->setStyleSheet("QComboBox { color: black; }");
+        }
+        else
+        {
+          ww->setEnabled( true );
+          combo->setToolTip( QString() );
+          if ( eww->constraintResult() == QgsEditorWidgetWrapper::ConstraintResultFailSoft )
+            combo->setStyleSheet("QComboBox { background-color: rgba(255, 200, 45, 0.3); }");
+        }
+      }
+      else
+      {
       const QList<QgsAttributeFormEditorWidget *> formWidgets = mFormEditorWidgets.values( eww->fieldIdx() );
 
       for ( QgsAttributeFormEditorWidget *formWidget : formWidgets )
@@ -1581,13 +1611,13 @@ void QgsAttributeForm::synchronizeState()
       ww->setEnabled( enabled );
 
       updateIcon( eww );
+      }
     }
     else // handle QgsWidgetWrapper different than QgsEditorWidgetWrapper
     {
       ww->setEnabled( isEditable );
     }
   }
-
 
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
