@@ -314,6 +314,7 @@ Layout graphical items for displaying a map.
 %End
   public:
 
+
     enum AtlasScalingMode
     {
       Fixed,
