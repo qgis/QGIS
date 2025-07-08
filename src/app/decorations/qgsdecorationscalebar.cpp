@@ -271,14 +271,14 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   //If scale bar is very small (< 30 pixels) reset to max percentage of map canvas
   if ( scaleBarWidth < 30 )
   {
-    scaleBarWidth = deviceWidth * mMaximumWidth / 100;       // value in pixels
+    scaleBarWidth = deviceWidth * mMaximumWidth / 100.0;       // value in pixels
     unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel; // value in map units
   }
 
   //if scale bar is more than the maximum percentage of the width of the map canvas resize to maxWidth
-  if ( scaleBarWidth > deviceWidth * mMaximumWidth / 100 )
+  if ( scaleBarWidth > deviceWidth * mMaximumWidth / 100.0 )
   {
-    scaleBarWidth = deviceWidth * mMaximumWidth / 100;
+    scaleBarWidth = deviceWidth * mMaximumWidth / 100.0;
     unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel;
   }
 
