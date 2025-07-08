@@ -1364,7 +1364,7 @@ def fix_annotations(line):
         CONTEXT.skipped_params_remove.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_remove[-1]}")
 
-    _out_params = re.findall(r"(\w+)\s+SIP_OUT", line)
+    _out_params = re.findall(r"(\w+)\s+(?:SIP_OUT|SIP_DOCSTRING_OUT)", line)
     for param in _out_params:
         CONTEXT.skipped_params_out.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_out[-1]}")
@@ -1388,6 +1388,7 @@ def fix_annotations(line):
         r"\bSIP_KEEPREFERENCE\b": "/KeepReference/",
         r"\bSIP_NODEFAULTCTORS\b": "/NoDefaultCtors/",
         r"\bSIP_OUT\b": "/Out/",
+        r"\bSIP_DOCSTRING_OUT\b": "",
         r"\bSIP_RELEASEGIL\b": "/ReleaseGIL/",
         r"\bSIP_HOLDGIL\b": "/HoldGIL/",
         r"\bSIP_TRANSFER\b": "/Transfer/",
