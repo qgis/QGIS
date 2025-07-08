@@ -113,11 +113,11 @@ class TestPackageLayers(QgisTestCase):
         f = ogr.Feature(lyr.GetLayerDefn())
         f["name"] = "region one"
         outring = ogr.Geometry(ogr.wkbLinearRing)
-        outring.AddPoint(2580000, 1220500)
-        outring.AddPoint(2581000, 1220500)
-        outring.AddPoint(2581000, 1221500)
-        outring.AddPoint(2580000, 1221500)
-        outring.AddPoint(2580000, 1220500)
+        outring.AddPoint_2D(2580000, 1220500)
+        outring.AddPoint_2D(2581000, 1220500)
+        outring.AddPoint_2D(2581000, 1221500)
+        outring.AddPoint_2D(2580000, 1221500)
+        outring.AddPoint_2D(2580000, 1220500)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(outring)
         f.SetGeometry(polygon)
@@ -125,11 +125,11 @@ class TestPackageLayers(QgisTestCase):
         f = ogr.Feature(lyr.GetLayerDefn())
         f["name"] = "region two"
         outring = ogr.Geometry(ogr.wkbLinearRing)
-        outring.AddPoint(2581000, 1220000)
-        outring.AddPoint(2582000, 1220000)
-        outring.AddPoint(2582000, 1221000)
-        outring.AddPoint(2581000, 1221000)
-        outring.AddPoint(2581000, 1220000)
+        outring.AddPoint_2D(2581000, 1220000)
+        outring.AddPoint_2D(2582000, 1220000)
+        outring.AddPoint_2D(2582000, 1221000)
+        outring.AddPoint_2D(2581000, 1221000)
+        outring.AddPoint_2D(2581000, 1220000)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(outring)
         f.SetGeometry(polygon)
@@ -142,11 +142,11 @@ class TestPackageLayers(QgisTestCase):
         f["name"] = "province one"
         f["region"] = 1
         outring = ogr.Geometry(ogr.wkbLinearRing)
-        outring.AddPoint(2580000, 1220500)
-        outring.AddPoint(2580500, 1220500)
-        outring.AddPoint(2580500, 1221500)
-        outring.AddPoint(2580000, 1221500)
-        outring.AddPoint(2580000, 1220500)
+        outring.AddPoint_2D(2580000, 1220500)
+        outring.AddPoint_2D(2580500, 1220500)
+        outring.AddPoint_2D(2580500, 1221500)
+        outring.AddPoint_2D(2580000, 1221500)
+        outring.AddPoint_2D(2580000, 1220500)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(outring)
         f.SetGeometry(polygon)
@@ -155,11 +155,11 @@ class TestPackageLayers(QgisTestCase):
         f["name"] = "province two"
         f["region"] = 1
         outring = ogr.Geometry(ogr.wkbLinearRing)
-        outring.AddPoint(2580500, 1220500)
-        outring.AddPoint(2581000, 1220500)
-        outring.AddPoint(2581000, 1221500)
-        outring.AddPoint(2580500, 1221500)
-        outring.AddPoint(2580500, 1220500)
+        outring.AddPoint_2D(2580500, 1220500)
+        outring.AddPoint_2D(2581000, 1220500)
+        outring.AddPoint_2D(2581000, 1221500)
+        outring.AddPoint_2D(2580500, 1221500)
+        outring.AddPoint_2D(2580500, 1220500)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(outring)
         f.SetGeometry(polygon)
@@ -168,11 +168,11 @@ class TestPackageLayers(QgisTestCase):
         f["name"] = "province three"
         f["region"] = 2
         outring = ogr.Geometry(ogr.wkbLinearRing)
-        outring.AddPoint(2581000, 1220000)
-        outring.AddPoint(2582000, 1220000)
-        outring.AddPoint(2582000, 1220500)
-        outring.AddPoint(2581000, 1220500)
-        outring.AddPoint(2581000, 1220000)
+        outring.AddPoint_2D(2581000, 1220000)
+        outring.AddPoint_2D(2582000, 1220000)
+        outring.AddPoint_2D(2582000, 1220500)
+        outring.AddPoint_2D(2581000, 1220500)
+        outring.AddPoint_2D(2581000, 1220000)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(outring)
         f.SetGeometry(polygon)
@@ -181,11 +181,11 @@ class TestPackageLayers(QgisTestCase):
         f["name"] = "province four"
         f["region"] = 2
         outring = ogr.Geometry(ogr.wkbLinearRing)
-        outring.AddPoint(2581000, 1220500)
-        outring.AddPoint(2582000, 1220500)
-        outring.AddPoint(2582000, 1221000)
-        outring.AddPoint(2581000, 1221000)
-        outring.AddPoint(2581000, 1220500)
+        outring.AddPoint_2D(2581000, 1220500)
+        outring.AddPoint_2D(2582000, 1220500)
+        outring.AddPoint_2D(2582000, 1221000)
+        outring.AddPoint_2D(2581000, 1221000)
+        outring.AddPoint_2D(2581000, 1220500)
         polygon = ogr.Geometry(ogr.wkbPolygon)
         polygon.AddGeometry(outring)
         f.SetGeometry(polygon)
@@ -198,28 +198,28 @@ class TestPackageLayers(QgisTestCase):
         f["name"] = "city one"
         f["province"] = 1
         point = ogr.Geometry(ogr.wkbPoint)
-        point.AddPoint(2580200, 1221200)
+        point.AddPoint_2D(2580200, 1221200)
         f.SetGeometry(point)
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f["name"] = "city two"
         f["province"] = 1
         point = ogr.Geometry(ogr.wkbPoint)
-        point.AddPoint(2580400, 1220700)
+        point.AddPoint_2D(2580400, 1220700)
         f.SetGeometry(point)
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f["name"] = "city three"
         f["province"] = 2
         point = ogr.Geometry(ogr.wkbPoint)
-        point.AddPoint(2580900, 1220900)
+        point.AddPoint_2D(2580900, 1220900)
         f.SetGeometry(point)
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f["name"] = "city four"
         f["province"] = 4
         point = ogr.Geometry(ogr.wkbPoint)
-        point.AddPoint(2581200, 1220300)
+        point.AddPoint_2D(2581200, 1220300)
         f.SetGeometry(point)
         lyr.CreateFeature(f)
 
@@ -521,20 +521,20 @@ class TestPackageLayers(QgisTestCase):
             parameters,
             {
                 "region": {
-                    1: "Polygon Z ((7.175 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.175 47.144 0, 7.175 47.135 0))",
-                    2: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.131 0))",
+                    1: "Polygon ((7.175 47.135, 7.188 47.135, 7.188 47.144, 7.175 47.144, 7.175 47.135))",
+                    2: "Polygon ((7.188 47.131, 7.201 47.131, 7.201 47.14, 7.188 47.14, 7.188 47.131))",
                 },
                 "province": {
-                    1: "Polygon Z ((7.175 47.135 0, 7.182 47.135 0, 7.182 47.144 0, 7.175 47.144 0, 7.175 47.135 0))",
-                    2: "Polygon Z ((7.182 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.182 47.144 0, 7.182 47.135 0))",
-                    3: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.135 0, 7.188 47.135 0, 7.188 47.131 0))",
-                    4: "Polygon Z ((7.188 47.135 0, 7.201 47.135 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.135 0))",
+                    1: "Polygon ((7.175 47.135, 7.182 47.135, 7.182 47.144, 7.175 47.144, 7.175 47.135))",
+                    2: "Polygon ((7.182 47.135, 7.188 47.135, 7.188 47.144, 7.182 47.144, 7.182 47.135))",
+                    3: "Polygon ((7.188 47.131, 7.201 47.131, 7.201 47.135, 7.188 47.135, 7.188 47.131))",
+                    4: "Polygon ((7.188 47.135, 7.201 47.135, 7.201 47.14, 7.188 47.14, 7.188 47.135))",
                 },
                 "city": {
-                    1: "Point Z (7.178 47.141 0)",
-                    2: "Point Z (7.18 47.137 0)",
-                    3: "Point Z (7.187 47.139 0)",
-                    4: "Point Z (7.191 47.133 0)",
+                    1: "Point (7.178 47.141)",
+                    2: "Point (7.18 47.137)",
+                    3: "Point (7.187 47.139)",
+                    4: "Point (7.191 47.133)",
                 },
             },
         )
@@ -549,15 +549,15 @@ class TestPackageLayers(QgisTestCase):
             parameters,
             {
                 "region": {
-                    1: "Polygon Z ((7.175 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.175 47.144 0, 7.175 47.135 0))",
-                    2: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.131 0))",
+                    1: "Polygon ((7.175 47.135, 7.188 47.135, 7.188 47.144, 7.175 47.144, 7.175 47.135))",
+                    2: "Polygon ((7.188 47.131, 7.201 47.131, 7.201 47.14, 7.188 47.14, 7.188 47.131))",
                 },
                 "province": {
-                    2: "Polygon Z ((7.182 47.135 0, 7.188 47.135 0, 7.188 47.144 0, 7.182 47.144 0, 7.182 47.135 0))",
-                    3: "Polygon Z ((7.188 47.131 0, 7.201 47.131 0, 7.201 47.135 0, 7.188 47.135 0, 7.188 47.131 0))",
-                    4: "Polygon Z ((7.188 47.135 0, 7.201 47.135 0, 7.201 47.14 0, 7.188 47.14 0, 7.188 47.135 0))",
+                    2: "Polygon ((7.182 47.135, 7.188 47.135, 7.188 47.144, 7.182 47.144, 7.182 47.135))",
+                    3: "Polygon ((7.188 47.131, 7.201 47.131, 7.201 47.135, 7.188 47.135, 7.188 47.131))",
+                    4: "Polygon ((7.188 47.135, 7.201 47.135, 7.201 47.14, 7.188 47.14, 7.188 47.135))",
                 },
-                "city": {3: "Point Z (7.187 47.139 0)", 4: "Point Z (7.191 47.133 0)"},
+                "city": {3: "Point (7.187 47.139)", 4: "Point (7.191 47.133)"},
             },
         )
 
