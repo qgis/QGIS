@@ -196,6 +196,10 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
       case Qgis::MouseHandlesAction::MoveItem:
       case Qgis::MouseHandlesAction::NoAction:
       case Qgis::MouseHandlesAction::SelectItem:
+      case Qgis::MouseHandlesAction::RotateTopLeft:
+      case Qgis::MouseHandlesAction::RotateTopRight:
+      case Qgis::MouseHandlesAction::RotateBottomLeft:
+      case Qgis::MouseHandlesAction::RotateBottomRight:
         return;
 
       case Qgis::MouseHandlesAction::ResizeUp:

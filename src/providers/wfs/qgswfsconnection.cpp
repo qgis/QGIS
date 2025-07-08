@@ -54,6 +54,12 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
     mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsPagingEnabled->value( detailsParameters ) );
   }
 
+  if ( settingsWfsForceInitialGetFeature->exists( detailsParameters ) )
+  {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ); // setParam allow for duplicates!
+    mUri.setParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE, settingsWfsForceInitialGetFeature->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  }
+
   if ( settingsPreferCoordinatesForWfsT11->exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ); // setParam allow for duplicates!

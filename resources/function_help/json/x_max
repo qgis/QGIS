@@ -8,8 +8,11 @@
     "description": "a geometry"
   }],
   "examples": [{
+    "expression": "x_max(@geometry)",
+    "returns": "the maximum x coordinate of the current feature's geometry"
+    },{
     "expression": "x_max( geom_from_wkt( 'LINESTRING(2 5, 3 6, 4 8)') )",
     "returns": "4"
   }],
-  "tags": ["coordinate", "spatial", "reference", "calculations", "system", "maximum"]
+  "tags": ["coordinate", "spatial", "reference", "calculations", "system", "maximum", "east"]
 }

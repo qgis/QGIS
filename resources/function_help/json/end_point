@@ -8,6 +8,9 @@
     "description": "geometry object"
   }],
   "examples": [{
+    "expression": "end_point(@geometry)",
+    "returns": "end point of the current feature's geometry"
+  },{
     "expression": "geom_to_wkt(end_point(geom_from_wkt('LINESTRING(4 0, 4 2, 0 2)')))",
     "returns": "'Point (0 2)'"
   }],

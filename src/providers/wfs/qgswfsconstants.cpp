@@ -42,6 +42,7 @@ const QString QgsWFSConstants::URI_PARAM_PAGING_ENABLED( QStringLiteral( "paging
 const QString QgsWFSConstants::URI_PARAM_PAGE_SIZE( QStringLiteral( "pageSize" ) );
 const QString QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES( QStringLiteral( "preferCoordinatesForWfsT11" ) );
 const QString QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE( QStringLiteral( "skipInitialGetFeature" ) );
+const QString QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE( QStringLiteral( "forceInitialGetFeature" ) );
 const QString QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER( QStringLiteral( "geometryTypeFilter" ) );
 const QString QgsWFSConstants::URI_PARAM_SQL( QStringLiteral( "sql" ) );
 const QString QgsWFSConstants::URI_PARAM_HTTPMETHOD( QStringLiteral( "httpMethod" ) );

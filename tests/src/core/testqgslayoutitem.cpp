@@ -244,7 +244,7 @@ void TestQgsLayoutItem::registry()
   QVERIFY( !registry.addLayoutItemType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
 
-  //retrieve metadata
+  // retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
   QCOMPARE( registry.itemMetadata( 2 )->visibleName(), QStringLiteral( "my type" ) );
   QCOMPARE( registry.itemMetadata( 2 )->visiblePluralName(), QStringLiteral( "my types" ) );
@@ -261,7 +261,24 @@ void TestQgsLayoutItem::registry()
   registry.resolvePaths( 2, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
 
-  //test populate
+  // Test remove item type
+  QgsLayoutItemMetadata *metadata_42 = new QgsLayoutItemMetadata( 42, QStringLiteral( "my other type" ), QStringLiteral( "my other types" ), create, resolve );
+  QVERIFY( registry.addLayoutItemType( metadata_42 ) );
+  QCOMPARE( registry.itemTypes().count(), 2 );
+  QCOMPARE( spyTypeAdded.value( 1 ).at( 0 ).toInt(), 42 );
+
+  const QSignalSpy spyTypeRemoved( &registry, &QgsLayoutItemRegistry::typeRemoved );
+  QVERIFY( registry.removeLayoutItemType( 2 ) ); // Remove by id
+  QCOMPARE( spyTypeRemoved.count(), 1 );
+  QCOMPARE( spyTypeRemoved.value( 0 ).at( 0 ).toInt(), 2 );
+  QCOMPARE( registry.itemTypes().count(), 1 );
+
+  QVERIFY( registry.removeLayoutItemType( metadata_42 ) ); // Remove by metadata
+  QCOMPARE( spyTypeRemoved.count(), 2 );
+  QCOMPARE( spyTypeRemoved.value( 1 ).at( 0 ).toInt(), 42 );
+  QCOMPARE( registry.itemTypes().count(), 0 );
+
+  // test populate
   QgsLayoutItemRegistry reg2;
   QVERIFY( reg2.itemTypes().isEmpty() );
   QVERIFY( reg2.populate() );

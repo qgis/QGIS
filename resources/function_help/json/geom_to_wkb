@@ -9,7 +9,7 @@
   }],
   "examples": [{
     "expression": "geom_to_wkb( @geometry )",
-    "returns": "binary blob containing a geometry object"
+    "returns": "binary blob of the current feature's geometry"
   }],
   "tags": ["wkb", "binary", "representation", "known", "conversion"]
 }

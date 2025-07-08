@@ -323,6 +323,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
   public:
 
     /**
+     * Settings entry - Whether to force rasterised clipping masks, regardless of output format.
+     *
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryBool *settingForceRasterMasks SIP_SKIP;
+
+    /**
      * Scaling modes used for the serial rendering (atlas)
      */
     enum AtlasScalingMode

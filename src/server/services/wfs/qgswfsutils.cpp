@@ -68,8 +68,10 @@ namespace QgsWfs
     QString name = layer->name();
     if ( !layer->serverProperties()->shortName().isEmpty() )
       name = layer->serverProperties()->shortName();
-    name = name.replace( ' ', '_' ).replace( ':', '-' );
-    return name;
+
+    name.replace( ' ', '_' ).replace( ':', '-' ).replace( QChar( 0x2014 ) /* em-dash */, '-' );
+
+    return name.toLocal8Bit();
   }
 
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )

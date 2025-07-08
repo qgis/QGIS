@@ -43,6 +43,7 @@
 #include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
+class QgsAbstractProfileSource;
 class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -1801,6 +1802,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
+
+
+    /**
+     * Returns the layer's profile source if it has profile capabilities. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QgsAbstractProfileSource *profileSource() { return nullptr; }
 
     /**
      * Returns path to the placeholder image or an empty string if a generated legend is shown

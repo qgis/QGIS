@@ -42,12 +42,15 @@
 #include "qgsunittypes.h"
 #include "qgsfeatureexpressionfilterprovider.h"
 #include "qgsgroupedfeaturefilterprovider.h"
+#include "qgssettingstree.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QScreen>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
+
+const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterised clipping masks, regardless of output format." ) );
 
 QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -1768,6 +1771,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
     jobMapSettings.setMaskSettings( mLayout->renderContext().maskSettings() );
     jobMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
+    if ( settingForceRasterMasks->value() )
+    {
+      jobMapSettings.setFlag( Qgis::MapSettingsFlag::ForceRasterMasks, true );
+    }
   }
   else
   {

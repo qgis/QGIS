@@ -658,6 +658,9 @@ class Repositories(QObject):
                         .text()
                         .strip()
                     )
+                    supports_qt6 = pluginNodes.item(i).firstChildElement(
+                        "supports_qt6"
+                    ).text().strip().upper() in ["TRUE", "YES"]
                     if not qgisMaximumVersion:
                         if qgisMinimumVersion[0] == "3" and supports_qt6:
                             qgisMaximumVersion = "4.99"

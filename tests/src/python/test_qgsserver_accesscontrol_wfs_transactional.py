@@ -35,7 +35,7 @@ WFS_TRANSACTION_INSERT = """<?xml version="1.0" encoding="UTF-8"?>
         </gml:Point>
       </qgs:geometry>
       <qgs:gid>{gid}</qgs:gid>
-      <qgs:name>{name}</qgs:name>
+      <qgs:name>new_name</qgs:name>
       <qgs:color>{color}</qgs:color>
     </qgs:db_point>
   </wfs:Insert>
@@ -311,6 +311,8 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
         drv = ogr.GetDriverByName("GPKG")
         ds = drv.CreateDataSource(cls.temporary_path + "/test_z.gpkg")
         layer_names = []
+        sr = ogr.osr.SpatialReference()
+        sr.ImportFromEPSG(4326)
         for wkb_type_name in ["Point", "LineString", "Polygon"]:
             for prefix in ["", "Multi"]:
                 wkb_type_name = prefix + wkb_type_name
@@ -319,6 +321,7 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
                 layer_names.append(layer_name)
                 layer = ds.CreateLayer(
                     layer_name,
+                    srs=sr,
                     geom_type=wkb_type,
                     options=["GEOMETRY_NAME=geom"],
                 )
@@ -404,9 +407,9 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
         self.do_insert("test_linestring", "LINESTRING Z (1 2 3, 4 5 6, 7 8 9)")
         self.do_update("test_linestring", "LINESTRING Z (10 11 12, 13 14 15, 16 17 18)")
 
-        self.do_insert("test_polygon", "POLYGON Z ((1 2 3, 4 5 6, 7 8 9, 1 2 3))")
+        self.do_insert("test_polygon", "POLYGON Z ((1 2 3, 1 5 6, 2 5 9, 1 2 3))")
         self.do_update(
-            "test_polygon", "POLYGON Z ((10 11 12, 13 14 15, 16 17 18, 10 11 12))"
+            "test_polygon", "POLYGON Z ((11 12 3, 11 15 6, 17 15 9, 11 12 3))"
         )
 
         self.do_insert("test_multipoint", "MULTIPOINT Z (1 2 3, 4 5 6, 7 8 9)")
@@ -423,11 +426,11 @@ class TestQgsServerAccessControlWFSTransactionalZ(QgsServerTestBase):
 
         self.do_insert(
             "test_multipolygon",
-            "MULTIPOLYGON Z (((1 2 3, 4 5 6, 7 8 9, 1 2 3)), ((10 11 12, 13 14 15, 16 17 18, 10 11 12)))",
+            "MULTIPOLYGON Z (((1 2 3, 1 5 6, 7 5 9, 1 2 3)), ((10 11 12, 10 14 15, 16 14 18, 10 11 12)))",
         )
         self.do_update(
             "test_multipolygon",
-            "MULTIPOLYGON Z (((10 11 12, 13 14 15, 16 17 18, 10 11 12)), ((19 20 21, 22 23 24, 25 26 27, 19 20 21)))",
+            "MULTIPOLYGON Z (((10 11 12, 10 14 15, 16 14 18, 10 11 12)), ((19 20 21, 19 23 24, 25 23 27, 19 20 21)))",
         )
 
 

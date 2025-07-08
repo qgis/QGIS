@@ -293,6 +293,13 @@ void TestQgsOgcUtils::testGeometryZToGML()
   elem.save( stream, 0 /*indent*/ );
 
   QCOMPARE( QgsOgcUtils::geometryFromGML( str ).asWkt(), geom.asWkt() );
+
+  //  Test GML2
+  elem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML2" ) );
+  QVERIFY( !elem.isNull() );
+  str.clear();
+  elem.save( stream, 0 /*indent*/ );
+  QCOMPARE( QgsOgcUtils::geometryFromGML( str ).asWkt(), geom.asWkt() );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()

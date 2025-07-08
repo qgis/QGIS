@@ -93,6 +93,9 @@ class QgsWFSDataSourceURI
     //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
 
+    //! Returns TRUE if an initial get features should always be issued.
+    bool forceInitialGetFeature() const;
+
     //! Returns whether there is a geometry type filter.
     bool hasGeometryTypeFilter() const;
 

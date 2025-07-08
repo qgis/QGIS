@@ -8,6 +8,9 @@
     "description": "a geometry"
   }],
   "examples": [{
+    "expression": "convex_hull(@geometry)",
+    "returns": "convex hull of the current feature's geometry"
+  },{
     "expression": "geom_to_wkt( convex_hull( geom_from_wkt( 'LINESTRING(3 3, 4 4, 4 10)' ) ) )",
     "returns": "'POLYGON((3 3, 4 10, 4 4, 3 3))'"
   }],
