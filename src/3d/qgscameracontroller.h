@@ -426,10 +426,10 @@ class _3D_EXPORT QgsCameraController : public QObject
     QgsVector3D globeViewCenterLonLat();
 
     /*
-     * Raycast our view center to the current terrain, sometimes it ends up way
-     * below/above.
+     * Reset our view center to the closest possible point to near, sometimes
+     * it ends up way below/above.
      */
-    void refreshViewCenter();
+    void refreshViewCenter( QVector3D &near );
 
     //! The 3d scene the controller uses
     Qgs3DMapScene *mScene = nullptr;
