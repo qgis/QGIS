@@ -247,6 +247,47 @@ class TestQgsExtentGroupBox(QgisTestCase):
             w.outputExtent().toString(4), QgsRectangle(1, 2, 3, 4).toString(4)
         )
         
+    def testSnapToGrid(self):
+        """Test snap to grid functionality"""
+        w = QgsExtentGroupBox()
+        
+        # Set an initial extent
+        extent = QgsRectangle(12.3, 23.4, 106.7, 122.8)
+        w.setOutputExtentFromUser(extent, QgsCoordinateReferenceSystem("EPSG:4326"))
+        
+        # Verify initial extent (without snap to grid)
+        self.assertEqual(
+            w.outputExtent().toString(1), extent.toString(1)
+        )
+        
+        # Set snap to grid parameters (resolution and origin point)
+        rasterXRes = 5.0
+        rasterYRes = 5.0
+        rasterMinX = 10.0
+        rasterMinY = 20.0
+        
+        # Enable snap to grid
+        w.setSnapToGrid(True, rasterXRes, rasterYRes, rasterMinX, rasterMinY)
+        
+        # Verify snap-to-grid is enabled
+        self.assertTrue(w.snapToGrid())
+        self.assertEqual(w.rasterXRes(), rasterXRes)
+        self.assertEqual(w.rasterYRes(), rasterYRes)
+        self.assertEqual(w.rasterMinX(), rasterMinX)
+        self.assertEqual(w.rasterMinY(), rasterMinY)
+        
+        # Verify the extent is snapped to the grid
+        expected_snapped = QgsRectangle(10.0, 20.0, 110.0, 125.0)
+        self.assertEqual(
+            w.outputExtent().toString(1), expected_snapped.toString(1)
+        )
+        
+        # Disable snap to grid and verify original extent is returned
+        w.setSnapToGrid(False, rasterXRes, rasterYRes, rasterMinX, rasterMinY)
+        self.assertEqual(
+            w.outputExtent().toString(1), extent.toString(1)
+        )
+
 
 
 if __name__ == "__main__":
