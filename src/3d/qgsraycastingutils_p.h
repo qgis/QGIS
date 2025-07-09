@@ -69,6 +69,7 @@ namespace QgsRayCastingUtils
       QVector3D point( float t ) const;
       float projectedDistance( QVector3D point ) const;
 
+      //! Project \a vector onto line defined by the ray.
       QVector3D project( QVector3D vector ) const;
 
       float distance( QVector3D point ) const;
