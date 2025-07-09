@@ -220,11 +220,11 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   const QgsVector3D p1 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   const QgsVector3D p2 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
 
-  const float xSide = std::abs( p1.x() - p2.x() );
-  const float ySide = std::abs( p1.y() - p2.y() );
-  const float side = std::max( xSide, ySide );
+  const double xSide = std::abs( p1.x() - p2.x() );
+  const double ySide = std::abs( p1.y() - p2.y() );
+  const double side = std::max( xSide, ySide );
 
-  const float fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
+  const double fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
   float distance = side / 2.0f / std::tan( fov / 2.0f );
 
   // adjust by elevation
