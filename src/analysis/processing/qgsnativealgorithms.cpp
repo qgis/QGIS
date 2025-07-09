@@ -219,6 +219,8 @@
 #include "qgsalgorithmremoveduplicatevertices.h"
 #include "qgsalgorithmremoveholes.h"
 #include "qgsalgorithmremovenullgeometry.h"
+#include "qgsalgorithmremovepartsbyarea.h"
+#include "qgsalgorithmremovepartsbylength.h"
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmrenametablefield.h"
 #include "qgsalgorithmrepairshapefile.h"
@@ -570,6 +572,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRemoveDuplicatesByAttributeAlgorithm() );
   addAlgorithm( new QgsRemoveHolesAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
+  addAlgorithm( new QgsRemovePartsByAreaAlgorithm() );
+  addAlgorithm( new QgsRemovePartsByLengthAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsRenameTableFieldAlgorithm() );
   addAlgorithm( new QgsRepairShapefileAlgorithm() );
