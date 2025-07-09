@@ -570,6 +570,120 @@ Calculates Cartesian azimuth between points (``x1``, ``y1``) and
 %End
 
 
+    static bool createChamfer( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
+                               double seg2StartX, double seg2StartY, double seg2EndX, double seg2EndY,
+                               double distance1, double distance2,
+                               double &chamferStartX /Out/, double &chamferStartY /Out/,
+                               double &chamferEndX /Out/, double &chamferEndY /Out/,
+                               double *trim1StartX = 0, double *trim1StartY = 0,
+                               double *trim1EndX = 0, double *trim1EndY = 0,
+                               double *trim2StartX = 0, double *trim2StartY = 0,
+                               double *trim2EndX = 0, double *trim2EndY = 0,
+                               double epsilon = 1e-8 ) /HoldGIL/;
+%Docstring
+Creates a chamfer (angled corner) between two line segments.
+
+This method generates a straight-line chamfer connecting two line
+segments at their intersection point. The chamfer distances can be
+specified independently for each segment, allowing for both symmetric
+and asymmetric chamfers.
+
+:param seg1StartX: x-coordinate of first segment start point
+:param seg1StartY: y-coordinate of first segment start point
+:param seg1EndX: x-coordinate of first segment end point
+:param seg1EndY: y-coordinate of first segment end point
+:param seg2StartX: x-coordinate of second segment start point
+:param seg2StartY: y-coordinate of second segment start point
+:param seg2EndX: x-coordinate of second segment end point
+:param seg2EndY: y-coordinate of second segment end point
+:param distance1: chamfer distance along first segment
+:param distance2: chamfer distance along second segment (if < 0, uses
+                  distance1)
+:param trim1StartX: optional output x-coordinate of trimmed first
+                    segment start
+:param trim1StartY: optional output y-coordinate of trimmed first
+                    segment start
+:param trim1EndX: optional output x-coordinate of trimmed first segment
+                  end
+:param trim1EndY: optional output y-coordinate of trimmed first segment
+                  end
+:param trim2StartX: optional output x-coordinate of trimmed second
+                    segment start
+:param trim2StartY: optional output y-coordinate of trimmed second
+                    segment start
+:param trim2EndX: optional output x-coordinate of trimmed second segment
+                  end
+:param trim2EndY: optional output y-coordinate of trimmed second segment
+                  end
+:param epsilon: tolerance for numerical comparisons and intersection
+                detection
+
+:return: - ``True`` if chamfer was successfully created
+         - chamferStartX: output x-coordinate of chamfer start point
+         - chamferStartY: output y-coordinate of chamfer start point
+         - chamferEndX: output x-coordinate of chamfer end point
+         - chamferEndY: output y-coordinate of chamfer end point
+
+.. versionadded:: 3.40
+%End
+
+    static bool createFillet( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
+                              double seg2StartX, double seg2StartY, double seg2EndX, double seg2EndY,
+                              double radius,
+                              double *filletPointsX, double *filletPointsY,
+                              double *trim1StartX = 0, double *trim1StartY = 0,
+                              double *trim1EndX = 0, double *trim1EndY = 0,
+                              double *trim2StartX = 0, double *trim2StartY = 0,
+                              double *trim2EndX = 0, double *trim2EndY = 0,
+                              double epsilon = 1e-8 ) /HoldGIL/;
+%Docstring
+Creates a fillet (rounded corner) between two line segments.
+
+This method generates a circular arc connecting two line segments at
+their intersection point. The fillet returns exactly 3 points defining a
+CircularString: start point, middle point, and end point of the arc.
+
+:param seg1StartX: x-coordinate of first segment start point
+:param seg1StartY: y-coordinate of first segment start point
+:param seg1EndX: x-coordinate of first segment end point
+:param seg1EndY: y-coordinate of first segment end point
+:param seg2StartX: x-coordinate of second segment start point
+:param seg2StartY: y-coordinate of second segment start point
+:param seg2EndX: x-coordinate of second segment end point
+:param seg2EndY: y-coordinate of second segment end point
+:param radius: radius of the fillet arc
+:param filletPointsX: output array of x-coordinates for 3 fillet points
+                      (start, middle, end)
+:param filletPointsY: output array of y-coordinates for 3 fillet points
+                      (start, middle, end)
+:param trim1StartX: optional output x-coordinate of trimmed first
+                    segment start
+:param trim1StartY: optional output y-coordinate of trimmed first
+                    segment start
+:param trim1EndX: optional output x-coordinate of trimmed first segment
+                  end
+:param trim1EndY: optional output y-coordinate of trimmed first segment
+                  end
+:param trim2StartX: optional output x-coordinate of trimmed second
+                    segment start
+:param trim2StartY: optional output y-coordinate of trimmed second
+                    segment start
+:param trim2EndX: optional output x-coordinate of trimmed second segment
+                  end
+:param trim2EndY: optional output y-coordinate of trimmed second segment
+                  end
+:param epsilon: tolerance for numerical comparisons and intersection
+                detection
+
+:return: ``True`` if fillet was successfully created
+
+.. note::
+
+   The caller must ensure that filletPointsX and filletPointsY arrays are
+   large enough to hold exactly 3 points defining the CircularString arc.
+
+.. versionadded:: 3.40
+%End
 };
 /************************************************************************
  * This file has been generated automatically from                      *
