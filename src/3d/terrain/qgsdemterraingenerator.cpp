@@ -73,16 +73,46 @@ QgsRectangle QgsDemTerrainGenerator::rootChunkExtent() const
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap )
+void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap )
 {
   QMutexLocker locker( &mRootNodeMutex );
+  const QgsChunkNodeId nodeId = node->tileId();
 
-  // save height map data in cache
-  mLoaderMap[tileId.text()] = heightMap;
-  //  if ( tileId.d >= mMaxLevel / 2 )
+  if ( !mLoaderMap.contains( nodeId.text() ) )
   {
-    // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
-    emit maxResTileReceived( tileId, extent );
+    // save height map data in cache
+    mLoaderMap[nodeId.text()] = heightMap;
+    cleanupHeightMapCache( node );
+    // if ( nodeId.d >= mMaxLevel / 2 )
+    {
+      // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
+      emit maxResTileReceived( nodeId, extent );
+    }
+  }
+}
+
+void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentNode ) const
+{
+  // check if all sibling are ok then delete parent height map in cache
+  QgsChunkNode *parent = currentNode->parent();
+
+  if ( parent && mLoaderMap.contains( parent->tileId().text() ) )
+  {
+    QgsChunkNode *const *children = parent->children();
+    bool deleteParentData = true;
+    for ( int i = 0; i < parent->childCount(); ++i )
+    {
+      if ( children[i]->state() != QgsChunkNode::Loading && children[i]->state() != QgsChunkNode::Loaded )
+      {
+        deleteParentData = false;
+        break;
+      }
+    }
+
+    if ( deleteParentData )
+    {
+      mLoaderMap.remove( parent->tileId().text() );
+    }
   }
 }
 
@@ -131,23 +161,8 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
       if ( loader && !loader->heightMap().isEmpty() )
       {
         mLoaderMap.insert( foundKey, loader->heightMap() );
+        cleanupHeightMapCache( found );
         heightMapData = loader->heightMap();
-
-        // check if all sibling are ok then delete parent height map in cache
-        QgsChunkNode *parent = found->parent();
-        if ( parent )
-        {
-          QgsChunkNode *const *children = parent->children();
-          bool doDeleteParentData = false;
-          for ( int i = 0; i < parent->childCount(); ++i )
-          {
-            doDeleteParentData &= children[i]->state() == QgsChunkNode::Loaded;
-          }
-          if ( doDeleteParentData )
-          {
-            mLoaderMap.remove( parent->tileId().text() );
-          }
-        }
       }
       else // no load in current tile, check for map in parents
       {
@@ -155,13 +170,20 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
         while ( parent )
         {
           loader = dynamic_cast<QgsDemTerrainTileLoader *>( parent->loader() );
-          if ( loader && !loader->heightMap().isEmpty() )
+          if ( loader )
           {
-            heightMapData = loader->heightMap();
+            if ( !loader->heightMap().isEmpty() )
+            {
+              heightMapData = loader->heightMap();
+              break;
+            }
+          }
+          else if ( mLoaderMap.contains( parent->tileId().text() ) )
+          {
+            heightMapData = mLoaderMap[parent->tileId().text()].constData();
             break;
           }
-          else
-            parent = parent->parent();
+          parent = parent->parent();
         }
       }
     }
@@ -171,8 +193,8 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     {
       const QgsRectangle extent = found->box3D().toRectangle();
 
-      int cellX = ( int ) ( ( x - extent.xMinimum() ) / extent.width() * mResolution + .5f );
-      int cellY = ( int ) ( ( extent.yMaximum() - y ) / extent.height() * mResolution + .5f );
+      int cellX = static_cast<int>( lround( ( x - extent.xMinimum() ) / extent.width() * mResolution ) );
+      int cellY = static_cast<int>( lround( ( extent.yMaximum() - y ) / extent.height() * mResolution ) );
       cellX = std::clamp( cellX, 0, mResolution - 1 );
       cellY = std::clamp( cellY, 0, mResolution - 1 );
 
@@ -202,7 +224,6 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
     mRootNode = node;
   }
 
-  QString key = node->tileId().text();
   // A bit of a hack to make cloning terrain generator work properly
   if ( mTerrain )
     return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
