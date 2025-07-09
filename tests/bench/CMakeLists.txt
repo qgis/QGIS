@@ -11,8 +11,8 @@ set (BENCH_SRCS
 
 add_executable (qgis_bench WIN32 ${BENCH_SRCS} )
 
-# require c++17
-target_compile_features(qgis_bench PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_bench PRIVATE cxx_std_20)
 
 include_directories(
 

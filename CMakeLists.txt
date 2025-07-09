@@ -73,6 +73,9 @@ set(QGIS_APP_NAME "qgis" CACHE STRING "The main app name and bundle name")
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
 #############################################################
@@ -531,8 +534,6 @@ if(WITH_CORE)
     set(QT_MIN_VERSION 6.4.0)
     set(QT_VERSION_BASE "Qt6")
     set(QT_VERSION_BASE_LOWER "qt6")
-    set(CMAKE_CXX_STANDARD 17)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
   else()
     set(QT_VERSION_MAJOR 5)
     set(QT_MIN_VERSION 5.15.2)

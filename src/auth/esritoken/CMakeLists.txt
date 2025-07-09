@@ -25,8 +25,8 @@ add_library(authmethod_esritoken_a STATIC ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKE
 
 target_include_directories(authmethod_esritoken_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/esritoken/core)
 
-# require c++17
-target_compile_features(authmethod_esritoken_a PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(authmethod_esritoken_a PRIVATE cxx_std_20)
 
 target_link_libraries(authmethod_esritoken_a qgis_core)
 
@@ -47,8 +47,8 @@ else()
   # dynamically loaded module
   add_library(authmethod_esritoken MODULE ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
 
-  # require c++17
-  target_compile_features(authmethod_esritoken PRIVATE cxx_std_17)
+  # require c++20
+  target_compile_features(authmethod_esritoken PRIVATE cxx_std_20)
 
   target_link_libraries(authmethod_esritoken qgis_core)
 

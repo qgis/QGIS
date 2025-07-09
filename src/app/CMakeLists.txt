@@ -512,9 +512,6 @@ endif()
 #############
 if (ANDROID)
   add_library(qgis ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
-
-  # require c++17
-  target_compile_features(qgis PRIVATE cxx_std_17)
 else()
   add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
@@ -522,10 +519,11 @@ else()
     qt_disable_unicode_defines(qgis)
   endif()
 
-  # require c++17
-  target_compile_features(qgis PRIVATE cxx_std_17)
   target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 endif()
+
+# require c++20
+target_compile_features(qgis PRIVATE cxx_std_20)
 
 set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
 
@@ -533,8 +531,8 @@ set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
 
-# require c++17
-target_compile_features(qgis_app PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_app PRIVATE cxx_std_20)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 if (POSTGRES_FOUND)
