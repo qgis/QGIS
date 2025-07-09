@@ -100,6 +100,8 @@ void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentN
     bool deleteParentData = true;
     for ( int i = 0; i < parent->childCount(); ++i )
     {
+      // if QgsChunkNode state is Loading, this means that the texture has been retrieved
+      // C VRAI CA ???
       if ( children[i]->state() != QgsChunkNode::Loading && children[i]->state() != QgsChunkNode::Loaded )
       {
         deleteParentData = false;
