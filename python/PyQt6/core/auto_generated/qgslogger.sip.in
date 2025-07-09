@@ -139,7 +139,6 @@ Logs the location of the call.
   public:
     QgsScopeLogger( const char *file, const char *func, int line );
     ~QgsScopeLogger();
-
 };
 
 /************************************************************************
