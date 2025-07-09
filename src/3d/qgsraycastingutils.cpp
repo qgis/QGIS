@@ -149,7 +149,7 @@ namespace QgsRayCastingUtils
   QVector3D Ray3D::project( QVector3D vector ) const
   {
     const QVector3D norm = m_direction.normalized();
-    return QVector3D::dotProduct( vector, norm ) * norm;
+    return m_origin + QVector3D::dotProduct( vector - m_origin, norm ) * norm;
   }
 
 
