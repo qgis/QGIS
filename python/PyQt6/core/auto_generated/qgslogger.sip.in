@@ -11,41 +11,6 @@
 
 
 
-  if ( level <= QgsLogger::debugLevel() )                                            \
-%Docstring
-*************************************************************************
-
-This program is free software; you can redistribute it and/or modify *
-it under the terms of the GNU General Public License as published by *
-the Free Software Foundation; either version 2 of the License, or * (at
-your option) any later version. *
-
-**************************************************************************
-%End
-  {                                                                                  \
-    QgsLogger::debug( QString( str ), ( level ), __FILE__, __FUNCTION__, __LINE__ ); \
-  }                                                                                  \
-  ( void ) ( 0 )
-  if ( level <= QgsLogger::debugLevel() )                            \
-  {                                                                  \
-    QgsLogger::debug( QString( str ), ( level ), file, func, line ); \
-  }                                                                  \
-  ( void ) ( 0 )
-  do                 \
-  {                  \
-  } while ( false )
-  do                         \
-  {                          \
-  } while ( false )
-  do                                   \
-  {                                    \
-  } while ( false )
-  do                                              \
-  {                                               \
-  } while ( false )
-  do                                                        \
-  {                                                         \
-  } while ( false )
 
 
 class QgsLogger
