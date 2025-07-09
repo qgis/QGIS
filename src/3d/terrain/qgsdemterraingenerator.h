@@ -86,10 +86,11 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     void maxResTileReceived( const QgsChunkNodeId &tileId, const QgsRectangle &extent );
 
   private slots:
-    void onHeightMapReceived( int jobId, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap );
+    void onHeightMapReceived( int jobId, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap );
 
   private:
     void updateGenerator();
+    void cleanupHeightMapCache( const QgsChunkNode *currentNode ) const;
 
     QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
