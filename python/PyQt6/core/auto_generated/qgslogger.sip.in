@@ -13,6 +13,7 @@
 
 
 
+
 class QgsLogger
 {
 %Docstring(signature="appended")
