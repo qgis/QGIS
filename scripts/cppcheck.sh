@@ -32,6 +32,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_TRANSFERTHIS= \
          -DSIP_INOUT= \
          -DSIP_OUT= \
+         -DSIP_DOCSTRING_OUT= \
          -DSIP_FACTORY= \
          -DSIP_PYNAME= \
          -DSIP_THROW= \
