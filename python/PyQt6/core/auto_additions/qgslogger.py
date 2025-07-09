@@ -1,5 +1,6 @@
 # The following has been generated automatically from src/core/qgslogger.h
 try:
+    QgsLogger.debug = staticmethod(QgsLogger.debug)
     QgsLogger.warning = staticmethod(QgsLogger.warning)
     QgsLogger.critical = staticmethod(QgsLogger.critical)
     QgsLogger.fatal = staticmethod(QgsLogger.fatal)

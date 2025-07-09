@@ -30,17 +30,42 @@
 class QFile;
 
 #ifdef QGISDEBUG
-#define QgsDebugError(str) QgsLogger::debug(QString(str), 0, __FILE__, __FUNCTION__, __LINE__)
-#define QgsDebugMsgLevel(str, level) if ( level <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), (level), __FILE__, __FUNCTION__, __LINE__); }(void)(0)
-#define QgsDebugErrorLoc(str, file, func, line) QgsLogger::debug(QString(str), 0, file, func, line)
-#define QgsDebugMsgLevelLoc(str, level, file, func, line) if ( level <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), (level), file, func, line); }(void)(0)
-#define QgsDebugCall QgsScopeLogger _qgsScopeLogger(__FILE__, __FUNCTION__, __LINE__)
+#define QgsDebugError( str ) QgsLogger::debug( QString( str ), 0, __FILE__, __FUNCTION__, __LINE__ )
+#define QgsDebugMsgLevel( str, level )                                               \
+  if ( level <= QgsLogger::debugLevel() )                                            \
+  {                                                                                  \
+    QgsLogger::debug( QString( str ), ( level ), __FILE__, __FUNCTION__, __LINE__ ); \
+  }                                                                                  \
+  ( void ) ( 0 )
+#define QgsDebugErrorLoc( str, file, func, line ) QgsLogger::debug( QString( str ), 0, file, func, line )
+#define QgsDebugMsgLevelLoc( str, level, file, func, line )          \
+  if ( level <= QgsLogger::debugLevel() )                            \
+  {                                                                  \
+    QgsLogger::debug( QString( str ), ( level ), file, func, line ); \
+  }                                                                  \
+  ( void ) ( 0 )
+#define QgsDebugCall QgsScopeLogger _qgsScopeLogger( __FILE__, __FUNCTION__, __LINE__ )
 #else
-#define QgsDebugCall do {} while(false)
-#define QgsDebugError(str) do {} while(false)
-#define QgsDebugMsgLevel(str, level) do {} while(false)
-#define QgsDebugErrorLoc(str, file, func, line) do {} while(false)
-#define QgsDebugMsgLevelLoc(str, level, file, func, line) do {} while(false)
+#define QgsDebugCall \
+  do                 \
+  {                  \
+  } while ( false )
+#define QgsDebugError( str ) \
+  do                         \
+  {                          \
+  } while ( false )
+#define QgsDebugMsgLevel( str, level ) \
+  do                                   \
+  {                                    \
+  } while ( false )
+#define QgsDebugErrorLoc( str, file, func, line ) \
+  do                                              \
+  {                                               \
+  } while ( false )
+#define QgsDebugMsgLevelLoc( str, level, file, func, line ) \
+  do                                                        \
+  {                                                         \
+  } while ( false )
 #endif
 
 /**
@@ -88,8 +113,7 @@ class CORE_EXPORT QgsLogger
      * Prints out a variable/value pair for types with overloaded operator<<
      * \note not available in Python bindings
      */
-    template <typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr,
-        int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
+    template<typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr, int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
     {
       std::ostringstream os;
       os << var.toLocal8Bit().data() << " = " << val;
@@ -151,6 +175,7 @@ class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
     {
       QgsLogger::debug( QStringLiteral( "Leaving." ), 2, _file, _func, _line );
     }
+
   private:
     const char *_file = nullptr;
     const char *_func = nullptr;
