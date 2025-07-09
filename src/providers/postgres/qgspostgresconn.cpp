@@ -2235,14 +2235,16 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
               ELSE '0'
             END
           )
-          FROM (
-            SELECT DISTINCT topology_id(%1), layer_id(%1)
-            FROM (
-                SELECT %1 FROM %2%3
+          FROM
+            (
+              SELECT DISTINCT topology_id(%1), layer_id(%1)
+              FROM (
+                  SELECT %1 FROM %2%3
+              )
             ) lyr
             JOIN topology.topology t ON ( t.id = lyr.topology_id )
             JOIN topology.layer l ON ( lyr.layer_id = l.layer_id AND l.topology_id = lyr.topology_id ) ;
-        )SQL"; )
+        )SQL" )
           .arg( quotedIdentifier( layerProperty.geometryColName ) )
           .arg( table )
           .arg( tableScanLimit )
