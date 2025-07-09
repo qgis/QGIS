@@ -1044,7 +1044,8 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # check that overviews were created
         sqlOverviews = """
-        SELECT o_table_schema, o_table_name FROM public.raster_overviews
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews 
+        WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
         """
         overviews = conn.executeSql(sqlOverviews)
 
@@ -1068,6 +1069,11 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertEqual(table.tableName(), "raster_for_move")
 
         # look at overviews after move
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews 
+        WHERE r_table_schema = 'schema_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
+        """
+
         overviews = conn.executeSql(sqlOverviews)
 
         self.assertEqual(
