@@ -73,16 +73,44 @@ QgsRectangle QgsDemTerrainGenerator::rootChunkExtent() const
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap )
+void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap )
 {
   QMutexLocker locker( &mRootNodeMutex );
 
+  const QgsChunkNodeId nodeId = node->tileId();
+
   // save height map data in cache
-  mLoaderMap[tileId.text()] = heightMap;
+  mLoaderMap[nodeId.text()] = heightMap;
+  cleanupHeightMapCache( node );
   //  if ( tileId.d >= mMaxLevel / 2 )
   {
     // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
-    emit maxResTileReceived( tileId, extent );
+    emit maxResTileReceived( nodeId, extent );
+  }
+}
+
+void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentNode ) const
+{
+  // check if all sibling are ok then delete parent height map in cache
+  QgsChunkNode *parent = currentNode->parent();
+
+  if ( parent && mLoaderMap.contains( parent->tileId().text() ) )
+  {
+    QgsChunkNode *const *children = parent->children();
+    bool deleteParentData = true;
+    for ( int i = 0; i < parent->childCount(); ++i )
+    {
+      if ( children[i]->state() != QgsChunkNode::Loading && children[i]->state() != QgsChunkNode::Loaded )
+      {
+        deleteParentData = false;
+        break;
+      }
+    }
+
+    if ( deleteParentData )
+    {
+      mLoaderMap.remove( parent->tileId().text() );
+    }
   }
 }
 
@@ -131,23 +159,8 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
       if ( loader && !loader->heightMap().isEmpty() )
       {
         mLoaderMap.insert( foundKey, loader->heightMap() );
+        cleanupHeightMapCache( found );
         heightMapData = loader->heightMap();
-
-        // check if all sibling are ok then delete parent height map in cache
-        QgsChunkNode *parent = found->parent();
-        if ( parent )
-        {
-          QgsChunkNode *const *children = parent->children();
-          bool doDeleteParentData = false;
-          for ( int i = 0; i < parent->childCount(); ++i )
-          {
-            doDeleteParentData &= children[i]->state() == QgsChunkNode::Loaded;
-          }
-          if ( doDeleteParentData )
-          {
-            mLoaderMap.remove( parent->tileId().text() );
-          }
-        }
       }
       else // no load in current tile, check for map in parents
       {
