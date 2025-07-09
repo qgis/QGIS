@@ -204,7 +204,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-  if ( event->key() == Qt::Key_F1 )
+  if ( event->matches( QKeySequence::StandardKey::HelpContents ) )
   {
     // Check if some text is selected
     QString text = selectedText();
@@ -359,6 +359,23 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   }
 }
 
+bool QgsCodeEditor::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event ) )
+    {
+      if ( keyEvent->matches( QKeySequence::StandardKey::HelpContents ) )
+      {
+        // If the user pressed F1, we want to prevent the main help dialog to show
+        // and handle the event in QgsCodeEditor::keyPressEvent
+        keyEvent->accept();
+        return true;
+      }
+    }
+  }
+  return QsciScintilla::event( event );
+}
 
 bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 {
