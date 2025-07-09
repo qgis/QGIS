@@ -2,7 +2,7 @@
 # Files
 
 set (LANDINGPAGE_SRCS
-  ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
+  ${CMAKE_SOURCE_DIR}/external/inja/inja/inja.hpp
   qgslandingpage.cpp
   qgslandingpageutils.cpp
   qgslandingpagehandlers.cpp
@@ -16,11 +16,14 @@ add_library (landingpage MODULE ${LANDINGPAGE_SRCS})
 # require c++17
 target_compile_features(landingpage PRIVATE cxx_std_17)
 
-include_directories(SYSTEM
-)
+if(QGISPOSTFIX)
+  set_target_properties(landingpage PROPERTIES
+    LIBRARY_OUTPUT_NAME landingpage${QGISPOSTFIX}
+    RUNTIME_OUTPUT_NAME landingpage${QGISPOSTFIX}
+  )
+endif()
 
 include_directories(
-
   ${CMAKE_SOURCE_DIR}/src/server
   ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/landingpage
