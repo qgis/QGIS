@@ -236,6 +236,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
+  processing/qgsalgorithmremovepartsbyarea.cpp
+  processing/qgsalgorithmremovepartsbylength.cpp
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmrenametablefield.cpp
   processing/qgsalgorithmrepairshapefile.cpp
