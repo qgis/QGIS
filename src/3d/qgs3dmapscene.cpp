@@ -237,8 +237,8 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   QgsPointXY center = extent.center();
   const QgsVector3D origin = mMap.origin();
 
-  const QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
-  const QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+  const QgsVector3D p1 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
+  const QgsVector3D p2 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
 
   const float xSide = std::abs( p1.x() - p2.x() );
   const float ySide = std::abs( p1.z() - p2.z() );
