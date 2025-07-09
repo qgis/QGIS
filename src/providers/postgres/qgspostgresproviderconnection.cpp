@@ -1946,17 +1946,6 @@ void QgsPostgresProviderConnection::renameField( const QString &schema, const QS
 
 void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
 {
-  std::shared_ptr<QgsPoolPostgresConn> conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
-
-  bool ok { false };
-  QgsPostgresLayerProperty property;
-  ok = conn->get()->supportedLayer( property, sourceSchema, tableName );
-
-  if ( !ok )
-  {
-    return;
-  }
-
   const QString sqlMoveToSchema = QStringLiteral( "ALTER TABLE %1.%2 SET SCHEMA %3;" );
 
   const QString sqlMoveTable = sqlMoveToSchema
@@ -1964,6 +1953,15 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
                                  .arg( QgsPostgresConn::quotedIdentifier( tableName ) )
                                  .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) );
   executeSqlPrivate( sqlMoveTable );
+
+  std::shared_ptr<QgsPoolPostgresConn> conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
+  QgsPostgresLayerProperty property;
+  bool ok = conn->get()->supportedLayer( property, sourceSchema, tableName );
+
+  if ( !ok )
+  {
+    return;
+  }
 
   // if raster table is moved the overview info is not updated so we need to do it manually
   // also the overviews are moved to the same schema as the raster
