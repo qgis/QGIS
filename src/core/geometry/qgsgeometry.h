@@ -3219,17 +3219,13 @@ class CORE_EXPORT QgsGeometry
      * Creates a fillet (rounded corner) between two line segments.
      *
      * This method creates a smooth circular arc connecting two line segments.
-     * The behavior depends on the geometry type:
-     *
-     * - For LineString: the arc is segmented into linear segments
-     * - For CompoundCurve: the arc is preserved as a CircularString
      *
      * \param seg1Start start point of first segment
      * \param seg1End end point of first segment
      * \param seg2Start start point of second segment
      * \param seg2End end point of second segment
      * \param radius radius of the fillet arc
-     * \param segments number of segments to use for LineString approximation (ignored for CompoundCurve)
+     * \param segments number of segments to use for LineString approximation (returns a CircularString when segments = 0)
      * \returns new geometry with fillet applied, or invalid geometry on failure
      *
      * \since QGIS 3.40
@@ -3245,7 +3241,7 @@ class CORE_EXPORT QgsGeometry
      * connecting points at specified distances along the adjacent segments.
      *
      * \param vertexIndex index of the vertex to chamfer (must be > 0 and < numPoints - 1)
-     * \param distance1 distance along the first segment from the vertex
+     * \param distance1 distance along the first segment from the vertex (must be > 0)
      * \param distance2 distance along the second segment from the vertex (if < 0, uses distance1)
      * \returns new geometry with chamfer applied, or invalid geometry on failure
      *

@@ -4678,7 +4678,7 @@ QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) 
     return QgsGeometry();
   }
 
-  // Handle LineString geometries by forcing segmented result
+  Handle LineString geometries by forcing segmented result
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
     QgsLineString *newLine = new QgsLineString();
