@@ -4530,3 +4530,456 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
+
+QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
+{
+  // Apply symmetric distance if distance2 is negative
+  if ( distance2 < 0 )
+    distance2 = distance1;
+
+  // Validate input parameters
+  if ( distance1 < 0 || distance2 < 0 )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() );
+  if ( !curve || vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
+  {
+    return QgsGeometry(); // Invalid geometry or vertex index
+  }
+
+  // Extract the three consecutive vertices forming the angle to chamfer
+  const QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
+  const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
+  const QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
+
+  // Create chamfer using the two segments: (pPrev→p) and (p→pNext)
+  double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
+  bool success = QgsGeometryUtilsBase::createChamfer(
+                   pPrev.x(), pPrev.y(), p.x(), p.y(),      // Segment 1: previous to vertex
+                   p.x(), p.y(), pNext.x(), pNext.y(),      // Segment 2: vertex to next
+                   distance1, distance2,
+                   chamferStartX, chamferStartY,
+                   chamferEndX, chamferEndY );
+
+  if ( !success )
+  {
+    return QgsGeometry();
+  }
+
+  // Create chamfer points with appropriate coordinate dimensions
+  QgsPoint t1, t2;
+  if ( pPrev.is3D() && pPrev.isMeasure() )
+  {
+    t1 = QgsPoint( Qgis::WkbType::PointZM, chamferStartX, chamferStartY, 0.0, 0.0 );
+    t2 = QgsPoint( Qgis::WkbType::PointZM, chamferEndX, chamferEndY, 0.0, 0.0 );
+  }
+  else if ( pPrev.is3D() )
+  {
+    t1 = QgsPoint( Qgis::WkbType::PointZ, chamferStartX, chamferStartY, 0.0 );
+    t2 = QgsPoint( Qgis::WkbType::PointZ, chamferEndX, chamferEndY, 0.0 );
+  }
+  else if ( pPrev.isMeasure() )
+  {
+    t1 = QgsPoint( Qgis::WkbType::PointM, chamferStartX, chamferStartY, 0.0, 0.0 );
+    t2 = QgsPoint( Qgis::WkbType::PointM, chamferEndX, chamferEndY, 0.0, 0.0 );
+  }
+  else
+  {
+    t1 = QgsPoint( chamferStartX, chamferStartY );
+    t2 = QgsPoint( chamferEndX, chamferEndY );
+  }
+
+  // Interpolate Z coordinates along the original segments
+  if ( pPrev.is3D() && p.is3D() && pNext.is3D() )
+  {
+    const double len1 = pPrev.distance( p );
+    if ( len1 > 0 )
+    {
+      const double ratio1 = pPrev.distance( t1 ) / len1;
+      t1.setZ( pPrev.z() + ratio1 * ( p.z() - pPrev.z() ) );
+    }
+
+    const double len2 = p.distance( pNext );
+    if ( len2 > 0 )
+    {
+      const double ratio2 = p.distance( t2 ) / len2;
+      t2.setZ( p.z() + ratio2 * ( pNext.z() - p.z() ) );
+    }
+  }
+
+  // Interpolate M coordinates along the original segments
+  if ( pPrev.isMeasure() && p.isMeasure() && pNext.isMeasure() )
+  {
+    const double len1 = pPrev.distance( p );
+    if ( len1 > 0 )
+    {
+      const double ratio1 = pPrev.distance( t1 ) / len1;
+      t1.setM( pPrev.m() + ratio1 * ( p.m() - pPrev.m() ) );
+    }
+
+    const double len2 = p.distance( pNext );
+    if ( len2 > 0 )
+    {
+      const double ratio2 = p.distance( t2 ) / len2;
+      t2.setM( p.m() + ratio2 * ( pNext.m() - p.m() ) );
+    }
+  }
+
+  // Build new geometry with chamfer replacing the original vertex
+  QgsLineString *newLine = new QgsLineString();
+
+  // Add points before the chamfered vertex
+  for ( int i = 0; i < vertexIndex; ++i )
+  {
+    QgsPoint pt = curve->vertexAt( QgsVertexId( 0, 0, i ) );
+    newLine->addVertex( pt );
+  }
+
+  // Add chamfer points (these replace the original vertex)
+  newLine->addVertex( t1 );
+  newLine->addVertex( t2 );
+
+  // Add points after the chamfered vertex (skip the original vertex)
+  for ( int i = vertexIndex + 1; i < curve->numPoints(); ++i )
+  {
+    QgsPoint pt = curve->vertexAt( QgsVertexId( 0, 0, i ) );
+    newLine->addVertex( pt );
+  }
+
+  return QgsGeometry( newLine );
+}
+
+QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
+{
+  // Validate input parameters
+  if ( radius <= 0 )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() );
+  if ( !curve || vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
+  {
+    return QgsGeometry(); // Invalid geometry or vertex index
+  }
+
+  // Extract the three consecutive vertices forming the angle to fillet
+  const QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
+  const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
+  const QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
+
+  // Create fillet using the segment-based method with proper orientation
+  QgsGeometry filletGeom = fillet( pPrev, p, p, pNext, radius, segments );
+
+  if ( filletGeom.isEmpty() )
+  {
+    return QgsGeometry();
+  }
+
+  // Handle LineString geometries by forcing segmented result
+  if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+  {
+    QgsLineString *newLine = new QgsLineString();
+
+    // Add points before the filleted vertex
+    for ( int i = 0; i < vertexIndex; ++i )
+    {
+      newLine->addVertex( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
+    }
+
+    // Extract and add fillet points, converting curves to line segments if necessary
+    std::unique_ptr<QgsLineString> segmentized;
+
+    if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( filletGeom.constGet() ) )
+    {
+      segmentized.reset( compound->curveToLine() );
+    }
+    else if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( filletGeom.constGet() ) )
+    {
+      segmentized.reset( line->clone() );
+    }
+
+    if ( segmentized && segmentized->numPoints() > 2 )
+    {
+      // Skip first and last points to avoid duplicates with adjacent segments
+      for ( int i = 1; i < segmentized->numPoints() - 1; ++i )
+      {
+        QgsPoint pt = segmentized->vertexAt( QgsVertexId( 0, 0, i ) );
+        newLine->addVertex( pt );
+      }
+    }
+    else
+    {
+      delete newLine;
+      return QgsGeometry();
+    }
+
+    // Add points after the filleted vertex (skip the original vertex)
+    for ( int i = vertexIndex + 1; i < curve->numPoints(); ++i )
+    {
+      newLine->addVertex( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
+    }
+
+    return QgsGeometry( newLine );
+  }
+
+  return QgsGeometry();
+}
+
+QgsGeometry QgsGeometry::chamfer(
+  const QgsPoint &seg1Start, const QgsPoint &seg1End,
+  const QgsPoint &seg2Start, const QgsPoint &seg2End,
+  double distance1, double distance2 ) const
+{
+  // Apply symmetric distance if distance2 is negative
+  if ( distance2 < 0 )
+    distance2 = distance1;
+
+  // Validate input parameters
+  if ( distance1 < 0 || distance2 < 0 )
+  {
+    return QgsGeometry();
+  }
+
+  // Create chamfer points using the utility function
+  double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
+
+  if ( !QgsGeometryUtilsBase::createChamfer(
+         seg1Start.x(), seg1Start.y(), seg1End.x(), seg1End.y(),
+         seg2Start.x(), seg2Start.y(), seg2End.x(), seg2End.y(),
+         distance1, distance2,
+         chamferStartX, chamferStartY,
+         chamferEndX, chamferEndY ) )
+  {
+    return QgsGeometry();
+  }
+
+  // Create chamfer points with appropriate coordinate dimensions
+  QgsPoint chamferStart, chamferEnd;
+  if ( seg1Start.is3D() && seg1Start.isMeasure() )
+  {
+    chamferStart = QgsPoint( Qgis::WkbType::PointZM, chamferStartX, chamferStartY, 0.0, 0.0 );
+    chamferEnd = QgsPoint( Qgis::WkbType::PointZM, chamferEndX, chamferEndY, 0.0, 0.0 );
+  }
+  else if ( seg1Start.is3D() )
+  {
+    chamferStart = QgsPoint( Qgis::WkbType::PointZ, chamferStartX, chamferStartY, 0.0 );
+    chamferEnd = QgsPoint( Qgis::WkbType::PointZ, chamferEndX, chamferEndY, 0.0 );
+  }
+  else if ( seg1Start.isMeasure() )
+  {
+    chamferStart = QgsPoint( Qgis::WkbType::PointM, chamferStartX, chamferStartY, 0.0, 0.0 );
+    chamferEnd = QgsPoint( Qgis::WkbType::PointM, chamferEndX, chamferEndY, 0.0, 0.0 );
+  }
+  else
+  {
+    chamferStart = QgsPoint( chamferStartX, chamferStartY );
+    chamferEnd = QgsPoint( chamferEndX, chamferEndY );
+  }
+
+  // Interpolate Z coordinates if all points have Z
+  if ( seg1Start.is3D() && seg1End.is3D() && seg2Start.is3D() && seg2End.is3D() )
+  {
+    const double len1 = seg1Start.distance( seg1End );
+    if ( len1 > 0 )
+    {
+      const double ratio1 = seg1Start.distance( chamferStart ) / len1;
+      chamferStart.setZ( seg1Start.z() + ratio1 * ( seg1End.z() - seg1Start.z() ) );
+    }
+
+    const double len2 = seg2Start.distance( seg2End );
+    if ( len2 > 0 )
+    {
+      const double ratio2 = seg2Start.distance( chamferEnd ) / len2;
+      chamferEnd.setZ( seg2Start.z() + ratio2 * ( seg2End.z() - seg2Start.z() ) );
+    }
+  }
+
+  // Interpolate M coordinates if all points have M
+  if ( seg1Start.isMeasure() && seg1End.isMeasure() && seg2Start.isMeasure() && seg2End.isMeasure() )
+  {
+    const double len1 = seg1Start.distance( seg1End );
+    if ( len1 > 0 )
+    {
+      const double ratio1 = seg1Start.distance( chamferStart ) / len1;
+      chamferStart.setM( seg1Start.m() + ratio1 * ( seg1End.m() - seg1Start.m() ) );
+    }
+
+    const double len2 = seg2Start.distance( seg2End );
+    if ( len2 > 0 )
+    {
+      const double ratio2 = seg2Start.distance( chamferEnd ) / len2;
+      chamferEnd.setM( seg2Start.m() + ratio2 * ( seg2End.m() - seg2Start.m() ) );
+    }
+  }
+
+  // Create complete LineString geometry connecting the segments through the chamfer
+  QgsLineString *completeLine = new QgsLineString();
+  completeLine->addVertex( seg1Start );     // Start of first segment
+  completeLine->addVertex( chamferStart );  // First chamfer point
+  completeLine->addVertex( chamferEnd );    // Second chamfer point
+  completeLine->addVertex( seg2Start );     // Start of second segment
+
+  return QgsGeometry( completeLine );
+}
+
+QgsGeometry QgsGeometry::fillet(
+  const QgsPoint &seg1Start, const QgsPoint &seg1End,
+  const QgsPoint &seg2Start, const QgsPoint &seg2End,
+  double radius, int segments ) const
+{
+  // Validate input parameters
+  if ( radius <= 0 )
+  {
+    return QgsGeometry();
+  }
+
+  // Create fillet arc using the utility function
+  double filletPointsX[3], filletPointsY[3];
+
+  if ( !QgsGeometryUtilsBase::createFillet(
+         seg1Start.x(), seg1Start.y(), seg1End.x(), seg1End.y(),
+         seg2Start.x(), seg2Start.y(), seg2End.x(), seg2End.y(),
+         radius,
+         filletPointsX, filletPointsY ) )
+  {
+    return QgsGeometry();
+  }
+
+  // Create fillet points with appropriate coordinate dimensions
+  QgsPoint t1, mid, t2;
+  if ( seg1Start.is3D() && seg1Start.isMeasure() )
+  {
+    t1 = QgsPoint( Qgis::WkbType::PointZM, filletPointsX[0], filletPointsY[0], 0.0, 0.0 );
+    mid = QgsPoint( Qgis::WkbType::PointZM, filletPointsX[1], filletPointsY[1], 0.0, 0.0 );
+    t2 = QgsPoint( Qgis::WkbType::PointZM, filletPointsX[2], filletPointsY[2], 0.0, 0.0 );
+  }
+  else if ( seg1Start.is3D() )
+  {
+    t1 = QgsPoint( Qgis::WkbType::PointZ, filletPointsX[0], filletPointsY[0], 0.0 );
+    mid = QgsPoint( Qgis::WkbType::PointZ, filletPointsX[1], filletPointsY[1], 0.0 );
+    t2 = QgsPoint( Qgis::WkbType::PointZ, filletPointsX[2], filletPointsY[2], 0.0 );
+  }
+  else if ( seg1Start.isMeasure() )
+  {
+    t1 = QgsPoint( Qgis::WkbType::PointM, filletPointsX[0], filletPointsY[0], 0.0, 0.0 );
+    mid = QgsPoint( Qgis::WkbType::PointM, filletPointsX[1], filletPointsY[1], 0.0, 0.0 );
+    t2 = QgsPoint( Qgis::WkbType::PointM, filletPointsX[2], filletPointsY[2], 0.0, 0.0 );
+  }
+  else
+  {
+    t1 = QgsPoint( filletPointsX[0], filletPointsY[0] );
+    mid = QgsPoint( filletPointsX[1], filletPointsY[1] );
+    t2 = QgsPoint( filletPointsX[2], filletPointsY[2] );
+  }
+
+  // Interpolate Z coordinates if all segments have Z
+  if ( seg1Start.is3D() && seg1End.is3D() && seg2Start.is3D() && seg2End.is3D() )
+  {
+    // Interpolate Z for tangent points along original segments
+    const double len1 = seg1Start.distance( seg1End );
+    if ( len1 > 0 )
+    {
+      const double ratio1 = seg1Start.distance( t1 ) / len1;
+      t1.setZ( seg1Start.z() + ratio1 * ( seg1End.z() - seg1Start.z() ) );
+    }
+
+    const double len2 = seg2Start.distance( seg2End );
+    if ( len2 > 0 )
+    {
+      const double ratio2 = seg2Start.distance( t2 ) / len2;
+      t2.setZ( seg2Start.z() + ratio2 * ( seg2End.z() - seg2Start.z() ) );
+    }
+
+    // Use simple average for arc midpoint Z coordinate
+    mid.setZ( ( t1.z() + t2.z() ) / 2.0 );
+  }
+
+  // Interpolate M coordinates similarly
+  if ( seg1Start.isMeasure() && seg1End.isMeasure() && seg2Start.isMeasure() && seg2End.isMeasure() )
+  {
+    const double len1 = seg1Start.distance( seg1End );
+    if ( len1 > 0 )
+    {
+      const double ratio1 = seg1Start.distance( t1 ) / len1;
+      t1.setM( seg1Start.m() + ratio1 * ( seg1End.m() - seg1Start.m() ) );
+    }
+
+    const double len2 = seg2Start.distance( seg2End );
+    if ( len2 > 0 )
+    {
+      const double ratio2 = seg2Start.distance( t2 ) / len2;
+      t2.setM( seg2Start.m() + ratio2 * ( seg2End.m() - seg2Start.m() ) );
+    }
+
+    mid.setM( ( t1.m() + t2.m() ) / 2.0 );
+  }
+
+  // Determine correct segment endpoints for complete geometry construction
+  // This handles both touching and non-touching segments correctly
+  double intersectionX, intersectionY;
+  bool isIntersection;
+  QgsGeometryUtilsBase::segmentIntersection(
+    seg1Start.x(), seg1Start.y(), seg1End.x(), seg1End.y(),
+    seg2Start.x(), seg2Start.y(), seg2End.x(), seg2End.y(),
+    intersectionX, intersectionY, isIntersection, 1e-8, true );
+
+  // Calculate distances from intersection to segment endpoints
+  double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1Start.x(), seg1Start.y() );
+  double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1End.x(), seg1End.y() );
+  double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2Start.x(), seg2Start.y() );
+  double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2End.x(), seg2End.y() );
+
+  // Choose the endpoints farther from intersection for complete geometry
+  QgsPoint seg1FarEnd = ( dist1ToStart < dist1ToEnd ) ? seg1End : seg1Start;
+  QgsPoint seg2FarEnd = ( dist2ToStart < dist2ToEnd ) ? seg2End : seg2Start;
+
+  // Create geometry based on segments parameter
+  if ( segments <= 0 )
+  {
+    // Return CompoundCurve with circular arc
+    QgsCompoundCurve *completeCurve = new QgsCompoundCurve();
+
+    // First linear segment: far endpoint to tangent point
+    QgsLineString *firstSegment = new QgsLineString();
+    firstSegment->addVertex( seg1FarEnd );
+    firstSegment->addVertex( t1 );
+    completeCurve->addCurve( firstSegment );
+
+    // Circular arc segment: tangent to tangent via midpoint
+    QgsCircularString *circularString = new QgsCircularString();
+    circularString->setPoints( {t1, mid, t2} );
+    completeCurve->addCurve( circularString );
+
+    // Last linear segment: tangent point to far endpoint
+    QgsLineString *lastSegment = new QgsLineString();
+    lastSegment->addVertex( t2 );
+    lastSegment->addVertex( seg2FarEnd );
+    completeCurve->addCurve( lastSegment );
+
+    return QgsGeometry( completeCurve );
+  }
+  else
+  {
+    // Return segmented LineString
+    QgsLineString *completeLine = new QgsLineString();
+
+    completeLine->addVertex( seg1FarEnd );
+
+    // Convert circular arc to line segments
+    QgsCircularString tempArc;
+    tempArc.setPoints( {t1, mid, t2} );
+    std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine() );
+
+    for ( int i = 0; i < segmentizedArc->numPoints(); ++i )
+    {
+      completeLine->addVertex( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
+    }
+
+    completeLine->addVertex( seg2FarEnd );
+
+    return QgsGeometry( completeLine );
+  }
+}
