@@ -32,7 +32,12 @@ QString QgsGeometryCheckSelfContactAlgorithm::name() const
 
 QString QgsGeometryCheckSelfContactAlgorithm::displayName() const
 {
-  return QObject::tr( "Check Geometry (self contact)" );
+  return QObject::tr( "Self-contacts" );
+}
+
+QString QgsGeometryCheckSelfContactAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Detect self contact points in the geometry (line or polygon)" );
 }
 
 QStringList QgsGeometryCheckSelfContactAlgorithm::tags() const
@@ -78,16 +83,18 @@ void QgsGeometryCheckSelfContactAlgorithm::initAlgorithm( const QVariantMap &con
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "ERRORS" ), QObject::tr( "Self contact error points" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Self contact features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -134,8 +141,6 @@ QVariantMap QgsGeometryCheckSelfContactAlgorithm::processAlgorithm( const QVaria
   const std::unique_ptr<QgsFeatureSink> sink_output(
     parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs() )
   );
-  if ( !sink_output )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
     parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
@@ -173,7 +178,7 @@ QVariantMap QgsGeometryCheckSelfContactAlgorithm::processAlgorithm( const QVaria
   long i = 0;
   feedback->setProgress( 0.0 );
 
-  for ( QgsGeometryCheckError *error : checkErrors )
+  for ( const QgsGeometryCheckError *error : checkErrors )
   {
     if ( feedback->isCanceled() )
     {
@@ -194,7 +199,7 @@ QVariantMap QgsGeometryCheckSelfContactAlgorithm::processAlgorithm( const QVaria
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );
-    if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
+    if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
@@ -212,8 +217,15 @@ QVariantMap QgsGeometryCheckSelfContactAlgorithm::processAlgorithm( const QVaria
     context.layerToLoadOnCompletionDetails( dest_output ).layerSortKey = 1;
   }
 
+  // cleanup memory of the pointed data
+  for ( const QgsGeometryCheckError *error : checkErrors )
+  {
+    delete error;
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
+  if ( sink_output )
+    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
   outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
 
   return outputs;

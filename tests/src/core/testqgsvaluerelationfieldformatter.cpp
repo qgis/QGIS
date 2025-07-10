@@ -180,23 +180,25 @@ void TestQgsValueRelationFieldFormatter::testOrderBy_data()
 {
   QTest::addColumn<QString>( "orderBy" );
   QTest::addColumn<QString>( "fieldName" );
-  QTest::addColumn<QString>( "expectedFirst" );
-  QTest::addColumn<QString>( "expectedLast" );
+  QTest::addColumn<QStringList>( "expectedFirst" );
+  QTest::addColumn<QStringList>( "expectedLast" );
 
-  QTest::newRow( "orderByDefault(pk)" ) << QString() << QString() << "brides" << "collar";
-  QTest::newRow( "orderByKey(pk)" ) << QString() << QStringLiteral( "Key" ) << "brides" << "collar";
-  QTest::newRow( "orderByValue(raccord)" ) << QString() << QStringLiteral( "Value" ) << "brides" << "collar";
-  QTest::newRow( "orderByField(raccord)" ) << QStringLiteral( "Field" ) << QStringLiteral( "raccord" ) << "brides" << "sleeve";
-  QTest::newRow( "orderByField(diameter)" ) << QStringLiteral( "Field" ) << QStringLiteral( "diameter" ) << "collar" << "brides";
-  QTest::newRow( "orderByField(material)" ) << QStringLiteral( "Field" ) << QStringLiteral( "material" ) << "brides" << "collar";
+  QTest::newRow( "orderByDefault(pk)" ) << QString() << QString() << QStringList { "brides" } << QStringList { "collar" };
+  QTest::newRow( "orderByKey(pk)" ) << QString() << QStringLiteral( "Key" ) << QStringList { "brides" } << QStringList { "collar" };
+  QTest::newRow( "orderByValue(raccord)" ) << QString() << QStringLiteral( "Value" ) << QStringList { "brides" } << QStringList { "collar" };
+  QTest::newRow( "orderByField(raccord)" ) << QStringLiteral( "Field" ) << QStringLiteral( "raccord" ) << QStringList { "brides" } << QStringList { "sleeve" };
+  QTest::newRow( "orderByField(diameter)" ) << QStringLiteral( "Field" ) << QStringLiteral( "diameter" ) << QStringList { "collar" } << QStringList { "brides" };
+
+  // material field has two duplicate values (for "iron"), so the ordering here is not well defined. Accept either "brides" OR "sleeve" as first value, as they both have material = "iron" and may be in either order.
+  QTest::newRow( "orderByField(material)" ) << QStringLiteral( "Field" ) << QStringLiteral( "material" ) << QStringList { "brides", "sleeve" } << QStringList { "collar" };
 }
 
 void TestQgsValueRelationFieldFormatter::testOrderBy()
 {
   QFETCH( QString, orderBy );
   QFETCH( QString, fieldName );
-  QFETCH( QString, expectedFirst );
-  QFETCH( QString, expectedLast );
+  QFETCH( QStringList, expectedFirst );
+  QFETCH( QStringList, expectedLast );
 
   QVariantMap config;
   config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
@@ -217,8 +219,23 @@ void TestQgsValueRelationFieldFormatter::testOrderBy()
     const QgsValueRelationFieldFormatter formatter;
     QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
     QVERIFY( !cache.isEmpty() );
-    QCOMPARE( cache.at( 0 ).value, expectedFirst );
-    QCOMPARE( cache.at( mLayer2->featureCount() - 1 ).value, expectedLast );
+
+    if ( expectedFirst.size() == 1 )
+    {
+      QCOMPARE( cache.at( 0 ).value, expectedFirst.at( 0 ) );
+    }
+    else
+    {
+      QVERIFY( expectedFirst.contains( cache.at( 0 ).value ) );
+    }
+    if ( expectedLast.size() == 1 )
+    {
+      QCOMPARE( cache.at( mLayer2->featureCount() - 1 ).value, expectedLast.at( 0 ) );
+    }
+    else
+    {
+      QVERIFY( expectedLast.contains( cache.at( mLayer2->featureCount() - 1 ).value ) );
+    }
   }
 
   // Descending
@@ -227,8 +244,22 @@ void TestQgsValueRelationFieldFormatter::testOrderBy()
     const QgsValueRelationFieldFormatter formatter;
     QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
     QVERIFY( !cache.isEmpty() );
-    QCOMPARE( cache.at( 0 ).value, expectedLast );
-    QCOMPARE( cache.at( mLayer2->featureCount() - 1 ).value, expectedFirst );
+    if ( expectedLast.size() == 1 )
+    {
+      QCOMPARE( cache.at( 0 ).value, expectedLast.at( 0 ) );
+    }
+    else
+    {
+      QVERIFY( expectedLast.contains( cache.at( 0 ).value ) );
+    }
+    if ( expectedFirst.size() == 1 )
+    {
+      QCOMPARE( cache.at( mLayer2->featureCount() - 1 ).value, expectedFirst.at( 0 ) );
+    }
+    else
+    {
+      QVERIFY( expectedFirst.contains( cache.at( mLayer2->featureCount() - 1 ).value ) );
+    }
   }
 }
 

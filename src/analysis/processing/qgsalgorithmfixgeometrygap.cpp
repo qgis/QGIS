@@ -30,12 +30,17 @@ QString QgsFixGeometryGapAlgorithm::name() const
 
 QString QgsFixGeometryGapAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (gap)" );
+  return QObject::tr( "Fill gaps" );
+}
+
+QString QgsFixGeometryGapAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Fill gaps detected with the \"Small gaps\" algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryGapAlgorithm::tags() const
 {
-  return QObject::tr( "fix,gap" ).split( ',' );
+  return QObject::tr( "fix,fill,gap" ).split( ',' );
 }
 
 QString QgsFixGeometryGapAlgorithm::group() const
@@ -50,7 +55,8 @@ QString QgsFixGeometryGapAlgorithm::groupId() const
 
 QString QgsFixGeometryGapAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm fills the gaps based on a gap and neighbors layer from the check gap algorithm." );
+  return QObject::tr( "This algorithm fills the gaps based on a gap and neighbors layer from the \"Small gaps\" algorithm in the \"Check geometry\" section.\n\n"
+                      "3 different fixing methods are available, which will give different results." );
 }
 
 QgsFixGeometryGapAlgorithm *QgsFixGeometryGapAlgorithm::createInstance() const
@@ -96,16 +102,18 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Gaps-filled layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing gaps" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
+                                   "given as an integer n, meaning that any difference smaller than 10⁻ⁿ (in map units) is considered zero." ) );
   addParameter( tolerance.release() );
 }
 
@@ -208,6 +216,9 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   multiStepFeedback.setProgressText( QObject::tr( "Fixing errors..." ) );
   while ( gapsFeaturesIt.nextFeature( gapFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     reportFeature.setGeometry( gapFeature.geometry().centroid() );
@@ -272,6 +283,9 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFeatureIterator fixedFeaturesIt = fixedLayer->getFeatures();
   while ( fixedFeaturesIt.nextFeature( fixedFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     multiStepFeedback.setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
     if ( !sink_output->addFeature( fixedFeature, QgsFeatureSink::FastInsert ) )

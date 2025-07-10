@@ -50,7 +50,9 @@ QWidget *QgsTextWidgetWrapper::createWidget( QWidget *parent )
       }
     } );
   }
-  return new QLabel( parent );
+  QLabel *widget = new QLabel( parent );
+  widget->setWordWrap( widget );
+  return widget;
 }
 
 void QgsTextWidgetWrapper::initWidget( QWidget *editor )

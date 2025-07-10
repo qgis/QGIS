@@ -32,6 +32,7 @@ class QgsGeometryCheckMissingVertexAlgorithm : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
+    QString shortDescription() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
@@ -42,9 +43,9 @@ class QgsGeometryCheckMissingVertexAlgorithm : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    static QgsFields outputFields();
 
   private:
+    static QgsFields outputFields();
     int mTolerance { 8 };
 };
 

@@ -131,13 +131,6 @@ QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, c
 
 void QgsPdalAlgorithmBase::checkOutputFormat( const QString &inputFileName, const QString &outputFileName )
 {
-  if ( outputFileName.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
-    throw QgsProcessingException(
-      QObject::tr( "This algorithm does not support output to COPC. Please use LAS or LAZ as the output format. "
-                   "LAS/LAZ files get automatically converted to COPC when loaded in QGIS, alternatively you can use "
-                   "\"Create COPC\" algorithm." )
-    );
-
   bool inputIsVpc = inputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
   bool outputIsVpc = outputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
   if ( !inputIsVpc && outputIsVpc )

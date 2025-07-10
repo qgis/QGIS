@@ -50,7 +50,7 @@ QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm uses a method proposed by Wang & Liu to identify and fill surface depressions in digital elevation models.\n\n"
 
-                      "The method was enhanced to allow the creation of hydrologic sound elevation models, i.e. not only to fill the depression(s) "
+                      "The method was enhanced to allow the creation of hydrologically sound elevation models, i.e. not only to fill the depression(s) "
                       "but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope "
                       "gradient (and thus elevation difference) between cells.\n\n"
 

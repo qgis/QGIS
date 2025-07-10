@@ -76,13 +76,6 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
 
-  if ( outputFile.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
-    throw QgsProcessingException(
-      QObject::tr( "This algorithm does not support output to COPC. Please use LAS or LAZ as the output format. "
-                   "LAS/LAZ files get automatically converted to COPC when loaded in QGIS, alternatively you can use "
-                   "\"Create COPC\" algorithm." )
-    );
-
   if ( outputFile.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive ) )
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "

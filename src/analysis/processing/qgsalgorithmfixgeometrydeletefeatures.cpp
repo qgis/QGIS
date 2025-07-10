@@ -26,7 +26,12 @@ QString QgsFixGeometryDeleteFeaturesAlgorithm::name() const
 
 QString QgsFixGeometryDeleteFeaturesAlgorithm::displayName() const
 {
-  return QObject::tr( "Fix geometry (delete features)" );
+  return QObject::tr( "Delete features" );
+}
+
+QString QgsFixGeometryDeleteFeaturesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Delete features detected with an algorithm from the \"Check geometry\" section" );
 }
 
 QStringList QgsFixGeometryDeleteFeaturesAlgorithm::tags() const
@@ -46,13 +51,13 @@ QString QgsFixGeometryDeleteFeaturesAlgorithm::groupId() const
 
 QString QgsFixGeometryDeleteFeaturesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm deletes error features listed in the errors layer from a check geometry algorithm.\n"
+  return QObject::tr( "This algorithm deletes error features listed in the errors layer from an algorithm in the \"Check geometry\" section.\n"
                       "The required inputs are the original layer used in the check algorithm, its unique id field, and its corresponding errors layer.\n\n"
                       "For instance, it can be used after the following check algorithms to delete error features:"
-                      "<html><ul><li>contained</li>"
-                      "<li>degenerate</li>"
-                      "<li>segment length</li>"
-                      "<li>duplicate</li>"
+                      "<html><ul><li>Feature inside polygon</li>"
+                      "<li>Degenerate polygons</li>"
+                      "<li>Small segments</li>"
+                      "<li>Duplicated geometries</li>"
                       "<li>etc.</li></ul></html>" );
 }
 
@@ -83,10 +88,10 @@ void QgsFixGeometryDeleteFeaturesAlgorithm::initAlgorithm( const QVariantMap &co
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Cleaned layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "REPORT" ), QObject::tr( "Report layer from deleting features" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 }
 
@@ -137,6 +142,9 @@ QVariantMap QgsFixGeometryDeleteFeaturesAlgorithm::processAlgorithm( const QVari
   QgsFeatureIterator inputFeaturesIt = input->getFeatures();
   while ( inputFeaturesIt.nextFeature( inputFeature ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     progression++;
     feedback->setProgress( static_cast<double>( static_cast<long double>( progression ) / totalProgression ) * 100 );
 
