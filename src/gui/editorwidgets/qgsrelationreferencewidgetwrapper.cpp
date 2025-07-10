@@ -83,6 +83,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   }
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 
+  mWidget->setOrderExpression( config( QStringLiteral( "OrderExpression" ) ).toString() );
+  mWidget->setOrderDescending( config( QStringLiteral( "OrderDescending" ), false ).toBool() );
+
   const QVariant relationName = config( QStringLiteral( "Relation" ) );
 
   // Store relation data source and provider key
