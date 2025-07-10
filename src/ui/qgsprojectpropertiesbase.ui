@@ -2730,6 +2730,13 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="2" column="0">
+                          <widget class="QCheckBox" name="mHTMLFiOnlyMaptip">
+                           <property name="text">
+                            <string>Use only maptip for HTML GetFeatureInfo (empty response when maptip template is missing)</string>
+                           </property>
+                          </widget>
+                        </item>
                         <item row="0" column="0">
                          <widget class="QCheckBox" name="mWmsUseLayerIDs">
                           <property name="text">
@@ -2737,7 +2744,7 @@
                           </property>
                          </widget>
                         </item>
-                        <item row="4" column="0">
+                        <item row="5" column="0">
                          <layout class="QHBoxLayout" name="grpWMSPrecision">
                           <item>
                            <widget class="QLabel" name="label_5">
@@ -2761,21 +2768,21 @@
                           </item>
                          </layout>
                         </item>
-                        <item row="3" column="0">
+                        <item row="4" column="0">
                          <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
                           <property name="text">
                            <string>Segmentize feature info geometry</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="2" column="0">
+                        <item row="3" column="0">
                          <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
                           <property name="text">
                            <string>Add geometry to feature response</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="5" column="0">
+                        <item row="6" column="0">
                          <layout class="QHBoxLayout" name="horizontalLayout_2">
                           <item>
                            <widget class="QLabel" name="mWMSUrlLabel">
@@ -3765,6 +3772,7 @@
   <tabstop>mWMSInspireMetadataDate</tabstop>
   <tabstop>mWmsUseLayerIDs</tabstop>
   <tabstop>mUseAttributeFormSettingsCheckBox</tabstop>
+  <tabstop>mHTMLFiOnlyMaptip</tabstop>
   <tabstop>mAddWktGeometryCheckBox</tabstop>
   <tabstop>mSegmentizeFeatureInfoGeometryCheckBox</tabstop>
   <tabstop>mWMSPrecisionSpinBox</tabstop>

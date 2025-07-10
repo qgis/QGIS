@@ -124,6 +124,60 @@ class TestQgsprojectServerValidator(QgisTestCase):
             results[0].error,
         )
 
+    def test_empty_maptip_enabled(self):
+        """Empty maptip must fail when only‐maptip is enabled."""
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "testlayer", "memory")
+        project.addMapLayers([layer])
+        layer.setMapTipTemplate("")
+        project.writeEntry("WMSHTMLFeatureInfoUseOnlyMaptip", "", True)
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(
+            QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
+            results[0].error,
+        )
+        # Explicitly enable MapTips — should still fail
+        layer.setMapTipsEnabled(True)
+        valid2, results2 = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid2)
+        self.assertEqual(1, len(results2))
+        self.assertEqual(
+            QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
+            results2[0].error,
+        )
+        # Explicitly disable MapTips — should still fail
+        layer.setMapTipsEnabled(False)
+        valid3, results3 = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid3)
+        self.assertEqual(1, len(results3))
+        self.assertEqual(
+            QgsProjectServerValidator.ValidationError.OnlyMaptipTrueButEmptyMaptip,
+            results3[0].error,
+        )
+
+    def test_empty_maptip_disabled(self):
+        """Empty maptip must pass when only‐maptip is disabled."""
+        project = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "testlayer", "memory")
+        project.addMapLayers([layer])
+        layer.setMapTipTemplate("")
+        project.writeEntry("WMSHTMLFeatureInfoUseOnlyMaptip", "", False)
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid)
+        self.assertEqual(0, len(results))
+        # Explicitly enable MapTips — should still pass
+        layer.setMapTipsEnabled(True)
+        valid2, results2 = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid2)
+        self.assertEqual(0, len(results2))
+        # Explicitly disable MapTips — should still pass
+        layer.setMapTipsEnabled(False)
+        valid3, results3 = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid3)
+        self.assertEqual(0, len(results3))
+
 
 if __name__ == "__main__":
     unittest.main()
