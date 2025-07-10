@@ -855,6 +855,52 @@ class TestQgsGeometry(QgisTestCase):
             # Verify that there are many points (segmented fillet)
             self.assertGreater(len(points), 10)
 
+    def test_fillet_vertex_compound_curve_preserve_circular(self):
+        """Test fillet on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))"
+        )
+
+        # Apply fillet at vertex index 4 (transition from CircularString to LineString)
+        result = compound.fillet(4, 1, -1)
+
+        expected_wkt = "CompoundCurve ((0 0, 10 0),CircularString (10 0, 11.41421356237309581 0.58578643762690485, 12 2),(12 2, 12 3),CircularString (12 3, 11.70710678118654791 3.70710678118654746, 11 4),(11 4, 10 4))"
+        self.assertEqual(result.asWkt(), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it contains both linear and circular segments
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CircularString", wkt)
+            self.assertIn("CompoundCurve", wkt)
+
+    def test_chamfer_vertex_compound_curve_preserve_circular(self):
+        """Test chamfer on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))"
+        )
+
+        # Apply chamfer at vertex index 4 (transition from CircularString to LineString)
+        result = compound.chamfer(4, 1)
+
+        expected_wkt = "CompoundCurve ((0 0, 10 0),CircularString (10 0, 11.41421356237309581 0.58578643762690485, 12 2),(12 2, 12 3),(12 3, 11 4),(11 4, 10 4))"
+        self.assertEqual(result.asWkt(), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it contains the original circular segment
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CircularString", wkt)
+            self.assertIn("CompoundCurve", wkt)
+
 
 if __name__ == "__main__":
     unittest.main()
