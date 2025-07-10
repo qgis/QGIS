@@ -532,6 +532,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
       * \note This will create the mesh if necessary before calling datasetValue().
       * \see datasetValue
       *
+      * \param renderContext the QgsRenderContext used by QgsRenderer
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
       * \param searchRadius the radius of the search area in map unit
