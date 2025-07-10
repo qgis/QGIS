@@ -590,7 +590,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \param epsilon tolerance for numerical comparisons and intersection detection
      * \returns TRUE if chamfer was successfully created
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     static bool createChamfer( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
                                double seg2StartX, double seg2StartY, double seg2EndX, double seg2EndY,
@@ -635,7 +635,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \note The caller must ensure that filletPointsX and filletPointsY arrays are
      *       large enough to hold exactly 3 points defining the CircularString arc.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     static bool createFillet( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
                               double seg2StartX, double seg2StartY, double seg2EndX, double seg2EndY,

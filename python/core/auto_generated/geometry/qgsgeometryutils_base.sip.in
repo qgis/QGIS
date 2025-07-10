@@ -624,7 +624,7 @@ and asymmetric chamfers.
          - chamferEndX: output x-coordinate of chamfer end point
          - chamferEndY: output y-coordinate of chamfer end point
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     static bool createFillet( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
@@ -682,7 +682,7 @@ CircularString: start point, middle point, and end point of the arc.
    The caller must ensure that filletPointsX and filletPointsY arrays are
    large enough to hold exactly 3 points defining the CircularString arc.
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 };
 /************************************************************************
