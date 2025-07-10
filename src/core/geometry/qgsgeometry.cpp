@@ -4627,28 +4627,182 @@ QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double dist
     }
   }
 
-  // Build new geometry with chamfer replacing the original vertex
-  QgsLineString *newLine = new QgsLineString();
-
-  // Add points before the chamfered vertex
-  for ( int i = 0; i < vertexIndex; ++i )
+  // Handle LineString geometries
+  if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
-    QgsPoint pt = curve->vertexAt( QgsVertexId( 0, 0, i ) );
-    newLine->addVertex( pt );
+    // Build new geometry with chamfer replacing the original vertex
+    QgsLineString *newLine = new QgsLineString();
+
+    // Add points before the chamfered vertex
+    for ( int i = 0; i < vertexIndex; ++i )
+    {
+      QgsPoint pt = curve->vertexAt( QgsVertexId( 0, 0, i ) );
+      newLine->addVertex( pt );
+    }
+
+    // Add chamfer points (these replace the original vertex)
+    newLine->addVertex( t1 );
+    newLine->addVertex( t2 );
+
+    // Add points after the chamfered vertex (skip the original vertex)
+    for ( int i = vertexIndex + 1; i < curve->numPoints(); ++i )
+    {
+      QgsPoint pt = curve->vertexAt( QgsVertexId( 0, 0, i ) );
+      newLine->addVertex( pt );
+    }
+
+    return QgsGeometry( newLine );
   }
 
-  // Add chamfer points (these replace the original vertex)
-  newLine->addVertex( t1 );
-  newLine->addVertex( t2 );
-
-  // Add points after the chamfered vertex (skip the original vertex)
-  for ( int i = vertexIndex + 1; i < curve->numPoints(); ++i )
+  // Handle CompoundCurve geometries by preserving curve nature
+  if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( curve ) )
   {
-    QgsPoint pt = curve->vertexAt( QgsVertexId( 0, 0, i ) );
-    newLine->addVertex( pt );
+    QgsCompoundCurve *newCompound = new QgsCompoundCurve();
+
+    // Find which subcurve contains the vertex to chamfer
+    int globalVertexIndex = 0;
+    int targetCurveIndex = -1;
+    int vertexInCurve = -1;
+
+    for ( int curveIdx = 0; curveIdx < compound->nCurves(); ++curveIdx )
+    {
+      const QgsCurve *subcurve = compound->curveAt( curveIdx );
+      int subcurvePoints = subcurve->numPoints();
+
+      if ( globalVertexIndex + subcurvePoints > vertexIndex )
+      {
+        targetCurveIndex = curveIdx;
+        vertexInCurve = vertexIndex - globalVertexIndex;
+        break;
+      }
+      globalVertexIndex += subcurvePoints - 1; // Curves share endpoints
+    }
+
+    if ( targetCurveIndex == -1 )
+    {
+      delete newCompound;
+      return QgsGeometry();
+    }
+
+    // Add curves before the target curve
+    for ( int i = 0; i < targetCurveIndex; ++i )
+    {
+      newCompound->addCurve( compound->curveAt( i )->clone() );
+    }
+
+    // Handle the curve containing the vertex
+    const QgsCurve *targetCurve = compound->curveAt( targetCurveIndex );
+
+    if ( vertexInCurve == 0 )
+    {
+      // Vertex is at start of curve - chamfer with previous curve
+      if ( targetCurveIndex > 0 )
+      {
+        // Remove the last added curve and add chamfer
+        newCompound->removeCurve( newCompound->nCurves() - 1 );
+
+        // Add chamfer line
+        QgsLineString *chamferLine = new QgsLineString();
+        chamferLine->addVertex( t1 );
+        chamferLine->addVertex( t2 );
+        newCompound->addCurve( chamferLine );
+      }
+
+      // Add remaining part of target curve
+      if ( targetCurve->numPoints() > 1 )
+      {
+        QgsLineString *remainder = new QgsLineString();
+        for ( int j = 1; j < targetCurve->numPoints(); ++j )
+        {
+          remainder->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+        }
+        if ( remainder->numPoints() > 1 )
+        {
+          newCompound->addCurve( remainder );
+        }
+        else
+        {
+          delete remainder;
+        }
+      }
+    }
+    else if ( vertexInCurve == targetCurve->numPoints() - 1 )
+    {
+      // Vertex is at end of curve - chamfer with next curve
+      // Add part of target curve before vertex
+      if ( vertexInCurve > 0 )
+      {
+        QgsLineString *beforeVertex = new QgsLineString();
+        for ( int j = 0; j < vertexInCurve; ++j )
+        {
+          beforeVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+        }
+        if ( beforeVertex->numPoints() > 1 )
+        {
+          newCompound->addCurve( beforeVertex );
+        }
+        else
+        {
+          delete beforeVertex;
+        }
+      }
+
+      // Add chamfer line
+      QgsLineString *chamferLine = new QgsLineString();
+      chamferLine->addVertex( t1 );
+      chamferLine->addVertex( t2 );
+      newCompound->addCurve( chamferLine );
+    }
+    else
+    {
+      // Vertex is in middle of curve - split the curve
+      // Add part before vertex
+      QgsLineString *beforeVertex = new QgsLineString();
+      for ( int j = 0; j <= vertexInCurve; ++j )
+      {
+        beforeVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+      }
+      if ( beforeVertex->numPoints() > 1 )
+      {
+        newCompound->addCurve( beforeVertex );
+      }
+      else
+      {
+        delete beforeVertex;
+      }
+
+      // Add chamfer line
+      QgsLineString *chamferLine = new QgsLineString();
+      chamferLine->addVertex( t1 );
+      chamferLine->addVertex( t2 );
+      newCompound->addCurve( chamferLine );
+
+      // Add part after vertex
+      QgsLineString *afterVertex = new QgsLineString();
+      for ( int j = vertexInCurve; j < targetCurve->numPoints(); ++j )
+      {
+        afterVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+      }
+      if ( afterVertex->numPoints() > 1 )
+      {
+        newCompound->addCurve( afterVertex );
+      }
+      else
+      {
+        delete afterVertex;
+      }
+    }
+
+    // Add curves after the target curve
+    for ( int i = targetCurveIndex + 1; i < compound->nCurves(); ++i )
+    {
+      newCompound->addCurve( compound->curveAt( i )->clone() );
+    }
+
+    return QgsGeometry( newCompound );
   }
 
-  return QgsGeometry( newLine );
+  return QgsGeometry();
 }
 
 QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
@@ -4678,7 +4832,7 @@ QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) 
     return QgsGeometry();
   }
 
-  Handle LineString geometries by forcing segmented result
+  // Handle LineString geometries by forcing segmented result
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
     QgsLineString *newLine = new QgsLineString();
@@ -4723,6 +4877,133 @@ QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) 
     }
 
     return QgsGeometry( newLine );
+  }
+
+  // Handle CompoundCurve geometries by preserving curve nature
+  if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( curve ) )
+  {
+    QgsCompoundCurve *newCompound = new QgsCompoundCurve();
+
+    // Find which subcurve contains the vertex to fillet
+    int globalVertexIndex = 0;
+    int targetCurveIndex = -1;
+    int vertexInCurve = -1;
+
+    for ( int curveIdx = 0; curveIdx < compound->nCurves(); ++curveIdx )
+    {
+      const QgsCurve *subcurve = compound->curveAt( curveIdx );
+      int subcurvePoints = subcurve->numPoints();
+
+      if ( globalVertexIndex + subcurvePoints > vertexIndex )
+      {
+        targetCurveIndex = curveIdx;
+        vertexInCurve = vertexIndex - globalVertexIndex;
+        break;
+      }
+      globalVertexIndex += subcurvePoints - 1; // Curves share endpoints
+    }
+
+    if ( targetCurveIndex == -1 )
+    {
+      delete newCompound;
+      return QgsGeometry();
+    }
+
+    // Add curves before the target curve (unchanged)
+    for ( int i = 0; i < targetCurveIndex; ++i )
+    {
+      newCompound->addCurve( compound->curveAt( i )->clone() );
+    }
+
+    // Handle the curve containing the vertex
+    const QgsCurve *targetCurve = compound->curveAt( targetCurveIndex );
+
+    // Extract fillet tangent points from the segment-based result
+    QgsPoint filletStart, filletEnd;
+    QgsCircularString *filletArc = nullptr;
+
+    if ( const QgsCompoundCurve *filletCompound = qgsgeometry_cast<const QgsCompoundCurve *>( filletGeom.constGet() ) )
+    {
+      // Extract start and end tangent points and the circular arc
+      if ( filletCompound->nCurves() >= 3 )
+      {
+        // First segment should connect to filletStart
+        if ( const QgsLineString *firstSeg = qgsgeometry_cast<const QgsLineString *>( filletCompound->curveAt( 0 ) ) )
+        {
+          filletStart = firstSeg->pointN( firstSeg->numPoints() - 1 ); // End of first segment
+        }
+
+        // Middle segment should be the circular arc
+        if ( const QgsCircularString *arcSeg = qgsgeometry_cast<const QgsCircularString *>( filletCompound->curveAt( 1 ) ) )
+        {
+          filletArc = arcSeg->clone();
+        }
+
+        // Last segment should connect from filletEnd
+        if ( const QgsLineString *lastSeg = qgsgeometry_cast<const QgsLineString *>( filletCompound->curveAt( 2 ) ) )
+        {
+          filletEnd = lastSeg->pointN( 0 ); // Start of last segment
+        }
+      }
+    }
+
+    if ( !filletArc )
+    {
+      delete newCompound;
+      return QgsGeometry();
+    }
+
+    // Split the target curve at the vertex and add fillet
+    if ( vertexInCurve > 0 )
+    {
+      // Add part of target curve before the vertex (up to tangent point)
+      QgsLineString *beforeVertex = new QgsLineString();
+      for ( int j = 0; j < vertexInCurve; ++j )
+      {
+        beforeVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+      }
+      beforeVertex->addVertex( filletStart ); // Connect to fillet start
+
+      if ( beforeVertex->numPoints() > 1 )
+      {
+        newCompound->addCurve( beforeVertex );
+      }
+      else
+      {
+        delete beforeVertex;
+      }
+    }
+
+    // Add the fillet arc
+    newCompound->addCurve( filletArc );
+
+    if ( vertexInCurve < targetCurve->numPoints() - 1 )
+    {
+      // Add part of target curve after the vertex (from tangent point)
+      QgsLineString *afterVertex = new QgsLineString();
+      afterVertex->addVertex( filletEnd ); // Start from fillet end
+      for ( int j = vertexInCurve + 1; j < targetCurve->numPoints(); ++j )
+      {
+        afterVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+      }
+
+      if ( afterVertex->numPoints() > 1 )
+      {
+        newCompound->addCurve( afterVertex );
+      }
+      else
+      {
+        delete afterVertex;
+      }
+    }
+
+    // Add curves after the target curve (unchanged)
+    for ( int i = targetCurveIndex + 1; i < compound->nCurves(); ++i )
+    {
+      newCompound->addCurve( compound->curveAt( i )->clone() );
+    }
+
+    return QgsGeometry( newCompound );
   }
 
   return QgsGeometry();
