@@ -3211,7 +3211,7 @@ class CORE_EXPORT QgsGeometry
      * \param segments number of segments to use for LineString approximation (ignored for CompoundCurve)
      * \returns new geometry with fillet applied, or invalid geometry on failure
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
 
@@ -3228,7 +3228,7 @@ class CORE_EXPORT QgsGeometry
      * \param segments number of segments to use for LineString approximation (returns a CircularString when segments = 0)
      * \returns new geometry with fillet applied, or invalid geometry on failure
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     QgsGeometry fillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
                         const QgsPoint &seg2Start, const QgsPoint &seg2End,
@@ -3245,7 +3245,7 @@ class CORE_EXPORT QgsGeometry
      * \param distance2 distance along the second segment from the vertex (if < 0, uses distance1)
      * \returns new geometry with chamfer applied, or invalid geometry on failure
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     QgsGeometry chamfer( int vertexIndex, double distance1, double distance2 = -1.0 ) const;
 
@@ -3262,7 +3262,7 @@ class CORE_EXPORT QgsGeometry
      * \param distance2 distance along the second segment from intersection (if < 0, uses distance1)
      * \returns new geometry with chamfer applied, or invalid geometry on failure
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     QgsGeometry chamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
                          const QgsPoint &seg2Start, const QgsPoint &seg2End,
