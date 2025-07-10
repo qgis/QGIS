@@ -36,6 +36,13 @@ stdenv.mkDerivation {
   version = qgisMinorVersion;
   src = qgisSource;
 
+  # Fix 'qhelpgenerator: not found'
+  postPatch = ''
+    substituteInPlace cmake_templates/Doxyfile.in --replace-fail \
+      "QHG_LOCATION           = qhelpgenerator" \
+      "QHG_LOCATION = ${qttools}/libexec/qhelpgenerator"
+  '';
+
   nativeBuildInputs = [
     cmake
     ninja
@@ -53,7 +60,11 @@ stdenv.mkDerivation {
     "-DWITH_CORE=False"
     "-DWITH_APIDOC=True"
     "-DGENERATE_QHP=True"
-    "-DWERROR=True"
+
+    # Bogus warning: More #if's than #endif's found
+    # https://github.com/doxygen/doxygen/issues/11675
+    # "-DWERROR=True"
+
     "-DWITH_DOT=False"
   ];
 
