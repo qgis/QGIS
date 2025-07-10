@@ -525,6 +525,20 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
       * \since QGIS 3.4
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
+
+    /**
+      * Interpolates the value on the given point from given dataset, even if the layer has not been rendered previously.
+      *
+      * \note This will create the mesh if necessary before calling datasetValue().
+      * \see datasetValue
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \param searchRadius the radius of the search area in map unit
+      * \returns interpolated value at the point returned by datasetValue()
+      *
+      * \since QGIS 3.42
+      */    
     QgsMeshDatasetValue datasetValueUncached( const QgsRenderContext &renderContext, const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 );
 
     /**
