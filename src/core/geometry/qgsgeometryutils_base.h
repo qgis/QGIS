@@ -592,16 +592,16 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static bool createChamfer( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
-                               double seg2StartX, double seg2StartY, double seg2EndX, double seg2EndY,
-                               double distance1, double distance2,
+    static bool createChamfer( const double seg1StartX, const double seg1StartY, const double seg1EndX, const double seg1EndY,
+                               const double seg2StartX, const double seg2StartY, const double seg2EndX, const double seg2EndY,
+                               const double distance1, const double distance2,
                                double &chamferStartX SIP_OUT, double &chamferStartY SIP_OUT,
                                double &chamferEndX SIP_OUT, double &chamferEndY SIP_OUT,
                                double *trim1StartX = nullptr, double *trim1StartY = nullptr,
                                double *trim1EndX = nullptr, double *trim1EndY = nullptr,
                                double *trim2StartX = nullptr, double *trim2StartY = nullptr,
                                double *trim2EndX = nullptr, double *trim2EndY = nullptr,
-                               double epsilon = 1e-8 ) SIP_HOLDGIL;
+                               const double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Creates a fillet (rounded corner) between two line segments.
@@ -637,13 +637,13 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static bool createFillet( double seg1StartX, double seg1StartY, double seg1EndX, double seg1EndY,
-                              double seg2StartX, double seg2StartY, double seg2EndX, double seg2EndY,
-                              double radius,
+    static bool createFillet( const double seg1StartX, const double seg1StartY, const double seg1EndX, const double seg1EndY,
+                              const double seg2StartX, const double seg2StartY, const double seg2EndX, const double seg2EndY,
+                              const double radius,
                               double *filletPointsX, double *filletPointsY,
                               double *trim1StartX = nullptr, double *trim1StartY = nullptr,
                               double *trim1EndX = nullptr, double *trim1EndY = nullptr,
                               double *trim2StartX = nullptr, double *trim2StartY = nullptr,
                               double *trim2EndX = nullptr, double *trim2EndY = nullptr,
-                              double epsilon = 1e-8 ) SIP_HOLDGIL;
+                              const double epsilon = 1e-8 ) SIP_HOLDGIL;
 };
