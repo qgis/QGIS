@@ -109,10 +109,11 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
   {
     mCreatedTransform = true;
     if ( !mCoordOp.isEmpty() )
-      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, false );
+      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, true );
     mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
 
-    mTransform.disableFallbackOperationHandler( true );
+    // Don't disable fallbacks - this allows graceful handling of grid shift errors
+    // mTransform.disableFallbackOperationHandler( true );
   }
 
   if ( feature.hasGeometry() )
