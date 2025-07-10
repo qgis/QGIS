@@ -434,7 +434,7 @@ void QgsCameraController::refreshViewCenter( QVector3D &near )
   // Find projection of near onto camera -> viewCenter ray.
   QgsVector3D newCenterPoint = ray.project( near );
   const double diff = newCenterPoint.distance( mCameraPose.centerPoint() );
-  const double diffMult = abs( ( newCenterPoint.distance( mCamera->position() ) ) / mCameraPose.distanceFromCenterPoint() );
+  const double diffMult = ( newCenterPoint.distance( mCamera->position() ) ) / mCameraPose.distanceFromCenterPoint();
   if ( diff > DISTANCE_THRESHOLD && ( diffMult < MULT_THRESHOLD || diffMult > 1 / MULT_THRESHOLD ) )
   {
     mCameraPose.setDistanceFromCenterPoint( static_cast<float>( newCenterPoint.distance( mCamera->position() ) ) );
