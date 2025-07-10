@@ -538,7 +538,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
       * \returns interpolated value at the point returned by datasetValue()
       *
       * \since QGIS 3.42
-      */    
+      */
     QgsMeshDatasetValue datasetValueUncached( const QgsRenderContext &renderContext, const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 );
 
     /**
