@@ -1956,7 +1956,8 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
 
   std::shared_ptr<QgsPoolPostgresConn> conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
   QgsPostgresLayerProperty property;
-  bool ok = conn->get()->supportedLayer( property, sourceSchema, tableName );
+  // need property from target schema, it is already moved
+  bool ok = conn->get()->supportedLayer( property, targetSchema, tableName );
 
   if ( !ok )
   {
