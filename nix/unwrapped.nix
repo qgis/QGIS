@@ -1,6 +1,7 @@
 { lib
+, stdenv
+
 , makeWrapper
-, mkDerivation
 , replaceVars
 , runCommand
 , wrapGAppsHook3
@@ -31,17 +32,18 @@
 , proj
 , protobuf
 , python3
-, qca-qt5
+, qca
 , qscintilla
 , qt3d
+, qt5compat
 , qtbase
 , qtkeychain
 , qtlocation
 , qtmultimedia
 , qtsensors
 , qtserialport
-, qtwebkit
-, qtxmlpatterns
+, qttools
+, qtwebengine
 , qwt
 , sqlite
 , txt2tags
@@ -84,12 +86,12 @@ let
 
   py = python3.override {
     self = py;
-    packageOverrides = self: super: {
-      pyqt5 = super.pyqt5.override {
-        withLocation = true;
-        withSerialPort = true;
-      };
-    };
+    # packageOverrides = self: super: {
+    #   pyqt6 = super.pyqt6.override {
+    #     withLocation = true;
+    #     # withSerialPort = true;
+    #   };
+    # };
   };
 
   pythonBuildInputs = with py.pkgs; [
@@ -100,12 +102,12 @@ let
     owslib
     psycopg2
     pygments
-    pyqt5
+    pyqt6
     pyqt-builder
     python-dateutil
     pytz
     pyyaml
-    qscintilla-qt5
+    qscintilla-qt6
     requests
     setuptools
     sip
@@ -117,10 +119,11 @@ in
 
 # Print the list of included source files
 # lib.fileset.trace qgisSourceFiles
-mkDerivation
+stdenv.mkDerivation
 {
   pname = "qgis-unwrapped";
-  version = qgisVersion;  # this is a "Import from derivation (IFD)" !
+  # version = qgisVersion;  # this is a "Import from derivation (IFD)" !
+  version = "10.0.0"; # FIXME
   src = lib.fileset.toSource {
     root = ../.;
     fileset = qgisSourceFiles;
@@ -144,37 +147,39 @@ mkDerivation
     geos
     gsl
     hdf5
+    libpq
     libspatialindex
     libspatialite
     libzip
     netcdf
     openssl
     pdal
-    libpq
     proj
     protobuf
-    qca-qt5
+    qca
     qscintilla
     qt3d
+    qt5compat
     qtbase
     qtkeychain
     qtlocation
     qtmultimedia
     qtsensors
     qtserialport
-    qtxmlpatterns
+    qttools
+    qtwebengine
     qwt
     sqlite
     txt2tags
     zstd
   ] ++ lib.optional withGrass grass
-  ++ lib.optional withWebKit qtwebkit
+  # ++ lib.optional withWebKit qtwebkit
   ++ pythonBuildInputs;
 
   patches = [
-    (replaceVars ./set-pyqt-package-dirs.patch {
-      pyQt5PackageDir = "${py.pkgs.pyqt5}/${py.pkgs.python.sitePackages}";
-      qsciPackageDir = "${py.pkgs.qscintilla-qt5}/${py.pkgs.python.sitePackages}";
+    (replaceVars ./set-pyqt6-package-dirs.patch {
+      pyQt6PackageDir = "${py.pkgs.pyqt6}/${py.pkgs.python.sitePackages}";
+      qsciPackageDir = "${py.pkgs.qscintilla-qt6}/${py.pkgs.python.sitePackages}";
     })
   ];
 
@@ -182,7 +187,11 @@ mkDerivation
   # (offscreen is needed by "${APIS_SRC_DIR}/generate_console_pap.py")
   env.QT_QPA_PLATFORM_PLUGIN_PATH = "${qtbase}/${qtbase.qtPluginPrefix}/platforms";
 
+  # FIXME: qt webkit can't be enabled with Qt6
   cmakeFlags = [
+    "-DBUILD_WITH_QT6=True"
+    "-DWITH_QTWEBENGINE=True"
+
     "-DWITH_3D=True"
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
