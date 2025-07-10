@@ -3270,7 +3270,7 @@ circular arc. The behavior depends on the geometry type:
 :return: new geometry with fillet applied, or invalid geometry on
          failure
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     QgsGeometry fillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
@@ -3292,7 +3292,7 @@ This method creates a smooth circular arc connecting two line segments.
 :return: new geometry with fillet applied, or invalid geometry on
          failure
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     QgsGeometry chamfer( int vertexIndex, double distance1, double distance2 = -1.0 ) const;
@@ -3313,7 +3313,7 @@ segments.
 :return: new geometry with chamfer applied, or invalid geometry on
          failure
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
     QgsGeometry chamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
@@ -3336,7 +3336,7 @@ specified distances.
 :return: new geometry with chamfer applied, or invalid geometry on
          failure
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
 
