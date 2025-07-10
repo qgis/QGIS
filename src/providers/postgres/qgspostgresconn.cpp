@@ -2243,7 +2243,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
               )
             ) lyr
             JOIN topology.topology t ON ( t.id = lyr.topology_id )
-            JOIN topology.layer l ON ( lyr.layer_id = l.layer_id AND l.topology_id = lyr.topology_id ) ;
+            JOIN topology.layer l ON ( lyr.layer_id = l.layer_id AND l.topology_id = lyr.topology_id )
         )SQL" )
           .arg( quotedIdentifier( layerProperty.geometryColName ) )
           .arg( table )
