@@ -33,6 +33,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
 #include "qgscolorutils.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsfillsymbol.h"
