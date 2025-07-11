@@ -62,6 +62,14 @@ try:
     QgsGeometryUtils.circleCenterRadius = staticmethod(QgsGeometryUtils.circleCenterRadius)
     QgsGeometryUtils.lineIntersection = staticmethod(QgsGeometryUtils.lineIntersection)
     QgsGeometryUtils.segmentIntersection = staticmethod(QgsGeometryUtils.segmentIntersection)
+    QgsGeometryUtils.createPointWithMatchingDimensions = staticmethod(QgsGeometryUtils.createPointWithMatchingDimensions)
+    QgsGeometryUtils.interpolatePointOnSegment = staticmethod(QgsGeometryUtils.interpolatePointOnSegment)
+    QgsGeometryUtils.createChamfer = staticmethod(QgsGeometryUtils.createChamfer)
+    QgsGeometryUtils.createFillet = staticmethod(QgsGeometryUtils.createFillet)
+    QgsGeometryUtils.createChamferGeometry = staticmethod(QgsGeometryUtils.createChamferGeometry)
+    QgsGeometryUtils.createFilletGeometry = staticmethod(QgsGeometryUtils.createFilletGeometry)
+    QgsGeometryUtils.chamferVertex = staticmethod(QgsGeometryUtils.chamferVertex)
+    QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
     QgsGeometryUtils.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

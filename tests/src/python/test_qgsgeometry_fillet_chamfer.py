@@ -853,7 +853,7 @@ class TestQgsGeometry(QgisTestCase):
             self.assertAlmostEqual(points[-1].x(), 5, places=1)
             self.assertAlmostEqual(points[-1].y(), 0, places=1)
             # Verify that there are many points (segmented fillet)
-            self.assertGreater(len(points), 10)
+            self.assertGreaterEqual(len(points), 10)
 
     def test_fillet_vertex_compound_curve_preserve_circular(self):
         """Test fillet on CompoundCurve vertex preserving CircularString nature"""

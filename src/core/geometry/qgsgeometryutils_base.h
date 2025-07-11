@@ -556,7 +556,6 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
       return sum < squaredEpsilon;
     }
-#endif
 
     /**
      * Creates a chamfer (angled corner) between two line segments.
@@ -646,4 +645,5 @@ class CORE_EXPORT QgsGeometryUtilsBase
                               double *trim2StartX = nullptr, double *trim2StartY = nullptr,
                               double *trim2EndX = nullptr, double *trim2EndY = nullptr,
                               const double epsilon = 1e-8 ) SIP_HOLDGIL;
+#endif
 };
