@@ -225,18 +225,18 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   const double side = std::max( xSide, ySide );
 
   const double fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
-  float distance = side / 2.0f / std::tan( fov / 2.0f );
+  const double distance = side / 2.0f / std::tan( fov / 2.0f );
 
   // adjust by elevation
   const QgsDoubleRange zRange = elevationRange();
   if ( !zRange.isInfinite() )
-    distance += static_cast<float>( zRange.upper() );
+    distance += zRange.upper();
 
   // subtract map origin so coordinates are relative to it
   mCameraController->setViewFromTop(
     static_cast<float>( center.x() - origin.x() ),
     static_cast<float>( center.y() - origin.y() ),
-    distance
+    static_cast<float>( distance )
   );
 }
 
