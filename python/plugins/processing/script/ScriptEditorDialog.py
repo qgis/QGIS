@@ -122,6 +122,12 @@ class ScriptEditorDialog(BASE, WIDGET):
                 self.palette().color(QPalette.ColorRole.WindowText),
             )
         )
+        self.actionReformatCode.setIcon(
+            QgsApplication.getThemeIcon(
+                "console/iconFormatCode.svg",
+                self.palette().color(QPalette.ColorRole.WindowText),
+            )
+        )
 
         # Connect signals and slots
         self.actionOpenScript.triggered.connect(self.openScript)
@@ -143,6 +149,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.actionToggleComment.triggered.connect(self.editor.toggleComment)
+        self.actionReformatCode.triggered.connect(self.editor.reformatCode)
         self.editor.modificationChanged.connect(self._on_text_modified)
 
         self.run_dialog = None

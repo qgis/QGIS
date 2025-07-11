@@ -1877,6 +1877,18 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerShortcuts( QStringLiteral( "Ctrl+Alt+," ), QStringLiteral( "mProfileToolNudgeLeft" ), tr( "Nudge profile tool curve to the left" ) );
   registerShortcuts( QStringLiteral( "Ctrl+Alt+." ), QStringLiteral( "mProfileToolNudgeRight" ), tr( "Nudge profile tool curve to the right" ) );
 
+  // Register editor actions
+  auto registerEditorAction = [=]( const QIcon &icon, const QString &text, const QString &sequence, const QString &objectName ) {
+    QAction *action = new QAction( icon, text, this );
+    setObjectName( objectName );
+    // We do not want these actions to be enabled, they are just there to be able to change
+    // the shortcuts in the Shortcuts Manager.
+    action->setEnabled( false );
+    QgsGui::shortcutsManager()->registerAction( action, sequence, QStringLiteral( "Editor" ) );
+  };
+  registerEditorAction( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ), tr( "Toggle Comment" ), QStringLiteral( "Ctrl+/" ), QStringLiteral( "mEditorToggleComment" ) );
+  registerEditorAction( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ), tr( "Reformat Code" ), QStringLiteral( "Ctrl+Alt+F" ), QStringLiteral( "mEditorReformatCode" ) );
+
   QgsGui::providerGuiRegistry()->registerGuis( this );
 
   setupLayoutManagerConnections();
