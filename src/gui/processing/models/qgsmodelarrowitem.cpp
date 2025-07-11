@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicitem.h"
 #include <QPainter>
 #include <QApplication>
 #include <QPalette>
@@ -72,7 +73,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, M
 
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  QColor color = mColor;
+  QColor color = mStartItem->linkColor( mStartEdge, mStartIndex );
 
   if ( mStartItem->state() == QgsModelComponentGraphicItem::Selected || mEndItem->state() == QgsModelComponentGraphicItem::Selected )
     color.setAlpha( 220 );
@@ -81,22 +82,23 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   else
     color.setAlpha( 80 );
 
+  //
   QPen p = pen();
   p.setColor( color );
-  p.setWidth( 1 );
+  p.setWidth( 0 );
   painter->setPen( p );
+
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
 
-
   switch ( mStartMarker )
   {
-    case Marker::Circle:
-      painter->drawEllipse( mStartPoint, 3.0, 3.0 );
-      break;
     case Marker::ArrowHead:
       drawArrowHead( painter, mStartPoint, path().pointAtPercent( 0.0 ) - path().pointAtPercent( 0.05 ) );
       break;
+
+    // start marker are no longer drawn
+    case Marker::Circle:
     case Marker::NoMarker:
       break;
   }
@@ -104,7 +106,7 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   switch ( mEndMarker )
   {
     case Marker::Circle:
-      painter->drawEllipse( mEndPoint, 3.0, 3.0 );
+      painter->drawEllipse( mEndPoint, 3, 3 );
       break;
     case Marker::ArrowHead:
       drawArrowHead( painter, mEndPoint, path().pointAtPercent( 1.0 ) - path().pointAtPercent( 0.95 ) );
@@ -113,7 +115,26 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
       break;
   }
 
+  painter->setBrush( color );
+  painter->setRenderHint( QPainter::Antialiasing );
   painter->setBrush( Qt::NoBrush );
+
+  // Set the painter back to regular stroke thickness
+  p = pen();
+  QColor endColor = mEndItem->linkColor( mEndEdge, mEndIndex );
+  color.setAlpha( 255 );
+
+  QLinearGradient gradient;
+  QPointF startPoint = path().pointAtPercent( 0.3 );
+  QPointF endPoint = path().pointAtPercent( 0.7 );
+  gradient.setStart( startPoint );
+  gradient.setFinalStop( endPoint );
+  gradient.setColorAt( 0, color );
+  gradient.setColorAt( 1, endColor );
+
+  p.setBrush( QBrush( gradient ) );
+  p.setWidth( 2 );
+  painter->setPen( p );
   painter->drawPath( path() );
 }
 
