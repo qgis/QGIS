@@ -1,7 +1,10 @@
 # TESTSRC is relative to ${CMAKE_SOURCE_DIR}
 macro (add_qgis_test_script TESTNAME TESTSRC)
   add_test(${TESTNAME} ${CMAKE_SOURCE_DIR}/${TESTSRC})
-  set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+  set_tests_properties(${TESTNAME} PROPERTIES
+    FIXTURES_REQUIRED SOURCETREE
+    LABELS code_layout
+  )
 endmacro()
 
 if(WITH_ASTYLE)
