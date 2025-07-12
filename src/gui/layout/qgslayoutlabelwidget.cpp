@@ -263,7 +263,7 @@ void QgsLayoutLabelWidget::mHtmlCheckBox_stateChanged( int state )
 {
   if ( mLabel )
   {
-    mVerticalAlignementLabel->setDisabled( state );
+    mVerticalAlignmentLabel->setDisabled( state );
     mVAlignmentComboBox->setDisabled( state );
 
     mLabel->beginCommand( tr( "Change Label Mode" ) );
@@ -385,7 +385,7 @@ void QgsLayoutLabelWidget::setGuiElementValues()
   mVAlignmentComboBox->setCurrentAlignment( mLabel->vAlign() );
 
   mFontButton->setTextFormat( mLabel->textFormat() );
-  mVerticalAlignementLabel->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
+  mVerticalAlignmentLabel->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
   mVAlignmentComboBox->setDisabled( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
 
   blockAllSignals( false );

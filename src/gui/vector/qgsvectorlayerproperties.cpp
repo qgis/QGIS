@@ -646,7 +646,7 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mRefreshLayerNotificationCheckBox->setChecked( mLayer->isRefreshOnNotifyEnabled() );
   mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
-  mNotifyMessagValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
+  mNotifyMessageValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
 
 
   // load appropriate symbology page (V1 or V2)
@@ -811,7 +811,7 @@ void QgsVectorLayerProperties::apply()
   mRefreshSettingsWidget->saveToLayer();
 
   mLayer->setRefreshOnNotifyEnabled( mRefreshLayerNotificationCheckBox->isChecked() );
-  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessagValueLineEdit->text() : QString() );
+  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessageValueLineEdit->text() : QString() );
 
   mOldJoins = mLayer->vectorJoins();
 
