@@ -2034,7 +2034,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
   // Depending on format settings, we may need to render in multiple passes. Eg buffer than text, or shadow than text.
   // We try to avoid this if possible as it requires more work, and just do a single pass, rendering text directly as we go.
-  // If we need to do multi-pass rendering then we'll calculate paths ONCE upfront and defer actually renderring these.
+  // If we need to do multi-pass rendering then we'll calculate paths ONCE upfront and defer actually rendering these.
   const bool requiresMultiPassRendering = ( components & Qgis::TextComponent::Buffer && format.buffer().enabled() )
                                           || ( components & Qgis::TextComponent::Shadow && format.shadow().enabled() && ( format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText || format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowBuffer ) );
   if ( requiresMultiPassRendering )

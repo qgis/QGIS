@@ -829,7 +829,7 @@ they are originally in ``sourceCrs``.
 
 This method will return
 :py:func:`~QgsFeatureRequest.coordinateTransform` if it is set (ignoring
-``sourceCrs``), otherwise it will calculate an appriopriate transform
+``sourceCrs``), otherwise it will calculate an appropriate transform
 from ``sourceCrs`` to :py:func:`~QgsFeatureRequest.destinationCrs`.
 
 .. versionadded:: 3.40

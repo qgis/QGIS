@@ -763,7 +763,7 @@ class CORE_EXPORT QgsFeatureRequest
      * when they are originally in \a sourceCrs.
      *
      * This method will return coordinateTransform() if it is set (ignoring \a sourceCrs), otherwise
-     * it will calculate an appriopriate transform from \a sourceCrs to destinationCrs().
+     * it will calculate an appropriate transform from \a sourceCrs to destinationCrs().
      *
      * \since QGIS 3.40
      */

@@ -46,7 +46,7 @@ class GUI_EXPORT QgsGpsToolsInterface
      * The geometry type of the feature is determined by the layer set via
      * QgsProjectGpsSettings::destinationLayer().
      *
-     * The created geometry will be automatically commited depending on the
+     * The created geometry will be automatically committed depending on the
      * status of QgsProjectGpsSettings::automaticallyCommitFeatures().
      */
     virtual void createFeatureFromGpsTrack() = 0;

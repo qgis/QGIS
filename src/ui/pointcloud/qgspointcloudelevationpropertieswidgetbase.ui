@@ -161,7 +161,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QPushButton" name="mShifPointCloudZAxisButton">
+       <widget class="QPushButton" name="mShiftPointCloudZAxisButton">
         <property name="minimumSize">
          <size>
           <width>24</width>
@@ -384,7 +384,7 @@
   <tabstop>mCrsGroupBox_2</tabstop>
   <tabstop>mScaleZSpinBox</tabstop>
   <tabstop>mOffsetZSpinBox</tabstop>
-  <tabstop>mShifPointCloudZAxisButton</tabstop>
+  <tabstop>mShiftPointCloudZAxisButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

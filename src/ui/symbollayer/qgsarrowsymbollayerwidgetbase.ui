@@ -41,7 +41,7 @@
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QCheckBox" name="mCurvedArrowChck">
+    <widget class="QCheckBox" name="mCurvedArrowCheck">
      <property name="text">
       <string>Curved arrows</string>
      </property>
@@ -351,7 +351,7 @@
     </layout>
    </item>
    <item row="8" column="1">
-    <widget class="QCheckBox" name="mRepeatArrowChck">
+    <widget class="QCheckBox" name="mRepeatArrowCheck">
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, one arrow will be rendered for each consecutive points (each 2 points for a straight arrow or 3 points for a curved arrow).&lt;/p&gt;&lt;p&gt;If unchecked, the arrow will be defined by extermum points of the line (the middle point will be used as a control point for a curved arrow)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
@@ -406,8 +406,8 @@
   <tabstop>mOffsetSpin</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
   <tabstop>mOffsetDDBtn</tabstop>
-  <tabstop>mCurvedArrowChck</tabstop>
-  <tabstop>mRepeatArrowChck</tabstop>
+  <tabstop>mCurvedArrowCheck</tabstop>
+  <tabstop>mRepeatArrowCheck</tabstop>
  </tabstops>
  <resources/>
  <connections/>

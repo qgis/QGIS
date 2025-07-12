@@ -35,8 +35,8 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidge
   connect( mArrowTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsArrowSymbolLayerWidget::mArrowTypeCombo_currentIndexChanged );
   connect( mOffsetSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mOffsetSpin_valueChanged );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mOffsetUnitWidget_changed );
-  connect( mCurvedArrowChck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mCurvedArrowChck_stateChanged );
-  connect( mRepeatArrowChck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mRepeatArrowChck_stateChanged );
+  connect( mCurvedArrowCheck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mCurvedArrowChck_stateChanged );
+  connect( mRepeatArrowCheck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mRepeatArrowChck_stateChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mArrowWidthUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
@@ -79,8 +79,8 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
 
-  mCurvedArrowChck->setChecked( mLayer->isCurved() );
-  mRepeatArrowChck->setChecked( mLayer->isRepeated() );
+  mCurvedArrowCheck->setChecked( mLayer->isCurved() );
+  mRepeatArrowCheck->setChecked( mLayer->isRepeated() );
 
   registerDataDefinedButton( mArrowWidthDDBtn, QgsSymbolLayer::Property::ArrowWidth );
   registerDataDefinedButton( mArrowStartWidthDDBtn, QgsSymbolLayer::Property::ArrowStartWidth );
