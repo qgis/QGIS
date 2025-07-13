@@ -1600,12 +1600,14 @@ def cpp_to_python_signature(cpp_function: str) -> str:
 
     return python_signature
 
+
 #
 # PARSING CODE
 #
 
 # The try_process_* functions return True if the line has been handled and
 # parsing should continue to the next line, False or None otherwise
+
 
 def try_process_sip_directive():
     match = re.match(r"^\s*SIP_FEATURE\(\s*(\w+)\s*\)(.*)$", CONTEXT.current_line)
@@ -2004,6 +2006,7 @@ def process_struct_decl():
         CONTEXT.exported.append(CONTEXT.exported[-1])
         CONTEXT.bracket_nesting_idx.append(0)
 
+
 def process_class_decl():
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
@@ -2264,6 +2267,7 @@ def try_skip_operator_decl():
         detect_and_remove_following_body_or_initializerlist()
         return True
 
+
 def try_save_comments():
     # Save comments and do not print them, except in SIP_RUN
     if not CONTEXT.sip_run:
@@ -2279,6 +2283,7 @@ def try_save_comments():
             elif not re.search(r"\*/", CONTEXT.input_lines[CONTEXT.line_idx - 1]):
                 CONTEXT.reset_method_state()
             return True
+
 
 def try_process_enum_decl():
     # Handle Q_DECLARE_FLAGS in Qt6
@@ -2631,7 +2636,9 @@ def process_misc_keywords():
         r"\1\2,\3,\4\5",
         CONTEXT.current_line,
     )
-    CONTEXT.current_method_is_override = bool(re.search(r"\b(?:override|final)\b", CONTEXT.current_line))
+    CONTEXT.current_method_is_override = bool(
+        re.search(r"\b(?:override|final)\b", CONTEXT.current_line)
+    )
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
@@ -2659,6 +2666,7 @@ def process_misc_keywords():
         exit_with_error(
             f"const static should be written static const in {CONTEXT.classname[-1]}"
         )
+
 
 def try_skip_non_method_decl():
     # Skip non-method member declaration in non-public sections
@@ -3415,32 +3423,50 @@ def process_input():
         CONTEXT.current_line = read_line()
         CONTEXT.current_method_is_override = False
 
-        if try_skip_sip_if_module(): continue
+        if try_skip_sip_if_module():
+            continue
         skip_cppcheck_comments()
-        if try_process_sip_directive(): continue
+        if try_process_sip_directive():
+            continue
         fixup_qt6_len_and_hash()
         process_pyqt_ifdefs()
         process_using()
-        if try_skip_sip_directives(): continue
-        if try_process_preprocessor_directive(): continue
+        if try_skip_sip_directives():
+            continue
+        if try_process_preprocessor_directive():
+            continue
         check_end_of_typeheadercode()
-        if try_skip_forward_decl(): continue
-        if try_skip_friend_decl(): continue
-        if try_process_q_gadget(): continue
-        if try_process_q_enum_q_flag(): continue
-        if try_skip_misc_q_macros(): continue
-        if try_process_sip_skip(): continue
-        if detect_comment_block(): continue
-        if process_struct_decl(): continue
-        if process_class_decl(): continue
+        if try_skip_forward_decl():
+            continue
+        if try_skip_friend_decl():
+            continue
+        if try_process_q_gadget():
+            continue
+        if try_process_q_enum_q_flag():
+            continue
+        if try_skip_misc_q_macros():
+            continue
+        if try_process_sip_skip():
+            continue
+        if detect_comment_block():
+            continue
+        if process_struct_decl():
+            continue
+        if process_class_decl():
+            continue
         process_brackets()
-        if try_process_access_specifiers(): continue
-        if try_skip_operator_decl(): continue
-        if try_save_comments(): continue
-        if try_process_enum_decl(): continue
+        if try_process_access_specifiers():
+            continue
+        if try_skip_operator_decl():
+            continue
+        if try_save_comments():
+            continue
+        if try_process_enum_decl():
+            continue
         check_invalid_doxygen_command()
         process_misc_keywords()
-        if try_skip_non_method_decl(): continue
+        if try_skip_non_method_decl():
+            continue
         process_struct_member_assignment()
         process_flags_q_macros()
         process_prepend_function_specifier()
@@ -3450,7 +3476,8 @@ def process_input():
 
         process_inline_declarations()
         process_method_decl()
-        if try_skip_deleted_function(): continue
+        if try_skip_deleted_function():
+            continue
         skip_struct_export_macro()
         process_comments()
 
@@ -3466,8 +3493,11 @@ def process_input():
         if CONTEXT.python_signature:
             write_output("PSI", f"{CONTEXT.python_signature}\n")
 
-        if try_process_multiline_definition(): continue
-        if try_write_comments(): continue
+        if try_process_multiline_definition():
+            continue
+        if try_write_comments():
+            continue
+
 
 def generate_cpp_output():
     if args.sip_output:
@@ -3481,6 +3511,7 @@ def generate_cpp_output():
             + "".join(CONTEXT.output)
             + "".join(sip_header_footer()).rstrip()
         )
+
 
 def generate_python_output():
     class_additions = defaultdict(list)
@@ -3536,7 +3567,10 @@ def generate_python_output():
                 "calculateStatistics",
             ):
                 continue
-            elif class_name == "QgsServerApiUtils" and method_name == "temporalExtentList":
+            elif (
+                class_name == "QgsServerApiUtils"
+                and method_name == "temporalExtentList"
+            ):
                 method_name = "temporalExtent"
 
             class_additions[class_name].append(
@@ -3626,7 +3660,9 @@ def generate_python_output():
 
 if __name__ == "__main__":
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Convert header file to SIP and Python")
+    parser = argparse.ArgumentParser(
+        description="Convert header file to SIP and Python"
+    )
     parser.add_argument("-debug", action="store_true", help="Enable debug mode")
     parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
     parser.add_argument("-sip_output", help="SIP output file")
@@ -3641,7 +3677,8 @@ if __name__ == "__main__":
             input_lines = f.read().splitlines()
     except OSError as e:
         print(
-            f"Couldn't open '{args.headerfile}' for reading because: {e}", file=sys.stderr
+            f"Couldn't open '{args.headerfile}' for reading because: {e}",
+            file=sys.stderr,
         )
         sys.exit(1)
 
