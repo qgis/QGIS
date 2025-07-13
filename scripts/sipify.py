@@ -2598,7 +2598,6 @@ def try_process_enum_decl():
 def check_invalid_doxygen_command():
     # Check for invalid use of doxygen command
     if re.search(r".*//!<", CONTEXT.current_line):
-        return
         exit_with_error(
             '"\\!<" doxygen command must only be used for enum documentation'
         )
