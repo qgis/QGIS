@@ -517,10 +517,10 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
     ${CMAKE_SOURCE_DIR}/external/untwine/api
   )
 
-  IF(MSVC)
+  IF(WIN32)
     set_source_files_properties(
       ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
-      PROPERTIES COMPILE_FLAGS "/DUNICODE"
+      PROPERTIES COMPILE_DEFINITIONS "UNICODE"
     )
   endif()
 endif()

@@ -14,10 +14,10 @@ set(PDAL_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
-IF(MSVC)
+IF(WIN32)
   set_source_files_properties(
     ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
-    PROPERTIES COMPILE_FLAGS "/DUNICODE"
+    PROPERTIES COMPILE_DEFINITIONS "UNICODE"
   )
 endif()
 
