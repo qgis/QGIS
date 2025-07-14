@@ -180,7 +180,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setOutputExtentFromOriginal();
 
   // Snap to grid checkbox (added for #43915)
-  mSnapToGridCheckBox = new QCheckBox( tr( "Snap to grid (align to pixels)" ) );
+  mSnapToGridCheckBox = new QCheckBox( tr( "Snap to grid" ) );
   mSnapToGridCheckBox->setToolTip( tr( "Align the export extent to the input raster pixels (similar to GDAL's -tap option)" ) );
   mSnapToGridCheckBox->setChecked( true );
   mExtentGroupBox->layout()->addWidget( mSnapToGridCheckBox );
