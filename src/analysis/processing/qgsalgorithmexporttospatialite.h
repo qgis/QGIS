@@ -40,11 +40,15 @@ class QgsExportToSpatialiteAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    Qgis::ProcessingAlgorithmFlags flags() const override;
     QgsExportToSpatialiteAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    QString mProviderType;
+    QString mDatabaseUri;
 };
 
 ///@endcond PRIVATE

@@ -59,11 +59,6 @@ QString QgsExportToSpatialiteAlgorithm::shortDescription() const
   return QObject::tr( "Exports a vector layer to a SpatiaLite database, creating a new table." );
 }
 
-Qgis::ProcessingAlgorithmFlags QgsExportToSpatialiteAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
-}
-
 QgsExportToSpatialiteAlgorithm *QgsExportToSpatialiteAlgorithm::createInstance() const
 {
   return new QgsExportToSpatialiteAlgorithm();
@@ -84,23 +79,27 @@ void QgsExportToSpatialiteAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_SINGLEPART" ), QObject::tr( "Create single-part geometries instead of multipart" ), false ) );
 }
 
+bool QgsExportToSpatialiteAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "DATABASE" ), context );
+  mProviderType = layer->providerType();
+  mDatabaseUri = layer->dataProvider()->dataSourceUri();
+  return true;
+}
+
 QVariantMap QgsExportToSpatialiteAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "DATABASE" ), context );
-  QString databaseUri = layer->dataProvider()->dataSourceUri();
-  QgsDataSourceUri uri( databaseUri );
+  QgsDataSourceUri uri( mDatabaseUri );
   if ( uri.database().isEmpty() )
   {
-    if ( databaseUri.contains( QStringLiteral( "|layername" ), Qt::CaseInsensitive ) )
-      databaseUri = databaseUri.left( databaseUri.indexOf( QLatin1String( "|layername" ) ) );
-    else if ( databaseUri.contains( QStringLiteral( "|layerid" ), Qt::CaseInsensitive ) )
-      databaseUri = databaseUri.left( databaseUri.indexOf( QLatin1String( "|layerid" ) ) );
-
-    uri = QgsDataSourceUri( QStringLiteral( "dbname='%1'" ).arg( databaseUri ) );
+    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( mProviderType );
+    const QVariantMap parts = md->decodeUri( mDatabaseUri );
+    mDatabaseUri = parts.value( QStringLiteral( "path" ) ).toString();
+    uri = QgsDataSourceUri( QStringLiteral( "dbname='%1'" ).arg( mDatabaseUri ) );
   }
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
