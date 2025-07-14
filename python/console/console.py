@@ -327,8 +327,16 @@ class PythonConsoleWidget(QWidget):
         )
         self.toggleCommentEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.toggleCommentEditorButton.setIconVisibleInMenu(True)
-        self.toggleCommentEditorButton.setToolTip(toggleText + " <b>Ctrl+:</b>")
+        self.toggleCommentEditorButton.setShortcut(
+            self.shortcut("mEditorToggleComment", "Ctrl+/")
+        )
         self.toggleCommentEditorButton.setText(toggleText)
+        self.toggleCommentEditorButton.setToolTip(
+            "{} <b>{}</b>".format(
+                self.toggleCommentEditorButton.text(),
+                self.toggleCommentEditorButton.shortcut().toString(),
+            )
+        )
 
         # Action Format code
         reformatCodeText = QCoreApplication.translate("PythonConsole", "Reformat Code")
@@ -340,11 +348,16 @@ class PythonConsoleWidget(QWidget):
         )
         self.reformatCodeEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.reformatCodeEditorButton.setIconVisibleInMenu(True)
-        self.reformatCodeEditorButton.setToolTip(
-            reformatCodeText + " <b>Ctrl+Alt+F</b>"
+        self.reformatCodeEditorButton.setShortcut(
+            self.shortcut("mEditorToggleComment", "Ctrl+Alt+F")
         )
-        self.reformatCodeEditorButton.setShortcut("Ctrl+Alt+F")
         self.reformatCodeEditorButton.setText(reformatCodeText)
+        self.reformatCodeEditorButton.setToolTip(
+            "{} <b>{}</b>".format(
+                self.reformatCodeEditorButton.text(),
+                self.reformatCodeEditorButton.shortcut().toString(),
+            )
+        )
 
         # Action for Object browser
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
@@ -800,6 +813,12 @@ class PythonConsoleWidget(QWidget):
         self.splitterObj.restoreState(
             settings.value("pythonConsole/splitterObj", QByteArray())
         )
+
+    def shortcut(self, key, default):
+        action = QgsGui.shortcutsManager().actionByName(key)
+        if action:
+            return action.shortcut()
+        return QKeySequence(default)
 
 
 if __name__ == "__main__":
