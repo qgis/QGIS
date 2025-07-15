@@ -1776,7 +1776,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
 
     /**
-     * Loads python expression functions stored in the currrent project
+     * Loads python expression functions stored in the current project
      * \param force Whether to check enablePythonEmbedded setting (default) or not.
      * \returns Whether the project functions were loaded or not.
      *

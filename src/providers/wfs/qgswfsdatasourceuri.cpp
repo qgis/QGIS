@@ -467,7 +467,7 @@ bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
     return true;
 
   // accept previously used version with typo
-  if ( mURI.hasParam( QStringLiteral( "retrictToRequestBBOX" ) ) && mURI.param( QStringLiteral( "retrictToRequestBBOX" ) ).toInt() == 1 )
+  if ( mURI.hasParam( QStringLiteral( "retrictToRequestBBOX" ) ) && mURI.param( QStringLiteral( "retrictToRequestBBOX" ) ).toInt() == 1 ) // spellok
     return true;
 
   return false;
