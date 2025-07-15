@@ -17,7 +17,7 @@
 
 #include "qgsalgorithmtransform.h"
 #include "qgsexception.h"
-
+#include "processing/qgsprocessingexception.h"
 ///@cond PRIVATE
 
 
