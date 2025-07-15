@@ -46,7 +46,7 @@ QString QgsUniqueValuesAlgorithm::groupId() const
 
 QString QgsUniqueValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Returns list of unique values in given field(s) of a vector layer." );
+  return QObject::tr( "This algorithm generates a report with information about the unique values found in a given attribute (or attributes) of a vector layer." );
 }
 
 QString QgsUniqueValuesAlgorithm::shortDescription() const
@@ -61,7 +61,7 @@ QgsUniqueValuesAlgorithm *QgsUniqueValuesAlgorithm::createInstance() const
 
 void QgsUniqueValuesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS" ), QObject::tr( "Target field(s)" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Unique values" ), Qgis::ProcessingSourceType::Vector, QVariant(), true ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "HTML report" ), QObject::tr( "HTML files (*.html *.htm)" ), QVariant(), true ) );
@@ -81,12 +81,12 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
   QgsFields fields;
   QList<int> fieldIndices;
 
-  for ( auto &fieldName : fieldNames )
+  for ( const QString &fieldName : fieldNames )
   {
     int fieldIndex = source->fields().lookupField( fieldName );
     if ( fieldIndex < 0 )
     {
-      feedback->reportError( QObject::tr( "Invalid field name &1" ).arg( fieldName ) );
+      feedback->reportError( QObject::tr( "Invalid field name %1" ).arg( fieldName ) );
       continue;
     }
     fields.append( source->fields().at( fieldIndex ) );
@@ -104,7 +104,7 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
   if ( fieldIndices.size() == 1 )
   {
     const QSet<QVariant> unique = source->uniqueValues( fieldIndices.at( 0 ) );
-    for ( auto &v : unique )
+    for ( const QVariant &v : unique )
     {
       values.insert( QgsAttributes() << v );
     }
@@ -145,11 +145,11 @@ QVariantMap QgsUniqueValuesAlgorithm::processAlgorithm( const QVariantMap &param
   for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
   {
     QStringList s;
-    for ( auto &v : std::as_const( *it ) )
+    for ( const QVariant &v : std::as_const( *it ) )
     {
       s.append( v.toString() );
     }
-    valueList.append( s );
+    valueList.append( s.join( ',' ) );
   }
   outputs.insert( QStringLiteral( "UNIQUE_VALUES" ), valueList.join( ';' ) );
 
