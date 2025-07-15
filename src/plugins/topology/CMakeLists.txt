@@ -25,8 +25,8 @@ qt_wrap_ui(topol_UIS_H  ${topol_UIS})
 
 add_library (plugin_topology MODULE ${topol_SRCS} ${topol_RCCS} ${topol_UIS_H})
 
-# require c++17
-target_compile_features(plugin_topology PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(plugin_topology PRIVATE cxx_std_20)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins
