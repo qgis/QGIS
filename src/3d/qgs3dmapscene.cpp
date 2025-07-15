@@ -225,7 +225,7 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   const double side = std::max( xSide, ySide );
 
   const double fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
-  const double distance = side / 2.0f / std::tan( fov / 2.0f );
+  double distance = side / 2.0f / std::tan( fov / 2.0f );
 
   // adjust by elevation
   const QgsDoubleRange zRange = elevationRange();
