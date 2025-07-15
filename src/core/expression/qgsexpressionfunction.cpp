@@ -7896,7 +7896,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     overlapOrRadiusFilter = minInscribedCircleRadius != -1 || minOverlap != -1;
   }
 
-
   FEAT_FROM_CONTEXT( context, feat )
   const QgsGeometry geometry = feat.geometry();
 
@@ -8486,9 +8485,32 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "clamp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ) ), fcnClamp, QStringLiteral( "Math" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "scale_linear" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )  << QgsExpressionFunction::Parameter( QStringLiteral( "domain_min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "domain_max" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "range_min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "range_max" ) ), fcnLinearScale, QStringLiteral( "Math" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "scale_polynomial" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )  << QgsExpressionFunction::Parameter( QStringLiteral( "domain_min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "domain_max" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "range_min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "range_max" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "exponent" ) ), fcnPolynomialScale, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "scale_exp" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "scale_exponential" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )  << QgsExpressionFunction::Parameter( QStringLiteral( "domain_min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "domain_max" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "range_min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "range_max" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "exponent" ) ), fcnExponentialScale, QStringLiteral( "Math" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "scale_linear" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "domain_min" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "domain_max" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "range_min" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "range_max" ) ),
+    }, fcnLinearScale, QStringLiteral( "Math" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "scale_polynomial" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "domain_min" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "domain_max" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "range_min" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "range_max" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "exponent" ) ),
+    }, fcnPolynomialScale, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "scale_exp" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "scale_exponential" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "domain_min" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "domain_max" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "range_min" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "range_max" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "exponent" ) ),
+    }, fcnExponentialScale, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "floor" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnFloor, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ceil" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnCeil, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "pi" ), 0, fcnPi, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$pi" ) )
@@ -8505,21 +8527,19 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "to_decimal" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToDecimal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todecimal" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "nullif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value2" ) ), fcnNullIf, QStringLiteral( "Conditionals" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "if" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "condition" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "result_when_true" ) )  << QgsExpressionFunction::Parameter( QStringLiteral( "result_when_false" ) ), fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "if" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "condition" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "result_when_true" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "result_when_false" ) ), fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "try" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "alternative" ), true, QVariant() ), fcnTry, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
 
         << new QgsStaticExpressionFunction( QStringLiteral( "aggregate" ),
-                                            QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "aggregate" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), false, QVariant(), true )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "concatenator" ), true )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "order_by" ), true, QVariant(), true ),
-                                            fcnAggregate,
-                                            QStringLiteral( "Aggregates" ),
-                                            QString(),
-                                            []( const QgsExpressionNodeFunction * node )
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "aggregate" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), false, QVariant(), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "concatenator" ), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "order_by" ), true, QVariant(), true ),
+    },
+    fcnAggregate, QStringLiteral( "Aggregates" ), QString(), []( const QgsExpressionNodeFunction * node )
     {
       // usesGeometry callback: return true if @parent variable is referenced
 
@@ -8577,13 +8597,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     true
                                           )
 
-        << new QgsStaticExpressionFunction( QStringLiteral( "relation_aggregate" ), QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "relation" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "aggregate" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), false, QVariant(), true )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "concatenator" ), true )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "order_by" ), true, QVariant(), true ),
-                                            fcnAggregateRelation, QStringLiteral( "Aggregates" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "relation_aggregate" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "relation" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "aggregate" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), false, QVariant(), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "concatenator" ), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "order_by" ), true, QVariant(), true ),
+    },
+    fcnAggregateRelation, QStringLiteral( "Aggregates" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true )
 
         << new QgsStaticExpressionFunction( QStringLiteral( "count" ), aggParams, fcnAggregateCount, QStringLiteral( "Aggregates" ), QString(), false, QSet<QString>(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "count_distinct" ), aggParams, fcnAggregateCountDistinct, QStringLiteral( "Aggregates" ), QString(), false, QSet<QString>(), true )
@@ -8616,11 +8638,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnAge, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "year" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnYear, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "month" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnMonth, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "week" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnWeek, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "day" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnDay, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "hour" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), fcnHour, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "minute" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), fcnMinute, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "second" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), fcnSeconds, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "week" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnWeek, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "day" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnDay, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "hour" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), fcnHour, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "minute" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), fcnMinute, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "second" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), fcnSeconds, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "epoch" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnEpoch, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "datetime_from_epoch" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "long" ) ), fcnDateTimeFromEpoch, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "day_of_week" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnDayOfWeek, QStringLiteral( "Date and Time" ) )
@@ -8632,21 +8654,25 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "minute" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "second" ) ),
                                             fcnMakeTime, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "make_datetime" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "year" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "month" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "day" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "hour" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "minute" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "second" ) ),
-                                            fcnMakeDateTime, QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "make_interval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "years" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "months" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "weeks" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "days" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "hours" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "minutes" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "seconds" ), true, 0 ),
-                                            fcnMakeInterval, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_datetime" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "year" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "month" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "day" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "hour" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "minute" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "second" ) ),
+    }, fcnMakeDateTime, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_interval" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "years" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "months" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "weeks" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "days" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "hours" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "minutes" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "seconds" ), true, 0 ),
+    }, fcnMakeInterval, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
@@ -8666,7 +8692,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "wordwrap" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "length" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "" ), fcnWordwrap, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "length" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "text" ), true, "" ), fcnLength, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "length3D" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnLength3D, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "repeat" ), { QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "number" ) )}, fcnRepeat, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "repeat" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ),
+    }, fcnRepeat, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "replace" ), -1, fcnReplace, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "regexp_replace" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "input_string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "regex" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "replacement" ) ), fcnRegexpReplace, QStringLiteral( "String" ) )
@@ -8680,14 +8709,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "rpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnRPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "omit_group_separators" ), true, false )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "trim_trailing_zeroes" ), true, false ), fcnFormatNumber, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "omit_group_separators" ), true, false ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "trim_trailing_zeroes" ), true, false ),
+    }, fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "color2" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "ratio" ) ),
@@ -8882,14 +8913,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       functions << fcnGeomOverlayFunc;
     }
 
-    QgsStaticExpressionFunction *fcnGeomOverlayNearestFunc   = new QgsStaticExpressionFunction( QStringLiteral( "overlay_nearest" ), QgsExpressionFunction::ParameterList()
-        << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( 1 ), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0 )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false ),
-        fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+    QgsStaticExpressionFunction *fcnGeomOverlayNearestFunc   = new QgsStaticExpressionFunction( QStringLiteral( "overlay_nearest" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( 1 ), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "cache" ), true, QVariant( false ), false ),
+    },
+    fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayNearestFunc->setIsStatic( false );
     functions << fcnGeomOverlayNearestFunc;
@@ -8980,7 +9013,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "y_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnYMax, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "ymax" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_wkt" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "text" ) ), fcnGeomFromWKT, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromWKT" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_wkb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "binary" ) ), fcnGeomFromWKB, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false )
-        << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_gml" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "gml" ) ), fcnGeomFromGML, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromGML" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "geom_from_gml" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "gml" ) ), fcnGeomFromGML, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "geomFromGML" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "flip_coordinates" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnFlipCoordinates, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "relate" ), -1, fcnRelate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "intersects_bbox" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ), fcnBbox, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "bbox" ) )
@@ -9005,69 +9038,88 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "within" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) ),
                                             fcnWithin, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "translate" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "dx" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "dy" ) ),
-                                            fcnTranslate, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "rotate" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "per_part" ), true, false ),
-                                            fcnRotate, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "scale" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "x_scale" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "y_scale" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
-                                            fcnScale, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "affine_transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "delta_x" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "delta_y" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "rotation_z" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scale_x" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scale_y" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "delta_z" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "delta_m" ), true, 0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scale_z" ), true, 1 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scale_m" ), true, 1 ),
-                                            fcnAffineTransform, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "cap" ), true, QStringLiteral( "round" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QStringLiteral( "round" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2 ),
-                                            fcnBuffer, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "force_rhr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnForceRHR, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "force_polygon_cw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnForcePolygonCW, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "force_polygon_ccw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnForcePolygonCCW, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "wedge_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "center" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "outer_radius" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "inner_radius" ), true, 0.0 ), fcnWedgeBuffer, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "tapered_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "start_width" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "end_width" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            , fcnTaperedBuffer, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "buffer_by_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            , fcnBufferByM, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
-                                            fcnOffsetCurve, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "single_sided_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
-                                            fcnSingleSidedBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "translate" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "dx" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "dy" ) ),
+    },
+    fcnTranslate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "rotate" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "per_part" ), true, false ),
+    },
+    fcnRotate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "scale" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "x_scale" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "y_scale" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
+    },
+    fcnScale, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "affine_transform" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "delta_x" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "delta_y" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "rotation_z" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "scale_x" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "scale_y" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "delta_z" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "delta_m" ), true, 0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "scale_z" ), true, 1 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "scale_m" ), true, 1 ),
+    },
+    fcnAffineTransform, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "cap" ), true, QStringLiteral( "round" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QStringLiteral( "round" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2 ),
+    },
+    fcnBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "force_rhr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnForceRHR, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "force_polygon_cw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnForcePolygonCW, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "force_polygon_ccw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnForcePolygonCCW, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "wedge_buffer" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "center" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "outer_radius" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "inner_radius" ), true, 0.0 ),
+    }, fcnWedgeBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "tapered_buffer" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "start_width" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "end_width" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 ),
+    }, fcnTaperedBuffer, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "buffer_by_m" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 ), fcnBufferByM, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
+    }, fcnOffsetCurve, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "single_sided_buffer" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
+    }, fcnSingleSidedBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "extend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "start_distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "end_distance" ) ),
@@ -9094,16 +9146,20 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "bounds" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnBounds, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "simplify" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnSimplify, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "simplify_vw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnSimplifyVW, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "smooth" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "iterations" ), true, 1 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "offset" ), true, 0.25 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "min_length" ), true, -1 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "max_angle" ), true, 180 ), fcnSmooth, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "smooth" ),
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "iterations" ), true, 1 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "offset" ), true, 0.25 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "min_length" ), true, -1 ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "max_angle" ), true, 180 ),
+    }, fcnSmooth, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "triangular_wave" ),
     {
       QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "wavelength" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "amplitude" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false )
+      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false ),
     }, fcnTriangularWave, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "triangular_wave_randomized" ),
     {
@@ -9112,14 +9168,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "max_wavelength" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "min_amplitude" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
+      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 ),
     }, fcnTriangularWaveRandomized, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "square_wave" ),
     {
       QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "wavelength" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "amplitude" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false )
+      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false ),
     }, fcnSquareWave, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "square_wave_randomized" ),
     {
@@ -9128,14 +9184,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "max_wavelength" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "min_amplitude" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
+      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 ),
     }, fcnSquareWaveRandomized, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "wave" ),
     {
       QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "wavelength" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "amplitude" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false )
+      QgsExpressionFunction::Parameter( QStringLiteral( "strict" ), true, false ),
     }, fcnRoundWave, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "wave_randomized" ),
     {
@@ -9144,7 +9200,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       QgsExpressionFunction::Parameter( QStringLiteral( "max_wavelength" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "min_amplitude" ) ),
       QgsExpressionFunction::Parameter( QStringLiteral( "max_amplitude" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 )
+      QgsExpressionFunction::Parameter( QStringLiteral( "seed" ), true, 0 ),
     }, fcnRoundWaveRandomized, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "apply_dash_pattern" ),
     {
@@ -9158,12 +9214,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "densify_by_count" ),
     {
       QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "vertices" ) )
+      QgsExpressionFunction::Parameter( QStringLiteral( "vertices" ) ),
     }, fcnDensifyByCount, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "densify_by_distance" ),
     {
       QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
+      QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ),
     }, fcnDensifyByDistance, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_points" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumPoints, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "num_interior_rings" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomNumInteriorRings, QStringLiteral( "GeometryGroup" ) )
