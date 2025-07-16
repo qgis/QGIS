@@ -8149,7 +8149,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
         if ( isIntersectsFunc && ( requireMeasures || overlapOrRadiusFilter ) )
         {
-          QgsGeometry intersection { geometry.intersection( feat2.geometry(), QgsGeometryParameters(), backend ) };
+          QgsGeometry intersection { geometry.intersection( feat2.geometry(), QgsGeometryParameters() ) };
 
           // Pre-process collections: if the tested geometry is a polygon we take the polygons from the collection
           if ( intersection.wkbType() == Qgis::WkbType::GeometryCollection )
