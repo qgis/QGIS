@@ -35,7 +35,6 @@ from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
-from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -94,7 +93,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             HubDistancePoints(),
             HypsometricCurves(),
             IdwInterpolation(),
-            ImportIntoSpatialite(),
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),
