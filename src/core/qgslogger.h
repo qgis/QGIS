@@ -34,17 +34,17 @@ class QFile;
 #ifdef QGISDEBUG
 #define QgsDebugError( str ) QgsLogger::debug( QString( str ), 0, __FILE__, __FUNCTION__, __LINE__ )
 #define QgsDebugMsgLevel( str, level )                                               \
-  if ( level <= QgsLogger::debugLevel() )                                            \
+  if ( ( level ) <= QgsLogger::debugLevel() )                                        \
   {                                                                                  \
     QgsLogger::debug( QString( str ), ( level ), __FILE__, __FUNCTION__, __LINE__ ); \
   }                                                                                  \
   ( void ) ( 0 )
-#define QgsDebugErrorLoc( str, file, func, line ) QgsLogger::debug( QString( str ), 0, file, func, line )
-#define QgsDebugMsgLevelLoc( str, level, file, func, line )          \
-  if ( level <= QgsLogger::debugLevel() )                            \
-  {                                                                  \
-    QgsLogger::debug( QString( str ), ( level ), file, func, line ); \
-  }                                                                  \
+#define QgsDebugErrorLoc( str, file, func, line ) QgsLogger::debug( QString( str ), 0, ( file ), ( func ), ( line ) )
+#define QgsDebugMsgLevelLoc( str, level, file, func, line )                      \
+  if ( ( level ) <= QgsLogger::debugLevel() )                                    \
+  {                                                                              \
+    QgsLogger::debug( QString( str ), ( level ), ( file ), ( func ), ( line ) ); \
+  }                                                                              \
   ( void ) ( 0 )
 #define QgsDebugCall QgsScopeLogger _qgsScopeLogger( __FILE__, __FUNCTION__, __LINE__ )
 #else
