@@ -1441,7 +1441,7 @@ void TestQgsProcessingAlgsPt1::polygonsToLines()
 
   const QgsFeature result = runForFeature( alg, feature, u"Polygon"_s );
 
-  QVERIFY2( result.geometry().equals( expectedGeometry ), u"Result: %1, Expected: %2"_s.arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+  QVERIFY2( result.geometry().isEqual( expectedGeometry ), u"Result: %1, Expected: %2"_s.arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
 }
 
 void TestQgsProcessingAlgsPt1::roundness_data()
@@ -2118,7 +2118,7 @@ void TestQgsProcessingAlgsPt1::densifyGeometries()
   if ( expectedGeometry.isNull() )
     QVERIFY( result.geometry().isNull() );
   else
-    QVERIFY2( result.geometry().equals( expectedGeometry ), u"Result: %1, Expected: %2"_s.arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+    QVERIFY2( result.geometry().isEqual( expectedGeometry ), u"Result: %1, Expected: %2"_s.arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
 }
 
 void TestQgsProcessingAlgsPt1::fillNoData_data()

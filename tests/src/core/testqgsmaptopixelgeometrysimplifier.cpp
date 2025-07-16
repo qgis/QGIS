@@ -173,7 +173,7 @@ void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
   const int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
   const QgsMapToPixelSimplifier simplifier( fl, 20.0 );
   const QgsGeometry ret = simplifier.simplify( g12416 );
-  QVERIFY( !ret.equals( g12416 ) );
+  QVERIFY( !ret.isEqual( g12416 ) );
 }
 
 void TestQgsMapToPixelGeometrySimplifier::testCircularString()

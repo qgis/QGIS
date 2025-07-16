@@ -111,7 +111,7 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geom = QgsOgcUtils::geometryFromGML( u"<gml:Point srsName=\"EPSG:4326\"><gml:coordinates>4,45</gml:coordinates></gml:Point>"_s );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( u"POINT (4 45)"_s ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( u"POINT (4 45)"_s ) ) );
 
 
   // Test GML3
@@ -128,26 +128,26 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geom = QgsOgcUtils::geometryFromGML( u"<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>"_s );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::PointZ );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( u"POINTZ(0 1 2)"_s ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( u"POINTZ(0 1 2)"_s ) ) );
 
   // Test polygon GML3 Z
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210 0 0 1200</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)GML" ) );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::PolygonZ );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( u"POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))"_s ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( u"POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))"_s ) ) );
 
   // Test linestring GML3 Z
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:LineString srsName="EPSG:4326"><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString>)GML" ) );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::LineStringZ );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( u"LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)"_s ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( u"LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)"_s ) ) );
 
   // Test point GML3 with urn:ogc:def:crs:EPSG::4326
   // X/Y coordinates are inverted
   geom = QgsOgcUtils::geometryFromGML( u"<gml:Point srsName=\"urn:ogc:def:crs:EPSG::4326\"><gml:pos>45 4</gml:pos></gml:Point>"_s );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( u"POINT (4 45)"_s ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( u"POINT (4 45)"_s ) ) );
 
 
   // Test point GML3 with urn:ogc:def:crs:EPSG::3857
@@ -155,7 +155,7 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geom = QgsOgcUtils::geometryFromGML( u"<gml:Point srsName=\"urn:ogc:def:crs:EPSG::3857\"><gml:pos>32 2</gml:pos></gml:Point>"_s );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( u"POINT (32 2)"_s ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( u"POINT (32 2)"_s ) ) );
 }
 
 void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()
@@ -213,7 +213,7 @@ void TestQgsOgcUtils::testGeometryFromGMLWithZ()
   QgsGeometry geom = QgsOgcUtils::geometryFromGML( xmlText );
   QVERIFY( !geom.isNull() );
   QCOMPARE( geom.wkbType(), type );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( WKT ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( WKT ) ) );
 }
 
 static QDomElement comparableElement( const QString &xmlText )
