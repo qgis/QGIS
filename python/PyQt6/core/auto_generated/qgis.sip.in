@@ -1300,6 +1300,12 @@ The development version
       CylindersAndSpheres,
     };
 
+    enum class GeometryBackend /BaseType=IntEnum/
+    {
+      QGIS,
+      GEOS,
+    };
+
     enum class GeosCreationFlag /BaseType=IntFlag/
     {
       RejectOnInvalidSubGeometry,
