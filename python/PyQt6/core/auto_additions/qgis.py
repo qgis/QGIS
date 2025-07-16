@@ -3893,6 +3893,32 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 """
 # --
 Qgis.JoinStyle.baseClass = Qgis
+QgsGeometry.GeometryBackend = Qgis.GeometryBackend
+# monkey patching scoped based enum
+QgsGeometry.GeometryBackendQGIS = Qgis.GeometryBackend.QGIS
+QgsGeometry.GeometryBackend.GeometryBackendQGIS = Qgis.GeometryBackend.QGIS
+QgsGeometry.GeometryBackendQGIS.is_monkey_patched = True
+QgsGeometry.GeometryBackendQGIS.__doc__ = "Use internal implementation"
+QgsGeometry.GeometryBackendGEOS = Qgis.GeometryBackend.GEOS
+QgsGeometry.GeometryBackend.GeometryBackendGEOS = Qgis.GeometryBackend.GEOS
+QgsGeometry.GeometryBackendGEOS.is_monkey_patched = True
+QgsGeometry.GeometryBackendGEOS.__doc__ = "Use GEOS implementation"
+Qgis.GeometryBackend.__doc__ = """Geometry backend for :py:class:`QgsGeometry`.
+
+.. versionadded:: 3.46
+
+* ``QGIS``: Use internal implementation
+
+  Available as ``QgsGeometry.GeometryBackendQGIS`` in older QGIS releases.
+
+* ``GEOS``: Use GEOS implementation
+
+  Available as ``QgsGeometry.GeometryBackendGEOS`` in older QGIS releases.
+
+
+"""
+# --
+Qgis.GeometryBackend.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"

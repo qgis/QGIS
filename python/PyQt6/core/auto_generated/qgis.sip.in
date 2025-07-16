@@ -1233,6 +1233,12 @@ The development version
       Bevel,
     };
 
+    enum class GeometryBackend /BaseType=IntEnum/
+      {
+      QGIS,
+      GEOS,
+    };
+
     enum class GeosCreationFlag /BaseType=IntFlag/
     {
       RejectOnInvalidSubGeometry,
