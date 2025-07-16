@@ -247,15 +247,15 @@ Qgis.LayerFilter.__doc__ = """Filter for layers
 
 .. versionadded:: 3.34.
 
-* ``RasterLayer``: 
-* ``NoGeometry``: 
-* ``PointLayer``: 
-* ``LineLayer``: 
-* ``PolygonLayer``: 
-* ``HasGeometry``: 
-* ``VectorLayer``: 
-* ``PluginLayer``: 
-* ``WritableLayer``: 
+* ``RasterLayer``:
+* ``NoGeometry``:
+* ``PointLayer``:
+* ``LineLayer``:
+* ``PolygonLayer``:
+* ``HasGeometry``:
+* ``VectorLayer``:
+* ``PluginLayer``:
+* ``WritableLayer``:
 * ``MeshLayer``: QgsMeshLayer
 
   .. versionadded:: 3.6
@@ -851,10 +851,10 @@ Qgis.EmbeddedScriptType.__doc__ = """Type of Python Embedded in projects
 
 .. versionadded:: 3.40
 
-* ``Macro``: 
-* ``ExpressionFunction``: 
-* ``Action``: 
-* ``FormInitCode``: 
+* ``Macro``:
+* ``ExpressionFunction``:
+* ``Action``:
+* ``FormInitCode``:
 
 """
 # --
@@ -867,9 +867,9 @@ Qgis.ProjectTrustStatus.__doc__ = """Project trust status
 
 .. versionadded:: 4.0
 
-* ``Undetermined``: 
-* ``Trusted``: 
-* ``Untrusted``: 
+* ``Undetermined``:
+* ``Trusted``:
+* ``Untrusted``:
 
 """
 # --
@@ -3229,8 +3229,8 @@ note Directly mapped from GDALRATTableType enum values.
 
 .. versionadded:: 3.30
 
-* ``Thematic``: 
-* ``Athematic``: 
+* ``Thematic``:
+* ``Athematic``:
 
 """
 # --
@@ -4063,6 +4063,19 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GeometryBackend.QGIS.__doc__ = "Use internal implementation"
+Qgis.GeometryBackend.GEOS.__doc__ = "Use GEOS implementation"
+Qgis.GeometryBackend.__doc__ = """Geometry backend for :py:class:`QgsGeometry`.
+
+.. versionadded:: 4.0
+
+* ``QGIS``: Use internal implementation
+* ``GEOS``: Use GEOS implementation
+
+"""
+# --
+Qgis.GeometryBackend.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.JoinStyle3D.Round.__doc__ = "Smooth, rounded buffer around the input geometry"
 Qgis.JoinStyle3D.Flat.__doc__ = "Flat ends and constant width along the linestring"
 Qgis.JoinStyle3D.CylindersAndSpheres.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
@@ -4077,6 +4090,19 @@ Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
 """
 # --
 Qgis.JoinStyle3D.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GeometryBackend.QGIS.__doc__ = "Use internal implementation"
+Qgis.GeometryBackend.GEOS.__doc__ = "Use GEOS implementation"
+Qgis.GeometryBackend.__doc__ = """Geometry backend for :py:class:`QgsGeometry`.
+
+.. versionadded:: 4.2
+
+* ``QGIS``: Use internal implementation
+* ``GEOS``: Use GEOS implementation
+
+"""
+# --
+Qgis.GeometryBackend.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
@@ -8398,7 +8424,7 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Target
 * ``Layer``: Action targets a complete layer
 * ``SingleFeature``: Action targets a single feature from a layer
 * ``MultipleFeatures``: Action targets multiple features from a layer
-* ``AllActions``: 
+* ``AllActions``:
 
 """
 # --
@@ -11240,9 +11266,9 @@ Qgis.ProviderStyleStorageCapability.__doc__ = """The StorageCapability enum repr
 
 .. versionadded:: 3.34
 
-* ``SaveToDatabase``: 
-* ``LoadFromDatabase``: 
-* ``DeleteFromDatabase``: 
+* ``SaveToDatabase``:
+* ``LoadFromDatabase``:
+* ``DeleteFromDatabase``:
 
 """
 # --
@@ -12445,10 +12471,10 @@ Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTesse
 
 .. versionadded:: 4.0
 
-* ``NoFace``: 
-* ``Walls``: 
-* ``Roof``: 
-* ``Floor``: 
+* ``NoFace``:
+* ``Walls``:
+* ``Roof``:
+* ``Floor``:
 
 """
 # --
@@ -12463,8 +12489,8 @@ Qgis.TriangulationAlgorithm.__doc__ = """Triangulation algorithms.
 
 .. versionadded:: 4.0
 
-* ``ConstrainedDelaunay``: 
-* ``Earcut``: 
+* ``ConstrainedDelaunay``:
+* ``Earcut``:
 
 """
 # --
