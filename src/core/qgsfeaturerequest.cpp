@@ -196,7 +196,7 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
          && mFilter == rh.mFilter
          && mSpatialFilter == rh.mSpatialFilter
          && mFilterRect == rh.mFilterRect
-         && ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.isExactlyEqual( rh.mReferenceGeometry ) )
+         && ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.isEqual( rh.mReferenceGeometry ) )
          && mDistanceWithin == rh.mDistanceWithin
          && mFilterFid == rh.mFilterFid
          && mFilterFids == rh.mFilterFids
