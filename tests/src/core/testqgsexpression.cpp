@@ -317,7 +317,7 @@ class TestQgsExpression : public QObject
       QVariant out = expression.evaluate( &context );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QgsGeometry geom( new QgsPoint( 2500, 2500, 800 ) );
-      QCOMPARE( geom.equals( outGeom ), true );
+      QCOMPARE( geom.isEqual( outGeom ), true );
 
       context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), 2 );
