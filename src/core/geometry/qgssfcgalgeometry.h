@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     QgsSfcgalGeometry *scale( const QgsPoint &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
 
     /**
-     * 2D Rotate this geometry around point \center by angle \angle
+     * 2D Rotate this geometry around point \a center by angle \a angle
      *
      * \param angle rotation angle in radians
      * \param center rotation center
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     QgsSfcgalGeometry *rotate2D( double angle, const QgsPoint &center, QString *errorMsg = nullptr ) const;
 
     /**
-     * 3D Rotate this geometry around axis \axisVector by angle \angle
+     * 3D Rotate this geometry around axis \a axisVector by angle \a angle
      *
      * \param geom geometry to perform the operation
      * \param angle rotation angle in radians
