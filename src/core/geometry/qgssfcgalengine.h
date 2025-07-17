@@ -398,7 +398,7 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_geom rotate2D( const sfcgal::geometry *geom, double angle, const QgsPoint &center, QString *errorMsg = nullptr );
 
     /**
-     * 3D Rotation of geometry \geom around axis \axisVector by angle \angle
+     * 3D Rotation of geometry \a geom around axis \a axisVector by angle \a angle
      *
      * \param geom geometry to perform the operation
      * \param angle rotation angle in radians
