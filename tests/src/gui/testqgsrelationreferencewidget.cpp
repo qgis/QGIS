@@ -1016,7 +1016,7 @@ void TestQgsRelationReferenceWidget::testSorting()
   QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "12" );
 
   // ... and order descent
-  w.setOrderDescending( true );
+  w.setSortOrder( Qt::DescendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -1026,7 +1026,7 @@ void TestQgsRelationReferenceWidget::testSorting()
 
   // no sort setting - orders according display expression what is set to "'l2 '||raccord"
   w.mComboBox->setDisplayExpression( QStringLiteral( "'l2 '||raccord" ) );
-  w.setOrderDescending( false );
+  w.setSortOrder( Qt::AscendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -1035,7 +1035,7 @@ void TestQgsRelationReferenceWidget::testSorting()
   QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 sleeve" );
 
   // ... and order descent
-  w.setOrderDescending( true );
+  w.setSortOrder( Qt::DescendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -1047,7 +1047,7 @@ void TestQgsRelationReferenceWidget::testSorting()
   //results in "test 1200" (l2 brides), "test 120" (l2 sleeve), "test 600" (l2 collar)
   //where this order is not numerical and has the 1200 before 600
   w.setOrderExpression( QStringLiteral( "'test '||(diameter * multiplicator)" ) );
-  w.setOrderDescending( false );
+  w.setSortOrder( Qt::AscendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -1056,7 +1056,7 @@ void TestQgsRelationReferenceWidget::testSorting()
   QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 collar" ); //test 600
 
   // ... and order descent
-  w.setOrderDescending( true );
+  w.setSortOrder( Qt::DescendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -1069,7 +1069,7 @@ void TestQgsRelationReferenceWidget::testSorting()
   //results in "1" (l2 sleeve), "5" (l2 collar), "10" (l2 brides)
   //where this order should be made numerical and have 5 before 10
   w.setOrderExpression( QStringLiteral( "multiplicator" ) );
-  w.setOrderDescending( false );
+  w.setSortOrder( Qt::AscendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );
@@ -1078,7 +1078,7 @@ void TestQgsRelationReferenceWidget::testSorting()
   QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 brides" ); //10
 
   // ... and order descent
-  w.setOrderDescending( true );
+  w.setSortOrder( Qt::DescendingOrder );
   w.setRelation( *mRelation, false );
   spy.wait();
   QCOMPARE( w.mComboBox->count(), 3 );

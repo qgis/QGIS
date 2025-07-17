@@ -238,16 +238,16 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void setOrderExpression( const QString &orderExpression );
 
     /**
-     * The order direction of the model. It defines the direction on sorting the combobox as descending or not (ascending).
+     * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
      * \since QGIS 4.0
      */
-    bool orderDescending() const;
+    Qt::SortOrder sortOrder() const;
 
     /**
-     * The order direction of the model. It defines the direction on sorting the combobox as descending or not (ascending).
+     * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
      * \since QGIS 4.0
      */
-    void setOrderDescending( const bool orderDescending );
+    void setSortOrder( const Qt::SortOrder sortOrder );
 
   signals:
 

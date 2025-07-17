@@ -116,18 +116,18 @@ The order expression will be used for sort values in the combobox.
 .. versionadded:: 4.0
 %End
 
-    bool orderDescending() const;
+    Qt::SortOrder sortOrder() const;
 %Docstring
 The order direction will be used for sort values in the combobox.
-Ascending or not (descending).
+Ascending or descending.
 
 .. versionadded:: 4.0
 %End
 
-    void setOrderDescending( const bool orderDescending );
+    void setSortOrder( const Qt::SortOrder sortOrder );
 %Docstring
 The order direction will be used for sort values in the combobox.
-Ascending or not (descending).
+Ascending or descending.
 
 .. versionadded:: 4.0
 %End
@@ -265,7 +265,7 @@ boxes etc.
 .. versionadded:: 4.0
 %End
 
-    void orderDescendingChanged();
+    void sortOrderChanged();
 %Docstring
 The direction used for sorting. Can be used for combo boxes etc.
 

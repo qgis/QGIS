@@ -38,7 +38,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     Q_PROPERTY( QString filterValue READ filterValue WRITE setFilterValue NOTIFY filterValueChanged )
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
     Q_PROPERTY( QString orderExpression READ orderExpression WRITE setOrderExpression NOTIFY orderExpressionChanged )
-    Q_PROPERTY( bool orderDescending READ orderDescending WRITE setOrderDescending NOTIFY orderDescendingChanged )
+    Q_PROPERTY( Qt::SortOrder sortOrder READ sortOrder WRITE setSortOrder NOTIFY sortOrderChanged )
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
     Q_PROPERTY( bool fetchGeometry READ fetchGeometry WRITE setFetchGeometry NOTIFY fetchGeometryChanged )
     Q_PROPERTY( int fetchLimit READ fetchLimit WRITE setFetchLimit NOTIFY fetchLimitChanged )
@@ -146,16 +146,16 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     void setOrderExpression( const QString &orderExpression );
 
     /**
-     * The order direction will be used for sort values in the combobox. Ascending or not (descending).
+     * The order direction will be used for sort values in the combobox. Ascending or descending.
      * \since QGIS 4.0
      */
-    bool orderDescending() const;
+    Qt::SortOrder sortOrder() const;
 
     /**
-     * The order direction will be used for sort values in the combobox. Ascending or not (descending).
+     * The order direction will be used for sort values in the combobox. Ascending or descending.
      * \since QGIS 4.0
      */
-    void setOrderDescending( const bool orderDescending );
+    void setSortOrder( const Qt::SortOrder sortOrder );
 
 
     /**
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      * Can be used for combo boxes etc.
      * \since QGIS 4.0
      */
-    void orderDescendingChanged();
+    void sortOrderChanged();
 
     /**
      * An attribute form feature to be used alongside the filter expression.
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     QString mFilterValue;
     QString mFilterExpression;
     QgsExpression mOrderExpression;
-    bool mOrderDescending = false;
+    Qt::SortOrder mSortOrder = Qt::AscendingOrder;
 
     QgsFeature mFormFeature;
     QgsFeature mParentFormFeature;

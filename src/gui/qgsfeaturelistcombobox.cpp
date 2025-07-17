@@ -361,12 +361,12 @@ void QgsFeatureListComboBox::setOrderExpression( const QString &orderExpression 
   mModel->setOrderExpression( orderExpression );
 }
 
-bool QgsFeatureListComboBox::orderDescending() const
+Qt::SortOrder QgsFeatureListComboBox::sortOrder() const
 {
-  return mModel->orderDescending();
+  return mModel->sortOrder();
 }
 
-void QgsFeatureListComboBox::setOrderDescending( bool orderDescending )
+void QgsFeatureListComboBox::setSortOrder( const Qt::SortOrder sortOrder )
 {
-  mModel->setOrderDescending( orderDescending );
+  mModel->setSortOrder( sortOrder );
 }

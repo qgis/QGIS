@@ -311,7 +311,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
         double bNumericOrderValue = b.orderValue.toDouble( &ok );
         if ( ok )
         {
-          if ( mOrderDescending )
+          if ( mSortOrder == Qt::DescendingOrder )
           {
             return aNumericOrderValue > bNumericOrderValue;
           }
@@ -321,7 +321,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
           }
         }
       }
-      if ( mOrderDescending )
+      if ( mSortOrder == Qt::DescendingOrder )
       {
         return a.orderValue.localeAwareCompare( b.orderValue ) > 0;
       }
@@ -736,18 +736,18 @@ void QgsFeaturePickerModelBase::setOrderExpression( const QString &orderExpressi
 }
 
 
-bool QgsFeaturePickerModelBase::orderDescending() const
+Qt::SortOrder QgsFeaturePickerModelBase::sortOrder() const
 {
-  return mOrderDescending;
+  return mSortOrder;
 }
 
 
-void QgsFeaturePickerModelBase::setOrderDescending( const bool orderDescending )
+void QgsFeaturePickerModelBase::setSortOrder( const Qt::SortOrder sortOrder )
 {
-  if ( mOrderDescending == orderDescending )
+  if ( mSortOrder == sortOrder )
     return;
 
-  mOrderDescending = orderDescending;
+  mSortOrder = sortOrder;
   reload();
-  emit orderDescendingChanged();
+  emit sortOrderChanged();
 }

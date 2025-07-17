@@ -243,18 +243,18 @@ the combobox.
 .. versionadded:: 4.0
 %End
 
-    bool orderDescending() const;
+    Qt::SortOrder sortOrder() const;
 %Docstring
 The order direction of the model. It defines the direction on sorting
-the combobox as descending or not (ascending).
+the combobox as ascending or descending.
 
 .. versionadded:: 4.0
 %End
 
-    void setOrderDescending( const bool orderDescending );
+    void setSortOrder( const Qt::SortOrder sortOrder );
 %Docstring
 The order direction of the model. It defines the direction on sorting
-the combobox as descending or not (ascending).
+the combobox as ascending or descending.
 
 .. versionadded:: 4.0
 %End

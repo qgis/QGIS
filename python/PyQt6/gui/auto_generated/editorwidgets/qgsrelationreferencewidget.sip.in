@@ -274,19 +274,18 @@ for sort values in the combobox.
 .. versionadded:: 4.0
 %End
 
-    bool orderDescending() const;
+    Qt::SortOrder sortOrder() const;
 %Docstring
-Returns true if the order direction is descending The order direction
-will be used for sort values in the combobox. Ascending or not
-(descending).
+Returns the order direction The order direction will be used for sort
+values in the combobox. Ascending or descending
 
 .. versionadded:: 4.0
 %End
 
-    void setOrderDescending( const bool orderDescending );
+    void setSortOrder( const Qt::SortOrder sortOrder );
 %Docstring
-Set the order direction (true if descending) The order direction will be
-used for sort values in the combobox. Ascending or not (descending).
+Set the order direction The order direction will be used for sort values
+in the combobox. Ascending or descending
 
 .. versionadded:: 4.0
 %End

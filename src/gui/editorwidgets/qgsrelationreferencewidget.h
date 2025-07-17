@@ -281,18 +281,18 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setOrderExpression( const QString &orderExpression ) { mOrderExpression = orderExpression; }
 
     /**
-     * Returns true if the order direction is descending
-     * The order direction will be used for sort values in the combobox. Ascending or not (descending).
+     * Returns the order direction
+     * The order direction will be used for sort values in the combobox. Ascending or descending
      * \since QGIS 4.0
      */
-    bool orderDescending() const { return mOrderDescending; }
+    Qt::SortOrder sortOrder() const { return mSortOrder; }
 
     /**
-     * Set the order direction (true if descending)
-     * The order direction will be used for sort values in the combobox. Ascending or not (descending).
+     * Set the order direction
+     * The order direction will be used for sort values in the combobox. Ascending or descending
      * \since QGIS 4.0
      */
-    void setOrderDescending( const bool orderDescending ) { mOrderDescending = orderDescending; }
+    void setSortOrder( const Qt::SortOrder sortOrder ) { mSortOrder = sortOrder; }
 
   public slots:
     //! open the form of the related feature in a new dialog
@@ -393,7 +393,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QString mReferencedLayerDataSource;
     QString mReferencedLayerProviderKey;
     QString mOrderExpression;
-    bool mOrderDescending = false;
+    Qt::SortOrder mSortOrder = Qt::AscendingOrder;
 
     // UI
     QVBoxLayout *mTopLayout = nullptr;
