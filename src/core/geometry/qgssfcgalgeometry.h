@@ -151,7 +151,6 @@ class CORE_EXPORT QgsSfcgalGeometry
     /**
      * 3D Rotate this geometry around axis \a axisVector by angle \a angle
      *
-     * \param geom geometry to perform the operation
      * \param angle rotation angle in radians
      * \param axisVector rotation axis
      * \param center optional parameter. If specified, rotation will be applied around axis and center point
