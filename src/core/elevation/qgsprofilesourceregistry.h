@@ -33,8 +33,10 @@ class QgsAbstractProfileSource;
  *
  * \since QGIS 3.38
  */
-class CORE_EXPORT QgsProfileSourceRegistry
+class CORE_EXPORT QgsProfileSourceRegistry : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -59,8 +61,14 @@ class CORE_EXPORT QgsProfileSourceRegistry
      */
     void unregisterProfileSource( QgsAbstractProfileSource *source );
 
+  signals:
+    void profileSourceRegistered( const QString &sourceId );
+    void profileSourceUnregistered( const QString &sourceId );
+
   private:
     QList< QgsAbstractProfileSource * > mSources;
+
+    Q_DISABLE_COPY( QgsProfileSourceRegistry )
 };
 
 #endif // QGSPROFILESOURCEREGISTRY_H

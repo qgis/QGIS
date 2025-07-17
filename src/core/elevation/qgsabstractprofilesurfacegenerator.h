@@ -81,7 +81,9 @@ class CORE_EXPORT QgsAbstractProfileSurfaceGenerator : public QgsAbstractProfile
     /**
      * Constructor for QgsAbstractProfileSurfaceGenerator.
      */
-    QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request );
+    QgsAbstractProfileSurfaceGenerator( const QString &sourceId, const QgsProfileRequest &request );
+
+    //QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request );
 
     ~QgsAbstractProfileSurfaceGenerator() override;
 

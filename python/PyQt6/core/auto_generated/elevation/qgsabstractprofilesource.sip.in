@@ -22,6 +22,7 @@ Interface for classes which can generate elevation profiles.
 #include "qgsabstractprofilesource.h"
 %End
   public:
+    QgsAbstractProfileSource( const QString &id );
 
     virtual ~QgsAbstractProfileSource();
 
@@ -35,6 +36,8 @@ The caller takes ownership of the returned generator.
 May return ``None`` if the source cannot generate a profile at this
 time.
 %End
+
+    QString sourceId() const;
 
 };
 

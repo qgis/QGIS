@@ -540,6 +540,9 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
           }
         }
         break;
+
+        case QgsLayerTreeNode::NodeCustom:
+          break;
       }
     }
   };

@@ -139,7 +139,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
 
     ~QgsPointCloudLayerProfileGenerator() override;
 
-    QString sourceId() const override;
+    //QString sourceId() const override;
     Qgis::ProfileGeneratorFlags flags() const override;
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QColor mPointColor;
     bool mOpacityByDistanceEffect = false;
 
-    QString mId;
+    //QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;

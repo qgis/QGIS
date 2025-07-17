@@ -19,6 +19,7 @@
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslayertreecustomnode.h"
 
 /**
  * \ingroup core
@@ -53,6 +54,15 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     }
 
     /**
+     * Check whether the node is a valid custom node
+     *
+     */
+    static inline bool isCustomNode( const QgsLayerTreeNode *node )
+    {
+      return node && node->nodeType() == QgsLayerTreeNode::NodeCustom;
+    }
+
+    /**
      * Cast node to a group.
      *
      * \note Not available in Python bindings, because cast is automatic.
@@ -80,6 +90,16 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node ) SIP_SKIP
     {
       return qobject_cast< const QgsLayerTreeLayer *>( node );
+    }
+
+    /**
+     * Cast node to a custom node.
+     *
+     * \note Not available in Python bindings, because cast is automatic.
+     */
+    static inline QgsLayerTreeCustomNode *toCustomNode( QgsLayerTreeNode *node ) SIP_SKIP
+    {
+      return qobject_cast<QgsLayerTreeCustomNode *>( node );
     }
 
     /**

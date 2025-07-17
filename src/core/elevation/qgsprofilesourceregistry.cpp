@@ -34,12 +34,18 @@ QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() c
 void QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
 {
   if ( !mSources.contains( profileSource ) )
+  {
     mSources.append( profileSource );
+    emit profileSourceRegistered( profileSource->sourceId() );
+  }
 }
 
 void QgsProfileSourceRegistry::unregisterProfileSource( QgsAbstractProfileSource *profileSource )
 {
   const int index = mSources.indexOf( profileSource );
   if ( index >= 0 )
+  {
     delete mSources.takeAt( index );
+    emit profileSourceUnregistered( profileSource->sourceId() );
+  }
 }

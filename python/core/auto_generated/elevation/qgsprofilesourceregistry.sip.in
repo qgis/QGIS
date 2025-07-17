@@ -11,7 +11,7 @@
 
 
 
-class QgsProfileSourceRegistry
+class QgsProfileSourceRegistry : QObject
 {
 %Docstring(signature="appended")
 Registry of profile sources used by :py:class:`QgsProfilePlotRenderer`.
@@ -49,6 +49,10 @@ Registers a profile ``source`` and takes ownership of it
 %Docstring
 Unregisters a profile ``source`` and destroys its instance
 %End
+
+  signals:
+    void profileSourceRegistered( const QString &sourceId );
+    void profileSourceUnregistered( const QString &sourceId );
 
 };
 

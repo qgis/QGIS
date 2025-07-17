@@ -416,6 +416,7 @@ class CORE_EXPORT QgsAbstractProfileGenerator
 {
 
   public:
+    QgsAbstractProfileGenerator( const QString &id );
 
     virtual ~QgsAbstractProfileGenerator();
 
@@ -425,7 +426,9 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      * For generators associated with a map layer the source ID will match the layer's QgsMapLayer::id(). Other (non-map-layer) sources
      * will have a different unique ID with its own custom interpretation.gen
      */
-    virtual QString sourceId() const = 0;
+    //virtual QString sourceId() const = 0;
+
+    QString sourceId() const;
 
     /**
      * Returns flags which reflect how the profile generator operates.
@@ -452,6 +455,8 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      */
     virtual QgsAbstractProfileResults *takeResults() = 0 SIP_TRANSFERBACK;
 
+  protected:
+    QString mSourceId;
 };
 
 #endif // QGSABSTRACTPROFILEGENERATOR_H

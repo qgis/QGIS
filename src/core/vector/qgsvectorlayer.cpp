@@ -166,6 +166,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &providerKey,
                                 const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Vector, baseName, vectorLayerPath )
+  , QgsAbstractProfileSource( id() )
   , mSelectionProperties( new QgsVectorLayerSelectionProperties( this ) )
   , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
   , mElevationProperties( new QgsVectorLayerElevationProperties( this ) )

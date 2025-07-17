@@ -55,6 +55,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::PointCloud, baseName, uri )
+  , QgsAbstractProfileSource( id() )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
   , mLayerOptions( options )
 {

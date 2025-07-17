@@ -34,6 +34,7 @@ class CORE_EXPORT QgsAbstractProfileSource
 {
 
   public:
+    QgsAbstractProfileSource( const QString &id );
 
     virtual ~QgsAbstractProfileSource();
 
@@ -46,6 +47,12 @@ class CORE_EXPORT QgsAbstractProfileSource
      * May return NULLPTR if the source cannot generate a profile at this time.
      */
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 SIP_FACTORY;
+
+    //void setSourceId( const QString &sourceId );
+    QString sourceId() const;
+
+  private:
+    QString mSourceId;
 
 };
 

@@ -60,8 +60,8 @@ QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const
 //
 
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
-  : QgsAbstractProfileSurfaceGenerator( request )
-  , mId( layer->id() )
+  : QgsAbstractProfileSurfaceGenerator( layer->id(), request )
+    //, mId( layer->id() )
   , mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
@@ -84,10 +84,10 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   mFillSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
-QString QgsRasterLayerProfileGenerator::sourceId() const
-{
-  return mId;
-}
+// QString QgsRasterLayerProfileGenerator::sourceId() const
+// {
+//   return mId;
+// }
 
 Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
 {
@@ -143,7 +143,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
   mResults = std::make_unique< QgsRasterLayerProfileResults >();
   mResults->mLayer = mLayer;
-  mResults->mId = mId;
+  mResults->mId = mSourceId;
   mResults->copyPropertiesFromGenerator( this );
 
   std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );

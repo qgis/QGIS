@@ -33,6 +33,12 @@ Check whether the node is a valid group node
 Check whether the node is a valid layer node
 %End
 
+    static bool isCustomNode( const QgsLayerTreeNode *node );
+%Docstring
+Check whether the node is a valid custom node
+%End
+
+
 
 
 
