@@ -18,6 +18,11 @@
 
 #include "qgsabstractrenderview.h"
 
+namespace Qt3DCore
+{
+  class QEntity;
+} //namespace Qt3DCore
+
 namespace Qt3DRender
 {
   class QTexture2D;
@@ -29,6 +34,10 @@ namespace Qt3DRender
 } //namespace Qt3DRender
 
 class QgsPostprocessingEntity;
+class QgsShadowRenderView;
+class QgsForwardRenderView;
+class QgsAmbientOcclusionRenderView;
+
 
 #define SIP_NO_FILE
 

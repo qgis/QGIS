@@ -28,6 +28,7 @@
 #include "qgspostprocessingentity.h"
 #include "qgsforwardrenderview.h"
 #include "qgsshadowrenderview.h"
+#include "qgsambientocclusionrenderview.h"
 
 QgsPostprocessingRenderView::QgsPostprocessingRenderView( const QString &viewName,                     //
                                                           QgsShadowRenderView &shadowRenderView,       //
