@@ -2009,7 +2009,7 @@ namespace QgsWms
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
         QString mapTip = layer->mapTipTemplate();
-        if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+        if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject ) ) )
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -2325,7 +2325,7 @@ namespace QgsWms
       }
       //add maptip attribute based on html/expression
       QString mapTip = layer->mapTipTemplate();
-      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject ) ) )
       {
         QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
         maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -2586,7 +2586,7 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
   {
-    const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip();
+    const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject );
     QString featureInfoString = QStringLiteral( "    <!DOCTYPE html>" );
     if ( !onlyMapTip )
     {
@@ -3203,7 +3203,7 @@ namespace QgsWms
     {
       QString mapTip = layer->mapTipTemplate();
 
-      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject ) ) )
       {
         QString fieldTextString = QgsExpression::replaceExpressionText( mapTip, &expressionContext );
         QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:maptip" ) );
