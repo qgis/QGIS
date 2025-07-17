@@ -714,14 +714,14 @@ bool QgsSfcgalEngine::intersects( const sfcgal::geometry *geomA, const sfcgal::g
   return static_cast<bool>( res );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::intersection( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg, const QgsGeometryParameters & )
+sfcgal::shared_geom QgsSfcgalEngine::intersection( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
 {
   sfcgal::shared_geom out = lambda_geomgeom_to_geom( sfcgal_geometry_intersection, sfcgal_geometry_intersection_3d, geomA, geomB, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
   return out;
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::difference( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg, const QgsGeometryParameters & )
+sfcgal::shared_geom QgsSfcgalEngine::difference( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
 {
   sfcgal::shared_geom out = lambda_geomgeom_to_geom( sfcgal_geometry_difference, sfcgal_geometry_difference_3d, geomA, geomB, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
