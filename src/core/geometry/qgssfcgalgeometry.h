@@ -239,11 +239,10 @@ class CORE_EXPORT QgsSfcgalGeometry
 
     /**
      * Cover test on 2D or 3D geometries
-     * Checks if \a geomA covers \a geomB.
+     * Checks if this covers \a otherGeom.
      * A 3D covers test is conducted when at least one geometry is 3D; otherwise, a 2D covers test is carried out.
      *
-     * \param geomA first geometry to perform the operation
-     * \param geomB second geometry to perform the operation
+     * \param otherGeom second geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
     bool covers( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr ) const;
