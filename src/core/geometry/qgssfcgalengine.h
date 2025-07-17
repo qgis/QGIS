@@ -100,6 +100,7 @@ namespace sfcgal
    * Helper class to handle SFCGAL engine errors.
    *
    * Messages are hold in a stacktrace way in order to improve context understanding.
+   * \ingroup core
    * \since QGIS 3.44
    */
   class CORE_EXPORT ErrorHandler

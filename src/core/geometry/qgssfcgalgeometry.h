@@ -79,31 +79,170 @@ class CORE_EXPORT QgsSfcgalGeometry
     //! Returns the underlying QGIS geometry
     QgsAbstractGeometry *asQgisGeometry( QString *errorMsg = nullptr ) const;
 
+    /**
+     * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
+     * \param errorMsg Error message returned by SFGCAL
+     */
     Qgis::WkbType wkbType( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns type of the geometry as String
+     * \param errorMsg Error message returned by SFGCAL
+     */
     QString geometryType( QString *errorMsg = nullptr ) const SIP_HOLDGIL;
+
+    /**
+     * Clones the geometry by performing a deep copy
+     */
     QgsSfcgalGeometry *clone() const;
+
+    /**
+     * Creates a new geometry from a WKB byte pointer
+     * \param wkbPtr WKB byte pointer
+     * \param errorMsg Error message returned by SFGCAL
+     */
     bool fromWkb( QgsConstWkbPtr &wkbPtr, QString *errorMsg = nullptr );
+
+    /**
+     * Export the geometry as WKB
+     *
+     * \param flags argument specifies flags controlling WKB export behavior (since QGIS 3.14).
+     * \param errorMsg Error message returned by SFGCAL
+     */
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags(), QString *errorMsg = nullptr ) const;
+
+    /**
+     * Creates a new geometry from a WKT string.
+     * \param wkt WTK string
+     * \param errorMsg Error message returned by SFGCAL
+     */
     bool fromWkt( const QString &wkt, QString *errorMsg = nullptr );
+
+    /**
+     * Export the geometry as WKT
+     *
+     * \param precision Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal).
+     * \param errorMsg Error message returned by SFGCAL
+     */
     QString asWkt( int precision = -1, QString *errorMsg = nullptr ) const;
 
+    /**
+     * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
+     * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
+     * \param errorMsg Error message returned by SFGCAL
+     * \returns boundary for geometry. May be NULLPTR for some geometry types.
+     */
     QgsSfcgalGeometry *boundary( QString *errorMsg = nullptr ) const SIP_FACTORY;
+
+    /**
+     * Returns true if this == other geometry
+     * \param other geometry to perform the operation
+     */
     bool operator==( const QgsSfcgalGeometry &other ) const;
+
+    /**
+     * Returns true if this != other geometry
+     * \param other geometry to perform the operation
+     */
     bool operator!=( const QgsSfcgalGeometry &other ) const;
 
+    /**
+     * Returns true if this == other geometry modulo \a epsilon distance
+     * \param other geometry to perform the operation
+     * \param epsilon tolerance
+     * \param errorMsg Error message returned by SFGCAL
+     */
     bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns the 3D bounding box for the geometry.
+     * \param errorMsg Error message returned by SFGCAL
+     */
     QgsBox3D boundingBox3D( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
+     * 1 for a linestring and 2 for a polygon.
+     * \param errorMsg Error message returned by SFGCAL
+     */
     int dimension( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns the \a geom part count.
+     *
+     * - POINT, TRIANGLE, LINESTRING: vertex number
+     * - POLYGON, SOLID, POLYHEDRALSURFACE, TRIANGULATEDSURFACE: ring or patch or shell number
+     * - MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, MULTISOLID, GEOMETRYCOLLECTION: number of geom in collection
+     *
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
     int partCount( QString *errorMsg = nullptr ) const;
 
+    /**
+     * Adds a z-dimension to the geometry, initialized to a preset value (existing Z values remains unchanged).
+     * \return true if success
+     * \param zValue z value to use
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
     bool addZValue( double zValue = 0, QString *errorMsg = nullptr );
+
+    /**
+     * Adds a m-dimension to the geometry, initialized to a preset value (existing M values remains unchanged).
+     * \return true if success
+     * \param mValue m value to use
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
     bool addMValue( double mValue = 0, QString *errorMsg = nullptr );
+
+    /**
+     * Drops the z coordinate of the geometry
+     * \return true if success
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
     bool dropZValue( QString *errorMsg = nullptr );
+
+    /**
+     * Drops the m coordinate of the geometry
+     * \return true if success
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
     bool dropMValue( QString *errorMsg = nullptr );
+
+    /**
+     * Swaps the x and y coordinates of the geometry
+     * \param errorMsg pointer to QString to receive the error message if any
+     */
     void swapXy( QString *errorMsg = nullptr );
+
+    /**
+     * Checks if \a geom is valid.
+     *
+     * If the geometry is invalid, \a errorMsg will be filled with the reported geometry error.
+     *
+     * \param errorMsg Error message returned by SFGCAL
+     * \param allowSelfTouchingHoles specifies whether self-touching holes are permitted.
+     *        OGC validity states that self-touching holes are NOT permitted, whilst other
+     *        vendor validity checks (e.g. ESRI) permit self-touching holes.
+     * \param errorLoc if specified, it will be set to the geometry of the error location.
+     */
     bool isValid( Qgis::GeometryValidityFlags flags, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Checks if \a geom is empty.
+     * \param errorMsg Error message returned by SFGCAL
+     */
     bool isEmpty( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Computes the area of \a geom.
+     * \param errorMsg Error message returned by SFGCAL
+     */
     double area( QString *errorMsg = nullptr ) const;
+
+    /**
+     * Computes the max length of \a geom.
+     * \param errorMsg Error message returned by SFGCAL
+     */
     double length( QString *errorMsg = nullptr ) const;
 
     /**
