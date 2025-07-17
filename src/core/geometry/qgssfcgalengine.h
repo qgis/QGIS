@@ -460,7 +460,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geomB second geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom intersection( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+    static sfcgal::shared_geom intersection( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr );
 
     /**
      * Calculates the difference of \a geomA minus \a geomB
@@ -469,7 +469,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geomB second geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom difference( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
+    static sfcgal::shared_geom difference( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg = nullptr );
 
     /**
      * Calculate the combination of all geometry in \a geomList.
