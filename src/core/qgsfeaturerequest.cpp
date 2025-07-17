@@ -105,25 +105,7 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
   if ( &rh == this )
     return true;
 
-  return mFlags == rh.mFlags &&
-         mFilter == rh.mFilter &&
-         mSpatialFilter == rh.mSpatialFilter &&
-         mFilterRect == rh.mFilterRect &&
-         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) &&
-         mDistanceWithin == rh.mDistanceWithin &&
-         mFilterFid == rh.mFilterFid &&
-         mFilterFids == rh.mFilterFids &&
-         ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) &&
-         mInvalidGeometryFilter == rh.mInvalidGeometryFilter &&
-         mAttrs == rh.mAttrs &&
-         mSimplifyMethod == rh.mSimplifyMethod &&
-         mLimit == rh.mLimit &&
-         mOrderBy == rh.mOrderBy &&
-         mTransform == rh.mTransform &&
-         mCrs == rh.mCrs &&
-         mTransformContext == rh.mTransformContext &&
-         mTimeout == rh.mTimeout &&
-         mRequestMayBeNested == rh.mRequestMayBeNested;
+  return mFlags == rh.mFlags && mFilter == rh.mFilter && mSpatialFilter == rh.mSpatialFilter && mFilterRect == rh.mFilterRect && ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.isEqual( rh.mReferenceGeometry ) ) && mDistanceWithin == rh.mDistanceWithin && mFilterFid == rh.mFilterFid && mFilterFids == rh.mFilterFids && ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) && mInvalidGeometryFilter == rh.mInvalidGeometryFilter && mAttrs == rh.mAttrs && mSimplifyMethod == rh.mSimplifyMethod && mLimit == rh.mLimit && mOrderBy == rh.mOrderBy && mTransform == rh.mTransform && mCrs == rh.mCrs && mTransformContext == rh.mTransformContext && mTimeout == rh.mTimeout && mRequestMayBeNested == rh.mRequestMayBeNested;
 }
 
 
