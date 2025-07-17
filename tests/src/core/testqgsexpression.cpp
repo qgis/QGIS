@@ -4169,7 +4169,7 @@ class TestQgsExpression : public QObject
 
       QCOMPARE( out.userType() == qMetaTypeId<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom.equals( outGeom ), true );
+      QCOMPARE( geom.isEqual( outGeom ), true );
     }
 
     void eval_geometry_access_transform_data()
@@ -4231,7 +4231,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.userType() == qMetaTypeId<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom.equals( outGeom ), true );
+      QCOMPARE( geom.isEqual( outGeom ), true );
     }
 
     void eval_spatial_operator_data()
