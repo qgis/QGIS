@@ -228,6 +228,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     * \param numDecimals Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal).
      */
     static QString toWkt( const sfcgal::geometry *geom, int numDecimals = -1, QString *errorMsg = nullptr );
 
