@@ -616,6 +616,7 @@ QMenu::separator
 
 QProgressBar
 {
+    color: @textlight;
     height: 1.3em;
     border-width: 1px;
     border-color: @itemdarkbackground;
