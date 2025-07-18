@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef WITH_SFCGAL
 #ifndef QGSSFCGALENGINE_H
 #define QGSSFCGALENGINE_H
 
@@ -589,3 +590,4 @@ class SFCGALException : public std::runtime_error
 /// @endcond
 
 #endif // QGSSFCGALENGINE_H
+#endif
