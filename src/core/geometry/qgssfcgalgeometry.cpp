@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef WITH_SFCGAL
 #include "qgssfcgalgeometry.h"
 #include "qgsvector3d.h"
 #include "qgswkbptr.h"
@@ -481,3 +482,4 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::extrude( const QgsPoint &extrusion, QStrin
   CHECK_SUCCESS( errorMsg, nullptr );
   return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
 }
+#endif

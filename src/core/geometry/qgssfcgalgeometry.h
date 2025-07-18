@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef WITH_SFCGAL
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 
@@ -512,3 +513,4 @@ inline T qgsgeometry_cast( const QgsSfcgalGeometry *geom )
 
 
 #endif // QGSSGCGAL_GEOMETRY_H
+#endif
