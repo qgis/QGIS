@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgselevationprofilelayertreeview.h"
 #include "moc_qgselevationprofilelayertreeview.cpp"
 #include "qgslayertreenode.h"
@@ -29,6 +30,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmaplayerutils.h"
+#include "qgsprofilesourceregistry.h"
 
 #include <QHeaderView>
 #include <QContextMenuEvent>
@@ -374,6 +376,7 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
       }
 
       case QgsLayerTreeNode::NodeGroup:
+      case QgsLayerTreeNode::NodeCustom:
         break;
     }
     return true;
@@ -470,6 +473,34 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
     {
       node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
     }
+  }
+}
+
+void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *project )
+{
+  const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
+  for ( auto *source : sources )
+  {
+    addNodeForRegisteredSource( source->sourceId() );
+  }
+
+  populateInitialLayers( project );
+}
+
+void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId )
+{
+  auto node = std::make_unique< QgsLayerTreeCustomNode >( sourceId );
+  node->setItemVisibilityChecked( true );
+  mLayerTree->insertChildNode( 0, node.release() );
+}
+
+void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )
+{
+  QgsLayerTreeCustomNode *node = mLayerTree->findCustomNode( sourceId );
+  if ( node )
+  {
+    mLayerTree->removeChildNode( node );
+    proxyModel()->invalidate();
   }
 }
 

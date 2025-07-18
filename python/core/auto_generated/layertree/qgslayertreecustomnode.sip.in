@@ -27,13 +27,13 @@ class QgsLayerTreeCustomNode : QgsLayerTreeNode
     virtual QString name() const;
 
 %Docstring
-Returns the group's name.
+Returns the node's name.
 %End
 
     virtual void setName( const QString &name );
 
 %Docstring
-Sets the group's name.
+Sets the node's name.
 %End
 
     static QgsLayerTreeCustomNode *readXml( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;

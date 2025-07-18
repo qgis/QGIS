@@ -49,6 +49,13 @@ class CORE_EXPORT QgsAbstractProfileSource
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 SIP_FACTORY;
 
     //void setSourceId( const QString &sourceId );
+
+    /**
+     * Returns a unique identifier for this profile source.
+     *
+     * For map layer sources, the source ID will match the layer's QgsMapLayer::id().
+     * Other (non-map-layer) sources will have a different unique ID with its own custom interpretation.
+     */
     QString sourceId() const;
 
   private:

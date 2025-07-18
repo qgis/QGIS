@@ -125,9 +125,9 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     QgsMapLayer *indexToLayer( const QModelIndex &index );
 
     /**
-     * Initially populates the tree view using layers from a \a project.
+     * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.
      */
-    void populateInitialLayers( QgsProject *project );
+    void populateInitialSources( QgsProject *project );
 
     /**
      * Returns the view's proxy model.
@@ -135,6 +135,10 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      * \since QGIS 3.32
      */
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
+
+  public slots:
+    void addNodeForRegisteredSource( const QString &sourceId );
+    void removeNodeForUnregisteredSource( const QString &sourceId );
 
   signals:
 
@@ -149,6 +153,11 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
+    /**
+     * Initially populates the tree view using layers from a \a project.
+     */
+    void populateInitialLayers( QgsProject *project );
+
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
     QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
     QgsLayerTree *mLayerTree = nullptr;

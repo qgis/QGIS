@@ -24,6 +24,7 @@
 
 class QgsMapLayer;
 class QgsLayerTreeLayer;
+class QgsLayerTreeCustomNode;
 class QgsGroupLayer;
 
 /**
@@ -142,6 +143,11 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Find all layer nodes. Searches recursively the whole sub-tree.
      */
     QList<QgsLayerTreeLayer *> findLayers() const;
+
+    /**
+     * Find custom node representing an object specified by its ID. Searches recursively the whole sub-tree.
+     */
+    QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
 
     /**
      * Reorders layers in the group to match the order specified by \a order.

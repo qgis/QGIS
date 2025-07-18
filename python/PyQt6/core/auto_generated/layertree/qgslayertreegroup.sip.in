@@ -137,6 +137,12 @@ recursively the whole sub-tree.
 Find all layer nodes. Searches recursively the whole sub-tree.
 %End
 
+    QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
+%Docstring
+Find custom node representing an object specified by its ID. Searches
+recursively the whole sub-tree.
+%End
+
     void reorderGroupLayers( const QList< QgsMapLayer * > &order );
 %Docstring
 Reorders layers in the group to match the order specified by ``order``.

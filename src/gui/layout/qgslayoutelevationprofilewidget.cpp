@@ -516,7 +516,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mTreeViewContainer->setLayout( vl );
 
   mBlockChanges++;
-  mLayerTreeView->populateInitialLayers( mProfile->layout() && mProfile->layout()->project() ? mProfile->layout()->project() : QgsProject::instance() );
+  mLayerTreeView->populateInitialSources( mProfile->layout() && mProfile->layout()->project() ? mProfile->layout()->project() : QgsProject::instance() );
   mBlockChanges--;
 
   setGuiElementValues();

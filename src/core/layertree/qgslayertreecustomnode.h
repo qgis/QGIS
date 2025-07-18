@@ -27,12 +27,12 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
     QString nodeId() const { return mId; };
 
     /**
-     * Returns the group's name.
+     * Returns the node's name.
      */
     QString name() const override;
 
     /**
-     * Sets the group's name.
+     * Sets the node's name.
      */
     void setName( const QString &name ) override;
 
