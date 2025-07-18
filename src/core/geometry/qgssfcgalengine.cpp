@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef WITH_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 
 #include "qgssfcgalengine.h"
@@ -869,3 +870,4 @@ sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, dou
 
   return sfcgal::make_shared_geom( result );
 }
+#endif

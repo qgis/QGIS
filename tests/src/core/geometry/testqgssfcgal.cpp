@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifdef WITH_SFCGAL
+
 #include "qgstest.h"
 #include <cmath>
 #include <memory>
@@ -1059,3 +1061,5 @@ void TestQgsSfcgal::simplify()
 
 QGSTEST_MAIN( TestQgsSfcgal )
 #include "testqgssfcgal.moc"
+
+#endif
