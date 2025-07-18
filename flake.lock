@@ -19,11 +19,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1752267132,
-        "narHash": "sha256-QGZ3TQP9+HxlscTckLP0w8frzqsgs3K9edkjLGpXPkg=",
+        "lastModified": 1752834437,
+        "narHash": "sha256-fu2mVm++6D9afckQlagW9Gh3NMW14JN8bTYJKz8igwo=",
         "owner": "imincik",
         "repo": "nixpkgs",
-        "rev": "062cfbb277f807689734d658dc2586b0e3d2921b",
+        "rev": "be1e2f24359f68735522faa9e40c0fcd334e423b",
         "type": "github"
       },
       "original": {

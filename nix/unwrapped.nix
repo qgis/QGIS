@@ -86,12 +86,11 @@ let
 
   py = python3.override {
     self = py;
-    # packageOverrides = self: super: {
-    #   pyqt6 = super.pyqt6.override {
-    #     withLocation = true;
-    #     # withSerialPort = true;
-    #   };
-    # };
+    packageOverrides = self: super: {
+      pyqt6 = super.pyqt6.override {
+        withSerialPort = true;
+      };
+    };
   };
 
   pythonBuildInputs = with py.pkgs; [
