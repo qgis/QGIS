@@ -222,6 +222,8 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
     mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
+  mWidget->setOrderExpression( config( QStringLiteral( "OrderExpression" ) ).toString() );
+  mWidget->setSortOrder( config( QStringLiteral( "OrderDescending" ), false ).toBool() ? Qt::DescendingOrder : Qt::AscendingOrder );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
   // if no relation is given from the config, fetch one if there is only one available
