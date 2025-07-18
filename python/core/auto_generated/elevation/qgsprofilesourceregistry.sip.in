@@ -50,6 +50,14 @@ Registers a profile ``source`` and takes ownership of it
 Unregisters a profile ``source`` and destroys its instance
 %End
 
+    QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
+%Docstring
+Finds a registered profile source by id. Returns ``None`` if the source
+is not found in the registry.
+
+:param sourceId: Id of the source to be found in the registry.
+%End
+
   signals:
     void profileSourceRegistered( const QString &sourceId );
     void profileSourceUnregistered( const QString &sourceId );

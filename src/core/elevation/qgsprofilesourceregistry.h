@@ -61,6 +61,14 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
      */
     void unregisterProfileSource( QgsAbstractProfileSource *source );
 
+    /**
+     * Finds a registered profile source by id.
+     * Returns NULLPTR if the source is not found in the registry.
+     *
+     * \param sourceId  Id of the source to be found in the registry.
+     */
+    QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
+
   signals:
     void profileSourceRegistered( const QString &sourceId );
     void profileSourceUnregistered( const QString &sourceId );

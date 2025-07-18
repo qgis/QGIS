@@ -182,6 +182,21 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     void setHasCustomLayerOrder( bool hasCustomLayerOrder );
 
     /**
+     * The order in which layers and custom nodes will be rendered on the canvas.
+     *
+     * Since custom nodes don't support custom layer order, this
+     * returns the node order derived from the tree.
+     *
+     * Depending on the use case, not all custom nodes are to be rendered on the
+     * canvas, so callers of this method will probably need another layer of
+     * logic to use the returned order in a meaningful way.
+     *
+     * This property is read only.
+     *
+     */
+    QList<QgsLayerTreeNode *> layerAndCustomNodeOrder() const;
+
+    /**
      * Load the layer tree from an XML element.
      * It is not required that layers are loaded at this point.
      * resolveReferences() needs to be called after loading the layers and

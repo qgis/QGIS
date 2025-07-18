@@ -51,6 +51,7 @@ void QgsLayerTreeCustomNode::writeXml( QDomElement &parentElement, const QgsRead
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-custom-node" ) );
+  elem.setAttribute( QStringLiteral( "id" ), mId );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );

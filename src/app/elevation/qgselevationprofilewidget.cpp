@@ -157,8 +157,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
-  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasLayers );
-  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasLayers );
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
 
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
@@ -502,7 +502,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
 
-  updateCanvasLayers();
+  updateCanvasSources();
 }
 
 QgsElevationProfileWidget::~QgsElevationProfileWidget()
@@ -620,7 +620,7 @@ void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &l
       }
     }
 
-    updateCanvasLayers();
+    updateCanvasSources();
     scheduleUpdate();
   }
 }
@@ -642,6 +642,47 @@ void QgsElevationProfileWidget::updateCanvasLayers()
 
   std::reverse( layers.begin(), layers.end() );
   mCanvas->setLayers( layers );
+  scheduleUpdate();
+}
+
+void QgsElevationProfileWidget::updateCanvasSources()
+{
+  QList<QgsMapLayer *> layers;
+  QList<QgsAbstractProfileSource *> sources;
+  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
+  //sources.reserve( layerAndCustomNodeOrder.size() );
+  for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
+  {
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      // safety check. maybe elevation properties have been disabled externally.
+      if ( !layer->elevationProperties() || !layer->elevationProperties()->hasElevation() )
+        continue;
+
+      if ( mLayerTree->findLayer( layer )->isVisible() )
+      {
+        layers << layer;
+        sources << layer->profileSource();
+      }
+    }
+    else if ( QgsLayerTree::isCustomNode( node ) )
+    {
+      QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
+      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      {
+        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
+        {
+          sources << customSource;
+        }
+      }
+    }
+  }
+
+  std::reverse( layers.begin(), layers.end() );
+  std::reverse( sources.begin(), sources.end() );
+  mCanvas->setLayers( layers );
+  mCanvas->setSources( sources );
   scheduleUpdate();
 }
 
@@ -916,19 +957,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
   context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
   request.setExpressionContext( context );
 
-  const QList<QgsMapLayer *> layersToGenerate = mCanvas->layers();
-  QList<QgsAbstractProfileSource *> sources;
-  const QList<QgsAbstractProfileSource *> registrySources = QgsApplication::profileSourceRegistry()->profileSources();
-  sources.reserve( layersToGenerate.size() + registrySources.size() );
-
-  sources << registrySources;
-  for ( QgsMapLayer *layer : layersToGenerate )
-  {
-    if ( QgsAbstractProfileSource *source = layer->profileSource() )
-      sources.append( source );
-  }
-
-  QgsProfileExporterTask *exportTask = new QgsProfileExporterTask( sources, request, type, file, QgsProject::instance()->transformContext() );
+  QgsProfileExporterTask *exportTask = new QgsProfileExporterTask( mCanvas->sources(), request, type, file, QgsProject::instance()->transformContext() );
   connect( exportTask, &QgsTask::taskCompleted, this, [exportTask] {
     switch ( exportTask->result() )
     {

@@ -102,6 +102,23 @@ Returns the list of layers included in the profile.
 .. seealso:: :py:func:`setLayers`
 %End
 
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+%Docstring
+Sets the list of ``sources`` to include in the profile.
+
+.. seealso:: :py:func:`sources`
+%End
+
+    QList<QgsAbstractProfileSource *> sources() const;
+%Docstring
+Returns the list of sources included in the profile.
+
+It includes both layer profile sources and custom sources from the
+profile source registry.
+
+.. seealso:: :py:func:`setSources`
+%End
+
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the ``crs`` associated with the canvas' map coordinates.

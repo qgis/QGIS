@@ -163,6 +163,7 @@ other layers will be ignored.
 %End
 
 
+
     QStringList findLayerIds() const;
 %Docstring
 Find layer IDs used in all layer nodes. Searches recursively the whole

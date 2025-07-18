@@ -49,3 +49,14 @@ void QgsProfileSourceRegistry::unregisterProfileSource( QgsAbstractProfileSource
     emit profileSourceUnregistered( profileSource->sourceId() );
   }
 }
+
+QgsAbstractProfileSource *QgsProfileSourceRegistry::findSourceById( const QString &sourceId ) const
+{
+  for ( QgsAbstractProfileSource *source : mSources )
+  {
+    if ( source->sourceId() == sourceId )
+      return source;
+  }
+
+  return nullptr;
+}

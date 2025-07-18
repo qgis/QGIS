@@ -878,19 +878,7 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  const QList<QgsMapLayer *> layersToGenerate = layers();
-  QList<QgsAbstractProfileSource *> sources;
-  const QList<QgsAbstractProfileSource *> registrySources = QgsApplication::profileSourceRegistry()->profileSources();
-  sources.reserve( layersToGenerate.size() + registrySources.size() );
-
-  sources << registrySources;
-  for ( QgsMapLayer *layer : layersToGenerate )
-  {
-    if ( QgsAbstractProfileSource *source = layer->profileSource() )
-      sources.append( source );
-  }
-
-  mCurrentJob = new QgsProfilePlotRenderer( sources, request );
+  mCurrentJob = new QgsProfilePlotRenderer( mSources, request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
@@ -1176,6 +1164,16 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );
+}
+
+void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
+}
+
+QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
+{
+  return mSources;
 }
 
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )

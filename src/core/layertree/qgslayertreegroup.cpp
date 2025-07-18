@@ -333,6 +333,38 @@ QList<QgsMapLayer *> QgsLayerTreeGroup::layerOrderRespectingGroupLayers() const
   return list;
 }
 
+QList<QgsLayerTreeNode *> QgsLayerTreeGroup::layerAndCustomNodeOrderRespectingGroupLayers() const
+{
+  QList<QgsLayerTreeNode *> list;
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      QgsMapLayer *layer = QgsLayerTree::toLayer( child )->layer();
+      if ( !layer || !layer->isSpatial() )
+        continue;
+      list << child;
+    }
+    else if ( QgsLayerTree::isCustomNode( child ) )
+    {
+      list << child;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      QgsLayerTreeGroup *group = QgsLayerTree::toGroup( child );
+      if ( group->groupLayer() )
+      {
+        list << group;
+      }
+      else
+      {
+        list << group->layerAndCustomNodeOrderRespectingGroupLayers();
+      }
+    }
+  }
+  return list;
+}
+
 QgsLayerTreeGroup *QgsLayerTreeGroup::findGroup( const QString &name )
 {
   for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
