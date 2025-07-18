@@ -3682,6 +3682,23 @@ if __name__ == "__main__":
         )
         sys.exit(1)
 
+    # early handle of SIP_NO_FILE directive to avoid useless sip generation
+    for line in input_lines:
+        sip_no_file_match = re.search(r"^(#define +)?SIP_NO_FILE\s*$", line)
+        if sip_no_file_match:
+            if args.debug:
+                print("Ignoring sip generation as SIP_NO_FILE directive was found!")
+            if args.sip_output:
+                try:
+                    os.remove(args.sip_output)
+                    print(
+                        f"Removed sip file '{args.sip_output}' as SIP_NO_FILE directive was found!"
+                    )
+                except FileNotFoundError:
+                    pass
+
+            sys.exit(1)
+
     CONTEXT.debug = args.debug
     CONTEXT.is_qt6 = args.qt6
     CONTEXT.header_file = args.headerfile
