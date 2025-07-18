@@ -23,8 +23,6 @@
 
 #include "qgsfeedback.h"
 
-#ifndef SIP_RUN
-
 #include <QThread>
 #if defined( QGISDEBUG ) || defined( AGGRESSIVE_SAFE_MODE )
 #include <QDebug>
@@ -43,7 +41,7 @@
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS                                                                                                                                                                                                                                                                                                                                         \
   if ( QThread::currentThread() != thread() )                                                                                                                                                                                                                                                                                                                                      \
   {                                                                                                                                                                                                                                                                                                                                                                                \
-    qFatal( "%s", QStringLiteral( "%2 (%1:%3) is run from a different thread than the object '%4' lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__ ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); \
+    qFatal( "%s", QStringLiteral ( "%2 (%1:%3) is run from a different thread than the object '%4' lives in [0x%5 vs 0x%6]" ).arg( QString( __FILE__ ), QString( __FUNCTION__ ), QString::number( __LINE__ ), objectName() ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ).arg( reinterpret_cast< qint64 >( thread() ), 0, 16 ).toLocal8Bit().constData() ); \
   }
 #elif defined( QGISDEBUG )
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS                                                                                                                                                                                                                                                                                                                                       \
@@ -275,5 +273,4 @@ class CORE_EXPORT QgsThreadingUtils
 };
 
 
-#endif
 #endif
