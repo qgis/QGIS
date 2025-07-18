@@ -56,9 +56,9 @@ std::unique_ptr<QgsPointCloudIndex> QgsRemoteCopcPointCloudIndex::clone() const
 
 void QgsRemoteCopcPointCloudIndex::load( const QString &uri )
 {
-  mUri = uri;
   QUrl url( uri );
   mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
+  mUri = url.toString();
   mIsValid = mLazInfo->isValid();
   if ( mIsValid )
   {
