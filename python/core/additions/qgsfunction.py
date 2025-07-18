@@ -188,8 +188,8 @@ def qgsfunction(args="auto", group="custom", **kwargs):
     If those parameters are present in the function signature, they will be automatically passed to the function,
     without the need to specify them in the expression.
 
-    Functions should return a value compatible with QVariant
-    Eval errors can be raised using parent.setEvalErrorString("Error message")
+    Functions should return a value compatible with QVariant.
+    Eval errors can be raised using parent.setEvalErrorString("Error message").
 
     :param args: DEPRECATED since QGIS 3.32. Use the "params_as_list" keyword argument if you want to pass parameters as a list.
     :param group: The expression group to which this expression should be added.
@@ -203,13 +203,13 @@ def qgsfunction(args="auto", group="custom", **kwargs):
         * *handlesnull* (``bool``) --
           Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
         * *params_as_list* (``bool``) \since QGIS 3.32 --
-          Defines if the parameters are passed to the function as a list. If set the False, they will be expanded. By default False.
+          Defines if the parameters are passed to the function as a list. If set to False, they will be expanded. By default False.
         * *register* (``bool``) --
-            Set to False to create the QgsPyExpressionFunction without registering it. Useful for testing puposes. By default True.
+          Set to False to create the QgsPyExpressionFunction without registering it. Useful for testing puposes. By default True.
         * *name* (``str``) --
-            If provided, replace the function name
+          If provided, replace the function name.
         * *helpText* (``str``) --
-            If provided, used in the help tooltip instead of the function docstring
+          If provided, used in the help tooltip instead of the function docstring.
 
 
     Example 1 (Basic function, with default parameters)
