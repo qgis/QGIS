@@ -1629,21 +1629,7 @@ bool QgsGeometry::disjoint( const QgsGeometry &geometry ) const
 
 bool QgsGeometry::equals( const QgsGeometry &geometry ) const
 {
-  if ( !d->geometry || geometry.isNull() )
-  {
-    return false;
-  }
-
-  // fast check - are they shared copies of the same underlying geometry?
-  if ( d == geometry.d )
-    return true;
-
-  // fast check - distinct geometry types?
-  if ( type() != geometry.type() )
-    return false;
-
-  // slower check - actually test the geometries
-  return *d->geometry == *geometry.d->geometry;
+  return isEqual( geometry, Qgis::GeometryBackend::QGIS );
 }
 
 bool QgsGeometry::touches( const QgsGeometry &geometry ) const
@@ -3568,7 +3554,12 @@ bool QgsGeometry::isAxisParallelRectangle( double maximumDeviation, bool simpleR
 
 bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 {
-  if ( !d->geometry || !g.d->geometry )
+  return isEqual( g, Qgis::GeometryBackend::GEOS );
+}
+
+bool QgsGeometry::isEqual( const QgsGeometry &g, Qgis::GeometryBackend backend ) const
+{
+  if ( !d->geometry || g.isNull() )
   {
     return false;
   }
@@ -3581,20 +3572,33 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   if ( type() != g.type() )
     return false;
 
-  // avoid calling geos for trivial point case
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point
-       && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
-  {
-    return equals( g );
-  }
-
   //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
   if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
     return false;
 
-  QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  return geos.isEqual( g.d->geometry.get(), &mLastError );
+  switch ( backend )
+  {
+    case Qgis::GeometryBackend::GEOS:
+    {
+      // avoid calling geos for trivial point case
+      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point
+           && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
+        return *d->geometry == *g.d->geometry;
+
+      QgsGeos geos( d->geometry.get() );
+      return geos.isEqual( g.d->geometry.get(), &mLastError );
+    }
+
+    case Qgis::GeometryBackend::QGIS:
+    {
+      // slower check - actually test the geometries
+      return *d->geometry == *g.d->geometry;
+    }
+
+    default:
+      throw QgsNotSupportedException( QStringLiteral( "Geometry backend '%1' is not supported by this function." ).arg( qgsEnumValueToKey( backend ) ) );
+  }
 }
 
 QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters )

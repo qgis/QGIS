@@ -255,7 +255,7 @@ ErrorList topolTest::checkDuplicates( QgsVectorLayer *layer1, QgsVectorLayer *la
         continue;
       }
 
-      if ( g1.isGeosEqual( g2 ) )
+      if ( g1.isEqual( g2, Qgis::GeometryBackend::GEOS ) )
       {
         duplicate = true;
         duplicateIds.append( mFeatureMap2[*cit].feature.id() );

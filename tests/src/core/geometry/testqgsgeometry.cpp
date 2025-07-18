@@ -493,38 +493,38 @@ void TestQgsGeometry::isValid()
 void TestQgsGeometry::equality()
 {
   // null geometries
-  QVERIFY( !QgsGeometry().equals( QgsGeometry() ) );
+  QVERIFY( !QgsGeometry().isEqual( QgsGeometry() ) );
 
   // compare to null
   QgsGeometry g1( std::make_unique<QgsPoint>( 1.0, 2.0 ) );
-  QVERIFY( !g1.equals( QgsGeometry() ) );
-  QVERIFY( !QgsGeometry().equals( g1 ) );
+  QVERIFY( !g1.isEqual( QgsGeometry() ) );
+  QVERIFY( !QgsGeometry().isEqual( g1 ) );
 
   // compare implicitly shared copies
   QgsGeometry g2( g1 );
-  QVERIFY( g2.equals( g1 ) );
-  QVERIFY( g1.equals( g2 ) );
-  QVERIFY( g1.equals( g1 ) );
+  QVERIFY( g2.isEqual( g1 ) );
+  QVERIFY( g1.isEqual( g2 ) );
+  QVERIFY( g1.isEqual( g1 ) );
 
   // equal geometry, but different internal data
   g2 = QgsGeometry::fromWkt( "Point( 1.0 2.0 )" );
-  QVERIFY( g2.equals( g1 ) );
-  QVERIFY( g1.equals( g2 ) );
+  QVERIFY( g2.isEqual( g1 ) );
+  QVERIFY( g1.isEqual( g2 ) );
 
   // different dimensionality
   g2 = QgsGeometry::fromWkt( "PointM( 1.0 2.0 3.0)" );
-  QVERIFY( !g2.equals( g1 ) );
-  QVERIFY( !g1.equals( g2 ) );
+  QVERIFY( !g2.isEqual( g1 ) );
+  QVERIFY( !g1.isEqual( g2 ) );
 
   // different type
   g2 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 3.0 4.0 )" );
-  QVERIFY( !g2.equals( g1 ) );
-  QVERIFY( !g1.equals( g2 ) );
+  QVERIFY( !g2.isEqual( g1 ) );
+  QVERIFY( !g1.isEqual( g2 ) );
 
   // different direction
   g1 = QgsGeometry::fromWkt( "LineString( 3.0 4.0, 1.0 2.0 )" );
-  QVERIFY( !g2.equals( g1 ) );
-  QVERIFY( !g1.equals( g2 ) );
+  QVERIFY( !g2.isEqual( g1 ) );
+  QVERIFY( !g1.isEqual( g2 ) );
 }
 
 void TestQgsGeometry::vertexIterator()

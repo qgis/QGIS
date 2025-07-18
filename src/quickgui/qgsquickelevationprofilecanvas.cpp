@@ -481,7 +481,7 @@ void QgsQuickElevationProfileCanvas::setCrs( const QgsCoordinateReferenceSystem 
 
 void QgsQuickElevationProfileCanvas::setProfileCurve( QgsGeometry curve )
 {
-  if ( mProfileCurve.equals( curve ) )
+  if ( mProfileCurve.isEqual( curve ) )
     return;
 
   mProfileCurve = curve.type() == Qgis::GeometryType::Line ? curve : QgsGeometry();

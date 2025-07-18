@@ -364,7 +364,7 @@ always return ``True`` for :py:func:`~QgsGeometry.isEmpty`.
 Returns ``True`` if WKB of the geometry is of WKBMulti* type
 %End
 
-    bool equals( const QgsGeometry &geometry ) const;
+ bool equals( const QgsGeometry &geometry ) const /Deprecated="Since 3.44. Will be removed in QGIS 4.02. Use isEqual which accepts Qgis.GeometryBackend."/;
 %Docstring
 Test if this geometry is exactly equal to another ``geometry``.
 
@@ -378,10 +378,12 @@ test performed by :py:func:`~QgsGeometry.isGeosEqual`.
 
    Comparing two null geometries will return ``False``.
 
-.. seealso:: :py:func:`isGeosEqual`
+.. deprecated:: 3.44
+
+   Will be removed in QGIS 4.02. Use isEqual which accepts :py:class:`Qgis`.GeometryBackend.
 %End
 
-    bool isGeosEqual( const QgsGeometry & ) const;
+ bool isGeosEqual( const QgsGeometry & ) const /Deprecated="Since 3.44. Will be removed in QGIS 4.02. Use isEqual which accepts Qgis.GeometryBackend."/;
 %Docstring
 Compares the geometry with another geometry using GEOS.
 
@@ -397,7 +399,26 @@ Consider using the much faster, stricter equality test performed by
 
    Comparing two null geometries will return ``False``.
 
-.. seealso:: :py:func:`equals`
+.. deprecated:: 3.44
+
+   Will be removed in QGIS 4.02. Use isEqual which accepts :py:class:`Qgis`.GeometryBackend.
+%End
+
+    bool isEqual( const QgsGeometry &geometry, Qgis::GeometryBackend backend = Qgis::GeometryBackend::QGIS ) const;
+%Docstring
+Compares the geometry with another geometry using the specified
+``backend``.
+
+Implementations:
+
+- GEOS: this method performs a slow, topological check, where geometries are considered equal if all of the their component edges overlap. E.g. lines with the same vertex locations but opposite direction will be considered equal by this method.
+- QGIS: this is a strict equality check, where the underlying geometries must have exactly the same type, component vertices and vertex order.
+
+The QGIS internal implementation is choosen by default.
+
+.. note::
+
+   Comparing two null geometries will return ``False``.
 %End
 
     bool isGeosValid( Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;

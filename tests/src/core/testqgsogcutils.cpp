@@ -120,19 +120,19 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Point srsName=\"EPSG:4326\"><gml:pos srsDimension=\"3\">0 1 2</gml:pos></gml:Point>" ) );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::PointZ );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POINTZ(0 1 2)" ) ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( QStringLiteral( "POINTZ(0 1 2)" ) ) ) );
 
   // Test polygon GML3 Z
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210 0 0 1200</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)GML" ) );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::PolygonZ );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" ) ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( QStringLiteral( "POLYGONZ((0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210, 0 0 1200))" ) ) ) );
 
   // Test linestring GML3 Z
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"GML(<gml:LineString srsName="EPSG:4326"><gml:posList srsDimension="3">0 0 1200 0 1 1250 1 1 1230 1 0 1210</gml:posList></gml:LineString>)GML" ) );
   QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == Qgis::WkbType::LineStringZ );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" ) ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(0 0 1200, 0 1 1250, 1 1 1230, 1 0 1210)" ) ) ) );
 }
 
 void TestQgsOgcUtils::testGeometryFromGMLWithZ_data()
@@ -190,7 +190,7 @@ void TestQgsOgcUtils::testGeometryFromGMLWithZ()
   QgsGeometry geom = QgsOgcUtils::geometryFromGML( xmlText );
   QVERIFY( !geom.isNull() );
   QCOMPARE( geom.wkbType(), type );
-  QVERIFY( geom.equals( QgsGeometry::fromWkt( WKT ) ) );
+  QVERIFY( geom.isEqual( QgsGeometry::fromWkt( WKT ) ) );
 }
 
 static QDomElement comparableElement( const QString &xmlText )

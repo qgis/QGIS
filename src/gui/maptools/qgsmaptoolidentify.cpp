@@ -455,7 +455,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
   else
   {
     // we have a polygon - maybe it is a rectangle - in such case we can avoid costly insterestion tests later
-    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isEqual( selectionGeom, Qgis::GeometryBackend::GEOS );
   }
 
   int featureCount = 0;
@@ -641,7 +641,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   else
   {
     // we have a polygon - maybe it is a rectangle - in such case we can avoid costly insterestion tests later
-    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isEqual( selectionGeom, Qgis::GeometryBackend::GEOS );
   }
 
   QgsFeatureList featureList;

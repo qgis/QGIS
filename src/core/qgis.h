@@ -2083,10 +2083,22 @@ class CORE_EXPORT Qgis
     enum class JoinStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, JoinStyle ) : int
       {
       Round SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleRound ) = 1, //!< Use rounded joins
-      Miter SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleMiter ), //!< Use mitered joins
-      Bevel SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleBevel ), //!< Use beveled joins
+      Miter SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleMiter ),     //!< Use mitered joins
+      Bevel SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleBevel ),     //!< Use beveled joins
     };
     Q_ENUM( JoinStyle )
+
+    /**
+     * Geometry backend for QgsGeometry.
+     *
+     * \since QGIS 3.46
+     */
+    enum class GeometryBackend SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, GeometryBackend ) : int
+      {
+      QGIS SIP_MONKEYPATCH_COMPAT_NAME( GeometryBackendQGIS ) = 1, //!< Use internal implementation
+      GEOS SIP_MONKEYPATCH_COMPAT_NAME( GeometryBackendGEOS ),     //!< Use GEOS implementation
+    };
+    Q_ENUM( GeometryBackend )
 
     /**
      * Flags which control geos geometry creation behavior.
