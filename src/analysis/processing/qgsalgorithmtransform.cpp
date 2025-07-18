@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtransform.h"
-
+#include "qgsexception.h"
+#include "processing/qgsprocessingexception.h"
 ///@cond PRIVATE
 
 
@@ -112,6 +113,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
       mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, false );
     mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
 
+    // Disable fallbacks to ensure missing grid files trigger errors
     mTransform.disableFallbackOperationHandler( true );
   }
 
@@ -143,11 +145,16 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
         mWarnedAboutFallbackTransform = true; // only warn once to avoid flooding the log
       }
     }
-    catch ( QgsCsException & )
+    catch ( QgsCsException &ex )
     {
       if ( feedback )
-        feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( f.id() ) );
+      feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( f.id() ) );
       feature.clearGeometry();
+
+      const QString msg = QObject::tr( "Coordinate transformation failed for feature id %1 (likely due to missing or inaccessible grid shift file). Error details: %2" )
+                            .arg( f.id() )
+                            .arg( QString::fromUtf8( ex.what() ) );
+      throw QgsProcessingException( msg );
     }
   }
   return QgsFeatureList() << feature;
