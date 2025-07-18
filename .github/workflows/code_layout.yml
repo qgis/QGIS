@@ -34,15 +34,8 @@ jobs:
           tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor
-      - name: Make
-        run: |
-          mkdir build
-          cd build
-          cmake -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON \
-                -DWITH_DOT=NO -DWERROR=ON -DDOXYGEN_EXECUTABLE=../doxygen-${DOXYGEN_VERSION}/bin/doxygen ..
-          make -j3 apidoc
-      - name: Run Tests
-        run: cd build && ctest -V -R PyQgsDocCoverage
+      - name: Run check
+        run: ./scripts/documentation_check/documentation_check.sh "$(pwd)" "$(pwd)/doxygen-${DOXYGEN_VERSION}"
 
   license_check:
     runs-on: ubuntu-latest
