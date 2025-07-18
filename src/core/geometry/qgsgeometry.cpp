@@ -4530,3 +4530,67 @@ bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
 }
+
+QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
+{
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() );
+  if ( !curve )
+  {
+    return QgsGeometry();
+  }
+
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::chamferVertex( curve, vertexIndex, distance1, distance2 ) );
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
+{
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() );
+  if ( !curve )
+  {
+    return QgsGeometry();
+  }
+
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::filletVertex( curve, vertexIndex, radius, segments ) );
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::chamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
+                                  const QgsPoint &seg2Start, const QgsPoint &seg2End,
+                                  double distance1, double distance2 ) const
+{
+  std::unique_ptr<QgsLineString> result( QgsGeometryUtils::createChamferGeometry(
+      seg1Start, seg1End, seg2Start, seg2End, distance1, distance2 ) );
+
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::fillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
+                                 const QgsPoint &seg2Start, const QgsPoint &seg2End,
+                                 double radius, int segments ) const
+{
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::createFilletGeometry(
+        seg1Start, seg1End, seg2Start, seg2End, radius, segments ) );
+
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
