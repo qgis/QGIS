@@ -220,10 +220,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * If the geometry is invalid, \a errorMsg will be filled with the reported geometry error.
      *
      * \param errorMsg Error message returned by SFGCAL
-     * \param allowSelfTouchingHoles specifies whether self-touching holes are permitted.
+     * \param flags with Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, specifies whether self-touching holes are permitted.
      *        OGC validity states that self-touching holes are NOT permitted, whilst other
      *        vendor validity checks (e.g. ESRI) permit self-touching holes.
-     * \param errorLoc if specified, it will be set to the geometry of the error location.
      */
     bool isValid( Qgis::GeometryValidityFlags flags, QString *errorMsg = nullptr ) const;
 
@@ -486,6 +485,10 @@ class CORE_EXPORT QgsSfcgalGeometry
 #endif
 
   protected:
+
+    /**
+     * Clears any cached parameters associated with the geometry, e.g., bounding boxes
+     */
     void clearCache() const;
 
   private:
