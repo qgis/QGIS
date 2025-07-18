@@ -556,7 +556,7 @@ tests:
           - 'Mean length: 3.0'
           - 'NULL \(missing\) values: 1'
 
-  - algorithm: qgis:listuniquevalues
+  - algorithm: native:listuniquevalues
     name: Unique values
     params:
       INPUT:

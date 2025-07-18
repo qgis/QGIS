@@ -270,6 +270,7 @@
 #include "qgsalgorithmtranslate.h"
 #include "qgsalgorithmtruncatetable.h"
 #include "qgsalgorithmunion.h"
+#include "qgsalgorithmuniquevalues.h"
 #include "qgsalgorithmuniquevalueindex.h"
 #include "qgsalgorithmurlopener.h"
 #include "qgsalgorithmhttprequest.h"
@@ -630,6 +631,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
+  addAlgorithm( new QgsUniqueValuesAlgorithm() );
   addAlgorithm( new QgsUpdateLayerMetadataAlgorithm() );
   addAlgorithm( new QgsOpenUrlAlgorithm() );
   addAlgorithm( new QgsHttpRequestAlgorithm() );
