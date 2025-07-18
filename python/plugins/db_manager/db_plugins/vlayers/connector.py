@@ -112,6 +112,8 @@ class VLayerRegistry:
 class VLayerConnector(DBConnector):
 
     def __init__(self, uri):
+        DBConnector.__init__(self, uri)
+        
         self.mapSridToName = {}
 
     def _execute(self, cursor, sql):
