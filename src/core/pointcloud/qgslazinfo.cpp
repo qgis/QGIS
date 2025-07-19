@@ -327,6 +327,13 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QByteArray lazHeaderData = reply.content();
 
     lazInfo.parseRawHeader( lazHeaderData.data(), lazHeaderData.size() );
+
+    // If request was redirected, let's update our url for all next calls
+    const QUrl requestedUrl = reply.request().url();
+    if ( requestedUrl != url )
+    {
+      url.setUrl( requestedUrl.toString() );
+    }
   }
 
   // Fetch VLR data
