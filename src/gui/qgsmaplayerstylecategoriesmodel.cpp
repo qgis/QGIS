@@ -33,6 +33,7 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
     case Qgis::LayerType::Raster:
       mCategoryList << QgsMapLayer::StyleCategory::LayerConfiguration
                     << QgsMapLayer::StyleCategory::Symbology
+                    << QgsMapLayer::StyleCategory::Labeling
                     << QgsMapLayer::StyleCategory::MapTips
                     << QgsMapLayer::StyleCategory::Rendering
                     << QgsMapLayer::StyleCategory::CustomProperties
@@ -40,6 +41,7 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
                     << QgsMapLayer::StyleCategory::Elevation
                     << QgsMapLayer::StyleCategory::AttributeTable
                     << QgsMapLayer::StyleCategory::Notes
+                    << QgsMapLayer::StyleCategory::AllVisualStyleCategories
                     << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;
     case Qgis::LayerType::Annotation:
