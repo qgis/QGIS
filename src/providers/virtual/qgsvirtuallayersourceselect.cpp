@@ -160,7 +160,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
 
   if ( !def.uid().isEmpty() )
   {
-    mUIDColumnNameChck->setChecked( true );
+    mUIDColumnNameCheck->setChecked( true );
     mUIDField->setText( def.uid() );
   }
 
@@ -219,7 +219,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   {
     def.setQuery( mQueryEdit->text() );
   }
-  if ( mUIDColumnNameChck->isChecked() && !mUIDField->text().isEmpty() )
+  if ( mUIDColumnNameCheck->isChecked() && !mUIDField->text().isEmpty() )
   {
     def.setUid( mUIDField->text() );
   }
@@ -261,11 +261,11 @@ bool QgsVirtualLayerSourceSelect::preFlight()
     if ( vl->isValid() )
     {
       const QStringList fieldNames = vl->fields().names();
-      if ( mUIDColumnNameChck->isChecked() && mUIDField->text().isEmpty() )
+      if ( mUIDColumnNameCheck->isChecked() && mUIDField->text().isEmpty() )
       {
         QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "Checkbox 'Unique identifier column' is checked, but no field given" ) );
       }
-      else if ( mUIDColumnNameChck->isChecked() && !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
+      else if ( mUIDColumnNameCheck->isChecked() && !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
       {
         QStringList bulletedFieldNames;
         for ( const QString &fieldName : fieldNames )

@@ -2607,7 +2607,7 @@ static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionC
 
   if ( !crs.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to cordinate reference system" ).arg( definition ) );
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to coordinate reference system" ).arg( definition ) );
   }
 
   return QVariant::fromValue( crs );

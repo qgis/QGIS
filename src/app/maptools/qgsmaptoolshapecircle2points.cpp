@@ -63,6 +63,9 @@ bool QgsMapToolShapeCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Q
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mCircle.isEmpty() )
+      return false;
+
     mPoints.append( mParentTool->mapPoint( *e ) );
     addCircleToParentTool();
     return true;

@@ -30,6 +30,8 @@
 #include "qgsmaptoolshapecircle2points.h"
 #include "qgsmaptoolshapecircle3points.h"
 #include "qgsmaptoolshapecirclecenterpoint.h"
+#include "qgsmaptoolshapecircle3tangents.h"
+#include "qgsmaptoolshapecircle2tangentspoint.h"
 
 
 class TestQgsMapToolCircle : public QObject
@@ -45,6 +47,11 @@ class TestQgsMapToolCircle : public QObject
 
     void testCircle_data();
     void testCircle();
+    void testDrawCircleFrom2PointsNotEnoughPoints();
+    void testDrawCircleFrom3PointsNotEnoughPoints();
+    void testDrawCircleFromCenterPointNotEnoughPoints();
+    void testDrawCircleFrom3TangentsNotEnoughPoints();
+    void testDrawCircleFrom2TangentsNotEnoughPoints();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -334,7 +341,6 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFromCenterPointWithDeletedVertex()
   return utils.newFeatureId();
 }
 
-
 void TestQgsMapToolCircle::testCircle_data()
 {
   QTest::addColumn<QString>( "wktGeometry" );
@@ -392,6 +398,107 @@ void TestQgsMapToolCircle::testCircle()
   QCOMPARE( wktGeometry, wktExpected );
 }
 
+void TestQgsMapToolCircle::testDrawCircleFrom2PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom3PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle3PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFromCenterPointNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircleCenterPointMetadata md;
+  resetMapTool( &md );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom3TangentsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle3TangentsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2TangentsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2TangentsPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
 
 QGSTEST_MAIN( TestQgsMapToolCircle )
 #include "testqgsmaptoolcircle.moc"
