@@ -33,7 +33,7 @@ QString QgsHubDistanceAlgorithm::displayName() const
 
 QStringList QgsHubDistanceAlgorithm::tags() const
 {
-  return QObject::tr( "lines,points,hub,spoke,geodesic,great,circle,distance" ).split( ',' );
+  return QObject::tr( "lines,points,hub,spoke,distance" ).split( ',' );
 }
 
 QString QgsHubDistanceAlgorithm::group() const
@@ -48,14 +48,13 @@ QString QgsHubDistanceAlgorithm::groupId() const
 
 QString QgsHubDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Computes the distance between features from the source layer to the closest feature "
+  return QObject::tr( "This algorithm computes the distance between features from the source layer to the closest feature "
                       "from the destination layer.\n\n"
-                      "If input layers are not point layers, a point on the surface of the geometries will "
-                      "be taken as the connecting location.\n\n"
-                      "Optionally, geodesic lines can be created, which represent the shortest path on the "
-                      "surface of an ellipsoid. When geodesic mode is used, it is possible to split the "
-                      "created lines at the antimeridian (±180 degrees longitude), which can improve rendering "
-                      "of the lines" );
+                      "Distance calculations are based on the features center.\n\n"
+                      "The resulting line layer contains lines linking each origin point with its nearest destination feature.\n\n"
+                      "The resulting point layer contains origin features center point with an additional field indicating the identifier "
+                      "of the nearest destination feature and the distance to it."
+  );
 }
 
 QString QgsHubDistanceAlgorithm::shortDescription() const
@@ -63,6 +62,10 @@ QString QgsHubDistanceAlgorithm::shortDescription() const
   return QObject::tr( "Computes the distance between features from the source layer to the closest feature from the destination layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsHubDistanceAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
 
 QgsHubDistanceAlgorithm *QgsHubDistanceAlgorithm::createInstance() const
 {
@@ -121,8 +124,8 @@ QVariantMap QgsHubDistanceAlgorithm::processAlgorithm( const QVariantMap &parame
   }
 
   QgsFields fields = spokeSource->fields();
-  fields.append( QgsField( QStringLiteral( "hub_name" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "hub_distance" ), QMetaType::Type::Double ) );
+  fields.append( QgsField( QStringLiteral( "HubName" ), QMetaType::Type::QString ) );
+  fields.append( QgsField( QStringLiteral( "HubDist" ), QMetaType::Type::Double ) );
 
   QString linesDest;
   std::unique_ptr<QgsFeatureSink> linesSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LINES" ), context, linesDest, fields, Qgis::WkbType::LineString, hubSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
