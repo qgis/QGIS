@@ -34,7 +34,6 @@
 #include <qgsapplication.h>
 #include "qgscompoundcurve.h"
 #include <qgsgeometry.h>
-#include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
@@ -415,7 +414,7 @@ void TestQgsSfcgal::isEqual()
   QVERIFY2( sfcgal::errorHandler()->isTextEmpty(), "isEquals should not failed" );
 
   // test with offset geometry
-  QgsPoint vector( 1.0, 1.0 );
+  QgsVector3D vector( 1.0, 1.0, 0 );
   std::unique_ptr<QgsSfcgalGeometry> geomB( geomA.translate( vector, &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), errorMsg.toStdString().c_str() );
 
@@ -644,30 +643,30 @@ void TestQgsSfcgal::scale()
   // simple 2D Point
   QgsSfcgalGeometry sfcgalPoint( "POINT (4 3)", &errorMsg );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
-  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint( sfcgalPoint.scale( QgsPoint( 2, 3 ), QgsPoint(), &errorMsg ) );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint( sfcgalPoint.scale( QgsVector3D( 2, 3, 0 ), QgsPoint(), &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QCOMPARE( sfcgalScalePoint->asWkt( 0 ), QStringLiteral( "POINT (8 9)" ) );
 
   // simple 2D Point with center
-  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePointCenter( sfcgalPoint.scale( QgsPoint( 2, 3 ), QgsPoint( 1, 1 ), &errorMsg ) );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePointCenter( sfcgalPoint.scale( QgsVector3D( 2, 3, 0 ), QgsPoint( 1, 1 ), &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QCOMPARE( sfcgalScalePointCenter->asWkt( 0 ), QStringLiteral( "POINT (7 7)" ) );
 
   // simple 3D Point
   QgsSfcgalGeometry sfcgalPoint3D( "POINT Z (4 3 2)", &errorMsg );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
-  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3D( sfcgalPoint3D.scale( QgsPoint( 2, 3, 4 ), QgsPoint(), &errorMsg ) );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3D( sfcgalPoint3D.scale( QgsVector3D( 2, 3, 4 ), QgsPoint(), &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QCOMPARE( sfcgalScalePoint3D->asWkt( 0 ), QStringLiteral( "POINT Z (8 9 8)" ) );
 
   // simple 3D Point with center
-  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3DCenter( sfcgalPoint3D.scale( QgsPoint( 2, 3, 4 ), QgsPoint( 1, 1, 2 ), &errorMsg ) );
+  std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3DCenter( sfcgalPoint3D.scale( QgsVector3D( 2, 3, 4 ), QgsPoint( 1, 1, 2 ), &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QCOMPARE( sfcgalScalePoint3DCenter->asWkt( 0 ), QStringLiteral( "POINT Z (7 7 2)" ) );
 
   // 3D Polygon - no center
   std::unique_ptr<QgsSfcgalGeometry> sfcgalPolygonA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
-  const QgsPoint scaleFactorPolygon( 2, 2, 2 );
+  const QgsVector3D scaleFactorPolygon( 2, 2, 2 );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePolygonA( sfcgalPolygonA->scale( scaleFactorPolygon, QgsPoint(), &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
@@ -689,7 +688,7 @@ void TestQgsSfcgal::scale()
 
   // 2D LineString - no center
   std::unique_ptr<QgsSfcgalGeometry> sfcgalLineD = std::make_unique<QgsSfcgalGeometry>( mpPolylineGeometryD );
-  const QgsPoint scaleFactorLine( 3, 2 );
+  const QgsVector3D scaleFactorLine( 3, 2, 0 );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScaleLineD( sfcgalLineD->scale( scaleFactorLine, QgsPoint(), &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
@@ -716,7 +715,7 @@ void TestQgsSfcgal::intersection()
   QVERIFY2( errorMsg.isEmpty(), errorMsg.toStdString().c_str() );
 
   // should be a single polygon as A intersect B
-  QgsSfcgalGeometry *intersectionGeom = geomA.intersection( mpPolygonGeometryB.constGet(), &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> intersectionGeom = geomA.intersection( mpPolygonGeometryB.constGet(), &errorMsg );
   QVERIFY2( intersectionGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
   QCOMPARE( intersectionGeom->wkbType(), Qgis::WkbType::Polygon );
 
@@ -739,16 +738,16 @@ void TestQgsSfcgal::intersection3d()
   std::unique_ptr<QgsSfcgalGeometry> geomZB = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZB );
   std::unique_ptr<QgsSfcgalGeometry> geomZC = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZC );
 
-  geomZA.reset( geomZA->triangulate() );
-  geomZB.reset( geomZB->triangulate() );
-  geomZC.reset( geomZC->triangulate() );
+  geomZA = geomZA->triangulate();
+  geomZB = geomZB->triangulate();
+  geomZC = geomZC->triangulate();
 
   // second intersect triangulated polygons
   QVERIFY( !geomZA->intersects( *geomZB.get() ) );
 
   {
     QVERIFY( geomZA->intersects( *geomZC.get() ) );
-    QgsSfcgalGeometry *scInterGeom = geomZA->intersection( *geomZC.get(), &errorMsg );
+    std::unique_ptr<QgsSfcgalGeometry> scInterGeom = geomZA->intersection( *geomZC.get(), &errorMsg );
     QVERIFY2( scInterGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
     QCOMPARE( scInterGeom->wkbType(), Qgis::WkbType::MultiLineStringZ );
     QCOMPARE( scInterGeom->asWkt(), QStringLiteral( "MULTILINESTRING Z ("
@@ -766,7 +765,7 @@ void TestQgsSfcgal::intersection3d()
 
   {
     QVERIFY( geomZB->intersects( *geomZC.get() ) );
-    QgsSfcgalGeometry *scInterGeom = geomZB->intersection( *geomZC.get(), &errorMsg );
+    std::unique_ptr<QgsSfcgalGeometry> scInterGeom = geomZB->intersection( *geomZC.get(), &errorMsg );
     QVERIFY2( scInterGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
     QCOMPARE( scInterGeom->wkbType(), Qgis::WkbType::MultiLineStringZ );
     QCOMPARE( scInterGeom->asWkt(), QStringLiteral( "MULTILINESTRING Z ("
@@ -790,10 +789,10 @@ void TestQgsSfcgal::intersection3d()
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
     // 2nd: intersect cylinder - cube
-    QgsSfcgalGeometry *resultGeom = cylinderGeom.intersection( cubeGeom, &errorMsg );
+    std::unique_ptr<QgsSfcgalGeometry> resultGeom = cylinderGeom.intersection( cubeGeom, &errorMsg );
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
-    QCOMPARE( resultGeom->wkbType(), Qgis::WkbType::GeometryCollectionZ );
     QVERIFY2( resultGeom, ( QString( "resultGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
+    QCOMPARE( resultGeom->wkbType(), Qgis::WkbType::GeometryCollectionZ );
     QCOMPARE( resultGeom->partCount(), 7 );
 
     const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( resultGeom->asQgisGeometry( &errorMsg ) );
@@ -818,7 +817,7 @@ void TestQgsSfcgal::intersection3d()
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
     // 2nd: intersection cube1 - cube2
-    QgsSfcgalGeometry *resultGeom = cube1.intersection( cube2, &errorMsg );
+    std::unique_ptr<QgsSfcgalGeometry> resultGeom = cube1.intersection( cube2, &errorMsg );
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
     //QCOMPARE( resultGeom->wkbType(), Qgis::WkbType::SO );
     QVERIFY2( resultGeom, ( QString( "resultGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
@@ -843,7 +842,7 @@ void TestQgsSfcgal::unionCheck1()
   QString errorMsg;
   QVector<const QgsAbstractGeometry *> geomList;
   geomList.append( mpPolygonGeometryC.constGet() );
-  QgsSfcgalGeometry *combinedGeom = geomA->combine( geomList, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> combinedGeom = geomA->combine( geomList, &errorMsg );
   QVERIFY2( combinedGeom, ( QString( "combinedGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
   QCOMPARE( combinedGeom->wkbType(), Qgis::WkbType::MultiPolygon );
 
@@ -868,7 +867,7 @@ void TestQgsSfcgal::unionCheck2()
   QString errorMsg;
   QVector<const QgsAbstractGeometry *> geomList;
   geomList.append( mpPolygonGeometryB.constGet() );
-  QgsSfcgalGeometry *combinedGeom = geomA->combine( geomList, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> combinedGeom = geomA->combine( geomList, &errorMsg );
   QVERIFY2( combinedGeom, ( QString( "combinedGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
   QCOMPARE( combinedGeom->wkbType(), Qgis::WkbType::Polygon );
 
@@ -891,7 +890,7 @@ void TestQgsSfcgal::differenceCheck1()
   std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
 
   QString errorMsg;
-  QgsSfcgalGeometry *diffGeom = geomA->difference( mpPolygonGeometryC.constGet(), &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> diffGeom = geomA->difference( mpPolygonGeometryC.constGet(), &errorMsg );
   QCOMPARE( diffGeom->wkbType(), Qgis::WkbType::Polygon );
 
   QVERIFY( diffGeom->partCount() > 0 ); // check that the union did not fail
@@ -910,7 +909,7 @@ void TestQgsSfcgal::differenceCheck2()
   std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
 
   QString errorMsg;
-  QgsSfcgalGeometry *diffGeom = geomA->difference( mpPolygonGeometryB.constGet(), &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> diffGeom = geomA->difference( mpPolygonGeometryB.constGet(), &errorMsg );
   QCOMPARE( diffGeom->wkbType(), Qgis::WkbType::Polygon );
 
   QVERIFY( diffGeom->partCount() > 0 ); // check that the union did not fail
@@ -936,7 +935,7 @@ void TestQgsSfcgal::difference3d()
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
     // 2nd: diff cube1 - cube2
-    QgsSfcgalGeometry *scDiffGeom = cube1.difference( cube2, &errorMsg );
+    std::unique_ptr<QgsSfcgalGeometry> scDiffGeom = cube1.difference( cube2, &errorMsg );
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
     //QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::SO );
     QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
@@ -959,7 +958,7 @@ void TestQgsSfcgal::difference3d()
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
     // 2nd: diff cylinder - cube
-    QgsSfcgalGeometry *scDiffGeom = cylinderGeom.difference( cubeGeom, &errorMsg );
+    std::unique_ptr<QgsSfcgalGeometry> scDiffGeom = cylinderGeom.difference( cubeGeom, &errorMsg );
     QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
     QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::TINZ );
     QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
@@ -1035,7 +1034,7 @@ void TestQgsSfcgal::extrude()
 {
   QString errorMsg;
   std::unique_ptr<QgsSfcgalGeometry> sfcgalPolygonA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
-  const QgsPoint extrusion( 0, 0, 30 );
+  const QgsVector3D extrusion( 0, 0, 30 );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalExtrusion( sfcgalPolygonA->extrude( extrusion, &errorMsg ) );
   QVERIFY2( errorMsg.isEmpty(), sfcgal::errorHandler()->getFullText().toStdString().c_str() );
 
