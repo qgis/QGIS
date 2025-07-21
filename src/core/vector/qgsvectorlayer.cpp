@@ -23,6 +23,7 @@
 
 #include "qgis.h" //for globals
 #include "qgssettings.h"
+#include "qgsvector.h"
 #include "qgsvectorlayer.h"
 #include "moc_qgsvectorlayer.cpp"
 #include "qgsactionmanager.h"
@@ -105,9 +106,21 @@
 #include <QUuid>
 #include <QRegularExpression>
 #include <QTimer>
+#include <qchar.h>
+#include <qlist.h>
+#include <qmessagebox.h>
+#include <qmutex.h>
+#include <qnamespace.h>
+#include <qvariant.h>
 
+#include <algorithm>
+#include <iterator>
 #include <limits>
+#include <memory>
 #include <optional>
+#include <stdexcept>
+#include <thread>
+#include <utility>
 
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
@@ -4022,8 +4035,27 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
 
   emit beforeCommitChanges( stopEditing );
 
-  if ( !mAllowCommit )
+  if ( !allowCommit() ) {
+    QMessageBox commitWarningBox;
+
+    QString warningMessage = "Committing changes to the selected layer has been disabled by:\n<ul>";
+    std::unique_ptr<QgsVectorLayer::QgsPermissionMap> pluginsBlocking = getPluginsBlocking();
+
+    for(const std::pair<QString, QgsLayerCommitPermission> permission: std::as_const(*pluginsBlocking)) {
+      warningMessage.append(QString("<li><b>%1</b>: %2</li>").arg(permission.first).arg(permission.second.reason));
+    }
+    warningMessage.append("</ul>");
+
+    commitWarningBox.setWindowTitle(tr("Committing is not allowed"));
+    commitWarningBox.setText(warningMessage);
+    commitWarningBox.setIcon(QMessageBox::Warning);
+    commitWarningBox.setTextFormat(Qt::RichText);
+    commitWarningBox.setDefaultButton(QMessageBox::Ok);
+    commitWarningBox.exec();
+
     return false;
+  }
+    
 
   mCommitChangesActive = true;
 
@@ -6502,21 +6534,40 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
-bool QgsVectorLayer::allowCommit() const
+QgsVectorLayer::QgsLayerCommitPermission QgsVectorLayer::allowCommit(const QString& appId) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mAllowCommit;
+  return commitPermissions.at(appId);
 }
 
-void QgsVectorLayer::setAllowCommit( bool allowCommit )
+bool QgsVectorLayer::allowCommit() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  auto falseValueIterator = std::find_if(commitPermissions.begin(), commitPermissions.end(), 
+    [](const std::pair<QString, QgsLayerCommitPermission>& permission) {
+      return !permission.second.allowCommit;
+    }
+  );
+  return falseValueIterator == commitPermissions.end();
+}
 
-  if ( mAllowCommit == allowCommit )
-    return;
+std::unique_ptr<QgsVectorLayer::QgsPermissionMap> QgsVectorLayer::getPluginsBlocking() const
+{
+  std::unique_ptr<QgsPermissionMap> result(new QgsPermissionMap());
+  std::copy_if(commitPermissions.begin(), commitPermissions.end(), std::inserter(*result, result->begin()), 
+    [](const std::pair<const QString, QgsLayerCommitPermission>& permission) {
+      return !permission.second.allowCommit;
+    }
+  );
+  return result;
+}
 
-  mAllowCommit = allowCommit;
+
+void QgsVectorLayer::setAllowCommit(bool allowCommit, const QString& appId, const QString& reason)
+{
+  QMutexLocker mutexLocker(&commitMutex);
+  commitPermissions[appId] = QgsLayerCommitPermission{
+    .allowCommit = allowCommit,
+    .reason = reason
+  };
   emit allowCommitChanged();
 }
 

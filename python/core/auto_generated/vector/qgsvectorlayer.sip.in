@@ -14,7 +14,6 @@
 
 
 
-
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
@@ -2810,6 +2809,40 @@ Sets the coordinate transform context to ``transformContext``
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    struct QgsLayerCommitPermission {
+        bool allowCommit;
+        QString reason;
+    };
+
+    QgsLayerCommitPermission allowCommit(const QString& id) const;
+%Docstring
+Checks layer commit permissions set by a specific plugin by the id of ``id`` and returns ``QgsLayerCommitPermission`` object.
+
+.. versionadded:: 3.44
+%End
+
+    bool allowCommit() const;
+%Docstring
+Checks all commit permissions set during the runtime of the program and returns bool. It can be used to check
+if committing is fully allowed.
+
+.. versionadded:: 3.18
+%End
+
+    void setAllowCommit(bool allowCommit, const QString& appId = "qgis", const QString& reason = "unspecified");
+%Docstring
+Controls, if the layer is allowed to commit changes. If this is set to ``False``
+it will not be possible to commit changes on this layer. This can be used to
+define checks on a layer that need to pass before the layer can be saved.
+``appId`` specifies your unique plugin id. The third parameter ``reason`` can be used
+to specify the reason for the process of committing to be blocked.
+
+When calling :py:func:`commitChanges` this flag is initially set to ``True`` and then checked
+just after the :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust
+it from there.
+
+.. versionadded:: 3.18
+%End
 
   signals:
 
