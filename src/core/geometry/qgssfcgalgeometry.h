@@ -48,7 +48,7 @@
  * \ingroup core
  * \class QgsSfcgalGeometry
  * \brief SfcgalGeometry geometry type.
- * \since QGIS 3.44
+ * \since QGIS 3.46
  */
 class CORE_EXPORT QgsSfcgalGeometry
 {
@@ -74,10 +74,16 @@ class CORE_EXPORT QgsSfcgalGeometry
     //! Copy constructor
     QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom );
 
-    //! Returns the underlying SFCGAL geometry
+    /**
+     * Returns the underlying SFCGAL geometry
+     * This operation is always fast, as the SFCGAL geometry representation is maintained for the lifetime of the QgsSfcgalGeometry object.
+     */
     sfcgal::shared_geom sfcgalGeometry() const { return mSfcgalGeom; }
 
-    //! Returns the underlying QGIS geometry
+    /**
+     * Returns the geometry converted to a QGIS geometry object.
+     * This method is slow to call, as it always involves re-conversion of the underlying SFCGAL geometry object.
+     */
     QgsAbstractGeometry *asQgisGeometry( QString *errorMsg = nullptr ) const;
 
     /**
@@ -87,7 +93,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     Qgis::WkbType wkbType( QString *errorMsg = nullptr ) const;
 
     /**
-     * Returns type of the geometry as String
+     * Returns type of the geometry as a OGC string in CamelCase
      * \param errorMsg Error message returned by SFGCAL
      */
     QString geometryType( QString *errorMsg = nullptr ) const SIP_HOLDGIL;
@@ -95,7 +101,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     /**
      * Clones the geometry by performing a deep copy
      */
-    QgsSfcgalGeometry *clone() const;
+    std::unique_ptr<QgsSfcgalGeometry> clone() const;
 
     /**
      * Creates a new geometry from a WKB byte pointer
@@ -133,7 +139,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      * \returns boundary for geometry. May be NULLPTR for some geometry types.
      */
-    QgsSfcgalGeometry *boundary( QString *errorMsg = nullptr ) const SIP_FACTORY;
+    std::unique_ptr<QgsSfcgalGeometry> boundary( QString *errorMsg = nullptr ) const SIP_FACTORY;
 
     /**
      * Returns true if this == other geometry
@@ -267,7 +273,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param translation translation vector (2D or 3D)
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *translate( const QgsPoint &translation, QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation, QString *errorMsg = nullptr ) const;
 
     /**
      * Scale this geometry by vector \a scaleFactor.
@@ -276,7 +282,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param center optional parameter. If specified, scaling will be performed relative to this center
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *scale( const QgsPoint &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
 
     /**
      * 2D Rotate this geometry around point \a center by angle \a angle
@@ -285,7 +291,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param center rotation center
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *rotate2D( double angle, const QgsPoint &center, QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center, QString *errorMsg = nullptr ) const;
 
     /**
      * 3D Rotate this geometry around axis \a axisVector by angle \a angle
@@ -295,7 +301,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param center optional parameter. If specified, rotation will be applied around axis and center point
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr ) const;
 
     /**
      * Checks if \a otherGeom intersects this.
@@ -320,7 +326,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      * \param parameters can be used to specify parameters which control the intersection results
      */
-    QgsSfcgalGeometry *intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Calculate the intersection of this and \a otherGeom.
@@ -329,7 +335,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      * \param parameters can be used to specify parameters which control the intersection results
      */
-    QgsSfcgalGeometry *intersection( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Calculate the combination of this and \a geomList.
@@ -337,7 +343,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param geomList list of geometries to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
 
     /**
      * Calculate the difference of this and \a otherGeom.
@@ -346,7 +352,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      * \param parameters can be used to specify parameters which control the difference results
      */
-    QgsSfcgalGeometry *difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Calculate the difference of this and \a otherGeom.
@@ -355,25 +361,25 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      * \param parameters can be used to specify parameters which control the difference results
      */
-    QgsSfcgalGeometry *difference( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Triangulates this geometry using constraint 2D Delaunay Triangulation (keep Z if defined)
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *triangulate( QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> triangulate( QString *errorMsg = nullptr ) const;
 
     /**
      * Calculate the convex hull (bounding box).
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *convexhull( QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> convexHull( QString *errorMsg = nullptr ) const;
 
     /**
      * Calculate the envelope (bounding box).
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *envelope( QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> envelope( QString *errorMsg = nullptr ) const;
 
     /**
      * Cover test on 2D or 3D geometries
@@ -396,7 +402,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param joinStyle3D the type of buffer to compute
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg = nullptr ) const;
 
     /**
      * Calculate a 2D buffer where all points are at \a distance from the original geometry.
@@ -408,7 +414,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param joinStyle the type of buffer to compute. Only round is supported.
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const;
+    std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const;
 
     /**
      * Simplifies a geometry using the CGAL algorithm
@@ -417,7 +423,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param preserveTopology Whether to preserve topology during simplification
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *simplify( double tolerance, bool preserveTopology, QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology, QString *errorMsg = nullptr ) const;
 
     /**
      * Calculate an extrusion of the original geometry.
@@ -426,7 +432,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param extrusion extrusion vector (2D or 3D)
      * \param errorMsg Error message returned by SFGCAL
      */
-    QgsSfcgalGeometry *extrude( const QgsPoint &extrusion, QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion, QString *errorMsg = nullptr ) const;
 
 
 #ifndef SIP_RUN

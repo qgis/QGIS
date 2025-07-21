@@ -35,33 +35,33 @@ class QgsGeometry;
 class QgsGeometryCollection;
 class QgsSfcgalGeometry;
 
-/// check if \a ptr is not null else add stacktrace entry and return the \a default_obj
-#define CHECK_NOT_NULL( ptr, default_obj )                                                                               \
+/// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
+#define CHECK_NOT_NULL( ptr, defaultObj )                                                                                \
   if ( !( ptr ) )                                                                                                        \
   {                                                                                                                      \
     sfcgal::errorHandler()->addText( QString( "Null pointer for '%1'" ).arg( #ptr ), __FILE__, __FUNCTION__, __LINE__ ); \
-    return default_obj;                                                                                                  \
+    return ( defaultObj );                                                                                               \
   }
 
-/// check if no error has been caught else add stacktrace entry and return the \a default_obj
-#define CHECK_SUCCESS( errorMsg, default_obj )                                                    \
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg, __FILE__, __FUNCTION__, __LINE__ ) ) \
-  {                                                                                               \
-    return default_obj;                                                                           \
+/// check if no error has been caught else add stacktrace entry and return the \a defaultObj
+#define CHECK_SUCCESS( errorMsg, defaultObj )                                                         \
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ), __FILE__, __FUNCTION__, __LINE__ ) ) \
+  {                                                                                                   \
+    return ( defaultObj );                                                                            \
   }
 
-/// check if no error has been caught else add stacktrace entry, log the stacktrace and return the \a default_obj
-#define CHECK_SUCCESS_LOG( errorMsg, default_obj )                                                \
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg, __FILE__, __FUNCTION__, __LINE__ ) ) \
-  {                                                                                               \
-    QgsDebugError( sfcgal::errorHandler()->getFullText() );                                       \
-    return default_obj;                                                                           \
+/// check if no error has been caught else add stacktrace entry, log the stacktrace and return the \a defaultObj
+#define CHECK_SUCCESS_LOG( errorMsg, defaultObj )                                                     \
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ), __FILE__, __FUNCTION__, __LINE__ ) ) \
+  {                                                                                                   \
+    QgsDebugError( sfcgal::errorHandler()->getFullText() );                                           \
+    return ( defaultObj );                                                                            \
   }
 
 /**
  * Contains SFCGAL related utilities and functions.
  * \note not available in Python bindings.
- * \since QGIS 3.44
+ * \since QGIS 3.46
  */
 namespace sfcgal
 {
@@ -100,9 +100,9 @@ namespace sfcgal
   /**
    * Helper class to handle SFCGAL engine errors.
    *
-   * Messages are hold in a stacktrace way in order to improve context understanding.
+   * Messages are held in a stacktrace in order to improve context understanding.
    * \ingroup core
-   * \since QGIS 3.44
+   * \since QGIS 3.46
    */
   class CORE_EXPORT ErrorHandler
   {
@@ -111,7 +111,7 @@ namespace sfcgal
       ErrorHandler();
 
       /**
-      * Returns true if no failure has been caught or returns false and add new stacktrace entry.
+      * Returns true if no failure has been caught or returns false and adds a new stacktrace entry.
       *
       * If a failure has already been caught and \a errorMsg is not null then:
       *
@@ -121,11 +121,11 @@ namespace sfcgal
       bool hasSucceedOrStack( QString *errorMsg = nullptr, const char *fromFile = nullptr, const char *fromFunc = nullptr, int fromLine = 0 );
 
       /**
-       * Clears failure messages and also clear \a errorMsg if not null.
+       * Clears failure messages and also clear \a errorMsg content if not null.
        */
       void clearText( QString *errorMsg = nullptr );
 
-      //! Returns true if failure has been caught.
+      //! Returns true if no failure has been caught.
       bool isTextEmpty() const;
 
       //! Returns the first caught failure message.
@@ -152,16 +152,16 @@ namespace sfcgal
 
 /**
  * \ingroup core
- * \brief Does vector analysis using the SFCGAL library and handles import, export, exception handling*
+ * \brief Does vector analysis using the SFCGAL library and handles import, export, exception handling
  * \note not available in Python bindings
- * \since QGIS 3.44
+ * \since QGIS 3.46
  */
 class CORE_EXPORT QgsSfcgalEngine
 {
   public:
 
     /**
-     * Creates a SFGAL geometry (inherit QgsAbstractGeometry) from an internal SFCGAL geometry (from SFCGAL library).
+     * Creates a QgsAbstractGeometry from an internal SFCGAL geometry (from SFCGAL library).
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsSfcgalEngine
     static std::unique_ptr< QgsAbstractGeometry > toAbstractGeometry( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
     /**
-     * Creates a SFGAL geometry (inherit QgsAbstractGeometry) from an internal SFCGAL geometry (from SFCGAL library).
+     * Creates a SFGAL geometry from an internal SFCGAL geometry (from SFCGAL library).
      *
      * Same as `toAbstractGeometry` but returned object is casted to QgsSfcgalGeometry.
      *
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsSfcgalEngine
     static std::unique_ptr< QgsSfcgalGeometry > toSfcgalGeometry( sfcgal::shared_geom &geom, QString *errorMsg = nullptr );
 
     /**
-     * Creates internal SFCGAL geometry (from SFCGAL library) from a QGIS geometry (inherit QgsAbstractGeometry).
+     * Creates internal SFCGAL geometry (from SFCGAL library) from a QGIS QgsAbstractGeometry.
      *
      * \param geom geometry to convert to SFCGAL representation
      * \param errorMsg pointer to QString to receive the error message if any
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsSfcgalEngine
     static sfcgal::shared_geom cloneGeometry( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
     /**
-     * Returns the type of a given geometry as a string
+     * Returns the type of a given geometry as a OGC string in CamelCase
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
-     * \param numDecimals Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal).
+     * \param numDecimals Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal) f.e. "Point(1/3, 1/6, 1/4)".
      */
     static QString toWkt( const sfcgal::geometry *geom, int numDecimals = -1, QString *errorMsg = nullptr );
 
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param translation translation vector (2D or 3D)
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom translate( const sfcgal::geometry *geom, const QgsPoint &translation, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom translate( const sfcgal::geometry *geom, const QgsVector3D &translation, QString *errorMsg = nullptr );
 
     /**
      * Scale the \a geom by vector \a scaleFactor.
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param center optional parameter. If specified, scaling will be performed relative to this center
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom scale( const sfcgal::geometry *geom, const QgsPoint &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+    static sfcgal::shared_geom scale( const sfcgal::geometry *geom, const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 
     /**
      * 2D Rotation of geometry \a geom around point \a center by angle \a angle
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom convexhull( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom convexHull( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
     /**
      * Calculate the envelope (bounding box) of \a geom.
@@ -562,7 +562,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param extrusion translation vector (2D or 3D)
      * \param errorMsg Error message returned by SFGCAL
      */
-    static sfcgal::shared_geom extrude( const sfcgal::geometry *geom, const QgsPoint &extrusion, QString *errorMsg = nullptr );
+    static sfcgal::shared_geom extrude( const sfcgal::geometry *geom, const QgsVector3D &extrusion, QString *errorMsg = nullptr );
 
     /**
      * Calculate the simplified version of \a geom.

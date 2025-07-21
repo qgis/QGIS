@@ -107,12 +107,12 @@ void sfcgal::ErrorHandler::clearText( QString *errorMsg )
 
 QString sfcgal::ErrorHandler::getMainText() const
 {
-  return errorMessages.isEmpty() ? QString( "No error!" ) : QString( "Error occurred: " ) + errorMessages.last();
+  return errorMessages.isEmpty() ? QString() : QString( "Error occurred: " ) + errorMessages.last();
 }
 
 QString sfcgal::ErrorHandler::getFullText() const
 {
-  return errorMessages.isEmpty() ? QString( "No error!" ) : getMainText() + "\n\t\t" + errorMessages.join( "\n\t\t" );
+  return errorMessages.isEmpty() ? QString() : getMainText() + "\n\t\t" + errorMessages.join( "\n\t\t" );
 }
 
 bool sfcgal::ErrorHandler::isTextEmpty() const
@@ -443,7 +443,7 @@ int QgsSfcgalEngine::dimension( const sfcgal::geometry *geom, QString *errorMsg 
 
 int QgsSfcgalEngine::partCount( const sfcgal::geometry *geom, QString *errorMsg )
 {
-  int out;
+  size_t out;
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, -1 );
 
@@ -486,7 +486,7 @@ int QgsSfcgalEngine::partCount( const sfcgal::geometry *geom, QString *errorMsg 
 
   CHECK_SUCCESS( errorMsg, -1 );
 
-  return out;
+  return static_cast<int>( out );
 }
 
 bool QgsSfcgalEngine::addZValue( sfcgal::geometry *geom, double zValue, QString *errorMsg )
@@ -613,36 +613,32 @@ QgsPoint QgsSfcgalEngine::centroid( const sfcgal::geometry *geom, QString *error
   return out;
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::translate( const sfcgal::geometry *geom, const QgsPoint &translation, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::translate( const sfcgal::geometry *geom, const QgsVector3D &translation, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
   sfcgal::geometry *result;
-  if ( translation.is3D() )
-    result = sfcgal_geometry_translate_3d( geom, translation.x(), translation.y(), translation.z() );
-  else
-    result = sfcgal_geometry_translate_2d( geom, translation.x(), translation.y() );
+  result = sfcgal_geometry_translate_3d( geom, translation.x(), translation.y(), translation.z() );
   CHECK_SUCCESS( errorMsg, nullptr );
 
   return sfcgal::make_shared_geom( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::scale( const sfcgal::geometry *geom, const QgsPoint &scaleFactor, const QgsPoint &center, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::scale( const sfcgal::geometry *geom, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
-  const double scaleZFactor = scaleFactor.is3D() ? scaleFactor.z() : 0;
   sfcgal::geometry *result;
   if ( center.isEmpty() )
   {
-    result = sfcgal_geometry_scale_3d( geom, scaleFactor.x(), scaleFactor.y(), scaleZFactor );
+    result = sfcgal_geometry_scale_3d( geom, scaleFactor.x(), scaleFactor.y(), scaleFactor.z() );
   }
   else
   {
     const double centerZ = center.is3D() ? center.z() : 0;
-    result = sfcgal_geometry_scale_3d_around_center( geom, scaleFactor.x(), scaleFactor.y(), scaleZFactor, center.x(), center.y(), centerZ );
+    result = sfcgal_geometry_scale_3d_around_center( geom, scaleFactor.x(), scaleFactor.y(), scaleFactor.z(), center.x(), center.y(), centerZ );
   }
 
   CHECK_SUCCESS( errorMsg, nullptr );
@@ -776,7 +772,7 @@ sfcgal::shared_geom QgsSfcgalEngine::envelope( const sfcgal::geometry *geom, QSt
   return out;
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::convexhull( const sfcgal::geometry *geom, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::convexHull( const sfcgal::geometry *geom, QString *errorMsg )
 {
   sfcgal::shared_geom out = lambda_geom_to_geom( sfcgal_geometry_convexhull, sfcgal_geometry_convexhull_3d, geom, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
@@ -829,13 +825,12 @@ sfcgal::shared_geom QgsSfcgalEngine::buffer3D( const sfcgal::geometry *geom, dou
   return sfcgal::make_shared_geom( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::extrude( const sfcgal::geometry *geom, const QgsPoint &extrusion, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::extrude( const sfcgal::geometry *geom, const QgsVector3D &extrusion, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
-  const double zFactor = extrusion.is3D() ? extrusion.z() : 0;
-  sfcgal_geometry_t *solid = sfcgal_geometry_extrude( geom, extrusion.x(), extrusion.y(), zFactor );
+  sfcgal_geometry_t *solid = sfcgal_geometry_extrude( geom, extrusion.x(), extrusion.y(), extrusion.z() );
 
   CHECK_SUCCESS( errorMsg, nullptr );
 
