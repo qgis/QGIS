@@ -57,6 +57,11 @@ QList<int> QgsFieldCalculatorAlgorithm::inputLayerTypes() const
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsFieldCalculatorAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 Qgis::ProcessingFeatureSourceFlags QgsFieldCalculatorAlgorithm::sourceFlags() const
 {
   return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
