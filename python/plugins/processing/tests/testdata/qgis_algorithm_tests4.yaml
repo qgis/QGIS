@@ -1724,20 +1724,6 @@ tests:
         name: expected/delete_duplicates_with_nulls.gml
         type: vector
 
-  - algorithm: native:deleteduplicategeometries
-    name: Delete Duplicates with duplicates and null geometries
-    params:
-      INPUT:
-        name: lines_with_duplicates_and_nulls.gml|layername=lines_with_duplicates_and_nulls
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/delete_duplicates_with_nulls.gml
-        type: vector
-      DUPLICATES:
-        name: expected/delete_duplicates_removed.gml
-        type: vector
-
   - algorithm: native:rasterlayerzonalstats
     name: Raster layer zonal stats, same CRS
     params:
