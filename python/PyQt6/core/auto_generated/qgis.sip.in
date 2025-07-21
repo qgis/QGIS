@@ -1234,10 +1234,10 @@ The development version
     };
 
     enum class JoinStyle3D /BaseType=IntEnum/
-      {
+    {
       Round,
       Flat,
-      CylSphere,
+      CylindersAndSpheres,
     };
 
     enum class GeosCreationFlag /BaseType=IntFlag/

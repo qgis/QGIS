@@ -2092,13 +2092,13 @@ class CORE_EXPORT Qgis
     /**
      * Join styles for 3D buffers.
      *
-     * \since QGIS 3.44
+     * \since QGIS 3.46
      */
-    enum class JoinStyle3D SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, JoinStyle3D ) : int
-      {
-      Round SIP_MONKEYPATCH_COMPAT_NAME( JoinStyle3DRound ) = 1, //!< Smooth, rounded buffer around the input geometry
-      Flat SIP_MONKEYPATCH_COMPAT_NAME( JoinStyle3DFlat ), //!< Flat ends and constant width along the linestring
-      CylSphere SIP_MONKEYPATCH_COMPAT_NAME( JoinStyle3DCylSphere ), //!< Cylinders along the linestring segments with spheres at the vertices
+    enum class JoinStyle3D : int
+    {
+      Round = 1,           //!< Smooth, rounded buffer around the input geometry
+      Flat,                //!< Flat ends and constant width along the linestring
+      CylindersAndSpheres, //!< Cylinders along the linestring segments with spheres at the vertices
     };
     Q_ENUM( JoinStyle3D )
 
