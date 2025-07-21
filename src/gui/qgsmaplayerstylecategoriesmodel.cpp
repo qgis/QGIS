@@ -19,6 +19,7 @@
 
 QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent )
   : QAbstractListModel( parent )
+  , mLayerType( type )
 {
   switch ( type )
   {
@@ -483,10 +484,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case static_cast<int>( Role::NameRole ):
           return name;
         case Qt::DisplayRole:
-
           return htmlStylePattern.arg( name ).arg( description );
         case Qt::ToolTipRole:
-          return QVariant();
+          return description;
         case Qt::DecorationRole:
           return QVariant();
       }
@@ -495,16 +495,15 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     case QgsMapLayer::StyleCategory::AllVisualStyleCategories:
     {
       QString name = tr( "All Symbology and Labeling Categories" );
-      QString description = tr( "All symbology and labeling categories" );
+      QString description = mLayerType == Qgis::LayerType::Vector ? tr( "All symbology, labeling and diagram categories" ) : tr( "All symbology and labeling categories" );
       switch ( role )
       {
         case static_cast<int>( Role::NameRole ):
           return name;
         case Qt::DisplayRole:
-
           return htmlStylePattern.arg( name ).arg( description );
         case Qt::ToolTipRole:
-          return QVariant();
+          return description;
         case Qt::DecorationRole:
           return QVariant();
       }
@@ -519,10 +518,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case static_cast<int>( Role::NameRole ):
           return name;
         case Qt::DisplayRole:
-
           return htmlStylePattern.arg( name ).arg( description );
         case Qt::ToolTipRole:
-          return QVariant();
         case Qt::DecorationRole:
           return QVariant();
       }
