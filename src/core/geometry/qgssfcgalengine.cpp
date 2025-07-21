@@ -818,7 +818,7 @@ sfcgal::shared_geom QgsSfcgalEngine::buffer3D( const sfcgal::geometry *geom, dou
     case Qgis::JoinStyle3D::Round:
       buffer_type = sfcgal_buffer3d_type_t::SFCGAL_BUFFER3D_ROUND;
       break;
-    case Qgis::JoinStyle3D::CylSphere:
+    case Qgis::JoinStyle3D::CylindersAndSpheres:
       buffer_type = sfcgal_buffer3d_type_t::SFCGAL_BUFFER3D_CYLSPHERE;
       break;
   }
