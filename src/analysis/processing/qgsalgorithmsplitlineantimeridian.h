@@ -40,6 +40,7 @@ class QgsSplitGeometryAtAntimeridianAlgorithm : public QgsProcessingFeatureBased
     QString groupId() const override;
     QString shortDescription() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QList<int> inputLayerTypes() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     QgsSplitGeometryAtAntimeridianAlgorithm *createInstance() const override SIP_FACTORY;

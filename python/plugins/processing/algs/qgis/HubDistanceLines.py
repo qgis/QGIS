@@ -21,6 +21,7 @@ __copyright__ = "(C) 2010, Michael Minn"
 
 from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
+    Qgis,
     QgsField,
     QgsFields,
     QgsProcessingUtils,
@@ -66,6 +67,9 @@ class HubDistanceLines(QgisAlgorithm):
 
     def groupId(self):
         return "vectoranalysis"
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
 
     def __init__(self):
         super().__init__()
