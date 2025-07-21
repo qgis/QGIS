@@ -6603,12 +6603,17 @@ ProcessingAlgorithmFlags = Qgis  # dirty hack since SIP seems to introduce the f
 # monkey patching scoped based enum
 Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey.__doc__ = "Algorithm always drops any existing primary keys or FID values and regenerates them in outputs"
 Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKeyInSomeScenarios.__doc__ = "Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters"
+Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid.__doc__ = "Algorithm respects the context's ellipsoid settings, and uses ellipsoidal based measurements. \n.. versionadded:: 4.0"
 Qgis.ProcessingAlgorithmDocumentationFlag.__doc__ = """Flags describing algorithm behavior for documentation purposes.
 
 .. versionadded:: 3.40
 
 * ``RegeneratesPrimaryKey``: Algorithm always drops any existing primary keys or FID values and regenerates them in outputs
 * ``RegeneratesPrimaryKeyInSomeScenarios``: Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters
+* ``RespectsEllipsoid``: Algorithm respects the context's ellipsoid settings, and uses ellipsoidal based measurements.
+
+  .. versionadded:: 4.0
+
 
 """
 # --

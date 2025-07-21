@@ -3520,6 +3520,7 @@ class CORE_EXPORT Qgis
     {
       RegeneratesPrimaryKey = 1 << 0, //!< Algorithm always drops any existing primary keys or FID values and regenerates them in outputs
       RegeneratesPrimaryKeyInSomeScenarios = 1 << 1, //!< Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters
+      RespectsEllipsoid = 1 << 2, //!< Algorithm respects the context's ellipsoid settings, and uses ellipsoidal based measurements. \since QGIS 4.0
     };
     Q_ENUM( ProcessingAlgorithmDocumentationFlag )
 
