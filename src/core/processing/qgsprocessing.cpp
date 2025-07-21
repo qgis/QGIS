@@ -37,7 +37,7 @@ QString QgsProcessing::documentationFlagToString( Qgis::ProcessingAlgorithmDocum
     case Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios:
       return QObject::tr( "This algorithm may drop existing primary keys or FID values and regenerate them in output layers, depending on the input parameters." );
     case Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid:
-      return QObject::tr( "This algorithm uses ellipsoidal based measurements and respects the current ellipsoid settings." );
+      return QObject::tr( "This algorithm uses ellipsoid based measurements and respects the current ellipsoid settings." );
   }
   BUILTIN_UNREACHABLE
 }
