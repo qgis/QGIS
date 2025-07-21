@@ -32,7 +32,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsG
     sfcgal::errorHandler()->clearText();
     mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( qgsGeom.get() );
     if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+    {
       QgsDebugError( sfcgal::errorHandler()->getFullText() );
+    }
   }
 }
 
@@ -41,7 +43,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom )
   sfcgal::errorHandler()->clearText();
   mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( &qgsGeom );
   if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+  {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
+  }
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
@@ -54,7 +58,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsGeometry &qgsGeom )
   sfcgal::errorHandler()->clearText();
   mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( qgsGeom.constGet() );
   if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+  {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
+  }
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom )
@@ -62,7 +68,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom )
   sfcgal::errorHandler()->clearText();
   mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( otherGeom.mSfcgalGeom.get() );
   if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+  {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
+  }
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QString &wkt, QString *errorMsg )
@@ -70,7 +78,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QString &wkt, QString *errorMsg )
   sfcgal::errorHandler()->clearText( errorMsg );
   mSfcgalGeom = QgsSfcgalEngine::fromWkt( wkt, errorMsg );
   if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg ) )
+  {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
+  }
 }
 
 
@@ -91,16 +101,18 @@ QString QgsSfcgalGeometry::geometryType( QString *errorMsg ) const
   return out;
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::clone() const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const
 {
-  return new QgsSfcgalGeometry( *this );
+  return std::make_unique<QgsSfcgalGeometry>( *this );
 }
 
 bool QgsSfcgalGeometry::fromWkb( QgsConstWkbPtr &wkbPtr, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   if ( !wkbPtr )
+  {
     return false;
+  }
 
   mSfcgalGeom = QgsSfcgalEngine::fromWkb( wkbPtr, errorMsg );
 
@@ -136,12 +148,12 @@ QgsAbstractGeometry *QgsSfcgalGeometry::asQgisGeometry( QString *errorMsg ) cons
   return out.release();
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::boundary( QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom boundary = QgsSfcgalEngine::boundary( mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( boundary ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( boundary );
 }
 
 bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
@@ -291,36 +303,36 @@ bool QgsSfcgalGeometry::isEmpty( QString *errorMsg ) const
   return result;
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::translate( const QgsPoint &translation, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::translate( const QgsVector3D &translation, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::translate( mSfcgalGeom.get(), translation, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::scale( const QgsPoint &scaleFactor, const QgsPoint &center, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::scale( const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::scale( mSfcgalGeom.get(), scaleFactor, center, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::rotate2D( double angle, const QgsPoint &center, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate2D( double angle, const QgsPoint &center, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::rotate2D( mSfcgalGeom.get(), angle, center, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::rotate3D( mSfcgalGeom.get(), angle, axisVector, center, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
 double QgsSfcgalGeometry::area( QString *errorMsg ) const
@@ -360,7 +372,7 @@ bool QgsSfcgalGeometry::intersects( const QgsSfcgalGeometry &otherGeom, QString 
   return out;
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, errorMsg );
@@ -368,18 +380,18 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *o
 
   sfcgal::shared_geom result = QgsSfcgalEngine::intersection( mSfcgalGeom.get(), otherShared.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::intersection( const QgsSfcgalGeometry &otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsSfcgalGeometry &otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::intersection( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   QVector<sfcgal::shared_geom> sfcgalGeomList;
@@ -393,11 +405,11 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::combine( const QVector<const QgsAbstractGe
 
   sfcgal::shared_geom result = QgsSfcgalEngine::combine( sfcgalGeomList, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
   ;
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom otherSharedr = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, errorMsg );
@@ -405,40 +417,40 @@ QgsSfcgalGeometry *QgsSfcgalGeometry::difference( const QgsAbstractGeometry *oth
 
   sfcgal::shared_geom result = QgsSfcgalEngine::difference( mSfcgalGeom.get(), otherSharedr.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::difference( const QgsSfcgalGeometry &otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsSfcgalGeometry &otherGeom, QString *errorMsg, const QgsGeometryParameters & ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
 
   sfcgal::shared_geom result = QgsSfcgalEngine::difference( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::triangulate( QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::triangulate( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::triangulate( mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::convexhull( QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::convexHull( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::convexhull( mSfcgalGeom.get(), errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::convexHull( mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::envelope( QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::envelope( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::envelope( mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
 bool QgsSfcgalGeometry::covers( const QgsSfcgalGeometry &otherGeom, QString *errorMsg ) const
@@ -449,37 +461,37 @@ bool QgsSfcgalGeometry::covers( const QgsSfcgalGeometry &otherGeom, QString *err
   return out;
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
 
   sfcgal::shared_geom result = QgsSfcgalEngine::buffer3D( mSfcgalGeom.get(), radius, segments, joinStyle3D, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
 
   sfcgal::shared_geom result = QgsSfcgalEngine::buffer2D( mSfcgalGeom.get(), radius, segments, joinStyle, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::simplify( double tolerance, bool preserveTopology, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::simplify( double tolerance, bool preserveTopology, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::simplify( mSfcgalGeom.get(), tolerance, preserveTopology, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-QgsSfcgalGeometry *QgsSfcgalGeometry::extrude( const QgsPoint &extrusion, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::extrude( const QgsVector3D &extrusion, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   sfcgal::shared_geom result = QgsSfcgalEngine::extrude( mSfcgalGeom.get(), extrusion, errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg ).release();
+  return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 #endif
