@@ -2032,6 +2032,7 @@ The development version
     {
       RegeneratesPrimaryKey,
       RegeneratesPrimaryKeyInSomeScenarios,
+      RespectsEllipsoid,
     };
 
     typedef QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> ProcessingAlgorithmDocumentationFlags;
