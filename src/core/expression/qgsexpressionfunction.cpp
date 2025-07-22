@@ -1387,6 +1387,29 @@ static QVariant fcnGetTimeZone( const QVariantList &values, const QgsExpressionC
   return QVariant();
 }
 
+static QVariant fcnSetTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  const QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( values.at( 1 ), parent );
+  if ( datetime.isValid() && tz.isValid() )
+  {
+    datetime.setTimeZone( tz );
+    return QVariant::fromValue( datetime );
+  }
+  return QVariant();
+}
+
+static QVariant fcnConvertTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  const QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( values.at( 1 ), parent );
+  if ( datetime.isValid() && tz.isValid() )
+  {
+    return QVariant::fromValue( datetime.toTimeZone( tz ) );
+  }
+  return QVariant();
+}
+
 static QVariant fcnTimeZoneToId( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QTimeZone timeZone = QgsExpressionUtils::getTimeZoneValue( values.at( 0 ), parent );
@@ -1396,6 +1419,7 @@ static QVariant fcnTimeZoneToId( const QVariantList &values, const QgsExpression
   }
   return QVariant();
 }
+
 static QVariant fcnMakeInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const double years = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
@@ -8687,6 +8711,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "timezone_from_id" ), { QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ) }, fcnTimeZoneFromId, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "timezone_id" ), { QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnTimeZoneToId, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "get_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) }, fcnGetTimeZone, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "set_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnSetTimeZone, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "convert_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnConvertTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )

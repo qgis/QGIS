@@ -1,0 +1,19 @@
+{
+  "name": "set_timezone",
+  "type": "function",
+  "groups": ["Conversions", "Date and Time"],
+  "description": "Sets the timezone object associated with a datetime value, without changing the date or time components. This function can be used to replace the timezone for a datetime.",
+  "arguments": [{
+    "arg": "datetime",
+    "description": "datetime value"
+  },
+  {
+    "arg": "timezone",
+    "description": "new timezone for datetime"
+  }],
+  "examples": [{
+    "expression": "set_timezone(make_datetime(2020,1,1,10,0,0), timezone_from_id('Australia/Darwin'))",
+    "returns": "Datetime of 2020-01-01 10:00:00 with associated timezone 'Australia/Darwin'"
+  }],
+  "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
+}
