@@ -549,9 +549,9 @@ void TestQgsVectorLayer::testSelectByIdsNonExistentIds()
   QVERIFY( layer->isValid() );
   
   QgsFeature f1, f2, f3;
-  f1.setAttributes( QgsAttributeList() << 1 << "feature1" );
-  f2.setAttributes( QgsAttributeList() << 2 << "feature2" );
-  f3.setAttributes( QgsAttributeList() << 3 << "feature3" );
+  f1.setAttributes( QVariantList() << 1 << "feature1" );
+  f2.setAttributes( QVariantList() << 2 << "feature2" );
+  f3.setAttributes( QVariantList() << 3 << "feature3" );
   
   layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );
   
