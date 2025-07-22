@@ -5368,6 +5368,29 @@ class TestQgsExpression : public QObject
       QVERIFY( !exp.hasEvalError() );
     }
 
+    void testGetTimeZoneValue()
+    {
+      QgsExpression exp;
+      QgsExpressionContext context;
+      // NULL value
+      QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( QVariant(), &exp );
+      QVERIFY( !tz.isValid() );
+      QVERIFY( !exp.hasEvalError() );
+
+      // value which CANNOT be a time zone
+      tz = QgsExpressionUtils::getTimeZoneValue( QVariant::fromValue( QgsGeometry() ), &exp );
+      QVERIFY( !tz.isValid() );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "Cannot convert '' to a time zone" ) );
+
+      // good value
+      exp = QgsExpression();
+      tz = QgsExpressionUtils::getTimeZoneValue( QVariant::fromValue( QTimeZone( "Australia/Brisbane" ) ), &exp );
+      QVERIFY( tz.isValid() );
+      QCOMPARE( tz.id(), QStringLiteral( "Australia/Brisbane" ) );
+      QVERIFY( !exp.hasEvalError() );
+    }
+
     void test_env()
     {
       QgsExpressionContext context;
