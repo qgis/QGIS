@@ -47,7 +47,7 @@ QString QgsMinimumBoundingGeometryAlgorithm::groupId() const
 
 QString QgsMinimumBoundingGeometryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates geometries which enclose the features from an input layer.\n\n"
+  return QObject::tr( "This algorithm creates geometries which enclose the features from an input layer.\n\n"
                       "Numerous enclosing geometry types are supported, including bounding "
                       "boxes (envelopes), oriented rectangles, circles and convex hulls.\n\n"
                       "Optionally, the features can be grouped by a field. If set, this "
@@ -164,26 +164,26 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
       QVariant fieldValue = f.attribute( fieldIndex );
       if ( geometryType == 0 )
       {
-        if ( !boundsHash.contains( fieldValue ) )
+        auto boundsHashIt = boundsHash.find( fieldValue );
+        if ( boundsHashIt == boundsHash.end() )
         {
           boundsHash.insert( fieldValue, f.geometry().boundingBox() );
         }
         else
         {
-          QgsRectangle r = boundsHash.value( fieldValue );
-          r.combineExtentWith( f.geometry().boundingBox() );
-          boundsHash.insert( fieldValue, r );
+          boundsHashIt.value().combineExtentWith( f.geometry().boundingBox() );
         }
       }
       else
       {
-        if ( !geometryHash.contains( fieldValue ) )
+        auto geometryHashIt = geometryHash.find( fieldValue );
+        if ( geometryHashIt == geometryHash.end() )
         {
           geometryHash.insert( fieldValue, QVector<QgsGeometry>() << f.geometry() );
         }
         else
         {
-          geometryHash.insert( fieldValue, geometryHash[fieldValue] << f.geometry() );
+          geometryHashIt.value().append( f.geometry() );
         }
       }
       i++;
@@ -207,7 +207,6 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         feature.setAttributes( QgsAttributes() << i << it.key() << rect.width() << rect.height() << rect.area() << rect.perimeter() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-        geometryHash.insert( it.key(), QVector<QgsGeometry>() );
         i++;
         feedback->setProgress( 50 + i * step );
       }
@@ -224,7 +223,6 @@ QVariantMap QgsMinimumBoundingGeometryAlgorithm::processAlgorithm( const QVarian
         QgsFeature feature = createFeature( feedback, i, geometryType, it.value(), it.key() );
         if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-        geometryHash.insert( it.key(), QVector<QgsGeometry>() );
         i++;
         feedback->setProgress( 50 + i * step );
       }
