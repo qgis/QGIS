@@ -719,7 +719,7 @@ void TestQgsSfcgal::intersection()
   QVERIFY2( intersectionGeom, ( QString( "intersectionGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
   QCOMPARE( intersectionGeom->wkbType(), Qgis::WkbType::Polygon );
 
-  const QgsPolygon *intersectionPoly = qgsgeometry_cast<const QgsPolygon *>( intersectionGeom->asQgisGeometry( &errorMsg ) );
+  const QgsPolygon *intersectionPoly = qgsgeometry_cast<const QgsPolygon *>( intersectionGeom->asQgisGeometry( &errorMsg ).release() );
   QVERIFY( intersectionPoly );                               // check that the union created a feature
   QVERIFY( intersectionPoly->exteriorRing()->length() > 0 ); // check that the union created a feature
   QCOMPARE( intersectionPoly->exteriorRing()->asWkt(), QStringLiteral( "LineString (40 80, 40 40, 80 40, 80 80, 40 80)" ) );
@@ -757,7 +757,7 @@ void TestQgsSfcgal::intersection3d()
                                                     "-129431703432785341454725506788272017716469477079/23313107857443583859443690159709871847505920 41489508487091336404601688874406905270455411499/11656553928721791929721845079854935923752960 20/1)"
                                                     ")" ) );
 
-    const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry( &errorMsg ) );
+    const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry( &errorMsg ).release() );
     QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
     QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5863.79 3335.64 20, -5551.89 3559.33 20)" ) );
     QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5520.8 3581.62 20, -5551.89 3559.33 20)" ) );
@@ -775,7 +775,7 @@ void TestQgsSfcgal::intersection3d()
                                                     "-3694427387541401611431496726449054179068805833/593047719006612426355979511374504815230976 70556612052601521660517929315037655768347058877/18977527008211597643391344363984154087391232 0/1)"
                                                     ")" ) );
 
-    const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry( &errorMsg ) );
+    const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry( &errorMsg ).release() );
     QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
     QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)" ) );
     QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)" ) );
@@ -795,7 +795,7 @@ void TestQgsSfcgal::intersection3d()
     QCOMPARE( resultGeom->wkbType(), Qgis::WkbType::GeometryCollectionZ );
     QCOMPARE( resultGeom->partCount(), 7 );
 
-    const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( resultGeom->asQgisGeometry( &errorMsg ) );
+    const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( resultGeom->asQgisGeometry( &errorMsg ).release() );
     QVERIFY( castGeom != nullptr );
     QCOMPARE( castGeom->partCount(), 7 );
 
@@ -848,7 +848,7 @@ void TestQgsSfcgal::unionCheck1()
 
   QVERIFY( combinedGeom->partCount() > 0 ); // check that the union did not fail
 
-  const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( combinedGeom->asQgisGeometry( &errorMsg ) );
+  const QgsGeometryCollection *castGeom = qgsgeometry_cast<const QgsGeometryCollection *>( combinedGeom->asQgisGeometry( &errorMsg ).release() );
   QVERIFY( castGeom != nullptr );
 
   paintMultiPolygon( castGeom );
@@ -873,7 +873,7 @@ void TestQgsSfcgal::unionCheck2()
 
   QVERIFY( combinedGeom->partCount() > 0 ); // check that the union did not fail
 
-  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( combinedGeom->asQgisGeometry( &errorMsg ) );
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( combinedGeom->asQgisGeometry( &errorMsg ).release() );
   QVERIFY( castGeom != nullptr );
 
   paintPolygon( castGeom );
@@ -895,7 +895,7 @@ void TestQgsSfcgal::differenceCheck1()
 
   QVERIFY( diffGeom->partCount() > 0 ); // check that the union did not fail
 
-  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( diffGeom->asQgisGeometry( &errorMsg ) );
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( diffGeom->asQgisGeometry( &errorMsg ).release() );
   QVERIFY( castGeom != nullptr );
 
   paintPolygon( castGeom );
@@ -914,7 +914,7 @@ void TestQgsSfcgal::differenceCheck2()
 
   QVERIFY( diffGeom->partCount() > 0 ); // check that the union did not fail
 
-  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( diffGeom->asQgisGeometry( &errorMsg ) );
+  const QgsPolygon *castGeom = qgsgeometry_cast<const QgsPolygon *>( diffGeom->asQgisGeometry( &errorMsg ).release() );
   QVERIFY( castGeom != nullptr );
 
   paintPolygon( castGeom );
@@ -963,7 +963,7 @@ void TestQgsSfcgal::difference3d()
     QCOMPARE( scDiffGeom->wkbType(), Qgis::WkbType::TINZ );
     QVERIFY2( scDiffGeom, ( QString( "diffGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
 
-    const QgsTriangulatedSurface *castGeom = qgsgeometry_cast<const QgsTriangulatedSurface *>( scDiffGeom->asQgisGeometry( &errorMsg ) );
+    const QgsTriangulatedSurface *castGeom = qgsgeometry_cast<const QgsTriangulatedSurface *>( scDiffGeom->asQgisGeometry( &errorMsg ).release() );
     QVERIFY( castGeom != nullptr );
 
     // 3rd: prepare compare

@@ -21,7 +21,6 @@
 
 #define SIP_NO_FILE
 
-#include <functional>
 #include <SFCGAL/capi/sfcgal_c.h>
 
 #include "qgspoint.h"
@@ -61,7 +60,7 @@ class QgsSfcgalGeometry;
 /**
  * Contains SFCGAL related utilities and functions.
  * \note not available in Python bindings.
- * \since QGIS 3.46
+ * \since QGIS 4.0
  */
 namespace sfcgal
 {
@@ -102,7 +101,7 @@ namespace sfcgal
    *
    * Messages are held in a stacktrace in order to improve context understanding.
    * \ingroup core
-   * \since QGIS 3.46
+   * \since QGIS 4.0
    */
   class CORE_EXPORT ErrorHandler
   {
@@ -154,7 +153,7 @@ namespace sfcgal
  * \ingroup core
  * \brief Does vector analysis using the SFCGAL library and handles import, export, exception handling
  * \note not available in Python bindings
- * \since QGIS 3.46
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsSfcgalEngine
 {

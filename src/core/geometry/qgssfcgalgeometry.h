@@ -48,7 +48,7 @@
  * \ingroup core
  * \class QgsSfcgalGeometry
  * \brief SfcgalGeometry geometry type.
- * \since QGIS 3.46
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsSfcgalGeometry
 {
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Returns the geometry converted to a QGIS geometry object.
      * This method is slow to call, as it always involves re-conversion of the underlying SFCGAL geometry object.
      */
-    QgsAbstractGeometry *asQgisGeometry( QString *errorMsg = nullptr ) const;
+    std::unique_ptr<QgsAbstractGeometry> asQgisGeometry( QString *errorMsg = nullptr ) const;
 
     /**
      * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
@@ -433,63 +433,6 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      */
     std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion, QString *errorMsg = nullptr ) const;
-
-
-#ifndef SIP_RUN
-    /**
-     * Cast the \a geom to the exact underlying QGIS geometry.
-     * Should be used, for example, by qgsgeometry_cast<QgsPoint *>( geometry ) or by qgsgeometry_cast<QgsPolygon *>( geometry ).
-     *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
-     */
-    inline static const QgsAbstractGeometry *cast( const QgsSfcgalGeometry *geom )
-    {
-      if ( geom )
-      {
-        QString errorMsg;
-        const QgsAbstractGeometry *qgsGeom = geom->asQgisGeometry( &errorMsg );
-        CHECK_SUCCESS_LOG( &errorMsg, nullptr );
-
-        const Qgis::WkbType type = QgsWkbTypes::flatType( geom->wkbType() );
-        switch ( type )
-        {
-          case Qgis::WkbType::Point:
-            return QgsPoint::cast( qgsGeom );
-          case Qgis::WkbType::LineString:
-            return QgsLineString::cast( qgsGeom );
-          case Qgis::WkbType::CircularString:
-            return QgsCircularString::cast( qgsGeom );
-          case Qgis::WkbType::CompoundCurve:
-            return QgsCompoundCurve::cast( qgsGeom );
-          case Qgis::WkbType::Polygon:
-            return QgsPolygon::cast( qgsGeom );
-          case Qgis::WkbType::CurvePolygon:
-            return QgsCurvePolygon::cast( qgsGeom );
-          case Qgis::WkbType::MultiLineString:
-            return QgsMultiLineString::cast( qgsGeom );
-          case Qgis::WkbType::MultiPolygon:
-            return QgsMultiPolygon::cast( qgsGeom );
-          case Qgis::WkbType::MultiPoint:
-            return QgsMultiPoint::cast( qgsGeom );
-          case Qgis::WkbType::MultiCurve:
-            return QgsMultiCurve::cast( qgsGeom );
-          case Qgis::WkbType::MultiSurface:
-            return QgsMultiSurface::cast( qgsGeom );
-          case Qgis::WkbType::GeometryCollection:
-            return QgsGeometryCollection::cast( qgsGeom );
-          case Qgis::WkbType::Triangle:
-            return QgsTriangle::cast( qgsGeom );
-          case Qgis::WkbType::PolyhedralSurface:
-            return QgsPolyhedralSurface::cast( qgsGeom );
-          case Qgis::WkbType::TIN:
-            return QgsTriangulatedSurface::cast( qgsGeom );
-          default:
-            return nullptr;
-        }
-      }
-      return nullptr;
-    }
-#endif
 
   protected:
 

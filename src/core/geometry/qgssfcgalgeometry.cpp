@@ -1,8 +1,8 @@
 /***************************************************************************
                          qgssfcgalGeometry.cpp
                          ----------------
-    begin                : September 2024
-    copyright            : (C) 2024 by Benoit De Mezzo
+    begin                : May 2025
+    copyright            : (C) 2025 by Oslandia
     email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************/
 
@@ -140,12 +140,12 @@ QString QgsSfcgalGeometry::asWkt( int precision, QString *errorMsg ) const
   return out;
 }
 
-QgsAbstractGeometry *QgsSfcgalGeometry::asQgisGeometry( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsSfcgalGeometry::asQgisGeometry( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   std::unique_ptr<QgsAbstractGeometry> out = QgsSfcgalEngine::toAbstractGeometry( mSfcgalGeom.get(), errorMsg );
   CHECK_SUCCESS( errorMsg, nullptr );
-  return out.release();
+  return out;
 }
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary( QString *errorMsg ) const
