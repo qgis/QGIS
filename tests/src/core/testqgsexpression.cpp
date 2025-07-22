@@ -5444,6 +5444,9 @@ class TestQgsExpression : public QObject
 
       QgsCoordinateReferenceSystem crs( "EPSG:4326" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
+
+      QTimeZone tz( "Australia/Brisbane" );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant::fromValue( tz ) ), QStringLiteral( "<i>&lt;time zone: AEST&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()
