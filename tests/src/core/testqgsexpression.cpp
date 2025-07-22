@@ -2052,6 +2052,14 @@ class TestQgsExpression : public QObject
       QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
       QTest::newRow( "formatted string with Z" ) << "format_date(to_datetime('2019-06-29T13:34:56+01:00'),'yyyy-MM-ddTHH:mm:ssZ')" << false << QVariant( QString( "2019-06-29T12:34:56Z" ) );
 
+      // time zone functions
+      QTest::newRow( "timezone_from_id NULL" ) << "timezone_from_id(NULL)" << false << QVariant();
+      QTest::newRow( "timezone_from_id not string" ) << "timezone_from_id(123)" << true << QVariant();
+      QTest::newRow( "timezone_from_id invalid id" ) << "timezone_from_id('xxxx')" << true << QVariant();
+      QTest::newRow( "timezone_id NULL" ) << "timezone_id(NULL)" << false << QVariant();
+      QTest::newRow( "timezone_id not timezone" ) << "timezone_id(123)" << true << QVariant();
+      QTest::newRow( "timezone_id valid timezone" ) << "timezone_id(timezone_from_id('Australia/Brisbane'))" << false << QVariant( QString( "Australia/Brisbane" ) );
+
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
       QTest::newRow( "ramp color error" ) << "ramp_color('NotExistingRamp',0.3)" << true << QVariant();
