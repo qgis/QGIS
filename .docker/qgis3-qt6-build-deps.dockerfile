@@ -3,6 +3,8 @@ ARG DISTRO_VERSION=39
 FROM fedora:${DISTRO_VERSION} AS binary-for-oracle
 LABEL org.opencontainers.image.authors="Matthias Kuhn <matthias@opengis.ch>"
 
+ARG SFCGAL_VERSION=2.1.0
+
 RUN dnf -y --refresh install \
     bison \
     ccache \
@@ -104,6 +106,16 @@ RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
 ENV PATH="/instantclient_21_16:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_21_16"
+
+# SFCGAL dependency installation (will be a package asap)
+RUN dnf install -y CGAL-devel \
+    && cd /tmp/ \
+    && wget https://gitlab.com/sfcgal/SFCGAL/-/archive/v2.1.0/SFCGAL-v${SFCGAL_VERSION}.tar.gz \
+    && tar xvzf SFCGAL-v${SFCGAL_VERSION}.tar.gz \
+    && cd SFCGAL-v${SFCGAL_VERSION} \
+    && cmake -S . -B build -GNinja -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang -DSFCGAL_BUILD_TESTS=OFF -DBUILD_TESTING=OFF \
+    && cmake --build build \
+    && cmake --install build
 
 ENV LANG=C.UTF-8
 
