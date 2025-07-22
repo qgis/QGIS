@@ -392,6 +392,33 @@ class TestQgsGeometryValidator(QgisTestCase):
         validator.run()
         self.assertEqual(len(spy), 0)
 
+    def test_interior_ring_inside_exterior_ring(self):
+        # Interior ring inside
+        g = QgsGeometry.fromWkt(
+            "Polygon ((0 0, 10 0, 10 10, 0 0), (1 1, 2 1, 2 2, 1 1))"
+        )
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 0)
+
+        # Interior ring not inside
+        g = QgsGeometry.fromWkt(
+            "Polygon ((0 0, 10 0, 10 10, 0 0), (1 1, 2 1, 1 -1, 1 1))"
+        )
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[0][0].where(), QgsPointXY(1, 1))  # Starting point
+        self.assertEqual(
+            spy[0][0].what(),
+            "ring 1 of polygon 0 not in exterior ring",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
