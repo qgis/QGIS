@@ -4850,16 +4850,31 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
     }
 
-    void testGetTimeZone()
+    void testTimeZoneFunctions()
     {
       QgsExpressionContext context;
       QgsExpressionContextScope *scope = new QgsExpressionContextScope();
       scope->setVariable( QStringLiteral( "dt_with_timezone" ), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Brisbane" ) ) );
       context.appendScope( scope );
 
+      // get_timezone
       QCOMPARE( QgsExpression( QString( "timezone_id(get_timezone(@dt_with_timezone))" ) ).evaluate( &context ).toString(), QStringLiteral( "Australia/Brisbane" ) );
       QCOMPARE( QgsExpression( QString( "get_timezone(NULL)" ) ).evaluate( &context ), QVariant() );
       QgsExpression invalid( QString( "get_timezone(123)" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+
+      // set_timezone
+      QCOMPARE( QgsExpression( QString( "set_timezone(@dt_with_timezone, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ).toDateTime(), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Darwin" ) ) );
+      QCOMPARE( QgsExpression( QString( "set_timezone(NULL, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ), QVariant() );
+      invalid = QgsExpression( QString( "set_timezone(123, timezone_from_id('Australia/Darwin'))" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+
+      // convert_timezone
+      QCOMPARE( QgsExpression( QString( "convert_timezone(@dt_with_timezone, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ).toDateTime(), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 32, 3 ), QTimeZone( "Australia/Darwin" ) ) );
+      QCOMPARE( QgsExpression( QString( "convert_timezone(NULL, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ), QVariant() );
+      invalid = QgsExpression( QString( "convert_timezone(123, timezone_from_id('Australia/Darwin'))" ) );
       QCOMPARE( invalid.evaluate( &context ), QVariant() );
       QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
     }

@@ -1,0 +1,19 @@
+{
+  "name": "convert_timezone",
+  "type": "function",
+  "groups": ["Conversions", "Date and Time"],
+  "description": "Converts a datetime object to a different timezone.",
+  "arguments": [{
+    "arg": "datetime",
+    "description": "datetime value"
+  },
+  {
+    "arg": "timezone",
+    "description": "target timezone"
+  }],
+  "examples": [{
+    "expression": "convert_timezone(\"DATE_FIELD\", timezone_from_id('Australia/Darwin'))",
+    "returns": "Datetime from DATE_FIELD, converted to the 'Australia/Darwin' timezone"
+  }],
+  "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
+}
