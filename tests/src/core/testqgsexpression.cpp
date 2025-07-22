@@ -4850,6 +4850,20 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
     }
 
+    void testGetTimeZone()
+    {
+      QgsExpressionContext context;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+      scope->setVariable( QStringLiteral( "dt_with_timezone" ), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Brisbane" ) ) );
+      context.appendScope( scope );
+
+      QCOMPARE( QgsExpression( QString( "timezone_id(get_timezone(@dt_with_timezone))" ) ).evaluate( &context ).toString(), QStringLiteral( "Australia/Brisbane" ) );
+      QCOMPARE( QgsExpression( QString( "get_timezone(NULL)" ) ).evaluate( &context ), QVariant() );
+      QgsExpression invalid( QString( "get_timezone(123)" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+    }
+
     void test_expressionToLayerFieldIndex()
     {
       std::unique_ptr layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
