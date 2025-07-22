@@ -47,6 +47,7 @@
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
 #include "qgsbrowserdockwidget_p.h"
+#include "qgsmessagebar.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -608,6 +609,7 @@ void QgsBrowserWidget::copySelectedPath()
     }
     return;
   }
+
   const QModelIndex index = selection.first();
   QgsDataItem *item = mModel->dataItem( index );
   if ( !item )
@@ -615,14 +617,13 @@ void QgsBrowserWidget::copySelectedPath()
 
   QString path;
   
-  // Try to get the file path for file-based items
+  
   if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
   {
     path = dirItem->dirPath();
   }
   else if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    // For layer items, try to extract the file path from the URI
     const QString uri = layerItem->uri();
     QFileInfo fileInfo( uri );
     if ( fileInfo.exists() )
@@ -631,12 +632,12 @@ void QgsBrowserWidget::copySelectedPath()
     }
     else
     {
-      path = uri; // Use the URI as-is if it's not a simple file path
+      path = uri; 
     }
   }
   else
   {
-    // For other items, use the item's path if available
+
     path = item->path();
   }
 
@@ -644,7 +645,6 @@ void QgsBrowserWidget::copySelectedPath()
   {
     QApplication::clipboard()->setText( path );
     
-    // Update the location bar to show the copied path
     mLeLocationBar->setText( path );
     
     if ( mMessageBar )
@@ -670,7 +670,6 @@ void QgsBrowserWidget::updateLocationBar()
     return;
   }
 
-  // Get the first selected item
   const QModelIndex index = selection.first();
   QgsDataItem *item = mModel->dataItem( index );
   if ( !item )
@@ -681,14 +680,13 @@ void QgsBrowserWidget::updateLocationBar()
 
   QString path;
   
-  // Try to get the file path for file-based items
   if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
   {
     path = dirItem->dirPath();
   }
   else if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-    // For layer items, try to extract the file path from the URI
+   
     const QString uri = layerItem->uri();
     QFileInfo fileInfo( uri );
     if ( fileInfo.exists() )
@@ -697,17 +695,15 @@ void QgsBrowserWidget::updateLocationBar()
     }
     else
     {
-      // For non-file URIs (like database connections), show the URI
       path = uri;
     }
   }
   else
   {
-    // For other items, use the item's path if available
     path = item->path();
   }
 
-  // Update the location bar with the path (but don't trigger navigation)
+  
   if ( !path.isEmpty() )
   {
     mLeLocationBar->setText( path );
