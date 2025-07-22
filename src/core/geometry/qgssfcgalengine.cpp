@@ -1,8 +1,8 @@
 /***************************************************************************
                          qgssfcgalengine.cpp
                          ----------------
-    begin                : September 2024
-    copyright            : (C) 2024 by Benoit De Mezzo
+    begin                : May 2025
+    copyright            : (C) 2025 by Oslandia
     email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************/
 
@@ -20,10 +20,8 @@
 
 #include "qgssfcgalengine.h"
 #include "qgsgeometry.h"
-#include "qgspolygon.h"
 #include "qgsgeometryfactory.h"
 #include "qgssfcgalgeometry.h"
-#include <thread>
 
 // ===================================
 // sfcgal namespace
@@ -619,7 +617,10 @@ sfcgal::shared_geom QgsSfcgalEngine::translate( const sfcgal::geometry *geom, co
   CHECK_NOT_NULL( geom, nullptr );
 
   sfcgal::geometry *result;
-  result = sfcgal_geometry_translate_3d( geom, translation.x(), translation.y(), translation.z() );
+  if ( sfcgal_geometry_is_3d( geom ) )
+    result = sfcgal_geometry_translate_3d( geom, translation.x(), translation.y(), translation.z() );
+  else
+    result = sfcgal_geometry_translate_2d( geom, translation.x(), translation.y() );
   CHECK_SUCCESS( errorMsg, nullptr );
 
   return sfcgal::make_shared_geom( result );
