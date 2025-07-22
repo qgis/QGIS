@@ -638,24 +638,35 @@ void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  // Filter out non-existent feature IDs to ensure only valid features are selected
+  QgsFeatureIds validIds;
+  for ( QgsFeatureId id : ids )
+  {
+    QgsFeature feature = getFeature( id );
+    if ( feature.isValid() )
+    {
+      validIds.insert( id );
+    }
+  }
+
   QgsFeatureIds newSelection;
 
   switch ( behavior )
   {
     case Qgis::SelectBehavior::SetSelection:
-      newSelection = ids;
+      newSelection = validIds;
       break;
 
     case Qgis::SelectBehavior::AddToSelection:
-      newSelection = mSelectedFeatureIds + ids;
+      newSelection = mSelectedFeatureIds + validIds;
       break;
 
     case Qgis::SelectBehavior::RemoveFromSelection:
-      newSelection = mSelectedFeatureIds - ids;
+      newSelection = mSelectedFeatureIds - validIds;
       break;
 
     case Qgis::SelectBehavior::IntersectSelection:
-      newSelection = mSelectedFeatureIds.intersect( ids );
+      newSelection = mSelectedFeatureIds.intersect( validIds );
       break;
   }
 

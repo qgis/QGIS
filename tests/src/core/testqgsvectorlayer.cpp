@@ -77,6 +77,7 @@ class TestQgsVectorLayer : public QgsTest
     void testFieldExpression();
     void testFieldAggregateExpression();
     void testAddFeatureExtentUpdated();
+    void testSelectByIdsNonExistentIds();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -537,6 +538,54 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
   QCOMPARE( spyDeleted.at( 0 ).at( 0 ), QVariant( lineF1.id() ) );
 
   delete layerLine;
+}
+
+void TestQgsVectorLayer::testSelectByIdsNonExistentIds()
+{
+  // Test for bug #61604: Incorrect SelectedFeatureCount in QgsVectorLayer after SelectFeatureByIds
+  // test 1 : When selectByIds is called with non-existent feature IDs, selectedFeatureCount should be 0
+  
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id:integer&field=name:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+  
+  QgsFeature f1, f2, f3;
+  f1.setAttributes( QgsAttributeList() << 1 << "feature1" );
+  f2.setAttributes( QgsAttributeList() << 2 << "feature2" );
+  f3.setAttributes( QgsAttributeList() << 3 << "feature3" );
+  
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );
+  
+  QgsFeatureIds nonExistentIds;
+  nonExistentIds << 999999; // This ID doesn't exist
+  layer->selectByIds( nonExistentIds );
+  
+  // selectedFeatureCount should be 0, not 1
+  QCOMPARE( layer->selectedFeatureCount(), 0 );
+  QVERIFY( layer->selectedFeatureIds().isEmpty() );
+  
+  // Test 2 : Select with mix of existing and non-existent IDs
+  QgsFeatureIds mixedIds;
+  mixedIds << f1.id() << 888888 << f2.id(); // f1.id() and f2.id() exist, 888888 doesn't
+  layer->selectByIds( mixedIds );
+  
+  // selectedFeatureCount should be 2 (only the existing features)
+  QCOMPARE( layer->selectedFeatureCount(), 2 );
+  QVERIFY( layer->selectedFeatureIds().contains( f1.id() ) );
+  QVERIFY( layer->selectedFeatureIds().contains( f2.id() ) );
+  QVERIFY( !layer->selectedFeatureIds().contains( 888888 ) );
+  
+  // Test 3 : Clear selection and test with multiple non-existent IDs
+  layer->removeSelection();
+  QCOMPARE( layer->selectedFeatureCount(), 0 );
+  
+  QgsFeatureIds multipleNonExistentIds;
+  multipleNonExistentIds << 111111 << 222222 << 333333; // None of these exist
+  layer->selectByIds( multipleNonExistentIds );
+  
+  QCOMPARE( layer->selectedFeatureCount(), 0 );
+  QVERIFY( layer->selectedFeatureIds().isEmpty() );
+  
+  delete layer;
 }
 
 
