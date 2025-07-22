@@ -20,6 +20,7 @@
 
 
 #include <QMetaEnum>
+#include <QTimeZone>
 #include <cfloat>
 #include <memory>
 #include <cmath>
@@ -6237,6 +6238,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
+Q_DECLARE_METATYPE( QTimeZone )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

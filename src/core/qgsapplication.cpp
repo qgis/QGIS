@@ -294,6 +294,7 @@ void registerMetaTypes()
   qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
+  qRegisterMetaType< QTimeZone >( "QTimeZone" );
 };
 
 void QgsApplication::init( QString profileFolder )
