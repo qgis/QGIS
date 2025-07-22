@@ -1222,10 +1222,10 @@ QgsCategorizedSymbolRendererWidget.setSymbolLevels: src/gui/symbology/qgscategor
 QgsCategorizedSymbolRendererWidget.showSymbolLevels: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L174
 QgsCategorizedSymbolRendererWidget.updateUiFromRenderer: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L226
 QgsCategorizedSymbolRendererWidget: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L115
-QgsCategoryDisplayLabelDelegate.QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L84
-QgsCategoryDisplayLabelDelegate.drawDisplay: src/gui/qgsmaplayerstylecategoriesmodel.h#L87
-QgsCategoryDisplayLabelDelegate.sizeHint: src/gui/qgsmaplayerstylecategoriesmodel.h#L88
-QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L78
+QgsCategoryDisplayLabelDelegate.QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L86
+QgsCategoryDisplayLabelDelegate.drawDisplay: src/gui/qgsmaplayerstylecategoriesmodel.h#L89
+QgsCategoryDisplayLabelDelegate.sizeHint: src/gui/qgsmaplayerstylecategoriesmodel.h#L90
+QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L80
 QgsCentroidFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L1239
 QgsCentroidFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1242
 QgsCentroidFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1243
