@@ -13700,8 +13700,8 @@ QgsProjectPropertyValue.readXml: src/core/project/qgsprojectproperty.h#L147
 QgsProjectPropertyValue.value: src/core/project/qgsprojectproperty.h#L141
 QgsProjectPropertyValue.writeXml: src/core/project/qgsprojectproperty.h#L148
 QgsProjectPropertyValue: src/core/project/qgsprojectproperty.h#L126
-QgsProjectServerValidator.displayValidationError: src/core/project/qgsprojectservervalidator.h#L57
-QgsProjectServerValidator.validate: src/core/project/qgsprojectservervalidator.h#L92
+QgsProjectServerValidator.displayValidationError: src/core/project/qgsprojectservervalidator.h#L58
+QgsProjectServerValidator.validate: src/core/project/qgsprojectservervalidator.h#L93
 QgsProjectServerValidator: src/core/project/qgsprojectservervalidator.h#L33
 QgsProjectStorage.Metadata: src/core/project/qgsprojectstorage.h#L45
 QgsProjectStorage.filePath: src/core/project/qgsprojectstorage.h#L116
