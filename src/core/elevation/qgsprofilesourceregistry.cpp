@@ -36,7 +36,7 @@ void QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *
   if ( !mSources.contains( profileSource ) )
   {
     mSources.append( profileSource );
-    emit profileSourceRegistered( profileSource->sourceId() );
+    emit profileSourceRegistered( profileSource->profileSourceId(), profileSource->profileSourceName() );
   }
 }
 
@@ -45,8 +45,9 @@ void QgsProfileSourceRegistry::unregisterProfileSource( QgsAbstractProfileSource
   const int index = mSources.indexOf( profileSource );
   if ( index >= 0 )
   {
+    const QString id = profileSource->profileSourceId();
     delete mSources.takeAt( index );
-    emit profileSourceUnregistered( profileSource->sourceId() );
+    emit profileSourceUnregistered( id );
   }
 }
 
@@ -54,7 +55,7 @@ QgsAbstractProfileSource *QgsProfileSourceRegistry::findSourceById( const QStrin
 {
   for ( QgsAbstractProfileSource *source : mSources )
   {
-    if ( source->sourceId() == sourceId )
+    if ( source->profileSourceId() == sourceId )
       return source;
   }
 

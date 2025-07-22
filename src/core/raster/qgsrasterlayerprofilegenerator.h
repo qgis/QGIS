@@ -76,14 +76,14 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
 
     ~QgsRasterLayerProfileGenerator() override;
 
-    //QString sourceId() const override;
+    QString sourceId() const override;
     Qgis::ProfileGeneratorFlags flags() const override;
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
 
   private:
-    //QString mId;
+    QString mId;
     std::unique_ptr<QgsRasterBlockFeedback> mFeedback;
 
     std::unique_ptr< QgsCurve > mProfileCurve;

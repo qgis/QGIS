@@ -16,18 +16,4 @@
  ***************************************************************************/
 #include "qgsabstractprofilesource.h"
 
-QgsAbstractProfileSource::QgsAbstractProfileSource( const QString &id )
-  : mSourceId( id )
-{}
-
 QgsAbstractProfileSource::~QgsAbstractProfileSource() = default;
-
-// void QgsAbstractProfileSource::setSourceId( const QString &sourceId )
-// {
-//   mSourceId = sourceId;
-// }
-
-QString QgsAbstractProfileSource::sourceId() const
-{
-  return mSourceId;
-}

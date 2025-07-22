@@ -137,7 +137,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
 
   public slots:
-    void addNodeForRegisteredSource( const QString &sourceId );
+    void addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName );
     void removeNodeForUnregisteredSource( const QString &sourceId );
 
   signals:

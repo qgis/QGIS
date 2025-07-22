@@ -70,7 +70,7 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
     QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
 
   signals:
-    void profileSourceRegistered( const QString &sourceId );
+    void profileSourceRegistered( const QString &sourceId, const QString &sourceName );
     void profileSourceUnregistered( const QString &sourceId );
 
   private:

@@ -59,7 +59,7 @@ is not found in the registry.
 %End
 
   signals:
-    void profileSourceRegistered( const QString &sourceId );
+    void profileSourceRegistered( const QString &sourceId, const QString &sourceName );
     void profileSourceUnregistered( const QString &sourceId );
 
 };

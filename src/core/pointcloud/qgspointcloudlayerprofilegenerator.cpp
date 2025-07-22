@@ -326,7 +326,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
   opacityByDistanceEffect = pcGenerator->mOpacityByDistanceEffect;
 
   mLayer = pcGenerator->mLayer;
-  mLayerId = pcGenerator->mSourceId;
+  mLayerId = pcGenerator->mId;
   mCurveCrs = pcGenerator->mTargetCrs;
   mProfileCurve.reset( pcGenerator->mProfileCurve->clone() );
   mTolerance = pcGenerator->mTolerance;
@@ -340,8 +340,7 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
 //
 
 QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
-  : QgsAbstractProfileGenerator( layer->id() )
-  , mLayer( layer )
+  : mLayer( layer )
   , mIndex( layer->index() )
   , mSubIndexes( layer->dataProvider()->subIndexes() )
   , mLayerAttributes( layer->attributes() )
@@ -353,7 +352,7 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mPointSymbol( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSymbol() )
   , mPointColor( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointColor() )
   , mOpacityByDistanceEffect( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
-    //, mId( layer->id() )
+  , mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTolerance( request.tolerance() )
@@ -371,10 +370,10 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   }
 }
 
-// QString QgsPointCloudLayerProfileGenerator::sourceId() const
-// {
-//   return mId;
-// }
+QString QgsPointCloudLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
 
 Qgis::ProfileGeneratorFlags QgsPointCloudLayerProfileGenerator::flags() const
 {

@@ -55,7 +55,6 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Mesh, baseName, meshLayerPath )
-  , QgsAbstractProfileSource( id() )
   , mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) )
   , mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
   , mElevationProperties( new QgsMeshLayerElevationProperties( this ) )

@@ -657,7 +657,7 @@ void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstrac
   QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( generator );
   const QgsVectorLayerProfileGenerator *vlGenerator = qgis::down_cast<  const QgsVectorLayerProfileGenerator * >( generator );
 
-  mId = vlGenerator->mSourceId;
+  mId = vlGenerator->mId;
   profileType = vlGenerator->mType;
   respectLayerSymbology = vlGenerator->mRespectLayerSymbology;
   mMarkerSymbol.reset( vlGenerator->mProfileMarkerSymbol->clone() );
@@ -669,8 +669,8 @@ void QgsVectorLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstrac
 //
 
 QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *layer, const QgsProfileRequest &request )
-  : QgsAbstractProfileSurfaceGenerator( layer->id(), request )
-    //, mId( layer->id() )
+  : QgsAbstractProfileSurfaceGenerator( request )
+  , mId( layer->id() )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTerrainProvider( request.terrainProvider() ? request.terrainProvider()->clone() : nullptr )
@@ -712,10 +712,10 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
   mFillSymbol.reset( qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
-// QString QgsVectorLayerProfileGenerator::sourceId() const
-// {
-//   return mId;
-// }
+QString QgsVectorLayerProfileGenerator::sourceId() const
+{
+  return mId;
+}
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;
 

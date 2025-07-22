@@ -113,7 +113,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
     ~QgsVectorLayerProfileGenerator() override;
 
-    //QString sourceId() const override;
+    QString sourceId() const override;
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;

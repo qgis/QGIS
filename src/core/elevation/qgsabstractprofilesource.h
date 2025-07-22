@@ -34,7 +34,6 @@ class CORE_EXPORT QgsAbstractProfileSource
 {
 
   public:
-    QgsAbstractProfileSource( const QString &id );
 
     virtual ~QgsAbstractProfileSource();
 
@@ -48,18 +47,28 @@ class CORE_EXPORT QgsAbstractProfileSource
      */
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 SIP_FACTORY;
 
-    //void setSourceId( const QString &sourceId );
-
     /**
      * Returns a unique identifier for this profile source.
      *
      * For map layer sources, the source ID will match the layer's QgsMapLayer::id().
      * Other (non-map-layer) sources will have a different unique ID with its own custom interpretation.
+     *
+     * \since QGIS 4.0.0
      */
-    QString sourceId() const;
+    virtual QString profileSourceId() const = 0;
+
+    /**
+     * Returns a name for displaying this profile source in the elevation profile layer tree.
+     *
+     * For map layer sources, the name displayed in the elevation profile tree will be taken from and synchronized to the layer's name.
+     *
+     * \since QGIS 4.0.0
+     */
+    virtual QString profileSourceName() const = 0;
 
   private:
     QString mSourceId;
+    QString mSourceName;
 
 };
 

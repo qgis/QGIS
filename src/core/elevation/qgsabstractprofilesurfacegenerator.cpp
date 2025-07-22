@@ -378,16 +378,11 @@ void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbs
 // QgsAbstractProfileSurfaceGenerator
 //
 
-QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const QString &id, const QgsProfileRequest &request )
-  : QgsAbstractProfileGenerator( id )
-  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
+QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request )
+  : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
 {
-}
 
-// QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request )
-//   : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
-// {
-// }
+}
 
 QgsAbstractProfileSurfaceGenerator::~QgsAbstractProfileSurfaceGenerator() = default;
 

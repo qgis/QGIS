@@ -54,18 +54,7 @@ void QgsProfileRenderContext::setElevationRange( const QgsDoubleRange &range )
   mElevationRange = range;
 }
 
-
-QgsAbstractProfileGenerator::QgsAbstractProfileGenerator( const QString &id )
-  : mSourceId( id )
-{
-}
-
 QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
-
-QString QgsAbstractProfileGenerator::sourceId() const
-{
-  return mSourceId;
-}
 
 QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;
 

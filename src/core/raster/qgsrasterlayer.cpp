@@ -111,7 +111,6 @@ QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS = Qgis::RasterRangeLimit
 
 QgsRasterLayer::QgsRasterLayer()
   : QgsMapLayer( Qgis::LayerType::Raster )
-  , QgsAbstractProfileSource( id() )
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
@@ -127,7 +126,6 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
                                 const QString &providerKey,
                                 const LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Raster, baseName, uri )
-  , QgsAbstractProfileSource( id() )
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )

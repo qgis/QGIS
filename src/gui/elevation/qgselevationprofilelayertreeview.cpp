@@ -481,15 +481,15 @@ void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *proje
   const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
   for ( auto *source : sources )
   {
-    addNodeForRegisteredSource( source->sourceId() );
+    addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
   }
 
   populateInitialLayers( project );
 }
 
-void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId )
+void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )
 {
-  auto node = std::make_unique< QgsLayerTreeCustomNode >( sourceId );
+  auto node = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
   node->setItemVisibilityChecked( true );
   mLayerTree->insertChildNode( 0, node.release() );
 }
@@ -500,7 +500,6 @@ void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QS
   if ( node )
   {
     mLayerTree->removeChildNode( node );
-    proxyModel()->invalidate();
   }
 }
 

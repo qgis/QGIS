@@ -878,7 +878,7 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  mCurrentJob = new QgsProfilePlotRenderer( mSources, request );
+  mCurrentJob = new QgsProfilePlotRenderer( sources(), request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
