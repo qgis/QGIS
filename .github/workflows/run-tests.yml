@@ -55,6 +55,7 @@ jobs:
             with-grass8: OFF
             with-webengine: OFF
             with-pdf4qt: OFF
+            with-sfcgal: OFF
             with-compile-commands: ON
             with-model-test: ON
             with-pg-test: ON
@@ -80,6 +81,7 @@ jobs:
             with-grass8: ON
             with-webengine: ON
             with-pdf4qt: ON
+            with-sfcgal: ON
             with-compile-commands: OFF
             with-model-test: OFF
             with-pg-test: OFF
@@ -181,6 +183,7 @@ jobs:
                      --env WITH_PDF4QT=${{ matrix.with-pdf4qt }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
+                     --env WITH_SFCGAL=${{ matrix.with-sfcgal }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
                      --env ENABLE_UNITY_BUILDS=${{ matrix.unity-builds }} \
                      --env WITH_MODEL_TEST=${{ matrix.with-model-test }} \
