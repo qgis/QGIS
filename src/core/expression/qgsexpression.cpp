@@ -1064,7 +1064,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.userType() == qMetaTypeId< QTimeZone>() )
   {
     const QTimeZone tz = value.value<QTimeZone>();
-    return startToken + tr( "time zone: %1" ).arg( tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) ) + endToken;
+    return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {

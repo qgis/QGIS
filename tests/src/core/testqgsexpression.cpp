@@ -5508,6 +5508,8 @@ class TestQgsExpression : public QObject
       QTimeZone tz( "Australia/Brisbane" );
       QString res = QgsExpression::formatPreviewString( QVariant::fromValue( tz ) );
       QVERIFY2( res == QString( "<i>&lt;time zone: AEST&gt;</i>" ) || res == QString( "<i>&lt;time zone: GMT+10&gt;</i>" ), QString( "got %1, expected <i>&lt;time zone: AEST&gt;</i> or <i>&lt;time zone: GMT+10&gt;</i>" ).arg( res ).toLocal8Bit().constData() );
+
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant::fromValue( QTimeZone() ) ), QStringLiteral( "<i>&lt;time zone: invalid&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()
