@@ -19,16 +19,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1744868846,
-        "narHash": "sha256-5RJTdUHDmj12Qsv7XOhuospjAjATNiTMElplWnJE9Hs=",
-        "owner": "NixOS",
+        "lastModified": 1752834437,
+        "narHash": "sha256-fu2mVm++6D9afckQlagW9Gh3NMW14JN8bTYJKz8igwo=",
+        "owner": "imincik",
         "repo": "nixpkgs",
-        "rev": "ebe4301cbd8f81c4f8d3244b3632338bbeb6d49c",
+        "rev": "be1e2f24359f68735522faa9e40c0fcd334e423b",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
+        "owner": "imincik",
+        "ref": "qgis-qt6-deps",
         "repo": "nixpkgs",
         "type": "github"
       }

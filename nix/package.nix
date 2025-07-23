@@ -4,7 +4,7 @@
 
 , extraPythonPackages ? (ps: [ ])
 
-, libsForQt5
+, qt6Packages
 
   # unwrapped package parameters
 , withGrass ? false
@@ -13,7 +13,7 @@
 }:
 
 let
-  qgis-unwrapped = libsForQt5.callPackage ./unwrapped.nix {
+  qgis-unwrapped = qt6Packages.callPackage ./unwrapped.nix {
     withGrass = withGrass;
     withServer = withServer;
     withWebKit = withWebKit;
