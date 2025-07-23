@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgdalprovider.h"
 #include "qgsstacasset.h"
 
 #include <QUrl>
@@ -57,10 +58,7 @@ QStringList QgsStacAsset::roles() const
 
 bool QgsStacAsset::isCloudOptimized() const
 {
-  const QString format = formatName();
-  return format == QLatin1String( "COG" ) ||
-         format == QLatin1String( "COPC" ) ||
-         format == QLatin1String( "EPT" );
+  return !formatName().isEmpty();
 }
 
 QString QgsStacAsset::formatName() const
@@ -72,6 +70,13 @@ QString QgsStacAsset::formatName() const
     return QStringLiteral( "COPC" );
   else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
     return QStringLiteral( "EPT" );
+  else if ( mMediaType.contains( QLatin1String( "cloud-optimized" ), Qt::CaseInsensitive ) )
+  {
+    // could use GDAL identify, but PDAL does not have the equivalent so split string
+    const QStringList parts = mMediaType.split( QRegExp( "[/;]+" ), Qt::SkipEmptyParts );
+    if ( parts.size() > 1 )
+      return parts[1];
+  }
   return QString();
 }
 
@@ -79,12 +84,11 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if ( formatName() == QLatin1String( "COG" ) )
+
+  if ( isCloudOptimized() )
   {
-    uri.layerType = QStringLiteral( "raster" );
-    uri.providerKey = QStringLiteral( "gdal" );
     if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+          href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
     {
       uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
     }
@@ -92,26 +96,40 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
     {
       uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
     }
+    else if ( href().startsWith( QLatin1String( "azure://"), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsiaz/%1" ).arg( href().mid( 8 ) );
+    }
+    else if ( href().startsWith( QLatin1String( "gcp://"), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsigs/%1" ).arg( href().mid( 6 ) );
+    }
     else
     {
       uri.uri = href();
     }
   }
-  else if ( formatName() == QLatin1String( "COPC" ) )
+  else
   {
-    uri.layerType = QStringLiteral( "pointcloud" );
-    uri.providerKey = QStringLiteral( "copc" );
-    uri.uri = href();
+      return {};
   }
-  else if ( formatName() == QLatin1String( "EPT" ) )
+
+  QString errMsg;
+
+  if ( ( formatName() == QLatin1String( "COG" ) ) ||
+    QgsGdalProvider::isValidRasterFileName( uri.uri, errMsg ) )
   {
-    uri.layerType = QStringLiteral( "pointcloud" );
-    uri.providerKey = QStringLiteral( "ept" );
-    uri.uri = href();
+    uri.layerType = QStringLiteral( "raster" );
+    uri.providerKey = QStringLiteral( "gdal" );
   }
   else
   {
-    return {};
+    uri.layerType = QStringLiteral( "pointcloud" );
+    uri.providerKey = formatName().toLower();
+#ifndef PDAL_2_9_OR_HIGHER
+    // reset and don't use /vsi/ as not supported
+    uri.uri = href();
+#endif
   }
 
   uri.name = title().isEmpty() ? url.fileName() : title();
