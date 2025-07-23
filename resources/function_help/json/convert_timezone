@@ -11,7 +11,12 @@
     "arg": "timezone",
     "description": "target timezone"
   }],
-  "examples": [{
+  "examples": [
+  {
+    "expression": "convert_timezone(to_datetime('2012-05-04 12:50:00 UTC+03'), timezone_from_id('UTC+10'))",
+    "returns": "datetime 2012-05-04 19:50:00 (UTC+10)"
+  },
+  {
     "expression": "convert_timezone(\"DATE_FIELD\", timezone_from_id('Australia/Darwin'))",
     "returns": "Datetime from DATE_FIELD, converted to the 'Australia/Darwin' timezone"
   }],
