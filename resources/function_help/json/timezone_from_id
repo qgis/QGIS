@@ -10,6 +10,14 @@
   "examples": [{
     "expression": "timezone_from_id('Australia/Brisbane')",
     "returns": "AEST timezone object"
+  },
+  {
+    "expression": "timezone_from_id('UTC+10:30')",
+    "returns": "UTC+10:30 timezone object"
+  },
+  {
+    "expression": "timezone_from_id('UTC-3')",
+    "returns": "UTC-03 timezone object"
   }],
   "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
 }

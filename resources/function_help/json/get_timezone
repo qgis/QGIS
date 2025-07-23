@@ -7,7 +7,12 @@
     "arg": "datetime",
     "description": "datetime with timezone"
   }],
-  "examples": [{
+  "examples": [
+  {
+    "expression": "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00 UTC+03')))",
+    "returns": "'UTC+03'"
+  },
+  {
     "expression": "timezone_id(get_timezone(\"DATE_FIELD\"))",
     "returns": "ID of timezone associated with the DATE_FIELD value"
   }],
