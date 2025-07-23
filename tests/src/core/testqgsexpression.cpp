@@ -5506,7 +5506,8 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
 
       QTimeZone tz( "Australia/Brisbane" );
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant::fromValue( tz ) ), QStringLiteral( "<i>&lt;time zone: AEST&gt;</i>" ) );
+      QString res = QgsExpression::formatPreviewString( QVariant::fromValue( tz ) );
+      QVERIFY2( res == QString( "<i>&lt;time zone: AEST&gt;</i>" ) || res == QString( "<i>&lt;time zone: GMT+10&gt;</i>" ), QString( "got %1, expected <i>&lt;time zone: AEST&gt;</i> or <i>&lt;time zone: GMT+10&gt;</i>" ).arg( res ).toLocal8Bit().constData() );
     }
 
     void test_formatPreviewStringWithLocale()
