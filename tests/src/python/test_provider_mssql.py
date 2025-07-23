@@ -33,6 +33,8 @@ from qgis.core import (
     QgsWkbTypes,
     QgsProviderConnectionException,
     QgsVectorDataProvider,
+    QgsUnsetAttributeValue,
+    QgsVectorLayerUtils,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1556,6 +1558,120 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
                 ],
             ],
         )
+
+    def testSkipConstraintCheck(self):
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql("DROP TABLE IF EXISTS qgis_test.test_constraint")
+        conn.execSql(
+            """CREATE TABLE [qgis_test].[test_constraint](
+        [pk] [int] IDENTITY(1,1) NOT NULL,
+        [name] [nchar](10) NULL,
+        [geom] [geometry] NULL,
+ CONSTRAINT [constraint_PK_test_table]  PRIMARY KEY CLUSTERED
+(
+        [pk] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]"""
+        )
+
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."test_constraint" sql=' % (self.dbconn),
+            "someData",
+            "mssql",
+        )
+
+        default_clause = "Autogenerate"
+        vl.dataProvider().setProviderProperty(
+            QgsDataProvider.ProviderProperty.EvaluateDefaultValues, False
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0, QgsFieldConstraints.Constraint.ConstraintUnique, default_clause
+            )
+        )
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                0, QgsFieldConstraints.Constraint.ConstraintUnique, 59
+            )
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintUnique,
+                QgsUnsetAttributeValue(),
+            )
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintNotNull,
+                QgsUnsetAttributeValue(),
+            )
+        )
+
+    def testUnsetAttributeValue(self):
+        """Test that QgsUnsetAttributeValue is handled correctly by the provider."""
+
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."test_unset_attribute_value"'
+        )
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."test_unset_attribute_value" ([pk] [int] IDENTITY(1,1) NOT NULL, test_int SMALLINT UNIQUE NOT NULL DEFAULT 16, test_int_no_default SMALLINT NOT NULL)'
+        )
+
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable table="qgis_test"."test_unset_attribute_value" sql=',
+            "test",
+            "mssql",
+        )
+
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature(vl.fields())
+        feature.setAttribute("test_int", QgsUnsetAttributeValue())
+        feature.setAttribute("test_int_no_default", 17)
+
+        self.assertTrue(vl.dataProvider().addFeatures([feature]))
+
+        # Reload the layer and check the value
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable table="qgis_test"."test_unset_attribute_value" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attribute("test_int"), 16)
+        self.assertEqual(f.attribute("test_int_no_default"), 17)
+
+        self.assertFalse(
+            QgsVectorLayerUtils.valueExists(vl, 1, QgsUnsetAttributeValue())
+        )
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 1, 16))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 1, 17))
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 2, 17))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 2, 16))
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1)[0])
+        f["test_int"] = QgsUnsetAttributeValue()
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1)[0])
+        f["test_int_no_default"] = QgsUnsetAttributeValue()
+
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                2, QgsFieldConstraints.Constraint.ConstraintUnique, 18
+            )
+        )
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                2, QgsFieldConstraints.Constraint.ConstraintNotNull, 18
+            )
+        )
+        self.assertFalse(QgsVectorLayerUtils.validateAttribute(vl, f, 2)[0])
 
 
 class TestPyQgsMssqlProviderQuery(QgisTestCase, MssqlProviderTestBase):

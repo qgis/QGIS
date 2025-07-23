@@ -131,6 +131,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
 
     //! Convert time value
     static QVariant convertTimeValue( const QVariant &value );
