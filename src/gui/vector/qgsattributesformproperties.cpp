@@ -1303,17 +1303,6 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 void QgsAttributesFormProperties::setAvailableWidgetsIndicatorProvidersEnabled( bool enabled )
 {
   // Only enable if the provider is disabled and only disable if it's enabled
-  if ( enabled && !mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
-  {
-    connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-    mConstraintIndicatorProviderAvailableWidgets->setEnabled( enabled );
-  }
-  else if ( !enabled && mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
-  {
-    disconnect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-    mConstraintIndicatorProviderAvailableWidgets->setEnabled( enabled );
-  }
-
   if ( enabled && !mDefaultValueIndicatorProviderAvailableWidgets->isEnabled() )
   {
     connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderAvailableWidgets, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
@@ -1324,22 +1313,22 @@ void QgsAttributesFormProperties::setAvailableWidgetsIndicatorProvidersEnabled( 
     disconnect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderAvailableWidgets, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
     mDefaultValueIndicatorProviderAvailableWidgets->setEnabled( enabled );
   }
+
+  if ( enabled && !mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
+  {
+    connect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderAvailableWidgets->setEnabled( enabled );
+  }
+  else if ( !enabled && mConstraintIndicatorProviderAvailableWidgets->isEnabled() )
+  {
+    disconnect( mAvailableWidgetsModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderAvailableWidgets, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderAvailableWidgets->setEnabled( enabled );
+  }
 }
 
 void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool enabled )
 {
   // Only enable if the provider is disabled and only disable if it's enabled
-  if ( enabled && !mConstraintIndicatorProviderFormLayout->isEnabled() )
-  {
-    connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-    mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
-  }
-  else if ( !enabled && mConstraintIndicatorProviderFormLayout->isEnabled() )
-  {
-    disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
-    mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
-  }
-
   if ( enabled && !mDefaultValueIndicatorProviderFormLayout->isEnabled() )
   {
     connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderFormLayout, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
@@ -1349,5 +1338,16 @@ void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool e
   {
     disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mDefaultValueIndicatorProviderFormLayout, &QgsFieldDefaultValueIndicatorProvider::updateItemIndicator );
     mDefaultValueIndicatorProviderFormLayout->setEnabled( enabled );
+  }
+
+  if ( enabled && !mConstraintIndicatorProviderFormLayout->isEnabled() )
+  {
+    connect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
+  }
+  else if ( !enabled && mConstraintIndicatorProviderFormLayout->isEnabled() )
+  {
+    disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
+    mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
   }
 }

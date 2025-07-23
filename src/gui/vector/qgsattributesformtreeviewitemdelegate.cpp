@@ -20,6 +20,7 @@
 #include <QHelpEvent>
 #include <QToolTip>
 
+/// @cond PRIVATE
 
 QgsAttributesFormTreeViewProxyStyle::QgsAttributesFormTreeViewProxyStyle( QgsAttributesFormBaseView *treeView )
   : QgsProxyStyle( treeView )
@@ -155,3 +156,5 @@ bool QgsAttributesFormTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstr
   }
   return QStyledItemDelegate::helpEvent( event, view, option, index );
 }
+
+/// @endcond

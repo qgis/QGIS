@@ -1024,6 +1024,10 @@
         <file>themes/default/mIconStoredQueries.svg</file>
         <file>themes/default/mIconQueryHistory.svg</file>
         <file>themes/default/mToggleAliases.svg</file>
+        <file>themes/default/field_indicators/mIndicatorConstraint.svg</file>
+        <file>themes/default/field_indicators/mIndicatorConstraintHard.svg</file>
+        <file>themes/default/field_indicators/mIndicatorDefaultValue.svg</file>
+        <file>themes/default/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

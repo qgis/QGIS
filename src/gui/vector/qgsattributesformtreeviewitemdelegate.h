@@ -19,6 +19,8 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
+/// @cond PRIVATE
+
 #include "qgsattributesformview.h"
 #include "qgsproxystyle.h"
 
@@ -72,5 +74,7 @@ class QgsAttributesFormTreeViewItemDelegate : public QStyledItemDelegate
   private:
     QgsAttributesFormBaseView *mAttributesFormTreeView;
 };
+
+/// @endcond
 
 #endif // QGSATTRIBUTESFORMTREEVIEWITEMDELEGATE_H

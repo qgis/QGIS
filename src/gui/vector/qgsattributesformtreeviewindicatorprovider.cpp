@@ -167,9 +167,44 @@ bool QgsFieldConstraintIndicatorProvider::acceptsItem( QgsAttributesFormItem *it
   return false;
 }
 
-QString QgsFieldConstraintIndicatorProvider::iconName( QgsAttributesFormItem * )
+QString QgsFieldConstraintIndicatorProvider::iconName( QgsAttributesFormItem *item )
 {
-  return QStringLiteral( "/mIndicatorEmbedded.svg" );
+  const QgsAttributesFormData::FieldConfig config = item->data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
+  const QgsFieldConstraints constraints = config.mFieldConstraints;
+
+  bool hardConstraint = false;
+
+  if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) != QgsFieldConstraints::ConstraintOriginNotSet )
+  {
+    if ( constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrengthHard )
+    {
+      hardConstraint = true;
+    }
+  }
+
+  if ( !hardConstraint )
+  {
+    if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) != QgsFieldConstraints::ConstraintOriginNotSet )
+    {
+      if ( constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrengthHard )
+      {
+        hardConstraint = true;
+      }
+    }
+  }
+
+  if ( !hardConstraint )
+  {
+    if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginNotSet )
+    {
+      if ( constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrengthHard )
+      {
+        hardConstraint = true;
+      }
+    }
+  }
+
+  return hardConstraint ? QStringLiteral( "/field_indicators/mIndicatorConstraintHard.svg" ) : QStringLiteral( "/field_indicators/mIndicatorConstraint.svg" );
 }
 
 QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem *item )
@@ -238,9 +273,20 @@ bool QgsFieldDefaultValueIndicatorProvider::acceptsItem( QgsAttributesFormItem *
   return false;
 }
 
-QString QgsFieldDefaultValueIndicatorProvider::iconName( QgsAttributesFormItem * )
+QString QgsFieldDefaultValueIndicatorProvider::iconName( QgsAttributesFormItem *item )
 {
-  return QStringLiteral( "/mIndicatorNotes.svg" );
+  const QgsAttributesFormData::FieldConfig config = item->data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
+
+  QString iconName = QStringLiteral( "/field_indicators/mIndicatorDefaultValue.svg" );
+
+  if ( !config.mDefaultValueExpression.isEmpty() )
+  {
+    if ( config.mApplyDefaultValueOnUpdate )
+    {
+      iconName = QStringLiteral( "/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg" );
+    }
+  }
+  return iconName;
 }
 
 QString QgsFieldDefaultValueIndicatorProvider::tooltipText( QgsAttributesFormItem *item )

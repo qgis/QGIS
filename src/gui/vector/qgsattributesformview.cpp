@@ -109,7 +109,7 @@ void QgsAttributesFormBaseView::addIndicator( QgsAttributesFormItem *item, QgsAt
   if ( !mIndicators[item].contains( indicator ) )
   {
     mIndicators[item].append( indicator );
-    connect( indicator, &QgsAttributesFormTreeViewIndicator::changed, this, [=] {
+    connect( indicator, &QgsAttributesFormTreeViewIndicator::changed, this, [this] {
       update();
       viewport()->repaint();
     } );
