@@ -146,9 +146,11 @@ void QgsBrowserWidget::showEvent( QShowEvent *e )
     mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
-    // selectionModel is created when model is set on tree
-    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
-    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::updateLocationBar );
+    if ( mBrowserView->selectionModel() )
+    {
+      connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
+      connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::updateLocationBar );
+    }
 
     // Forward the model changed signals to the widget
     connect( mModel, &QgsBrowserModel::connectionsChanged, this, &QgsBrowserWidget::connectionsChanged );
@@ -552,11 +554,18 @@ void QgsBrowserWidget::propertiesWidgetToggled( bool enabled )
 
 void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
 {
+  
+  if ( !mProxyModel || !mBrowserView )
+    return;
+
   if ( index.isValid() )
   {
     QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
-    mBrowserView->expand( proxyIndex );
-    mBrowserView->setCurrentIndex( proxyIndex );
+    if ( proxyIndex.isValid() )
+    {
+      mBrowserView->expand( proxyIndex );
+      mBrowserView->setCurrentIndex( proxyIndex );
+    }
   }
 }
 
@@ -568,6 +577,10 @@ void QgsBrowserWidget::splitterMoved()
 
 void QgsBrowserWidget::navigateToPath()
 {
+  
+  if ( !mLeLocationBar || !mModel )
+    return;
+
   const QString path = mLeLocationBar->text().trimmed();
   if ( path.isEmpty() )
     return;
@@ -600,6 +613,10 @@ void QgsBrowserWidget::navigateToPath()
 
 void QgsBrowserWidget::copySelectedPath()
 {
+  
+  if ( !mBrowserView || !mBrowserView->selectionModel() || !mModel || !mLeLocationBar )
+    return;
+
   const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
   if ( selection.isEmpty() )
   {
@@ -611,6 +628,9 @@ void QgsBrowserWidget::copySelectedPath()
   }
 
   const QModelIndex index = selection.first();
+  if ( !index.isValid() )
+    return;
+
   QgsDataItem *item = mModel->dataItem( index );
   if ( !item )
     return;
@@ -663,6 +683,10 @@ void QgsBrowserWidget::copySelectedPath()
 
 void QgsBrowserWidget::updateLocationBar()
 {
+  
+  if ( !mBrowserView || !mBrowserView->selectionModel() || !mLeLocationBar || !mModel )
+    return;
+
   const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
   if ( selection.isEmpty() )
   {
@@ -671,6 +695,12 @@ void QgsBrowserWidget::updateLocationBar()
   }
 
   const QModelIndex index = selection.first();
+  if ( !index.isValid() )
+  {
+    mLeLocationBar->clear();
+    return;
+  }
+
   QgsDataItem *item = mModel->dataItem( index );
   if ( !item )
   {
