@@ -75,6 +75,13 @@ class _3D_EXPORT QgsCameraPose
      */
     void updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, double lon ) SIP_SKIP;
 
+    /**
+     * Calculate rotation to go from a plane tangent at the equator (X up, Y
+     * east, Z north) to a plane tangent at the given point.
+     * \since QGIS 3.44
+     */
+    static QQuaternion globeRotation( double lat, double lon, float pitch, float heading );
+
     //! Writes configuration to a new DOM element and returns it
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from a DOM element previously written using writeXml()

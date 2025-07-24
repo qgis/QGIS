@@ -243,6 +243,15 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void setSceneOriginShiftEnabled( bool enabled ) { mSceneOriginShiftEnabled = enabled; }
 
     /**
+     * Recompute the origin if origin shifts are enabled and the camera is far
+     * enough away from the current origin, see hasSceneOriginShiftEnabled()
+     * for more details.
+     *
+     * \since QGIS 4.0
+     */
+    void recomputeOrigin();
+
+    /**
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.

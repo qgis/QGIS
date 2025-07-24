@@ -259,7 +259,6 @@ void TestQgs3DCameraController::testZoomWheel()
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
-  QPoint midPos = winSize / 2;
   QgsOffscreen3DEngine engine;
   engine.setSize( QSize( winSize.x(), winSize.y() ) );
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
@@ -271,7 +270,7 @@ void TestQgs3DCameraController::testZoomWheel()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
+  QWheelEvent wheelEvent( QPoint( 0, 0 ), QPoint( 0, 0 ), QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
@@ -520,7 +519,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   initialPitch = scene->cameraController()->pitch();
   initialYaw = scene->cameraController()->yaw();
 
-  QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
+  QWheelEvent wheelEvent( midPos + movement1 + movement2, midPos + movement1 + movement2, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
