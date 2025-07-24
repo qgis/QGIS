@@ -391,12 +391,12 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsSfc
   return QgsSfcgalEngine::toSfcgalGeometry( result, errorMsg );
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   QVector<sfcgal::shared_geom> sfcgalGeomList;
   sfcgalGeomList.append( mSfcgalGeom );
-  for ( QVector<const QgsAbstractGeometry *>::const_iterator ite = geomList.constBegin(); ite != geomList.constEnd(); ++ite )
+  for ( QVector<QgsAbstractGeometry *>::const_iterator ite = geomList.constBegin(); ite != geomList.constEnd(); ++ite )
   {
     sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( *ite, errorMsg );
     CHECK_SUCCESS( errorMsg, nullptr );
