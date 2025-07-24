@@ -829,4 +829,6 @@
 %If ( HAVE_WEBENGINE_SIP )
 %Include auto_generated/web/qgswebenginepage.sip
 %End
+%If ( HAVE_SFCGAL_SIP )
 %Include auto_generated/geometry/qgssfcgalgeometry.sip
+%End
