@@ -325,18 +325,12 @@ sfcgal::shared_geom QgsSfcgalEngine::fromAbstractGeometry( const QgsAbstractGeom
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, sfcgal::shared_geom( nullptr ) );
 
-  const QgsSfcgalGeometry *sfcgalGeometry = dynamic_cast<const QgsSfcgalGeometry *>( geom );
-  if ( sfcgalGeometry )
-    return sfcgalGeometry->sfcgalGeometry();
-  else
-  {
-    QByteArray wkbBytes = geom->asWkb();
+  QByteArray wkbBytes = geom->asWkb();
 
-    sfcgal::geometry *out = sfcgal_io_read_wkb( wkbBytes.data(), wkbBytes.length() );
-    CHECK_SUCCESS( errorMsg, nullptr );
+  sfcgal::geometry *out = sfcgal_io_read_wkb( wkbBytes.data(), wkbBytes.length() );
+  CHECK_SUCCESS( errorMsg, nullptr );
 
-    return sfcgal::make_shared_geom( out );
-  }
+  return sfcgal::make_shared_geom( out );
 }
 
 sfcgal::shared_geom QgsSfcgalEngine::cloneGeometry( const sfcgal::geometry *geom, QString *errorMsg )
