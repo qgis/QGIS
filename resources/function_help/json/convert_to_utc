@@ -1,0 +1,20 @@
+{
+  "name": "convert_to_utc",
+  "type": "function",
+  "groups": ["Conversions", "Date and Time"],
+  "description": "Converts a datetime object to UTC.",
+  "arguments": [{
+    "arg": "datetime",
+    "description": "datetime value"
+  }],
+  "examples": [
+  {
+    "expression": "convert_to_utc(to_datetime('2012-05-04 12:50:00+3'))",
+    "returns": "datetime 2012-05-04 09:50:00 (UTC)"
+  },
+  {
+    "expression": "convert_to_utc(\"DATE_FIELD\")",
+    "returns": "Datetime from DATE_FIELD, converted to UTC"
+  }],
+  "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
+}

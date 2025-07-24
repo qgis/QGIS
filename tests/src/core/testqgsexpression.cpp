@@ -2065,6 +2065,13 @@ class TestQgsExpression : public QObject
       QTest::newRow( "set timezone, fixed datetime" ) << "format_date(set_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 12:50:00 UTC+10" ) );
       QTest::newRow( "get timezone, fixed datetime" ) << "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))" << false << QVariant( QString( "UTC+03" ) );
 
+      QTest::newRow( "convert to utc, fixed datetime" ) << "format_date(convert_to_utc(to_datetime('2012-05-04 12:50:00+3')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 09:50:00 UTC" ) );
+      QTest::newRow( "convert to utc, NULL" ) << "convert_to_utc(NULL)" << false << QVariant();
+      QTest::newRow( "convert to utc, invalid value" ) << "convert_to_utc(3)" << true << QVariant();
+
+      QTest::newRow( "convert to localtime, fixed datetime" ) << "format_date(convert_to_localtime(to_datetime('2012-05-04 12:50:00+3')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QVariant( "2012-05-04 12:50:00+3" ).toDateTime().toLocalTime().toString( "yyyy-MM-dd HH:mm:ss t" ) );
+      QTest::newRow( "convert to localtime, NULL" ) << "convert_to_localtime(NULL)" << false << QVariant();
+      QTest::newRow( "convert to localtime, invalid value" ) << "convert_to_localtime(3)" << true << QVariant();
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
