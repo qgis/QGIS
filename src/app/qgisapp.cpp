@@ -8185,11 +8185,17 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       mLayerTreeView->refreshLayerSymbology( vl->id() );
       this->visibleMessageBar()->pushMessage( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
 
-      QMessageBox question( QMessageBox::Question, tr( "Rename Layer" ), tr( "Would you like to change layer name to `%1` in layers panel?" ).arg( newLayerName ), QMessageBox::Yes | QMessageBox::Cancel, this );
-      int res = question.exec();
-      if ( res == QMessageBox::Yes )
+      if ( ( !newLayerName.isEmpty() ) )
       {
-        vl->setName( newLayerName );
+        if ( newLayerName != vl->name() )
+        {
+          QMessageBox question( QMessageBox::Question, tr( "Rename Layer" ), tr( "Would you like to change layer name to `%1` in layers panel?" ).arg( newLayerName ), QMessageBox::Yes | QMessageBox::Cancel, this );
+          int res = question.exec();
+          if ( res == QMessageBox::Yes )
+          {
+            vl->setName( newLayerName );
+          }
+        }
       }
     }
   };
