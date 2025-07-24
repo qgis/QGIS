@@ -41,7 +41,7 @@ Constructor with :py:class:`QgsAbstractGeometry` reference.
 
     QgsSfcgalGeometry( const QgsGeometry &qgsGeom );
 %Docstring
-Constructor with :py:class:`QgsGeometry` refernce.
+Constructor with :py:class:`QgsGeometry` reference.
 %End
 
     QgsSfcgalGeometry( const QString &wkt, QString *errorMsg = 0 );
@@ -344,6 +344,13 @@ Calculate the intersection of this and ``otherGeom``.
                    intersection results
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+%Docstring
+Calculate the combination of this and ``geomList``.
+
+:param geomList: list of geometries to perform the operation
+:param errorMsg: Error message returned by SFGCAL
+%End
 
     std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring

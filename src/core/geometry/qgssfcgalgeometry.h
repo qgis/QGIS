@@ -69,7 +69,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     //! Constructor with QgsAbstractGeometry reference.
     QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom );
 
-    //! Constructor with QgsGeometry refernce.
+    //! Constructor with QgsGeometry reference.
     QgsSfcgalGeometry( const QgsGeometry &qgsGeom );
 
     //! Constructor from WKT
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param geomList list of geometries to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    SIP_SKIP std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
 
     /**
      * Calculate the difference of this and \a otherGeom.

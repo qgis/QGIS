@@ -840,8 +840,8 @@ void TestQgsSfcgal::unionCheck1()
   std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
 
   QString errorMsg;
-  QVector<const QgsAbstractGeometry *> geomList;
-  geomList.append( mpPolygonGeometryC.constGet() );
+  QVector<QgsAbstractGeometry *> geomList;
+  geomList.append( mpPolygonGeometryC.get() );
   std::unique_ptr<QgsSfcgalGeometry> combinedGeom = geomA->combine( geomList, &errorMsg );
   QVERIFY2( combinedGeom, ( QString( "combinedGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
   QCOMPARE( combinedGeom->wkbType(), Qgis::WkbType::MultiPolygon );
@@ -865,8 +865,8 @@ void TestQgsSfcgal::unionCheck2()
   std::unique_ptr<QgsSfcgalGeometry> geomA = std::make_unique<QgsSfcgalGeometry>( mpPolygonGeometryA );
 
   QString errorMsg;
-  QVector<const QgsAbstractGeometry *> geomList;
-  geomList.append( mpPolygonGeometryB.constGet() );
+  QVector<QgsAbstractGeometry *> geomList;
+  geomList.append( mpPolygonGeometryB.get() );
   std::unique_ptr<QgsSfcgalGeometry> combinedGeom = geomA->combine( geomList, &errorMsg );
   QVERIFY2( combinedGeom, ( QString( "combinedGeom is NULL. SFCGAL msg: '%1'" ).arg( errorMsg ) ).toStdString().c_str() );
   QCOMPARE( combinedGeom->wkbType(), Qgis::WkbType::Polygon );
