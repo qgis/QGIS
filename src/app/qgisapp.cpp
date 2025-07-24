@@ -8189,7 +8189,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       {
         if ( newLayerName != vl->name() )
         {
-          QMessageBox question( QMessageBox::Question, tr( "Rename Layer" ), tr( "Would you like to change layer name to `%1` in layers panel?" ).arg( newLayerName ), QMessageBox::Yes | QMessageBox::Cancel, this );
+          QMessageBox question( QMessageBox::Question, tr( "Rename Layer" ), tr( "Would you like to change layer name to `%1` in layers panel?" ).arg( newLayerName ), QMessageBox::Yes | QMessageBox::No, this );
           int res = question.exec();
           if ( res == QMessageBox::Yes )
           {
