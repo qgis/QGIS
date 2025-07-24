@@ -21,8 +21,6 @@
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
@@ -128,7 +126,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     /**
      * Export the geometry as WKT
      *
-     * \param precision Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal).
+     * \param precision Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal) f.e. "Point(1/3, 1/6, 1/4)".
      * \param errorMsg Error message returned by SFGCAL
      */
     QString asWkt( int precision = -1, QString *errorMsg = nullptr ) const;
@@ -444,21 +442,6 @@ class CORE_EXPORT QgsSfcgalGeometry
   private:
     sfcgal::shared_geom mSfcgalGeom;
 };
-
-#ifndef SIP_RUN
-
-template<class T>
-inline T qgsgeometry_cast( QgsSfcgalGeometry *geom )
-{
-  return std::remove_pointer<T>::type::cast( geom );
-}
-
-template<class T>
-inline T qgsgeometry_cast( const QgsSfcgalGeometry *geom )
-{
-  return std::remove_pointer<T>::type::cast( geom );
-}
-#endif
 
 
 #endif // QGSSGCGAL_GEOMETRY_H
