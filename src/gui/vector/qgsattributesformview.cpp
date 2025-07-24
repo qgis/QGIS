@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgsscrollarea.h"
+#include "qgsattributesformtreeviewindicator.h"
 #include "moc_qgsattributesformview.cpp"
 
 #include <QMimeData>

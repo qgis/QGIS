@@ -15,6 +15,7 @@
 
 #include "qgsattributesformtreeviewitemdelegate.h"
 #include "qgsattributesformview.h"
+#include "qgsattributesformtreeviewindicator.h"
 #include "moc_qgsattributesformtreeviewitemdelegate.cpp"
 
 #include <QHelpEvent>
@@ -112,17 +113,6 @@ void QgsAttributesFormTreeViewItemDelegate::paint( QPainter *painter, const QSty
   }
 }
 
-static void _fixStyleOption( QStyleOptionViewItem &opt )
-{
-  // This makes sure our delegate behaves correctly across different styles. Unfortunately there is inconsistency
-  // in how QStyleOptionViewItem::showDecorationSelected is prepared for paint() vs what is returned from view's viewOptions():
-  // - viewOptions() returns it based on style's SH_ItemView_ShowDecorationSelected hint
-  // - for paint() there is extra call to QTreeViewPrivate::adjustViewOptionsForIndex() which makes it
-  //   always true if view's selection behavior is SelectRows (which is the default and our case with attributes form tree view)
-  // So for consistency between different calls we override it to what we get in paint() method ... phew!
-  opt.showDecorationSelected = true;
-}
-
 bool QgsAttributesFormTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
   if ( event && event->type() == QEvent::ToolTip )
@@ -134,7 +124,7 @@ bool QgsAttributesFormTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstr
       {
         QStyleOptionViewItem opt = option;
         initStyleOption( &opt, index );
-        _fixStyleOption( opt );
+        opt.showDecorationSelected = true; // See https://github.com/qgis/QGIS/pull/7853 for the rationale of this fix
 
         const QRect indRect = mAttributesFormTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsAttributesFormTreeViewProxyStyle::SE_AttributesFormTreeItemIndicator ), &opt, mAttributesFormTreeView );
 

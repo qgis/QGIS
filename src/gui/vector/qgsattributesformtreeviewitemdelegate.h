@@ -21,11 +21,12 @@
 
 /// @cond PRIVATE
 
-#include "qgsattributesformview.h"
 #include "qgsproxystyle.h"
 
-#include <QStyledItemDelegate>
+class QgsAttributesFormTreeViewIndicator;
+class QgsAttributesFormBaseView;
 
+#include <QStyledItemDelegate>
 
 /**
  * Proxy style for field items with indicators.

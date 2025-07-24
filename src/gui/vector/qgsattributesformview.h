@@ -21,8 +21,8 @@
 
 #include "qgis_gui.h"
 #include "qgsattributesformmodel.h"
-#include "qgsattributesformtreeviewindicator.h"
-#include "qgsexpressioncontextgenerator.h"
+
+class QgsAttributesFormTreeViewIndicator;
 
 #include <QTreeView>
 
