@@ -168,9 +168,7 @@ class CORE_EXPORT QgsSfcgalEngine
     static std::unique_ptr< QgsAbstractGeometry > toAbstractGeometry( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
     /**
-     * Creates a SFGAL geometry from an internal SFCGAL geometry (from SFCGAL library).
-     *
-     * Same as `toAbstractGeometry` but returned object is casted to QgsSfcgalGeometry.
+     * Creates a SFGAL geometry from a shared SFCGAL geometry (from SFCGAL library).
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
