@@ -197,6 +197,11 @@ endif()
 
 set (PY_MODULES core)
 
+if(NOT WITH_SFCGAL)
+    message(STATUS "SFCGAL not enabled - disabling bindings")
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_SFCGAL_SIP)
+endif()
+
 if(WITH_ANALYSIS)
   set(PY_MODULES ${PY_MODULES} analysis)
 

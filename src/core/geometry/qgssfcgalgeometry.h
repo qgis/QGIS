@@ -17,6 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
+SIP_IF_MODULE( HAVE_SFCGAL_SIP )
+
 #ifdef WITH_SFCGAL
 #ifndef QGSSGCGAL_GEOMETRY_H
 #define QGSSGCGAL_GEOMETRY_H
