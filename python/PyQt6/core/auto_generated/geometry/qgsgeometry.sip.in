@@ -811,6 +811,22 @@ is index 0)
          object to help make the distinction?)
 %End
 
+    bool deleteVertices( const QList<int> &vertices );
+%Docstring
+Deletes the vertices at the given positions.
+
+:param vertices: list of vertex indexes to delete
+
+:return: ``True`` if all vertices were deleted, ``False`` if at least
+         one vertex does not correspond to a valid vertex on this
+         geometry (including if this geometry is a Point), or if the
+         number of remaining vertices in the linestring would be less
+         than two. It is up to the caller to distinguish between these
+         error conditions.
+
+.. versionadded:: 4.0
+%End
+
     bool toggleCircularAtVertex( int atVertex );
 %Docstring
 Converts the vertex at the given position from/to circular

@@ -863,6 +863,17 @@ class CORE_EXPORT QgsGeometry
     bool deleteVertex( int atVertex );
 
     /**
+     * Deletes the vertices at the given positions.
+     * \param vertices list of vertex indexes to delete
+     * \returns TRUE if all vertices were deleted, FALSE if at least one vertex
+     * does not correspond to a valid vertex on this geometry (including if this geometry is a Point),
+     * or if the number of remaining vertices in the linestring would be less than two.
+     * It is up to the caller to distinguish between these error conditions.
+     * \since QGIS 4.0
+     */
+    bool deleteVertices( const QList<int> &vertices );
+
+    /**
      * Converts the vertex at the given position from/to circular
      * \returns FALSE if atVertex does not correspond to a valid vertex
      * on this geometry (including if this geometry is a Point),

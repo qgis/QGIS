@@ -678,6 +678,64 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+bool QgsGeometry::deleteVertices( const QList<int> &vertices )
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  if ( vertices.isEmpty() )
+  {
+    return true;
+  }
+
+  QList<int> sortedVertices = vertices;
+  std::sort( sortedVertices.begin(), sortedVertices.end(), std::greater<int>() );
+
+  // maintain compatibility with < 2.10 API
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::MultiPoint )
+  {
+    detach();
+    QgsGeometryCollection *collection = static_cast< QgsGeometryCollection * >( d->geometry.get() );
+    
+    for ( int vertex : sortedVertices )
+    {
+      if ( !collection->removeGeometry( vertex ) )
+        return false;
+    }
+    return true;
+  }
+
+  // If it's a point and we're deleting any vertex, set geometry to null
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
+  {
+    reset( nullptr );
+    return true;
+  }
+
+  detach();
+
+  for ( int vertex : sortedVertices )
+  {
+    QgsVertexId id;
+    if ( !vertexIdFromVertexNr( vertex, id ) )
+    {
+      QgsDebugError( QStringLiteral( "Invalid vertex number %1" ).arg( vertex ) );
+      return false;
+    }
+
+    if ( !d->geometry->deleteVertex( id ) )
+    {
+      QgsDebugError( QStringLiteral( "Failed to delete vertex %1" ).arg( vertex ) );
+      return false;
+    }
+    
+  }
+  
+  return true;
+}
+
 bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
 
