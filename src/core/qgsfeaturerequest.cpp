@@ -109,7 +109,7 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
          mFilter == rh.mFilter &&
          mSpatialFilter == rh.mSpatialFilter &&
          mFilterRect == rh.mFilterRect &&
-         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) &&
+         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.isEqual( rh.mReferenceGeometry, Qgis::GeometryBackend::QGIS ) ) &&
          mDistanceWithin == rh.mDistanceWithin &&
          mFilterFid == rh.mFilterFid &&
          mFilterFids == rh.mFilterFids &&

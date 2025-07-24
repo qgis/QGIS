@@ -35,7 +35,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.equals( g2 );
+    return g1.isEqual( g2 );
 }
 
 namespace QTest
@@ -700,7 +700,7 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   utils.mouseClick( 2, 5.1, Qt::RightButton );
 
   const QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
-  QVERIFY( !mLayerSelfSnapLine->getFeature( newFid1 ).geometry().equals( QgsGeometry::fromWkt( targetWkt ) ) );
+  QVERIFY( !mLayerSelfSnapLine->getFeature( newFid1 ).geometry().isEqual( QgsGeometry::fromWkt( targetWkt ) ) );
   mLayerSelfSnapLine->undoStack()->undo();
 
   // With self snapping, endpoint will snap to start point

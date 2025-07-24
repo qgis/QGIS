@@ -59,7 +59,7 @@ QgsReferencedGeometry::QgsReferencedGeometry( const QgsGeometry &geom, const Qgs
 
 bool QgsReferencedGeometry::operator==( const QgsReferencedGeometry &other ) const
 {
-  return ( ( this->isNull() && other.isNull() ) || this->equals( other ) ) && crs() == other.crs();
+  return ( ( this->isNull() && other.isNull() ) || this->isEqual( other ) ) && crs() == other.crs();
 }
 
 bool QgsReferencedGeometry::operator!=( const QgsReferencedGeometry &other ) const

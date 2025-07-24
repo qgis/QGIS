@@ -1494,7 +1494,7 @@ QList<QgsFeature> TestQgsGrassProvider::getFeatures( QgsVectorLayer *layer )
 bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature )
 {
   QgsGeometry expectedGeom = expectedFeature.geometry();
-  if ( !feature.geometry().equals( expectedGeom ) )
+  if ( !feature.geometry().isEqual( expectedGeom ) )
   {
     return false;
   }

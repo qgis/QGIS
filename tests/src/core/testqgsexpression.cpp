@@ -317,7 +317,7 @@ class TestQgsExpression : public QObject
       QVariant out = expression.evaluate( &context );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QgsGeometry geom( new QgsPoint( 2500, 2500, 800 ) );
-      QCOMPARE( geom.equals( outGeom ), true );
+      QCOMPARE( geom.isEqual( outGeom ), true );
 
       context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), 2 );
@@ -4169,7 +4169,7 @@ class TestQgsExpression : public QObject
 
       QCOMPARE( out.userType() == qMetaTypeId<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom.equals( outGeom ), true );
+      QCOMPARE( geom.isEqual( outGeom ), true );
     }
 
     void eval_geometry_access_transform_data()
@@ -4231,7 +4231,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( out.userType() == qMetaTypeId<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
-      QCOMPARE( geom.equals( outGeom ), true );
+      QCOMPARE( geom.isEqual( outGeom ), true );
     }
 
     void eval_spatial_operator_data()
