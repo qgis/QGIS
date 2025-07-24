@@ -841,3 +841,4 @@
 %If ( HAVE_WEBENGINE_SIP )
 %Include auto_generated/web/qgswebenginepage.sip
 %End
+%Include auto_generated/geometry/qgssfcgalgeometry.sip

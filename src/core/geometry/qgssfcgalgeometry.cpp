@@ -106,7 +106,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const
   return std::make_unique<QgsSfcgalGeometry>( *this );
 }
 
-bool QgsSfcgalGeometry::fromWkb( QgsConstWkbPtr &wkbPtr, QString *errorMsg )
+bool QgsSfcgalGeometry::fromWkb( const QgsConstWkbPtr &wkbPtr, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   if ( !wkbPtr )

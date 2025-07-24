@@ -54,16 +54,22 @@ class CORE_EXPORT QgsSfcgalGeometry
     //! Constructor for an empty sfcgalGeometry geometry.
     QgsSfcgalGeometry();
 
-    //! Constructor with SFCGAL shared ptr
-    QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom );
+    /**
+     * Constructor with SFCGAL shared ptr
+     * Will copy the shared ptr.
+     */
+    SIP_SKIP QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom );
 
-    //! Constructor with QgsAbstractGeometry unique_ptr
+    /**
+     * Constructor with QgsAbstractGeometry unique_ptr.
+     * Will not take ownership.
+     */
     QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsGeom );
 
-    //! Constructor with QgsAbstractGeometry ptr
+    //! Constructor with QgsAbstractGeometry reference.
     QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom );
 
-    //! Constructor with QgsAbstractGeometry ptr
+    //! Constructor with QgsGeometry refernce.
     QgsSfcgalGeometry( const QgsGeometry &qgsGeom );
 
     //! Constructor from WKT
@@ -76,7 +82,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Returns the underlying SFCGAL geometry
      * This operation is always fast, as the SFCGAL geometry representation is maintained for the lifetime of the QgsSfcgalGeometry object.
      */
-    sfcgal::shared_geom sfcgalGeometry() const { return mSfcgalGeom; }
+    SIP_SKIP sfcgal::shared_geom sfcgalGeometry() const { return mSfcgalGeom; }
 
     /**
      * Returns the geometry converted to a QGIS geometry object.
@@ -106,7 +112,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param wkbPtr WKB byte pointer
      * \param errorMsg Error message returned by SFGCAL
      */
-    bool fromWkb( QgsConstWkbPtr &wkbPtr, QString *errorMsg = nullptr );
+    bool fromWkb( const QgsConstWkbPtr &wkbPtr, QString *errorMsg = nullptr );
 
     /**
      * Export the geometry as WKB
@@ -341,7 +347,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param geomList list of geometries to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+    SIP_SKIP std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<const QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
 
     /**
      * Calculate the difference of this and \a otherGeom.
