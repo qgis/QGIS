@@ -55,6 +55,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( mMap->sceneMode() == Qgis::SceneMode::Globe ? Qgis::NavigationMode::GlobeTerrainBased : Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
+  connect( mCameraNavigationModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onNavigationModeChanged );
+  onNavigationModeChanged();
 
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
@@ -528,4 +530,18 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
   }
 
   mMap->set3DAxisSettings( s );
+}
+
+void Qgs3DMapConfigWidget::onNavigationModeChanged()
+{
+  if ( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() == Qgis::NavigationMode::Walk )
+  {
+    mCameraMovementSpeed->setEnabled( true );
+    mCameraMovementSpeed->setToolTip( "" );
+  }
+  else
+  {
+    mCameraMovementSpeed->setEnabled( false );
+    mCameraMovementSpeed->setToolTip( tr( "Movement speed is only applicable in Walk Mode" ) );
+  }
 }
