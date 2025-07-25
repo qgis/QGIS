@@ -1219,7 +1219,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
 
         req = QgsProfileRequest(curve)
         req.setCrs(pcl.crs())
-        req.setTolerance(0.05)
+        req.setTolerance(0.5)
         generator = pcl.createProfileGenerator(req)
 
         context = QgsProfileGenerationContext()
