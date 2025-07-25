@@ -80,6 +80,8 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget : public QgsLayoutItemBaseWidge
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
     QMenu *mCopyFromDockMenu = nullptr;
+
+    friend class TestQgsLayoutGui;
 };
 
 #endif //QGSLAYOUTELEVATIONPROFILEWIDGET_H
