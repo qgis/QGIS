@@ -57,6 +57,16 @@ Deletes a vertex from a feature.
 :param vertex: index of vertex to delete
 %End
 
+    Qgis::VectorEditResult deleteVertices( QgsFeatureId featureId, const QList<int> &vertices );
+%Docstring
+Deletes multiple vertices from a feature.
+
+:param featureId: ID of feature to remove vertices from
+:param vertices: list of vertex indices to delete
+
+.. versionadded:: 4.0
+%End
+
  Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a ring to polygon/multipolygon features
