@@ -2245,14 +2245,12 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
             JOIN topology.topology t ON ( t.id = lyr.topology_id )
             JOIN topology.layer l ON ( lyr.layer_id = l.layer_id AND l.topology_id = lyr.topology_id )
         )SQL" )
-          .arg( quotedIdentifier( layerProperty.geometryColName ) )
-          .arg( table )
-          .arg( tableScanLimit )
-        ;
+                 .arg( quotedIdentifier( layerProperty.geometryColName ) )
+                 .arg( table )
+                 .arg( tableScanLimit );
       }
       else
       {
-
         bool castToGeometry = layerProperty.geometryColType == SctGeography || layerProperty.geometryColType == SctPcPatch;
 
         sql += QLatin1String( "array_agg(DISTINCT " );
@@ -2303,7 +2301,6 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         {
           sql += " FROM " + table;
         }
-
       }
 
       QgsDebugMsgLevel( "Geometry types,srids and dims query: " + sql, 2 );

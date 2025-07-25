@@ -2148,18 +2148,20 @@ bool QgsPostgresProvider::getTopoLayerInfo()
     throw PGException( result ); // we should probably not do this
   }
 
-  if ( ! result.PQntuples() )
+  if ( !result.PQntuples() )
   {
     QgsMessageLog::logMessage( tr( "TopoGeometry column %1.%2.%3 is not registered in topology.layer" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
 
     QString dataQuery;
     if ( mIsQuery )
     {
-      dataQuery = QStringLiteral("SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2 WHERE %1 IS NOT NULL")
-        .arg( quotedIdentifier( mGeometryColumn ), mQuery );
-    } else {
-      dataQuery = QStringLiteral("SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2.%3 WHERE %1 IS NOT NULL")
-        .arg( quotedIdentifier( mGeometryColumn ), quotedIdentifier( mSchemaName ), quotedIdentifier( mTableName ) );
+      dataQuery = QStringLiteral( "SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2 WHERE %1 IS NOT NULL" )
+                    .arg( quotedIdentifier( mGeometryColumn ), mQuery );
+    }
+    else
+    {
+      dataQuery = QStringLiteral( "SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2.%3 WHERE %1 IS NOT NULL" )
+                    .arg( quotedIdentifier( mGeometryColumn ), quotedIdentifier( mSchemaName ), quotedIdentifier( mTableName ) );
     }
 
     sql = QStringLiteral( R"SQL(
@@ -2173,8 +2175,8 @@ bool QgsPostgresProvider::getTopoLayerInfo()
       WHERE d.topology_id = t.id
       AND l.topology_id = t.id
       AND l.layer_id = d.layer_id
-    )SQL")
-      .arg( dataQuery );
+    )SQL" )
+            .arg( dataQuery );
 
     result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
