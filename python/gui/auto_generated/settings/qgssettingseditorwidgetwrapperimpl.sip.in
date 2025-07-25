@@ -162,6 +162,12 @@ Constructor of the wrapper for a given ``setting`` and its widget
 ``editor``
 %End
 
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
+%End
+
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
 
     virtual QString id() const;

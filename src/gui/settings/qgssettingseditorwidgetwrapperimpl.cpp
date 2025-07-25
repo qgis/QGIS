@@ -94,7 +94,7 @@ bool QgsSettingsStringComboBoxWrapper::setWidgetValue( const QString &value ) co
 {
   if ( mEditor )
   {
-    int idx = mMode == Mode::Data ? mEditor->findData( value ) : mEditor->findText( value );
+    int idx = mMode == Mode::Data ? mEditor->findData( value, mDataRole ) : mEditor->findText( value );
     if ( idx >= 0 )
     {
       mEditor->setCurrentIndex( idx );
@@ -140,7 +140,7 @@ QString QgsSettingsStringComboBoxWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
-    return mMode == Mode::Data ? mEditor->currentData().toString() : mEditor->currentText();
+    return mMode == Mode::Data ? mEditor->currentData( mDataRole ).toString() : mEditor->currentText();
   }
   else
   {
