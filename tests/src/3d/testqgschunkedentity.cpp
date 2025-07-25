@@ -20,10 +20,27 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsline3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsvectorlayerchunkloader_p.h"
+#include "qgsdemterrainsettings.h"
+#include "qgsdemterraingenerator.h"
+#include "qgs3dsymbolregistry.h"
+#include "qbuffer.h"
+
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+#endif
 
 
 class TestQgsChunkedEntity : public QgsTest
@@ -38,10 +55,15 @@ class TestQgsChunkedEntity : public QgsTest
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void vectorLayerChunkedEntityElevationDtm();
     void vectorLayerChunkedEntityElevationOffset();
     void ruleBasedChunkedEntityElevationOffset();
 
   private:
+    void checkLowestZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData );
+    void docCheckElevationDtm( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs, const QString &dataPath, const QString &dtmPath, //
+                               const QString &dtmHiResPath, const QgsRectangle &featExtent, const QVector<float> &expectedZ );
+
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm = nullptr;
     QgsRasterLayer *mLayerRgb = nullptr;
@@ -92,6 +114,183 @@ void TestQgsChunkedEntity::cleanupTestCase()
   mProject.reset();
   QgsApplication::exitQgis();
 }
+
+void TestQgsChunkedEntity::checkLowestZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, //
+                                         QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData )
+{
+  std::unique_ptr<Qt3DCore::QEntity> entity;
+  Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( map );
+  renderContext.expressionContext().setFeature( f );
+
+  QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layerData, symbolTerrain );
+  QSet<QString> attributeNames;
+  QVERIFY( handler->prepare( renderContext, attributeNames, QgsVector3D() ) );
+  handler->processFeature( f, renderContext );
+
+  entity.reset( new Qt3DCore::QEntity() );
+  entity->setObjectName( "ROOT" );
+
+  handler->finalize( entity.get(), renderContext );
+
+  QCOMPARE( entity->children().size(), 1 );
+
+  for ( QObject *child : entity->children() ) // search 3d entity
+  {
+    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
+    if ( childEntity )
+    {
+      for ( QObject *comp : childEntity->children() ) // search geometry renderer
+      {
+        Qt3DRender::QGeometryRenderer *childComp = qobject_cast<Qt3DRender::QGeometryRenderer *>( comp );
+        if ( childComp )
+        {
+          QVERIFY( childComp->geometry() );
+          for ( Qt3DRender::QAttribute *attrib : childComp->geometry()->attributes() ) // search position attribute
+          {
+            if ( attrib->name() == Qt3DQAttribute::defaultPositionAttributeName() )
+            {
+              QCOMPARE( attrib->count(), expectedZ.size() );
+              Qt3DQBuffer *buff3d = attrib->buffer();
+              QByteArray buff = buff3d->data();
+              const float *ptrFloat = reinterpret_cast<const float *>( buff.constData() );
+              for ( uint i = 0; i < attrib->count(); ++i )
+              {
+                float z = ptrFloat[( i * attrib->byteStride() / sizeof( float ) ) + 2];
+                if ( z != expectedZ[i] )
+                {
+                  qWarning() << "actual[" << i << "]=" << z << "/ expected= " << expectedZ[i];
+                  for ( uint j = 0; j < attrib->count(); ++j )
+                  {
+                    float x = ptrFloat[( j * attrib->byteStride() / sizeof( float ) ) + 0];
+                    float y = ptrFloat[( j * attrib->byteStride() / sizeof( float ) ) + 1];
+                    z = ptrFloat[( j * attrib->byteStride() / sizeof( float ) ) + 2];
+                    qWarning() << x << "," << y << "," << z;
+                  }
+                }
+                QCOMPARE( z, expectedZ[i] );
+              }
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+}
+
+
+void TestQgsChunkedEntity::docCheckElevationDtm( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs,      //
+                                                 const QString &dataPath, const QString &dtmPath, const QString &dtmHiResPath, //
+                                                 const QgsRectangle &featExtent, const QVector<float> &expectedZ )
+{
+  QgsVectorLayer *layerData = new QgsVectorLayer( dataPath, "data", "ogr" );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( dtmPath, "dtm", "gdal" );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerData << layerDtm );
+  mapSettings->setCrs( crs );
+  mapSettings->setExtent( fullExtent );
+
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( layerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+
+  mapSettings->setTerrainSettings( demTerrainSettings );
+
+  // if clamping is terrain, offset is applied
+  QgsAbstract3DSymbol *symbolTerrain;
+  if ( layerData->geometryType() == Qgis::GeometryType::Line )
+  {
+    QgsLine3DSymbol *symbol = new QgsLine3DSymbol;
+    symbol->setRenderAsSimpleLines( false );
+    symbol->setAltitudeClamping( Qgis::AltitudeClamping::Terrain );
+    symbol->setAltitudeBinding( Qgis::AltitudeBinding::Vertex );
+    symbol->setWidth( 2.0 );
+    symbol->setExtrusionHeight( 0.0 );
+    symbolTerrain = symbol;
+  }
+  else
+  {
+    QgsPolygon3DSymbol *symbol = new QgsPolygon3DSymbol;
+    symbol->setAltitudeClamping( Qgis::AltitudeClamping::Terrain );
+    symbol->setAltitudeBinding( Qgis::AltitudeBinding::Vertex );
+    symbolTerrain = symbol;
+  }
+
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbolTerrain );
+  renderer3d->setLayer( layerData );
+  layerData->setRenderer3D( renderer3d );
+
+  // build full res terrain generator
+  QgsRasterLayer *layerDtmHiRes = new QgsRasterLayer( dtmHiResPath, "dtm", "gdal" );
+  QgsDemTerrainGenerator fullResDem;
+  fullResDem.setLayer( layerDtmHiRes );
+  fullResDem.setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
+
+  // lowest Z is computed above terrain
+  QgsFeatureIterator fi = layerData->getFeatures( featExtent );
+  QgsFeature f;
+  QVERIFY( fi.nextFeature( f ) );
+
+  QgsPointXY centroid = f.geometry().centroid().asPoint();
+  float fullResZ;
+  qDebug() << "Check elevation around x/y:" << centroid.x() << "/" << centroid.y();
+  for ( int x = -10; x <= 10; x += 2 )
+    for ( int y = -10; y <= 10; y += 2 )
+    {
+      double tx = centroid.x() + x;
+      double ty = centroid.y() + y;
+      fullResZ = fullResDem.heightAt( tx, ty, Qgs3DRenderContext() );
+      qDebug() << tx << "," << ty << "," << fullResZ * demTerrainSettings->verticalScale();
+      float z = mapSettings->terrainGenerator()->heightAt( tx, ty, Qgs3DRenderContext() );
+      QCOMPARE( fullResZ, z );
+    }
+
+  checkLowestZ( f, expectedZ, mapSettings, symbolTerrain, layerData );
+}
+
+
+void TestQgsChunkedEntity::vectorLayerChunkedEntityElevationDtm()
+{
+  docCheckElevationDtm( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                           //
+                        QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                             //
+                        testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm_hi_res.tif" ), //
+                        QgsRectangle( 321900, 130360, 321930, 130390 ),                                                           //
+                        QVector<float> { 306.0f, 309.0f, 309.0f, 309.0f, 309.0f, 309.0f } );
+
+  docCheckElevationDtm( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                           //
+                        QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                             //
+                        testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm_hi_res.tif" ), //
+                        QgsRectangle( 321875, 130109, 321883, 130120 ),                                                           //
+                        QVector<float> { 228.0f, 234.0f, 231.0f, 228.0f, 231.0f, 228.0f } );
+
+  docCheckElevationDtm( QgsRectangle( 60000, 60000, 70000, 70000 ),  //
+                        QgsCoordinateReferenceSystem( "EPSG:2169" ), //
+                        "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/routes.gpkg.gz",
+                        "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
+                        "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
+                        QgsRectangle( 62780, 64545, 62784, 64555 ),                                                                         //
+                        QVector<float> { 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
+                                         1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
+                                         1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
+                                         1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
+                                         1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
+                                         1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f } );
+
+  docCheckElevationDtm( QgsRectangle( 60000, 60000, 70000, 70000 ),  //
+                        QgsCoordinateReferenceSystem( "EPSG:2169" ), //
+                        "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/routes.gpkg.gz",
+                        "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
+                        "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
+                        QgsRectangle( 63265, 65796, 63260, 65802 ),                                                                         // id: 3118
+                        QVector<float> { 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
+                                         1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
+                                         1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
+                                         1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
+                                         1170.0f, 1170.0f, 1170.0f, 1170.0f } );
+}
+
 
 void TestQgsChunkedEntity::vectorLayerChunkedEntityElevationOffset()
 {
