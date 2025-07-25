@@ -118,10 +118,13 @@ void QgsVectorLayerChunkLoader::start()
 
 QgsVectorLayerChunkLoader::~QgsVectorLayerChunkLoader()
 {
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  if ( mFutureWatcher )
   {
     disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
+    mCanceled = true;
+    mFutureWatcher->cancel();
+    if ( mFutureWatcher->isFinished() )
+      mFutureWatcher->waitForFinished();
   }
 }
 
