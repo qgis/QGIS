@@ -22,6 +22,11 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemcombobox.h"
+#include "qgslayoutelevationprofilewidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
+#include "qgselevationprofilecanvas.h"
+#include "qgslayertree.h"
 
 #include <QApplication>
 #include <QMainWindow>
@@ -39,6 +44,7 @@ class TestQgsLayoutGui : public QObject
 
     void itemTypeComboBox();
     void testProxyCrash();
+    void testElevationProfileWidget();
 
   private:
 };
@@ -233,6 +239,58 @@ void TestQgsLayoutGui::testProxyCrash()
   layout->itemsModel()->rebuildSceneItemList();
 
   delete layout;
+}
+
+void TestQgsLayoutGui::testElevationProfileWidget()
+{
+  QgsProject project;
+  QgsLayout layout( &project );
+  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl1->elevationProperties() )->setZOffset( 5 );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl2->elevationProperties() )->setZOffset( 5 );
+  QgsVectorLayer *vl3 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl3->elevationProperties() )->setZOffset( 5 );
+  project.addMapLayers( { vl1, vl2, vl3 } );
+
+  QgsLayoutItemElevationProfile profile( &layout );
+  // layers will be rendered from v1->vl3 from bottom to top
+  profile.setLayers( { vl1, vl2, vl3 } );
+  QgsLayoutElevationProfileWidget widget( &profile );
+
+  QCOMPARE( widget.mLayerTree->children().size(), 3 );
+  // in widget's layer tree the layers should be in order v1->vl3 from bottom to top
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), QStringLiteral( "vl3" ) );
+  QVERIFY( widget.mLayerTree->children().at( 0 )->isItemVisibilityCheckedRecursive() );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), QStringLiteral( "vl2" ) );
+  QVERIFY( widget.mLayerTree->children().at( 1 )->isItemVisibilityCheckedRecursive() );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), QStringLiteral( "vl1" ) );
+  QVERIFY( widget.mLayerTree->children().at( 2 )->isItemVisibilityCheckedRecursive() );
+
+  // uncheck a layer
+  widget.mLayerTree->children().at( 1 )->setItemVisibilityChecked( false );
+  QCOMPARE( profile.layers().size(), 2 );
+  // layers should be in order of rendering, ie vl1 before vl3 as vl3 is rendered on top
+  QCOMPARE( profile.layers().at( 0 )->name(), QStringLiteral( "vl1" ) );
+  QCOMPARE( profile.layers().at( 1 )->name(), QStringLiteral( "vl3" ) );
+
+  QgsElevationProfileCanvas canvas;
+  // layers will be rendered from v1->vl3 from bottom to top
+  canvas.setLayers( { vl1, vl2, vl3 } );
+
+  widget.copySettingsFromProfileCanvas( &canvas );
+  QCOMPARE( profile.layers().size(), 3 );
+  // layers should be in order of rendering, ie vl1 before vl3 as vl3 is rendered on top
+  QCOMPARE( profile.layers().at( 0 )->name(), QStringLiteral( "vl1" ) );
+  QCOMPARE( profile.layers().at( 1 )->name(), QStringLiteral( "vl2" ) );
+  QCOMPARE( profile.layers().at( 2 )->name(), QStringLiteral( "vl3" ) );
+
+  canvas.setLayers( { vl3, vl2, vl1 } );
+  widget.copySettingsFromProfileCanvas( &canvas );
+  QCOMPARE( profile.layers().size(), 3 );
+  QCOMPARE( profile.layers().at( 0 )->name(), QStringLiteral( "vl3" ) );
+  QCOMPARE( profile.layers().at( 1 )->name(), QStringLiteral( "vl2" ) );
+  QCOMPARE( profile.layers().at( 2 )->name(), QStringLiteral( "vl1" ) );
 }
 
 
