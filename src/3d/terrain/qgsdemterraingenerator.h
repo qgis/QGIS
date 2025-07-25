@@ -22,6 +22,7 @@
 
 class QgsRasterLayer;
 class QgsDemHeightMapGenerator;
+class QgsDemTerrainTileLoader;
 
 #include "qgsmaplayerref.h"
 
@@ -80,6 +81,13 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
+  signals:
+    //! emitted when an hi-res DEM tile has been received
+    void maxResTileReceived( const QgsChunkNodeId &tileId, const QgsRectangle &extent );
+
+  private slots:
+    void onHeightMapReceived( int jobId, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap );
+
   private:
     void updateGenerator();
 
@@ -95,6 +103,12 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
     float mSkirtHeight = 10.f;
+    //! root node used to search best height map data according to x/y
+    mutable QgsChunkNode *mRootNode = nullptr;
+    //! map used as height map data cache
+    mutable QMap<QString, QByteArray> mLoaderMap;
+    //! protect cache and mRootNode for concurrent updates
+    mutable QMutex mRootNodeMutex;
 };
 
 
