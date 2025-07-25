@@ -1225,7 +1225,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         context = QgsProfileGenerationContext()
         context.setMapUnitsPerDistancePixel(0.50)
 
-        self.asserTrue(generator.generateProfile(context))
+        self.assertTrue(generator.generateProfile(context))
         results = generator.takeResults()
         self.assertEqual(
             self.round_dict(results.distanceToHeightMap(), 1),
