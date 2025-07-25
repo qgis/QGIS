@@ -30,6 +30,7 @@
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
@@ -37,6 +38,7 @@
 #include <QElapsedTimer>
 #include <QFutureWatcher>
 #include <QMutex>
+#include <QtConcurrent/QtConcurrentRun>
 
 #define SIP_NO_FILE
 
@@ -57,9 +59,17 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     //! Constructs loader for the given chunk node
     QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator );
 
+    virtual ~QgsDemTerrainTileLoader() override
+    {
+      mNode = nullptr;
+    }
+
     void start() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+
+    //! Returns current height map data
+    QByteArray heightMap() const { return mHeightMap; }
 
   private slots:
     void onHeightMapReady( int jobId, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap );
