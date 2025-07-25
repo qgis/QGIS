@@ -211,6 +211,8 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map,
 
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
 
+  mUpdateJobFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
+
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
@@ -219,6 +221,14 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
   // cancel / wait for jobs
   cancelActiveJobs();
 }
+
+void QgsVectorLayerChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes )
+{
+  QgsChunkedEntity::updateNodes( nodes, mUpdateJobFactory.get() );
+
+  setNeedsUpdate( true );
+}
+
 
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
