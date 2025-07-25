@@ -129,7 +129,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   return entity;
 }
 
-void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &heightMap )
+void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QgsChunkNodeId &, const QgsRectangle &, const QByteArray &heightMap )
 {
   if ( mHeightMapJobId == jobId )
   {
@@ -282,7 +282,7 @@ void QgsDemHeightMapGenerator::waitForFinished()
     toBeDeleted.push_back( fw );
 
     QByteArray data = jobData.future.result();
-    emit heightMapReady( jobData.jobId, data );
+    emit heightMapReady( jobData.jobId, jobData.tileId, jobData.extent, data );
   }
 
   for ( QFutureWatcher<QByteArray> *fw : toBeDeleted )
@@ -335,7 +335,7 @@ void QgsDemHeightMapGenerator::onFutureFinished()
   QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), jobData.tileId.text() );
 
   QByteArray data = jobData.future.result();
-  emit heightMapReady( jobData.jobId, data );
+  emit heightMapReady( jobData.jobId, jobData.tileId, jobData.extent, data );
 }
 
 /// @endcond
