@@ -1215,9 +1215,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
 
         # curve in pcl extent
         curve = QgsLineString()
-        curve.fromWkt(
-            "LineString (637780 850995, 637785 850995)"
-        )
+        curve.fromWkt("LineString (637780 850995, 637785 850995)")
 
         req = QgsProfileRequest(curve)
         req.setCrs(pcl.crs())
@@ -1241,9 +1239,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
 
         # curve outside pcl extent
         curve = QgsLineString()
-        curve.fromWkt(
-            "LineString (639000 850722, 639005 850722)"
-        )
+        curve.fromWkt("LineString (639000 850722, 639005 850722)")
 
         req = QgsProfileRequest(curve)
         req.setCrs(pcl.crs())
@@ -1253,6 +1249,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         self.assertFalse(generator.generateProfile(context))
         results = generator.takeResults()
         self.assertFalse(results)
+
 
 if __name__ == "__main__":
     unittest.main()
