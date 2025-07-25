@@ -59,7 +59,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private slots:
-    void onHeightMapReady( int jobId, const QByteArray &heightMap );
+    void onHeightMapReady( int jobId, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap );
 
   private:
     int mHeightMapJobId;
@@ -100,7 +100,7 @@ class QgsDemHeightMapGenerator : public QObject
 
   signals:
     //! emitted when a previously requested heightmap is ready
-    void heightMapReady( int jobId, const QByteArray &heightMap );
+    void heightMapReady( int jobId, const QgsChunkNodeId &tileId, const QgsRectangle &extent, const QByteArray &heightMap );
 
   private slots:
     void onFutureFinished();
