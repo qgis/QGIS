@@ -679,19 +679,25 @@ void QgsChunkedEntity::onActiveJobFinished()
   {
     Q_ASSERT( node->state() == QgsChunkNode::Updating );
 
+    Qt3DCore::QEntity *newEntity = nullptr;
     // This is a special case when we're replacing the node's entity
     // with QgsChunkUpdaterFactory passed to updatedNodes(). The returned
     // updater is actually a chunk loader that will give us a completely
     // new QEntity, so we just delete the old one and use the new one
     if ( QgsChunkLoader *nodeUpdater = qobject_cast<QgsChunkLoader *>( node->updater() ) )
     {
-      Qt3DCore::QEntity *newEntity = nodeUpdater->createEntity( this );
-      node->replaceEntity( newEntity );
-      emit newEntityCreated( newEntity );
+      newEntity = nodeUpdater->createEntity( this );
+      if ( newEntity )
+      {
+        node->replaceEntity( newEntity );
+      }
     }
 
     addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Update"_s );
     node->setUpdated();
+
+    if ( newEntity )
+      emit newEntityCreated( newEntity );
   }
 
   // cleanup the job that has just finished
@@ -715,7 +721,7 @@ void QgsChunkedEntity::startJobs()
     delete entry;
 
     QgsChunkQueueJob *job = startJob( node );
-    if ( !job->isFinished() )
+    if ( job && !job->isFinished() )
       mActiveJobs.append( job );
   }
 }
@@ -727,9 +733,12 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
     addTileTraceEvent( *this, *node, QgsEventTracing::AsyncBegin, u"Load"_s );
 
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
-    connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
-    loader->start();
-    node->setLoading( loader );
+    if ( loader )
+    {
+      connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
+      loader->start();
+      node->setLoading( loader );
+    }
     return loader;
   }
   else if ( node->state() == QgsChunkNode::QueuedForUpdate )
@@ -753,6 +762,11 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob *job )
   Q_ASSERT( job );
 
   QgsChunkNode *node = job->chunk();
+  if ( !node )
+    return;
+  if ( node->state() == QgsChunkNode::Loaded )
+    return;
+
   disconnect( job, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
 
   if ( node->state() == QgsChunkNode::Loading )
