@@ -21,6 +21,8 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsfieldformatter.h"
+#include "qgsapplication.h"
 
 #include <QTableView>
 
@@ -145,6 +147,26 @@ void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariant
   if ( !isRunningDeprecatedSetValue )
     setValue( value );
   Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsEditorWidgetWrapper::updateComboBoxValues( const QVariant &value, QComboBox *comboBox )
+{
+  if ( comboBox )
+  {
+    if ( !QgsVariantUtils::isNull( value ) )
+    {
+      QString v = value.toString();
+      if ( comboBox->findData( v ) == -1 )
+      {
+        comboBox->addItem( v.prepend( '(' ).append( ')' ), v );
+      }
+    }
+    // only when "allow null" is checked a null value is added
+    else if ( config( QStringLiteral( "AllowNull" ) ).toBool() && comboBox->findData( QgsFieldFormatter::NULL_VALUE ) == -1 )
+    {
+      comboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), QgsFieldFormatter::NULL_VALUE );
+    }
+  }
 }
 
 QgsEditorWidgetWrapper::ConstraintResult QgsEditorWidgetWrapper::constraintResult() const
