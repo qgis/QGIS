@@ -237,6 +237,16 @@ Controls if the constraint result should be visualized on the widget
                                 (mostly editable status)
 %End
 
+    void updateComboBoxValues( const QVariant &value, QComboBox *comboBox );
+%Docstring
+Adds a value to the combobox, for example the default value or the value
+from :py:func:`QgsEditorWidgetWrapper.setValues()`. Updates the combobox
+to show the new value.
+
+:param value: The new value of the attribute
+:param comboBox: Pointer to the combobox of the widget
+%End
+
   signals:
 
  void valueChanged( const QVariant &value );

@@ -528,12 +528,12 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  const QVariant val = exp.evaluate( &context );
   if ( exp.hasEvalError() )
   {
     mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
     return;
   }
+  const QVariant val = exp.evaluate( &context );
 
   // if the expression uses fields and it's not on update,
   // there is no warranty that the field will be available
