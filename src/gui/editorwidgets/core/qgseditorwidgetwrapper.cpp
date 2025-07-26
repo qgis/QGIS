@@ -15,11 +15,11 @@
 
 #include "qgseditorwidgetwrapper.h"
 
+#include "qgsapplication.h"
+#include "qgsfieldformatter.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoinbuffer.h"
-#include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QString>
@@ -32,6 +32,8 @@ using namespace Qt::StringLiterals;
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mFieldIdx( fieldIdx )
+  , mValidConstraint( true )
+  , mIsBlockingCommit( false )
 {}
 
 int QgsEditorWidgetWrapper::fieldIdx() const
@@ -156,6 +158,26 @@ void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariant
   if ( !isRunningDeprecatedSetValue )
     setValue( value );
   Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsEditorWidgetWrapper::updateComboBoxValues( const QVariant &value, QComboBox *comboBox )
+{
+  if ( comboBox )
+  {
+    if ( !QgsVariantUtils::isNull( value ) )
+    {
+      QString v = value.toString();
+      if ( comboBox->findData( v ) == -1 )
+      {
+        comboBox->addItem( v.prepend( '(' ).append( ')' ), v );
+      }
+    }
+    // The null value is added only when allow null is checked
+    else if ( config( u"AllowNull"_s ).toBool() && comboBox->findData( QgsFieldFormatter::NULL_VALUE ) == -1 )
+    {
+      comboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), QgsFieldFormatter::NULL_VALUE );
+    }
+  }
 }
 
 QgsEditorWidgetWrapper::ConstraintResult QgsEditorWidgetWrapper::constraintResult() const
