@@ -21,6 +21,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+const QString QgsFieldFormatter::NULL_VALUE = u"{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"_s;
+
 QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( config )
