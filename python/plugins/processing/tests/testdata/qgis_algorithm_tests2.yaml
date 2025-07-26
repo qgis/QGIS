@@ -1496,8 +1496,8 @@ tests:
         name: expected/gridify_lines.gml
         type: vector
 
-  - algorithm: qgis:distancetonearesthubpoints
-    name: Hub distance points
+  - algorithm: native:distancetonearesthub
+    name: Hub distance
     params:
       INPUT:
         name: points.gml
@@ -1508,24 +1508,11 @@ tests:
       FIELD: name
       UNIT: 0
     results:
-      OUTPUT:
-        name: expected/hub_distance_points.gml
-        type: vector
-
-  - algorithm: qgis:distancetonearesthublinetohub
-    name: Hub distance lines
-    params:
-      INPUT:
-        name: points.gml
-        type: vector
-      HUBS:
-        name: custom/hub_points.gml
-        type: vector
-      FIELD: name
-      UNIT: 0
-    results:
-      OUTPUT:
+      OUTPUT_LINES:
         name: expected/hub_distance_lines.gml
+        type: vector
+      OUTPUT_POINTS:
+        name: expected/hub_distance_points.gml
         type: vector
 
   - algorithm: native:hublines
