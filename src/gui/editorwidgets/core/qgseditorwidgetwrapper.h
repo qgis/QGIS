@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include <QMap>
 #include <QVariant>
+#include <QComboBox>
 
 class QgsVectorLayer;
 class QgsField;
@@ -233,6 +234,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param constraintResultVisible if constraintResult should be displayed (mostly editable status)
      */
     void setConstraintResultVisible( bool constraintResultVisible );
+
+    /**
+    * Adds a value to the combobox, for example the default value or the value from QgsEditorWidgetWrapper::setValues().
+    * Updates the combobox to show the new value.
+    *
+    * \param value The new value of the attribute
+    * \param comboBox Pointer to the combobox of the widget
+    */
+    void updateComboBoxValues( const QVariant &value, QComboBox *comboBox );
 
   signals:
 

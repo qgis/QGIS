@@ -33,8 +33,6 @@ the above configuration:
 %End
   public:
 
-    static const QString NULL_VALUE;
-
     QgsValueMapFieldFormatter();
 %Docstring
 Default constructor of field formatter for a value map field.

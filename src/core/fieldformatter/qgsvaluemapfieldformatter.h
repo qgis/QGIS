@@ -43,12 +43,6 @@ class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
   public:
 
     /**
-     * Will be saved in the configuration when a value is NULL.
-     * It's the magic UUID {2839923C-8B7D-419E-B84B-CA2FE9B80EC7}
-     */
-    static const QString NULL_VALUE;
-
-    /**
       * Default constructor of field formatter for a value map field.
       */
     QgsValueMapFieldFormatter();
