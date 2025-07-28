@@ -199,6 +199,10 @@ class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilt
 
     /**
      * Returns TRUE if the proxy accepts the matching source row.
+     *
+     * Handles filtering based on object name.
+     *
+     * Subclasses should override this method instead of filterAcceptsRow().
      */
     virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
 

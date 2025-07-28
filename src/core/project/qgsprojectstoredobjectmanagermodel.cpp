@@ -293,6 +293,7 @@ void QgsProjectStoredObjectManagerModel<T>::setAllowEmptyObject( bool allowEmpty
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
 
+///@cond PRIVATE
 template<>
 QVariant QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>::objectToVariant( QgsMasterLayoutInterface *object ) const
 {
@@ -318,6 +319,8 @@ QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInte
 }
 
 template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>;
+
+///@endcond
 
 //
 // QgsProjectStoredObjectManagerProxyModelBase
@@ -390,4 +393,6 @@ bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int s
   return true;
 }
 
+///@cond PRIVATE
 template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;
+///@endcond
