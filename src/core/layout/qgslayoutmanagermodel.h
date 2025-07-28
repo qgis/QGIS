@@ -21,12 +21,15 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
+#include "qgsprojectstoredobjectmanagermodel.h"
+
 
 class QgsProject;
 class QgsPrintLayout;
 class QgsStyleEntityVisitorInterface;
 class QgsLayoutManager;
 class QgsMasterLayoutInterface;
+
 
 /**
  * \ingroup core
@@ -37,8 +40,13 @@ class QgsMasterLayoutInterface;
  *
  * \since QGIS 3.8
  */
-class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
+#ifdef SIP_RUN
+class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerModelBase // for sip we skip to the base class and avoid the template difficulty
 {
+#else
+class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerModel< QgsMasterLayoutInterface >
+{
+#endif
     Q_OBJECT
 
   public:
@@ -63,11 +71,6 @@ class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
      */
     explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-
     /**
      * Returns the layout at the corresponding \a index.
      * \see indexFromLayout()
@@ -90,17 +93,8 @@ class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
      * Returns TRUE if the model allows the empty layout ("not set") choice.
      * \see setAllowEmptyLayout()
      */
-    bool allowEmptyLayout() const { return mAllowEmpty; }
+    bool allowEmptyLayout() const { return allowEmptyObject(); }
 
-  private slots:
-    void layoutAboutToBeAdded( const QString &name );
-    void layoutAboutToBeRemoved( const QString &name );
-    void layoutAdded( const QString &name );
-    void layoutRemoved( const QString &name );
-    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
-  private:
-    QgsLayoutManager *mLayoutManager = nullptr;
-    bool mAllowEmpty = false;
 };
 
 

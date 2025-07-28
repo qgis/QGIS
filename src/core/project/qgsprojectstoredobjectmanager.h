@@ -105,6 +105,25 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
       clearObjects();
     }
 
+    /**
+     * Returns the list of objects contained within the manager.
+     */
+    QList< T * > objects() const { return mObjects; }
+
+    /**
+     * Returns the object with a matching name, or NULLPTR if no matching objects
+     * were found.
+     */
+    T *objectByName( const QString &name ) const
+    {
+      for ( T *l : mObjects )
+      {
+        if ( l->name() == name )
+          return l;
+      }
+      return nullptr;
+    }
+
   protected:
 
     //! Attached objects, owned by the manager
@@ -180,20 +199,6 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
       emit objectRemoved( name );
       markProjectDirty();
       return true;
-    }
-
-    /**
-     * Returns the object with a matching name, or NULLPTR if no matching objects
-     * were found.
-     */
-    T *objectByName( const QString &name ) const
-    {
-      for ( T *l : mObjects )
-      {
-        if ( l->name() == name )
-          return l;
-      }
-      return nullptr;
     }
 
     /**

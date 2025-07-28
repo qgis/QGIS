@@ -769,6 +769,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
   project/qgsprojectstoredobjectmanager.cpp
+  project/qgsprojectstoredobjectmanagermodel.cpp
   project/qgsprojectstylesettings.cpp
   project/qgsprojecttimesettings.cpp
   project/qgsprojectutils.cpp
@@ -1850,6 +1851,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
   project/qgsprojectstoredobjectmanager.h
+  project/qgsprojectstoredobjectmanagermodel.h
   project/qgsprojectstylesettings.h
   project/qgsprojecttimesettings.h
   project/qgsprojecttranslator.h
