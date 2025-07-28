@@ -94,35 +94,20 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
     /**
      * Constructor for QgsAbstractProjectStoredObjectManager, for objects attached to the specified \a project.
      */
-    explicit QgsAbstractProjectStoredObjectManager( QgsProject *project SIP_TRANSFERTHIS = nullptr )
-      : QgsProjectStoredObjectManagerBase( project )
-    {
+    explicit QgsAbstractProjectStoredObjectManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
 
-    }
-
-    ~QgsAbstractProjectStoredObjectManager() override
-    {
-      clearObjects();
-    }
+    ~QgsAbstractProjectStoredObjectManager() override;
 
     /**
      * Returns the list of objects contained within the manager.
      */
-    QList< T * > objects() const { return mObjects; }
+    QList< T * > objects() const;
 
     /**
      * Returns the object with a matching name, or NULLPTR if no matching objects
      * were found.
      */
-    T *objectByName( const QString &name ) const
-    {
-      for ( T *l : mObjects )
-      {
-        if ( l->name() == name )
-          return l;
-      }
-      return nullptr;
-    }
+    T *objectByName( const QString &name ) const;
 
   protected:
 
@@ -133,14 +118,7 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
      * Removes and deletes all objects from the manager.
      * \see removeObject()
      */
-    void clearObjects()
-    {
-      const QList< T * > objects = mObjects;
-      for ( T *l : objects )
-      {
-        removeObject( l );
-      }
-    }
+    void clearObjects();
 
     /**
      * Adds an \a object to the manager. Ownership of the object is transferred to the manager.
@@ -149,30 +127,7 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
      * \see removeObject()
      * \see objectAdded()
      */
-    bool addObject( T *object SIP_TRANSFER )
-    {
-      if ( !object || mObjects.contains( object ) )
-        return false;
-
-      // check for duplicate name
-      const QList<T *> constObjects = mObjects;
-      for ( T *l : constObjects )
-      {
-        if ( l->name() == object->name() )
-        {
-          delete object;
-          return false;
-        }
-      }
-
-      setupObjectConnections( object );
-
-      emit objectAboutToBeAdded( object->name() );
-      mObjects << object;
-      emit objectAdded( object->name() );
-      markProjectDirty();
-      return true;
-    }
+    bool addObject( T *object SIP_TRANSFER );
 
     /**
      * Removes an \a object from the manager. The object is deleted.
@@ -184,31 +139,13 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
      * \see objectAboutToBeRemoved()
      * \see clearObjects()
      */
-    bool removeObject( T *object )
-    {
-      if ( !object )
-        return false;
-
-      if ( !mObjects.contains( object ) )
-        return false;
-
-      QString name = object->name();
-      emit objectAboutToBeRemoved( name );
-      mObjects.removeAll( object );
-      delete object;
-      emit objectRemoved( name );
-      markProjectDirty();
-      return true;
-    }
+    bool removeObject( T *object );
 
     /**
      * Sets up additional connections to an \a object, called when the object
      * is first added to the manager.
      */
-    virtual void setupObjectConnections( T *object )
-    {
-      Q_UNUSED( object )
-    }
+    virtual void setupObjectConnections( T *object );
 
 };
 
