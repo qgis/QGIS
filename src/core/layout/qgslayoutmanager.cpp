@@ -60,9 +60,9 @@ QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
 QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
 {
   QList<QgsPrintLayout *> result;
-  const QList<QgsMasterLayoutInterface *> _layouts( mObjects );
-  result.reserve( _layouts.size() );
-  for ( const auto &layout : _layouts )
+  const QList<QgsMasterLayoutInterface *> constLayouts( mObjects );
+  result.reserve( constLayouts.size() );
+  for ( const auto &layout : constLayouts )
   {
     QgsPrintLayout *_item( dynamic_cast<QgsPrintLayout *>( layout ) );
     if ( _item )
