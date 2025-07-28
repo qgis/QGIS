@@ -17,7 +17,6 @@
 #include "moc_qgslayoutmanager.cpp"
 #include "qgslayout.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
@@ -28,90 +27,41 @@
 #include <QMessageBox>
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
-  : QObject( project )
-  , mProject( project )
+  : QgsAbstractProjectStoredObjectManager( project )
 {
-
+  // proxy base class generic signals to specific layout signals
+  connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeAdded, this, &QgsLayoutManager::layoutAboutToBeAdded );
+  connect( this, &QgsProjectStoredObjectManagerBase::objectAdded, this, &QgsLayoutManager::layoutAdded );
+  connect( this, &QgsProjectStoredObjectManagerBase::objectRemoved, this, &QgsLayoutManager::layoutRemoved );
+  connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsLayoutManager::layoutAboutToBeRemoved );
 }
 
-QgsLayoutManager::~QgsLayoutManager()
-{
-  clear();
-}
+QgsLayoutManager::~QgsLayoutManager() = default;
 
 bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
 {
-  if ( !layout || mLayouts.contains( layout ) )
-    return false;
-
-  // check for duplicate name
-  for ( QgsMasterLayoutInterface *l : std::as_const( mLayouts ) )
-  {
-    if ( l->name() == layout->name() )
-    {
-      delete layout;
-      return false;
-    }
-  }
-
-  // ugly, but unavoidable for interfaces...
-  if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
-  {
-    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString & newName )
-    {
-      emit layoutRenamed( l, newName );
-    } );
-  }
-  else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
-  {
-    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString & newName )
-    {
-      emit layoutRenamed( r, newName );
-    } );
-  }
-
-  emit layoutAboutToBeAdded( layout->name() );
-  mLayouts << layout;
-  emit layoutAdded( layout->name() );
-  mProject->setDirty( true );
-  return true;
+  return addObject( layout );
 }
 
 bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
 {
-  if ( !layout )
-    return false;
-
-  if ( !mLayouts.contains( layout ) )
-    return false;
-
-  QString name = layout->name();
-  emit layoutAboutToBeRemoved( name );
-  mLayouts.removeAll( layout );
-  delete layout;
-  emit layoutRemoved( name );
-  mProject->setDirty( true );
-  return true;
+  return removeObject( layout );
 }
 
 void QgsLayoutManager::clear()
 {
-  const QList< QgsMasterLayoutInterface * > layouts = mLayouts;
-  for ( QgsMasterLayoutInterface *l : layouts )
-  {
-    removeLayout( l );
-  }
+  clearObjects();
 }
 
 QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
 {
-  return mLayouts;
+  return mObjects;
 }
 
 QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
 {
   QList<QgsPrintLayout *> result;
-  const QList<QgsMasterLayoutInterface *> _layouts( mLayouts );
+  const QList<QgsMasterLayoutInterface *> _layouts( mObjects );
   result.reserve( _layouts.size() );
   for ( const auto &layout : _layouts )
   {
@@ -124,12 +74,7 @@ QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
 
 QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const
 {
-  for ( QgsMasterLayoutInterface *l : mLayouts )
-  {
-    if ( l->name() == name )
-      return l;
-  }
-  return nullptr;
+  return objectByName( name );
 }
 
 bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &doc )
@@ -173,7 +118,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
         do
         {
           isDuplicateName = false;
-          for ( QgsMasterLayoutInterface *layout : std::as_const( mLayouts ) )
+          for ( QgsMasterLayoutInterface *layout : std::as_const( mObjects ) )
           {
             if ( l->name() == layout->name() )
             {
@@ -251,7 +196,7 @@ QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
 
   QgsReadWriteContext context;
   context.setPathResolver( mProject->pathResolver() );
-  for ( QgsMasterLayoutInterface *l : mLayouts )
+  for ( QgsMasterLayoutInterface *l : mObjects )
   {
     QDomElement layoutElem = l->writeLayoutXml( doc, context );
     layoutsElem.appendChild( layoutElem );
@@ -286,8 +231,8 @@ QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayo
 QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type type ) const
 {
   QStringList names;
-  names.reserve( mLayouts.size() );
-  for ( QgsMasterLayoutInterface *l : mLayouts )
+  names.reserve( mObjects.size() );
+  for ( QgsMasterLayoutInterface *l : mObjects )
   {
     names << l->name();
   }
@@ -311,14 +256,14 @@ QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type ty
 
 bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  if ( mLayouts.empty() )
+  if ( mObjects.empty() )
     return true;
 
   // NOTE: if visitEnter returns false it means "don't visit the layouts", not "abort all further visitations"
   if ( !visitor->visitEnter( QgsStyleEntityVisitorInterface::Node( QgsStyleEntityVisitorInterface::NodeType::Layouts, QStringLiteral( "layouts" ), tr( "Layouts" ) ) ) )
     return true;
 
-  for ( QgsMasterLayoutInterface *l : mLayouts )
+  for ( QgsMasterLayoutInterface *l : mObjects )
   {
     if ( !l->layoutAccept( visitor ) )
       return false;
@@ -328,6 +273,25 @@ bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
     return false;
 
   return true;
+}
+
+void QgsLayoutManager::setupObjectConnections( QgsMasterLayoutInterface *layout )
+{
+  // ugly, but unavoidable for interfaces...
+  if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
+  {
+    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString & newName )
+    {
+      emit layoutRenamed( l, newName );
+    } );
+  }
+  else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
+  {
+    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString & newName )
+    {
+      emit layoutRenamed( r, newName );
+    } );
+  }
 }
 
 

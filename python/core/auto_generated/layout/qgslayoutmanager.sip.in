@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutManager : QObject
+class QgsLayoutManager : QgsProjectStoredObjectManagerBase
 {
 %Docstring(signature="appended")
 Manages storage of a set of layouts.
@@ -152,6 +152,11 @@ Emitted when a layout is about to be removed from the manager
 %Docstring
 Emitted when a layout is renamed
 %End
+
+  protected:
+
+    virtual void setupObjectConnections( QgsMasterLayoutInterface *layout );
+
 
 };
 

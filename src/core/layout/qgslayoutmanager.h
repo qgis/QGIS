@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgsprojectstoredobjectmanager.h"
 #include <QObject>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
@@ -40,8 +41,13 @@ class QgsStyleEntityVisitorInterface;
  * QgsLayoutManager retains ownership of all the layouts contained
  * in the manager.
  */
-class CORE_EXPORT QgsLayoutManager : public QObject
+#ifdef SIP_RUN
+class CORE_EXPORT QgsLayoutManager : public QgsProjectStoredObjectManagerBase // for sip we skip to the base class and avoid the template difficulty
 {
+#else
+class CORE_EXPORT QgsLayoutManager : public QgsAbstractProjectStoredObjectManager< QgsMasterLayoutInterface >
+{
+#endif
     Q_OBJECT
 
   public:
@@ -150,11 +156,12 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     //! Emitted when a layout is renamed
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 
+  protected:
+
+    void setupObjectConnections( QgsMasterLayoutInterface *layout ) override;
+
   private:
 
-    QgsProject *mProject = nullptr;
-
-    QList< QgsMasterLayoutInterface * > mLayouts;
 
 };
 
