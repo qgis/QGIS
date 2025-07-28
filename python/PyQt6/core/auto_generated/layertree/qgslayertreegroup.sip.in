@@ -143,6 +143,14 @@ Find custom node representing an object specified by its ID. Searches
 recursively the whole sub-tree.
 %End
 
+    QList<QgsLayerTreeNode *> findLayersAndCustomNodes() const;
+%Docstring
+Find all layer and custom nodes. Searches recursively the whole
+sub-tree.
+
+.. versionadded:: 4.0
+%End
+
     void reorderGroupLayers( const QList< QgsMapLayer * > &order );
 %Docstring
 Reorders layers in the group to match the order specified by ``order``.
@@ -160,6 +168,27 @@ other layers will be ignored.
    non-matching layers and group nodes moved to sit after the re-ordered matching layers.
 
 .. versionadded:: 3.30
+%End
+
+    void reorderGroupLayersAndCustomNodes( const QList< QgsLayerTreeNode * > &order );
+%Docstring
+Reorders layers and custom nodes in the group to match the order
+specified by ``order``.
+
+Only layers and custom nodes which are direct children of this group
+will be reordered, other layers and custom nodes will be ignored.
+
+.. note::
+
+   This method does not recursively reorder child groups.
+
+.. note::
+
+   Matching layers or custom nodes will be moved to the start of the group, with any existing
+   non-matching layers, custom and group nodes moved to sit after the re-ordered matching layers and
+   custom nodes.
+
+.. versionadded:: 4.0
 %End
 
 

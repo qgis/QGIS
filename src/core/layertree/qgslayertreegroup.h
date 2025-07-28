@@ -150,6 +150,13 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
 
     /**
+     * Find all layer and custom nodes. Searches recursively the whole sub-tree.
+     *
+     * \since QGIS 4.0
+     */
+    QList<QgsLayerTreeNode *> findLayersAndCustomNodes() const;
+
+    /**
      * Reorders layers in the group to match the order specified by \a order.
      *
      * Only layers which are direct children of this group will be reordered, other
@@ -162,6 +169,21 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * \since QGIS 3.30
      */
     void reorderGroupLayers( const QList< QgsMapLayer * > &order );
+
+    /**
+     * Reorders layers and custom nodes in the group to match the order specified by \a order.
+     *
+     * Only layers and custom nodes which are direct children of this group will be reordered, other
+     * layers and custom nodes will be ignored.
+     *
+     * \note This method does not recursively reorder child groups.
+     * \note Matching layers or custom nodes will be moved to the start of the group, with any existing
+     * non-matching layers, custom and group nodes moved to sit after the re-ordered matching layers and
+     * custom nodes.
+     *
+     * \since QGIS 4.0
+     */
+    void reorderGroupLayersAndCustomNodes( const QList< QgsLayerTreeNode * > &order );
 
     /**
      * Returns an ordered list of map layers in the group, ignoring any layers which

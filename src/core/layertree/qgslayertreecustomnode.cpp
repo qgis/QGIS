@@ -12,6 +12,7 @@ QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QString &nodeId, const QSt
 QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QgsLayerTreeCustomNode &other )
   : QgsLayerTreeNode( other )
   , mId( other.mId )
+  , mName( other.mName )
 {
 }
 

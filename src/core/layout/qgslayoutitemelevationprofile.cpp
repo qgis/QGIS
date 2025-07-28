@@ -491,6 +491,17 @@ void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layer
   invalidateCache();
 }
 
+QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
+{
+  return mSources;
+}
+
+void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
+  invalidateCache();
+}
+
 void QgsLayoutItemElevationProfile::setProfileCurve( QgsCurve *curve )
 {
   mCurve.reset( curve );
@@ -681,15 +692,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QList< QgsAbstractProfileSource * > sources;
-        sources << QgsApplication::profileSourceRegistry()->profileSources();
-        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-        {
-          if ( QgsAbstractProfileSource *source = layer->profileSource() )
-            sources.append( source );
-        }
-
-        QgsProfilePlotRenderer renderer( sources, profileRequest() );
+        QgsProfilePlotRenderer renderer( sources(), profileRequest() );
         std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
         renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
@@ -736,15 +739,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QList< QgsAbstractProfileSource * > sources;
-        sources << QgsApplication::profileSourceRegistry()->profileSources();
-        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-        {
-          if ( QgsAbstractProfileSource *source = layer->profileSource() )
-            sources.append( source );
-        }
-
-        QgsProfilePlotRenderer renderer( sources, profileRequest() );
+        QgsProfilePlotRenderer renderer( sources(), profileRequest() );
         std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
         renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
@@ -993,15 +988,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
 
-  QList< QgsAbstractProfileSource * > sources;
-  sources << QgsApplication::profileSourceRegistry()->profileSources();
-  for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-  {
-    if ( QgsAbstractProfileSource *source = layer->profileSource() )
-      sources.append( source );
-  }
-
-  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sources, profileRequest() );
+  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sources(), profileRequest() );
   std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
   mRenderJob->setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
   connect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );

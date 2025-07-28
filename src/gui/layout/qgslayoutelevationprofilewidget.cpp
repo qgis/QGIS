@@ -35,6 +35,7 @@
 #include "qgslayoutreportcontext.h"
 #include "qgsprofilerenderer.h"
 #include "qgsgui.h"
+#include "qgsprofilesourceregistry.h"
 #include <QMenu>
 
 std::function<void( QgsLayoutElevationProfileWidget *, QMenu * )> QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
@@ -77,8 +78,8 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, profile );
   mainLayout->addWidget( mItemPropertiesWidget );
 
-  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
-  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemSources );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemSources );
 
   mSpinTolerance->setClearValue( 0 );
   connect( mSpinTolerance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
@@ -657,20 +658,63 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   }
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
-  mProfile->setLayers( canvasLayers );
-  const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
-  for ( QgsLayerTreeLayer *layer : layers )
-  {
-    layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
-  }
-
-  // canvas layers are in opposite direction to what the layer tree requires
+  // canvas layers are in opposite direction to what the layout item requires
   std::reverse( canvasLayers.begin(), canvasLayers.end() );
-  mLayerTree->reorderGroupLayers( canvasLayers );
+  mProfile->setLayers( canvasLayers );
+
+  QList<QgsAbstractProfileSource *> canvasSources = canvas->sources();
+  // canvas sources are in opposite direction to what the layout item requires
+  std::reverse( canvasSources.begin(), canvasSources.end() );
+  mProfile->setSources( canvasSources );
+
+  syncLayerTreeAndProfileItemSources();
 
   mProfile->invalidateCache();
   mProfile->update();
   mBlockChanges--;
+}
+
+void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
+{
+  // Update layer tree node visibility, based on layout item profile
+  const QList<QgsLayerTreeNode *> nodes = mLayerTree->findLayersAndCustomNodes();
+  for ( QgsLayerTreeNode *node : nodes )
+  {
+    QgsAbstractProfileSource *source;
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer *layerNode = QgsLayerTree::toLayer( node );
+      QgsMapLayer *layer = layerNode->layer();
+      if ( !layer )
+        continue;
+
+      source = layer->profileSource();
+    }
+    else if ( QgsLayerTree::isCustomNode( node ) )
+    {
+      QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
+      source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
+      if ( !source )
+        continue;
+    }
+
+    node->setItemVisibilityChecked( mProfile->sources().contains( source ) );
+  }
+
+  // Update layer tree node ordering, based on layout item profile
+  QList< QgsLayerTreeNode * > orderedNodes;
+  for ( const QgsAbstractProfileSource *source : mProfile->sources() )
+  {
+    if ( QgsLayerTreeLayer *layerNode = mLayerTree->findLayer( source->profileSourceId() ) )
+    {
+      orderedNodes << layerNode;
+    }
+    else if ( QgsLayerTreeCustomNode *customNode = mLayerTree->findCustomNode( source->profileSourceId() ) )
+    {
+      orderedNodes << customNode;
+    }
+  }
+  mLayerTree->reorderGroupLayersAndCustomNodes( orderedNodes );
 }
 
 bool QgsLayoutElevationProfileWidget::setNewItem( QgsLayoutItem *item )
@@ -756,15 +800,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mSpinTopMargin->setValue( mProfile->plot()->margins().top() );
   mSpinBottomMargin->setValue( mProfile->plot()->margins().bottom() );
 
-  QList<QgsMapLayer *> profileLayers = mProfile->layers();
-  const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
-  for ( QgsLayerTreeLayer *layer : layers )
-  {
-    layer->setItemVisibilityChecked( profileLayers.contains( layer->layer() ) );
-  }
-  // elevation profile layers are in opposite direction to what the layer tree requires
-  std::reverse( profileLayers.begin(), profileLayers.end() );
-  mLayerTree->reorderGroupLayers( profileLayers );
+  syncLayerTreeAndProfileItemSources();
 
   updateDataDefinedButton( mDDBtnTolerance );
   updateDataDefinedButton( mDDBtnMinDistance );
@@ -785,7 +821,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mBlockChanges--;
 }
 
-void QgsLayoutElevationProfileWidget::updateItemLayers()
+void QgsLayoutElevationProfileWidget::updateItemLayers() // TODO: remove
 {
   if ( mBlockChanges )
     return;
@@ -799,9 +835,45 @@ void QgsLayoutElevationProfileWidget::updateItemLayers()
       layers << layer;
   }
 
-  std::reverse( layers.begin(), layers.end() );
+  mProfile->setLayers( layers );
+  mProfile->update();
+}
+
+void QgsLayoutElevationProfileWidget::updateItemSources()
+{
+  if ( mBlockChanges )
+    return;
+
+  QList<QgsMapLayer *> layers;
+  QList<QgsAbstractProfileSource *> sources;
+  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
+  //sources.reserve( layerAndCustomNodeOrder.size() );
+  for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
+  {
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      if ( mLayerTree->findLayer( layer )->isVisible() )
+      {
+        layers << layer;
+        sources << layer->profileSource();
+      }
+    }
+    else if ( QgsLayerTree::isCustomNode( node ) )
+    {
+      QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
+      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      {
+        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
+        {
+          sources << customSource;
+        }
+      }
+    }
+  }
 
   mProfile->setLayers( layers );
+  mProfile->setSources( sources );
   mProfile->update();
 }
 
