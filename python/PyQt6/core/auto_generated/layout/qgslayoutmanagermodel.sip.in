@@ -70,7 +70,7 @@ choice.
 };
 
 
-class QgsLayoutManagerProxyModel : QSortFilterProxyModel
+class QgsLayoutManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
 {
 %Docstring(signature="appended")
 QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`.
@@ -95,10 +95,6 @@ QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`.
 %Docstring
 Constructor for QgsLayoutManagerProxyModel.
 %End
-    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-
-    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
-
 
     QgsLayoutManagerProxyModel::Filters filters() const;
 %Docstring
@@ -114,26 +110,10 @@ Sets the current ``filters`` used for filtering available layouts.
 .. seealso:: :py:func:`filters`
 %End
 
-    QString filterString() const;
-%Docstring
-Returns the current filter string, if set.
+  protected:
 
-.. seealso:: :py:func:`setFilterString`
+    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
 
-.. versionadded:: 3.12
-%End
-
-  public slots:
-
-    void setFilterString( const QString &filter );
-%Docstring
-Sets a ``filter`` string, such that only layouts with names containing
-the specified string will be shown.
-
-.. seealso:: :py:func:`filterString`
-
-.. versionadded:: 3.12
-%End
 
 };
 

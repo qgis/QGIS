@@ -106,10 +106,14 @@ class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerMo
  *
  * \since QGIS 3.8
  */
-class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
+#ifdef SIP_RUN
+class CORE_EXPORT QgsLayoutManagerProxyModel : public QgsProjectStoredObjectManagerProxyModelBase // for sip we skip to the base class and avoid the template difficulty
 {
+#else
+class CORE_EXPORT QgsLayoutManagerProxyModel : public QgsProjectStoredObjectManagerProxyModel< QgsMasterLayoutInterface >
+{
+#endif
     Q_OBJECT
-
   public:
 
     //! Available filter flags for filtering the model
@@ -125,8 +129,6 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
      * Constructor for QgsLayoutManagerProxyModel.
      */
     explicit QgsLayoutManagerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Returns the current filters used for filtering available layouts.
@@ -142,30 +144,14 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
      */
     void setFilters( QgsLayoutManagerProxyModel::Filters filters );
 
-    /**
-     * Returns the current filter string, if set.
-     *
-     * \see setFilterString()
-     * \since QGIS 3.12
-     */
-    QString filterString() const { return mFilterString; }
+  protected:
 
-  public slots:
-
-    /**
-     * Sets a \a filter string, such that only layouts with names containing the
-     * specified string will be shown.
-     *
-     * \see filterString()
-     * \since QGIS 3.12
-    */
-    void setFilterString( const QString &filter );
+    bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
 
     Filters mFilters = Filters( FilterPrintLayouts | FilterReports );
 
-    QString mFilterString;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutManagerProxyModel::Filters )

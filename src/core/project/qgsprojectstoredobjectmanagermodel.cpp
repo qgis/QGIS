@@ -318,3 +318,76 @@ QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInte
 }
 
 template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>;
+
+//
+// QgsProjectStoredObjectManagerProxyModelBase
+//
+
+QgsProjectStoredObjectManagerProxyModelBase::QgsProjectStoredObjectManagerProxyModelBase( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+  sort( 0 );
+  setSortCaseSensitivity( Qt::CaseInsensitive );
+}
+
+bool QgsProjectStoredObjectManagerProxyModelBase::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  const QString leftText = sourceModel()->data( left, Qt::DisplayRole ).toString();
+  const QString rightText = sourceModel()->data( right, Qt::DisplayRole ).toString();
+  if ( leftText.isEmpty() )
+    return true;
+  if ( rightText.isEmpty() )
+    return false;
+
+  return QString::localeAwareCompare( leftText, rightText ) < 0;
+}
+
+bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  return filterAcceptsRowInternal( sourceRow, sourceParent );
+}
+
+void QgsProjectStoredObjectManagerProxyModelBase::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
+  invalidateFilter();
+}
+
+bool QgsProjectStoredObjectManagerProxyModelBase::filterAcceptsRowInternal( int, const QModelIndex & ) const
+{
+  return true;
+}
+
+//
+// QgsProjectStoredObjectManagerProxyModel
+//
+
+template<class T>
+QgsProjectStoredObjectManagerProxyModel<T>::QgsProjectStoredObjectManagerProxyModel( QObject *parent )
+  : QgsProjectStoredObjectManagerProxyModelBase( parent )
+{
+
+}
+
+template<class T>
+bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  QgsProjectStoredObjectManagerModel<T> *model = dynamic_cast< QgsProjectStoredObjectManagerModel<T> * >( sourceModel() );
+  if ( !model )
+    return false;
+
+  T *object = model->objectFromIndex( model->index( sourceRow, 0, sourceParent ) );
+  if ( !object )
+    return model->allowEmptyObject();
+
+  if ( !mFilterString.trimmed().isEmpty() )
+  {
+    if ( !object->name().contains( mFilterString, Qt::CaseInsensitive ) )
+      return false;
+  }
+
+  return true;
+}
+
+template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;

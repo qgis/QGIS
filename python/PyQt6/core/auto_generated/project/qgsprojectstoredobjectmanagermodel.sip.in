@@ -123,6 +123,92 @@ choice.
 };
 
 
+
+
+class QgsProjectStoredObjectManagerProxyModelBase : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+Base class QSortFilterProxyModel subclass for
+:py:class:`QgsProjectStoredObjectManagerModel`.
+
+Supports sorting by object name and text based filtering against the
+object name.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
+  public:
+
+    explicit QgsProjectStoredObjectManagerProxyModelBase( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerProxyModelBase.
+%End
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layouts with names containing
+the specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+%End
+
+  protected:
+
+    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
+%Docstring
+Returns ``True`` if the proxy accepts the matching source row.
+%End
+
+};
+
+
+template<T>
+class QgsProjectStoredObjectManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
+{
+%Docstring(signature="appended")
+Template class QSortFilterProxyModel subclass for
+:py:class:`QgsProjectStoredObjectManagerModel`.
+
+Supports sorting by object name and text based filtering against the
+object name.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
+  public:
+
+    explicit QgsProjectStoredObjectManagerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerProxyModel.
+%End
+
+  protected:
+
+    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
