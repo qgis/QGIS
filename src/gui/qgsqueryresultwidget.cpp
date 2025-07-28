@@ -73,6 +73,7 @@ QgsQueryResultPanelWidget::QgsQueryResultPanelWidget( QWidget *parent, QgsAbstra
   mainLayout->setSpacing( 6 );
   progressLayout->setSpacing( 6 );
 
+  mResultsContainer->hide();
   mQueryResultsTableView->hide();
   mQueryResultsTableView->setItemDelegate( new QgsQueryResultItemDelegate( mQueryResultsTableView ) );
   mQueryResultsTableView->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -233,6 +234,7 @@ void QgsQueryResultPanelWidget::executeQuery()
 {
   mQueryResultsTableView->hide();
   mSqlErrorText->hide();
+  mResultsContainer->hide();
   mFirstRowFetched = false;
 
   cancelRunningQuery();
@@ -440,6 +442,7 @@ void QgsQueryResultPanelWidget::startFetching()
           emit firstResultBatchFetched();
           mFirstRowFetched = true;
           mQueryResultsTableView->show();
+          mResultsContainer->show();
           updateButtons();
           updateSqlLayerColumns();
           mActualRowCount = mModel->queryResult().rowCount();
@@ -452,6 +455,7 @@ void QgsQueryResultPanelWidget::startFetching()
 
       mQueryResultsTableView->setModel( mModel.get() );
       mQueryResultsTableView->show();
+      mResultsContainer->show();
 
       connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [this] {
         bool ok = false;
@@ -483,10 +487,12 @@ void QgsQueryResultPanelWidget::showError( const QString &title, const QString &
   {
     mSqlErrorText->show();
     mSqlErrorText->setText( message );
+    mResultsContainer->show();
   }
   else
   {
     mMessageBar->pushCritical( title, message );
+    mResultsContainer->hide();
   }
 }
 
