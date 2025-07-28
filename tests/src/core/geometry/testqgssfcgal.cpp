@@ -390,9 +390,8 @@ void TestQgsSfcgal::fromWkt()
   QgsSfcgalGeometry geomA( "Point Z (-5673.79 3594.8 20, 5)", &errorMsg );
   QVERIFY2( !errorMsg.isEmpty(), "Should have failed" );
 
-  QgsSfcgalGeometry geomB;
-  bool result = geomB.fromWkt( "Point Z (-5673.79 3594.8 20, 5)" );
-  QVERIFY( !result );
+  std::unique_ptr<QgsSfcgalGeometry> geomB = QgsSfcgalGeometry::fromWkt( "Point Z (-5673.79 3594.8 20, 5)" );
+  QVERIFY( geomB.get() == nullptr );
   QVERIFY( !sfcgal::errorHandler()->isTextEmpty() );
   QVERIFY( sfcgal::errorHandler()->getFullText().contains( "SFCGAL error occurred: WKT parse error" ) );
 }

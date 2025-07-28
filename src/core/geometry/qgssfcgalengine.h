@@ -75,9 +75,9 @@ namespace sfcgal
   {
 
     /**
-     * Destroys the SFCGAL geometry \a geom, using the static QGIS
-     * SFCGAL context.
-     */
+    * Destroys the SFCGAL geometry \a geom, using the static QGIS
+    * SFCGAL context.
+    */
     void CORE_EXPORT operator()( sfcgal::geometry *geom ) const;
   };
 
@@ -228,12 +228,12 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
-     * \param numDecimals Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal) f.e. "Point(1/3, 1/6, 1/4)".
+     * \param numDecimals Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal) f.e. "Point(1/3, 1/6, 1/4)". Note that this will produce WKT which is not compatible with other QGIS methods or external libraries.
      */
     static QString toWkt( const sfcgal::geometry *geom, int numDecimals = -1, QString *errorMsg = nullptr );
 
     /**
-     * Returns the QGIS WTB type from \a geom.
+     * Returns the QGIS WKB type from \a geom.
      *
      * \param geom geometry to perform the operation
      * \param errorMsg pointer to QString to receive the error message if any
@@ -331,12 +331,9 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
-     * \param allowSelfTouchingHoles specifies whether self-touching holes are permitted.
-     *        OGC validity states that self-touching holes are NOT permitted, whilst other
-     *        vendor validity checks (e.g. ESRI) permit self-touching holes.
      * \param errorLoc if specified, it will be set to the geometry of the error location.
      */
-    static bool isValid( const sfcgal::geometry *geom, QString *errorMsg = nullptr, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = nullptr );
+    static bool isValid( const sfcgal::geometry *geom, QString *errorMsg = nullptr, QgsGeometry *errorLoc = nullptr );
 
     /**
      * Checks if \a geom is simple.
