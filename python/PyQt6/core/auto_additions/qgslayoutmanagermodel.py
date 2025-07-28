@@ -37,7 +37,7 @@ QgsLayoutManagerProxyModel.Filter.__eq__ = lambda flag1, flag2: _force_int(flag1
 QgsLayoutManagerProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsLayoutManagerProxyModel.Filter.__or__ = lambda flag1, flag2: QgsLayoutManagerProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
 try:
-    QgsLayoutManagerProxyModel.__overridden_methods__ = ['lessThan', 'filterAcceptsRow']
+    QgsLayoutManagerProxyModel.__overridden_methods__ = ['filterAcceptsRowInternal']
     QgsLayoutManagerProxyModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

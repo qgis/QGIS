@@ -50,27 +50,15 @@ void QgsLayoutManagerModel::setAllowEmptyLayout( bool allowEmpty )
 //
 
 QgsLayoutManagerProxyModel::QgsLayoutManagerProxyModel( QObject *parent )
-  : QSortFilterProxyModel( parent )
+  : QgsProjectStoredObjectManagerProxyModel( parent )
 {
-  setDynamicSortFilter( true );
-  sort( 0 );
-  setSortCaseSensitivity( Qt::CaseInsensitive );
 }
 
-bool QgsLayoutManagerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+bool QgsLayoutManagerProxyModel::filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  const QString leftText = sourceModel()->data( left, Qt::DisplayRole ).toString();
-  const QString rightText = sourceModel()->data( right, Qt::DisplayRole ).toString();
-  if ( leftText.isEmpty() )
-    return true;
-  if ( rightText.isEmpty() )
+  if ( !QgsProjectStoredObjectManagerProxyModel::filterAcceptsRowInternal( sourceRow, sourceParent ) )
     return false;
 
-  return QString::localeAwareCompare( leftText, rightText ) < 0;
-}
-
-bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
-{
   QgsLayoutManagerModel *model = qobject_cast< QgsLayoutManagerModel * >( sourceModel() );
   if ( !model )
     return false;
@@ -78,12 +66,6 @@ bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIn
   QgsMasterLayoutInterface *layout = model->layoutFromIndex( model->index( sourceRow, 0, sourceParent ) );
   if ( !layout )
     return model->allowEmptyLayout();
-
-  if ( !mFilterString.trimmed().isEmpty() )
-  {
-    if ( !layout->name().contains( mFilterString, Qt::CaseInsensitive ) )
-      return false;
-  }
 
   switch ( layout->layoutType() )
   {
@@ -103,11 +85,5 @@ QgsLayoutManagerProxyModel::Filters QgsLayoutManagerProxyModel::filters() const
 void QgsLayoutManagerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
-  invalidateFilter();
-}
-
-void QgsLayoutManagerProxyModel::setFilterString( const QString &filter )
-{
-  mFilterString = filter;
   invalidateFilter();
 }

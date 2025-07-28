@@ -153,4 +153,86 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModel : public QgsProjectStoredOb
 };
 
 
+
+
+/**
+ * \ingroup core
+ * \class QgsProjectStoredObjectManagerProxyModelBase
+ *
+ * \brief Base class QSortFilterProxyModel subclass for QgsProjectStoredObjectManagerModel.
+ *
+ * Supports sorting by object name and text based filtering against the object name.
+ *
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsProjectStoredObjectManagerProxyModelBase : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProjectStoredObjectManagerProxyModelBase.
+     */
+    explicit QgsProjectStoredObjectManagerProxyModelBase( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    /**
+     * Returns the current filter string, if set.
+     *
+     * \see setFilterString()
+     */
+    QString filterString() const { return mFilterString; }
+
+  public slots:
+
+    /**
+     * Sets a \a filter string, such that only layouts with names containing the
+     * specified string will be shown.
+     *
+     * \see filterString()
+    */
+    void setFilterString( const QString &filter );
+
+  protected:
+
+    /**
+     * Returns TRUE if the proxy accepts the matching source row.
+     */
+    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
+
+    //! Filter string
+    QString mFilterString;
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsProjectStoredObjectManagerProxyModel
+ *
+ * \brief Template class QSortFilterProxyModel subclass for QgsProjectStoredObjectManagerModel.
+ *
+ * Supports sorting by object name and text based filtering against the object name.
+ *
+ * \since QGIS 4.0
+ */
+template<class T>
+class CORE_EXPORT QgsProjectStoredObjectManagerProxyModel : public QgsProjectStoredObjectManagerProxyModelBase
+{
+
+  public:
+
+    /**
+     * Constructor for QgsProjectStoredObjectManagerProxyModel.
+     */
+    explicit QgsProjectStoredObjectManagerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+  protected:
+
+    bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+};
+
+
 #endif // QGSPROJECTSTOREDOBJECTMANAGERMODEL_H

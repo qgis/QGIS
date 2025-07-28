@@ -24,7 +24,7 @@ QgsLayoutManagerModel.CustomRole.baseClass = QgsLayoutManagerModel
 QgsLayoutManagerProxyModel.Filters.baseClass = QgsLayoutManagerProxyModel
 Filters = QgsLayoutManagerProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
-    QgsLayoutManagerProxyModel.__overridden_methods__ = ['lessThan', 'filterAcceptsRow']
+    QgsLayoutManagerProxyModel.__overridden_methods__ = ['filterAcceptsRowInternal']
     QgsLayoutManagerProxyModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
