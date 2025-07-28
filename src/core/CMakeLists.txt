@@ -700,6 +700,7 @@ set(QGIS_CORE_SRCS
   layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmanager.cpp
+  layout/qgslayoutmanagermodel.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
@@ -1630,6 +1631,7 @@ set(QGIS_CORE_HDRS
   layout/qgslayoutitemtexttable.h
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmanager.h
+  layout/qgslayoutmanagermodel.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgslayoutmodel.h
