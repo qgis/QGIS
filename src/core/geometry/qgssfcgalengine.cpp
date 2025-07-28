@@ -541,7 +541,7 @@ bool QgsSfcgalEngine::isEmpty( const sfcgal::geometry *geom, QString *errorMsg )
   return static_cast<bool>( res );
 }
 
-bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, bool, QgsGeometry *errorLoc )
+bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, QgsGeometry *errorLoc )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, false );
