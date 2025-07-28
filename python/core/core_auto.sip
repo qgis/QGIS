@@ -452,6 +452,7 @@
 %Include auto_generated/layout/qgslayoutitemshape.sip
 %Include auto_generated/layout/qgslayoutitemtexttable.sip
 %Include auto_generated/layout/qgslayoutmanager.sip
+%Include auto_generated/layout/qgslayoutmanagermodel.sip
 %Include auto_generated/layout/qgslayoutmeasurement.sip
 %Include auto_generated/layout/qgslayoutmeasurementconverter.sip
 %Include auto_generated/layout/qgslayoutmodel.sip
