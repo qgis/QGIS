@@ -693,20 +693,6 @@ bool QgsGeometry::deleteVertices( const QList<int> &vertices )
   QList<int> sortedVertices = vertices;
   std::sort( sortedVertices.begin(), sortedVertices.end(), std::greater<int>() );
 
-  // maintain compatibility with < 2.10 API
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::MultiPoint )
-  {
-    detach();
-    QgsGeometryCollection *collection = static_cast< QgsGeometryCollection * >( d->geometry.get() );
-    
-    for ( int vertex : sortedVertices )
-    {
-      if ( !collection->removeGeometry( vertex ) )
-        return false;
-    }
-    return true;
-  }
-
   // If it's a point and we're deleting any vertex, set geometry to null
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
   {
