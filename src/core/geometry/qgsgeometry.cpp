@@ -700,7 +700,11 @@ bool QgsGeometry::deleteVertices( const QList<int> &vertices )
     return true;
   }
 
+  // create a copy of the original geometry to restore it in case of failure
+  std::unique_ptr< QgsAbstractGeometry > originalGeometry( d->geometry->clone() );
+
   detach();
+  QList<QgsVertexId> vertexIds;
 
   for ( int vertex : sortedVertices )
   {
@@ -710,13 +714,24 @@ bool QgsGeometry::deleteVertices( const QList<int> &vertices )
       QgsDebugError( QStringLiteral( "Invalid vertex number %1" ).arg( vertex ) );
       return false;
     }
+    vertexIds.append( id );
+  }
 
-    if ( !d->geometry->deleteVertex( id ) )
+  for ( QgsVertexId &vertexId : vertexIds )
+  {
+    // it is possible that multiple vertices were removed and now vertexId is invalid
+    if ( !vertexId.isValid( constGet() ) )
     {
-      QgsDebugError( QStringLiteral( "Failed to delete vertex %1" ).arg( vertex ) );
-      return false;
+      continue;
     }
-    
+
+    if ( !d->geometry->deleteVertex( vertexId ) )
+    {
+      QgsDebugError( QStringLiteral( "Failed to delete vertex %1" ).arg( vertexId.vertex ) );
+      // restore the original geometry if deletion of any single vertex fails
+      reset( std::move( originalGeometry ) );
+      return false;
+    } 
   }
   
   return true;
