@@ -173,6 +173,11 @@ the specified string will be shown.
     virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
 %Docstring
 Returns ``True`` if the proxy accepts the matching source row.
+
+Handles filtering based on object name.
+
+Subclasses should override this method instead of
+:py:func:`~QgsProjectStoredObjectManagerProxyModelBase.filterAcceptsRow`.
 %End
 
 };
