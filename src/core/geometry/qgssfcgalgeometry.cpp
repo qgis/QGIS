@@ -25,24 +25,24 @@ QgsSfcgalGeometry::QgsSfcgalGeometry()
 {
 }
 
-QgsSfcgalGeometry::QgsSfcgalGeometry( std::unique_ptr<QgsAbstractGeometry> &qgsGeom )
+QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom, QString *errorMsg )
 {
   if ( qgsGeom )
   {
-    sfcgal::errorHandler()->clearText();
-    mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( qgsGeom.get() );
-    if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+    sfcgal::errorHandler()->clearText( errorMsg );
+    mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( qgsGeom, errorMsg );
+    if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg ) )
     {
       QgsDebugError( sfcgal::errorHandler()->getFullText() );
     }
   }
 }
 
-QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom )
+QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom, QString *errorMsg )
 {
-  sfcgal::errorHandler()->clearText();
-  mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( &qgsGeom );
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+  sfcgal::errorHandler()->clearText( errorMsg );
+  mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( &qgsGeom, errorMsg );
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg ) )
   {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
   }
@@ -53,21 +53,21 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
 {
 }
 
-QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsGeometry &qgsGeom )
+QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsGeometry &qgsGeom, QString *errorMsg )
 {
-  sfcgal::errorHandler()->clearText();
-  mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( qgsGeom.constGet() );
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+  sfcgal::errorHandler()->clearText( errorMsg );
+  mSfcgalGeom = QgsSfcgalEngine::fromAbstractGeometry( qgsGeom.constGet(), errorMsg );
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg ) )
   {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
   }
 }
 
-QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom )
+QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom, QString *errorMsg )
 {
-  sfcgal::errorHandler()->clearText();
-  mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( otherGeom.mSfcgalGeom.get() );
-  if ( !sfcgal::errorHandler()->hasSucceedOrStack() )
+  sfcgal::errorHandler()->clearText( errorMsg );
+  mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( otherGeom.mSfcgalGeom.get(), errorMsg );
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( errorMsg ) )
   {
     QgsDebugError( sfcgal::errorHandler()->getFullText() );
   }
@@ -106,17 +106,18 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const
   return std::make_unique<QgsSfcgalGeometry>( *this );
 }
 
-bool QgsSfcgalGeometry::fromWkb( const QgsConstWkbPtr &wkbPtr, QString *errorMsg )
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::fromWkb( const QgsConstWkbPtr &wkbPtr, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   if ( !wkbPtr )
   {
-    return false;
+    return nullptr;
   }
 
-  mSfcgalGeom = QgsSfcgalEngine::fromWkb( wkbPtr, errorMsg );
+  sfcgal::shared_geom sfcgalGeom = QgsSfcgalEngine::fromWkb( wkbPtr, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
 
-  return true;
+  return std::make_unique<QgsSfcgalGeometry>( sfcgalGeom );
 }
 
 
@@ -194,15 +195,13 @@ int QgsSfcgalGeometry::dimension( QString *errorMsg ) const
   return result;
 }
 
-bool QgsSfcgalGeometry::fromWkt( const QString &wkt, QString *errorMsg )
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::fromWkt( const QString &wkt, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  mSfcgalGeom = QgsSfcgalEngine::fromWkt( wkt, errorMsg );
-  CHECK_SUCCESS( errorMsg, false );
+  sfcgal::shared_geom sfcgalGeom = QgsSfcgalEngine::fromWkt( wkt, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
 
-  clearCache();
-
-  return true;
+  return std::make_unique<QgsSfcgalGeometry>( sfcgalGeom );
 }
 
 int QgsSfcgalGeometry::partCount( QString *errorMsg ) const
@@ -268,10 +267,10 @@ void QgsSfcgalGeometry::swapXy( QString *errorMsg )
   clearCache();
 }
 
-bool QgsSfcgalGeometry::isValid( Qgis::GeometryValidityFlags flags, QString *errorMsg ) const
+bool QgsSfcgalGeometry::isValid( Qgis::GeometryValidityFlags, QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  const bool valid = QgsSfcgalEngine::isValid( mSfcgalGeom.get(), errorMsg, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
+  const bool valid = QgsSfcgalEngine::isValid( mSfcgalGeom.get(), errorMsg, nullptr );
   CHECK_SUCCESS( errorMsg, false );
   return valid;
 }
