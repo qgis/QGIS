@@ -9,7 +9,9 @@
 
 
 
-class QgsLayoutManagerModel : QAbstractListModel
+
+
+class QgsLayoutManagerModel : QgsProjectStoredObjectManagerModelBase
 {
 %Docstring(signature="appended")
 List model representing the print layouts and reports available in a
@@ -34,15 +36,6 @@ layout manager.
 Constructor for QgsLayoutManagerModel, showing the layouts from the
 specified ``manager``.
 %End
-
-    virtual int rowCount( const QModelIndex &parent ) const;
-
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
-
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
 
     QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
 %Docstring

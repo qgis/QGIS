@@ -24,12 +24,11 @@ QgsLayoutManagerModel.CustomRole.baseClass = QgsLayoutManagerModel
 QgsLayoutManagerProxyModel.Filters.baseClass = QgsLayoutManagerProxyModel
 Filters = QgsLayoutManagerProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
-    QgsLayoutManagerModel.__overridden_methods__ = ['rowCount', 'data', 'setData', 'flags']
-    QgsLayoutManagerModel.__group__ = ['layout']
+    QgsLayoutManagerProxyModel.__overridden_methods__ = ['lessThan', 'filterAcceptsRow']
+    QgsLayoutManagerProxyModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayoutManagerProxyModel.__overridden_methods__ = ['lessThan', 'filterAcceptsRow']
-    QgsLayoutManagerProxyModel.__group__ = ['layout']
+    QgsLayoutManagerModel.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

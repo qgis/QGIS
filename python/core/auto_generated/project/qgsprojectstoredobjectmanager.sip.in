@@ -95,6 +95,17 @@ attached to the specified ``project``.
 
     ~QgsAbstractProjectStoredObjectManager();
 
+    QList< T * > objects() const;
+%Docstring
+Returns the list of objects contained within the manager.
+%End
+
+    T *objectByName( const QString &name ) const;
+%Docstring
+Returns the object with a matching name, or ``None`` if no matching
+objects were found.
+%End
+
   protected:
 
 
@@ -131,12 +142,6 @@ the manager).
 .. seealso:: :py:func:`objectAboutToBeRemoved`
 
 .. seealso:: :py:func:`clearObjects`
-%End
-
-    T *objectByName( const QString &name ) const;
-%Docstring
-Returns the object with a matching name, or ``None`` if no matching
-objects were found.
 %End
 
     virtual void setupObjectConnections( T *object );
