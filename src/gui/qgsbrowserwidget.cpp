@@ -631,7 +631,7 @@ void QgsBrowserWidget::copySelectedPath()
   if ( !index.isValid() )
     return;
 
-  QgsDataItem *item = mModel->dataItem( index );
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
   if ( !item )
     return;
 
@@ -701,7 +701,7 @@ void QgsBrowserWidget::updateLocationBar()
     return;
   }
 
-  QgsDataItem *item = mModel->dataItem( index );
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
   if ( !item )
   {
     mLeLocationBar->clear();
