@@ -18,6 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayerref.h"
+
 #include <QObject>
 #include <QPointer>
 
@@ -25,6 +28,9 @@ class QgsProject;
 class QgsReadWriteContext;
 class QDomDocument;
 class QDomElement;
+class QgsMapLayer;
+class QgsCurve;
+class QgsLineSymbol;
 
 /**
  * \ingroup core
@@ -44,6 +50,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      * Constructor for QgsElevationProfile.
      */
     explicit QgsElevationProfile( QgsProject *project );
+    ~QgsElevationProfile() override;
 
     /**
      * Returns the profile's unique name.
@@ -64,14 +71,105 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      *
      * \a element is the DOM node corresponding to the profile.
      *
+     * \see resolveReferences()
      * \see writeXml()
      */
     bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
     /**
+     * After reading settings from XML, resolves references to any layers in a \a project that have been read as layer IDs.
+     *
+     * \see readXml()
+     */
+    void resolveReferences( const QgsProject *project );
+
+    /**
      * Returns the icon to use for the elevation profile.
      */
     QIcon icon() const;
+
+    /**
+     * Sets the list of \a layers to include in the profile.
+     *
+     * \see layers()
+     */
+    void setLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Returns the list of layers included in the profile.
+     *
+     * \see setLayers()
+     */
+    QList<QgsMapLayer *> layers() const;
+
+    /**
+     * Returns the crs associated with the profile's map coordinates.
+     *
+     * \see setCrs()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets the profile \a curve.
+     *
+     * The CRS associated with \a curve is set via setCrs().
+     *
+     * Ownership is transferred to the profile.
+     *
+     * \see profileCurve()
+     */
+    void setProfileCurve( QgsCurve *curve SIP_TRANSFER );
+
+    /**
+     * Returns the profile curve.
+     *
+     * The CRS associated with the curve is retrieved via crs().
+     *
+     * \see setProfileCurve()
+     */
+    QgsCurve *profileCurve() const;
+
+    /**
+     * Returns the tolerance of the profile (in crs() units).
+     *
+     * This value determines how far from the profileCurve() is appropriate for inclusion of results. For instance,
+     * when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+     * actual profile curve a point can reside within to be included in the results.
+     *
+     * \see setTolerance()
+     */
+    double tolerance() const;
+
+    /**
+     * Returns TRUE if the distance and elevation scales are locked to each other.
+     *
+     * \see setLockAxisScales()
+     */
+    bool lockAxisScales() const;
+
+    /**
+     * Returns the distance unit used by the profile.
+     *
+     * \see setDistanceUnit()
+     */
+    Qgis::DistanceUnit distanceUnit() const;
+
+    /**
+     * Returns the symbol used to draw the subsections.
+     *
+     * \see setSubsectionsSymbol()
+     */
+    QgsLineSymbol *subsectionsSymbol();
+
+    /**
+     * Sets the \a symbol used to draw the subsections.
+     *
+     * If \a symbol is NULLPTR, the subsections are not drawn.
+     * Ownership of \a symbol is transferred.
+     *
+     * \see subsectionsSymbol()
+     */
+    void setSubsectionsSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
   public slots:
 
@@ -82,6 +180,38 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      * \see nameChanged()
      */
     void setName( const QString &name );
+
+    /**
+     * Sets the \a crs associated with the profile's map coordinates.
+     *
+     * \see crs()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the profile tolerance (in crs() units).
+     *
+     * This value determines how far from the profileCurve() is appropriate for inclusion of results. For instance,
+     * when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+     * actual profile curve a point can reside within to be included in the results.
+     *
+     * \see tolerance()
+     */
+    void setTolerance( double tolerance );
+
+    /**
+     * Sets whether the distance and elevation scales are locked to each other.
+     *
+     * \see lockAxisScales()
+     */
+    void setLockAxisScales( bool lock );
+
+    /**
+     * Sets the distance \a unit used by the profile.
+     *
+     * \see distanceUnit()
+     */
+    void setDistanceUnit( Qgis::DistanceUnit unit );
 
   signals:
 
@@ -97,6 +227,13 @@ class CORE_EXPORT QgsElevationProfile : public QObject
 
     QPointer< QgsProject > mProject;
     QString mName;
+    QgsCoordinateReferenceSystem mCrs;
+    bool mLockAxisScales = false;
+    Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
+    QList< QgsMapLayerRef > mLayers;
+    std::unique_ptr<QgsCurve> mProfileCurve;
+    double mTolerance = 0;
+    std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
 
 };
 

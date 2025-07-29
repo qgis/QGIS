@@ -93,12 +93,22 @@ profiles were found.
 Reads the manager's state from a DOM element, restoring all profiles
 present in the XML document.
 
+.. seealso:: :py:func:`resolveReferences`
+
 .. seealso:: :py:func:`writeXml`
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    void resolveReferences( const QgsProject *project );
+%Docstring
+After reading settings from XML, resolves references to any layers in a
+``project`` that have been read as layer IDs.
 
 .. seealso:: :py:func:`readXml`
 %End
