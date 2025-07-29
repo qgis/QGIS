@@ -16,10 +16,10 @@
 #include "qgsappdbutils.h"
 #include "moc_qgsappdbutils.cpp"
 #include "qgisapp.h"
-#include "qgsgui.h"
 #include "qgsdbqueryhistoryprovider.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "browser/qgsinbuiltdataitemproviders.h"
 
@@ -45,7 +45,7 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
   vl->addWidget( mWidget, 1 );
   connect( mWidget, &QgsDatabaseQueryHistoryWidget::sqlTriggered, this, &QgsQueryHistoryDialog::openQueryDialog );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
 
   QPushButton *clearButton = new QPushButton( tr( "Clear" ) );
   clearButton->setToolTip( tr( "Clear history" ) );
@@ -53,7 +53,9 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
 
   connect( clearButton, &QPushButton::clicked, this, &QgsQueryHistoryDialog::clearHistory );
   connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
-
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, mWidget, [this]() {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#sql-history" ) );
+  } );
   vl->addWidget( mButtonBox );
 
   setLayout( vl );
