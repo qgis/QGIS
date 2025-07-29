@@ -155,19 +155,19 @@ void TestQgsChunkedEntity::checkLowestZ( QgsFeature f, QVector<float> expectedZ,
               const float *ptrFloat = reinterpret_cast<const float *>( buff.constData() );
               for ( uint i = 0; i < attrib->count(); ++i )
               {
-                float z = ptrFloat[( i * attrib->byteStride() / sizeof( float ) ) + 2];
-                if ( z != expectedZ[i] )
+                float z = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 2];
+                if ( z != expectedZ[static_cast<int>( i )] )
                 {
-                  qWarning() << "actual[" << i << "]=" << z << "/ expected= " << expectedZ[i];
+                  qWarning() << "actual[" << i << "]=" << z << "/ expected= " << expectedZ[static_cast<int>( i )];
                   for ( uint j = 0; j < attrib->count(); ++j )
                   {
-                    float x = ptrFloat[( j * attrib->byteStride() / sizeof( float ) ) + 0];
-                    float y = ptrFloat[( j * attrib->byteStride() / sizeof( float ) ) + 1];
-                    z = ptrFloat[( j * attrib->byteStride() / sizeof( float ) ) + 2];
+                    float x = ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 0];
+                    float y = ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 1];
+                    z = ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 2];
                     qWarning() << x << "," << y << "," << z;
                   }
                 }
-                QCOMPARE( z, expectedZ[i] );
+                QCOMPARE( z, expectedZ[static_cast<int>( i )] );
               }
               break;
             }

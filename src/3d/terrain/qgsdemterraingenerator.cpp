@@ -186,8 +186,8 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     {
       const QgsRectangle extent = found->box3D().toRectangle();
 
-      int cellX = ( int ) ( ( x - extent.xMinimum() ) / extent.width() * mResolution + .5f );
-      int cellY = ( int ) ( ( extent.yMaximum() - y ) / extent.height() * mResolution + .5f );
+      int cellX = static_cast<int>( lround( ( x - extent.xMinimum() ) / extent.width() * mResolution ) );
+      int cellY = static_cast<int>( lround( ( extent.yMaximum() - y ) / extent.height() * mResolution ) );
       cellX = std::clamp( cellX, 0, mResolution - 1 );
       cellY = std::clamp( cellY, 0, mResolution - 1 );
 
