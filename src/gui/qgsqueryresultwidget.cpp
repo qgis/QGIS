@@ -1220,7 +1220,7 @@ QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnectio
 
   mWidget = new QgsQueryResultWidget( this, connection );
   QVBoxLayout *l = new QVBoxLayout();
-  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setContentsMargins( 6, 6, 6, 6 );
 
   QDialogButtonBox *mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::close );
@@ -1258,6 +1258,7 @@ QgsQueryResultMainWindow::QgsQueryResultMainWindow( QgsAbstractDatabaseProviderC
 
   mWidget = new QgsQueryResultWidget( nullptr, connection );
   setCentralWidget( mWidget );
+  mWidget->layout()->setContentsMargins( 6, 6, 6, 6 );
 
   connect( mWidget, &QgsQueryResultWidget::requestDialogTitleUpdate, this, &QgsQueryResultMainWindow::updateWindowTitle );
 

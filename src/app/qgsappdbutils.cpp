@@ -41,6 +41,7 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
   setWindowTitle( tr( "Query History" ) );
 
   QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 6, 6, 6, 6 );
   mWidget = new QgsDatabaseQueryHistoryWidget();
   vl->addWidget( mWidget, 1 );
   connect( mWidget, &QgsDatabaseQueryHistoryWidget::sqlTriggered, this, &QgsQueryHistoryDialog::openQueryDialog );
