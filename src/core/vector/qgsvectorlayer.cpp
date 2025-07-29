@@ -640,12 +640,19 @@ void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior
 
   // Filter out non-existent feature IDs to ensure only valid features are selected
   QgsFeatureIds validIds;
-  for ( QgsFeatureId id : ids )
+  if ( !ids.isEmpty() )
   {
-    QgsFeature feature = getFeature( id );
-    if ( feature.isValid() )
+    // request only feature IDs without geometry or attributes
+    QgsFeatureRequest request;
+    request.setFilterFids( ids );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+    request.setNoAttributes();
+
+    QgsFeatureIterator it = getFeatures( request );
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
     {
-      validIds.insert( id );
+      validIds.insert( feature.id() );
     }
   }
 
