@@ -1351,6 +1351,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void show3DMapViewsManager();
 
+    /**
+     * Shows the elevation profile manager dialog.
+     */
+    void showElevationProfileManager();
+
     //! shows the snapping Options
     void snappingOptions();
 
