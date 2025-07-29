@@ -180,11 +180,11 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setOutputExtentFromOriginal();
 
   // Snap to grid button (added for #43915)
-  mSnapToGridButton = new QPushButton( tr( "📐 Snap to Grid" ) );
+  mSnapToGridButton = new QPushButton( tr( "Snap to Grid" ) );
   mSnapToGridButton->setToolTip( tr( "Align the export extent to the input raster pixels (similar to GDAL's -tap option)" ) );
   mSnapToGridButton->setCheckable( true );
   mSnapToGridButton->setChecked( true );
-  mSnapToGridButton->setMinimumHeight( 32 ); 
+  mSnapToGridButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mExtentGroupBox->layout()->addWidget( mSnapToGridButton );
   connect( mSnapToGridButton, &QPushButton::toggled, this, &QgsRasterLayerSaveAsDialog::snapToGridButtonToggled );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
@@ -506,60 +506,25 @@ void QgsRasterLayerSaveAsDialog::snapToGridButtonToggled( bool checked )
   if ( !mDataProvider )
     return;
     
-  // Get the raster grid parameters
   double xRes = mDataProvider->extent().width() / mDataProvider->xSize();
   double yRes = mDataProvider->extent().height() / mDataProvider->ySize();
-  double minX = mDataProvider->extent().xMinimum();
-  double minY = mDataProvider->extent().yMinimum();
+  double rasterMinX = mDataProvider->extent().xMinimum();
+  double rasterMinY = mDataProvider->extent().yMinimum();
   
-  mExtentGroupBox->setSnapToGrid( checked, xRes, yRes, minX, minY );
+  // Set snap to grid parameters in the extent group box
+  // This enables/disables snapping for ANY extent calculation method (Canvas, Layer...)
+  mExtentGroupBox->setSnapToGrid( checked, xRes, yRes, rasterMinX, rasterMinY );
   
+  // Update button text and tooltip to reflect current state
   if ( checked )
   {
-    
-    mSnapToGridButton->setStyleSheet( 
-      "QPushButton { "
-      "  background-color: #4CAF50; "
-      "  border: 2px solid #45a049; "
-      "  color: white; "
-      "  font-weight: bold; "
-      "  border-radius: 4px; "
-      "  padding: 6px 12px; "
-      "} "
-      "QPushButton:hover { "
-      "  background-color: #45a049; "
-      "  border: 2px solid #3d8b40; "
-      "} "
-      "QPushButton:pressed { "
-      "  background-color: #3d8b40; "
-      "}"
-    );
-    mSnapToGridButton->setText( tr( "📐 Snap to Grid" ) );
-    mSnapToGridButton->setToolTip( tr( "Grid snapping is ENABLED. Extent coordinates are aligned to raster pixels. Click to disable." ) );
+    mSnapToGridButton->setText( tr( "Snap to Grid (ON)" ) );
+    mSnapToGridButton->setToolTip( tr( "Grid snapping is ENABLED. Any extent calculation will be aligned to raster pixels" ) );
   }
   else
   {
-    
-    mSnapToGridButton->setStyleSheet( 
-      "QPushButton { "
-      "  background-color: #f5f5f5; "
-      "  border: 2px solid #ddd; "
-      "  color: #666; "
-      "  font-weight: normal; "
-      "  border-radius: 4px; "
-      "  padding: 6px 12px; "
-      "} "
-      "QPushButton:hover { "
-      "  background-color: #e9e9e9; "
-      "  border: 2px solid #ccc; "
-      "  color: #333; "
-      "} "
-      "QPushButton:pressed { "
-      "  background-color: #ddd; "
-      "}"
-    );
-    mSnapToGridButton->setText( tr( "📐 Snap to Grid" ) );
-    mSnapToGridButton->setToolTip( tr( "Grid snapping is DISABLED. Click to enable alignment to raster grid pixels." ) );
+    mSnapToGridButton->setText( tr( "Snap to Grid (OFF)" ) );
+    mSnapToGridButton->setToolTip( tr( "Grid snapping is DISABLED. Extent calculations use original coordinates without alignment." ) );
   }
 }
 
@@ -1084,27 +1049,31 @@ QgsRectangle QgsRasterLayerSaveAsDialog::snapExtentToGrid( const QgsRectangle &r
   if ( !mDataProvider || rect.isNull() )
     return rect;
 
-  // Ensure provider reports size capability
   if ( !( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
     return rect;
 
-  const QgsRectangle rasterRect = mDataProvider->extent();
+  const QgsRectangle rasterExtent = mDataProvider->extent();
   const int xSize = mDataProvider->xSize();
   const int ySize = mDataProvider->ySize();
   if ( xSize <= 0 || ySize <= 0 )
     return rect;
 
-  const double xRes = rasterRect.width() / static_cast< double >( xSize );
-  const double yRes = rasterRect.height() / static_cast< double >( ySize );
+  // Calculate raster resolution
+  const double xres = rasterExtent.width() / static_cast< double >( xSize );
+  const double yres = rasterExtent.height() / static_cast< double >( ySize );
 
-  // Avoid division by zero
-  if ( xRes == 0 || yRes == 0 )
+  
+  if ( xres == 0 || yres == 0 )
     return rect;
 
-  const double xmin = rasterRect.xMinimum() + std::floor( ( rect.xMinimum() - rasterRect.xMinimum() ) / xRes ) * xRes;
-  const double ymin = rasterRect.yMinimum() + std::floor( ( rect.yMinimum() - rasterRect.yMinimum() ) / yRes ) * yRes;
-  const double xmax = rasterRect.xMinimum() + std::ceil(  ( rect.xMaximum() - rasterRect.xMinimum() ) / xRes ) * xRes;
-  const double ymax = rasterRect.yMinimum() + std::ceil(  ( rect.yMaximum() - rasterRect.yMinimum() ) / yRes ) * yRes;
+  
+  const double xmin_raster = rasterExtent.xMinimum();
+  const double ymin_raster = rasterExtent.yMinimum();
 
-  return QgsRectangle( xmin, ymin, xmax, ymax );
+  const double xmin_extent = xmin_raster + std::floor( ( rect.xMinimum() - xmin_raster ) / xres ) * xres;
+  const double ymin_extent = ymin_raster + std::floor( ( rect.yMinimum() - ymin_raster ) / yres ) * yres;
+  const double xmax_extent = xmin_raster + std::ceil(  ( rect.xMaximum() - xmin_raster ) / xres ) * xres;
+  const double ymax_extent = ymin_raster + std::ceil(  ( rect.yMaximum() - ymin_raster ) / yres ) * yres;
+
+  return QgsRectangle( xmin_extent, ymin_extent, xmax_extent, ymax_extent );
 }
