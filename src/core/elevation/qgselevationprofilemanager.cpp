@@ -105,6 +105,14 @@ QDomElement QgsElevationProfileManager::writeXml( QDomDocument &doc, const QgsRe
   return profilesElem;
 }
 
+void QgsElevationProfileManager::resolveReferences( const QgsProject *project )
+{
+  for ( QgsElevationProfile *l : mObjects )
+  {
+    l->resolveReferences( project );
+  }
+}
+
 QString QgsElevationProfileManager::generateUniqueTitle() const
 {
   QStringList names;
