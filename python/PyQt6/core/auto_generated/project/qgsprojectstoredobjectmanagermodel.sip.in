@@ -29,6 +29,10 @@ Base class for list models representing the objects available in a
     };
 
     QgsProjectStoredObjectManagerModelBase( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerModelBase, with the
+specified ``parent`` object.
+%End
 
     virtual int rowCount( const QModelIndex &parent ) const;
 

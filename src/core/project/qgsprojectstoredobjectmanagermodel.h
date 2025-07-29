@@ -50,6 +50,9 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     Q_ENUM( CustomRole )
     // *INDENT-ON*
 
+    /**
+     * Constructor for QgsProjectStoredObjectManagerModelBase, with the specified \a parent object.
+     */
     QgsProjectStoredObjectManagerModelBase( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     int rowCount( const QModelIndex &parent ) const override;
