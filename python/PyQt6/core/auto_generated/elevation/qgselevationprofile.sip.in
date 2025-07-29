@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgselevationprofile.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsElevationProfile : QObject
+{
+%Docstring(signature="appended")
+Represents an elevation profile attached to a project.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgselevationprofile.h"
+%End
+  public:
+
+    explicit QgsElevationProfile( QgsProject *project );
+%Docstring
+Constructor for QgsElevationProfile.
+%End
+
+    QString name() const;
+%Docstring
+Returns the profile's unique name.
+
+.. seealso:: :py:func:`setName`
+
+.. seealso:: :py:func:`nameChanged`
+%End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Returns the profiles's state encapsulated in a DOM element.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+Sets the profiles's state from a DOM element.
+
+``element`` is the DOM node corresponding to the profile.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+  public slots:
+
+    void setName( const QString &name );
+%Docstring
+Sets the profile's unique ``name``.
+
+.. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`nameChanged`
+%End
+
+  signals:
+
+    void nameChanged( const QString &newName );
+%Docstring
+Emitted when the profile is renamed.
+
+.. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`setName`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgselevationprofile.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

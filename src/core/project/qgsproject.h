@@ -74,6 +74,7 @@ class QgsTransactionGroup;
 class QgsVectorLayer;
 class QgsAnnotationManager;
 class QgsLayoutManager;
+class QgsElevationProfileManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
@@ -850,6 +851,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the project.
      */
     QgsLayoutManager *layoutManager();
+
+    /**
+     * Returns the project's elevation profile manager, which manages elevation profiles within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    const QgsElevationProfileManager *elevationProfileManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's elevation profile manager, which manages elevation profiles within
+     * the project.
+     * \since QGIS 4.0
+     */
+    QgsElevationProfileManager *elevationProfileManager();
 
     /**
      * Returns the project's views manager, which manages map views (including 3d maps)
@@ -2483,6 +2499,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
+    std::unique_ptr<QgsElevationProfileManager> mElevationProfileManager;
     std::unique_ptr<QgsMapViewsManager> m3DViewsManager;
 
     QgsBookmarkManager *mBookmarkManager = nullptr;

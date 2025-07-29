@@ -129,3 +129,8 @@ void QgsAbstractProjectStoredObjectManager<T>::setupObjectConnections( T * )
 #include "qgsmasterlayoutinterface.h"
 
 template class QgsAbstractProjectStoredObjectManager<QgsMasterLayoutInterface>;
+
+#include "qgselevationprofile.h"
+
+template class QgsAbstractProjectStoredObjectManager<QgsElevationProfile>;
+
