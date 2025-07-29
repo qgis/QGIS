@@ -98,7 +98,7 @@
                 echo
                 echo "1.  ninja test"
                 echo
-                echo "Note: run 'nix flake update' from time to time to update dependencies."
+                echo "Note: run 'nix flake update' to update dependencies."
                 echo
                 echo "Run 'dev-help' to see this message again."
               }
