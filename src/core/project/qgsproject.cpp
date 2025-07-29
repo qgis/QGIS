@@ -2540,6 +2540,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   {
     profile.switchTask( tr( "Loading elevation profiles" ) );
     mElevationProfileManager->readXml( doc->documentElement(), *doc, context );
+    mElevationProfileManager->resolveReferences( this );
   }
 
   if ( !( flags & Qgis::ProjectReadFlag::DontLoad3DViews ) )

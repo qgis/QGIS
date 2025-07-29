@@ -106,6 +106,7 @@ class CORE_EXPORT QgsElevationProfileManager : public QgsAbstractProjectStoredOb
     /**
      * Reads the manager's state from a DOM element, restoring all profiles
      * present in the XML document.
+     * \see resolveReferences()
      * \see writeXml()
      */
     bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
@@ -115,6 +116,13 @@ class CORE_EXPORT QgsElevationProfileManager : public QgsAbstractProjectStoredOb
      * \see readXml()
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * After reading settings from XML, resolves references to any layers in a \a project that have been read as layer IDs.
+     *
+     * \see readXml()
+     */
+    void resolveReferences( const QgsProject *project );
 
     /**
      * Generates a unique title for a new profile, which does not
