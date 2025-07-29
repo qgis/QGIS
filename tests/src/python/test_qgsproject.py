@@ -44,6 +44,7 @@ from qgis.core import (
     QgsSettings,
     QgsUnitTypes,
     QgsVectorLayer,
+    QgsElevationProfile,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -425,6 +426,34 @@ class TestQgsProject(QgisTestCase):
             self.assertEqual(
                 p2.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop
             )
+
+    def test_elevation_profile_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.elevationProfileManager().profiles())
+        profile = QgsElevationProfile(p)
+        profile.setName("p1")
+        p.elevationProfileManager().addProfile(profile)
+        profile = QgsElevationProfile(p)
+        profile.setName("p2")
+        p.elevationProfileManager().addProfile(profile)
+        self.assertCountEqual(
+            [profile.name() for profile in p.elevationProfileManager().profiles()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "elevation_profiles.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [profile.name() for profile in p2.elevationProfileManager().profiles()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.elevationProfileManager().profiles())
 
     def testReadEntry(self):
         prj = QgsProject.instance()
