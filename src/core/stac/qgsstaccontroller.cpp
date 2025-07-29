@@ -300,14 +300,9 @@ QgsNetworkReplyContent QgsStacController::fetchBlocking( const QUrl &url )
   req.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   req.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  if ( !mAuthCfg.isEmpty() )
-  {
-    QgsApplication::authManager()->updateNetworkRequest( req, mAuthCfg );
-  }
-
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
-  return nam->blockingGet( req );
+  return nam->blockingGet( req, mAuthCfg );
 }
 
 QString QgsStacController::authCfg() const
