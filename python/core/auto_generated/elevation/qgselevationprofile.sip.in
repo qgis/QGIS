@@ -52,6 +52,11 @@ Sets the profiles's state from a DOM element.
 .. seealso:: :py:func:`writeXml`
 %End
 
+    QIcon icon() const;
+%Docstring
+Returns the icon to use for the elevation profile.
+%End
+
   public slots:
 
     void setName( const QString &name );

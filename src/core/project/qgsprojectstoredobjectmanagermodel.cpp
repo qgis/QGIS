@@ -319,6 +319,10 @@ QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInte
 
 template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>;
 
+
+#include "qgselevationprofile.h"
+template class QgsProjectStoredObjectManagerModel<QgsElevationProfile>;
+
 ///@endcond
 
 //
@@ -394,4 +398,5 @@ bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int s
 
 ///@cond PRIVATE
 template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;
+template class QgsProjectStoredObjectManagerProxyModel<QgsElevationProfile>;
 ///@endcond

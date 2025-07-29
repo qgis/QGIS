@@ -41,6 +41,11 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
   return true;
 }
 
+QIcon QgsElevationProfile::icon() const
+{
+  return QIcon();
+}
+
 void QgsElevationProfile::setName( const QString &name )
 {
   if ( name == mName )
