@@ -29,6 +29,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgscodeeditorwidget.h"
 #include "qgsfileutils.h"
+#include "qgshelp.h"
 #include "qgsstoredquerymanager.h"
 #include "qgsproject.h"
 #include "qgsnewnamedialog.h"
@@ -36,6 +37,7 @@
 #include "qgsdbqueryhistoryprovider.h"
 
 #include <QClipboard>
+#include <QDialogButtonBox>
 #include <QShortcut>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -1219,7 +1221,15 @@ QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnectio
   mWidget = new QgsQueryResultWidget( this, connection );
   QVBoxLayout *l = new QVBoxLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
+
+  QDialogButtonBox *mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#execute-sql" ) );
+  } );
   l->addWidget( mWidget );
+  l->addWidget( mButtonBox );
+
   setLayout( l );
 }
 
