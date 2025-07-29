@@ -9,7 +9,6 @@
 
 , withGrass
 , withServer
-, withWebKit
 
 , bison
 , cmake
@@ -172,7 +171,6 @@ stdenv.mkDerivation
     txt2tags
     zstd
   ] ++ lib.optional withGrass grass
-  # ++ lib.optional withWebKit qtwebkit
   ++ pythonBuildInputs;
 
   patches = [
@@ -186,7 +184,6 @@ stdenv.mkDerivation
   # (offscreen is needed by "${APIS_SRC_DIR}/generate_console_pap.py")
   env.QT_QPA_PLATFORM_PLUGIN_PATH = "${qtbase}/${qtbase.qtPluginPrefix}/platforms";
 
-  # FIXME: qt webkit can't be enabled with Qt6
   cmakeFlags = [
     "-DBUILD_WITH_QT6=True"
     "-DWITH_QTWEBENGINE=True"
@@ -195,8 +192,7 @@ stdenv.mkDerivation
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
     "-DQT_PLUGINS_DIR=${qtbase}/${qtbase.qtPluginPrefix}"
-  ] ++ lib.optional (!withWebKit) "-DWITH_QTWEBKIT=OFF"
-  ++ lib.optional withServer [
+  ] ++ lib.optional withServer [
     "-DWITH_SERVER=True"
     "-DQGIS_CGIBIN_SUBDIR=${placeholder "out"}/lib/cgi-bin"
   ]
