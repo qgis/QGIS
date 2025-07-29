@@ -33,7 +33,7 @@
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
 #include "qgsdatums.h"
-#include <QCheckBox>
+#include <QPushButton>
 #include <cmath>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -179,12 +179,14 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
 
-  // Snap to grid checkbox (added for #43915)
-  mSnapToGridCheckBox = new QCheckBox( tr( "Snap to grid" ) );
-  mSnapToGridCheckBox->setToolTip( tr( "Align the export extent to the input raster pixels (similar to GDAL's -tap option)" ) );
-  mSnapToGridCheckBox->setChecked( true );
-  mExtentGroupBox->layout()->addWidget( mSnapToGridCheckBox );
-  connect( mSnapToGridCheckBox, &QCheckBox::toggled, this, &QgsRasterLayerSaveAsDialog::snapToGridCheckBoxToggled );
+  // Snap to grid button (added for #43915)
+  mSnapToGridButton = new QPushButton( tr( "📐 Snap to Grid" ) );
+  mSnapToGridButton->setToolTip( tr( "Align the export extent to the input raster pixels (similar to GDAL's -tap option)" ) );
+  mSnapToGridButton->setCheckable( true );
+  mSnapToGridButton->setChecked( true );
+  mSnapToGridButton->setMinimumHeight( 32 ); 
+  mExtentGroupBox->layout()->addWidget( mSnapToGridButton );
+  connect( mSnapToGridButton, &QPushButton::toggled, this, &QgsRasterLayerSaveAsDialog::snapToGridButtonToggled );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
   
 
@@ -192,10 +194,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // Initialize the snap to grid parameters from the input raster
   if ( mDataProvider )
   {
-    // Raster grid parameters are set in snapToGridCheckBoxToggled
-    
     // Enable snapping to grid by default
-    snapToGridCheckBoxToggled( mSnapToGridCheckBox->isChecked() );
+    snapToGridButtonToggled( mSnapToGridButton->isChecked() );
   }
 
   recalcResolutionSize();
@@ -494,14 +494,14 @@ QStringList QgsRasterLayerSaveAsDialog::creationOptions() const
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
   QgsRectangle rect = mExtentGroupBox->outputExtent();
-  if ( mSnapToGridCheckBox && mSnapToGridCheckBox->isChecked() )
+  if ( mSnapToGridButton && mSnapToGridButton->isChecked() )
   {
     return snapExtentToGrid( rect );
   }
   return rect;
 }
 
-void QgsRasterLayerSaveAsDialog::snapToGridCheckBoxToggled( bool checked )
+void QgsRasterLayerSaveAsDialog::snapToGridButtonToggled( bool checked )
 {
   if ( !mDataProvider )
     return;
@@ -512,8 +512,55 @@ void QgsRasterLayerSaveAsDialog::snapToGridCheckBoxToggled( bool checked )
   double minX = mDataProvider->extent().xMinimum();
   double minY = mDataProvider->extent().yMinimum();
   
-  // Set snap to grid parameters in the extent group box
   mExtentGroupBox->setSnapToGrid( checked, xRes, yRes, minX, minY );
+  
+  if ( checked )
+  {
+    
+    mSnapToGridButton->setStyleSheet( 
+      "QPushButton { "
+      "  background-color: #4CAF50; "
+      "  border: 2px solid #45a049; "
+      "  color: white; "
+      "  font-weight: bold; "
+      "  border-radius: 4px; "
+      "  padding: 6px 12px; "
+      "} "
+      "QPushButton:hover { "
+      "  background-color: #45a049; "
+      "  border: 2px solid #3d8b40; "
+      "} "
+      "QPushButton:pressed { "
+      "  background-color: #3d8b40; "
+      "}"
+    );
+    mSnapToGridButton->setText( tr( "📐 Snap to Grid" ) );
+    mSnapToGridButton->setToolTip( tr( "Grid snapping is ENABLED. Extent coordinates are aligned to raster pixels. Click to disable." ) );
+  }
+  else
+  {
+    
+    mSnapToGridButton->setStyleSheet( 
+      "QPushButton { "
+      "  background-color: #f5f5f5; "
+      "  border: 2px solid #ddd; "
+      "  color: #666; "
+      "  font-weight: normal; "
+      "  border-radius: 4px; "
+      "  padding: 6px 12px; "
+      "} "
+      "QPushButton:hover { "
+      "  background-color: #e9e9e9; "
+      "  border: 2px solid #ccc; "
+      "  color: #333; "
+      "} "
+      "QPushButton:pressed { "
+      "  background-color: #ddd; "
+      "}"
+    );
+    mSnapToGridButton->setText( tr( "📐 Snap to Grid" ) );
+    mSnapToGridButton->setToolTip( tr( "Grid snapping is DISABLED. Click to enable alignment to raster grid pixels." ) );
+  }
 }
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
