@@ -68,6 +68,11 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      */
     bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Returns the icon to use for the elevation profile.
+     */
+    QIcon icon() const;
+
   public slots:
 
     /**
