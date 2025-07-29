@@ -114,8 +114,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   mMaxClipPlanes = Qgs3DUtils::openGlMaxClipPlanes( mEngine->surface() );
 
   // Camera
-  float aspectRatio = ( float ) viewportRect.width() / viewportRect.height();
-  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
+  double aspectRatio = static_cast<double>( viewportRect.width() ) / static_cast<double>( viewportRect.height() );
+  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), static_cast<float>( aspectRatio ), 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered, this, &Qgs3DMapScene::onFrameTriggered );
@@ -286,9 +286,9 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
     else
     {
       // If the projected point is on the front of the camera we choose the closest between it and farthest point in the front
-      t = std::min<float>( t, camera->farPlane() );
+      t = std::min<double>( t, static_cast<double>( camera->farPlane() ) );
     }
-    QVector3D planePoint = ray.origin() + t * dir;
+    QVector3D planePoint = ray.origin() + static_cast<float>( t ) * dir;
     QgsVector3D pMap = mMap.worldToMapCoordinates( planePoint );
     extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
   }
@@ -308,12 +308,12 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
   Qt3DRender::QCamera *camera = mCameraController->camera();
   float fov = camera->fieldOfView();
   const QSize size = mEngine->size();
-  float screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
 
   // see Qgs3DUtils::screenSpaceError() for the inverse calculation (world space error to screen space error)
   // with explanation of the math.
-  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
-  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  float frustumWidthAtDistance = static_cast<float>( 2.0 * distance * tan( fov / 2.0 ) );
+  float err = frustumWidthAtDistance * epsilon / static_cast<float>( screenSizePx );
   return err;
 }
 
@@ -323,7 +323,7 @@ void Qgs3DMapScene::onCameraChanged()
   {
     QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
     const float viewWidthFromCenter = mCameraController->distance();
-    const float viewHeightFromCenter = viewportRect.height() * viewWidthFromCenter / viewportRect.width();
+    const float viewHeightFromCenter = static_cast<float>( viewportRect.height() ) * viewWidthFromCenter / static_cast<float>( viewportRect.width() );
     mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
   }
 
@@ -1274,7 +1274,7 @@ void Qgs3DMapScene::onOriginChanged()
     QgsVector3D originShift = mMap.origin() - oldOrigin;
     for ( QVector4D plane : std::as_const( mClipPlanesEquations ) )
     {
-      plane.setW( originShift.x() * plane.x() + originShift.y() * plane.y() + originShift.z() * plane.z() + plane.w() );
+      plane.setW( static_cast<float>( originShift.x() * plane.x() + originShift.y() * plane.y() + originShift.z() * plane.z() + plane.w() ) );
       newPlanes.append( plane );
     }
     enableClipping( newPlanes );
