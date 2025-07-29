@@ -145,7 +145,7 @@ void TestQgsChunkedEntity::checkLowestZ( QgsFeature f, QVector<float> expectedZ,
         if ( childComp )
         {
           QVERIFY( childComp->geometry() );
-          for ( Qt3DRender::QAttribute *attrib : childComp->geometry()->attributes() ) // search position attribute
+          for ( Qt3DQAttribute *attrib : childComp->geometry()->attributes() ) // search position attribute
           {
             if ( attrib->name() == Qt3DQAttribute::defaultPositionAttributeName() )
             {

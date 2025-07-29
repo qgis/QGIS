@@ -217,7 +217,6 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
     mRootNode = node;
   }
 
-  QString key = node->tileId().text();
   // A bit of a hack to make cloning terrain generator work properly
   if ( mTerrain )
     return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
