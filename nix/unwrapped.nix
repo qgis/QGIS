@@ -210,11 +210,10 @@ stdenv.mkDerivation
 
   dontWrapGApps = true; # wrapper params passed below
 
+  # GRASS has to be availble on the command line even though we baked in the
+  # path at build time using GRASS_PREFIX. Using wrapGAppsHook also prevents
+  # file dialogs from crashing the program on non-NixOS.
   postFixup = lib.optionalString withGrass ''
-    # GRASS has to be availble on the command line even though we baked in
-    # the path at build time using GRASS_PREFIX.
-    # Using wrapGAppsHook also prevents file dialogs from crashing the program
-    # on non-NixOS.
     for program in $out/bin/*; do
       wrapProgram $program \
         "''${gappsWrapperArgs[@]}" \
