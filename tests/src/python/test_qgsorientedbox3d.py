@@ -103,7 +103,7 @@ class TestQgsOrientedBox3D(QgisTestCase):
         box = QgsOrientedBox3D(
             QgsVector3D(4, 5, 6),
             QgsVector3D(1, 1, 1),
-            QQuaternion.fromAxisAndAngle(QVector3D(0, 1, 0), -45)
+            QQuaternion.fromAxisAndAngle(QVector3D(0, 1, 0), -45),
         )
         self.assertEqual(box.centerX(), 4)
         self.assertEqual(box.centerY(), 5)
@@ -300,14 +300,14 @@ class TestQgsOrientedBox3D(QgisTestCase):
         self.assertEqual(box.size(), QgsVector3D(20, 40, 60))
 
     def test_longestSide(self):
-      box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
-      self.assertEqual(box.longestSide(), 2)
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+        self.assertEqual(box.longestSide(), 2)
 
-      box = QgsOrientedBox3D([10, 10, 10], [1, 0, 0, 0, 2, 0, 0, 0, 3])
-      self.assertEqual(box.longestSide(), 6)
+        box = QgsOrientedBox3D([10, 10, 10], [1, 0, 0, 0, 2, 0, 0, 0, 3])
+        self.assertEqual(box.longestSide(), 6)
 
-      box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
-      self.assertEqual(box.longestSide(), 60)
+        box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        self.assertEqual(box.longestSide(), 60)
 
     def test_reprojectedExtent(self):
         box = QgsOrientedBox3D(
