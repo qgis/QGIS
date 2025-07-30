@@ -128,7 +128,7 @@ void TestQgsGltfUtils::testI3SDracoModel3DObject()
   context.isGlobalMode = true;
   context.datasetToSceneTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4979" ), QgsCoordinateReferenceSystem( "EPSG:4978" ), QgsCoordinateTransformContext() );
   context.nodeCenterEcef = context.datasetToSceneTransform.transform( nodeCenter );
-  context.materialInfo["pbrBaseColorFactor"] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+  context.materialInfo["pbrBaseColorFactor"] = QVariantList { 1.0, 1.0, 1.0, 1.0 };
 
   tinygltf::Model model;
   QVERIFY( QgsGltfUtils::loadDracoModel( data, context, model, nullptr ) );
@@ -161,9 +161,9 @@ void TestQgsGltfUtils::testI3SDracoModel3DObject()
   QVector<double> vx, vy, vz;
   QgsGltfUtils::accessorToMapCoordinates( model, 0, QgsMatrix4x4(), nullptr, context.nodeCenterEcef, nullptr, Qgis::Axis::Z, vx, vy, vz );
   QCOMPARE( vx.size(), 29992 );
-  QCOMPARE( vx[0],  1339937.494089 );
+  QCOMPARE( vx[0], 1339937.494089 );
   QCOMPARE( vy[0], -4657825.592067 );
-  QCOMPARE( vz[0],  4132174.028885 );
+  QCOMPARE( vz[0], 4132174.028885 );
 
   // check indices
   const tinygltf::Accessor &indexAccessor = model.accessors[2];
@@ -206,7 +206,7 @@ void TestQgsGltfUtils::testI3SDracoModelIntegratedMesh()
   context.isGlobalMode = true;
   context.datasetToSceneTransform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4979" ), QgsCoordinateReferenceSystem( "EPSG:4978" ), QgsCoordinateTransformContext() );
   context.nodeCenterEcef = context.datasetToSceneTransform.transform( nodeCenter );
-  context.materialInfo["pbrBaseColorFactor"] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+  context.materialInfo["pbrBaseColorFactor"] = QVariantList { 1.0, 1.0, 1.0, 1.0 };
   context.materialInfo["pbrBaseColorTexture"] = "https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/Rancho_Mesh_v18/SceneServer/layers/0/nodes/16/textures/0";
 
   tinygltf::Model model;
@@ -244,7 +244,7 @@ void TestQgsGltfUtils::testI3SDracoModelIntegratedMesh()
   QCOMPARE( vx.size(), 12162 );
   QCOMPARE( vx[0], -2443892.712516 );
   QCOMPARE( vy[0], -4687029.053951 );
-  QCOMPARE( vz[0],  3558046.710601 );
+  QCOMPARE( vz[0], 3558046.710601 );
 
   // check texture coordinates
   const tinygltf::Accessor &texAccessor = model.accessors[1];
