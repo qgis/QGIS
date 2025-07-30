@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:
     //! Result of the calculation
-    enum class Result : int
+    enum class Result SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterCalculator, Result ) : int
     {
       Success = 0,           //!< Calculation successful
       CreateOutputError = 1, //!< Error creating output data file

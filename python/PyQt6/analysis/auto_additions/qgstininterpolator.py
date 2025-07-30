@@ -1,7 +1,11 @@
 # The following has been generated automatically from src/analysis/interpolation/qgstininterpolator.h
 # monkey patching scoped based enum
-QgsTinInterpolator.TinInterpolation.Linear.__doc__ = "Linear interpolation"
-QgsTinInterpolator.TinInterpolation.CloughTocher.__doc__ = "Clough-Tocher interpolation"
+QgsTinInterpolator.Linear = QgsTinInterpolator.TinInterpolation.Linear
+QgsTinInterpolator.Linear.is_monkey_patched = True
+QgsTinInterpolator.Linear.__doc__ = "Linear interpolation"
+QgsTinInterpolator.CloughTocher = QgsTinInterpolator.TinInterpolation.CloughTocher
+QgsTinInterpolator.CloughTocher.is_monkey_patched = True
+QgsTinInterpolator.CloughTocher.__doc__ = "Clough-Tocher interpolation"
 QgsTinInterpolator.TinInterpolation.__doc__ = """Indicates the type of interpolation to be performed
 
 * ``Linear``: Linear interpolation
