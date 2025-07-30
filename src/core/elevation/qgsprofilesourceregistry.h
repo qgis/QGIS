@@ -47,19 +47,32 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
     ~QgsProfileSourceRegistry();
 
     /**
-     * Returns a list of registered profile sources
+     * Returns a list of registered profile sources.
      */
     QList< QgsAbstractProfileSource * > profileSources() const;
 
     /**
-     * Registers a profile \a source and takes ownership of it
+     * Registers a profile \a source and takes ownership of it.
+     *
+     * Returns TRUE if the profile \a source could be registered and FALSE otherwise.
      */
-    void registerProfileSource( QgsAbstractProfileSource *source SIP_TRANSFER );
+    bool registerProfileSource( QgsAbstractProfileSource *source SIP_TRANSFER );
 
     /**
-     * Unregisters a profile \a source and destroys its instance
+     * Unregisters a profile \a source and destroys its instance.
+     *
+     * \deprecated QGIS 4.0. Unregister the profile source by ID instead.
      */
-    void unregisterProfileSource( QgsAbstractProfileSource *source );
+    Q_DECL_DEPRECATED bool unregisterProfileSource( QgsAbstractProfileSource *source ) SIP_DEPRECATED;
+
+    /**
+     * Unregisters a profile source by a given ID and destroys its instance.
+     *
+     * Returns TRUE if the source id was found in the registry and FALSE otherwise.
+     *
+     * \param sourceID  Profile source ID to be unregistered.
+     */
+    bool unregisterProfileSource( const QString &sourceId );
 
     /**
      * Finds a registered profile source by id.

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilesourceregistry.h"
-
 #include "qgsabstractprofilesource.h"
+#include "qgslogger.h"
 
 QgsProfileSourceRegistry::QgsProfileSourceRegistry()
 {
@@ -31,16 +31,29 @@ QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() c
   return mSources;
 }
 
-void QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
+bool QgsProfileSourceRegistry::registerProfileSource( QgsAbstractProfileSource *profileSource )
 {
-  if ( !mSources.contains( profileSource ) )
+
+  if ( mSources.contains( profileSource ) )
   {
-    mSources.append( profileSource );
-    emit profileSourceRegistered( profileSource->profileSourceId(), profileSource->profileSourceName() );
+    return false;
   }
+
+  for ( const auto &source : std::as_const( mSources ) )
+  {
+    if ( source->profileSourceId() == profileSource->profileSourceId() )
+    {
+      QgsDebugError( QStringLiteral( "A profile source with the same ID (%1) already exists" ).arg( profileSource->profileSourceId() ) );
+      return false;
+    }
+  }
+
+  mSources.append( profileSource );
+  emit profileSourceRegistered( profileSource->profileSourceId(), profileSource->profileSourceName() );
+  return true;
 }
 
-void QgsProfileSourceRegistry::unregisterProfileSource( QgsAbstractProfileSource *profileSource )
+bool QgsProfileSourceRegistry::unregisterProfileSource( QgsAbstractProfileSource *profileSource )
 {
   const int index = mSources.indexOf( profileSource );
   if ( index >= 0 )
@@ -48,7 +61,24 @@ void QgsProfileSourceRegistry::unregisterProfileSource( QgsAbstractProfileSource
     const QString id = profileSource->profileSourceId();
     delete mSources.takeAt( index );
     emit profileSourceUnregistered( id );
+    return true;
   }
+  return false;
+}
+
+bool QgsProfileSourceRegistry::unregisterProfileSource( const QString &sourceId )
+{
+  for ( auto it = mSources.begin(); it != mSources.end(); ++it )
+  {
+    if ( ( *it )->profileSourceId() == sourceId )
+    {
+      const int index = mSources.indexOf( *it );
+      delete mSources.takeAt( index );
+      emit profileSourceUnregistered( sourceId );
+      return true;
+    }
+  }
+  return false;
 }
 
 QgsAbstractProfileSource *QgsProfileSourceRegistry::findSourceById( const QString &sourceId ) const

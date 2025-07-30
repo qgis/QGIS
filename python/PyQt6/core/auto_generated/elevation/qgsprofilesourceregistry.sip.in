@@ -37,17 +37,34 @@ Constructor - creates a registry of profile sources
 
     QList< QgsAbstractProfileSource * > profileSources() const;
 %Docstring
-Returns a list of registered profile sources
+Returns a list of registered profile sources.
 %End
 
-    void registerProfileSource( QgsAbstractProfileSource *source /Transfer/ );
+    bool registerProfileSource( QgsAbstractProfileSource *source /Transfer/ );
 %Docstring
-Registers a profile ``source`` and takes ownership of it
+Registers a profile ``source`` and takes ownership of it.
+
+Returns ``True`` if the profile ``source`` could be registered and
+``False`` otherwise.
 %End
 
-    void unregisterProfileSource( QgsAbstractProfileSource *source );
+ bool unregisterProfileSource( QgsAbstractProfileSource *source ) /Deprecated="Since 4.0. Unregister the profile source by ID instead."/;
 %Docstring
-Unregisters a profile ``source`` and destroys its instance
+Unregisters a profile ``source`` and destroys its instance.
+
+.. deprecated:: 4.0
+
+   Unregister the profile source by ID instead.
+%End
+
+    bool unregisterProfileSource( const QString &sourceId );
+%Docstring
+Unregisters a profile source by a given ID and destroys its instance.
+
+Returns ``True`` if the source id was found in the registry and
+``False`` otherwise.
+
+:param sourceID: Profile source ID to be unregistered.
 %End
 
     QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
