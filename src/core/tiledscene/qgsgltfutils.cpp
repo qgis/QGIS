@@ -627,10 +627,10 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
         // UV coordinates could have been easily calculated by the dataset producer.
         uint16_t uvRegion[4];
         uvRegionAttribute->ConvertValue<uint16_t>( uvRegionAttribute->mapped_index( i ), uvRegionAttribute->num_components(), uvRegion );
-        float uMin = uvRegion[0] / 65535.0;
-        float vMin = uvRegion[1] / 65535.f;
-        float uMax = uvRegion[2] / 65535.f;
-        float vMax = uvRegion[3] / 65535.f;
+        float uMin = static_cast<float>( uvRegion[0] ) / 65535.f;
+        float vMin = static_cast<float>( uvRegion[1] ) / 65535.f;
+        float uMax = static_cast<float>( uvRegion[2] ) / 65535.f;
+        float vMax = static_cast<float>( uvRegion[3] ) / 65535.f;
         values[0] = uMin + values[0] * ( uMax - uMin );
         values[1] = vMin + values[1] * ( vMax - vMin );
       }
