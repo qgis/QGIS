@@ -60,7 +60,7 @@ struct point10
     unsigned char user_data;
     unsigned short point_source_ID;
 
-    point10() : x(0), y(0), intensity(0), return_number(0),
+    point10() : x(0), y(0), z(0), intensity(0), return_number(0),
         number_of_returns_of_given_pulse(0), scan_direction_flag(0),
         edge_of_flight_line(0), classification(0),
         scan_angle_rank(0), user_data(0), point_source_ID(0)
