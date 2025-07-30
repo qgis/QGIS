@@ -165,6 +165,8 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     void copySelectedPath();
     //! Update the location bar with the selected item's path
     void updateLocationBar();
+    //! Efficiently populate the model hierarchy for the given path
+    bool populatePathHierarchy( const QString &targetPath );
 
   private:
     //! Selection has changed

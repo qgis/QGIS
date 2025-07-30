@@ -577,8 +577,7 @@ void QgsBrowserWidget::splitterMoved()
 
 void QgsBrowserWidget::navigateToPath()
 {
-  
-  if ( !mLeLocationBar || !mModel )
+  if ( !mLeLocationBar || !mModel || !mBrowserView )
     return;
 
   const QString path = mLeLocationBar->text().trimmed();
@@ -596,18 +595,33 @@ void QgsBrowserWidget::navigateToPath()
     return;
   }
 
-  const QModelIndex index = mModel->findPath( normalizedPath );
+  // Quick check: is path already loaded?
+  QModelIndex index = mModel->findPath( normalizedPath );
   if ( index.isValid() )
   {
     setActiveIndex( index );
     mLeLocationBar->clear();
+    return;
   }
-  else
+
+
+  if ( populatePathHierarchy( normalizedPath ) )
   {
-    if ( mMessageBar )
+    index = mModel->findPath( normalizedPath );
+    if ( index.isValid() )
     {
-      mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1" ).arg( normalizedPath ) );
+      setActiveIndex( index );
+      mLeLocationBar->clear();
+      if ( mMessageBar )
+      {
+        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( normalizedPath ) );
+      }
+      return;
     }
+  }
+  if ( mMessageBar )
+  {
+    mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1" ).arg( normalizedPath ) );
   }
 }
 
@@ -681,9 +695,58 @@ void QgsBrowserWidget::copySelectedPath()
   }
 }
 
+bool QgsBrowserWidget::populatePathHierarchy( const QString &targetPath )
+{
+  if ( !mModel || !mBrowserView )
+    return false;
+
+  // Build path components from root to target
+  QStringList pathComponents;
+  QString currentPath = targetPath;
+  
+  while ( !currentPath.isEmpty() && currentPath != "/" && currentPath.length() > 3 )
+  {
+    pathComponents.prepend( currentPath );
+    QDir dir( currentPath );
+    if ( !dir.cdUp() )
+      break;
+    currentPath = dir.absolutePath();
+  }
+  
+  
+  QModelIndex lastValidIndex;
+  for ( const QString &pathComponent : pathComponents )
+  {
+    QModelIndex componentIndex = mModel->findPath( pathComponent, Qt::MatchStartsWith );
+    if ( componentIndex.isValid() )
+    {
+      lastValidIndex = componentIndex;
+      QModelIndex proxyIndex = mProxyModel->mapFromSource( componentIndex );
+      if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
+      {
+        mBrowserView->expand( proxyIndex );
+      }
+    }
+    else if ( lastValidIndex.isValid() )
+    {
+      QgsDataItem *parentItem = mModel->dataItem( lastValidIndex );
+      if ( parentItem )
+      {
+        parentItem->refresh();
+        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 100 );
+      }
+      break;
+    }
+  }
+  
+  //  Ensure all expansions are complete
+  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+  
+  return true;
+}
+
 void QgsBrowserWidget::updateLocationBar()
 {
-  
   if ( !mBrowserView || !mBrowserView->selectionModel() || !mLeLocationBar || !mModel )
     return;
 
@@ -716,7 +779,6 @@ void QgsBrowserWidget::updateLocationBar()
   }
   else if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
   {
-   
     const QString uri = layerItem->uri();
     QFileInfo fileInfo( uri );
     if ( fileInfo.exists() )
@@ -733,7 +795,6 @@ void QgsBrowserWidget::updateLocationBar()
     path = item->path();
   }
 
-  
   if ( !path.isEmpty() )
   {
     mLeLocationBar->setText( path );
