@@ -179,24 +179,14 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
 
-  // Snap to grid button (added for #43915)
+  // Snap to grid button (added for #43915) - momentary push button like other extent buttons
   mSnapToGridButton = new QPushButton( tr( "Snap to Grid" ) );
-  mSnapToGridButton->setToolTip( tr( "Align the export extent to the input raster pixels (similar to GDAL's -tap option)" ) );
-  mSnapToGridButton->setCheckable( true );
-  mSnapToGridButton->setChecked( true );
+  mSnapToGridButton->setToolTip( tr( "Align the current extent to the input raster pixels (similar to GDAL's -tap option)" ) );
   mSnapToGridButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mExtentGroupBox->layout()->addWidget( mSnapToGridButton );
-  connect( mSnapToGridButton, &QPushButton::toggled, this, &QgsRasterLayerSaveAsDialog::snapToGridButtonToggled );
+  connect( mSnapToGridButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::snapToGridButtonClicked );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
-  
 
-  
-  // Initialize the snap to grid parameters from the input raster
-  if ( mDataProvider )
-  {
-    // Enable snapping to grid by default
-    snapToGridButtonToggled( mSnapToGridButton->isChecked() );
-  }
 
   recalcResolutionSize();
 
@@ -493,39 +483,22 @@ QStringList QgsRasterLayerSaveAsDialog::creationOptions() const
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
-  QgsRectangle rect = mExtentGroupBox->outputExtent();
-  if ( mSnapToGridButton && mSnapToGridButton->isChecked() )
-  {
-    return snapExtentToGrid( rect );
-  }
-  return rect;
+  return mExtentGroupBox->outputExtent();
 }
 
-void QgsRasterLayerSaveAsDialog::snapToGridButtonToggled( bool checked )
+void QgsRasterLayerSaveAsDialog::snapToGridButtonClicked()
 {
   if ( !mDataProvider )
     return;
     
-  double xRes = mDataProvider->extent().width() / mDataProvider->xSize();
-  double yRes = mDataProvider->extent().height() / mDataProvider->ySize();
-  double rasterMinX = mDataProvider->extent().xMinimum();
-  double rasterMinY = mDataProvider->extent().yMinimum();
+  // Get current extent from the extent group box
+  QgsRectangle currentExtent = mExtentGroupBox->outputExtent();
   
-  // Set snap to grid parameters in the extent group box
-  // This enables/disables snapping for ANY extent calculation method (Canvas, Layer...)
-  mExtentGroupBox->setSnapToGrid( checked, xRes, yRes, rasterMinX, rasterMinY );
+  // Apply snap-to-grid mathematical logic to the current extent
+  QgsRectangle snappedExtent = snapExtentToGrid( currentExtent );
   
-  // Update button text and tooltip to reflect current state
-  if ( checked )
-  {
-    mSnapToGridButton->setText( tr( "Snap to Grid (ON)" ) );
-    mSnapToGridButton->setToolTip( tr( "Grid snapping is ENABLED. Any extent calculation will be aligned to raster pixels" ) );
-  }
-  else
-  {
-    mSnapToGridButton->setText( tr( "Snap to Grid (OFF)" ) );
-    mSnapToGridButton->setToolTip( tr( "Grid snapping is DISABLED. Extent calculations use original coordinates without alignment." ) );
-  }
+  // Set the snapped extent back to the extent group box
+  mExtentGroupBox->setOutputExtentFromUser( snappedExtent, mExtentGroupBox->outputCrs() );
 }
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
