@@ -124,7 +124,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     void accept() override;
 
   private slots:
-    void snapToGridButtonToggled( bool checked );
+    void snapToGridButtonClicked();
     void mRawModeRadioButton_toggled( bool );
     void mFormatComboBox_currentIndexChanged( const QString &text );
     void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
