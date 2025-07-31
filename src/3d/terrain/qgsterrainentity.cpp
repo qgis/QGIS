@@ -90,7 +90,8 @@ QgsTerrainEntity::~QgsTerrainEntity()
   // cancel / wait for jobs
   cancelActiveJobs();
 
-  mapSettings()->terrainGenerator()->setTerrain( nullptr );
+  if ( mMapSettings && mMapSettings->terrainGenerator() )
+    mMapSettings->terrainGenerator()->setTerrain( nullptr );
   delete mTextureGenerator;
 }
 
