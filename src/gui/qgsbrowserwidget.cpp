@@ -586,7 +586,6 @@ void QgsBrowserWidget::navigateToPath()
 
   const QString normalizedPath = QDir::cleanPath( path );
   
-  // Validate path exists on filesystem
   if ( !QFileInfo::exists( normalizedPath ) )
   {
     if ( mMessageBar )
@@ -596,7 +595,7 @@ void QgsBrowserWidget::navigateToPath()
     return;
   }
 
-  // Quick check: is path already loaded in model?
+  //is path already loaded in model?
   QModelIndex index = mModel->findPath( normalizedPath );
   if ( index.isValid() )
   {
@@ -609,17 +608,8 @@ void QgsBrowserWidget::navigateToPath()
     return;
   }
 
-  // Try alternative path formats for QGIS browser model
-  QStringList pathVariants;
-  pathVariants << normalizedPath;
+  QStringList pathVariants = generatePathVariants( normalizedPath );
   
-  // Windows path variants
-  if ( normalizedPath.contains( '/' ) )
-    pathVariants << QString( normalizedPath ).replace( '/', '\\' );
-  if ( normalizedPath.contains( '\\' ) )
-    pathVariants << QString( normalizedPath ).replace( '\\', '/' );
-  
-  // Try each variant
   for ( const QString &variant : pathVariants )
   {
     index = mModel->findPath( variant );
@@ -635,10 +625,8 @@ void QgsBrowserWidget::navigateToPath()
     }
   }
 
-  // Path not found in model - try to populate hierarchy
   if ( populatePathHierarchy( normalizedPath ) )
   {
-    // Try finding the path again after hierarchy population
     for ( const QString &variant : pathVariants )
     {
       index = mModel->findPath( variant );
@@ -654,8 +642,7 @@ void QgsBrowserWidget::navigateToPath()
       }
     }
   }
-  
-  // Final attempt: try with exact match flag
+ 
   for ( const QString &variant : pathVariants )
   {
     index = mModel->findPath( variant, Qt::MatchExactly );
@@ -671,7 +658,6 @@ void QgsBrowserWidget::navigateToPath()
     }
   }
   
-  // Navigation failed
   if ( mMessageBar )
   {
     mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser." ).arg( normalizedPath ) );
@@ -753,31 +739,51 @@ bool QgsBrowserWidget::populatePathHierarchy( const QString &targetPath )
   if ( !mModel || !mBrowserView )
     return false;
 
+  
+  QString normalizedPath = QDir::cleanPath( targetPath );
+  QFileInfo pathInfo( normalizedPath );
+  
+  
+
+  if ( pathInfo.isRelative() )
+  {
+    normalizedPath = QDir::current().absoluteFilePath( normalizedPath );
+    normalizedPath = QDir::cleanPath( normalizedPath );
+  }
+
   // Build complete path hierarchy from root to target
   QStringList pathComponents;
-  QString currentPath = QDir::cleanPath( targetPath );
+  QString currentPath = normalizedPath;
   
-  // Build hierarchy: collect all parent paths
+  
+  
   while ( !currentPath.isEmpty() )
   {
     pathComponents.prepend( currentPath );
     
-    // Handle Windows drive roots (e.g., "C:" or "C:/")
-    if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
-      break;
-      
-    // Handle Unix root
-    if ( currentPath == "/" )
-      break;
     
     QDir dir( currentPath );
     QString parentPath = dir.absolutePath();
     
-    // Try going up one level
+    
+    bool isRoot = false;
+    
+#ifdef Q_OS_WIN
+    
+    if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
+      isRoot = true;
+#else
+    if ( currentPath == "/" )
+      isRoot = true;
+#endif
+    
+    if ( isRoot )
+      break;
+    
     if ( dir.cdUp() )
     {
       QString newPath = dir.absolutePath();
-      // Avoid infinite loop if we can't go up further
+      
       if ( newPath == currentPath || newPath == parentPath )
         break;
       currentPath = newPath;
@@ -794,19 +800,12 @@ bool QgsBrowserWidget::populatePathHierarchy( const QString &targetPath )
   
   for ( const QString &pathComponent : pathComponents )
   {
-    // Try multiple path formats that QGIS browser might use
-    QStringList pathVariants;
-    pathVariants << pathComponent;
     
-    // For Windows, try both forward and backslash variants
-    if ( pathComponent.contains( '/' ) )
-      pathVariants << QString( pathComponent ).replace( '/', '\\' );
-    if ( pathComponent.contains( '\\' ) )
-      pathVariants << QString( pathComponent ).replace( '\\', '/' );
+    QStringList pathVariants = generatePathVariants( pathComponent );
     
     QModelIndex componentIndex;
     
-    // Try each path variant
+
     for ( const QString &variant : pathVariants )
     {
       componentIndex = mModel->findPath( variant, Qt::MatchStartsWith );
@@ -818,30 +817,25 @@ bool QgsBrowserWidget::populatePathHierarchy( const QString &targetPath )
     {
       foundAnyPath = true;
       lastValidIndex = componentIndex;
-      
-      // Expand this level to load children
+ 
       QModelIndex proxyIndex = mProxyModel->mapFromSource( componentIndex );
       if ( proxyIndex.isValid() )
       {
         if ( !mBrowserView->isExpanded( proxyIndex ) )
         {
           mBrowserView->expand( proxyIndex );
-          // Allow time for expansion to complete
           QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
         }
       }
     }
     else if ( lastValidIndex.isValid() )
     {
-      // If we can't find this component, try refreshing the parent
       QgsDataItem *parentItem = mModel->dataItem( lastValidIndex );
       if ( parentItem )
       {
         parentItem->refresh();
-        // Wait for refresh to complete
         QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
         
-        // Try finding the path again after refresh
         for ( const QString &variant : pathVariants )
         {
           componentIndex = mModel->findPath( variant, Qt::MatchStartsWith );
@@ -860,6 +854,37 @@ bool QgsBrowserWidget::populatePathHierarchy( const QString &targetPath )
   QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
   
   return foundAnyPath;
+}
+
+QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
+{
+  QStringList pathVariants;
+  pathVariants << path;
+
+#ifdef Q_OS_WIN
+  if ( path.contains( '/' ) )
+    pathVariants << QString( path ).replace( '/', '\\' );
+  if ( path.contains( '\\' ) )
+    pathVariants << QString( path ).replace( '\\', '/' );
+#else
+  
+  if ( path.contains( '\\' ) )
+    pathVariants << QString( path ).replace( '\\', '/' );
+#endif
+  
+  QString nativePath = QDir::toNativeSeparators( path );
+  if ( !pathVariants.contains( nativePath ) )
+    pathVariants << nativePath;
+  
+  QFileInfo fileInfo( path );
+  if ( fileInfo.exists() )
+  {
+    QString canonicalPath = fileInfo.canonicalFilePath();
+    if ( !canonicalPath.isEmpty() && !pathVariants.contains( canonicalPath ) )
+      pathVariants << canonicalPath;
+  }
+  
+  return pathVariants;
 }
 
 void QgsBrowserWidget::updateLocationBar()
