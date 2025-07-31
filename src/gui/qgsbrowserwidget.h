@@ -167,6 +167,8 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     void updateLocationBar();
     //! Efficiently populate the model hierarchy for the given path
     bool populatePathHierarchy( const QString &targetPath );
+    //! Generate cross-platform path variants for browser model lookup
+    QStringList generatePathVariants( const QString &path );
 
   private:
     //! Selection has changed
