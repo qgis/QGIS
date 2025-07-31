@@ -17,6 +17,13 @@
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+struct LayerCommitBlockage
+{
+    QString pluginId;
+    QString reason;
+};
+
+
 
 class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
@@ -360,10 +367,7 @@ Provider to display vector data in a GRASS GIS layer.
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
 %End
-  public:
-
-
-
+public:
     struct LayerOptions
     {
 
@@ -534,7 +538,6 @@ string. Uses :py:class:`QgsExpression`
 %End
 
     virtual bool hasMapTips() const ${SIP_FINAL};
-
 
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
@@ -2698,7 +2701,59 @@ this layer.
 .. versionadded:: 3.4
 %End
 
+    bool allowCommit() const;
+%Docstring
+Checks all commit permissions set during the runtime of the program and
+returns bool. It can be used to check if committing is fully allowed.
 
+.. versionadded:: 3.4
+%End
+
+    LayerCommitBlockage allowCommit(const QString& appId) const;
+%Docstring
+Checks layer commit permissions set by a specific plugin by the id of
+``id`` and returns ``LayerCommitBlockage`` object.
+
+.. versionadded:: 3.4
+%End
+
+    PyObject *getPluginsBlocking() const;
+%MethodCode
+    const std::list<LayerCommitBlockage>& blockages = sipCpp->getPluginsBlocking();
+    PyObject* pyList = PyList_New(blockages.size());
+
+    size_t i = 0;
+    for(const LayerCommitBlockage& blockage : blockages) {
+        PyObject* pyBlockage = sipConvertFromType(
+            new LayerCommitBlockage(blockage),
+            sipType_LayerCommitBlockage,
+            NULL
+        );
+        PyList_SET_ITEM(pyList, i++, pyBlockage);
+    }
+    sipRes = pyList;
+%End
+
+    void setAllowCommit(const QString& pluginId, bool allow, const QString& reason = "");
+%Docstring
+Controls, if the layer is allowed to commit changes. If this is set to
+``False`` it will not be possible to commit changes on this layer. This
+can be used to define checks on a layer that need to pass before the
+layer can be saved. ``appId`` specifies your unique plugin id. The third
+parameter ``reason`` can be used to specify the reason for the process
+of committing to be blocked.
+
+When calling :py:func:`commitChanges` this flag is initially set to
+``True`` and then checked just after the :py:func:`beforeCommitChanges`
+signal is emitted, so it's possible to adjust it from there.
+
+When calling :py:func:`commitChanges` this flag is checked just after
+the
+
+.. seealso:: :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust it from there.
+
+.. versionadded:: 3.4
+%End
 
     QgsStoredExpressionManager *storedExpressionManager();
 %Docstring
@@ -2809,40 +2864,6 @@ Sets the coordinate transform context to ``transformContext``
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
-    struct QgsLayerCommitPermission {
-        bool allowCommit;
-        QString reason;
-    };
-
-    QgsLayerCommitPermission allowCommit(const QString& id) const;
-%Docstring
-Checks layer commit permissions set by a specific plugin by the id of ``id`` and returns ``QgsLayerCommitPermission`` object.
-
-.. versionadded:: 3.44
-%End
-
-    bool allowCommit() const;
-%Docstring
-Checks all commit permissions set during the runtime of the program and returns bool. It can be used to check
-if committing is fully allowed.
-
-.. versionadded:: 3.18
-%End
-
-    void setAllowCommit(bool allowCommit, const QString& appId = "qgis", const QString& reason = "unspecified");
-%Docstring
-Controls, if the layer is allowed to commit changes. If this is set to ``False``
-it will not be possible to commit changes on this layer. This can be used to
-define checks on a layer that need to pass before the layer can be saved.
-``appId`` specifies your unique plugin id. The third parameter ``reason`` can be used
-to specify the reason for the process of committing to be blocked.
-
-When calling :py:func:`commitChanges` this flag is initially set to ``True`` and then checked
-just after the :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust
-it from there.
-
-.. versionadded:: 3.18
-%End
 
   signals:
 

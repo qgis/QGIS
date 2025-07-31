@@ -119,6 +119,7 @@
 #include <memory>
 #include <optional>
 #include <stdexcept>
+#include <string>
 #include <thread>
 #include <utility>
 
@@ -4036,13 +4037,16 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   emit beforeCommitChanges( stopEditing );
 
   if ( !allowCommit() ) {
+    /* MessageBox can only be drawn in the GUI thread */
+    if (QThread::currentThread() != QApplication::instance()->thread())
+      return false;
+
     QMessageBox commitWarningBox;
-
     QString warningMessage = "Committing changes to the selected layer has been disabled by:\n<ul>";
-    std::unique_ptr<QgsVectorLayer::QgsPermissionMap> pluginsBlocking = getPluginsBlocking();
+    std::list<LayerCommitBlockage> pluginsBlocking = getPluginsBlocking();
 
-    for(const std::pair<QString, QgsLayerCommitPermission> permission: std::as_const(*pluginsBlocking)) {
-      warningMessage.append(QString("<li><b>%1</b>: %2</li>").arg(permission.first).arg(permission.second.reason));
+    for(const LayerCommitBlockage& pluginBlocking: std::as_const(pluginsBlocking)) {
+      warningMessage.append(QString("<li><b>%1</b>: %2</li>").arg(pluginBlocking.pluginId).arg(pluginBlocking.reason));
     }
     warningMessage.append("</ul>");
 
@@ -6534,41 +6538,55 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
-QgsVectorLayer::QgsLayerCommitPermission QgsVectorLayer::allowCommit(const QString& appId) const
+LayerCommitBlockage QgsVectorLayer::allowCommit(const QString& appId) const
 {
-  return commitPermissions.at(appId);
+  auto foundBlockage = std::find_if(commitBlockages.begin(), commitBlockages.end(), [&appId](const LayerCommitBlockage& blockage) {
+    return blockage.pluginId == appId;
+  });
+  if (foundBlockage == commitBlockages.end())
+    throw std::runtime_error(QString("The commit blockage with pluginId '%1' could not be found").arg(appId).toStdString());
+
+  return *foundBlockage;
 }
 
 bool QgsVectorLayer::allowCommit() const
 {
-  auto falseValueIterator = std::find_if(commitPermissions.begin(), commitPermissions.end(), 
-    [](const std::pair<QString, QgsLayerCommitPermission>& permission) {
-      return !permission.second.allowCommit;
-    }
-  );
-  return falseValueIterator == commitPermissions.end();
+  return commitBlockages.empty();
 }
 
-std::unique_ptr<QgsVectorLayer::QgsPermissionMap> QgsVectorLayer::getPluginsBlocking() const
+std::list<LayerCommitBlockage> QgsVectorLayer::getPluginsBlocking() const
 {
-  std::unique_ptr<QgsPermissionMap> result(new QgsPermissionMap());
-  std::copy_if(commitPermissions.begin(), commitPermissions.end(), std::inserter(*result, result->begin()), 
-    [](const std::pair<const QString, QgsLayerCommitPermission>& permission) {
-      return !permission.second.allowCommit;
-    }
-  );
-  return result;
+  return commitBlockages;
 }
 
 
-void QgsVectorLayer::setAllowCommit(bool allowCommit, const QString& appId, const QString& reason)
+void QgsVectorLayer::setAllowCommit(const QString& appId, bool allowCommit, const QString& reason)
 {
   QMutexLocker mutexLocker(&commitMutex);
-  commitPermissions[appId] = QgsLayerCommitPermission{
-    .allowCommit = allowCommit,
-    .reason = reason
-  };
-  emit allowCommitChanged();
+
+  auto foundBlockage = std::find_if(commitBlockages.begin(), commitBlockages.end(), [&appId](const LayerCommitBlockage& blockage) {
+    return blockage.pluginId == appId;
+  });
+
+  /* We only store information about blockages - not permissions */
+  if (allowCommit && foundBlockage == commitBlockages.end())
+    return;
+
+  if (foundBlockage == commitBlockages.end()) {
+    commitBlockages.push_back(LayerCommitBlockage{
+      .pluginId = appId,
+      .reason = reason,
+    });
+    emit allowCommitChanged();    
+    return;
+  }
+
+  if (allowCommit && foundBlockage != commitBlockages.end())
+  {
+    commitBlockages.erase(foundBlockage);
+    emit allowCommitChanged();
+    return;
+  }
 }
 
 QgsGeometryOptions *QgsVectorLayer::geometryOptions() const

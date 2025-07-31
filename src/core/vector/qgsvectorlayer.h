@@ -100,6 +100,14 @@ class QgsSettingsEntryBool;
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+/** 
+ * Represents a blockage of the ability to commit the changes to the vector layer.
+ */
+struct LayerCommitBlockage
+{
+  QString pluginId;
+  QString reason;
+};
 
 // TODO QGIS4: Remove virtual from non-inherited methods (like isModified)
 
@@ -416,6 +424,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QgsFields fields READ fields NOTIFY updatedFields )
 
   QMutex commitMutex;
+  /** 
+   * A list storing which plugins block the changes of the layer to be committed (and possibly why).
+   */
+  std::list<LayerCommitBlockage> commitBlockages;
   public:
 
     static const QgsSettingsEntryBool *settingsSimplifyLocal SIP_SKIP;
@@ -425,27 +437,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     static const QgsSettingsEntryEnumFlag<Qgis::VectorSimplificationAlgorithm> *settingsSimplifyAlgorithm SIP_SKIP;
     static const QgsSettingsEntryEnumFlag<Qgis::VectorRenderingSimplificationFlags> *settingsSimplifyDrawingHints SIP_SKIP;
 
-    /** 
-     * Represents a permission to commit the changes of the vector layer.
-     */
-    struct QgsLayerCommitPermission
-    {
-      bool allowCommit;
-      QString reason;
-    };
-    typedef std::map<QString, QgsLayerCommitPermission> QgsPermissionMap;
-
-private:
-    /** 
-     * A map storing which plugins block and allow the changes of the layer to be committed (and possibly why).
-     */
-    std::map<QString, QgsLayerCommitPermission> commitPermissions = {
-      {"qgis", QgsLayerCommitPermission{
-        .allowCommit = true,
-        .reason = "unspecified"
-      }}
-    };
-public:
     /**
      * Setting options for loading vector layers.
      */
@@ -2485,21 +2476,18 @@ public:
     bool allowCommit() const;
 
     /**
-     * Checks layer commit permissions set by a specific plugin by the id of ``id`` and returns ``QgsLayerCommitPermission`` object.
+     * Checks layer commit permissions set by a specific plugin by the id of ``pluginId`` and returns ``LayerCommitBlockage`` object.
      *
      * \since QGIS 3.4
      */
-    QgsLayerCommitPermission allowCommit(const QString& appId) const;
+    LayerCommitBlockage allowCommit(const QString& pluginId) const;
 
     /**
-     * Returns a pointer to the ``QgsPermissionMap`` representing all the plugins which disallow the changes to the layer
-     * to be committed.
-     *
-     * \note Not available in Python bindings.
+     * Returns a list of ``LayerCommitBlockage`` blockages which are currently imposed 
      *
      * \since QGIS 3.4
      */
-    std::unique_ptr<QgsPermissionMap> getPluginsBlocking() const SIP_SKIP;
+    std::list<LayerCommitBlockage> getPluginsBlocking() const;
 
 
 
@@ -2507,7 +2495,7 @@ public:
      * Controls, if the layer is allowed to commit changes. If this is set to ``False``
      * it will not be possible to commit changes on this layer. This can be used to
      * define checks on a layer that need to pass before the layer can be saved.
-     * ``appId`` specifies your unique plugin id. The third parameter ``reason`` can be used
+     * ``pluginId`` specifies your unique plugin id. The third parameter ``reason`` can be used
      * to specify the reason for the process of committing to be blocked.
      *
      * When calling :py:func:`commitChanges` this flag is initially set to ``True`` and then checked
@@ -2520,7 +2508,7 @@ public:
      *
      * \since QGIS 3.4
      */
-    void setAllowCommit(bool allowCommit, const QString& serviceId = "qgis", const QString& reason = "");
+    void setAllowCommit(const QString& pluginId, bool allow, const QString& reason = "");
 
     /**
      * Returns the manager of the stored expressions for this layer.
