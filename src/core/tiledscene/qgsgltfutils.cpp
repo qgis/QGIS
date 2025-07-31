@@ -396,6 +396,8 @@ std::size_t QgsGltfUtils::sourceSceneForModel( const tinygltf::Model &model, boo
 }
 
 
+#ifdef HAVE_DRACO
+
 void dumpDracoModelInfo( draco::Mesh *dracoMesh )
 {
   std::cout << "Decoded Draco Mesh:" << dracoMesh->num_points() << " points / " << dracoMesh->num_faces() << " faces" << std::endl;
@@ -728,6 +730,19 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
 
   return true;
 }
+#else
+
+bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext &context, tinygltf::Model &model, QString *errors )
+{
+  Q_UNUSED( data );
+  Q_UNUSED( context );
+  Q_UNUSED( model );
+  if ( errors )
+    *errors = "Cannot load geometry - QGIS is built without Draco library.";
+  return false;
+}
+
+#endif
 
 int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tinygltf::Model &model )
 {
