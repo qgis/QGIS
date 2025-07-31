@@ -76,45 +76,49 @@ QgsRectangle QgsDemTerrainGenerator::rootChunkExtent() const
 void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap )
 {
   QMutexLocker locker( &mRootNodeMutex );
-
   const QgsChunkNodeId nodeId = node->tileId();
 
-  // save height map data in cache
-  mLoaderMap[nodeId.text()] = heightMap;
-  cleanupHeightMapCache( node );
-  //  if ( tileId.d >= mMaxLevel / 2 )
+  if ( !mLoaderMap.contains( nodeId.text() ) )
   {
-    // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
-    qDebug() << "onHeightMapReceived emit for" << nodeId.text();
-    emit maxResTileReceived( nodeId, extent );
+    // save height map data in cache
+    mLoaderMap[nodeId.text()] = heightMap;
+    cleanupHeightMapCache( node );
+    // if ( nodeId.d >= mMaxLevel / 2 )
+    {
+      // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
+      qDebug() << "onHeightMapReceived emit for" << nodeId.text();
+      emit maxResTileReceived( nodeId, extent );
+    }
   }
 }
 
 void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentNode ) const
 {
-  // check if all sibling are ok then delete parent height map in cache
-  QgsChunkNode *parent = currentNode->parent();
+  // // check if all sibling are ok then delete parent height map in cache
+  // QgsChunkNode *parent = currentNode->parent();
 
-  if ( parent && mLoaderMap.contains( parent->tileId().text() ) )
-  {
-    QgsChunkNode *const *children = parent->children();
-    bool deleteParentData = true;
-    for ( int i = 0; i < parent->childCount(); ++i )
-    {
-      // if QgsChunkNode state is Loading, this means that the texture has been retrieved
-      // C VRAI CA ???
-      if ( children[i]->state() != QgsChunkNode::Loading && children[i]->state() != QgsChunkNode::Loaded )
-      {
-        deleteParentData = false;
-        break;
-      }
-    }
+  // if ( parent && mLoaderMap.contains( parent->tileId().text() ) )
+  // {
+  //   QgsChunkNode *const *children = parent->children();
+  //   bool deleteParentData = true;
+  //   for ( int i = 0; i < parent->childCount(); ++i )
+  //   {
+  //     // if QgsChunkNode state is Loading, this means that the texture has been retrieved
+  //     // C VRAI CA ???
+  //     if ( children[i]->state() != QgsChunkNode::Loading && children[i]->state() != QgsChunkNode::Loaded )
+  //     {
+  //       deleteParentData = false;
+  //       break;
+  //     }
+  //   }
 
-    if ( deleteParentData )
-    {
-      mLoaderMap.remove( parent->tileId().text() );
-    }
-  }
+  //   if ( deleteParentData )
+  //   {
+  //     qDebug() << "cleanupHeightMapCache cleaning up" << parent->tileId().text();
+
+  //     mLoaderMap.remove( parent->tileId().text() );
+  //   }
+  // }
 }
 
 float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
@@ -172,13 +176,20 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
         while ( parent )
         {
           loader = dynamic_cast<QgsDemTerrainTileLoader *>( parent->loader() );
-          if ( loader && !loader->heightMap().isEmpty() )
+          if ( loader )
           {
-            heightMapData = loader->heightMap();
+            if ( !loader->heightMap().isEmpty() )
+            {
+              heightMapData = loader->heightMap();
+              break;
+            }
+          }
+          else if ( mLoaderMap.contains( parent->tileId().text() ) )
+          {
+            heightMapData = mLoaderMap[parent->tileId().text()].constData();
             break;
           }
-          else
-            parent = parent->parent();
+          parent = parent->parent();
         }
       }
     }
