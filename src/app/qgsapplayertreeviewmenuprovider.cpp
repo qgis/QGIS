@@ -675,6 +675,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
               connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [=] { QgisApp::instance()->saveAsFile(); } );
               menuExportRaster->addAction( actionSaveAs );
+              const bool enableSaveAs = ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) || ( rlayer && rlayer->isValid() );
+              actionSaveAs->setEnabled( enableSaveAs );
             }
             QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
