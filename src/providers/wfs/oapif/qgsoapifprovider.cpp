@@ -182,7 +182,6 @@ bool QgsOapifProvider::init()
     mShared->mServerSupportsBasicSpatialFunctions = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions" ) ) ||
                                                       // Two below names are deprecated
                                                       conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
-    mShared->mServerSupportsBasicSpatialOperators = ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) || conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
     implementsSchemas = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas" ) );
   }
 
