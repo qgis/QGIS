@@ -85,6 +85,7 @@ void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNode *node,
   //  if ( tileId.d >= mMaxLevel / 2 )
   {
     // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
+    qDebug() << "onHeightMapReceived emit for" << nodeId.text();
     emit maxResTileReceived( nodeId, extent );
   }
 }
@@ -147,6 +148,7 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     }
 
     QString foundKey = found->tileId().text();
+    qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "foundKey:" << foundKey;
 
     // search in cache if we know this chunk node/tile
     const char *heightMapData = nullptr;
@@ -192,7 +194,7 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
       cellY = std::clamp( cellY, 0, mResolution - 1 );
 
       const float *data = ( const float * ) heightMapData;
-
+      qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "in cache";
       return data[cellX + cellY * mResolution];
     }
   }
@@ -200,10 +202,12 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
   // if we have no rootNode or if we were not able to find better height map data, we fallback to coarse DEM data
   if ( mHeightMapGenerator )
   {
+    qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "in coarse";
     return mHeightMapGenerator->heightAt( x, y );
   }
   else
   {
+    qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "in nothing";
     return 0;
   }
 }

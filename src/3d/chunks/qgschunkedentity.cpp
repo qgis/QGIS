@@ -126,6 +126,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
   if ( !mIsValid )
     return;
 
+  qDebug() << "QgsChunkedEntity::handleSceneUpdate" << this;
   // Let's start the update by removing from loader queue chunks that
   // would get frustum culled if loaded (outside of the current view
   // of the camera). Removing them keeps the loading queue shorter,

@@ -1343,6 +1343,7 @@ void Qgs3DMapScene::onNewDemTileReceived( const QgsChunkNodeId &tileId, const Qg
             case Qgis::LayerType::Vector:
             {
               QgsVectorLayerChunkedEntity *vlc = qobject_cast<QgsVectorLayerChunkedEntity *>( rootEntity );
+              qWarning() << "onNewDemTileReceived will reload" << tileId.text() << nodesToReload;
               vlc->updateNodes( nodesToReload );
               break;
             }
