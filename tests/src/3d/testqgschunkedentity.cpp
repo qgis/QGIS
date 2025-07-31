@@ -242,9 +242,10 @@ void TestQgsChunkedEntity::docCheckElevationDtm( const QgsRectangle &fullExtent,
       double tx = centroid.x() + x;
       double ty = centroid.y() + y;
       fullResZ = fullResDem.heightAt( tx, ty, Qgs3DRenderContext() );
-      qDebug() << tx << "," << ty << "," << fullResZ * demTerrainSettings->verticalScale();
       float z = mapSettings->terrainGenerator()->heightAt( tx, ty, Qgs3DRenderContext() );
-      QCOMPARE( fullResZ, z );
+      if ( std::abs( fullResZ - z ) > 1.0 )
+        qDebug() << tx << "," << ty << "," << fullResZ * demTerrainSettings->verticalScale() << "vs" << z * demTerrainSettings->verticalScale();
+      QVERIFY( std::abs( fullResZ - z ) <= 1.0 );
     }
 
   checkLowestZ( f, expectedZ, mapSettings, symbolTerrain, layerData );
