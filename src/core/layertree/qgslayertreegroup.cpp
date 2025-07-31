@@ -109,6 +109,36 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::addLayer( QgsMapLayer *layer )
   return ll;
 }
 
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, const QString &id, const QString &name )
+{
+  if ( id.trimmed().isEmpty() )
+    return nullptr;
+
+  // Avoid registering two custom nodes with the same id
+  const QStringList customNodeIds = findCustomNodeIds();
+  if ( customNodeIds.contains( id ) )
+    return nullptr;
+
+  QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( id, name );
+  insertChildNode( index, customNode );
+  return customNode;
+}
+
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::addCustomNode( const QString &id, const QString &name )
+{
+  if ( id.trimmed().isEmpty() )
+    return nullptr;
+
+  // Avoid registering two custom nodes with the same id
+  const QStringList customNodeIds = findCustomNodeIds();
+  if ( customNodeIds.contains( id ) )
+    return nullptr;
+
+  QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( id, name );
+  addChildNode( customNode );
+  return customNode;
+}
+
 void QgsLayerTreeGroup::insertChildNode( int index, QgsLayerTreeNode *node )
 {
   QList<QgsLayerTreeNode *> nodes;
@@ -178,6 +208,15 @@ void QgsLayerTreeGroup::removeLayer( QgsMapLayer *layer )
   }
 
   updateGroupLayers();
+}
+
+void QgsLayerTreeGroup::removeCustomNode( const QString &id )
+{
+  QgsLayerTreeCustomNode *node = findCustomNode( id );
+  if ( node )
+  {
+    removeChildNode( node );
+  }
 }
 
 void QgsLayerTreeGroup::removeChildren( int from, int count )
@@ -663,6 +702,19 @@ QStringList QgsLayerTreeGroup::findLayerIds() const
       lst << QgsLayerTree::toGroup( child )->findLayerIds();
     else if ( QgsLayerTree::isLayer( child ) )
       lst << QgsLayerTree::toLayer( child )->layerId();
+  }
+  return lst;
+}
+
+QStringList QgsLayerTreeGroup::findCustomNodeIds() const
+{
+  QStringList lst;
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isGroup( child ) )
+      lst << QgsLayerTree::toGroup( child )->findCustomNodeIds();
+    else if ( QgsLayerTree::isCustomNode( child ) )
+      lst << QgsLayerTree::toCustomNode( child )->nodeId();
   }
   return lst;
 }

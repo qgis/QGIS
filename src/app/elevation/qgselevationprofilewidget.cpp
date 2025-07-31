@@ -666,7 +666,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
         sources << layer->profileSource();
       }
     }
-    else if ( QgsLayerTree::isCustomNode( node ) )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QStringLiteral( "elevationProfileRegistry" ) )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )

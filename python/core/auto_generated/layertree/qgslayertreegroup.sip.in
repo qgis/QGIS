@@ -76,6 +76,22 @@ Append a new layer node for given map layer. The newly created node is
 owned by this group.
 %End
 
+    QgsLayerTreeCustomNode *insertCustomNode( int index, const QString &id, const QString &name = QString() );
+%Docstring
+Insert a new custom node with the given ``id`` and ``name`` at specified
+``index``. The newly created node is owned by this group.
+
+.. versionadded:: 4.0
+%End
+
+    QgsLayerTreeCustomNode *addCustomNode( const QString &id, const QString &name = QString() );
+%Docstring
+Append a new custom node with the given ``id`` and ``name``. The newly
+created node is owned by this group.
+
+.. versionadded:: 4.0
+%End
+
     void insertChildNodes( int index, const QList<QgsLayerTreeNode *> &nodes /Transfer/ );
 %Docstring
 Insert existing nodes at specified position. The nodes must not have a
@@ -102,6 +118,15 @@ Remove a child node from this group. The node will be deleted.
     void removeLayer( QgsMapLayer *layer );
 %Docstring
 Remove map layer's node from this group. The node will be deleted.
+%End
+
+    void removeCustomNode( const QString &id );
+%Docstring
+Remove a custom node from this group. The node will be deleted.
+
+:param id: Id of the node to be removed.
+
+.. versionadded:: 4.0
 %End
 
     void removeChildren( int from, int count );
@@ -176,7 +201,8 @@ Reorders layers and custom nodes in the group to match the order
 specified by ``order``.
 
 Only layers and custom nodes which are direct children of this group
-will be reordered, other layers and custom nodes will be ignored.
+will be reordered, other layers and custom nodes will be ignored, as
+well as child group nodes.
 
 .. note::
 
@@ -197,6 +223,11 @@ will be reordered, other layers and custom nodes will be ignored.
 %Docstring
 Find layer IDs used in all layer nodes. Searches recursively the whole
 sub-tree.
+%End
+
+    QStringList findCustomNodeIds() const;
+%Docstring
+Find custom node IDs. Searches recursively the whole sub-tree.
 %End
 
     QgsLayerTreeGroup *findGroup( const QString &name );

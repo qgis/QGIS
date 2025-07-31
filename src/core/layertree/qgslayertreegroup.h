@@ -90,6 +90,20 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeLayer *addLayer( QgsMapLayer *layer );
 
     /**
+     * Insert a new custom node with the given \a id and \a name at specified \a index. The newly created node is owned by this group.
+     *
+     * \since QGIS 4.0
+     */
+    QgsLayerTreeCustomNode *insertCustomNode( int index, const QString &id, const QString &name = QString() );
+
+    /**
+     * Append a new custom node with the given \a id and \a name. The newly created node is owned by this group.
+     *
+     * \since QGIS 4.0
+     */
+    QgsLayerTreeCustomNode *addCustomNode( const QString &id, const QString &name = QString() );
+
+    /**
      * Insert existing nodes at specified position. The nodes must not have a parent yet. The nodes will be owned by this group.
      */
     void insertChildNodes( int index, const QList<QgsLayerTreeNode *> &nodes SIP_TRANSFER );
@@ -113,6 +127,15 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Remove map layer's node from this group. The node will be deleted.
      */
     void removeLayer( QgsMapLayer *layer );
+
+    /**
+     * Remove a custom node from this group. The node will be deleted.
+     *
+     * \param id Id of the node to be removed.
+     *
+     * \since QGIS 4.0
+     */
+    void removeCustomNode( const QString &id );
 
     /**
      * Remove child nodes from index "from". The nodes will be deleted.
@@ -174,7 +197,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Reorders layers and custom nodes in the group to match the order specified by \a order.
      *
      * Only layers and custom nodes which are direct children of this group will be reordered, other
-     * layers and custom nodes will be ignored.
+     * layers and custom nodes will be ignored, as well as child group nodes.
      *
      * \note This method does not recursively reorder child groups.
      * \note Matching layers or custom nodes will be moved to the start of the group, with any existing
@@ -208,6 +231,11 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
      */
     QStringList findLayerIds() const;
+
+    /**
+     * Find custom node IDs. Searches recursively the whole sub-tree.
+     */
+    QStringList findCustomNodeIds() const;
 
     /**
      * Find group node with specified name. Searches recursively the whole sub-tree.

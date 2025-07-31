@@ -489,18 +489,18 @@ void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *proje
 
 void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )
 {
-  auto node = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
-  node->setItemVisibilityChecked( true );
-  mLayerTree->insertChildNode( 0, node.release() );
+  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( 0, sourceId, sourceName.isEmpty() ? sourceId : sourceName );
+  if ( node )
+  {
+    node->setItemVisibilityChecked( true );
+    // Mark the node so that we know which custom nodes correspond to elevation profile sources
+    node->setCustomProperty( QStringLiteral( "source" ), QStringLiteral( "elevationProfileRegistry" ) );
+  }
 }
 
 void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )
 {
-  QgsLayerTreeCustomNode *node = mLayerTree->findCustomNode( sourceId );
-  if ( node )
-  {
-    mLayerTree->removeChildNode( node );
-  }
+  mLayerTree->removeCustomNode( sourceId );
 }
 
 QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()
