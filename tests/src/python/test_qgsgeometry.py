@@ -2665,17 +2665,21 @@ class TestQgsGeometry(QgisTestCase):
         # ! 5-+-+-+-4
         # |
         # 1-+-+-+-+-0
-        
+
         linestringwkt = "LineString (5 0, 0 0, 0 4, 5 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
         linestring = QgsGeometry.fromWkt(linestringwkt)
 
         # test invalid range
-        assert not linestring.deleteVertices([-5]), "Delete vertices [-5] unexpectedly succeeded"
+        assert not linestring.deleteVertices(
+            [-5]
+        ), "Delete vertices [-5] unexpectedly succeeded"
         assert not linestring.deleteVertices(
             [100]
         ), "Delete vertices 100 unexpectedly succeeded"
         # single invalid value should fail
-        assert not linestring.deleteVertices([1, 10]), "Delete vertices [1, 10] unexpectedly succeeded"
+        assert not linestring.deleteVertices(
+            [1, 10]
+        ), "Delete vertices [1, 10] unexpectedly succeeded"
 
         # test deletion of single vertex
         assert linestring.deleteVertices([3]), "Delete vertices [5 4] failed"
@@ -2686,7 +2690,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of multiple vertices
         linestring = QgsGeometry.fromWkt(linestringwkt)
 
-        assert linestring.deleteVertices([0, 1, 8, 9]), "Delete vertices 5 0, 0 0, 4 2, 2 2 failed"
+        assert linestring.deleteVertices(
+            [0, 1, 8, 9]
+        ), "Delete vertices 5 0, 0 0, 4 2, 2 2 failed"
         expwkt = "LineString (0 4, 5 4, 5 1, 1 1, 1 3, 4 3)"
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2694,7 +2700,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (remove all but one in linestring)
         linestring = QgsGeometry.fromWkt(linestringwkt)
 
-        assert linestring.deleteVertices([1, 2, 3, 4, 5, 6, 7, 8, 9]), "Delete vertices [1, 2, 3, 4, 5, 7, 8, 9, 9] failed"
+        assert linestring.deleteVertices(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        ), "Delete vertices [1, 2, 3, 4, 5, 7, 8, 9, 9] failed"
         expwkt = "LineString EMPTY"
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2702,7 +2710,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (list all vertices)
         linestring = QgsGeometry.fromWkt(linestringwkt)
 
-        assert linestring.deleteVertices([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
+        assert linestring.deleteVertices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        ), "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
         expwkt = "LineString EMPTY"
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2711,16 +2721,22 @@ class TestQgsGeometry(QgisTestCase):
         #   | | |   |
         # 0-1 4 5   8-9
 
-        multilinestringwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+        multilinestringwkt = (
+            "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+        )
         multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
 
         # test invalid range
-        assert not multilinestring.deleteVertices([-5]), "Delete vertices [-5] unexpectedly succeeded"
+        assert not multilinestring.deleteVertices(
+            [-5]
+        ), "Delete vertices [-5] unexpectedly succeeded"
         assert not multilinestring.deleteVertices(
             [100]
         ), "Delete vertices 100 unexpectedly succeeded"
         # single invalid value should fail
-        assert not multilinestring.deleteVertices([1, 10]), "Delete vertices [1, 10] unexpectedly succeeded"
+        assert not multilinestring.deleteVertices(
+            [1, 10]
+        ), "Delete vertices [1, 10] unexpectedly succeeded"
 
         # test deletion of single vertex
         assert multilinestring.deleteVertices([0]), "Delete vertex [0] failed"
@@ -2731,7 +2747,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of multiple vertices
         multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
 
-        assert multilinestring.deleteVertices([0, 1, 8, 9]), "Delete vertices [0, 1, 8, 9] failed"
+        assert multilinestring.deleteVertices(
+            [0, 1, 8, 9]
+        ), "Delete vertices [0, 1, 8, 9] failed"
         expwkt = "MultiLineString ((1 1, 2 1, 2 0), (3 0, 3 1, 5 1))"
         wkt = multilinestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2739,7 +2757,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of a part of multilinestring (list all but one)
         multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
 
-        assert multilinestring.deleteVertices([6, 7, 8, 9]), "Delete vertices [6, 7, 8, 9] failed"
+        assert multilinestring.deleteVertices(
+            [6, 7, 8, 9]
+        ), "Delete vertices [6, 7, 8, 9] failed"
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0))"
         wkt = multilinestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2747,7 +2767,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of a part of multilinestring (list all)
         multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
 
-        assert multilinestring.deleteVertices([5, 6, 7, 8, 9]), "Delete vertices [5, 6, 7, 8, 9] failed"
+        assert multilinestring.deleteVertices(
+            [5, 6, 7, 8, 9]
+        ), "Delete vertices [5, 6, 7, 8, 9] failed"
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0))"
         wkt = multilinestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2755,7 +2777,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (remove all but one in multilinestring)
         multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
 
-        assert multilinestring.deleteVertices([1, 2, 3, 4, 5, 6, 7, 8, 9]), "Delete vertices [1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
+        assert multilinestring.deleteVertices(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        ), "Delete vertices [1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
         expwkt = "MultiLineString EMPTY"
         wkt = multilinestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2763,7 +2787,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (list all vertices)
         multilinestring = QgsGeometry.fromWkt(multilinestringwkt)
 
-        assert multilinestring.deleteVertices([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
+        assert multilinestring.deleteVertices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        ), "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] failed"
         expwkt = "MultiLineString EMPTY"
         wkt = multilinestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2778,12 +2804,16 @@ class TestQgsGeometry(QgisTestCase):
         polygon = QgsGeometry.fromWkt(polygonwkt)
 
         # test invalid range
-        assert not polygon.deleteVertices([-5]), "Delete vertices -5 unexpectedly succeeded"
+        assert not polygon.deleteVertices(
+            [-5]
+        ), "Delete vertices -5 unexpectedly succeeded"
         assert not polygon.deleteVertices(
             [100]
         ), "Delete vertices 100 unexpectedly succeeded"
         # single invalid value should fail
-        assert not polygon.deleteVertices([1, 10]), "Delete vertices [1, 10] unexpectedly succeeded"
+        assert not polygon.deleteVertices(
+            [1, 10]
+        ), "Delete vertices [1, 10] unexpectedly succeeded"
 
         # test deletion of single vertex
         assert polygon.deleteVertices([0]), "Delete vertices [0] failed"
@@ -2810,7 +2840,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (list all but two)
         polygon = QgsGeometry.fromWkt(polygonwkt)
 
-        assert polygon.deleteVertices([2, 3, 4, 5]), "Delete vertices [2, 3, 4, 5] failed"
+        assert polygon.deleteVertices(
+            [2, 3, 4, 5]
+        ), "Delete vertices [2, 3, 4, 5] failed"
         expwkt = "Polygon EMPTY"
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2818,7 +2850,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (list all but one)
         polygon = QgsGeometry.fromWkt(polygonwkt)
 
-        assert polygon.deleteVertices([1, 2, 3, 4, 5]), "Delete vertices [1, 2, 3, 4, 5] failed"
+        assert polygon.deleteVertices(
+            [1, 2, 3, 4, 5]
+        ), "Delete vertices [1, 2, 3, 4, 5] failed"
         expwkt = "Polygon EMPTY"
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2826,7 +2860,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire geometry (list all)
         polygon = QgsGeometry.fromWkt(polygonwkt)
 
-        assert polygon.deleteVertices([0, 1, 2, 3, 4, 5]), "Delete vertices [0, 1, 2, 3, 4, 5] failed"
+        assert polygon.deleteVertices(
+            [0, 1, 2, 3, 4, 5]
+        ), "Delete vertices [0, 1, 2, 3, 4, 5] failed"
         expwkt = "Polygon EMPTY"
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2884,7 +2920,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of multiple interior rings
         polygon = QgsGeometry.fromWkt(polygonwkt)
 
-        assert polygon.deleteVertices([5, 6, 9, 15, 16]), "Delete vertices [5, 6, 9, 15, 16] failed"
+        assert polygon.deleteVertices(
+            [5, 6, 9, 15, 16]
+        ), "Delete vertices [5, 6, 9, 15, 16] failed"
         expwkt = "Polygon ((0 0, 5 0, 5 7, 0 7, 0 0), (1 4, 4 4, 4 3, 1 3, 1 4))"
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2917,11 +2955,15 @@ class TestQgsGeometry(QgisTestCase):
         wkt = multipolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
-        # test multiple deletion 
+        # test multiple deletion
         multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
 
-        assert multipolygon.deleteVertices([0, 1, 11, 12]), "Delete vertices [0, 1, 10, 11] failed"
-        expwkt = "MultiPolygon (((1 1, 2 1, 2 2, 0 2, 1 1)), ((4 0, 5 0, 5 2, 3 2, 4 0)))"
+        assert multipolygon.deleteVertices(
+            [0, 1, 11, 12]
+        ), "Delete vertices [0, 1, 10, 11] failed"
+        expwkt = (
+            "MultiPolygon (((1 1, 2 1, 2 2, 0 2, 1 1)), ((4 0, 5 0, 5 2, 3 2, 4 0)))"
+        )
         wkt = multipolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -2946,7 +2988,9 @@ class TestQgsGeometry(QgisTestCase):
         multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
 
         # test deletion of start and endpoint of exterior and interior rings
-        assert multipolygon.deleteVertices([0, 4, 5, 9, 20, 24, 25, 29]), "Delete vertices [0, 4, 5, 9, 20, 24, 25, 29] failed"
+        assert multipolygon.deleteVertices(
+            [0, 4, 5, 9, 20, 24, 25, 29]
+        ), "Delete vertices [0, 4, 5, 9, 20, 24, 25, 29] failed"
         expwkt = "MultiPolygon (((0 7, 5 0, 5 7, 0 7), (1 5, 4 6, 4 5, 1 5), (1 4, 4 4, 4 3, 1 3, 1 4), (1 2, 4 2, 4 1, 1 1, 1 2)), ((6 7, 11 0, 11 7, 6 7), (7 5, 10 6, 10 5, 7 5), (7 4, 10 4, 10 3, 7 3, 7 4), (7 2, 10 2, 10 1, 7 1, 7 2)))"
         wkt = multipolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2954,7 +2998,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of multiple interior rings of both polygons
         multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
 
-        assert multipolygon.deleteVertices([10, 13, 15, 18, 30, 33, 35, 38]), "Delete vertices [10, 13, 15, 18, 30, 33, 35, 38] failed"
+        assert multipolygon.deleteVertices(
+            [10, 13, 15, 18, 30, 33, 35, 38]
+        ), "Delete vertices [10, 13, 15, 18, 30, 33, 35, 38] failed"
         expwkt = "MultiPolygon (((0 0, 5 0, 5 7, 0 7, 0 0), (1 6, 4 6, 4 5, 1 5, 1 6)), ((6 0, 11 0, 11 7, 6 7, 6 0), (7 6, 10 6, 10 5, 7 5, 7 6)))"
         wkt = multipolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
@@ -2962,7 +3008,9 @@ class TestQgsGeometry(QgisTestCase):
         # test deletion of entire part
         multipolygon = QgsGeometry.fromWkt(multipolygonwkt)
 
-        assert multipolygon.deleteVertices([0, 1, 5, 6, 10, 11, 17, 18]), "Delete vertices [0, 1, 5, 6, 10, 11, 17, 18] failed"
+        assert multipolygon.deleteVertices(
+            [0, 1, 5, 6, 10, 11, 17, 18]
+        ), "Delete vertices [0, 1, 5, 6, 10, 11, 17, 18] failed"
         expwkt = "MultiPolygon (((6 0, 11 0, 11 7, 6 7, 6 0), (7 6, 10 6, 10 5, 7 5, 7 6), (7 4, 10 4, 10 3, 7 3, 7 4), (7 2, 10 2, 10 1, 7 1, 7 2)))"
         wkt = multipolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
