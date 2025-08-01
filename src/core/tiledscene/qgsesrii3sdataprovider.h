@@ -21,6 +21,8 @@
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
 
+#define SIP_NO_FILE
+
 class QgsEsriI3SDataProviderSharedData;
 
 ///@cond PRIVATE
