@@ -81,8 +81,12 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoaderFactory(
-      const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs,
-      double zValueScale, double zValueOffset
+      const Qgs3DRenderContext &context,
+      const QgsTiledSceneIndex &index,
+      QgsCoordinateReferenceSystem tileCrs,
+      QgsCoordinateReferenceSystem layerCrs,
+      double zValueScale,
+      double zValueOffset
     );
 
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -101,6 +105,7 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
     QgsCoordinateTransform mBoundsTransform;
+    QgsCoordinateReferenceSystem mLayerCrs;
     QSet<long long> mPendingHierarchyFetches;
     QSet<long long> mFutureHierarchyFetches;
 };
@@ -120,7 +125,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
+    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneLayerChunkedEntity();
 
