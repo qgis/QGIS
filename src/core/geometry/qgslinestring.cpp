@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgswkbptr.h"
@@ -1830,6 +1831,10 @@ void QgsLineString::extend( double startDistance, double endDistance )
   {
     const double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
                                          std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
+    if ( qgsDoubleNear( currentLen, 0.0 ) )
+    {
+      throw QgsException( QObject::tr( "Extending linestring failed. Start segment has zero length." ) );
+    }
     const double newLen = currentLen + startDistance;
     mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
     mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
@@ -1840,6 +1845,10 @@ void QgsLineString::extend( double startDistance, double endDistance )
     const int last = mX.size() - 1;
     const double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
                                          std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
+    if ( qgsDoubleNear( currentLen, 0.0 ) )
+    {
+      throw QgsException( QObject::tr( "Extending linestring failed. End segment has zero length." ) );
+    }
     const double newLen = currentLen + endDistance;
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;

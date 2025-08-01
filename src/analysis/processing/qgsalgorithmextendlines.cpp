@@ -128,7 +128,7 @@ QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &featur
 
     const QgsGeometry outGeometry = geometry.extendLine( startDistance, endDistance );
     if ( outGeometry.isNull() )
-      throw QgsProcessingException( QObject::tr( "Error calculating extended line" ) ); // don't think this can actually happen!
+      throw QgsProcessingException( QObject::tr( "Feature %1 has a zero length end segment and cannot be extended" ).arg( feature.id() ) );
 
     f.setGeometry( outGeometry );
   }

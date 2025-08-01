@@ -2310,6 +2310,28 @@ void TestQgsLineString::extend()
   QCOMPARE( ls.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 1, 0 ) );
   QCOMPARE( ls.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 1, 3 ) );
   QCOMPARE( ls.boundingBox(), QgsRectangle( -1, 0, 1, 3 ) );
+
+  QgsLineString lsStackedStart;
+  lsStackedStart.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) );
+  QVERIFY_EXCEPTION_THROWN( lsStackedStart.extend( 1, 0 ), QgsException );
+
+ 
+  QgsLineString lsStackedEnd;
+  lsStackedEnd.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
+  QVERIFY_EXCEPTION_THROWN( lsStackedEnd.extend( 0, 1 ), QgsException );
+
+  
+  QgsLineString lsStackedBoth;
+  lsStackedBoth.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
+  QVERIFY_EXCEPTION_THROWN( lsStackedBoth.extend( 1, 1 ), QgsException );
+
+  
+  QgsLineString lsPartialStacked;
+  lsPartialStacked.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
+  lsPartialStacked.extend( 1, 0 ); 
+  QCOMPARE( lsPartialStacked.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 3, 0 ) );
+  QCOMPARE( lsPartialStacked.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
+  QCOMPARE( lsPartialStacked.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
 }
 
 void TestQgsLineString::addToPainterPath()
