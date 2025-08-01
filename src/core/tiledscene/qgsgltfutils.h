@@ -187,7 +187,7 @@ class CORE_EXPORT QgsGltfUtils
        * coordinates are lat/lon decimal degrees (in EPSG:4326).
        * When not in global mode, we are using a projected CRS.
        */
-      bool isGlobalMode;
+      bool isGlobalMode = false;
 
       /**
        * Only applies when in global mode: transform from dataset's native CRS
