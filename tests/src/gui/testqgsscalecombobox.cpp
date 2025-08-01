@@ -37,16 +37,18 @@ class TestQgsScaleComboBox : public QObject
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
     void basic();
+    void flexible();
     void slot_test();
     void min_test();
+    void toString_data();
     void toString();
     void toDouble();
     void allowNull();
     void testLocale();
 
   private:
-    void enterScale( const QString &scale );
-    void enterScale( double scale );
+    void enterScale( const QString &scale, QgsScaleComboBox *widget = nullptr );
+    void enterScale( double scale, QgsScaleComboBox *widget = nullptr );
     QgsScaleComboBox *s = nullptr;
 };
 
@@ -131,6 +133,67 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scale(), 240.0 );
 }
 
+void TestQgsScaleComboBox::flexible()
+{
+  std::unique_ptr< QgsScaleComboBox > combo = std::make_unique< QgsScaleComboBox >();
+  combo->setRatioMode( QgsScaleComboBox::RatioMode::Flexible );
+
+  const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
+  QCOMPARE( scales.count(), combo->count() );
+  for ( int i = 0; i < combo->count(); i++ )
+  {
+    int denominator = QLocale().toInt( scales[i].split( ':' )[1] );
+    QCOMPARE( combo->itemText( i ), QString( "1:%1" ).arg( QLocale().toString( denominator ) ) );
+  }
+
+  // Testing conversion from "1:nnn".
+  enterScale( QStringLiteral( "1:2345" ), combo.get() );
+  QCOMPARE( combo->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 2345 ) ) );
+  QCOMPARE( combo->scale(), 2345.0 );
+
+  // Testing conversion from number to "1:x"
+  enterScale( 0.02, combo.get() );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "1:50" ) );
+  QCOMPARE( combo->scale(), 1.0 / 0.02 );
+
+  // Testing conversion from number to "1:x"
+  enterScale( 42, combo.get() );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "42:1" ) );
+  QGSCOMPARENEAR( combo->scale(), 1.0 / 42.0, 0.0001 );
+
+  enterScale( QStringLiteral( "2:3" ), combo.get() );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "2:3" ) );
+  QCOMPARE( combo->scale(), 3.0 / 2.0 );
+
+  enterScale( QStringLiteral( "3:2" ), combo.get() );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "3:2" ) );
+  QCOMPARE( combo->scale(), 2.0 / 3.0 );
+
+  // Testing conversion from number to rational fraction
+  enterScale( 2.0 / 3.0, combo.get() );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "2:3" ) );
+  QCOMPARE( combo->scale(), 3.0 / 2.0 );
+
+  enterScale( 3.0 / 2.0, combo.get() );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "3:2" ) );
+  QCOMPARE( combo->scale(), 2.0 / 3.0 );
+
+  // Test setting programmatically
+  combo->setScale( 5.263 );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "4:21" ) );
+  // note that the combo internally rounds to 2 decimal places:
+  QCOMPARE( combo->scale(), 5.25 );
+
+  // Test setting programmatically
+  combo->setScaleString( QStringLiteral( "6:7" ) );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "6:7" ) );
+  QGSCOMPARENEAR( combo->scale(), 1.16666666667, 0.00001 );
+
+  combo->setScaleString( QStringLiteral( "7:6" ) );
+  QCOMPARE( combo->scaleString(), QStringLiteral( "7:6" ) );
+  QGSCOMPARENEAR( combo->scale(), 0.8571428571, 0.00001 );
+}
+
 void TestQgsScaleComboBox::slot_test()
 {
   QLineEdit *l = s->lineEdit();
@@ -160,13 +223,46 @@ void TestQgsScaleComboBox::min_test()
   QCOMPARE( s->scale(), 2.0 );
 }
 
+void TestQgsScaleComboBox::toString_data()
+{
+  QTest::addColumn<double>( "scale" );
+  QTest::addColumn<QgsScaleComboBox::RatioMode>( "ratioMode" );
+  QTest::addColumn<QString>( "expected" );
+
+  // ForceUnitNumerator mode
+  QTest::newRow( "ForceUnitNumerator 100.0" ) << 100.0 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "1:100" );
+  QTest::newRow( "ForceUnitNumerator 100.02134234" ) << 100.02134234 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "1:100" );
+  QTest::newRow( "ForceUnitNumerator 1.0" ) << 1.0 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "1:1" );
+  QTest::newRow( "ForceUnitNumerator 1.0 / 100" ) << 1.0 / 100 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "100:1" );
+  QTest::newRow( "ForceUnitNumerator nan" ) << std::numeric_limits<double>::quiet_NaN() << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QString();
+  QTest::newRow( "ForceUnitNumerator 0.5" ) << 0.5 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "2:1" );
+  QTest::newRow( "ForceUnitNumerator 2.0" ) << 2.0 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "1:2" );
+  QTest::newRow( "ForceUnitNumerator 2.0 / 3.0" ) << 2.0 / 3.0 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "2:1" );
+  QTest::newRow( "ForceUnitNumerator 3.0 / 2.0" ) << 3.0 / 2.0 << QgsScaleComboBox::RatioMode::ForceUnitNumerator << QStringLiteral( "1:2" );
+
+  // Flexible mode
+  QTest::newRow( "Flexible 100.0" ) << 100.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "1:100" );
+  QTest::newRow( "Flexible 100.02134234" ) << 100.02134234 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "1:100" );
+  QTest::newRow( "Flexible 1.0" ) << 1.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "1:1" );
+  QTest::newRow( "Flexible 1.0 / 100" ) << 1.0 / 100 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "100:1" );
+  QTest::newRow( "Flexible nan" ) << std::numeric_limits<double>::quiet_NaN() << QgsScaleComboBox::RatioMode::Flexible << QString();
+  QTest::newRow( "Flexible 0.5" ) << 0.5 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "2:1" );
+  QTest::newRow( "Flexible 2.0" ) << 2.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "1:2" );
+  QTest::newRow( "Flexible 2.0 / 3.0" ) << 2.0 / 3.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "3:2" );
+  QTest::newRow( "Flexible 3.0 / 2.0" ) << 3.0 / 2.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "2:3" );
+  QTest::newRow( "Flexible 4.0 / 3.0" ) << 4.0 / 3.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "3:4" );
+  QTest::newRow( "Flexible 3.0 / 4.0" ) << 3.0 / 4.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "4:3" );
+  QTest::newRow( "Flexible 16.0 / 9.0" ) << 16.0 / 9.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "9:16" );
+  QTest::newRow( "Flexible 9.0 / 16.0" ) << 9.0 / 16.0 << QgsScaleComboBox::RatioMode::Flexible << QStringLiteral( "16:9" );
+}
+
 void TestQgsScaleComboBox::toString()
 {
-  QCOMPARE( QgsScaleComboBox::toString( 100 ), QStringLiteral( "1:100" ) );
-  QCOMPARE( QgsScaleComboBox::toString( 100.02134234 ), QStringLiteral( "1:100" ) );
-  QCOMPARE( QgsScaleComboBox::toString( 1 ), QStringLiteral( "1:1" ) );
-  QCOMPARE( QgsScaleComboBox::toString( 1.0 / 100 ), QStringLiteral( "100:1" ) );
-  QCOMPARE( QgsScaleComboBox::toString( std::numeric_limits<double>::quiet_NaN() ), QString() );
+  QFETCH( double, scale );
+  QFETCH( QgsScaleComboBox::RatioMode, ratioMode );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsScaleComboBox::toString( scale, ratioMode ), expected );
 }
 
 void TestQgsScaleComboBox::toDouble()
@@ -246,17 +342,19 @@ void TestQgsScaleComboBox::allowNull()
   QVERIFY( !s->lineEdit()->isClearButtonEnabled() );
 }
 
-void TestQgsScaleComboBox::enterScale( const QString &scale )
+void TestQgsScaleComboBox::enterScale( const QString &scale, QgsScaleComboBox *widget )
 {
-  QLineEdit *l = s->lineEdit();
+  if ( !widget )
+    widget = s;
+  QLineEdit *l = widget->lineEdit();
   l->clear();
   QTest::keyClicks( l, scale );
   QTest::keyClick( l, Qt::Key_Return );
 }
 
-void TestQgsScaleComboBox::enterScale( double scale )
+void TestQgsScaleComboBox::enterScale( double scale, QgsScaleComboBox *widget )
 {
-  enterScale( QLocale().toString( scale ) );
+  enterScale( QLocale().toString( scale ), widget );
 }
 
 void TestQgsScaleComboBox::cleanup()

@@ -32,8 +32,21 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     Q_OBJECT
     Q_PROPERTY( double scale READ scale WRITE setScale NOTIFY scaleChanged )
     Q_PROPERTY( double minScale READ minScale WRITE setMinScale )
+    Q_PROPERTY( RatioMode ratioMode READ ratioMode WRITE setRatioMode NOTIFY ratioModeChanged )
 
   public:
+    /**
+     * Scale ratio modes.
+     *
+     * \since QGIS 4.0
+     */
+    enum class RatioMode : int
+    {
+      ForceUnitNumerator, //!< Default mode, forces the scale numerator to be 1, e.g. "1:1000"
+      Flexible,           //!< Allows numerator values other than 1, e.g: "2:3".
+    };
+    Q_ENUM( RatioMode )
+
     /**
      * Constructor for QgsScaleComboBox.
      */
@@ -77,12 +90,15 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
 
     /**
      * Helper function to convert a \a scale double to scale string.
-     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      *
      * The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
+     *
+     * \param scale scale value indicating the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \param mode ratio mode (since QGIS 4.0)
+     *
      * \see toDouble()
      */
-    static QString toString( double scale );
+    static QString toString( double scale, QgsScaleComboBox::RatioMode mode = QgsScaleComboBox::RatioMode::ForceUnitNumerator );
 
     /**
      * Helper function to convert a scale \a string to double.
@@ -120,6 +136,14 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     */
     void setPredefinedScales( const QVector<double> &scales );
 
+    /**
+     * Returns the ratio mode for the scale.
+     *
+     * \see setRatioMode()
+     * \since QGIS 4.0
+     */
+    QgsScaleComboBox::RatioMode ratioMode() const;
+
   signals:
 
     /**
@@ -127,6 +151,13 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      */
     void scaleChanged( double scale );
+
+    /**
+     * Emitted when the ratio mode for the widget is changed.
+     *
+     * \since QGIS 4.0
+     */
+    void ratioModeChanged( QgsScaleComboBox::RatioMode mode );
 
   public slots:
 
@@ -162,6 +193,14 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      */
     void setNull();
 
+    /**
+     * Sets the ratio \a mode for the scale.
+     *
+     * \see ratioMode()
+     * \since QGIS 4.0
+     */
+    void setRatioMode( QgsScaleComboBox::RatioMode mode );
+
   protected:
     void showPopup() override;
 
@@ -172,6 +211,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     double mScale = 1.0;
     double mMinScale = 0.0;
     bool mAllowNull = false;
+    QgsScaleComboBox::RatioMode mMode = QgsScaleComboBox::RatioMode::ForceUnitNumerator;
 };
 
 #endif // QGSSCALECOMBOBOX_H
