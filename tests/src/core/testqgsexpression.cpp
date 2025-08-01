@@ -2060,10 +2060,18 @@ class TestQgsExpression : public QObject
       QTest::newRow( "timezone_id not timezone" ) << "timezone_id(123)" << true << QVariant();
       QTest::newRow( "timezone_id valid timezone" ) << "timezone_id(timezone_from_id('Australia/Brisbane'))" << false << QVariant( QString( "Australia/Brisbane" ) );
       QTest::newRow( "timezone_id UTC+10:30" ) << "timezone_id(timezone_from_id('UTC+10:30'))" << false << QVariant( QString( "UTC+10:30" ) );
+
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+      QTest::newRow( "timezone_id UTC-3" ) << "timezone_id(timezone_from_id('UTC-3'))" << false << QVariant( QString( "UTC-03:00" ) );
+      QTest::newRow( "convert timezone, fixed datetime" ) << "format_date(convert_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 19:50:00 UTC+10:00" ) );
+      QTest::newRow( "set timezone, fixed datetime" ) << "format_date(set_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 12:50:00 UTC+10:00" ) );
+      QTest::newRow( "get timezone, fixed datetime" ) << "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))" << false << QVariant( QString( "UTC+03:00" ) );
+#else
       QTest::newRow( "timezone_id UTC-3" ) << "timezone_id(timezone_from_id('UTC-3'))" << false << QVariant( QString( "UTC-03" ) );
       QTest::newRow( "convert timezone, fixed datetime" ) << "format_date(convert_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 19:50:00 UTC+10" ) );
       QTest::newRow( "set timezone, fixed datetime" ) << "format_date(set_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 12:50:00 UTC+10" ) );
       QTest::newRow( "get timezone, fixed datetime" ) << "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))" << false << QVariant( QString( "UTC+03" ) );
+#endif
 
 
       // Color functions
