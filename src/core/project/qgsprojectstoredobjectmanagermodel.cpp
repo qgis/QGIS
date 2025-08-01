@@ -82,7 +82,6 @@ QgsProjectStoredObjectManagerModel<T>::QgsProjectStoredObjectManagerModel( QgsAb
   connect( mObjectManager, &QgsProjectStoredObjectManagerBase::objectAdded, this, &QgsProjectStoredObjectManagerModel::objectAdded );
   connect( mObjectManager, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsProjectStoredObjectManagerModel::objectAboutToBeRemoved );
   connect( mObjectManager, &QgsProjectStoredObjectManagerBase::objectRemoved, this, &QgsProjectStoredObjectManagerModel::objectRemoved );
-  //connect( mObjectManager, &QgsLayoutManager::layoutRenamed, this, &QgsProjectStoredObjectManagerModel::layoutRenamed );
 }
 
 ///@cond PRIVATE
