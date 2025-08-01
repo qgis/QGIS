@@ -738,7 +738,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
   Q_UNUSED( context );
   Q_UNUSED( model );
   if ( errors )
-    *errors = "Cannot load geometry - QGIS is built without Draco library.";
+    *errors = "Cannot load geometry - QGIS was built without Draco library.";
   return false;
 }
 
