@@ -17,6 +17,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #ifndef QGSMATHUTILS_H
 #define QGSMATHUTILS_H
