@@ -20,6 +20,12 @@ highlights nearest to current scale value.
 #include "qgsscalecombobox.h"
 %End
   public:
+    enum class RatioMode /BaseType=IntEnum/
+    {
+      ForceUnitNumerator,
+      Flexible,
+    };
+
     QgsScaleComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScaleComboBox.
@@ -66,13 +72,15 @@ scale lower than the minimum scale will automatically be converted to
 the minimum scale. Except for 0 which is always allowed.
 %End
 
-    static QString toString( double scale );
+    static QString toString( double scale, QgsScaleComboBox::RatioMode mode = QgsScaleComboBox::RatioMode::ForceUnitNumerator );
 %Docstring
-Helper function to convert a ``scale`` double to scale string. The
-``scale`` value indicates the scale denominator, e.g. 1000.0 for a
-1:1000 map.
+Helper function to convert a ``scale`` double to scale string.
 
 The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
+
+:param scale: scale value indicating the scale denominator, e.g. 1000.0
+              for a 1:1000 map.
+:param mode: ratio mode (since QGIS 4.0)
 
 .. seealso:: :py:func:`toDouble`
 %End
@@ -125,6 +133,15 @@ instead.
 .. versionadded:: 3.38
 %End
 
+    QgsScaleComboBox::RatioMode ratioMode() const;
+%Docstring
+Returns the ratio mode for the scale.
+
+.. seealso:: :py:func:`setRatioMode`
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
     void scaleChanged( double scale );
@@ -132,6 +149,13 @@ instead.
 Emitted when *user* has finished editing/selecting a new scale. The
 ``scale`` value indicates the scale denominator, e.g. 1000.0 for a
 1:1000 map.
+%End
+
+    void ratioModeChanged( QgsScaleComboBox::RatioMode mode );
+%Docstring
+Emitted when the ratio mode for the widget is changed.
+
+.. versionadded:: 4.0
 %End
 
   public slots:
@@ -171,6 +195,15 @@ This only has an effect if :py:func:`~QgsScaleComboBox.allowNull` is
 .. seealso:: :py:func:`isNull`
 
 .. versionadded:: 3.8
+%End
+
+    void setRatioMode( QgsScaleComboBox::RatioMode mode );
+%Docstring
+Sets the ratio ``mode`` for the scale.
+
+.. seealso:: :py:func:`ratioMode`
+
+.. versionadded:: 4.0
 %End
 
   protected:

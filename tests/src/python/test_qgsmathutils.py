@@ -44,6 +44,7 @@ class TestQgsMathUtils(QgisTestCase):
         self.assertEqual(QgsMathUtils.doubleToRational(10001 / 10000), (10001, 10000))
 
         self.assertEqual(QgsMathUtils.doubleToRational(1 / 10), (1, 10))
+        self.assertEqual(QgsMathUtils.doubleToRational(1 / 100), (1, 100))
         self.assertEqual(QgsMathUtils.doubleToRational(1 / 500), (1, 500))
         self.assertEqual(QgsMathUtils.doubleToRational(1 / 1000), (1, 1000))
         self.assertEqual(QgsMathUtils.doubleToRational(1 / 10000000), (1, 10000000))
