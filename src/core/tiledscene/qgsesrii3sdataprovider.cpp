@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsesrii3sdataprovider.h"
+#include "moc_qgsesrii3sdataprovider.cpp"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -35,10 +36,11 @@
 #include <nlohmann/json.hpp>
 
 
-#define PROVIDER_KEY QStringLiteral( "esrii3s" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "ESRI I3S data provider" )
+#define I3S_PROVIDER_KEY QStringLiteral( "esrii3s" )
+#define I3S_PROVIDER_DESCRIPTION QStringLiteral( "ESRI I3S data provider" )
 
 
+///@cond PRIVATE
 
 class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
@@ -178,7 +180,7 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
       }
       else
       {
-        QgsDebugError( QString( "referencing textureSetDefinition that does not exist! %1 ").arg( textureSetDefinitionId ) );
+        QgsDebugError( QString( "referencing textureSetDefinition that does not exist! %1 " ).arg( textureSetDefinitionId ) );
       }
     }
     if ( pbrJson.contains( "doubleSided" ) )
@@ -370,7 +372,7 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
     networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
-                            networkRequest, QString(), false, feedback );
+                                           networkRequest, QString(), false, feedback );
     return reply.content();
   }
 
@@ -420,16 +422,16 @@ static QgsOrientedBox3D parseBox( const json &box )
     json quaternion = box["quaternion"];  // order is x, y, z, w
 
     return QgsOrientedBox3D(
-      QgsVector3D( center[0].get<double>(),
-                   center[1].get<double>(),
-                   center[2].get<double>() ),
-      QgsVector3D( halfSize[0].get<double>(),
-                   halfSize[1].get<double>(),
-                   halfSize[2].get<double>() ),
-      QQuaternion( static_cast<float>( quaternion[3].get<double>() ),
-                   static_cast<float>( quaternion[0].get<double>() ),
-                   static_cast<float>( quaternion[1].get<double>() ),
-                   static_cast<float>( quaternion[2].get<double>() ) ) );
+             QgsVector3D( center[0].get<double>(),
+                          center[1].get<double>(),
+                          center[2].get<double>() ),
+             QgsVector3D( halfSize[0].get<double>(),
+                          halfSize[1].get<double>(),
+                          halfSize[2].get<double>() ),
+             QQuaternion( static_cast<float>( quaternion[3].get<double>() ),
+                          static_cast<float>( quaternion[0].get<double>() ),
+                          static_cast<float>( quaternion[1].get<double>() ),
+                          static_cast<float>( quaternion[2].get<double>() ) ) );
   }
   catch ( nlohmann::json::exception & )
   {
@@ -546,10 +548,10 @@ QgsEsriI3SDataProviderSharedData::QgsEsriI3SDataProviderSharedData()
 }
 
 void QgsEsriI3SDataProviderSharedData::initialize(
-    const QString &i3sVersion,
-    const json &layerJson,
-    const QUrl &rootUrl,
-    const QgsCoordinateTransformContext &transformContext )
+  const QString &i3sVersion,
+  const json &layerJson,
+  const QUrl &rootUrl,
+  const QgsCoordinateTransformContext &transformContext )
 {
   mI3sVersion = i3sVersion;
   mLayerJson = layerJson;
@@ -637,7 +639,7 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
       return;
   }
 
-  QString layerType	= QString::fromStdString( layerJson["layerType"].get<std::string>() );
+  QString layerType = QString::fromStdString( layerJson["layerType"].get<std::string>() );
   if ( layerType != "3DObject" && layerType != "IntegratedMesh" )
   {
     appendError( QgsErrorMessage( tr( "Unsupported layer type: " ) + layerType, QStringLiteral( "I3S" ) ) );
@@ -847,7 +849,7 @@ QString QgsEsriI3SDataProvider::name() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return PROVIDER_KEY;
+  return I3S_PROVIDER_KEY;
 }
 
 QString QgsEsriI3SDataProvider::description() const
@@ -945,7 +947,7 @@ QgsDoubleRange QgsEsriI3SDataProvider::zRange() const
 
 
 QgsEsriI3SProviderMetadata::QgsEsriI3SProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+  QgsProviderMetadata( I3S_PROVIDER_KEY, I3S_PROVIDER_DESCRIPTION )
 {
 }
 
