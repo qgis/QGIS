@@ -264,16 +264,16 @@
            </layout>
           </item>
           <item>
-           <widget class="QCheckBox" name="mForceMultiCheckBox">
+           <widget class="QCheckBox" name="mIncludeZCheckBox">
             <property name="text">
-             <string>Force multi-type</string>
+             <string>Include z-dimension</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="mIncludeZCheckBox">
+           <widget class="QCheckBox" name="mForceMultiCheckBox">
             <property name="text">
-             <string>Include z-dimension</string>
+             <string>Force multi-type</string>
             </property>
            </widget>
           </item>
