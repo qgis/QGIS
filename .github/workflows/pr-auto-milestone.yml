@@ -97,7 +97,7 @@ jobs:
           echo "MAX_RELEASE: ${MAX_RELEASE}"
 
           # bump to QGIS 4.0 if last version
-            if [[ -z ${MINOR_VERSION} ]] && [[ ${MAX_RELEASE} =~ ^${LAST_MINOR_VERSION_FOR_3X}(\.d)?$ ]]; then
+            if [[ -z ${MINOR_VERSION} ]] && [[ ${MAX_RELEASE} =~ ^${LAST_MINOR_VERSION_FOR_3X}(\.[0-9]+)?$ ]]; then
             MILESTONE_TITLE=4.0.0
           else
             # increase the number to get milestone: round+2 for master, +0.1 for release_xxx branches
