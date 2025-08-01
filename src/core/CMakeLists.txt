@@ -401,6 +401,7 @@ set(QGIS_CORE_SRCS
 
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
+  tiledscene/qgsesrii3sdataprovider.cpp
   tiledscene/qgsgltfutils.cpp
   tiledscene/qgsquantizedmeshdataprovider.cpp
   tiledscene/qgsquantizedmeshtiles.cpp
@@ -2079,6 +2080,7 @@ set(QGIS_CORE_HDRS
 
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
+  tiledscene/qgsesrii3sdataprovider.h
   tiledscene/qgsgltfutils.h
   tiledscene/qgsquantizedmeshdataprovider.h
   tiledscene/qgsquantizedmeshtiles.h
