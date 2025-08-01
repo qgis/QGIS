@@ -543,6 +543,7 @@ set(QGIS_CORE_SRCS
   qgsmargins.cpp
   qgsmaskidprovider.cpp
   qgsmaskrendersettings.cpp
+  qgsmathutils.cpp
   qgsmatrix4x4.cpp
   qgsmbtiles.cpp
   qgsmessagelog.cpp
@@ -1248,6 +1249,7 @@ set(QGIS_CORE_HDRS
   qgsmargins.h
   qgsmaskidprovider.h
   qgsmaskrendersettings.h
+  qgsmathutils.h
   qgsmatrix4x4.h
   qgsmbtiles.h
   qgsmessagelog.h
