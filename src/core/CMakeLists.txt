@@ -700,6 +700,7 @@ set(QGIS_CORE_SRCS
   layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmanager.cpp
+  layout/qgslayoutmanagermodel.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
@@ -767,6 +768,8 @@ set(QGIS_CORE_SRCS
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
+  project/qgsprojectstoredobjectmanager.cpp
+  project/qgsprojectstoredobjectmanagermodel.cpp
   project/qgsprojectstylesettings.cpp
   project/qgsprojecttimesettings.cpp
   project/qgsprojectutils.cpp
@@ -1629,6 +1632,7 @@ set(QGIS_CORE_HDRS
   layout/qgslayoutitemtexttable.h
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmanager.h
+  layout/qgslayoutmanagermodel.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgslayoutmodel.h
@@ -1846,6 +1850,8 @@ set(QGIS_CORE_HDRS
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
+  project/qgsprojectstoredobjectmanager.h
+  project/qgsprojectstoredobjectmanagermodel.h
   project/qgsprojectstylesettings.h
   project/qgsprojecttimesettings.h
   project/qgsprojecttranslator.h

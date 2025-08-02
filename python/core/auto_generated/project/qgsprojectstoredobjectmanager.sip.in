@@ -1,0 +1,162 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstoredobjectmanager.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsProjectStoredObjectManagerBase : QObject
+{
+%Docstring(signature="appended")
+Manages storage of a set of objects attached to a
+:py:class:`QgsProject`.
+
+:py:class:`QgsProjectStoredObjectManagerBase` handles the storage,
+serializing and deserializing of attached objects.
+
+:py:class:`QgsProjectStoredObjectManagerBase` retains ownership of all
+the objects contained in the manager.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanager.h"
+%End
+  public:
+
+    explicit QgsProjectStoredObjectManagerBase( QgsProject *project /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerBase, for objects attached
+to the specified ``project``.
+%End
+
+  signals:
+
+    void objectAboutToBeAdded( const QString &name );
+%Docstring
+Emitted when an object is about to be added to the manager
+%End
+
+    void objectAdded( const QString &name );
+%Docstring
+Emitted when an object has been added to the manager
+%End
+
+    void objectRemoved( const QString &name );
+%Docstring
+Emitted when an object was removed from the manager
+%End
+
+    void objectAboutToBeRemoved( const QString &name );
+%Docstring
+Emitted when an object is about to be removed from the manager
+%End
+
+  protected:
+
+
+    void markProjectDirty();
+%Docstring
+Marks the project as dirty.
+%End
+};
+
+template<T>
+class QgsAbstractProjectStoredObjectManager : QgsProjectStoredObjectManagerBase
+{
+%Docstring(signature="appended")
+Template class for storage of a set of objects attached to a
+:py:class:`QgsProject`.
+
+:py:class:`QgsAbstractProjectStoredObjectManager` handles the storage,
+serializing and deserializing of attached objects.
+
+:py:class:`QgsAbstractProjectStoredObjectManager` retains ownership of
+all the objects contained in the manager.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanager.h"
+%End
+  public:
+
+    explicit QgsAbstractProjectStoredObjectManager( QgsProject *project /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAbstractProjectStoredObjectManager, for objects
+attached to the specified ``project``.
+%End
+
+    ~QgsAbstractProjectStoredObjectManager();
+
+    QList< T * > objects() const;
+%Docstring
+Returns the list of objects contained within the manager.
+%End
+
+    T *objectByName( const QString &name ) const;
+%Docstring
+Returns the object with a matching name, or ``None`` if no matching
+objects were found.
+%End
+
+  protected:
+
+
+    void clearObjects();
+%Docstring
+Removes and deletes all objects from the manager.
+
+.. seealso:: :py:func:`removeObject`
+%End
+
+    bool addObject( T *object /Transfer/ );
+%Docstring
+Adds an ``object`` to the manager. Ownership of the object is
+transferred to the manager. Returns ``True`` if the addition was
+successful, or ``False`` if the object could not be added (eg as a
+result of a duplicate object name).
+
+.. seealso:: :py:func:`removeObject`
+
+.. seealso:: :py:func:`objectAdded`
+%End
+
+    bool removeObject( T *object );
+%Docstring
+Removes an ``object`` from the manager. The object is deleted. Returns
+``True`` if the removal was successful, or ``False`` if the removal
+failed (eg as a result of removing an object which is not contained in
+the manager).
+
+.. seealso:: :py:func:`addObject`
+
+.. seealso:: :py:func:`objectRemoved`
+
+.. seealso:: :py:func:`objectAboutToBeRemoved`
+
+.. seealso:: :py:func:`clearObjects`
+%End
+
+    virtual void setupObjectConnections( T *object );
+%Docstring
+Sets up additional connections to an ``object``, called when the object
+is first added to the manager.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstoredobjectmanager.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

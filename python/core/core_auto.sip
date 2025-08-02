@@ -452,6 +452,7 @@
 %Include auto_generated/layout/qgslayoutitemshape.sip
 %Include auto_generated/layout/qgslayoutitemtexttable.sip
 %Include auto_generated/layout/qgslayoutmanager.sip
+%Include auto_generated/layout/qgslayoutmanagermodel.sip
 %Include auto_generated/layout/qgslayoutmeasurement.sip
 %Include auto_generated/layout/qgslayoutmeasurementconverter.sip
 %Include auto_generated/layout/qgslayoutmodel.sip
@@ -609,6 +610,8 @@
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip
 %Include auto_generated/project/qgsprojectstorageregistry.sip
+%Include auto_generated/project/qgsprojectstoredobjectmanager.sip
+%Include auto_generated/project/qgsprojectstoredobjectmanagermodel.sip
 %Include auto_generated/project/qgsprojectstylesettings.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip

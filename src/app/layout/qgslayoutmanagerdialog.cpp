@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgslayoutview.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutmanagermodel.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgsprintlayout.h"
