@@ -84,6 +84,10 @@ if (WITH_SERVER_PLUGINS)
   )
 endif()
 
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS Server Core" "qgis_server" QGIS_SERVER_SRCS)
+endif()
+
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
 if(QGISPOSTFIX)
   set_target_properties(qgis_server PROPERTIES
@@ -158,8 +162,16 @@ install(TARGETS qgis_server
 # add test resources, e.g. standard test font
 set(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
 
-add_executable(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCCS})
-add_executable(qgis_mapserver qgis_mapserver.cpp ${QGIS_SERVER_TESTRCCS})
+SET(QGIS_SERVER_EX_SRCS qgis_map_serv.cpp)
+win32_icon(QGIS_SERVER_EX_SRCS)
+win32_version_info("QGIS Server" "qgis_mapserv.fcgi" QGIS_SERVER_EX_SRCS)
+add_executable(qgis_mapserv.fcgi ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
+
+SET(QGIS_SERVER_EX_SRCS qgis_mapserver.cpp)
+win32_icon(QGIS_SERVER_EX_SRCS)
+win32_version_info("QGIS Server (Development Server)" "qgis_mapserver" QGIS_SERVER_EX_SRCS)
+add_executable(qgis_mapserver ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
+
 if (QGISPOSTFIX)
   set_target_properties(qgis_mapserv.fcgi PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserv${QGISPOSTFIX}.fcgi)
   set_target_properties(qgis_mapserver PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserver${QGISPOSTFIX})

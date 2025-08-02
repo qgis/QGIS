@@ -15,6 +15,9 @@ endif()
 ########################################################
 # Build
 
+win32_icon(QGIS_PROCESS_SRCS)
+win32_version_info("QGIS Process Command Tool" "qgis_process" QGIS_PROCESS_SRCS)
+
 add_executable (qgis_process ${QGIS_PROCESS_SRCS})
 if (QGISPOSTFIX)
   set_target_properties(qgis_process PROPERTIES RUNTIME_OUTPUT_NAME qgis_process${QGISPOSTFIX})
