@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
-
-
+"""
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+"""
 import argparse
 import os
 import re
@@ -8,9 +12,7 @@ import sys
 
 from collections import defaultdict
 from enum import Enum, auto
-from typing import Any, Dict, List, Optional, Tuple
-
-import yaml
+from typing import Any, Optional
 
 
 class Visibility(Enum):
@@ -39,41 +41,6 @@ class MultiLineType(Enum):
     ConditionalStatement = auto()
 
 
-# Parse command-line arguments
-parser = argparse.ArgumentParser(description="Convert header file to SIP and Python")
-parser.add_argument("-debug", action="store_true", help="Enable debug mode")
-parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
-parser.add_argument("-sip_output", help="SIP output file")
-parser.add_argument("-python_output", help="Python output file")
-parser.add_argument("-class_map", help="Class map file")
-parser.add_argument("headerfile", help="Input header file")
-args = parser.parse_args()
-
-# Read the input file
-try:
-    with open(args.headerfile) as f:
-        input_lines = f.read().splitlines()
-except OSError as e:
-    print(
-        f"Couldn't open '{args.headerfile}' for reading because: {e}", file=sys.stderr
-    )
-    sys.exit(1)
-
-# Read configuration
-cfg_file = os.path.join(os.path.dirname(__file__), "../python/sipify.yaml")
-try:
-    with open(cfg_file) as f:
-        sip_config = yaml.safe_load(f)
-except OSError as e:
-    print(
-        f"Couldn't open configuration file '{cfg_file}' because: {e}", file=sys.stderr
-    )
-    sys.exit(1)
-
-
-# Initialize contexts
-
-
 class Context:
 
     def __init__(self):
@@ -82,15 +49,18 @@ class Context:
         self.header_file: str = ""
         self.current_line: str = ""
         self.sip_run: bool = False
+        """Current line is inside #ifdef SIP_RUN block"""
         self.header_code: bool = False
+        """Currently generating %TypeHeaderCode block"""
         self.access: list[Visibility] = [Visibility.Public]
+        """Stack of access specifiers (for e.g. nested classes)"""
         self.multiline_definition: MultiLineType = MultiLineType.NotMultiline
         self.classname: list[str] = []
         self.class_and_struct: list[str] = []
         self.declared_classes: list[str] = []
         self.all_fully_qualified_class_names: list[str] = []
         self.exported: list[int] = [0]
-        self.actual_class: str = ""
+        self.actual_class: str | None = None
         self.python_signature: str = ""
         self.enum_int_types: list[str] = []
         self.enum_intflag_types: list[str] = []
@@ -115,7 +85,7 @@ class Context:
         self.found_since: bool = False
         self.qflag_hash: dict[str, Any] = {}
         self.input_lines: list[str] = []
-        self.line_count: int = len(input_lines)
+        self.line_count: int = 0
         self.line_idx: int = 0
         self.output: list[str] = []
         self.output_python: list[str] = []
@@ -133,6 +103,7 @@ class Context:
         self.signal_arguments = defaultdict(dict)
         self.deprecated_message = None
         self.method_py_name: Optional[str] = None
+        self.current_method_is_override: bool = False
 
     def reset_method_state(self):
         """
@@ -157,11 +128,6 @@ class Context:
 
 
 CONTEXT = Context()
-CONTEXT.debug = args.debug
-CONTEXT.is_qt6 = args.qt6
-CONTEXT.header_file = args.headerfile
-CONTEXT.input_lines = input_lines
-CONTEXT.line_count = len(input_lines)
 
 ALLOWED_NON_CLASS_ENUMS = [
     "QgsSipifyHeader::MyEnum",
@@ -584,10 +550,13 @@ ALLOWED_NON_CLASS_ENUMS = [
     "TextFormatTable",
 ]
 
+CLASS_HEADERFILES = {
+    "QgsAbstractFeatureIteratorFromSource": "qgsfeatureiterator.h",
+    "QgsSettingsEntryBaseTemplate": "qgssettingsentry.h",
+}
+
 
 def replace_macros(line):
-    global CONTEXT
-
     line = re.sub(r"\bTRUE\b", "``True``", line)
     line = re.sub(r"\bFALSE\b", "``False``", line)
     line = re.sub(r"\bNULLPTR\b", "``None``", line)
@@ -602,8 +571,6 @@ def replace_macros(line):
 
 
 def read_line():
-    global CONTEXT
-
     new_line = CONTEXT.input_lines[CONTEXT.line_idx]
     CONTEXT.line_idx += 1
 
@@ -619,8 +586,6 @@ def read_line():
 
 
 def write_output(dbg_code, out, prepend="no"):
-    global CONTEXT
-
     if CONTEXT.debug:
         dbg_code = f"{CONTEXT.line_idx} {dbg_code:<4} :: "
     else:
@@ -639,8 +604,6 @@ def write_output(dbg_code, out, prepend="no"):
 
 
 def dbg_info(info):
-    global CONTEXT
-
     if CONTEXT.debug:
         CONTEXT.output.append(f"{info}\n")
         print(
@@ -649,14 +612,12 @@ def dbg_info(info):
 
 
 def exit_with_error(message):
-    global CONTEXT
     sys.exit(
         f"! Sipify error in {CONTEXT.header_file} at line :: {CONTEXT.line_idx}\n! {message}"
     )
 
 
 def sip_header_footer():
-    global CONTEXT
     header_footer = []
     # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
     # otherwise "sip up to date" test fails. This is because the test uses %Include entries
@@ -686,7 +647,6 @@ def sip_header_footer():
 
 
 def python_header():
-    global CONTEXT
     header = []
     headerfile_x = re.sub(r"src/core/3d", r"src/core/./3d", CONTEXT.header_file)
     header.append("# The following has been generated automatically from ")
@@ -695,8 +655,6 @@ def python_header():
 
 
 def create_class_links(line):
-    global CONTEXT
-
     # Replace Qgs classes (but not the current class) with :py:class: links
     class_link_match = re.search(r"\b(Qgs[A-Z]\w+|Qgis)\b(\.?$|\W{2})", line)
     if class_link_match:
@@ -739,8 +697,6 @@ def process_deprecated_message(message: str) -> str:
 
 
 def process_doxygen_line(line: str) -> str:
-    global CONTEXT
-
     # Handle SIP_RUN preprocessor directives
     if re.search(r"\s*#ifdef SIP_RUN", line):
         CONTEXT.doxy_inside_sip_run = 1
@@ -1035,8 +991,6 @@ def validate_docstring(docstring: str):
 
 
 def detect_and_remove_following_body_or_initializerlist():
-    global CONTEXT
-
     signature = ""
 
     # Complex regex pattern to match various C++ function declarations and definitions
@@ -1220,8 +1174,6 @@ def wrap_text(text: str, width=72):
 
 
 def remove_following_body_or_initializerlist():
-    global CONTEXT
-
     signature = ""
 
     dbg_info(
@@ -1314,7 +1266,6 @@ def remove_sip_pyargremove(input_string: str) -> str:
     """
     Remove SIP_PYARGREMOVE annotated arguments
     """
-    global CONTEXT
     # Split the string into function signature and body
     signature_split = re.match(r"(.*?)\((.*)\)(.*)", input_string)
     if signature_split and "SIP_PYARGREMOVE" not in signature_split.group(1):
@@ -1352,8 +1303,6 @@ def remove_sip_pyargremove(input_string: str) -> str:
 
 
 def fix_annotations(line):
-    global CONTEXT
-
     CONTEXT.method_py_name = None
 
     # Get removed params to be able to drop them out of the API doc
@@ -1364,7 +1313,7 @@ def fix_annotations(line):
         CONTEXT.skipped_params_remove.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_remove[-1]}")
 
-    _out_params = re.findall(r"(\w+)\s+SIP_OUT", line)
+    _out_params = re.findall(r"(\w+)\s+(?:SIP_OUT|SIP_DOCSTRING_OUT)", line)
     for param in _out_params:
         CONTEXT.skipped_params_out.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_out[-1]}")
@@ -1388,6 +1337,7 @@ def fix_annotations(line):
         r"\bSIP_KEEPREFERENCE\b": "/KeepReference/",
         r"\bSIP_NODEFAULTCTORS\b": "/NoDefaultCtors/",
         r"\bSIP_OUT\b": "/Out/",
+        r"\bSIP_DOCSTRING_OUT\b": "",
         r"\bSIP_RELEASEGIL\b": "/ReleaseGIL/",
         r"\bSIP_HOLDGIL\b": "/HoldGIL/",
         r"\bSIP_TRANSFER\b": "/Transfer/",
@@ -1476,8 +1426,6 @@ def fix_constants(line):
 
 def detect_comment_block(strict_mode=True):
     # Initialize global or module-level variables if necessary
-    global CONTEXT
-
     CONTEXT.comment_param_list = False
     CONTEXT.indent = ""
     CONTEXT.prev_indent = ""
@@ -1653,38 +1601,33 @@ def cpp_to_python_signature(cpp_function: str) -> str:
     return python_signature
 
 
-while CONTEXT.line_idx < CONTEXT.line_count:
+#
+# PARSING CODE
+#
 
-    CONTEXT.python_signature = ""
-    CONTEXT.actual_class = CONTEXT.classname[-1] if CONTEXT.classname else None
-    CONTEXT.current_line = read_line()
+# The try_process_* functions return True if the line has been handled and
+# parsing should continue to the next line, False or None otherwise
 
-    if re.match(r"^\s*(#define\s+)?SIP_IF_MODULE\(.*\)$", CONTEXT.current_line):
-        dbg_info("skipping SIP include condition macro")
-        continue
 
-    match = re.match(r"^(.*?)\s*//\s*cppcheck-suppress.*$", CONTEXT.current_line)
-    if match:
-        CONTEXT.current_line = match.group(1)
-
+def try_process_sip_directive():
     match = re.match(r"^\s*SIP_FEATURE\(\s*(\w+)\s*\)(.*)$", CONTEXT.current_line)
     if match:
         write_output("SF1", f"%Feature {match.group(1)}{match.group(2)}\n")
-        continue
+        return True
 
     match = re.match(r"^\s*SIP_PROPERTY\((.*)\)$", CONTEXT.current_line)
     if match:
         write_output("SF1", f"%Property({match.group(1)})\n")
-        continue
+        return True
 
     match = re.match(r"^\s*SIP_IF_FEATURE\(\s*(!?\w+)\s*\)(.*)$", CONTEXT.current_line)
     if match:
         write_output("SF2", f"%If ({match.group(1)}){match.group(2)}\n")
-        continue
+        return True
 
     match = re.match(r"^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$", CONTEXT.current_line)
     if match:
-        # TYPE HEADER CODE
+        # %TypeHeaderCode
         if CONTEXT.header_code and not re.match(r"^ *//.*$", CONTEXT.current_line):
             CONTEXT.header_code = False
             write_output("HCE", "%End\n")
@@ -1699,7 +1642,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     match = re.match(r"^\s*SIP_END(.*)$", CONTEXT.current_line)
     if match:
         write_output("SEN", f"%End{match.group(1)}\n")
-        continue
+        return True
 
     match = re.search(r"SIP_WHEN_FEATURE\(\s*(.*?)\s*\)", CONTEXT.current_line)
     if match:
@@ -1710,8 +1653,23 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         dbg_info("found SIP_TYPEHEADER_INCLUDE")
         write_output("STI", f'#include "{match.group(1)}"\n')
-        continue
+        return True
 
+
+def try_skip_sip_if_module():
+    if re.match(r"^\s*(#define\s+)?SIP_IF_MODULE\(.*\)$", CONTEXT.current_line):
+        dbg_info("skipping SIP include condition macro")
+        return True
+
+
+def skip_cppcheck_comments():
+    match = re.match(r"^(.*?)\s*//\s*cppcheck-suppress.*$", CONTEXT.current_line)
+    if match:
+        CONTEXT.current_line = match.group(1)
+
+
+def fixup_qt6_len_and_hash():
+    # Rewrite hardcoded return types and use proper typedefs instead
     if CONTEXT.is_qt6:
         CONTEXT.current_line = re.sub(
             r"int\s*__len__\s*\(\s*\)", "Py_ssize_t __len__()", CONTEXT.current_line
@@ -1720,6 +1678,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             r"long\s*__hash__\s*\(\s*\)", "Py_hash_t __hash__()", CONTEXT.current_line
         )
 
+
+def process_pyqt_ifdefs():
+    """Skip ifdefs gating PyQt5/PyQt6-only code."""
     if CONTEXT.is_qt6 and re.match(r"^\s*#ifdef SIP_PYQT5_RUN", CONTEXT.current_line):
         dbg_info("do not process PYQT5 code")
         while not re.match(r"^#endif", CONTEXT.current_line):
@@ -1732,10 +1693,16 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         while not re.match(r"^#endif", CONTEXT.current_line):
             CONTEXT.current_line = read_line()
 
+
+def process_using():
+    """Rewrite using into typedef."""
     using_match = re.match(r"(\s*)using\s+(.*?)\s*=\s*(.*);", CONTEXT.current_line)
     if using_match:
         CONTEXT.current_line = f"{using_match.group(1)}typedef {using_match.group(3)} {using_match.group(2)};"
+        return True
 
+
+def try_skip_sip_directives():
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
         r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
@@ -1767,9 +1734,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         CONTEXT.current_line = re.sub(r"^\s*[/]*% *End", "%End", CONTEXT.current_line)
         write_output("COD", CONTEXT.current_line + "\n")
-        continue
+        return True
 
-    # Do not process SIP code %Property
+    # Do not process SIP directive %Property
     if CONTEXT.sip_run and re.match(
         r"^ *[/]*% *(Property)(.*)?$", CONTEXT.current_line
     ):
@@ -1778,17 +1745,19 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         )
         CONTEXT.reset_method_state()
         write_output("COD", CONTEXT.current_line + "\n")
-        continue
+        return True
 
-    # Do not process SIP code %If %End
+    # Do not process SIP directive %If %End
     if CONTEXT.sip_run and re.match(r"^ *[/]*% *(If|End)(.*)?$", CONTEXT.current_line):
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% (.*)$', CONTEXT.current_line).group(1)}"
         )
         CONTEXT.reset_method_state()
         write_output("COD", CONTEXT.current_line)
-        continue
+        return True
 
+
+def try_process_preprocessor_directive():
     # Skip preprocessor directives
     if re.match(r"^\s*#", CONTEXT.current_line):
         # Skip #if 0 or #if defined(Q_OS_WIN) blocks
@@ -1809,7 +1778,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     r"^\s*#endif", CONTEXT.current_line
                 ):
                     nesting_index -= 1
-            continue
+            return True
 
         if re.match(r"^\s*#ifdef SIP_RUN", CONTEXT.current_line):
             CONTEXT.sip_run = True
@@ -1818,13 +1787,13 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 if CONTEXT.private_section_line:
                     write_output("PRV1", CONTEXT.private_section_line + "\n")
                 CONTEXT.private_section_line = ""
-            continue
+            return True
 
         if CONTEXT.sip_run:
             if re.match(r"^\s*#endif", CONTEXT.current_line):
                 if CONTEXT.ifdef_nesting_idx == 0:
                     CONTEXT.sip_run = False
-                    continue
+                    return True
                 else:
                     CONTEXT.ifdef_nesting_idx -= 1
 
@@ -1847,7 +1816,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             break
                         else:
                             CONTEXT.ifdef_nesting_idx -= 1
-                continue
+                return True
 
         elif re.match(r"^\s*#ifndef SIP_RUN", CONTEXT.current_line):
             # Code is ignored here
@@ -1869,16 +1838,17 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     break
                 elif re.match(r"^\s*#endif", CONTEXT.current_line):
                     if CONTEXT.ifdef_nesting_idx == 0:
-                        CONTEXT.sip_run = 0
+                        CONTEXT.sip_run = False
                         break
                     else:
                         CONTEXT.ifdef_nesting_idx -= 1
-            continue
+            return True
 
         else:
-            continue
+            return True
 
-    # TYPE HEADER CODE
+
+def check_end_of_typeheadercode():
     if (
         CONTEXT.header_code
         and not CONTEXT.sip_run
@@ -1887,6 +1857,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.header_code = False
         write_output("HCE", "%End\n")
 
+
+def try_skip_forward_decl():
     # Skip forward declarations
     match = re.match(
         r"^\s*(template ?<class T> |enum\s+)?(class|struct) \w+(?P<external> *SIP_EXTERNAL)?;\s*(//.*)?$",
@@ -1898,20 +1870,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             CONTEXT.reset_method_state()
         else:
             dbg_info("skipping forward declaration")
-            continue
+            return True
 
+
+def try_skip_friend_decl():
     # Skip friend declarations
     if re.match(r"^\s*friend class \w+", CONTEXT.current_line):
-        continue
+        return True
 
+
+def try_process_q_gadget():
     # Insert metaobject for Q_GADGET
     if re.match(r"^\s*Q_GADGET\b.*?$", CONTEXT.current_line):
         if not re.search(r"SIP_SKIP", CONTEXT.current_line):
             dbg_info("Q_GADGET")
             write_output("HCE", "  public:\n")
             write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n")
-        continue
+        return True
 
+
+def try_process_q_enum_q_flag():
     # Insert in Python output (python/module/__init__.py)
     match = re.search(r"Q_(ENUM|FLAG)\(\s*(\w+)\s*\)", CONTEXT.current_line)
     if match:
@@ -1928,18 +1906,22 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         CONTEXT.output_python.append(
                             f"{match.group(2)} = {CONTEXT.actual_class}  # dirty hack since SIP seems to introduce the flags in module\n"
                         )
-        continue
+        return True
 
+
+def try_skip_misc_q_macros():
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, etc.
     if re.match(
         r"^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$",
         CONTEXT.current_line,
     ):
-        continue
+        return True
 
     if re.match(r"^\s*QHASH_FOR_CLASS_ENUM", CONTEXT.current_line):
-        continue
+        return True
 
+
+def try_process_sip_skip():
     if re.search(r"SIP_SKIP|SIP_PYTHON_SPECIAL_", CONTEXT.current_line):
         dbg_info("SIP SKIP!")
         # if multiline definition, remove previous lines
@@ -2001,12 +1983,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.output_python.append(f"{pyop}\n")
 
         CONTEXT.reset_method_state()
-        continue
+        return True
 
-    # Detect comment block
-    if detect_comment_block():
-        continue
 
+def process_struct_decl():
     struct_match = re.match(
         r"^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$", CONTEXT.current_line
     )
@@ -2026,6 +2006,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.exported.append(CONTEXT.exported[-1])
         CONTEXT.bracket_nesting_idx.append(0)
 
+
+def process_class_decl():
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
     class_pattern = re.compile(
@@ -2160,9 +2142,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.current_line = f"\ntypedef {tpl}<{cls1},{cls2},{cls3}> {tpl}{cls1}{cls2}{cls3}Base /NoTypeName/;\n\n{CONTEXT.current_line}"
 
             if tpl not in CONTEXT.declared_classes:
-                tpl_header = f"{tpl.lower()}.h"
-                if tpl in sip_config["class_headerfile"]:
-                    tpl_header = sip_config["class_headerfile"][tpl]
+                tpl_header = CLASS_HEADERFILES.get(tpl, f"{tpl.lower()}.h")
                 CONTEXT.current_line += f'\n#include "{tpl_header}"'
 
             if cls2 == "":
@@ -2179,7 +2159,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             and len(CONTEXT.access) != 1
         ):
             dbg_info("skipping class in private context")
-            continue
+            return True
 
         CONTEXT.access[-1] = Visibility.Private  # private by default
         write_output("CLS", f"{CONTEXT.current_line}\n")
@@ -2193,8 +2173,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.reset_method_state()
         CONTEXT.header_code = True
         CONTEXT.access[-1] = Visibility.Private
-        continue
+        return True
 
+
+def process_brackets():
     # Bracket balance in class/struct tree
     if not CONTEXT.sip_run:
         bracket_balance = 0
@@ -2211,9 +2193,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     CONTEXT.bracket_nesting_idx.pop()
                     CONTEXT.access.pop()
 
-                    if CONTEXT.exported[-1] == 0 and CONTEXT.classname[
-                        -1
-                    ] != sip_config.get("no_export_macro"):
+                    if CONTEXT.exported[-1] == 0:
                         exit_with_error(
                             f"Class {CONTEXT.classname[-1]} should be exported with appropriate [LIB]_EXPORT macro. "
                             f"If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
@@ -2235,6 +2215,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
             dbg_info(f"new bracket balance: {CONTEXT.bracket_nesting_idx}")
 
+
+def try_process_access_specifiers():
     # Private members (exclude SIP_RUN)
     if re.match(r"^\s*private( slots)?:", CONTEXT.current_line):
         CONTEXT.access[-1] = Visibility.Private
@@ -2242,7 +2224,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.private_section_line = CONTEXT.current_line
         CONTEXT.reset_method_state()
         dbg_info("going private")
-        continue
+        return True
 
     elif re.match(r"^\s*(public( slots)?):.*$", CONTEXT.current_line):
         dbg_info("going public")
@@ -2272,8 +2254,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     elif any(x == Visibility.Private for x in CONTEXT.access) and not CONTEXT.sip_run:
         CONTEXT.reset_method_state()
-        continue
+        return True
 
+
+def try_skip_operator_decl():
     # Skip operators
     if CONTEXT.access[-1] != Visibility.Private and re.search(
         r"operator(=|<<|>>|->)\s*\(", CONTEXT.current_line
@@ -2281,8 +2265,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info("skip operator")
         CONTEXT.reset_method_state()
         detect_and_remove_following_body_or_initializerlist()
-        continue
+        return True
 
+
+def try_save_comments():
     # Save comments and do not print them, except in SIP_RUN
     if not CONTEXT.sip_run:
         if re.match(r"^\s*//", CONTEXT.current_line):
@@ -2296,8 +2282,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 CONTEXT.comment = CONTEXT.comment.rstrip()
             elif not re.search(r"\*/", CONTEXT.input_lines[CONTEXT.line_idx - 1]):
                 CONTEXT.reset_method_state()
-            continue
+            return True
 
+
+def try_process_enum_decl():
     # Handle Q_DECLARE_FLAGS in Qt6
     if CONTEXT.is_qt6 and re.match(
         r"^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)", CONTEXT.current_line
@@ -2428,7 +2416,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 exit_with_error(
                     "Sipify does not handle enum one liners with value assignment. Use multiple lines instead. Or just write a new parser."
                 )
-            continue
+            return True
         else:
             CONTEXT.current_line = read_line()
             if not re.match(r"^\s*\{\s*$", CONTEXT.current_line):
@@ -2609,14 +2597,18 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
             # enums don't have Docstring apparently
             CONTEXT.comment = ""
-            continue
+            return True
 
+
+def check_invalid_doxygen_command():
     # Check for invalid use of doxygen command
     if re.search(r".*//!<", CONTEXT.current_line):
         exit_with_error(
             '"\\!<" doxygen command must only be used for enum documentation'
         )
 
+
+def process_misc_keywords():
     # Handle override, final, and make private keywords
     if re.search(r"\boverride\b", CONTEXT.current_line):
         CONTEXT.is_override_or_make_private = PrependType.Virtual
@@ -2644,7 +2636,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         r"\1\2,\3,\4\5",
         CONTEXT.current_line,
     )
-    is_override = re.search(r"\b(?:override|final)\b", CONTEXT.current_line)
+    CONTEXT.current_method_is_override = bool(
+        re.search(r"\b(?:override|final)\b", CONTEXT.current_line)
+    )
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
@@ -2666,15 +2660,6 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.exported[-1] += 1
         CONTEXT.current_line = re.sub(r"\b\w+_EXPORT\s+", "", CONTEXT.current_line)
 
-    # Skip non-method member declaration in non-public sections
-    if (
-        not CONTEXT.sip_run
-        and CONTEXT.access[-1] != Visibility.Public
-        and detect_non_method_member(CONTEXT.current_line)
-    ):
-        dbg_info("skip non-method member declaration in non-public sections")
-        continue
-
     # Remove static const value assignment
     # https://regex101.com/r/DyWkgn/6
     if re.search(r"^\s*const static \w+", CONTEXT.current_line):
@@ -2682,9 +2667,25 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             f"const static should be written static const in {CONTEXT.classname[-1]}"
         )
 
-    # TODO needs fixing!!
+
+def try_skip_non_method_decl():
+    # Skip non-method member declaration in non-public sections
+    if (
+        not CONTEXT.sip_run
+        and CONTEXT.access[-1] != Visibility.Public
+        and detect_non_method_member(CONTEXT.current_line)
+    ):
+        dbg_info("skip non-method member declaration in non-public sections")
+        return True
+
+
+def process_struct_member_assignment():
+    # Take a const or static const declaration and strip out the assignment
+    # part, leaving only `static const <type> <name>;`
+    # TODO needs fixing!! TODO^2: Why?
     # original perl regex was:
     #       ^(?<staticconst> *(?<static>static )?const (\w+::)*\w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
+    # https://regex101.com/r/DyWkgn/6
     match = re.search(
         r"^(?P<staticconst> *(?P<static>static )?const (\w+::)*\w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*)?$",
         CONTEXT.current_line,
@@ -2754,6 +2755,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             dbg_info(f"remove struct member assignment '={match.group(2)}'")
             CONTEXT.current_line = f"{match.group(1)};"
 
+
+def process_flags_q_macros():
     # Catch Q_DECLARE_FLAGS
     match = re.search(
         r"^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$", CONTEXT.current_line
@@ -2826,6 +2829,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         f"{py_flag}.__or__ = lambda flag1, flag2: {patched_type[0]}.{patched_type[1]}(_force_int(flag1) | _force_int(flag2))\n"
                     )
 
+
+def process_prepend_function_specifier():
     # Remove keywords
     if CONTEXT.is_override_or_make_private != PrependType.NoPrepend:
         # Handle multiline definition to add virtual keyword or make private on opening line
@@ -2881,9 +2886,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 r"^(\s*?)\b(.*)$", r"\1virtual \2\n", CONTEXT.current_line
             )
 
-    # remove constructor definition, function bodies, member initializing list
-    CONTEXT.python_signature = detect_and_remove_following_body_or_initializerlist()
 
+def process_inline_declarations():
     # remove inline declarations
     match = re.search(
         r"^(\s*)?(static |const )*(([(?:long )\w]+(<.*?>)?\s+([*&])?)?(\w+)( const*?)*)\s*(\{.*});(\s*//.*)?$",
@@ -2892,6 +2896,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         CONTEXT.current_line = f"{match.group(1)}{match.group(3)};"
 
+
+def process_method_decl():
     pattern = r"^\s*((?:const |virtual |static |inline ))*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(\w+|operator.{1,2})(\(.*)$"
     match = re.match(pattern, CONTEXT.current_line)
     if match:
@@ -2906,7 +2912,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 r".*\s*=\s*0\s*(?:\s*SIP[A-Za-z_() ]*\s*)*\s*;", match.group(4)
             )
         )
-        if is_abstract or is_override:
+        if is_abstract or CONTEXT.current_method_is_override:
             is_virtual = False  # assumed!
 
         class_name = CONTEXT.current_fully_qualified_class_name()
@@ -2934,7 +2940,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
 
         if CONTEXT.multiline_definition != MultiLineType.Method:
-            if is_override:
+            if CONTEXT.current_method_is_override:
                 CONTEXT.overridden_methods[class_name][
                     CONTEXT.current_method_name
                 ] = True
@@ -3025,9 +3031,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         if is_abstract:
             CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
 
-        if is_override:
+        if CONTEXT.current_method_is_override:
             CONTEXT.overridden_methods[class_name][CONTEXT.current_method_name] = True
 
+
+def try_skip_deleted_function():
     # deleted functions
     if re.match(
         r"^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+([*&])?)?(\w+|operator.{1,2})\(.*?(\(.*\))*.*\)( const)?)\s*= delete;(\s*//.*)?$",
@@ -3035,18 +3043,24 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     ):
         dbg_info(f"removing deleted function {CONTEXT.current_line}")
         CONTEXT.reset_method_state()
-        continue
+        return True
 
-    # remove export macro from struct definition
-    CONTEXT.current_line = re.sub(
-        r"^(\s*struct )\w+_EXPORT (.+)$", r"\1\2", CONTEXT.current_line
-    )
 
+def process_namespace_decl():
     if re.search(r"\bnamespace\b", CONTEXT.current_line):
         exit_with_error(
             "Use classes with public static methods instead of namespaces when methods are exposed to PyQGIS"
         )
 
+
+def skip_struct_export_macro():
+    # remove export macro from struct definition
+    CONTEXT.current_line = re.sub(
+        r"^(\s*struct )\w+_EXPORT (.+)$", r"\1\2", CONTEXT.current_line
+    )
+
+
+def process_comments():
     # Skip comments
     if re.match(
         r"^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE",
@@ -3113,16 +3127,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.return_type = ""
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
 
-    CONTEXT.current_line = fix_constants(CONTEXT.current_line)
-    CONTEXT.current_line = fix_annotations(CONTEXT.current_line)
 
-    # fix astyle placing space after % character
-    CONTEXT.current_line = re.sub(
-        r"/\s+GetWrapper\s+/", "/GetWrapper/", CONTEXT.current_line
-    )
-
-    # MISSING
-    # handle enum/flags QgsSettingsEntryEnumFlag
+def process_qgssettingsentryenumflag_members():
+    # Special handling for QgsSettingsEntryEnumFlag constants
     match = re.match(
         r"^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$", CONTEXT.current_line
     )
@@ -3148,8 +3155,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         CONTEXT.reset_method_state()
         write_output("ENF", f"{prep_line}\n", "prepend")
 
-    write_output("NOR", f"{CONTEXT.current_line}\n")
 
+def add_to_classmap_file():
     # append to class map file
     if args.class_map and CONTEXT.actual_class:
         match = re.match(
@@ -3162,9 +3169,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     f"{'.'.join(CONTEXT.classname)}.{match.group('method')}: {CONTEXT.header_file}#L{CONTEXT.line_idx}\n"
                 )
 
-    if CONTEXT.python_signature:
-        write_output("PSI", f"{CONTEXT.python_signature}\n")
 
+def try_process_multiline_definition():
     # multiline definition (parenthesis left open)
     if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
         dbg_info("on multiline")
@@ -3189,24 +3195,26 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 write_output("MLT", f"{last_line};\n")
             CONTEXT.multiline_definition = MultiLineType.NotMultiline
         else:
-            continue
+            return True
     elif re.match(r"^[^()]+\([^()]*(?:\([^()]*\)[^()]*)*[^)]*$", CONTEXT.current_line):
         dbg_info(f"Multiline detected:: {CONTEXT.current_line}")
         if re.match(r"^\s*((else )?if|while|for) *\(", CONTEXT.current_line):
             CONTEXT.multiline_definition = MultiLineType.ConditionalStatement
         else:
             CONTEXT.multiline_definition = MultiLineType.Method
-        continue
+        return True
 
+
+def try_write_comments():
     # write comment
     if re.match(r"^\s*$", CONTEXT.current_line):
         dbg_info("no more override / private")
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
-        continue
+        return True
 
     if re.match(r"^\s*template\s*<.*>", CONTEXT.current_line):
         # do not comment now for templates, wait for class definition
-        continue
+        return True
 
     if CONTEXT.comment.strip() or CONTEXT.return_type:
         if (
@@ -3407,155 +3415,280 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             write_output("MKP", CONTEXT.last_access_section_line)
         CONTEXT.is_override_or_make_private = PrependType.NoPrepend
 
-# Output results
-if args.sip_output:
-    with open(args.sip_output, "w") as f:
-        f.write("".join(sip_header_footer()))
-        f.write("".join(CONTEXT.output))
-        f.write("".join(sip_header_footer()))
-else:
-    print(
-        "".join(sip_header_footer())
-        + "".join(CONTEXT.output)
-        + "".join(sip_header_footer()).rstrip()
+
+def process_input():
+    while CONTEXT.line_idx < CONTEXT.line_count:
+        CONTEXT.python_signature = ""
+        CONTEXT.actual_class = CONTEXT.classname[-1] if CONTEXT.classname else None
+        CONTEXT.current_line = read_line()
+        CONTEXT.current_method_is_override = False
+
+        if try_skip_sip_if_module():
+            continue
+        skip_cppcheck_comments()
+        if try_process_sip_directive():
+            continue
+        fixup_qt6_len_and_hash()
+        process_pyqt_ifdefs()
+        process_using()
+        if try_skip_sip_directives():
+            continue
+        if try_process_preprocessor_directive():
+            continue
+        check_end_of_typeheadercode()
+        if try_skip_forward_decl():
+            continue
+        if try_skip_friend_decl():
+            continue
+        if try_process_q_gadget():
+            continue
+        if try_process_q_enum_q_flag():
+            continue
+        if try_skip_misc_q_macros():
+            continue
+        if try_process_sip_skip():
+            continue
+        if detect_comment_block():
+            continue
+        if process_struct_decl():
+            continue
+        if process_class_decl():
+            continue
+        process_brackets()
+        if try_process_access_specifiers():
+            continue
+        if try_skip_operator_decl():
+            continue
+        if try_save_comments():
+            continue
+        if try_process_enum_decl():
+            continue
+        check_invalid_doxygen_command()
+        process_misc_keywords()
+        if try_skip_non_method_decl():
+            continue
+        process_struct_member_assignment()
+        process_flags_q_macros()
+        process_prepend_function_specifier()
+
+        # remove constructor definition, function bodies, member initializing list
+        CONTEXT.python_signature = detect_and_remove_following_body_or_initializerlist()
+
+        process_inline_declarations()
+        process_method_decl()
+        if try_skip_deleted_function():
+            continue
+        skip_struct_export_macro()
+        process_comments()
+
+        CONTEXT.current_line = fix_constants(CONTEXT.current_line)
+        CONTEXT.current_line = fix_annotations(CONTEXT.current_line)
+
+        process_qgssettingsentryenumflag_members()
+
+        write_output("NOR", f"{CONTEXT.current_line}\n")
+
+        add_to_classmap_file()
+
+        if CONTEXT.python_signature:
+            write_output("PSI", f"{CONTEXT.python_signature}\n")
+
+        if try_process_multiline_definition():
+            continue
+        if try_write_comments():
+            continue
+
+
+def generate_cpp_output():
+    if args.sip_output:
+        with open(args.sip_output, "w") as f:
+            f.write("".join(sip_header_footer()))
+            f.write("".join(CONTEXT.output))
+            f.write("".join(sip_header_footer()))
+    else:
+        print(
+            "".join(sip_header_footer())
+            + "".join(CONTEXT.output)
+            + "".join(sip_header_footer()).rstrip()
+        )
+
+
+def generate_python_output():
+    class_additions = defaultdict(list)
+
+    for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
+        class_additions[class_name].append(
+            f"{class_name}.__attribute_docs__ = {str(attribute_docstrings)}"
+        )
+
+    for class_name, attribute_typehints in CONTEXT.attribute_typehints.items():
+        if not attribute_typehints:
+            continue
+
+        annotations_str = "{"
+        for attribute_name, typehint in attribute_typehints.items():
+            annotations_str += f"'{attribute_name}': "
+            annotations_str += {
+                "int": "int",
+                "float": "float",
+                "str": "str",
+                "bool": "bool",
+            }.get(typehint, f"'{typehint}'")
+            annotations_str += ", "
+        annotations_str = annotations_str[:-2] + "}"
+
+        class_additions[class_name].append(
+            f"{class_name}.__annotations__ = {annotations_str}"
+        )
+
+    for class_name, static_methods in CONTEXT.static_methods.items():
+        for method_name, is_static in static_methods.items():
+            if not is_static:
+                continue
+
+            # TODO -- fix
+            if (
+                class_name == "QgsProcessingUtils"
+                and method_name == "createFeatureSinkPython"
+            ):
+                method_name = "createFeatureSink"
+            elif (
+                class_name == "QgsRasterAttributeTable"
+                and method_name == "usageInformationInt"
+            ):
+                method_name = "usageInformation"
+            elif (
+                class_name == "QgsSymbolLayerUtils"
+                and method_name == "wellKnownMarkerFromSld"
+            ):
+                method_name = "wellKnownMarkerFromSld2"
+            elif class_name == "QgsZonalStatistics" and method_name in (
+                "calculateStatisticsInt",
+                "calculateStatistics",
+            ):
+                continue
+            elif (
+                class_name == "QgsServerApiUtils"
+                and method_name == "temporalExtentList"
+            ):
+                method_name = "temporalExtent"
+
+            class_additions[class_name].append(
+                f"{class_name}.{method_name} = staticmethod({class_name}.{method_name})"
+            )
+
+    for class_name, virtual_methods in CONTEXT.virtual_methods.items():
+        virtual_method_names = []
+        for method_name, is_virtual in virtual_methods.items():
+            if not is_virtual:
+                continue
+
+            virtual_method_names.append(method_name)
+        if virtual_method_names:
+            class_additions[class_name].append(
+                f"{class_name}.__virtual_methods__ = {str(virtual_method_names)}"
+            )
+
+    for class_name, abstract_methods in CONTEXT.abstract_methods.items():
+        abstract_method_names = []
+        for method_name, is_abstract in abstract_methods.items():
+            if not is_abstract:
+                continue
+
+            abstract_method_names.append(method_name)
+        if abstract_method_names:
+            class_additions[class_name].append(
+                f"{class_name}.__abstract_methods__ = {str(abstract_method_names)}"
+            )
+
+    for class_name, overridden_methods in CONTEXT.overridden_methods.items():
+        overridden_method_names = []
+        for method_name, is_override in overridden_methods.items():
+            if not is_override:
+                continue
+
+            overridden_method_names.append(method_name)
+        if overridden_method_names:
+            class_additions[class_name].append(
+                f"{class_name}.__overridden_methods__ = {str(overridden_method_names)}"
+            )
+
+    for class_name, signal_arguments in CONTEXT.signal_arguments.items():
+        python_signatures = {}
+
+        for signal, arguments in signal_arguments.items():
+            python_args = []
+            for argument in arguments:
+                var_name, python_type, default_value = parse_argument(argument)
+                if default_value:
+                    python_args.append(f"{var_name}: {python_type} = {default_value}")
+                else:
+                    python_args.append(f"{var_name}: {python_type}")
+            if python_args:
+                python_signatures[signal] = python_args
+
+        if python_signatures:
+            class_additions[class_name].append(
+                f"{class_name}.__signal_arguments__ = {str(python_signatures)}"
+            )
+
+    for class_name, doc_string in CONTEXT.struct_docstrings.items():
+        class_additions[class_name].append(f'{class_name}.__doc__ = """{doc_string}"""')
+
+    group_match = re.match("^.*src/[a-z0-9_]+/(.*?)/[^/]+$", CONTEXT.header_file)
+    if group_match:
+        groups = list(
+            group for group in group_match.group(1).split("/") if group and group != "."
+        )
+        if groups:
+            for class_name in CONTEXT.all_fully_qualified_class_names:
+                class_additions[class_name].append(f"{class_name}.__group__ = {groups}")
+
+    for _class, additions in class_additions.items():
+        if additions:
+            this_class_additions = "\n".join("    " + c for c in additions)
+            CONTEXT.output_python.append(
+                f"try:\n{this_class_additions}\nexcept (NameError, AttributeError):\n    pass\n"
+            )
+
+    if args.python_output and CONTEXT.output_python:
+
+        with open(args.python_output, "w") as f:
+            f.write("".join(python_header()))
+            f.write("".join(CONTEXT.output_python))
+
+
+if __name__ == "__main__":
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description="Convert header file to SIP and Python"
     )
+    parser.add_argument("-debug", action="store_true", help="Enable debug mode")
+    parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
+    parser.add_argument("-sip_output", help="SIP output file")
+    parser.add_argument("-python_output", help="Python output file")
+    parser.add_argument("-class_map", help="Class map file")
+    parser.add_argument("headerfile", help="Input header file")
+    args = parser.parse_args()
 
-class_additions = defaultdict(list)
-
-for class_name, attribute_docstrings in CONTEXT.attribute_docstrings.items():
-    class_additions[class_name].append(
-        f"{class_name}.__attribute_docs__ = {str(attribute_docstrings)}"
-    )
-
-for class_name, attribute_typehints in CONTEXT.attribute_typehints.items():
-    if not attribute_typehints:
-        continue
-
-    annotations_str = "{"
-    for attribute_name, typehint in attribute_typehints.items():
-        annotations_str += f"'{attribute_name}': "
-        annotations_str += {
-            "int": "int",
-            "float": "float",
-            "str": "str",
-            "bool": "bool",
-        }.get(typehint, f"'{typehint}'")
-        annotations_str += ", "
-    annotations_str = annotations_str[:-2] + "}"
-
-    class_additions[class_name].append(
-        f"{class_name}.__annotations__ = {annotations_str}"
-    )
-
-for class_name, static_methods in CONTEXT.static_methods.items():
-    for method_name, is_static in static_methods.items():
-        if not is_static:
-            continue
-
-        # TODO -- fix
-        if (
-            class_name == "QgsProcessingUtils"
-            and method_name == "createFeatureSinkPython"
-        ):
-            method_name = "createFeatureSink"
-        elif (
-            class_name == "QgsRasterAttributeTable"
-            and method_name == "usageInformationInt"
-        ):
-            method_name = "usageInformation"
-        elif (
-            class_name == "QgsSymbolLayerUtils"
-            and method_name == "wellKnownMarkerFromSld"
-        ):
-            method_name = "wellKnownMarkerFromSld2"
-        elif class_name == "QgsZonalStatistics" and method_name in (
-            "calculateStatisticsInt",
-            "calculateStatistics",
-        ):
-            continue
-        elif class_name == "QgsServerApiUtils" and method_name == "temporalExtentList":
-            method_name = "temporalExtent"
-
-        class_additions[class_name].append(
-            f"{class_name}.{method_name} = staticmethod({class_name}.{method_name})"
+    # Read the input file
+    try:
+        with open(args.headerfile) as f:
+            input_lines = f.read().splitlines()
+    except OSError as e:
+        print(
+            f"Couldn't open '{args.headerfile}' for reading because: {e}",
+            file=sys.stderr,
         )
+        sys.exit(1)
 
-for class_name, virtual_methods in CONTEXT.virtual_methods.items():
-    virtual_method_names = []
-    for method_name, is_virtual in virtual_methods.items():
-        if not is_virtual:
-            continue
+    CONTEXT.debug = args.debug
+    CONTEXT.is_qt6 = args.qt6
+    CONTEXT.header_file = args.headerfile
+    CONTEXT.input_lines = input_lines
+    CONTEXT.line_count = len(input_lines)
 
-        virtual_method_names.append(method_name)
-    if virtual_method_names:
-        class_additions[class_name].append(
-            f"{class_name}.__virtual_methods__ = {str(virtual_method_names)}"
-        )
-
-for class_name, abstract_methods in CONTEXT.abstract_methods.items():
-    abstract_method_names = []
-    for method_name, is_abstract in abstract_methods.items():
-        if not is_abstract:
-            continue
-
-        abstract_method_names.append(method_name)
-    if abstract_method_names:
-        class_additions[class_name].append(
-            f"{class_name}.__abstract_methods__ = {str(abstract_method_names)}"
-        )
-
-for class_name, overridden_methods in CONTEXT.overridden_methods.items():
-    overridden_method_names = []
-    for method_name, is_override in overridden_methods.items():
-        if not is_override:
-            continue
-
-        overridden_method_names.append(method_name)
-    if overridden_method_names:
-        class_additions[class_name].append(
-            f"{class_name}.__overridden_methods__ = {str(overridden_method_names)}"
-        )
-
-for class_name, signal_arguments in CONTEXT.signal_arguments.items():
-    python_signatures = {}
-
-    for signal, arguments in signal_arguments.items():
-        python_args = []
-        for argument in arguments:
-            var_name, python_type, default_value = parse_argument(argument)
-            if default_value:
-                python_args.append(f"{var_name}: {python_type} = {default_value}")
-            else:
-                python_args.append(f"{var_name}: {python_type}")
-        if python_args:
-            python_signatures[signal] = python_args
-
-    if python_signatures:
-        class_additions[class_name].append(
-            f"{class_name}.__signal_arguments__ = {str(python_signatures)}"
-        )
-
-for class_name, doc_string in CONTEXT.struct_docstrings.items():
-    class_additions[class_name].append(f'{class_name}.__doc__ = """{doc_string}"""')
-
-group_match = re.match("^.*src/[a-z0-9_]+/(.*?)/[^/]+$", CONTEXT.header_file)
-if group_match:
-    groups = list(
-        group for group in group_match.group(1).split("/") if group and group != "."
-    )
-    if groups:
-        for class_name in CONTEXT.all_fully_qualified_class_names:
-            class_additions[class_name].append(f"{class_name}.__group__ = {groups}")
-
-for _class, additions in class_additions.items():
-    if additions:
-        this_class_additions = "\n".join("    " + c for c in additions)
-        CONTEXT.output_python.append(
-            f"try:\n{this_class_additions}\nexcept (NameError, AttributeError):\n    pass\n"
-        )
-
-if args.python_output and CONTEXT.output_python:
-
-    with open(args.python_output, "w") as f:
-        f.write("".join(python_header()))
-        f.write("".join(CONTEXT.output_python))
+    process_input()
+    generate_cpp_output()
+    if args.python_output:
+        generate_python_output()

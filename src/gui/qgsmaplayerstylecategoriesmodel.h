@@ -61,6 +61,8 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     Qt::ItemFlags flags( const QModelIndex & ) const override;
 
   private:
+    //! map layer type
+    Qgis::LayerType mLayerType = Qgis::LayerType::Vector;
     //! current data as flags
     QgsMapLayer::StyleCategories mCategories;
     //! map of existing categories

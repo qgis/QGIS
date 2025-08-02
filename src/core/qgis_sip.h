@@ -58,6 +58,14 @@
 #define SIP_OUT
 
 /*
+ * Alternative to SIP_OUT for methods with manual SIP MethodCode, where only the docstring needs to be
+ * considered for the output argument.
+ *
+ * No /Out/ annotation will be added to the SIP bindings.
+ */
+#define SIP_DOCSTRING_OUT
+
+/*
  * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
  */
 #define SIP_IN

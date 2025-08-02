@@ -89,25 +89,29 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     void setCollection( const QString &collection );
 
     /**
-     *  Returns the single nominal date/time for the item, stored in the item's \a properties().
-     *  If a temporal interval is more appropriate for this item then a null QDateTime is returned
-     *  and the interval may be retrieved with dateTimeRange()
-     *  \see hasDateTimeRange()
-     *  \see dateTimeRange()
+     * Returns the single nominal date/time for the item, stored in the item's properties().
+     *
+     * If a temporal interval is more appropriate for this item then a null QDateTime is returned
+     * and the interval may be retrieved with dateTimeRange().
+     *
+     * \see hasDateTimeRange()
+     * \see dateTimeRange()
      */
     QDateTime dateTime() const;
 
     /**
-     *  Returns TRUE if a temporal interval is available for this item, FALSE if a single QDateTime is available.
-     *  \see hasDateTimeRange()
-     *  \see dateTime()
+     * Returns TRUE if a temporal interval is available for this item, FALSE if a single QDateTime is available.
+     *
+     * \see hasDateTimeRange()
+     * \see dateTime()
      */
     bool hasDateTimeRange() const;
 
     /**
-     *  Returns the temporal interval stored in the item's \a properties()
-     *  \see hasDateTimeRange()
-     *  \see dateTime()
+     * Returns the temporal interval stored in the item's properties().
+     *
+     * \see hasDateTimeRange()
+     * \see dateTime()
      */
     QgsDateTimeRange dateTimeRange() const;
 

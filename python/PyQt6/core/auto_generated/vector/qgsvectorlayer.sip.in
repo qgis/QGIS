@@ -545,6 +545,7 @@ string. Uses :py:class:`QgsExpression`
 
     virtual QgsMapLayerElevationProperties *elevationProperties();
 
+    virtual QgsAbstractProfileSource *profileSource();
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 

@@ -657,15 +657,16 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   }
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
-  // canvas layers are in opposite direction to what the layout item requires
-  std::reverse( canvasLayers.begin(), canvasLayers.end() );
   mProfile->setLayers( canvasLayers );
   const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
     layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
   }
-  mLayerTree->reorderGroupLayers( mProfile->layers() );
+
+  // canvas layers are in opposite direction to what the layer tree requires
+  std::reverse( canvasLayers.begin(), canvasLayers.end() );
+  mLayerTree->reorderGroupLayers( canvasLayers );
 
   mProfile->invalidateCache();
   mProfile->update();
@@ -755,12 +756,15 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mSpinTopMargin->setValue( mProfile->plot()->margins().top() );
   mSpinBottomMargin->setValue( mProfile->plot()->margins().bottom() );
 
+  QList<QgsMapLayer *> profileLayers = mProfile->layers();
   const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
+    layer->setItemVisibilityChecked( profileLayers.contains( layer->layer() ) );
   }
-  mLayerTree->reorderGroupLayers( mProfile->layers() );
+  // elevation profile layers are in opposite direction to what the layer tree requires
+  std::reverse( profileLayers.begin(), profileLayers.end() );
+  mLayerTree->reorderGroupLayers( profileLayers );
 
   updateDataDefinedButton( mDDBtnTolerance );
   updateDataDefinedButton( mDDBtnMinDistance );
@@ -794,6 +798,8 @@ void QgsLayoutElevationProfileWidget::updateItemLayers()
     if ( mLayerTree->findLayer( layer )->isVisible() )
       layers << layer;
   }
+
+  std::reverse( layers.begin(), layers.end() );
 
   mProfile->setLayers( layers );
   mProfile->update();

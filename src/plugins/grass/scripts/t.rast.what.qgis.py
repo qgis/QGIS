@@ -250,7 +250,7 @@ def main(options, flags):
     # in parallel
 
     # First estimate the number of maps per process. We use 400 maps
-    # simultaniously as maximum for a single process
+    # simultaneously as maximum for a single process
 
     num_loops = int(num_maps / (400 * nprocs))
     remaining_maps = num_maps % (400 * nprocs)

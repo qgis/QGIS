@@ -43,6 +43,7 @@
 #include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
+class QgsAbstractProfileSource;
 class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -186,6 +187,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Legend             = 1 << 15, //!< Legend settings \since QGIS 3.16
       Elevation          = 1 << 16, //!< Elevation settings \since QGIS 3.18
       Notes              = 1 << 17, //!< Layer user notes \since QGIS 3.20
+      AllVisualStyleCategories = Symbology | Symbology3D | Labeling | Diagrams, //!< All categories dealing with map canvas rendering
+      AllAttributeCategories = Fields | Forms | AttributeTable, //!< All categories dealing with attributes and attribute form
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
                            MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
@@ -1801,6 +1804,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
+
+
+    /**
+     * Returns the layer's profile source if it has profile capabilities. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QgsAbstractProfileSource *profileSource() { return nullptr; }
 
     /**
      * Returns path to the placeholder image or an empty string if a generated legend is shown

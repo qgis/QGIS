@@ -130,6 +130,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexportlayersinformation.cpp
   processing/qgsalgorithmexportmesh.cpp
   processing/qgsalgorithmexporttopostgresql.cpp
+  processing/qgsalgorithmexporttospatialiteregistered.cpp
+  processing/qgsalgorithmexporttospatialite.cpp
   processing/qgsalgorithmexporttospreadsheet.cpp
   processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextentfromlayer.cpp
@@ -162,6 +164,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmgpsbabeltools.cpp
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
+  processing/qgsalgorithmhubdistance.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
@@ -184,6 +187,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmergelines.cpp
   processing/qgsalgorithmmeshsurfacetopolygon.cpp
   processing/qgsalgorithmmergevector.cpp
+  processing/qgsalgorithmminimumboundinggeometry.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultidifference.cpp
   processing/qgsalgorithmmultiintersection.cpp
@@ -236,6 +240,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
+  processing/qgsalgorithmremovepartsbyarea.cpp
+  processing/qgsalgorithmremovepartsbylength.cpp
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmrenametablefield.cpp
   processing/qgsalgorithmrepairshapefile.cpp
@@ -285,6 +291,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmtruncatetable.cpp
   processing/qgsalgorithmunion.cpp
+  processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
@@ -515,10 +522,10 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
     ${CMAKE_SOURCE_DIR}/external/untwine/api
   )
 
-  IF(MSVC)
+  IF(WIN32)
     set_source_files_properties(
       ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
-      PROPERTIES COMPILE_FLAGS "/DUNICODE"
+      PROPERTIES COMPILE_DEFINITIONS "UNICODE"
     )
   endif()
 endif()
@@ -559,6 +566,12 @@ endif()
 # qgis_analysis library
 
 add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_analysis PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_analysis${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_analysis${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_analysis PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
@@ -581,9 +594,13 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/external/tinygltf
   ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
 )
 
+if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
+  target_include_directories(qgis_analysis PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+  )
+endif()
 
 GENERATE_EXPORT_HEADER(
    qgis_analysis

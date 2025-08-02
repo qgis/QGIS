@@ -89,6 +89,12 @@ if(NOT LIBRARY_TYPE EQUAL STATIC)
 endif()
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_server PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_server${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_server${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_server PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
@@ -100,6 +106,7 @@ set_target_properties(qgis_server PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 target_compile_features(qgis_server PRIVATE cxx_std_17)
 
 target_include_directories(qgis_server SYSTEM PUBLIC
+  ${CMAKE_SOURCE_DIR}/external/inja
   ${FCGI_INCLUDE_DIR}
 )
 
@@ -164,6 +171,11 @@ SET(QGIS_SERVER_EX_SRCS qgis_mapserver.cpp)
 win32_icon(QGIS_SERVER_EX_SRCS)
 win32_version_info("QGIS Server (Development Server)" "qgis_mapserver" QGIS_SERVER_EX_SRCS)
 add_executable(qgis_mapserver ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
+
+if (QGISPOSTFIX)
+  set_target_properties(qgis_mapserv.fcgi PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserv${QGISPOSTFIX}.fcgi)
+  set_target_properties(qgis_mapserver PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserver${QGISPOSTFIX})
+endif()
 
 # require c++17
 target_compile_features(qgis_mapserv.fcgi PRIVATE cxx_std_17)

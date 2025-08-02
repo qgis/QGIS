@@ -2052,6 +2052,20 @@ class TestQgsExpression : public QObject
       QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
       QTest::newRow( "formatted string with Z" ) << "format_date(to_datetime('2019-06-29T13:34:56+01:00'),'yyyy-MM-ddTHH:mm:ssZ')" << false << QVariant( QString( "2019-06-29T12:34:56Z" ) );
 
+      // time zone functions
+      QTest::newRow( "timezone_from_id NULL" ) << "timezone_from_id(NULL)" << false << QVariant();
+      QTest::newRow( "timezone_from_id not string" ) << "timezone_from_id(123)" << true << QVariant();
+      QTest::newRow( "timezone_from_id invalid id" ) << "timezone_from_id('xxxx')" << true << QVariant();
+      QTest::newRow( "timezone_id NULL" ) << "timezone_id(NULL)" << false << QVariant();
+      QTest::newRow( "timezone_id not timezone" ) << "timezone_id(123)" << true << QVariant();
+      QTest::newRow( "timezone_id valid timezone" ) << "timezone_id(timezone_from_id('Australia/Brisbane'))" << false << QVariant( QString( "Australia/Brisbane" ) );
+      QTest::newRow( "timezone_id UTC+10:30" ) << "timezone_id(timezone_from_id('UTC+10:30'))" << false << QVariant( QString( "UTC+10:30" ) );
+      QTest::newRow( "timezone_id UTC-3" ) << "timezone_id(timezone_from_id('UTC-3'))" << false << QVariant( QString( "UTC-03" ) );
+      QTest::newRow( "convert timezone, fixed datetime" ) << "format_date(convert_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 19:50:00 UTC+10" ) );
+      QTest::newRow( "set timezone, fixed datetime" ) << "format_date(set_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 12:50:00 UTC+10" ) );
+      QTest::newRow( "get timezone, fixed datetime" ) << "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))" << false << QVariant( QString( "UTC+03" ) );
+
+
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
       QTest::newRow( "ramp color error" ) << "ramp_color('NotExistingRamp',0.3)" << true << QVariant();
@@ -4842,6 +4856,35 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
     }
 
+    void testTimeZoneFunctions()
+    {
+      QgsExpressionContext context;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+      scope->setVariable( QStringLiteral( "dt_with_timezone" ), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Brisbane" ) ) );
+      context.appendScope( scope );
+
+      // get_timezone
+      QCOMPARE( QgsExpression( QString( "timezone_id(get_timezone(@dt_with_timezone))" ) ).evaluate( &context ).toString(), QStringLiteral( "Australia/Brisbane" ) );
+      QCOMPARE( QgsExpression( QString( "get_timezone(NULL)" ) ).evaluate( &context ), QVariant() );
+      QgsExpression invalid( QString( "get_timezone(123)" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+
+      // set_timezone
+      QCOMPARE( QgsExpression( QString( "set_timezone(@dt_with_timezone, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ).toDateTime(), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Darwin" ) ) );
+      QCOMPARE( QgsExpression( QString( "set_timezone(NULL, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ), QVariant() );
+      invalid = QgsExpression( QString( "set_timezone(123, timezone_from_id('Australia/Darwin'))" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+
+      // convert_timezone
+      QCOMPARE( QgsExpression( QString( "convert_timezone(@dt_with_timezone, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ).toDateTime(), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 32, 3 ), QTimeZone( "Australia/Darwin" ) ) );
+      QCOMPARE( QgsExpression( QString( "convert_timezone(NULL, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ), QVariant() );
+      invalid = QgsExpression( QString( "convert_timezone(123, timezone_from_id('Australia/Darwin'))" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+    }
+
     void test_expressionToLayerFieldIndex()
     {
       std::unique_ptr layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
@@ -5368,6 +5411,29 @@ class TestQgsExpression : public QObject
       QVERIFY( !exp.hasEvalError() );
     }
 
+    void testGetTimeZoneValue()
+    {
+      QgsExpression exp;
+      QgsExpressionContext context;
+      // NULL value
+      QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( QVariant(), &exp );
+      QVERIFY( !tz.isValid() );
+      QVERIFY( !exp.hasEvalError() );
+
+      // value which CANNOT be a time zone
+      tz = QgsExpressionUtils::getTimeZoneValue( QVariant::fromValue( QgsGeometry() ), &exp );
+      QVERIFY( !tz.isValid() );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "Cannot convert '' to a time zone" ) );
+
+      // good value
+      exp = QgsExpression();
+      tz = QgsExpressionUtils::getTimeZoneValue( QVariant::fromValue( QTimeZone( "Australia/Brisbane" ) ), &exp );
+      QVERIFY( tz.isValid() );
+      QCOMPARE( tz.id(), QStringLiteral( "Australia/Brisbane" ) );
+      QVERIFY( !exp.hasEvalError() );
+    }
+
     void test_env()
     {
       QgsExpressionContext context;
@@ -5444,6 +5510,12 @@ class TestQgsExpression : public QObject
 
       QgsCoordinateReferenceSystem crs( "EPSG:4326" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
+
+      QTimeZone tz( "Australia/Brisbane" );
+      QString res = QgsExpression::formatPreviewString( QVariant::fromValue( tz ) );
+      QVERIFY2( res == QString( "<i>&lt;time zone: AEST&gt;</i>" ) || res == QString( "<i>&lt;time zone: GMT+10&gt;</i>" ), QString( "got %1, expected <i>&lt;time zone: AEST&gt;</i> or <i>&lt;time zone: GMT+10&gt;</i>" ).arg( res ).toLocal8Bit().constData() );
+
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant::fromValue( QTimeZone() ) ), QStringLiteral( "<i>&lt;time zone: invalid&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()

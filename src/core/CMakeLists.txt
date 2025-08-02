@@ -1054,8 +1054,8 @@ string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-  DEPENDS ${JSON_HELP_FILES} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+  DEPENDS ${JSON_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
@@ -2271,32 +2271,32 @@ endif()
 
 if (WITH_EPT OR WITH_COPC)
   if (LazPerf_FOUND)
-  # Use system laz-perf
-  include_directories(SYSTEM
-    ${LazPerf_INCLUDE_DIR}
-  )
+    # Use system laz-perf
+    include_directories(SYSTEM
+      ${LazPerf_INCLUDE_DIR}
+    )
   else()
-  # Use embedded laz-perf from external/laz-perf
-  include_directories(SYSTEM
-  )
+    include_directories(SYSTEM
+      ${CMAKE_SOURCE_DIR}/external/lazperf/
+    )
 
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
-  )
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
+    )
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2338,6 +2338,12 @@ set(IMAGE_RCCS ../../images/images.qrc)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_core PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_core${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_core${QGISPOSTFIX}
+  )
+endif()
 
 if(USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_core PRIVATE $<$<COMPILE_LANGUAGE:CXX>:qgis.h>)
@@ -2446,7 +2452,6 @@ target_include_directories(qgis_core PUBLIC
   vector
   vectortile
   web
-  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -2493,8 +2498,8 @@ if(HAVE_OPENCL)
 endif()
 
 if(WITH_INTERNAL_NLOHMANN_JSON)
-  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
-  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/detail/abi_macros.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann/detail)
+  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
+  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/nlohmann/detail/abi_macros.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann/detail)
 endif()
 
 #generate unversioned libs for android
@@ -2643,7 +2648,7 @@ if (WITH_QTSERIALPORT)
   )
 endif()
 
-target_compile_definitions(qgis_core PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_core PRIVATE "QT_NO_FOREACH")
 target_compile_definitions(qgis_core PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 # clang-tidy

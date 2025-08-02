@@ -918,7 +918,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QgsCollapsibleGroupBox" name="mVisiblityGrpBox">
+                   <widget class="QgsCollapsibleGroupBox" name="mVisibilityGrpBox">
                     <property name="title">
                      <string>Visibility</string>
                     </property>

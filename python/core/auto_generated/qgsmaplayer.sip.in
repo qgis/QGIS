@@ -106,6 +106,8 @@ point cloud, annotations, etc).
       Legend,
       Elevation,
       Notes,
+      AllVisualStyleCategories,
+      AllAttributeCategories,
       AllStyleCategories
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
@@ -1930,6 +1932,15 @@ Returns the layer's elevation properties. This may be ``None``,
 depending on the layer type.
 
 .. versionadded:: 3.18
+%End
+
+
+    virtual QgsAbstractProfileSource *profileSource();
+%Docstring
+Returns the layer's profile source if it has profile capabilities. This
+may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.44
 %End
 
     QString legendPlaceholderImage() const;

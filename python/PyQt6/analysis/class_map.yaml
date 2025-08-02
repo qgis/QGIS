@@ -174,8 +174,8 @@ QgsGraph.removeVertex: src/analysis/network/qgsgraph.h#L200
 QgsGraph.vertex: src/analysis/network/qgsgraph.h#L166
 QgsGraph.vertexCount: src/analysis/network/qgsgraph.h#L151
 QgsGraph: src/analysis/network/qgsgraph.h#L130
-QgsGraphAnalyzer.dijkstra: src/analysis/network/qgsgraphanalyzer.h#L43
-QgsGraphAnalyzer.shortestTree: src/analysis/network/qgsgraphanalyzer.h#L82
+QgsGraphAnalyzer.dijkstra: src/analysis/network/qgsgraphanalyzer.h#L46
+QgsGraphAnalyzer.shortestTree: src/analysis/network/qgsgraphanalyzer.h#L83
 QgsGraphAnalyzer: src/analysis/network/qgsgraphanalyzer.h#L31
 QgsGraphBuilder.addEdge: src/analysis/network/qgsgraphbuilder.h#L50
 QgsGraphBuilder.addVertex: src/analysis/network/qgsgraphbuilder.h#L48

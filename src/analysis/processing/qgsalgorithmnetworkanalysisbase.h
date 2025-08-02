@@ -40,6 +40,7 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
     QString groupId() const final;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:

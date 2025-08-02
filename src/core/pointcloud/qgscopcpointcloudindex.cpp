@@ -58,10 +58,16 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
   QUrl url = urlString;
   // Treat non-URLs as local files
   if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
+  {
     mAccessType = Qgis::PointCloudAccessType::Remote;
+    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
+    // now store the uri as it might have been updated due to redirects
+    mUri = url.toString();
+  }
   else
   {
     mAccessType = Qgis::PointCloudAccessType::Local;
+    mUri = urlString;
     mCopcFile.open( QgsLazDecoder::toNativePath( urlString ), std::ios::binary );
     if ( mCopcFile.fail() )
     {
@@ -69,22 +75,10 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
       mIsValid = false;
       return;
     }
-  }
-  mUri = urlString;
-
-  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
-  else
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
-  mIsValid = mLazInfo->isValid();
-  if ( mIsValid )
-  {
-    mIsValid = loadSchema( *mLazInfo.get() );
-    if ( mIsValid )
-    {
-      loadHierarchy();
-    }
   }
+
+  mIsValid = mLazInfo->isValid() && loadSchema( *mLazInfo.get() ) && loadHierarchy();
   if ( !mIsValid )
   {
     mError = QObject::tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( urlString, mLazInfo->error() );

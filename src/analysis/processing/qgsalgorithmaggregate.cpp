@@ -45,6 +45,11 @@ QString QgsAggregateAlgorithm::shortDescription() const
   return QObject::tr( "Aggregates features based on a group by expression, combining geometries (if present) into one multipart geometry for each group." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsAggregateAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QStringList QgsAggregateAlgorithm::tags() const
 {
   return QObject::tr( "attributes,sum,mean,collect,dissolve,statistics" ).split( ',' );

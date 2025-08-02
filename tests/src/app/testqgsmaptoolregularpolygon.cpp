@@ -43,10 +43,13 @@ class TestQgsMapToolRegularPolygon : public QObject
 
     void testRegularPolygonFrom2Points();
     void testRegularPolygonFrom2PointsWithDeletedVertex();
+    void testRegularPolygonFrom2PointsNotEnoughPoints();
     void testRegularPolygonFromCenterAndPoint();
     void testRegularPolygonFromCenterAndPointWithDeletedVertex();
-    void testRegularPolygonFromCenterAndCroner();
-    void testRegularPolygonFromCenterAndCronerWithDeletedVertex();
+    void testRegularPolygonFromCenterAndPointNotEnoughPoints();
+    void testRegularPolygonFromCenterAndCorner();
+    void testRegularPolygonFromCenterAndCornerWithDeletedVertex();
+    void testRegularPolygonFromCenterAndCornerNotEnoughPoints();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -150,6 +153,27 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsWithDeletedVerte
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
+void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeRegularPolygon2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
+}
+
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
 {
@@ -200,8 +224,29 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointWithDelet
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
+void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
 
-void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
+  QgsMapToolShapeRegularPolygonCenterPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
+}
+
+
+void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCorner()
 {
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
@@ -224,7 +269,8 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
-void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDeletedVertex()
+
+void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCornerWithDeletedVertex()
 {
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
   mLayer->startEditing();
@@ -248,6 +294,27 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDele
 
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+}
+
+void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCornerNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeRegularPolygonCenterCornerMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
 }
 
 

@@ -373,6 +373,13 @@ class CORE_EXPORT QgsExpressionUtils
      */
     static QgsCoordinateReferenceSystem getCrsValue( const QVariant &value, QgsExpression *parent );
 
+    /**
+     * Tries to convert a \a value to a time zone.
+     *
+     * \since QGIS 4.0
+     */
+    static QTimeZone getTimeZoneValue( const QVariant &value, QgsExpression *parent );
+
     static QgsExpressionNode *getNode( const QVariant &value, QgsExpression *parent )
     {
       if ( value.canConvert<QgsExpressionNode *>() )

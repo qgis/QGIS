@@ -18,16 +18,17 @@ endif()
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
-set(WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
+set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 
 set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
-set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
-set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
 
 if(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with SDK -- ${SDK_PATH}")
@@ -107,12 +108,12 @@ endif()
 # Configure CCache if available
 option(USE_CCACHE "Use ccache" ON)
 if (USE_CCACHE)
-  find_program(CCACHE_FOUND ccache)
-  if(CCACHE_FOUND)
+  find_program(CCACHE_EXE ccache)
+  if(CCACHE_EXE)
     message(STATUS "ccache found")
-    execute_process(COMMAND ccache --help OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_HELP)
-    execute_process(COMMAND ccache --get-config sloppiness OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_SLOPPINESS)
-    execute_process(COMMAND ccache --get-config compiler_type OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_COMPILER_TYPE)
+    execute_process(COMMAND ${CCACHE_EXE} --help OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_HELP)
+    execute_process(COMMAND ${CCACHE_EXE} --get-config sloppiness OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_SLOPPINESS)
+    execute_process(COMMAND ${CCACHE_EXE} --get-config compiler_type OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_COMPILER_TYPE)
     string(FIND "${CCACHE_SLOPPINESS}" "pch_defines" fpch_defines_found_index)
     string(FIND "${CCACHE_SLOPPINESS}" "time_macros" time_macros_found_index)
     string(FIND "${CCACHE_SLOPPINESS}" "include_file_mtime" include_file_mtime_found_index)
@@ -155,7 +156,7 @@ if (USE_CCACHE)
     endif()
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_INVOCATION_COMMAND}")
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_INVOCATION_COMMAND}")
-  endif(CCACHE_FOUND)
+  endif(CCACHE_EXE)
 endif(USE_CCACHE)
 
 if (USE_CCACHE AND MSVC)
@@ -636,10 +637,24 @@ if(WITH_CORE)
     set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
   endif()
 
-  # search for QScintilla2 (C++ lib)
+  # search for QScintilla2 (C++ lib) and Qwt
   if (WITH_GUI)
     find_package(QScintilla REQUIRED)
-    find_package(Qwt REQUIRED)
+
+    set (WITH_INTERNAL_QWT FALSE CACHE BOOL "Determines if the internal copy of qwt should be used.")
+    if(NOT WITH_INTERNAL_QWT)
+      find_package(Qwt 6.2)
+      if(NOT QWT_FOUND)
+        set(WITH_INTERNAL_QWT TRUE)
+        message(STATUS "Qwt >=6.2 not found - using internal Qwt")
+      endif()
+    endif()
+
+    if(WITH_INTERNAL_QWT)
+      set(QWT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0)
+      set(QWT_LIBRARY "")
+      set(QWT_VERSION_STR 6.3.0)
+    endif()
   endif()
 
   # Password helper
@@ -1169,6 +1184,12 @@ endif()
 # installed with app target
 configure_file(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
 include_directories(${CMAKE_BINARY_DIR})
+
+if(WITH_INTERNAL_NLOHMANN_JSON)
+  include_directories(SYSTEM
+    ${CMAKE_SOURCE_DIR}/external/nlohmann
+  )
+endif()
 
 #############################################################
 # create qgsversion.h

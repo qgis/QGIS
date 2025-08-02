@@ -111,6 +111,7 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( QgsOwsConnection::settingsPreferCoordinatesForWfsT11->value( detailsParameters ), newDetailsParameters );
 

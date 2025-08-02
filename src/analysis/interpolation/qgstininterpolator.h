@@ -37,7 +37,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
 {
   public:
     //! Indicates the type of interpolation to be performed
-    enum class TinInterpolation : int
+    enum class TinInterpolation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTinInterpolator, TinInterpolation ) : int
     {
       Linear,       //!< Linear interpolation
       CloughTocher, //!< Clough-Tocher interpolation

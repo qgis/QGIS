@@ -235,24 +235,29 @@ void Qgs3DMapScene::viewZoomFull()
 void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
 {
   QgsPointXY center = extent.center();
-  QgsVector3D centerWorld = mMap.mapToWorldCoordinates( QVector3D( center.x(), center.y(), 0 ) );
-  QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
-  QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+  const QgsVector3D origin = mMap.origin();
 
-  float xSide = std::abs( p1.x() - p2.x() );
-  float ySide = std::abs( p1.z() - p2.z() );
-  if ( xSide < ySide )
-  {
-    float fov = 2 * std::atan( std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2 ) * cameraController()->camera()->aspectRatio() );
-    float r = xSide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
-  }
-  else
-  {
-    float fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
-    float r = ySide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
-  }
+  const QgsVector3D p1 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
+  const QgsVector3D p2 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+
+  const double xSide = std::abs( p1.x() - p2.x() );
+  const double ySide = std::abs( p1.y() - p2.y() );
+  const double side = std::max( xSide, ySide );
+
+  const double fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
+  double distance = side / 2.0f / std::tan( fov / 2.0f );
+
+  // adjust by elevation
+  const QgsDoubleRange zRange = elevationRange();
+  if ( !zRange.isInfinite() )
+    distance += zRange.upper();
+
+  // subtract map origin so coordinates are relative to it
+  mCameraController->setViewFromTop(
+    static_cast<float>( center.x() - origin.x() ),
+    static_cast<float>( center.y() - origin.y() ),
+    static_cast<float>( distance )
+  );
 }
 
 QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
