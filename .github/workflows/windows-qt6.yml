@@ -85,7 +85,7 @@ jobs:
                 -D WITH_BINDINGS=ON \
                 -D ENABLE_TESTS=OFF \
                 -D BUILD_WITH_QT6=ON \
-                -D USE_CCACHE=OFF \
+                -D USE_CCACHE=ON \
                 -D ENABLE_UNITY_BUILDS=ON \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
