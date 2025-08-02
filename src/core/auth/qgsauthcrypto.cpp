@@ -60,8 +60,14 @@ const QString QgsAuthCrypto::decrypt( const QString &pass, const QString &cipher
 
 static QCA::SymmetricKey passwordKey_( const QString &pass, const QCA::InitializationVector &salt )
 {
-  const QCA::SecureArray passarray( QByteArray( pass.toUtf8().constData() ) );
-  const QCA::SecureArray passhash( QCA::Hash( PASSWORD_HASH_ALGORITHM ).hash( passarray ) );
+  const QCA::SecureArray passarray( pass.toUtf8() );
+  const QCA::Hash hash( PASSWORD_HASH_ALGORITHM );
+  if ( !hash.isSupported() || !hash.isValid() )
+  {
+    qWarning() << "Hash algorithm is not valid!";
+    return QCA::SymmetricKey();
+  }
+  const QCA::SecureArray passhash( hashAlg.hash( passarray ) );
   return QCA::PBKDF2().makeKey( passhash, salt, KEY_GEN_LENGTH, KEY_GEN_ITERATIONS );
 }
 
