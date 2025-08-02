@@ -129,6 +129,11 @@ if(NOT WITH_QTWEBENGINE)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_WEBENGINE_SIP)
 endif()
 
+if(NOT WITH_SFCGAL)
+    message(STATUS "SFCGAL not enabled - disabling bindings")
+    set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_SFCGAL_SIP)
+endif()
+
 
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)

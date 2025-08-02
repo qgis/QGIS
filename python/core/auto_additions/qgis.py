@@ -3855,6 +3855,21 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.JoinStyle3D.Round.__doc__ = "Smooth, rounded buffer around the input geometry"
+Qgis.JoinStyle3D.Flat.__doc__ = "Flat ends and constant width along the linestring"
+Qgis.JoinStyle3D.CylindersAndSpheres.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
+Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
+
+.. versionadded:: 3.46
+
+* ``Round``: Smooth, rounded buffer around the input geometry
+* ``Flat``: Flat ends and constant width along the linestring
+* ``CylindersAndSpheres``: Cylinders along the linestring segments with spheres at the vertices
+
+"""
+# --
+Qgis.JoinStyle3D.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
 Qgis.GeosCreationFlag.__doc__ = """Flags which control geos geometry creation behavior.
