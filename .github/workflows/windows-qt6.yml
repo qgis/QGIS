@@ -92,6 +92,7 @@ jobs:
                 -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
                 -D CMAKE_C_COMPILER_LAUNCHER=ccache \
                 -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
+                -D CMAKE_RC_COMPILER_LAUNCHER=ccache \
                 -D WITH_QTWEBKIT=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=${{ github.actor }} \
