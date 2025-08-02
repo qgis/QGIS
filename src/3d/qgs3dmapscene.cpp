@@ -89,6 +89,11 @@
 #include "qgsambientocclusionrenderview.h"
 #include "qgspostprocessingentity.h"
 
+#include "qgsdemterraingenerator.h"
+#include "qgsline3dsymbol.h"
+#include "qgspolygon3dsymbol.h"
+#include "qgsvectorlayerchunkloader_p.h"
+
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
 Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
@@ -109,8 +114,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   mMaxClipPlanes = Qgs3DUtils::openGlMaxClipPlanes( mEngine->surface() );
 
   // Camera
-  float aspectRatio = ( float ) viewportRect.width() / viewportRect.height();
-  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
+  double aspectRatio = static_cast<double>( viewportRect.width() ) / static_cast<double>( viewportRect.height() );
+  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), static_cast<float>( aspectRatio ), 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered, this, &Qgs3DMapScene::onFrameTriggered );
@@ -281,9 +286,9 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
     else
     {
       // If the projected point is on the front of the camera we choose the closest between it and farthest point in the front
-      t = std::min<float>( t, camera->farPlane() );
+      t = std::min<double>( t, static_cast<double>( camera->farPlane() ) );
     }
-    QVector3D planePoint = ray.origin() + t * dir;
+    QVector3D planePoint = ray.origin() + static_cast<float>( t ) * dir;
     QgsVector3D pMap = mMap.worldToMapCoordinates( planePoint );
     extent.push_back( QgsPointXY( pMap.x(), pMap.y() ) );
   }
@@ -303,12 +308,12 @@ float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
   Qt3DRender::QCamera *camera = mCameraController->camera();
   float fov = camera->fieldOfView();
   const QSize size = mEngine->size();
-  float screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
 
   // see Qgs3DUtils::screenSpaceError() for the inverse calculation (world space error to screen space error)
   // with explanation of the math.
-  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
-  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  float frustumWidthAtDistance = static_cast<float>( 2.0 * distance * tan( fov / 2.0 ) );
+  float err = frustumWidthAtDistance * epsilon / static_cast<float>( screenSizePx );
   return err;
 }
 
@@ -318,7 +323,7 @@ void Qgs3DMapScene::onCameraChanged()
   {
     QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
     const float viewWidthFromCenter = mCameraController->distance();
-    const float viewHeightFromCenter = viewportRect.height() * viewWidthFromCenter / viewportRect.width();
+    const float viewHeightFromCenter = static_cast<float>( viewportRect.height() ) * viewWidthFromCenter / static_cast<float>( viewportRect.width() );
     mEngine->camera()->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mEngine->camera()->nearPlane(), mEngine->camera()->farPlane() );
   }
 
@@ -533,6 +538,13 @@ void Qgs3DMapScene::createTerrainDeferred()
 
     mTerrain = new QgsTerrainEntity( &mMap );
     terrainOrGlobe = mTerrain;
+
+    // when terrain generator is DEM, we watch for new hi-res tile are downloaded in order to correct the elevation of entities
+    if ( mMap.terrainGenerator()->type() == QgsTerrainGenerator::Dem )
+    {
+      const QgsDemTerrainGenerator *demGen = dynamic_cast<const QgsDemTerrainGenerator *>( mMap.terrainGenerator() );
+      connect( demGen, &QgsDemTerrainGenerator::maxResTileReceived, this, &Qgs3DMapScene::onNewDemTileReceived );
+    }
   }
 
   if ( terrainOrGlobe )
@@ -1262,10 +1274,86 @@ void Qgs3DMapScene::onOriginChanged()
     QgsVector3D originShift = mMap.origin() - oldOrigin;
     for ( QVector4D plane : std::as_const( mClipPlanesEquations ) )
     {
-      plane.setW( originShift.x() * plane.x() + originShift.y() * plane.y() + originShift.z() * plane.z() + plane.w() );
+      plane.setW( static_cast<float>( originShift.x() * plane.x() + originShift.y() * plane.y() + originShift.z() * plane.z() + plane.w() ) );
       newPlanes.append( plane );
     }
     enableClipping( newPlanes );
+  }
+}
+
+void Qgs3DMapScene::onNewDemTileReceived( const QgsChunkNodeId &tileId, const QgsRectangle &extent )
+{
+  Q_UNUSED( tileId );
+
+  // search for vector layer
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
+  {
+    bool doReloadNodes = false;
+    QgsMapLayer *layer = it.key();
+    Qt3DCore::QEntity *rootEntity = it.value();
+    Qgis::LayerType layerType = layer->type();
+    switch ( layerType )
+    {
+      case Qgis::LayerType::Vector:
+        // use QgsVectorLayerChunkedEntity::applyTerrainOffset?
+        // search for 3D symbols which need DEM elevation
+        if ( QgsVectorLayer3DRenderer *renderer = dynamic_cast<QgsVectorLayer3DRenderer *>( layer->renderer3D() ) )
+        {
+          if ( renderer->symbol()->type() == "point" )
+          {
+            const QgsPoint3DSymbol *symb = dynamic_cast<const QgsPoint3DSymbol *>( renderer->symbol() );
+            if ( symb->altitudeClamping() != Qgis::AltitudeClamping::Absolute )
+              doReloadNodes = true;
+          }
+          else if ( renderer->symbol()->type() == "line" )
+          {
+            const QgsLine3DSymbol *symb = dynamic_cast<const QgsLine3DSymbol *>( renderer->symbol() );
+            if ( symb->altitudeClamping() != Qgis::AltitudeClamping::Absolute )
+              doReloadNodes = true;
+          }
+          else if ( renderer->symbol()->type() == "polygon" )
+          {
+            const QgsPolygon3DSymbol *symb = dynamic_cast<const QgsPolygon3DSymbol *>( renderer->symbol() );
+            if ( symb->altitudeClamping() != Qgis::AltitudeClamping::Absolute )
+              doReloadNodes = true;
+          }
+        }
+        break;
+      default:
+        break;
+    }
+
+    // search chunk nodes of vector layer who intersect the new DEM hi-res tile
+    if ( doReloadNodes )
+    {
+      if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( rootEntity ) )
+      {
+        QList<QgsChunkNode *> nodesToReload;
+        const QList<QgsChunkNode *> activeNodes = c->activeNodes();
+
+        // search within all active chunknodes of current entity
+        for ( QgsChunkNode *n : activeNodes )
+          if ( n->box3D().toRectangle().intersects( extent ) && ( n->state() == QgsChunkNode::Loaded ) )
+            nodesToReload << n;
+
+        // tag all intersecting nodes to reload
+        if ( !nodesToReload.isEmpty() )
+          switch ( layerType )
+          {
+            case Qgis::LayerType::Vector:
+            {
+              QgsVectorLayerChunkedEntity *vlc = qobject_cast<QgsVectorLayerChunkedEntity *>( rootEntity );
+              qWarning() << "onNewDemTileReceived will reload" << tileId.text() << nodesToReload;
+              vlc->updateNodes( nodesToReload );
+              break;
+            }
+
+            default:
+              qWarning() << "onNewDemTileReceived: unmanaged QgsChunkedEntity";
+              break;
+          }
+      }
+    }
   }
 }
 
