@@ -601,6 +601,8 @@ Returns ``True`` if a ``font`` is a fixed pitch font.
 
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
+    virtual bool event( QEvent *event );
+
     virtual bool eventFilter( QObject *watched, QEvent *event );
 
     virtual void initializeLexer();

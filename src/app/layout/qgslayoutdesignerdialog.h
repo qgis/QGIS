@@ -365,6 +365,8 @@ class QgsLayoutDesignerDialog : public QMainWindow, public Ui::QgsLayoutDesigner
     void setTitle( const QString &title );
 
     void itemTypeAdded( int id );
+    void itemTypeRemoved( int id );
+    void itemGroupRemoved( const QString &groupId );
     void statusZoomCombo_currentIndexChanged( int index );
     void statusZoomCombo_zoomEntered();
     void sliderZoomChanged( int value );

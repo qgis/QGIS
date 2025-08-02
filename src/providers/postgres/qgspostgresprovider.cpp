@@ -2147,11 +2147,57 @@ bool QgsPostgresProvider::getTopoLayerInfo()
   {
     throw PGException( result ); // we should probably not do this
   }
-  if ( result.PQntuples() < 1 )
+
+  if ( !result.PQntuples() )
   {
-    QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
-    return false;
+    QgsMessageLog::logMessage( tr( "TopoGeometry column %1.%2.%3 is not registered in topology.layer" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
+
+    QString dataQuery;
+    if ( mIsQuery )
+    {
+      dataQuery = QStringLiteral( "SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2 WHERE %1 IS NOT NULL" )
+                    .arg( quotedIdentifier( mGeometryColumn ), mQuery );
+    }
+    else
+    {
+      dataQuery = QStringLiteral( "SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2.%3 WHERE %1 IS NOT NULL" )
+                    .arg( quotedIdentifier( mGeometryColumn ), quotedIdentifier( mSchemaName ), quotedIdentifier( mTableName ) );
+    }
+
+    sql = QStringLiteral( R"SQL(
+      SELECT t.name, l.layer_id, l.level, l.feature_type
+      FROM
+        topology.topology t,
+        topology.layer l,
+        (
+          %1
+        ) d
+      WHERE d.topology_id = t.id
+      AND l.topology_id = t.id
+      AND l.layer_id = d.layer_id
+    )SQL" )
+            .arg( dataQuery );
+
+    result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
+    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+    {
+      throw PGException( result ); // we should probably not do this
+    }
+    if ( result.PQntuples() < 1 )
+    {
+      QgsMessageLog::logMessage( tr( "Cannot find topology and layer information from data in %1.%2.%3" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
+
+      return false;
+    }
+
+    if ( result.PQntuples() > 1 )
+    {
+      QgsMessageLog::logMessage( tr( "TopoGeometry columns with data referencing different topology layers are not supported (%1.%2.%3)" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
+
+      return false;
+    }
   }
+
   mTopoLayerInfo.topologyName = result.PQgetvalue( 0, 0 );
   mTopoLayerInfo.layerId = result.PQgetvalue( 0, 1 ).toLong();
   mTopoLayerInfo.layerLevel = result.PQgetvalue( 0, 2 ).toInt();

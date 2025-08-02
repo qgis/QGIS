@@ -46,6 +46,11 @@ class TestQgsMapToolEllipse : public QObject
     void testEllipse_data();
     void testEllipse();
 
+    void testEllipseFromCenterAndPointNotEnoughPoints();
+    void testEllipseFromCenterAnd2PointsNotEnoughPoints();
+    void testEllipseFromExtentNotEnoughPoints();
+    void testEllipseFromFociNotEnoughPoints();
+
   private:
     QgisApp *mQgisApp = nullptr;
     QgsMapToolCapture *mMapTool = nullptr;
@@ -448,6 +453,115 @@ void TestQgsMapToolEllipse::testEllipse()
   QFETCH( QString, wktGeometry );
   QFETCH( QString, wktExpected );
   QCOMPARE( wktGeometry, wktExpected );
+}
+
+void TestQgsMapToolEllipse::testEllipseFromCenterAndPointNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeEllipseCenterPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeEllipseCenter2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolEllipse::testEllipseFromExtentNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeEllipseExtentMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolEllipse::testEllipseFromFociNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeEllipseFociMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
 }
 
 

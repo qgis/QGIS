@@ -8,6 +8,9 @@
     "description": "a geometry"
   }],
   "examples": [{
+    "expression": "boundary(@geometry)",
+    "returns": "boundary of the current feature's geometry"
+  },{
     "expression": "geom_to_wkt(boundary(geom_from_wkt('Polygon((1 1, 0 0, -1 1, 1 1))')))",
     "returns": "'LineString(1 1,0 0,-1 1,1 1)'"
   }, {
@@ -16,3 +19,4 @@
   }],
   "tags": ["polygon", "linestrings", "instance", "combinatorial", "topological", "points", "collections", "types", "ring", "boundary", "closure"]
 }
+

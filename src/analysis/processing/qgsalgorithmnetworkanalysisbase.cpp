@@ -44,6 +44,11 @@ Qgis::ProcessingAlgorithmFlags QgsNetworkAnalysisAlgorithmBase::flags() const
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsNetworkAnalysisAlgorithmBase::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector layer representing network" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );

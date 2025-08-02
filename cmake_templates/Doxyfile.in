@@ -2418,6 +2418,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_NODEFAULTCTORS" \
                          "SIP_NO_FILE" \
                          "SIP_OUT" \
+                         "SIP_DOCSTRING_OUT" \
                          "SIP_PROPERTY" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGREMOVE" \

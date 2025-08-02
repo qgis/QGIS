@@ -2,7 +2,7 @@
 # Files
 
 set (WFS3_SRCS
-  ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
+  ${CMAKE_SOURCE_DIR}/external/inja/inja/inja.hpp
   qgswfs3.cpp
   qgswfs3handlers.cpp
 )
@@ -28,12 +28,10 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-
 target_link_libraries(wfs3
   qgis_core
   qgis_server
 )
-
 
 ########################################################
 # Install

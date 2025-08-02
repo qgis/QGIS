@@ -1350,6 +1350,9 @@ void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, con
           case Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios:
             documentationFlags << QStringLiteral( "regenerates_primary_key_in_some_scenarios" );
             break;
+          case Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid:
+            documentationFlags << QStringLiteral( "respects_ellipsoid" );
+            break;
         }
         algorithmJson.insert( QStringLiteral( "documentation_flags" ), documentationFlags );
       }

@@ -51,9 +51,6 @@ qgis:idwinterpolation: >
 
   Sample points are weighted during interpolation such that the influence of one point relative to another declines with distance from the unknown point you want to create.
 
-qgis:importintospatialite: >
-  This algorithm imports a vector layer into a SpatiaLite database, creating a new table.
-
 qgis:knearestconcavehull: >
   This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
 
@@ -71,13 +68,6 @@ qgis:listuniquevalues: >
 
 qgis:meanandstandarddeviationplot: >
   This algorithm creates a box plot with mean and standard deviation values.
-
-qgis:minimumboundinggeometry: >
-  This algorithm creates geometries which enclose the features from an input layer.
-
-  Numerous enclosing geometry types are supported, including bounding boxes (envelopes), oriented rectangles, circles and convex hulls.
-
-  Optionally, the features can be grouped by a field. If set, this causes the output layer to contain one feature per grouped value with a minimal geometry covering just the features with matching values.
 
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.

@@ -2442,14 +2442,55 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.clear();
       layerOptions.clear();
 
+      QStringList compressionMethods;
+      const QStringList searchCompressions =
+      {
+        QStringLiteral( "NONE" ),
+        QStringLiteral( "SNAPPY" ),
+        QStringLiteral( "BROTLI" ),
+        QStringLiteral( "ZSTD" )
+      };
+
+      if ( GDALDriverH hParquetDrv = GDALGetDriverByName( "PARQUET" ) )
+      {
+        if ( const char *xml = GDALGetMetadataItem( hParquetDrv, GDAL_DS_LAYER_CREATIONOPTIONLIST, nullptr ) )
+        {
+          for ( const QString &comp : searchCompressions )
+          {
+            QRegularExpression re( "<Value[^>]*>\\s*" + comp + "\\s*</Value>" );
+            if ( re.match( QString::fromUtf8( xml ) ).hasMatch() )
+            {
+              compressionMethods << comp;
+            }
+          }
+        }
+      }
+
       layerOptions.insert( QStringLiteral( "COMPRESSION" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Compression method." ),
-                             QStringList()
-                             << QStringLiteral( "UNCOMPRESSED" )
-                             << QStringLiteral( "SNAPPY" ),
+                             compressionMethods,
                              QStringLiteral( "SNAPPY" ), // Default value
                              false // Allow None
                            ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+      layerOptions.insert( QStringLiteral( "COMPRESSION_LEVEL" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Compression level." ),
+                             -1 // Default value
+                           ) );
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+      layerOptions.insert( QStringLiteral( "SORT_BY_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to sort by spatial location. Enables faster spatial filtering on reading." ),
+                             false // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "WRITE_COVERING_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to write the bounding box of geometries into columns." ),
+                             true // Default value
+                           ) );
+#endif
 
       layerOptions.insert( QStringLiteral( "GEOMETRY_ENCODING" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Geometry encoding." ),

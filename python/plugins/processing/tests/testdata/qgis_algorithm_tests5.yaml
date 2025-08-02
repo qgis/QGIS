@@ -373,3 +373,51 @@ tests:
       OUTPUT:
         name: expected/concave_hull_by_feature.gml
         type: vector
+
+  - algorithm: native:removepartsbylength
+    name: Remove line parts by length
+    params:
+      INPUT:
+        name: custom/line_3857.gml|layername=line_3857
+        type: vector
+      MIN_LENGTH: 550000.0
+    results:
+      OUTPUT:
+        name: expected/remove_line_parts_by_length.gml
+        type: vector
+
+  - algorithm: native:removepartsbylength
+    name: Remove multiline parts by length
+    params:
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      MIN_LENGTH: 3.0
+    results:
+      OUTPUT:
+        name: expected/remove_multiline_parts_by_length.gml
+        type: vector
+
+  - algorithm: native:removepartsbyarea
+    name: Remove polygon parts by area
+    params:
+      INPUT:
+        name: custom/polys_epsg31256.shp
+        type: vector
+      MIN_AREA: 9999000000.0
+    results:
+      OUTPUT:
+        name: expected/remove_polygon_parts_by_area.gml
+        type: vector
+
+  - algorithm: native:removepartsbyarea
+    name: Remove multipolygon parts by area
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+      MIN_AREA: 4.0
+    results:
+      OUTPUT:
+        name: expected/remove_multipolygon_parts_by_area.gml
+        type: vector

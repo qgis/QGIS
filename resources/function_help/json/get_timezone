@@ -1,0 +1,20 @@
+{
+  "name": "get_timezone",
+  "type": "function",
+  "groups": ["Conversions", "Date and Time"],
+  "description": "Returns the timezone object associated with a datetime value.",
+  "arguments": [{
+    "arg": "datetime",
+    "description": "datetime with timezone"
+  }],
+  "examples": [
+  {
+    "expression": "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))",
+    "returns": "'UTC+03'"
+  },
+  {
+    "expression": "timezone_id(get_timezone(\"DATE_FIELD\"))",
+    "returns": "ID of timezone associated with the DATE_FIELD value"
+  }],
+  "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
+}

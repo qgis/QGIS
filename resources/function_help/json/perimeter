@@ -8,6 +8,9 @@
     "description": "polygon geometry object"
   }],
   "examples": [{
+    "expression": "perimeter(@geometry)",
+    "returns": "perimeter of the current feature's geometry"
+  },{
     "expression": "perimeter(geom_from_wkt('POLYGON((0 0, 4 0, 4 2, 0 2, 0 0))'))",
     "returns": "12.0"
   }],

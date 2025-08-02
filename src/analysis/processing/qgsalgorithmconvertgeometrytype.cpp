@@ -85,7 +85,7 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   }
 
   const int typeIndex = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context );
-  Qgis::WkbType outputWkbType;
+  Qgis::WkbType outputWkbType = Qgis::WkbType::Unknown;
 
   if ( typeIndex == 0 ) // centroids
   {
@@ -106,6 +106,10 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   else if ( typeIndex == 4 ) // polygons
   {
     outputWkbType = Qgis::WkbType::Polygon;
+  }
+  else
+  {
+    throw QgsProcessingException( QObject::tr( "Invalid TYPE parameter value: %1" ).arg( typeIndex ) );
   }
 
   // preserve Z/M values

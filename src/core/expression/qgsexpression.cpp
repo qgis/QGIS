@@ -1061,6 +1061,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     const QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
     return startToken + tr( "crs: %1" ).arg( crs.userFriendlyIdentifier() ) + endToken;
   }
+  else if ( value.userType() == qMetaTypeId< QTimeZone>() )
+  {
+    const QTimeZone tz = value.value<QTimeZone>();
+    return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
+  }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
     QgsInterval interval = value.value<QgsInterval>();

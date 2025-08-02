@@ -1329,7 +1329,18 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addDatabaseLayers( const QStringList &
       QgsMessageLog::logMessage( QObject::tr( "%1 is an invalid layer - not loaded" ).arg( layerPath ) );
       QLabel *msgLabel = new QLabel( QObject::tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).arg( layerPath ), QgisApp::instance()->messageBar() );
       msgLabel->setWordWrap( true );
-      QObject::connect( msgLabel, &QLabel::linkActivated, QgisApp::instance()->logDock(), &QWidget::show );
+
+      if ( providerKey == QLatin1String( "postgres" ) )
+      {
+        QObject::connect( msgLabel, &QLabel::linkActivated, QgisApp::instance(), [] {
+          QgisApp::instance()->openMessageLog( QObject::tr( "PostGIS" ) );
+        } );
+      }
+      else
+      {
+        QObject::connect( msgLabel, &QLabel::linkActivated, QgisApp::instance()->logDock(), &QWidget::show );
+      }
+
       QgsMessageBarItem *item = new QgsMessageBarItem( msgLabel, Qgis::MessageLevel::Warning );
       QgisApp::instance()->messageBar()->pushItem( item );
       delete layer;

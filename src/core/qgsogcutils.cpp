@@ -1387,7 +1387,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         QString coordString = qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
 
         // Add Z
-        if ( hasZValue && gmlVersion != GML_2_1_2 )
+        if ( hasZValue )
         {
           double z = 0;
           wkbPtr >> z;
@@ -1438,16 +1438,9 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
           // Add Z
           if ( hasZValue )
           {
-            if ( gmlVersion != GML_2_1_2 )
-            {
-              double z = 0;
-              wkbPtr >> z;
-              coordString += cs + qgsDoubleToString( z, precision );
-            }
-            else
-            {
-              wkbPtr += sizeof( double );
-            }
+            double z = 0;
+            wkbPtr >> z;
+            coordString += cs + qgsDoubleToString( z, precision );
           }
 
           const QDomText coordText = doc.createTextNode( coordString );
@@ -1499,16 +1492,9 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
           if ( hasZValue )
           {
-            if ( gmlVersion != GML_2_1_2 )
-            {
-              double z = 0;
-              wkbPtr >> z;
-              coordString += cs + qgsDoubleToString( z, precision );
-            }
-            else
-            {
-              wkbPtr += sizeof( double );
-            }
+            double z = 0;
+            wkbPtr >> z;
+            coordString += cs + qgsDoubleToString( z, precision );
           }
 
         }
@@ -1567,17 +1553,11 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
             if ( hasZValue )
             {
-              if ( gmlVersion != GML_2_1_2 )
-              {
-                double z = 0;
-                wkbPtr >> z;
-                coordString += cs + qgsDoubleToString( z, precision );
-              }
-              else
-              {
-                wkbPtr += sizeof( double );
-              }
+              double z = 0;
+              wkbPtr >> z;
+              coordString += cs + qgsDoubleToString( z, precision );
             }
+
           }
           const QDomText coordText = doc.createTextNode( coordString );
           coordElem.appendChild( coordText );
@@ -1642,17 +1622,9 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
             if ( hasZValue )
             {
-              if ( gmlVersion != GML_2_1_2 )
-              {
-                // Add Z
-                double z = 0;
-                wkbPtr >> z;
-                coordString += cs + qgsDoubleToString( z, precision );
-              }
-              else
-              {
-                wkbPtr += sizeof( double );
-              }
+              double z = 0;
+              wkbPtr >> z;
+              coordString += cs + qgsDoubleToString( z, precision );
             }
           }
           const QDomText coordText = doc.createTextNode( coordString );
@@ -1727,17 +1699,9 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
               if ( hasZValue )
               {
-                if ( gmlVersion != GML_2_1_2 )
-                {
-                  // Add Z
-                  double z = 0;
-                  wkbPtr >> z;
-                  coordString += cs + qgsDoubleToString( z, precision );
-                }
-                else
-                {
-                  wkbPtr += sizeof( double );
-                }
+                double z = 0;
+                wkbPtr >> z;
+                coordString += cs + qgsDoubleToString( z, precision );
               }
 
             }

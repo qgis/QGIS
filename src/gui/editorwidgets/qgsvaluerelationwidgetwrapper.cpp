@@ -249,13 +249,13 @@ void QgsFilteredTableWidget::onTableWidgetCustomContextMenuRequested( const QPoi
 
   tableWidgetMenu->exec( QCursor::pos() );
 
-  // destory actions
+  // destroy actions
   disconnect( actionTableWidgetSelectAll, &QAction::triggered, nullptr, nullptr );
   disconnect( actionTableWidgetDeselectAll, &QAction::triggered, nullptr, nullptr );
   actionTableWidgetSelectAll->deleteLater();
   actionTableWidgetDeselectAll->deleteLater();
 
-  // destory menu
+  // destroy menu
   tableWidgetMenu->deleteLater();
 }
 
