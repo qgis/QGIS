@@ -617,7 +617,9 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>scrollArea_2</tabstop>
   <tabstop>mDatasetsListWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mUseVirtualProviderCheckBox</tabstop>
   <tabstop>mOutputFormatComboBox</tabstop>
   <tabstop>mOutputGroupNameLineEdit</tabstop>
@@ -627,6 +629,7 @@
   <tabstop>mAllTimesButton</tabstop>
   <tabstop>mStartTimeComboBox</tabstop>
   <tabstop>mEndTimeComboBox</tabstop>
+  <tabstop>mAddResultToProjectCheckBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
   <tabstop>mOpenBracketPushButton</tabstop>

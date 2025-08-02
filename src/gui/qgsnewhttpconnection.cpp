@@ -193,6 +193,7 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
   // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
   const bool pagingOptionsEnabled = ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 );
+  lblFeaturePaging->setEnabled( pagingOptionsEnabled );
   cmbFeaturePaging->setEnabled( pagingOptionsEnabled );
   lblPageSize->setEnabled( pagingOptionsEnabled );
   txtPageSize->setEnabled( pagingOptionsEnabled );
