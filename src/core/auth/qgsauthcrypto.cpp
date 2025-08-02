@@ -18,6 +18,7 @@
 
 #include <QObject>
 #include <QtCrypto>
+#include <QDebug>
 
 // defines culled from MeePasswords (GPL2)
 // https://github.com/ruedigergad/meepasswords/blob/master/entrystorage.h
@@ -60,8 +61,10 @@ const QString QgsAuthCrypto::decrypt( const QString &pass, const QString &cipher
 
 static QCA::SymmetricKey passwordKey_( const QString &pass, const QCA::InitializationVector &salt )
 {
-  const QCA::SecureArray passarray( QByteArray( pass.toUtf8().constData() ) );
-  const QCA::SecureArray passhash( QCA::Hash( PASSWORD_HASH_ALGORITHM ).hash( passarray ) );
+  const QCA::SecureArray passarray( pass.toUtf8() );
+  QCA::Hash hash( PASSWORD_HASH_ALGORITHM );
+  qWarning() << "Type: " << hash.type() << "Provider: " << hash.provider();
+  const QCA::SecureArray passhash( hash.hash( passarray ) );
   return QCA::PBKDF2().makeKey( passhash, salt, KEY_GEN_LENGTH, KEY_GEN_ITERATIONS );
 }
 
