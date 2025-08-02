@@ -75,5 +75,5 @@ bool QgsClassificationWidgetWrapper::valid() const
 
 void QgsClassificationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+  updateComboBoxValues( value, mComboBox );
 }
