@@ -158,6 +158,17 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     void showProperties();
     //! Hide current item
     void hideItem();
+    
+    //! Navigate to the path entered in the location bar
+    void navigateToPath();
+    //! Copy the selected item's path to clipboard
+    void copySelectedPath();
+    //! Update the location bar with the selected item's path
+    void updateLocationBar();
+    //! Efficiently populate the model hierarchy for the given path
+    bool populatePathHierarchy( const QString &targetPath );
+    //! Generate cross-platform path variants for browser model lookup
+    QStringList generatePathVariants( const QString &path );
 
   private:
     //! Selection has changed

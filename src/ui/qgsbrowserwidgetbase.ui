@@ -48,6 +48,78 @@
      </widget>
     </item>
     <item>
+     <widget class="QWidget" name="mWidgetLocationBar" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayoutLocationBar">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="mLabelLocation">
+         <property name="text">
+          <string>Location:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="mLeLocationBar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Enter a file path to navigate directly to that location</string>
+         </property>
+         <property name="placeholderText">
+          <string>Enter path...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="mBtnNavigateToPath">
+         <property name="toolTip">
+          <string>Navigate to path</string>
+         </property>
+         <property name="text">
+          <string>Go</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionFolder.svg</normaloff>:/images/themes/default/mActionFolder.svg</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="mBtnCopyPath">
+         <property name="toolTip">
+          <string>Copy selected path to clipboard</string>
+         </property>
+         <property name="text">
+          <string>Copy</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="QWidget" name="mWidgetFilter" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
