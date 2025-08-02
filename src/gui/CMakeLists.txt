@@ -190,6 +190,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgsclassificationwidgetwrapper.cpp
   editorwidgets/qgsclassificationwidgetwrapperfactory.cpp
   editorwidgets/qgsactionwidgetwrapper.cpp
+  editorwidgets/qgsclassificationconfigdlg.cpp
   editorwidgets/qgscolorwidgetwrapper.cpp
   editorwidgets/qgscolorwidgetfactory.cpp
   editorwidgets/qgsdatetimeedit.cpp
