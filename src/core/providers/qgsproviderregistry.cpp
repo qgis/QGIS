@@ -41,6 +41,7 @@
 #include "qgsvtpkvectortiledataprovider.h"
 
 #include "qgscesiumtilesdataprovider.h"
+#include "qgsesrii3sdataprovider.h"
 #include "qgstiledsceneprovidermetadata.h"
 
 #ifdef HAVE_EPT
@@ -244,6 +245,9 @@ void QgsProviderRegistry::init()
     mProviders[ metadata->key() ] = metadata;
 
     metadata = new QgsQuantizedMeshProviderMetadata();
+    mProviders[ metadata->key() ] = metadata;
+
+    metadata = new QgsEsriI3SProviderMetadata();
     mProviders[ metadata->key() ] = metadata;
   }
 
