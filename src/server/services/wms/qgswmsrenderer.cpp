@@ -38,6 +38,8 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsscalecalculator.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgscoordinatereferencesystem.h"
@@ -1698,7 +1700,8 @@ namespace QgsWms
               break;
             }
           }
-          else
+
+          if ( layer->type() == Qgis::LayerType::Raster )
           {
             QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
             if ( !rasterLayer )
@@ -1719,10 +1722,16 @@ namespace QgsWms
               layerElement = result.createElement( QStringLiteral( "gml:featureMember" ) /*wfs:FeatureMember*/ );
               getFeatureInfoElement.appendChild( layerElement );
             }
-
             ( void ) featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
           }
-          break;
+
+          if ( layer->type() == Qgis::LayerType::Mesh )
+          {
+            QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+            QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
+            ( void ) featureInfoFromMeshLayer( meshLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
+          }
+
         }
       }
       if ( !validLayer && !mContext.isValidLayer( queryLayer ) && !mContext.isValidGroup( queryLayer ) )
@@ -1966,12 +1975,12 @@ namespace QgsWms
         int gmlVersion = mWmsParameters.infoFormatVersion();
         QString typeName = mContext.layerNickname( *layer );
         QDomElement elem = createFeatureGML(
-          &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
+                             &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-          ,
-          &attributes
+                             ,
+                             &attributes
 #endif
-        );
+                           );
         QDomElement featureMemberElem = infoDocument.createElement( QStringLiteral( "gml:featureMember" ) /*wfs:FeatureMember*/ );
         featureMemberElem.appendChild( elem );
         layerElement.appendChild( featureMemberElem );
@@ -1992,7 +2001,7 @@ namespace QgsWms
                                     ,
                                     &attributes
 #endif
-          );
+                                  );
         }
         else
         {
@@ -2003,7 +2012,7 @@ namespace QgsWms
                                        ,
                                        &attributes
 #endif
-            );
+                                     );
           }
         }
 
@@ -2165,6 +2174,141 @@ namespace QgsWms
     featureElem.appendChild( attributeElement );
   }
 
+  bool QgsRenderer::featureInfoFromMeshLayer( QgsMeshLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const
+  {
+    Q_UNUSED( version )
+    Q_UNUSED( mapSettings )
+
+    if ( !infoPoint || !layer || !layer->dataProvider() )
+    {
+      return false;
+    }
+
+    bool isTemporal = layer->temporalProperties()->isActive();
+    QgsDateTimeRange range, layerRange;
+    const QString dateFormat = QStringLiteral( "yyyy-MM-ddTHH:mm:ss" );
+
+    QList<QgsMeshDatasetIndex> datasetIndexList;
+    int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
+    int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
+
+    const QList<int> allGroup = layer->enabledDatasetGroupsIndexes();
+
+    if ( isTemporal )
+    {
+      range = renderContext.temporalRange();
+      layerRange = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent();
+
+      if ( activeScalarGroup >= 0 )
+      {
+        QgsMeshDatasetIndex indice;
+        indice = layer->activeScalarDatasetAtTime( range );
+        datasetIndexList.append( indice );
+      }
+
+      if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
+        datasetIndexList.append( layer->activeVectorDatasetAtTime( range ) );
+
+      for ( int groupIndex : allGroup )
+      {
+        if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
+          datasetIndexList.append( layer->datasetIndexAtTime( range, groupIndex ) );
+      }
+    }
+    else
+    {
+      if ( activeScalarGroup >= 0 )
+        datasetIndexList.append( layer->staticScalarDatasetIndex() );
+      if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
+        datasetIndexList.append( layer->staticVectorDatasetIndex() );
+
+      for ( int groupIndex : allGroup )
+      {
+        if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
+        {
+          if ( !layer->datasetGroupMetadata( groupIndex ).isTemporal() )
+            datasetIndexList.append( groupIndex );
+        }
+      }
+    }
+
+    double searchRadius = Qgis::DEFAULT_SEARCH_RADIUS_MM * renderContext.scaleFactor() * renderContext.mapToPixel().mapUnitsPerPixel();
+
+    double scalarDoubleValue = 0.0;
+
+    for ( const QgsMeshDatasetIndex &index : datasetIndexList )
+    {
+      if ( !index.isValid() )
+        continue;
+
+      const QgsMeshDatasetGroupMetadata &groupMeta = layer->datasetGroupMetadata( index );
+      QMap<QString, QString> derivedAttributes;
+
+      QMap<QString, QString> attribute;
+
+      if ( groupMeta.isScalar() )
+      {
+        const QgsMeshDatasetValue scalarValue = layer->datasetValueUncached( renderContext, index, *infoPoint, searchRadius ); //
+        scalarDoubleValue = scalarValue.scalar();
+        attribute.insert( "Scalar Value", std::isnan( scalarDoubleValue ) ? "no data" : QLocale().toString( scalarDoubleValue ) );
+      }
+
+      if ( groupMeta.isVector() )
+      {
+        const QgsMeshDatasetValue vectorValue = layer->datasetValueUncached( renderContext, index, *infoPoint, searchRadius ); //
+        const double vectorX = vectorValue.x();
+        const double vectorY = vectorValue.y();
+        if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
+        {
+          attribute.insert( "Vector Value", "no data" );
+        }
+        else
+        {
+          attribute.insert( "Vector Magnitude", QLocale().toString( vectorValue.scalar() ) );
+          derivedAttributes.insert( "Vector x-component", QLocale().toString( vectorY ) );
+          derivedAttributes.insert( "Vector y-component", QLocale().toString( vectorX ) );
+        }
+      }
+
+      const QgsMeshDatasetMetadata &meta = layer->datasetMetadata( index );
+
+      if ( groupMeta.isTemporal() )
+        derivedAttributes.insert( "Time Step", layer->formatTime( meta.time() ) );
+      derivedAttributes.insert( "Source", groupMeta.uri() );
+
+      QString resultName = groupMeta.name();
+
+      QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+      attributeElement.setAttribute( QStringLiteral( "name" ), resultName );
+
+      QString value;
+      if ( !QgsVariantUtils::isNull( scalarDoubleValue ) )
+      {
+        value = QString::number( scalarDoubleValue );
+      }
+
+      attributeElement.setAttribute( QStringLiteral( "value" ), value );
+      layerElement.appendChild( attributeElement );
+
+      if ( isTemporal )
+      {
+        QDomElement attributeElementTime = infoDocument.createElement( QStringLiteral( "Attribute" ) );
+        attributeElementTime.setAttribute( QStringLiteral( "name" ), "Time" );
+        if ( range.isInstant() )
+        {
+          value = range.begin().toString( dateFormat );
+        }
+        else
+        {
+          value = range.begin().toString( dateFormat ) + '/' + range.end().toString( dateFormat );
+        }
+        attributeElementTime.setAttribute( QStringLiteral( "value" ), value );
+        layerElement.appendChild( attributeElementTime );
+      }
+    }
+    return true;
+  }
+
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const
   {
     Q_UNUSED( version )
@@ -2183,8 +2327,8 @@ namespace QgsWms
 
     const Qgis::RasterIdentifyFormat identifyFormat(
       static_cast<bool>( layer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::IdentifyFeature )
-        ? Qgis::RasterIdentifyFormat::Feature
-        : Qgis::RasterIdentifyFormat::Value
+      ? Qgis::RasterIdentifyFormat::Feature
+      : Qgis::RasterIdentifyFormat::Value
     );
 
     QgsRasterIdentifyResult identifyResult;
@@ -2227,8 +2371,8 @@ namespace QgsWms
         }
         feature.setFields( fields );
         QDomElement elem = createFeatureGML(
-          &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
-        );
+                             &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
+                           );
         layerElement.appendChild( elem );
       }
       else
@@ -2257,8 +2401,8 @@ namespace QgsWms
             for ( const QgsFeature &feature : storeFeatures )
             {
               QDomElement elem = createFeatureGML(
-                &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
-              );
+                                   &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr
+                                 );
               layerElement.appendChild( elem );
             }
           }
@@ -2673,7 +2817,7 @@ namespace QgsWms
           <th>%1</th>
           <td>%2</td>
         </tr>)HTML" )
-                                                           .arg( name, value );
+                  .arg( name, value );
 
               featureInfoString.append( featureInfoAttributeString );
             }
@@ -2681,7 +2825,7 @@ namespace QgsWms
             {
               featureInfoString.append( QStringLiteral( R"HTML(
       %1)HTML" )
-                                          .arg( value ) );
+                                        .arg( value ) );
               break;
             }
           }
@@ -2729,7 +2873,7 @@ namespace QgsWms
           <th>%1</th>
           <td>%2</td>
         </tr>)HTML" )
-                                                           .arg( name, value );
+                  .arg( name, value );
 
 
               featureInfoString.append( featureInfoAttributeString );
@@ -2738,7 +2882,7 @@ namespace QgsWms
             {
               featureInfoString.append( QStringLiteral( R"HTML(
       %1)HTML" )
-                                          .arg( value ) );
+                                        .arg( value ) );
               break;
             }
           }
@@ -2821,7 +2965,8 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const
   {
-    json json {
+    json json
+    {
       { "type", "FeatureCollection" },
       { "features", json::array() },
     };
@@ -2971,10 +3116,11 @@ namespace QgsWms
         }
 
         json["features"].push_back(
-          { { "type", "Feature" },
-            { "id", layerName.toStdString() },
-            { "properties", properties }
-          }
+        {
+          { "type", "Feature" },
+          { "id", layerName.toStdString() },
+          { "properties", properties }
+        }
         );
       }
     }
@@ -3024,7 +3170,7 @@ namespace QgsWms
     expressionContext.setFeature( *feat );
 
     QgsEditFormConfig editConfig { layer ? layer->editFormConfig() : QgsEditFormConfig() };
-    const bool honorFormConfig { layer && QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) && editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
+    const bool honorFormConfig { layer &&QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( *mProject ) &&editConfig.layout() == Qgis::AttributeFormLayout::DragAndDrop };
 
     // always add bounding box info if feature contains geometry and has been
     // explicitly configured in the project
@@ -3064,7 +3210,8 @@ namespace QgsWms
 
     // find if an attribute is in any form tab
     std::function<bool( const QString &, const QgsAttributeEditorElement * )> findAttributeInTree;
-    findAttributeInTree = [&findAttributeInTree, &layer]( const QString &attributeName, const QgsAttributeEditorElement *group ) -> bool {
+    findAttributeInTree = [&findAttributeInTree, &layer]( const QString & attributeName, const QgsAttributeEditorElement * group ) -> bool
+    {
       const QgsAttributeEditorContainer *container = dynamic_cast<const QgsAttributeEditorContainer *>( group );
       if ( container )
       {
@@ -3592,15 +3739,15 @@ namespace QgsWms
           if ( !testFilterStringSafety( filter.mFilter ) )
           {
             throw QgsSecurityException( QStringLiteral( "The filter string %1"
-                                                        " has been rejected because of security reasons."
-                                                        " Note: Text strings have to be enclosed in single or double quotes."
-                                                        " A space between each word / special character is mandatory."
-                                                        " Allowed Keywords and special characters are"
-                                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
-                                                        " Not allowed are semicolons in the filter expression." )
-                                          .arg(
-                                            filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ? QString() : mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' )
-                                          ) );
+                                        " has been rejected because of security reasons."
+                                        " Note: Text strings have to be enclosed in single or double quotes."
+                                        " A space between each word / special character is mandatory."
+                                        " Allowed Keywords and special characters are"
+                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
+                                        " Not allowed are semicolons in the filter expression." )
+                                        .arg(
+                                          filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ? QString() : mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' )
+                                        ) );
           }
 
           QString newSubsetString = filter.mFilter;
