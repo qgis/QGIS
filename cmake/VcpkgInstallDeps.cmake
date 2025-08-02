@@ -10,10 +10,11 @@ if(MSVC)
   )
   install(FILES ${ALL_LIBS} DESTINATION "bin")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  file(GLOB ALL_LIBS
-    "${VCPKG_BASE_DIR}/lib/*.dylib"
+  install(
+    DIRECTORY "${VCPKG_BASE_DIR}/lib/"
+    DESTINATION "${QGIS_LIB_SUBDIR}"
+    FILES_MATCHING PATTERN "*.dylib"
   )
-  install(FILES ${ALL_LIBS} DESTINATION "${QGIS_LIB_SUBDIR}")
 endif()
 
 set(PROJ_DATA_PATH "${VCPKG_BASE_DIR}/share/proj")
