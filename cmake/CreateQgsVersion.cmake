@@ -66,7 +66,7 @@ function(win32_icon SRC_LIST)
     return()
   endif()
 
-  set(OUT "${PROJECT_SOURCE_DIR}/ms-windows/rc/icon.rc")
+  set(OUT "${PROJECT_SOURCE_DIR}/platform/windows/rc/icon.rc")
   list(APPEND ${SRC_LIST} "${OUT}")
 
   set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
@@ -84,7 +84,7 @@ function(win32_version_info desc filename SRC_LIST)
   set(WIN32_VI_COMPANY "The QGIS Team. Made with love.")
   set(WIN32_VI_PRODUCT "QGIS")
   set(OUT "${CMAKE_CURRENT_BINARY_DIR}/${filename}_version.rc")
-  configure_file("${PROJECT_SOURCE_DIR}/ms-windows/rc/version.rc.in" "${OUT}" @ONLY)
+  configure_file("${PROJECT_SOURCE_DIR}/platform/windows/rc/version.rc.in" "${OUT}" @ONLY)
   list(APPEND ${SRC_LIST} "${OUT}")
 
   set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
