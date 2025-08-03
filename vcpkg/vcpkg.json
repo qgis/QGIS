@@ -67,6 +67,7 @@
     "meshoptimizer",
     "nlohmann-json",
     "o2",
+    "opencl",
     "pdal",
     "proj",
     "protobuf",
