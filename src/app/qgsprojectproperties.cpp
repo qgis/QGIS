@@ -98,17 +98,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   setupUi( this );
 
-  mExtentGroupBox->setObjectName( "mExtentGroupBox" );
   mExtentGroupBox->setCheckable( true );
-
 
   mExtentWidget = new QgsExtentWidget( parent, QgsExtentWidget::ExpandedStyle );
   QVBoxLayout *mExtentGroupBoxLayout = qobject_cast<QVBoxLayout *>( mExtentGroupBox->layout() );
   mExtentGroupBoxLayout->insertWidget( 0, mExtentWidget );
 
   mExtentWidget->setMapCanvas( mapCanvas, false );
-
-  mCheckBoxLoadProjectExtent->setObjectName( "mCheckBoxLoadProjectExtent" );
 
   mAdvertisedExtentServer->setOutputCrs( QgsProject::instance()->crs() );
   mAdvertisedExtentServer->setMapCanvas( mapCanvas, false );
