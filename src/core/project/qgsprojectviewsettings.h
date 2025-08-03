@@ -116,7 +116,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      *
      * \since QGIS 4.0
      */
-    bool mainCanvasOpensAtProjectExtent();
+    bool restoreProjectExtentOnProjectLoad();
 
     /**
      * Returns the full extent of the project, which represents the maximal limits of the project.

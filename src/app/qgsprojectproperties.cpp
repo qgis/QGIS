@@ -491,7 +491,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   else
     mExtentWidget->setOutputExtentFromUser( presetExtent, presetExtent.crs() );
   mExtentGroupBox->setChecked( !presetExtent.isNull() );
-  mCheckBoxLoadProjectExtent->setChecked( QgsProject::instance()->viewSettings()->mainCanvasOpensAtProjectExtent() );
+  mCheckBoxLoadProjectExtent->setChecked( QgsProject::instance()->viewSettings()->restoreProjectExtentOnProjectLoad() );
 
   mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
   mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );

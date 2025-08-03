@@ -3271,7 +3271,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
       // never manually set the crs for the main canvas - this is instead connected to the project CRS
       setDestinationCrs( tmpSettings.destinationCrs() );
     }
-    if ( QgsProject::instance()->viewSettings()->mainCanvasOpensAtProjectExtent() && objectName() == QLatin1String( "theMapCanvas" ) )
+    if ( QgsProject::instance()->viewSettings()->restoreProjectExtentOnProjectLoad() && objectName() == QLatin1String( "theMapCanvas" ) )
     {
       zoomToProjectExtent();
     }

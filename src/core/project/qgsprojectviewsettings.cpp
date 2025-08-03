@@ -79,7 +79,7 @@ void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectE
   mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState;
 }
 
-bool QgsProjectViewSettings::mainCanvasOpensAtProjectExtent( )
+bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad( )
 {
   return mRestoreProjectExtentOnProjectLoad;
 }
