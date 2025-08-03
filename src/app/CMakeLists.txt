@@ -652,7 +652,8 @@ if (WITH_PDAL)
 endif()
 
 if(MSVC)
-  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION icons)
+  file (GLOB ICONS ${PROJECT_SOURCE_DIR}/platform/windows/rc/*.ico)
+  install(FILES ${ICONS} DESTINATION icons)
 endif()
 
 install(TARGETS qgis_app
