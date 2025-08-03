@@ -406,7 +406,9 @@ if (WIN32)
     set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff -i <SOURCE> -o <OBJECT>")
     set(QGIS_RC_LIBS -mwindows)
   endif()
-  set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+
+  win32_icon(QGIS_APPMAIN_SRCS)
+  win32_version_info("QGIS Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -478,6 +480,10 @@ else()
 endif()
 
 set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
+
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS App Library" "qgis_app" QGIS_APP_SRCS)
+endif()
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
@@ -646,7 +652,8 @@ if (WITH_PDAL)
 endif()
 
 if(MSVC)
-  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION icons)
+  file (GLOB ICONS ${PROJECT_SOURCE_DIR}/platform/windows/rc/*.ico)
+  install(FILES ${ICONS} DESTINATION icons)
 endif()
 
 install(TARGETS qgis_app

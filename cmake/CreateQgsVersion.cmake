@@ -58,3 +58,35 @@ MACRO(CREATE_QGSVERSION)
 
   ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_BINARY_DIR}/qgsversion.h)
 ENDMACRO(CREATE_QGSVERSION)
+
+# Add the win32 resource for the QGIS icon
+# Only runs for WIN32 when called
+function(win32_icon SRC_LIST)
+  if(NOT WIN32)
+    return()
+  endif()
+
+  set(OUT "${PROJECT_SOURCE_DIR}/platform/windows/rc/icon.rc")
+  list(APPEND ${SRC_LIST} "${OUT}")
+
+  set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
+endfunction()
+
+# Function to create win32 VERSIONINFO and resource blocks
+# Only runs for WIN32 when called
+function(win32_version_info desc filename SRC_LIST)
+  if(NOT WIN32)
+    return()
+  endif()
+
+  set(WIN32_VI_DESC ${desc})
+  set(WIN32_VI_FILENAME ${filename})
+  set(WIN32_VI_COMPANY "The QGIS Team. Made with love.")
+  set(WIN32_VI_PRODUCT "QGIS")
+  set(OUT "${CMAKE_CURRENT_BINARY_DIR}/${filename}_version.rc")
+  configure_file("${PROJECT_SOURCE_DIR}/platform/windows/rc/version.rc.in" "${OUT}" @ONLY)
+  list(APPEND ${SRC_LIST} "${OUT}")
+
+  set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
+endfunction()
+
