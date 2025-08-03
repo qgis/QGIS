@@ -68,7 +68,6 @@ function(win32_icon SRC_LIST)
 
   set(OUT "${PROJECT_SOURCE_DIR}/ms-windows/rc/icon.rc")
   list(APPEND ${SRC_LIST} "${OUT}")
-  message(DEBUG "Win32 Icon Resource")
 
   set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
 endfunction()
@@ -87,7 +86,6 @@ function(win32_version_info desc filename SRC_LIST)
   set(OUT "${CMAKE_CURRENT_BINARY_DIR}/${filename}_version.rc")
   configure_file("${PROJECT_SOURCE_DIR}/ms-windows/rc/version.rc.in" "${OUT}" @ONLY)
   list(APPEND ${SRC_LIST} "${OUT}")
-  message(DEBUG "Win32 Version Gen: ${desc} (${filename})")
 
   set(${SRC_LIST} "${${SRC_LIST}}" PARENT_SCOPE)
 endfunction()
