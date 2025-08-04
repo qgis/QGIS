@@ -1130,6 +1130,12 @@ endif()
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
 option(ENABLE_UNITY_BUILDS "Enable Unity builds, that is compiling several .cpp files in the same compilation unit (EXPERIMENTAL. Not recommended for production builds)" OFF)
+if (ENABLE_UNITY_BUILDS)
+  if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+  endif()
+endif()
+
 
 #############################################################
 # Python
