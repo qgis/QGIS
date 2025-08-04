@@ -522,15 +522,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cmbVersion</tabstop>
-  <tabstop>mWfsVersionDetectButton</tabstop>
-  <tabstop>mComboHttpMethod</tabstop>
-  <tabstop>txtMaxNumFeatures</tabstop>
-  <tabstop>cmbFeaturePaging</tabstop>
-  <tabstop>txtPageSize</tabstop>
-  <tabstop>mComboWfsFeatureMode</tabstop>
-  <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
-  <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtUrl</tabstop>
+  <tabstop>mTestConnectionButton</tabstop>
   <tabstop>cmbDpiMode</tabstop>
   <tabstop>cmbTilePixelRatio</tabstop>
   <tabstop>sbFeatureCount</tabstop>
@@ -540,7 +535,17 @@
   <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWmsInvertAxisOrientation</tabstop>
   <tabstop>cbxSmoothPixmapTransform</tabstop>
-  <tabstop>mTestConnectionButton</tabstop>
+  <tabstop>cmbVersion</tabstop>
+  <tabstop>mWfsVersionDetectButton</tabstop>
+  <tabstop>mComboHttpMethod</tabstop>
+  <tabstop>txtMaxNumFeatures</tabstop>
+  <tabstop>cmbFeaturePaging</tabstop>
+  <tabstop>txtPageSize</tabstop>
+  <tabstop>mComboWfsFeatureMode</tabstop>
+  <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>
+  <tabstop>cbxWfsForceInitialGetFeature</tabstop>
  </tabstops>
  <resources/>
  <connections>
