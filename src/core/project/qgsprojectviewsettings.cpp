@@ -20,10 +20,13 @@
 #include "qgsmaplayerutils.h"
 #include "qgscoordinatetransform.h"
 #include <QDomElement>
+#include "qgsmessagelog.h"
+
 
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
+  , mRestoreProjectExtentOnProjectLoad( false )
 {
 
 }
@@ -70,6 +73,17 @@ void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &
   mPresetFullExtent = extent;
   emit presetFullExtentChanged();
 }
+
+void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectExtentCheckboxState )
+{
+  mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState;
+}
+
+bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad( )
+{
+  return mRestoreProjectExtentOnProjectLoad;
+}
+
 
 QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
 {
@@ -198,6 +212,7 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
   }
 
   mDefaultRotation = element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble();
+  mRestoreProjectExtentOnProjectLoad = element.attribute( QStringLiteral( "LoadProjectExtent" ), QStringLiteral( "0" ) ).toInt();
 
   return true;
 }
@@ -206,6 +221,8 @@ QDomElement QgsProjectViewSettings::writeXml( QDomDocument &doc, const QgsReadWr
 {
   QDomElement element = doc.createElement( QStringLiteral( "ProjectViewSettings" ) );
   element.setAttribute( QStringLiteral( "UseProjectScales" ), mUseProjectScales ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+  element.setAttribute( QStringLiteral( "LoadProjectExtent" ), mRestoreProjectExtentOnProjectLoad ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   element.setAttribute( QStringLiteral( "rotation" ), qgsDoubleToString( mDefaultRotation ) );
 
