@@ -300,7 +300,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label_ToleranceExplanation">
         <property name="text">
-         <string>Tolerance controls how far from the profile line a feature can reside to be included in the results. If set, this value overrides the tolerance defined in the Elevation Profile widget, for this specific layer.</string>
+         <string>Tolerance controls how far from the profile line a feature can reside to be included in the results. If set, this value overrides the tolerance defined in the Elevation Profile for this specific layer.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
