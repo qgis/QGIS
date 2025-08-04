@@ -248,12 +248,6 @@ if(WITH_CORE)
   endif()
 
   set (WITH_SFCGAL FALSE CACHE BOOL "Determines whether SFCGAL geometry support should be built")
-  if (WITH_SFCGAL)
-    add_definitions(-DWITH_SFCGAL)
-    message(STATUS "SFCGAL support enabled")
-  else()
-    message(STATUS "SFCGAL support DISABLED.")
-  endif()
 
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
