@@ -703,7 +703,8 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
 
   // Update layer tree node ordering, based on layout item profile
   QList< QgsLayerTreeNode * > orderedNodes;
-  for ( const QgsAbstractProfileSource *source : mProfile->sources() )
+  const QList<QgsAbstractProfileSource *> profileSources = mProfile->sources();
+  for ( const QgsAbstractProfileSource *source : profileSources )
   {
     if ( QgsLayerTreeLayer *layerNode = mLayerTree->findLayer( source->profileSourceId() ) )
     {
@@ -847,7 +848,6 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
   QList<QgsMapLayer *> layers;
   QList<QgsAbstractProfileSource *> sources;
   const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
-  //sources.reserve( layerAndCustomNodeOrder.size() );
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
     if ( QgsLayerTree::isLayer( node ) )

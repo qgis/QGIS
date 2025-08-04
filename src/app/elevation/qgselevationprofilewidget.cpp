@@ -184,6 +184,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
     }
   } );
 
+  // These 2 connections should be made after mCanvas is created, since they will
+  // override canvas sources, set by a connection made in canvas constructor
   connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::addNodeForRegisteredSource );
   connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, mLayerTreeView, &QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource );
 
@@ -621,7 +623,7 @@ void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &l
     }
 
     updateCanvasSources();
-    scheduleUpdate();
+    scheduleUpdate(); // Do we need this call? updateCanvasSources() calls it anyway.
   }
 }
 

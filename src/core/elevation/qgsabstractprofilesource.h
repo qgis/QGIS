@@ -23,6 +23,7 @@
 class QgsProfileRequest;
 class QgsAbstractProfileGenerator;
 
+#include <QUuid>
 
 /**
  * \brief Interface for classes which can generate elevation profiles.
@@ -55,7 +56,7 @@ class CORE_EXPORT QgsAbstractProfileSource
      *
      * \since QGIS 4.0.0
      */
-    virtual QString profileSourceId() const = 0;
+    virtual QString profileSourceId() const { return QUuid::createUuid().toString(); }; // TODO QGIS 5.0: Make it pure virtual
 
     /**
      * Returns a name for displaying this profile source in the elevation profile layer tree.
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsAbstractProfileSource
      *
      * \since QGIS 4.0.0
      */
-    virtual QString profileSourceName() const = 0;
+    virtual QString profileSourceName() const { return QString(); }; // TODO QGIS 5.0: Make it pure virtual
 
   private:
     QString mSourceId;

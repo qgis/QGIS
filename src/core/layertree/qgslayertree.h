@@ -56,6 +56,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     /**
      * Check whether the node is a valid custom node
      *
+     * \since QGIS 4.0
      */
     static inline bool isCustomNode( const QgsLayerTreeNode *node )
     {
@@ -96,6 +97,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Cast node to a custom node.
      *
      * \note Not available in Python bindings, because cast is automatic.
+     * \since QGIS 4.0
      */
     static inline QgsLayerTreeCustomNode *toCustomNode( QgsLayerTreeNode *node ) SIP_SKIP
     {
@@ -159,7 +161,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * This property is read only.
      *
      * \see customLayerOrder
-     *
+     * \see layerAndCustomNodeOrder()
      */
     QList<QgsMapLayer *> layerOrder() const;
 
@@ -193,6 +195,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * This property is read only.
      *
+     * \see layerOrder()
+     * \since QGIS 4.0
      */
     QList<QgsLayerTreeNode *> layerAndCustomNodeOrder() const;
 

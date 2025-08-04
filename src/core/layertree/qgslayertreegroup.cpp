@@ -124,6 +124,20 @@ QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, const QS
   return customNode;
 }
 
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, QgsLayerTreeCustomNode *node SIP_TRANSFER )
+{
+  if ( node->nodeId().trimmed().isEmpty() )
+    return nullptr;
+
+  // Avoid registering two custom nodes with the same id
+  const QStringList customNodeIds = findCustomNodeIds();
+  if ( customNodeIds.contains( node->nodeId() ) )
+    return nullptr;
+
+  insertChildNode( index, node );
+  return node;
+}
+
 QgsLayerTreeCustomNode *QgsLayerTreeGroup::addCustomNode( const QString &id, const QString &name )
 {
   if ( id.trimmed().isEmpty() )

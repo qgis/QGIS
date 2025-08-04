@@ -343,6 +343,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void startDeferredRegeneration();
     void startDeferredRedraw();
     void refineResults();
+    void setSourcesPrivate();
 
   private:
     void updateChartFromPalette();

@@ -832,8 +832,6 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode *node, int inde
   const auto subNodes = _layerNodesInSubtree( node, indexFrom, indexTo );
   for ( QgsLayerTreeLayer *nodeLayer : subNodes )
     disconnectFromLayer( nodeLayer );
-
-  // TODO: Should we disconnect from custom nodes?
 }
 
 void QgsLayerTreeModel::nodeRemovedChildren()

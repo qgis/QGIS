@@ -489,13 +489,14 @@ void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *proje
 
 void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )
 {
-  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( 0, sourceId, sourceName.isEmpty() ? sourceId : sourceName );
-  if ( node )
-  {
-    node->setItemVisibilityChecked( true );
-    // Mark the node so that we know which custom nodes correspond to elevation profile sources
-    node->setCustomProperty( QStringLiteral( "source" ), QStringLiteral( "elevationProfileRegistry" ) );
-  }
+  std::unique_ptr< QgsLayerTreeCustomNode > customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
+  customNode->setItemVisibilityChecked( true );
+  // Mark the node so that we know which custom nodes correspond to elevation profile sources
+  customNode->setCustomProperty( QStringLiteral( "source" ), QStringLiteral( "elevationProfileRegistry" ) );
+
+  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
+  if ( !node )
+    QgsDebugError( QString( "The custom node with id '%1' could not be added!" ).arg( sourceId ) );
 }
 
 void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )

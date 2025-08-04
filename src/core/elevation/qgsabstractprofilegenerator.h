@@ -416,6 +416,7 @@ class CORE_EXPORT QgsAbstractProfileGenerator
 {
 
   public:
+
     virtual ~QgsAbstractProfileGenerator();
 
     /**

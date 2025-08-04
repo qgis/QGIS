@@ -401,6 +401,7 @@ The scenario will be:
 #include "qgsabstractprofilegenerator.h"
 %End
   public:
+
     virtual ~QgsAbstractProfileGenerator();
 
     virtual QString sourceId() const = 0;

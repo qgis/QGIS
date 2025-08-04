@@ -97,6 +97,13 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeCustomNode *insertCustomNode( int index, const QString &id, const QString &name = QString() );
 
     /**
+     * Insert an existent custom node at specified \a index. The node must not have a parent yet. The node will be owned by this group.
+     *
+     * \since QGIS 4.0
+     */
+    QgsLayerTreeCustomNode *insertCustomNode( int index, QgsLayerTreeCustomNode *node SIP_TRANSFER );
+
+    /**
      * Append a new custom node with the given \a id and \a name. The newly created node is owned by this group.
      *
      * \since QGIS 4.0
@@ -164,17 +171,22 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     /**
      * Find all layer nodes. Searches recursively the whole sub-tree.
+     *
+     * \see findLayersAndCustomNodes()
      */
     QList<QgsLayerTreeLayer *> findLayers() const;
 
     /**
      * Find custom node representing an object specified by its ID. Searches recursively the whole sub-tree.
+     *
+     * \since QGIS 4.0
      */
     QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
 
     /**
      * Find all layer and custom nodes. Searches recursively the whole sub-tree.
      *
+     * \see findLayers()
      * \since QGIS 4.0
      */
     QList<QgsLayerTreeNode *> findLayersAndCustomNodes() const;
@@ -188,6 +200,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * \note This method does not recursively reorder child groups.
      * \note Matching layers will be moved to the start of the group, with any existing
      * non-matching layers and group nodes moved to sit after the re-ordered matching layers.
+     *
+     * \see reorderGroupLayersAndCustomNodes()
      *
      * \since QGIS 3.30
      */
@@ -204,6 +218,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * non-matching layers, custom and group nodes moved to sit after the re-ordered matching layers and
      * custom nodes.
      *
+     * \see reorderGroupLayers()
+     *
      * \since QGIS 4.0
      */
     void reorderGroupLayersAndCustomNodes( const QList< QgsLayerTreeNode * > &order );
@@ -213,6 +229,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * are child layers of QgsGroupLayers. Searches recursively the whole sub-tree.
      *
      * \note Not available in Python bindings
+     * \see layerAndCustomNodeOrderRespectingGroupLayers()
      * \since QGIS 3.24
      */
     QList<QgsMapLayer *> layerOrderRespectingGroupLayers() const SIP_SKIP;
@@ -223,6 +240,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * whole sub-tree.
      *
      * \note Not available in Python bindings
+     * \see layerOrderRespectingGroupLayers()
      * \since QGIS 4.0
      */
     QList<QgsLayerTreeNode *> layerAndCustomNodeOrderRespectingGroupLayers() const SIP_SKIP;

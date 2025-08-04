@@ -1,3 +1,20 @@
+/***************************************************************************
+                       qgslayertreecustomnode.h
+                       ------------------------
+    begin                : July 2025
+    copyright            : (C) 2025 by Germán Carrillo
+    email                : german at opengis dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSLAYERTREECUSTOMNODE_H
 #define QGSLAYERTREECUSTOMNODE_H
 
@@ -6,6 +23,15 @@
 #include "qgslayertreenode.h"
 #include <QObject>
 
+/**
+ * \ingroup core
+ * \brief Layer tree custom node serves as a node for objects that are not layers nor groups.
+ *
+ * They are created, and can be found based on a node ID, which should be unique in the whole
+ * layer tree.
+ *
+ * \since QGIS 4.0
+ */
 class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 {
     Q_OBJECT
@@ -24,6 +50,9 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
     % End
 #endif
 
+    /**
+     * Returns the node's unique identifier.
+     */
     QString nodeId() const { return mId; };
 
     /**
@@ -37,13 +66,12 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
     void setName( const QString &name ) override;
 
     /**
-     * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
-     * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+     * Read custom node from XML element <layer-tree-custom-node> and return the newly created node (or NULLPTR on error).
      */
     static QgsLayerTreeCustomNode *readXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
 
     /**
-     * Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
+     * Write custom node as XML element <layer-tree-custom-node> and add it to the given parent element.
      */
     void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 

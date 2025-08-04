@@ -245,6 +245,8 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     void recreateCachedImageInBackground();
     void profileGenerationFinished();
+    void setSourcesPrivate();
+
   private:
 
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;

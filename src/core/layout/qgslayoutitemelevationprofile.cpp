@@ -99,6 +99,11 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
 
   //default to no background
   setBackgroundEnabled( false );
+
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsLayoutItemElevationProfile::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsLayoutItemElevationProfile::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile()
@@ -493,6 +498,24 @@ void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layer
 
 QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
 {
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+    return sources;
+  }
+
   return mSources;
 }
 
@@ -1100,4 +1123,9 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
 void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
 {
   mSubsectionsSymbol.reset( symbol );
+}
+
+void QgsLayoutItemElevationProfile::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
 }

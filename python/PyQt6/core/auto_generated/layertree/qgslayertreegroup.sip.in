@@ -84,6 +84,14 @@ Insert a new custom node with the given ``id`` and ``name`` at specified
 .. versionadded:: 4.0
 %End
 
+    QgsLayerTreeCustomNode *insertCustomNode( int index, QgsLayerTreeCustomNode *node /Transfer/ );
+%Docstring
+Insert an existent custom node at specified ``index``. The node must not
+have a parent yet. The node will be owned by this group.
+
+.. versionadded:: 4.0
+%End
+
     QgsLayerTreeCustomNode *addCustomNode( const QString &id, const QString &name = QString() );
 %Docstring
 Append a new custom node with the given ``id`` and ``name``. The newly
@@ -160,18 +168,24 @@ recursively the whole sub-tree.
     QList<QgsLayerTreeLayer *> findLayers() const;
 %Docstring
 Find all layer nodes. Searches recursively the whole sub-tree.
+
+.. seealso:: :py:func:`findLayersAndCustomNodes`
 %End
 
     QgsLayerTreeCustomNode *findCustomNode( const QString &id ) const;
 %Docstring
 Find custom node representing an object specified by its ID. Searches
 recursively the whole sub-tree.
+
+.. versionadded:: 4.0
 %End
 
     QList<QgsLayerTreeNode *> findLayersAndCustomNodes() const;
 %Docstring
 Find all layer and custom nodes. Searches recursively the whole
 sub-tree.
+
+.. seealso:: :py:func:`findLayers`
 
 .. versionadded:: 4.0
 %End
@@ -191,6 +205,8 @@ other layers will be ignored.
 
    Matching layers will be moved to the start of the group, with any existing
    non-matching layers and group nodes moved to sit after the re-ordered matching layers.
+
+.. seealso:: :py:func:`reorderGroupLayersAndCustomNodes`
 
 .. versionadded:: 3.30
 %End
@@ -213,6 +229,8 @@ well as child group nodes.
    Matching layers or custom nodes will be moved to the start of the group, with any existing
    non-matching layers, custom and group nodes moved to sit after the re-ordered matching layers and
    custom nodes.
+
+.. seealso:: :py:func:`reorderGroupLayers`
 
 .. versionadded:: 4.0
 %End

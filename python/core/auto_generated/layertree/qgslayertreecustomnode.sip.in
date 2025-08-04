@@ -7,8 +7,19 @@
  ************************************************************************/
 
 
+
+
 class QgsLayerTreeCustomNode : QgsLayerTreeNode
 {
+%Docstring(signature="appended")
+Layer tree custom node serves as a node for objects that are not layers
+nor groups.
+
+They are created, and can be found based on a node ID, which should be
+unique in the whole layer tree.
+
+.. versionadded:: 4.0
+%End
 
 %TypeHeaderCode
 #include "qgslayertreecustomnode.h"
@@ -24,6 +35,9 @@ class QgsLayerTreeCustomNode : QgsLayerTreeNode
 %End
 
     QString nodeId() const;
+%Docstring
+Returns the node's unique identifier.
+%End
     virtual QString name() const;
 
 %Docstring
@@ -38,18 +52,15 @@ Sets the node's name.
 
     static QgsLayerTreeCustomNode *readXml( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Read group (tree) from XML element <layer-tree-group> and return the
-newly created group (or ``None`` on error). Does not resolve textual
-references to layers. Call
-:py:func:`~QgsLayerTreeCustomNode.resolveReferences` afterwards to do
-it.
+Read custom node from XML element <layer-tree-custom-node> and return
+the newly created node (or ``None`` on error).
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 
 %Docstring
-Write group (tree) as XML element <layer-tree-group> and add it to the
-given parent element
+Write custom node as XML element <layer-tree-custom-node> and add it to
+the given parent element.
 %End
 
     virtual QString dump() const;

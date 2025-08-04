@@ -442,6 +442,11 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mDeferredRedrawTimer->setSingleShot( true );
   mDeferredRedrawTimer->stop();
   connect( mDeferredRedrawTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredRedraw );
+
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -1173,6 +1178,24 @@ void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource
 
 QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
 {
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+    return sources;
+  }
+
   return mSources;
 }
 
@@ -1445,4 +1468,9 @@ void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
   mSubsectionsSymbol.reset( symbol );
   std::unique_ptr<QgsLineSymbol> plotItemSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
   mPlotItem->setSubsectionsSymbol( plotItemSymbol.release() );
+}
+
+void QgsElevationProfileCanvas::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
 }
