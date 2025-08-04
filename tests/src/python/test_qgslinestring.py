@@ -15,7 +15,7 @@ import math
 
 from qgis.core import Qgis, QgsLineString, QgsPoint
 from qgis.testing import start_app, QgisTestCase
-
+from qgis.core import QgsGeometry, QgsException
 start_app()
 
 
@@ -599,7 +599,7 @@ class TestQgsLineString(QgisTestCase):
         Test extend method with stacked vertices - should raise exception instead of producing NaN.
         Addresses issue #62473
         """
-        from qgis.core import QgsGeometry, QgsException
+        
         
         linestring = QgsLineString([4, 4, 5, 5], [0, 0, 0, 0])
         with self.assertRaises(Exception):
