@@ -10,6 +10,7 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
   set(qgis_${testname}${grass_build_version}_SRCS ${testsrc} ${util_SRCS})
   add_custom_target(qgis_${testname}${grass_build_version}moc ALL DEPENDS ${qgis_${testname}${grass_build_version}_MOC_SRCS})
   add_executable(qgis_${testname}${grass_build_version} ${qgis_${testname}${grass_build_version}_SRCS})
+  set_target_properties(qgis_${testname}${grass_build_version} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${QGIS_OUTPUT_DIRECTORY}/bin")
   target_compile_features(qgis_${testname}${grass_build_version} PRIVATE cxx_std_17)
 
   include_directories(
