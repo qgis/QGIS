@@ -354,6 +354,19 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mLockRatioAction, &QAction::toggled, this, &QgsElevationProfileWidget::axisScaleLockToggled );
   mOptionsMenu->addAction( mLockRatioAction );
 
+  mScaleRatioSettingsAction = new QgsElevationProfileScaleRatioWidgetSettingsAction( mOptionsMenu );
+  connect( mScaleRatioSettingsAction->scaleRatioWidget(), &QgsScaleComboBox::scaleChanged, this, [this]( double scale ) {
+    const double distanceToElevationRatio = 1.0 / scale;
+    if ( mBlockScaleRatioChanges )
+      return;
+
+    mCanvas->setAxisScaleRatio( distanceToElevationRatio );
+    createOrUpdateRubberBands();
+    scheduleUpdate();
+  } );
+
+  mOptionsMenu->addAction( mScaleRatioSettingsAction );
+
   mDistanceUnitMenu = new QMenu( tr( "Distance Units" ), this );
   QActionGroup *unitGroup = new QActionGroup( this );
   for ( Qgis::DistanceUnit unit :
@@ -444,6 +457,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mBtnOptions->setMenu( mOptionsMenu );
 
   toolBar->addWidget( mBtnOptions );
+
+  connect( mOptionsMenu, &QMenu::aboutToShow, this, [this] {
+    mBlockScaleRatioChanges++;
+    const double distanceToElevationScaleRatio = mCanvas->axisScaleRatio();
+    mScaleRatioSettingsAction->scaleRatioWidget()->setScale( 1.0 / distanceToElevationScaleRatio );
+    mBlockScaleRatioChanges--;
+  } );
 
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
@@ -1153,6 +1173,32 @@ QgsElevationProfileToleranceWidgetSettingsAction::QgsElevationProfileToleranceWi
   QLabel *label = new QLabel( tr( "Tolerance" ) );
   gLayout->addWidget( label, 0, 0 );
   gLayout->addWidget( mToleranceWidget, 0, 1 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+}
+
+
+//
+// QgsElevationProfileScaleRatioWidgetSettingsAction
+//
+
+QgsElevationProfileScaleRatioWidgetSettingsAction::QgsElevationProfileScaleRatioWidgetSettingsAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  mScaleRatioWidget = new QgsScaleComboBox();
+  mScaleRatioWidget->setRatioMode( QgsScaleComboBox::RatioMode::Flexible );
+  mScaleRatioWidget->setScale( 1.0 );
+  mScaleRatioWidget->setMaximumWidth( QFontMetrics( mScaleRatioWidget->font() ).horizontalAdvance( '0' ) * 50 );
+  mScaleRatioWidget->setPredefinedScales( { 0.01, 0.1, 0.5, 1, 2.0, 10, 100 } );
+
+  QLabel *label = new QLabel( tr( "Scale Ratio" ) );
+  gLayout->addWidget( label, 0, 0 );
+  gLayout->addWidget( mScaleRatioWidget, 0, 1 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
