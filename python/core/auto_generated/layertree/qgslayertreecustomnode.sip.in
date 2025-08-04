@@ -25,7 +25,17 @@ unique in the whole layer tree.
 #include "qgslayertreecustomnode.h"
 %End
   public:
+
     explicit QgsLayerTreeCustomNode( const QString &nodeId, const QString &nodeName = QString(), bool checked = true );
+%Docstring
+Constructor to create custom nodes that represent application objects
+other than layers and groups.
+
+:param nodeId: Unique identifier of the custom node.
+:param nodeName: Optional name of the custom node.
+:param checked: Whether the custom node should be checked or not once it
+                is created.
+%End
 
 
     SIP_PYOBJECT __repr__();

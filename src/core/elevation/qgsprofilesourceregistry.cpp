@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilesourceregistry.h"
+#include "moc_qgsprofilesourceregistry.cpp"
 #include "qgsabstractprofilesource.h"
 #include "qgslogger.h"
 

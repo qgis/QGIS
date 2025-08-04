@@ -883,7 +883,10 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  mCurrentJob = new QgsProfilePlotRenderer( sources(), request );
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
+
+  mCurrentJob = new QgsProfilePlotRenderer( sourcesToRender, request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
@@ -1193,6 +1196,11 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
       if ( QgsAbstractProfileSource *source = layer->profileSource() )
         sources << source;
     }
+
+    // More legacy: canvas layers are in the same direction as the renderer
+    // expects, but since we reverse sources() (i.e., layers) before passing
+    // them to the renderer, then we need to reverse them here first.
+    std::reverse( sources.begin(), sources.end() );
     return sources;
   }
 

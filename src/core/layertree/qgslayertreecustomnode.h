@@ -36,6 +36,14 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor to create custom nodes that represent application objects other than layers and groups.
+     *
+     * \param nodeId    Unique identifier of the custom node.
+     * \param nodeName  Optional name of the custom node.
+     * \param checked   Whether the custom node should be checked or not once it is created.
+     */
     explicit QgsLayerTreeCustomNode( const QString &nodeId, const QString &nodeName = QString(), bool checked = true );
 
 #ifndef SIP_RUN

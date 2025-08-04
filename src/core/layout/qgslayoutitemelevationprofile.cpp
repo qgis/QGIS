@@ -513,6 +513,13 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
       if ( QgsAbstractProfileSource *source = layer->profileSource() )
         sources << source;
     }
+
+    // More legacy: elevation profile layers are in opposite direction
+    // to what the layer tree requires, and are in the same direction as
+    // the renderer expects, but since we reverse sources() (i.e., layers)
+    // before passing them to the renderer, then we need to revers here first.
+    std::reverse( sources.begin(), sources.end() );
+
     return sources;
   }
 
@@ -715,7 +722,10 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QgsProfilePlotRenderer renderer( sources(), profileRequest() );
+        QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+        std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
+
+        QgsProfilePlotRenderer renderer( sourcesToRender, profileRequest() );
         std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
         renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
@@ -762,7 +772,10 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QgsProfilePlotRenderer renderer( sources(), profileRequest() );
+        QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+        std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
+
+        QgsProfilePlotRenderer renderer( sourcesToRender, profileRequest() );
         std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
         renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
@@ -1011,7 +1024,10 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
 
-  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sources(), profileRequest() );
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
+
+  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sourcesToRender, profileRequest() );
   std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
   mRenderJob->setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
   connect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );

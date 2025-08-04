@@ -627,32 +627,12 @@ void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &l
   }
 }
 
-void QgsElevationProfileWidget::updateCanvasLayers()
-{
-  QList<QgsMapLayer *> layers;
-  const QList<QgsMapLayer *> layerOrder = mLayerTree->layerOrder();
-  layers.reserve( layerOrder.size() );
-  for ( QgsMapLayer *layer : layerOrder )
-  {
-    // safety check. maybe elevation properties have been disabled externally.
-    if ( !layer->elevationProperties() || !layer->elevationProperties()->hasElevation() )
-      continue;
-
-    if ( mLayerTree->findLayer( layer )->isVisible() )
-      layers << layer;
-  }
-
-  std::reverse( layers.begin(), layers.end() );
-  mCanvas->setLayers( layers );
-  scheduleUpdate();
-}
-
 void QgsElevationProfileWidget::updateCanvasSources()
 {
   QList<QgsMapLayer *> layers;
   QList<QgsAbstractProfileSource *> sources;
   const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
-  //sources.reserve( layerAndCustomNodeOrder.size() );
+
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
     if ( QgsLayerTree::isLayer( node ) )
@@ -681,9 +661,11 @@ void QgsElevationProfileWidget::updateCanvasSources()
     }
   }
 
+  // Legacy: layer tree layers are in opposite direction to what canvas layers requires
   std::reverse( layers.begin(), layers.end() );
-  std::reverse( sources.begin(), sources.end() );
   mCanvas->setLayers( layers );
+
+  // std::reverse( sources.begin(), sources.end() );
   mCanvas->setSources( sources );
   scheduleUpdate();
 }

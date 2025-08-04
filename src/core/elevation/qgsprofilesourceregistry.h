@@ -70,7 +70,8 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
      *
      * Returns TRUE if the source id was found in the registry and FALSE otherwise.
      *
-     * \param sourceID  Profile source ID to be unregistered.
+     * \param sourceId  Profile source ID to be unregistered.
+     * \since QGIS 4.0
      */
     bool unregisterProfileSource( const QString &sourceId );
 
@@ -79,11 +80,29 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
      * Returns NULLPTR if the source is not found in the registry.
      *
      * \param sourceId  Id of the source to be found in the registry.
+     * \since QGIS 4.0
      */
     QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
 
   signals:
+
+    /**
+     * Signal emitted once a profile source is registered.
+     *
+     * \param sourceId    Unique identifier of the profile source that has been registered.
+     * \param sourceName  Name of the profile source that has been registered.
+     *
+     * \since QGIS 4.0
+     */
     void profileSourceRegistered( const QString &sourceId, const QString &sourceName );
+
+    /**
+     * Signal emitted once a profile source is unregistered.
+     *
+     * \param sourceId    Unique identifier of the profile source that has been unregistered.
+     *
+     * \since QGIS 4.0
+     */
     void profileSourceUnregistered( const QString &sourceId );
 
   private:

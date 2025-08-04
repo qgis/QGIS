@@ -658,13 +658,9 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   }
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
-  // canvas layers are in opposite direction to what the layout item requires
-  std::reverse( canvasLayers.begin(), canvasLayers.end() );
   mProfile->setLayers( canvasLayers );
 
   QList<QgsAbstractProfileSource *> canvasSources = canvas->sources();
-  // canvas sources are in opposite direction to what the layout item requires
-  std::reverse( canvasSources.begin(), canvasSources.end() );
   mProfile->setSources( canvasSources );
 
   syncLayerTreeAndProfileItemSources();
@@ -872,7 +868,10 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
     }
   }
 
+  // Legacy: layer tree layers are in opposite direction to what the elevation profile requires
+  std::reverse( layers.begin(), layers.end() );
   mProfile->setLayers( layers );
+
   mProfile->setSources( sources );
   mProfile->update();
 }

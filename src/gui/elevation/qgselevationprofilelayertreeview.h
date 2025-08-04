@@ -137,7 +137,26 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
 
   public slots:
+    /**
+     * Adds a custom node in the layer tree corresponding to a registered profile source.
+     *
+     * The created node can be accessed via the source id.
+     * If the source already has a corresponding node in the layer tree, a second node won't be created.
+     *
+     * \param sourceId    Unique identifier of the registered profile source.
+     * \param sourceName  Name of the registered profile source.
+     *
+     * \since QGIS 4.0
+     */
     void addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName );
+
+    /**
+     * Removes a custom node from the layer tree corresponding to an unregistered profile source.
+     *
+     * \param sourceId  Unique identifier of the unregistered profile source.
+     *
+     * \since QGIS 4.0
+     */
     void removeNodeForUnregisteredSource( const QString &sourceId );
 
   signals:

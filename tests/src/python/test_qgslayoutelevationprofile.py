@@ -1121,6 +1121,118 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         self.assertTrue(self.render_layout_check("vector_layer_subsections", layout))
 
+    def test_layers_legacy(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+
+        self.assertFalse(profile.layers())
+        self.assertFalse(profile.sources())
+
+        layer1 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "france_parts.shp"), "france", "ogr"
+        )
+        self.assertTrue(layer1.isValid())
+        project.addMapLayers([layer1])
+
+        layer2 = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "landsat.tif"), "landsat", "gdal"
+        )
+        self.assertTrue(layer2.isValid())
+        project.addMapLayers([layer2])
+
+        layer3 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "lines.shp"), "lines", "ogr"
+        )
+        self.assertTrue(layer3.isValid())
+        project.addMapLayers([layer3])
+
+        profile.setLayers([layer2, layer3])
+
+        # Calling sources() returns the layers (even if we never called
+        # setSources()), but in reversed order, since they will be
+        # reverted before being passed to the renderer.
+        self.assertEqual(profile.sources(), [layer3, layer2])
+
+        project.layoutManager().addLayout(layout)
+
+        # test that sources are written/restored
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.assertTrue(project.write(os.path.join(temp_dir, "s.qgs")))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(os.path.join(temp_dir, "s.qgs")))
+
+            layout2 = p2.layoutManager().printLayouts()[0]
+            profile2 = [
+                i
+                for i in layout2.items()
+                if isinstance(i, QgsLayoutItemElevationProfile)
+            ][0]
+
+            # TODO:
+            # self.assertEqual(
+            #    [m.profileSourceId() for m in profile2.sources()], [layer2.id(), layer3.id()]
+            # )
+            self.assertEqual(
+                [m.id() for m in profile2.layers()], [layer2.id(), layer3.id()]
+            )
+
+    def test_sources(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+
+        self.assertFalse(profile.layers())
+        self.assertFalse(profile.sources())
+
+        layer1 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "france_parts.shp"), "france", "ogr"
+        )
+        self.assertTrue(layer1.isValid())
+        project.addMapLayers([layer1])
+
+        layer2 = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "landsat.tif"), "landsat", "gdal"
+        )
+        self.assertTrue(layer2.isValid())
+        project.addMapLayers([layer2])
+
+        layer3 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "lines.shp"), "lines", "ogr"
+        )
+        self.assertTrue(layer3.isValid())
+        project.addMapLayers([layer3])
+
+        profile.setSources([layer2, layer3])
+        self.assertEqual(profile.sources(), [layer2, layer3])
+
+        project.layoutManager().addLayout(layout)
+
+        # test that sources are written/restored
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.assertTrue(project.write(os.path.join(temp_dir, "s.qgs")))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(os.path.join(temp_dir, "s.qgs")))
+
+            layout2 = p2.layoutManager().printLayouts()[0]
+            profile2 = [
+                i
+                for i in layout2.items()
+                if isinstance(i, QgsLayoutItemElevationProfile)
+            ][0]
+
+            # TODO:
+            # self.assertEqual(
+            #    [m.profileSourceId() for m in profile2.sources()], [layer2.id(), layer3.id()]
+            # )
+            # self.assertEqual(
+            #    [m.id() for m in profile2.layers()], [layer2.id(), layer3.id()]
+            # )
+
 
 if __name__ == "__main__":
     unittest.main()
