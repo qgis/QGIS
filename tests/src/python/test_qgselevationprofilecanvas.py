@@ -225,6 +225,56 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
         canvas.wheelEvent(wheel_event)
         self.assertEqual(tool.events[-1].type(), QEvent.Type.Wheel)
 
+    def test_ratio(self):
+        """
+        Test axis scale ratio logic
+        """
+        canvas = QgsElevationProfileCanvas()
+        canvas.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        canvas.setFrameStyle(0)
+        # make a 2:1 canvas, to make the maths easier!
+        canvas.resize(800, 400)
+        canvas.setProject(QgsProject.instance())
+        canvas.show()
+        self.assertEqual(canvas.width(), 800)
+        self.assertEqual(canvas.height(), 400)
+
+        canvas.setVisiblePlotRange(100, 200, 50, 150)
+        # showing 100m distance, 100m elevation
+        # distance:elevation ratio is 1:2, as canvas is twice as wide as high
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 0.5, 1)
+
+        canvas.setVisiblePlotRange(100, 300, 50, 150)
+        # showing 200m distance, 100m elevation
+        # distance:elevation ratio is 1:1, as canvas is twice as wide as high
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 1.0, 1)
+
+        canvas.setVisiblePlotRange(100, 500, 50, 150)
+        # showing 400m distance, 100m elevation
+        # distance:elevation ratio is 2:1, as canvas is twice as wide as high
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 2.0, delta=0.1)
+
+        canvas.setAxisScaleRatio(0.5)
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 0.5, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, 1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 50.0, 1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 150.0, 1)
+
+        canvas.setAxisScaleRatio(1.0)
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 1.0, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, 1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 75.0, 1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 125.0, 1)
+
+        canvas.setAxisScaleRatio(2.0)
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 2.0, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, 1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 87.5, 1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 112.5, 1)
+
 
 if __name__ == "__main__":
     unittest.main()
