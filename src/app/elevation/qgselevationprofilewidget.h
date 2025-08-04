@@ -43,6 +43,7 @@ class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
 class QgsDoubleSpinBox;
 class QgsElevationProfileToleranceWidgetSettingsAction;
+class QgsElevationProfileScaleRatioWidgetSettingsAction;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
 class QgsElevationProfileToolIdentify;
@@ -55,6 +56,7 @@ class QgsSettingsEntryString;
 class QgsSettingsEntryColor;
 class QgsMapLayerProxyModel;
 class QgsLineSymbol;
+class QgsScaleComboBox;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
 {
@@ -182,6 +184,8 @@ class QgsElevationProfileWidget : public QWidget
     QgsElevationProfileToolIdentify *mIdentifyTool = nullptr;
 
     QgsElevationProfileToleranceWidgetSettingsAction *mToleranceSettingsAction = nullptr;
+    int mBlockScaleRatioChanges = 0;
+    QgsElevationProfileScaleRatioWidgetSettingsAction *mScaleRatioSettingsAction = nullptr;
 
     std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
@@ -203,5 +207,19 @@ class QgsElevationProfileToleranceWidgetSettingsAction : public QWidgetAction
   private:
     QgsDoubleSpinBox *mToleranceWidget = nullptr;
 };
+
+class QgsElevationProfileScaleRatioWidgetSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    QgsElevationProfileScaleRatioWidgetSettingsAction( QWidget *parent = nullptr );
+
+    QgsScaleComboBox *scaleRatioWidget() { return mScaleRatioWidget; }
+
+  private:
+    QgsScaleComboBox *mScaleRatioWidget = nullptr;
+};
+
 
 #endif // QGSELEVATIONPROFILEWIDGET_H
