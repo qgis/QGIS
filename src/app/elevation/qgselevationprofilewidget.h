@@ -42,7 +42,7 @@ class QgsPlotToolPan;
 class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
 class QgsDoubleSpinBox;
-class QgsElevationProfileWidgetSettingsAction;
+class QgsElevationProfileToleranceWidgetSettingsAction;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
 class QgsElevationProfileToolIdentify;
@@ -181,7 +181,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolZoom *mZoomTool = nullptr;
     QgsElevationProfileToolIdentify *mIdentifyTool = nullptr;
 
-    QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
+    QgsElevationProfileToleranceWidgetSettingsAction *mToleranceSettingsAction = nullptr;
 
     std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
@@ -191,12 +191,12 @@ class QgsElevationProfileWidget : public QWidget
 };
 
 
-class QgsElevationProfileWidgetSettingsAction : public QWidgetAction
+class QgsElevationProfileToleranceWidgetSettingsAction : public QWidgetAction
 {
     Q_OBJECT
 
   public:
-    QgsElevationProfileWidgetSettingsAction( QWidget *parent = nullptr );
+    QgsElevationProfileToleranceWidgetSettingsAction( QWidget *parent = nullptr );
 
     QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
 

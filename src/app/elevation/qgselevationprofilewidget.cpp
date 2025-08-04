@@ -402,16 +402,16 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mOptionsMenu->addMenu( mDistanceUnitMenu );
   mOptionsMenu->addSeparator();
 
-  mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
+  mToleranceSettingsAction = new QgsElevationProfileToleranceWidgetSettingsAction( mOptionsMenu );
 
-  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
-  connect( mSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
+  mToleranceSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
+  connect( mToleranceSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     settingTolerance->setValue( value );
     createOrUpdateRubberBands();
     scheduleUpdate();
   } );
 
-  mOptionsMenu->addAction( mSettingsAction );
+  mOptionsMenu->addAction( mToleranceSettingsAction );
 
   mOptionsMenu->addSeparator();
 
@@ -711,7 +711,7 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const 
 
 void QgsElevationProfileWidget::updatePlot()
 {
-  mCanvas->setTolerance( mSettingsAction->toleranceSpinBox()->value() );
+  mCanvas->setTolerance( mToleranceSettingsAction->toleranceSpinBox()->value() );
   mCanvas->setCrs( QgsProject::instance()->crs3D() );
   showSubsectionsTriggered();
 
@@ -905,7 +905,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 
   QgsProfileRequest request( profileCurve.release() );
   request.setCrs( QgsProject::instance()->crs3D() );
-  request.setTolerance( mSettingsAction->toleranceSpinBox()->value() );
+  request.setTolerance( mToleranceSettingsAction->toleranceSpinBox()->value() );
   request.setTransformContext( QgsProject::instance()->transformContext() );
   request.setTerrainProvider( QgsProject::instance()->elevationProperties()->terrainProvider() ? QgsProject::instance()->elevationProperties()->terrainProvider()->clone() : nullptr );
   QgsExpressionContext context;
@@ -972,7 +972,7 @@ void QgsElevationProfileWidget::nudgeCurve( Qgis::BufferSide side )
   // for now we match the nudge distance to the tolerance distance, so that nudging results in
   // a completely different set of point features in the curve. We may want to revisit and expose
   // this as a user configurable setting at some point...
-  const double distance = mSettingsAction->toleranceSpinBox()->value() * 2;
+  const double distance = mToleranceSettingsAction->toleranceSpinBox()->value() * 2;
 
   const QgsGeometry nudgedCurve = mProfileCurve.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
   setProfileCurve( nudgedCurve, false );
@@ -1075,7 +1075,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
 
   mRubberBand->setToGeometry( mProfileCurve );
 
-  const double tolerance = mSettingsAction->toleranceSpinBox()->value();
+  const double tolerance = mToleranceSettingsAction->toleranceSpinBox()->value();
   if ( !qgsDoubleNear( tolerance, 0, 0.000001 ) )
   {
     if ( !mToleranceRubberBand )
@@ -1131,7 +1131,11 @@ void QgsElevationProfileWidget::onProjectElevationPropertiesChanged()
   }
 }
 
-QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction( QWidget *parent )
+//
+// QgsElevationProfileToleranceWidgetSettingsAction
+//
+
+QgsElevationProfileToleranceWidgetSettingsAction::QgsElevationProfileToleranceWidgetSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
 {
   QGridLayout *gLayout = new QGridLayout();
