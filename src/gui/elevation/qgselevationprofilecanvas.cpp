@@ -605,16 +605,19 @@ void QgsElevationProfileCanvas::adjustRangeForAxisScaleLock( double &xMinimum, d
   // ensures that we always "zoom out" to match horizontal/vertical scales
   const double horizontalScale = ( xMaximum - xMinimum ) / mPlotItem->plotArea().width();
   const double verticalScale = ( yMaximum - yMinimum ) / mPlotItem->plotArea().height();
-  if ( horizontalScale > verticalScale )
+
+  const double currentRatio = horizontalScale / verticalScale;
+
+  if ( currentRatio <= mLockedAxisScale )
   {
-    const double height = horizontalScale * mPlotItem->plotArea().height();
+    const double height = horizontalScale * mPlotItem->plotArea().height() / mLockedAxisScale;
     const double deltaHeight = ( yMaximum - yMinimum ) - height;
     yMinimum += deltaHeight / 2;
     yMaximum -= deltaHeight / 2;
   }
   else
   {
-    const double width = verticalScale * mPlotItem->plotArea().width();
+    const double width = verticalScale * mPlotItem->plotArea().width() * mLockedAxisScale;
     const double deltaWidth = ( ( xMaximum - xMinimum ) - width );
     xMinimum += deltaWidth / 2;
     xMaximum -= deltaWidth / 2;
@@ -698,6 +701,32 @@ void QgsElevationProfileCanvas::setLockAxisScales( bool lock )
     mPlotItem->updatePlot();
     emit plotAreaChanged();
   }
+}
+
+double QgsElevationProfileCanvas::axisScaleRatio() const
+{
+  const double horizontalScale = ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor / mPlotItem->plotArea().width();
+  const double verticalScale = ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / mPlotItem->plotArea().height();
+  return horizontalScale / verticalScale;
+}
+
+void QgsElevationProfileCanvas::setAxisScaleRatio( double scale )
+{
+  mLockedAxisScale = scale;
+
+  double xMinimum = mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
+  double xMaximum = mPlotItem->xMaximum() * mPlotItem->mXScaleFactor;
+  double yMinimum = mPlotItem->yMinimum();
+  double yMaximum = mPlotItem->yMaximum();
+  adjustRangeForAxisScaleLock( xMinimum, xMaximum, yMinimum, yMaximum );
+  mPlotItem->setXMinimum( xMinimum / mPlotItem->mXScaleFactor );
+  mPlotItem->setXMaximum( xMaximum / mPlotItem->mXScaleFactor );
+  mPlotItem->setYMinimum( yMinimum );
+  mPlotItem->setYMaximum( yMaximum );
+
+  refineResults();
+  mPlotItem->updatePlot();
+  emit plotAreaChanged();
 }
 
 QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
