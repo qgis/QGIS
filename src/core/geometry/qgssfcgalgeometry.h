@@ -375,7 +375,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param errorMsg Error message returned by SFGCAL
      * \return new geometry
      */
-    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Calculate the difference of this and \a otherGeom.
