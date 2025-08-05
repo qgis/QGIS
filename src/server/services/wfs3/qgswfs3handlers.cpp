@@ -283,7 +283,7 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
 json QgsWfs3ConformanceHandler::schema( const QgsServerApiContext &context ) const
 {
   json data;
-  const std::string path { QgsServerApiUtils::appendMapParameter( context.apiRootPath() + QStringLiteral( "/conformance" ), context.request()->url() ).toStdString() };
+  const std::string path { QgsServerApiUtils::appendMapParameter( QStringLiteral( "/conformance" ), context.request()->url() ).toStdString() };
   data[path] = {
     { "get", { { "tags", jsonTags() }, { "summary", summary() }, { "description", description() }, { "operationId", operationId() }, { "responses", { { "200", { { "description", description() }, { "content", { { "application/json", { { "schema", { { "$ref", "#/components/schemas/root" } } } } }, { "text/html", { { "schema", { { "type", "string" } } } } } } } } }, { "default", defaultResponse() } } } }
     }
