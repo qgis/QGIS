@@ -264,7 +264,7 @@ void QgsSfcgalGeometry::swapXy( QString *errorMsg )
   clearCache();
 }
 
-bool QgsSfcgalGeometry::isValid( Qgis::GeometryValidityFlags, QString *errorMsg ) const
+bool QgsSfcgalGeometry::isValid( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   const bool valid = QgsSfcgalEngine::isValid( mSfcgalGeom.get(), errorMsg, nullptr );
