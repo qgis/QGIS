@@ -26,22 +26,9 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgscircularstring.h"
-#include "qgscompoundcurve.h"
-#include "qgscurvepolygon.h"
 #include "qgspoint.h"
-#include "qgspolygon.h"
 #include "qgslinestring.h"
-#include "qgsmulticurve.h"
-#include "qgsmultilinestring.h"
-#include "qgsmultipoint.h"
-#include "qgsmultipolygon.h"
-#include "qgsmultisurface.h"
-#include "qgspolyhedralsurface.h"
-#include "qgstriangulatedsurface.h"
-#include "qgstriangle.h"
 #include "qgssfcgalengine.h"
-#include "qgslogger.h"
 
 /**
  * Wraps SFCGAL geometry object.
