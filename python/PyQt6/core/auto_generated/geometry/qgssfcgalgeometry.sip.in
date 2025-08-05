@@ -517,13 +517,11 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const;
 %Docstring
 Calculate the intersection of this and ``otherGeom``.
 
 :param otherGeom: geometry to perform the operation
-:param parameters: can be used to specify parameters which control the
-                   intersection results
 
 :return: new geometry
 
@@ -532,13 +530,11 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 returned geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const;
 %Docstring
 Calculate the intersection of this and ``otherGeom``.
 
 :param otherGeom: geometry to perform the operation
-:param parameters: can be used to specify parameters which control the
-                   intersection results
 
 :return: new geometry
 
