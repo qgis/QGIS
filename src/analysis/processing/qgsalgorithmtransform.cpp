@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmtransform.h"
 #include "qgsexception.h"
+#include <cmath>
 ///@cond PRIVATE
 
 
@@ -129,6 +130,35 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
     {
       if ( g.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
       {
+        // Check if the transformed geometry contains invalid coordinates (inf or NaN)
+        // This can happen when grid shift files are missing or inaccessible
+        if ( !g.isEmpty() )
+        {
+          const QgsAbstractGeometry *abstractGeom = g.constGet();
+          if ( abstractGeom )
+          {
+            bool hasInvalidCoordinates = false;
+            for ( auto vertex = abstractGeom->vertices_begin(); vertex != abstractGeom->vertices_end(); ++vertex )
+            {
+              if ( !std::isfinite( vertex->x() ) || !std::isfinite( vertex->y() ) || 
+                   ( abstractGeom->is3D() && !std::isfinite( vertex->z() ) ) )
+              {
+                hasInvalidCoordinates = true;
+                break;
+              }
+            }
+            
+            if ( hasInvalidCoordinates )
+            {
+              const QString msg = QObject::tr( "Coordinate transformation failed for feature id %1: "
+                                              "Invalid coordinates (inf or NaN) detected in output geometry. "
+                                              "This is likely due to a missing or inaccessible grid shift file required by the selected transformation operation." )
+                                    .arg( f.id() );
+              throw QgsProcessingException( msg );
+            }
+          }
+        }
+        
         feature.setGeometry( g );
       }
       else
