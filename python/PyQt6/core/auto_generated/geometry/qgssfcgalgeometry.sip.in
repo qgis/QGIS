@@ -36,35 +36,35 @@ Constructor with :py:class:`QgsAbstractGeometry` pointer.
 
 Will not take ownership.
 
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 %End
 
     QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom, QString *errorMsg = 0 );
 %Docstring
 Constructor with :py:class:`QgsAbstractGeometry` reference.
 
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 %End
 
     QgsSfcgalGeometry( const QgsGeometry &qgsGeom, QString *errorMsg = 0 );
 %Docstring
 Constructor with :py:class:`QgsGeometry` reference.
 
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 %End
 
     QgsSfcgalGeometry( const QString &wkt, QString *errorMsg = 0 );
 %Docstring
 Constructor from WKT
 
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 %End
 
     QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom, QString *errorMsg = 0 );
 %Docstring
 Copy constructor
 
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 %End
 
 
@@ -84,7 +84,7 @@ etc.)
 
 :return: - type of the geometry as a WKB type (point / linestring /
            polygon etc.)
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     QString geometryType( QString *errorMsg /Out/ = 0 ) const /HoldGIL/;
@@ -94,7 +94,7 @@ Returns type of the geometry as a OGC string in CamelCase
 
 
 :return: - type of the geometry as a OGC string in CamelCase
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> clone() const;
@@ -109,7 +109,7 @@ Creates a new geometry from a WKB byte pointer
 :param wkbPtr: WKB byte pointer
 
 :return: - new geometry from WKB
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags(), QString *errorMsg /Out/ = 0 ) const;
@@ -119,7 +119,7 @@ Export the geometry as WKB
 :param flags: argument specifies flags controlling WKB export behavior.
 
 :return: - WKB data
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt, QString *errorMsg /Out/ = 0 );
@@ -129,7 +129,7 @@ Creates a new geometry from a WKT string.
 :param wkt: WTK string
 
 :return: - new geometry from WKT
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     QString asWkt( int precision = -1, QString *errorMsg /Out/ = 0 ) const;
@@ -143,7 +143,7 @@ Export the geometry as WKT
                   external libraries.
 
 :return: - WKT data
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> boundary( QString *errorMsg /Out/ = 0 ) const;
@@ -157,7 +157,7 @@ ring in the polygon.
 
 :return: - boundary for geometry. May be ``None`` for some geometry
            types.
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     bool operator==( const QgsSfcgalGeometry &other ) const;
@@ -172,7 +172,7 @@ Returns true if this == other geometry modulo ``epsilon`` distance
 :param epsilon: tolerance
 
 :return: - true if this == other geometry modulo ``epsilon`` distance
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     int dimension( QString *errorMsg /Out/ = 0 ) const;
@@ -183,7 +183,7 @@ for a point geometry, 1 for a linestring and 2 for a polygon.
 
 
 :return: - geometry dimension
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     int partCount( QString *errorMsg /Out/ = 0 ) const;
@@ -268,7 +268,7 @@ reported geometry error.
 
 
 :return: - true if valid
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     bool isEmpty( QString *errorMsg /Out/ = 0 ) const;
@@ -278,7 +278,7 @@ Checks if ``geom`` is empty.
 
 
 :return: - true if empty
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     double area( QString *errorMsg /Out/ = 0 ) const;
@@ -288,7 +288,7 @@ Computes the area of ``geom``.
 
 
 :return: - geometry area
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     double length( QString *errorMsg /Out/ = 0 ) const;
@@ -298,7 +298,7 @@ Computes the max length of ``geom``.
 
 
 :return: - geometry length
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     bool isSimple( QString *errorMsg /Out/ = 0 ) const;
@@ -310,14 +310,14 @@ Checks this geometry is simple.
 
 
 :return: - true if simple
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     QgsPoint centroid( QString *errorMsg ) const;
 %Docstring
 Calculates the centroid of this geometry.
 
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 
 :return: geometry centroid
 %End
@@ -329,7 +329,7 @@ Translate this geometry by vector ``translation``.
 :param translation: translation vector (2D or 3D)
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg /Out/ = 0 ) const;
@@ -341,7 +341,7 @@ Scale this geometry by vector ``scaleFactor``.
                performed relative to this center
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center, QString *errorMsg /Out/ = 0 ) const;
@@ -352,7 +352,7 @@ Scale this geometry by vector ``scaleFactor``.
 :param center: rotation center
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg /Out/ = 0 ) const;
@@ -365,7 +365,7 @@ Scale this geometry by vector ``scaleFactor``.
                applied around axis and center point
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     bool intersects( const QgsAbstractGeometry *otherGeom, QString *errorMsg /Out/ = 0 ) const;
@@ -375,7 +375,7 @@ Checks if ``otherGeom`` intersects this.
 :param otherGeom: geometry to perform the operation
 
 :return: - true if intersection exists
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     bool intersects( const QgsSfcgalGeometry &otherGeom, QString *errorMsg /Out/ = 0 ) const;
@@ -385,7 +385,7 @@ Checks if ``otherGeom`` intersects this.
 :param otherGeom: geometry to perform the operation
 
 :return: - true if intersection exists
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom, QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -397,7 +397,7 @@ Calculate the intersection of this and ``otherGeom``.
                    intersection results
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom, QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -409,7 +409,7 @@ Calculate the intersection of this and ``otherGeom``.
                    intersection results
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg /Out/ = 0 ) const;
@@ -419,7 +419,7 @@ Calculate the combination of this and ``geomList``.
 :param geomList: list of geometries to perform the operation
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -431,7 +431,7 @@ Calculate the difference of this and ``otherGeom``.
                    difference results
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom, QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -443,7 +443,7 @@ Calculate the difference of this and ``otherGeom``.
                    difference results
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> triangulate( QString *errorMsg /Out/ = 0 ) const;
@@ -454,7 +454,7 @@ Triangulates this geometry using constraint 2D Delaunay Triangulation
 
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> convexHull( QString *errorMsg /Out/ = 0 ) const;
@@ -464,7 +464,7 @@ Calculate the convex hull (bounding box).
 
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> envelope( QString *errorMsg /Out/ = 0 ) const;
@@ -474,7 +474,7 @@ Calculate the envelope (bounding box).
 
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     bool covers( const QgsSfcgalGeometry &otherGeom, QString *errorMsg /Out/ = 0 ) const;
@@ -486,7 +486,7 @@ a 2D covers test is carried out.
 :param otherGeom: second geometry to perform the operation
 
 :return: - true if coverage exists
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D, QString *errorMsg /Out/ = 0 ) const;
@@ -501,7 +501,7 @@ fails, a null pointer is returned.
 :param joinStyle3D: the type of buffer to compute
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle, QString *errorMsg ) const;
@@ -514,7 +514,7 @@ expanding it. If the operation fails, a null pointer is returned.
 :param segments: the number of segments to use for approximating curved
 :param joinStyle: the type of buffer to compute. Only round is
                   supported.
-:param errorMsg: Error message returned by SFGCAL
+:param errorMsg: Error message returned by SFCGAL
 
 :return: new geometry
 %End
@@ -528,7 +528,7 @@ Simplifies a geometry using the CGAL algorithm
                          simplification
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion, QString *errorMsg /Out/ = 0 ) const;
@@ -539,7 +539,7 @@ a null pointer is returned.
 :param extrusion: extrusion vector (2D or 3D)
 
 :return: - new geometry
-         - errorMsg: Error message returned by SFGCAL
+         - errorMsg: Error message returned by SFCGAL
 %End
 
   protected:
