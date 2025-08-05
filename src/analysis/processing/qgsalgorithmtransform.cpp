@@ -140,8 +140,9 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
             bool hasInvalidCoordinates = false;
             for ( auto vertex = abstractGeom->vertices_begin(); vertex != abstractGeom->vertices_end(); ++vertex )
             {
-              if ( !std::isfinite( vertex->x() ) || !std::isfinite( vertex->y() ) || 
-                   ( abstractGeom->is3D() && !std::isfinite( vertex->z() ) ) )
+              const QgsPoint &pt = *vertex;
+              if ( !std::isfinite( pt.x() ) || !std::isfinite( pt.y() ) || 
+                   ( abstractGeom->is3D() && !std::isfinite( pt.z() ) ) )
               {
                 hasInvalidCoordinates = true;
                 break;
