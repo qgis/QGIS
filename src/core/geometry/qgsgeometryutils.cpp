@@ -1318,11 +1318,11 @@ bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPo
                                       double epsilon )
 {
   // Apply symmetric distance if distance2 is negative
-  if ( distance2 < 0 )
+  if ( distance2 <= 0 )
     distance2 = distance1;
 
   // Validate input parameters
-  if ( distance1 < 0 || distance2 < 0 )
+  if ( distance1 <= 0 || distance2 <= 0 )
     return false;
 
   // Create chamfer points using the utility function
@@ -1506,10 +1506,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
     return nullptr;
 
   // Apply symmetric distance if distance2 is negative
-  if ( distance2 < 0 )
+  if ( distance2 <= 0 )
     distance2 = distance1;
 
-  if ( distance1 < 0 || distance2 < 0 )
+  if ( distance1 <= 0 || distance2 <= 0 )
     return nullptr;
 
   // Extract the three consecutive vertices
