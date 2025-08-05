@@ -426,7 +426,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( !model )
     return QModelIndex();
 
-  // Normalize path separators to forward slashes for consistent comparison
+  
   QString normalizedPath = QString( path ).replace( '\\', '/' );
 
   QModelIndex index; // starting from root
