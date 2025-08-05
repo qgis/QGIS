@@ -716,13 +716,15 @@ void QgsBrowserWidget::copySelectedPath()
 
   if ( !path.isEmpty() )
   {
-    QApplication::clipboard()->setText( path );
+    // Convert to native separators for clipboard (backslashes on Windows)
+    QString nativePath = QDir::toNativeSeparators( path );
+    QApplication::clipboard()->setText( nativePath );
     
-    mLeLocationBar->setText( path );
+    mLeLocationBar->setText( nativePath );
     
     if ( mMessageBar )
     {
-      mMessageBar->pushSuccess( tr( "Copy Path" ), tr( "Path copied to clipboard: %1" ).arg( path ) );
+      mMessageBar->pushSuccess( tr( "Copy Path" ), tr( "Path copied to clipboard: %1" ).arg( nativePath ) );
     }
   }
   else
@@ -939,7 +941,9 @@ void QgsBrowserWidget::updateLocationBar()
 
   if ( !path.isEmpty() )
   {
-    mLeLocationBar->setText( path );
+    // Convert to native separators for display (backslashes on Windows)
+    QString nativePath = QDir::toNativeSeparators( path );
+    mLeLocationBar->setText( nativePath );
   }
   else
   {
