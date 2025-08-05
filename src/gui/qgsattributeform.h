@@ -580,6 +580,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;
     friend class TestQgsValueRelationWidgetWrapper;
+    friend class TestQgsWidgetsConfigDlg;
 };
 
 #endif // QGSATTRIBUTEFORM_H
