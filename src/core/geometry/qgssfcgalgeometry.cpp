@@ -183,12 +183,6 @@ bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsil
   return out;
 }
 
-QgsBox3D QgsSfcgalGeometry::boundingBox3D( QString * ) const
-{
-  QgsDebugError( QStringLiteral( "Not implemented" ) );
-  return QgsBox3D();
-}
-
 int QgsSfcgalGeometry::dimension( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
