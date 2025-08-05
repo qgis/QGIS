@@ -183,13 +183,6 @@ class CORE_EXPORT QgsSfcgalGeometry
     bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
-     * Returns the 3D bounding box for the geometry.
-     * \param errorMsg Error message returned by SFGCAL
-     * \return geometry bbox
-     */
-    QgsBox3D boundingBox3D( QString *errorMsg SIP_OUT = nullptr ) const;
-
-    /**
      * Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
      * 1 for a linestring and 2 for a polygon.
      * \param errorMsg Error message returned by SFGCAL

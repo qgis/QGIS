@@ -175,16 +175,6 @@ Returns true if this == other geometry modulo ``epsilon`` distance
          - errorMsg: Error message returned by SFGCAL
 %End
 
-    QgsBox3D boundingBox3D( QString *errorMsg /Out/ = 0 ) const;
-%Docstring
-Returns the 3D bounding box for the geometry.
-
-
-
-:return: - geometry bbox
-         - errorMsg: Error message returned by SFGCAL
-%End
-
     int dimension( QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns the inherent dimension of the geometry. For example, this is 0
