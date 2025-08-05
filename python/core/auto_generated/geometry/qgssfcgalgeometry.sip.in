@@ -556,13 +556,11 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 returned geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const;
 %Docstring
 Calculate the difference of this and ``otherGeom``.
 
 :param otherGeom: geometry to perform the operation
-:param parameters: can be used to specify parameters which control the
-                   difference results
 
 :return: new geometry
 
@@ -571,13 +569,11 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 returned geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const;
 %Docstring
 Calculate the difference of this and ``otherGeom``.
 
 :param otherGeom: geometry to perform the operation
-:param parameters: can be used to specify parameters which control the
-                   difference results
 
 :return: new geometry
 
