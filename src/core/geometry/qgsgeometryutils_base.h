@@ -589,18 +589,19 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \param epsilon tolerance for numerical comparisons and intersection detection
      * \returns TRUE if chamfer was successfully created
      *
+     * \note Not available in Python bindings
      * \since QGIS 4.0
      */
     static bool createChamfer( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
                                const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
                                const double distance1, const double distance2,
-                               double &chamferStartX SIP_OUT, double &chamferStartY SIP_OUT,
-                               double &chamferEndX SIP_OUT, double &chamferEndY SIP_OUT,
+                               double &chamferStartX, double &chamferStartY,
+                               double &chamferEndX, double &chamferEndY,
                                double *trim1StartX = nullptr, double *trim1StartY = nullptr,
                                double *trim1EndX = nullptr, double *trim1EndY = nullptr,
                                double *trim2StartX = nullptr, double *trim2StartY = nullptr,
                                double *trim2EndX = nullptr, double *trim2EndY = nullptr,
-                               const double epsilon = 1e-8 ) SIP_HOLDGIL;
+                               const double epsilon = 1e-8 );
 
     /**
      * Creates a fillet (rounded corner) between two line segments.
@@ -634,6 +635,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \note The caller must ensure that filletPointsX and filletPointsY arrays are
      *       large enough to hold exactly 3 points defining the CircularString arc.
      *
+     * \note Not available in Python bindings
      * \since QGIS 4.0
      */
     static bool createFillet( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
@@ -644,6 +646,6 @@ class CORE_EXPORT QgsGeometryUtilsBase
                               double *trim1EndX = nullptr, double *trim1EndY = nullptr,
                               double *trim2StartX = nullptr, double *trim2StartY = nullptr,
                               double *trim2EndX = nullptr, double *trim2EndY = nullptr,
-                              const double epsilon = 1e-8 ) SIP_HOLDGIL;
+                              const double epsilon = 1e-8 );
 #endif
 };
