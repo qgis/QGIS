@@ -878,6 +878,29 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
     layoutProfileElem.appendChild( layersElement );
   }
 
+  {
+    QDomElement sourcesElement = doc.createElement( QStringLiteral( "profileSources" ) );
+    for ( QgsAbstractProfileSource *source : mSources )
+    {
+      if ( source )
+      {
+        if ( QgsApplication::profileSourceRegistry()->findSourceById( source->profileSourceId() ) )
+        {
+          QDomElement sourceElement = doc.createElement( QStringLiteral( "profileCustomSource" ) );
+          sourceElement.setAttribute( QStringLiteral( "id" ), source->profileSourceId() );
+          sourcesElement.appendChild( sourceElement );
+        }
+        else if ( auto layer = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( source ) ) )
+        {
+          QDomElement sourceElement = doc.createElement( QStringLiteral( "profileLayerSource" ) );
+          layer.writeXml( sourceElement, rwContext );
+          sourcesElement.appendChild( sourceElement );
+        }
+      }
+    }
+    layoutProfileElem.appendChild( sourcesElement );
+  }
+
   if ( mSubsectionsSymbol )
   {
     QDomElement subsectionsElement = doc.createElement( QStringLiteral( "subsections" ) );
@@ -938,6 +961,35 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
       mLayers.append( ref );
 
       layerElement = layerElement.nextSiblingElement( QStringLiteral( "layer" ) );
+    }
+  }
+
+  {
+    mSources.clear();
+    const QDomElement sourcesElement = itemElem.firstChildElement( QStringLiteral( "profileSources" ) );
+    QDomElement sourceElement = sourcesElement.firstChildElement();
+    while ( !sourceElement.isNull() )
+    {
+      if ( sourceElement.tagName() == QStringLiteral( "profileCustomSource" ) )
+      {
+        const QString sourceId = sourceElement.attribute( QStringLiteral( "id" ) );
+        if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
+        {
+          mSources.append( profileSource );
+        }
+      }
+      else if ( sourceElement.tagName() == QStringLiteral( "profileLayerSource" ) )
+      {
+        QgsMapLayerRef ref;
+        ref.readXml( sourceElement, context );
+        ref.resolveWeakly( mLayout->project() );
+        if ( ref.get() )
+        {
+          mSources.append( ref.get()->profileSource() );
+        }
+      }
+
+      sourceElement = sourceElement.nextSiblingElement();
     }
   }
 

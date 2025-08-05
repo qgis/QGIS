@@ -19,6 +19,9 @@ from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (
     Qgis,
+    QgsAbstractProfileGenerator,
+    QgsAbstractProfileSource,
+    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsExpressionContextUtils,
     QgsFeature,
@@ -47,6 +50,42 @@ from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
+
+
+class MyDummyProfileGenerator(QgsAbstractProfileGenerator):
+    def __init__(self, request):
+        QgsAbstractProfileGenerator.__init__(self)
+
+    def sourceId(self):
+        return "my-dummy-profile"
+
+    def generateProfile(self, context):
+        return True
+
+    def takeResults(self):
+        return None
+
+
+class MyDummyProfileSourceLegacy(QgsAbstractProfileSource):
+    def __init__(self):
+        QgsAbstractProfileSource.__init__(self)
+
+    def createProfileGenerator(self, request):
+        return MyDummyProfileGenerator(request)
+
+
+class MyDummyProfileSource(QgsAbstractProfileSource):
+    def __init__(self):
+        QgsAbstractProfileSource.__init__(self)
+
+    def createProfileGenerator(self, request):
+        return MyDummyProfileGenerator(request)
+
+    def profileSourceName(self):
+        return "My Dummy Profile"
+
+    def profileSourceId(self):
+        return "my-dummy-profile"
 
 
 class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
@@ -1157,7 +1196,7 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         project.layoutManager().addLayout(layout)
 
-        # test that sources are written/restored
+        # test that custom sources are written/restored
         with tempfile.TemporaryDirectory() as temp_dir:
             self.assertTrue(project.write(os.path.join(temp_dir, "s.qgs")))
 
@@ -1171,10 +1210,11 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
                 if isinstance(i, QgsLayoutItemElevationProfile)
             ][0]
 
-            # TODO:
-            # self.assertEqual(
-            #    [m.profileSourceId() for m in profile2.sources()], [layer2.id(), layer3.id()]
-            # )
+            # See comment above on layer ordering vs. source ordering
+            self.assertEqual(
+                [m.profileSourceId() for m in profile2.sources()],
+                [layer3.id(), layer2.id()],
+            )
             self.assertEqual(
                 [m.id() for m in profile2.layers()], [layer2.id(), layer3.id()]
             )
@@ -1211,6 +1251,61 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         project.layoutManager().addLayout(layout)
 
+        # test that custom sources are written/restored
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.assertTrue(project.write(os.path.join(temp_dir, "s.qgs")))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(os.path.join(temp_dir, "s.qgs")))
+
+            layout2 = p2.layoutManager().printLayouts()[0]
+            profile2 = [
+                i
+                for i in layout2.items()
+                if isinstance(i, QgsLayoutItemElevationProfile)
+            ][0]
+
+            self.assertEqual(
+                [m.profileSourceId() for m in profile2.sources()],
+                [layer2.id(), layer3.id()],
+            )
+
+    def test_custom_sources_legacy(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+
+        self.assertFalse(profile.layers())
+        self.assertFalse(profile.sources())
+
+        layer1 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "france_parts.shp"), "france", "ogr"
+        )
+        self.assertTrue(layer1.isValid())
+        project.addMapLayers([layer1])
+
+        layer2 = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "landsat.tif"), "landsat", "gdal"
+        )
+        self.assertTrue(layer2.isValid())
+        project.addMapLayers([layer2])
+
+        layer3 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "lines.shp"), "lines", "ogr"
+        )
+        self.assertTrue(layer3.isValid())
+        project.addMapLayers([layer3])
+
+        source_legacy = MyDummyProfileSourceLegacy()
+        source_legacy_id = source_legacy.profileSourceId()
+        QgsApplication.profileSourceRegistry().registerProfileSource(source_legacy)
+
+        profile.setSources([source_legacy, layer2, layer3])
+        self.assertEqual(profile.sources(), [source_legacy, layer2, layer3])
+
+        project.layoutManager().addLayout(layout)
+
         # test that sources are written/restored
         with tempfile.TemporaryDirectory() as temp_dir:
             self.assertTrue(project.write(os.path.join(temp_dir, "s.qgs")))
@@ -1225,13 +1320,73 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
                 if isinstance(i, QgsLayoutItemElevationProfile)
             ][0]
 
-            # TODO:
-            # self.assertEqual(
-            #    [m.profileSourceId() for m in profile2.sources()], [layer2.id(), layer3.id()]
-            # )
-            # self.assertEqual(
-            #    [m.id() for m in profile2.layers()], [layer2.id(), layer3.id()]
-            # )
+            self.assertEqual(
+                [m.profileSourceId() for m in profile2.sources()],
+                [source_legacy_id, layer2.id(), layer3.id()],
+            )
+
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(
+            source_legacy_id
+        )
+        self.assertTrue(res)
+
+    def test_custom_sources(self):
+        project = QgsProject()
+        layout = QgsPrintLayout(project)
+        profile = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile)
+
+        self.assertFalse(profile.layers())
+        self.assertFalse(profile.sources())
+
+        layer1 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "france_parts.shp"), "france", "ogr"
+        )
+        self.assertTrue(layer1.isValid())
+        project.addMapLayers([layer1])
+
+        layer2 = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "landsat.tif"), "landsat", "gdal"
+        )
+        self.assertTrue(layer2.isValid())
+        project.addMapLayers([layer2])
+
+        layer3 = QgsVectorLayer(
+            os.path.join(unitTestDataPath(), "lines.shp"), "lines", "ogr"
+        )
+        self.assertTrue(layer3.isValid())
+        project.addMapLayers([layer3])
+
+        source = MyDummyProfileSource()
+        source_id = source.profileSourceId()
+        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
+        profile.setSources([source, layer2, layer3])
+        self.assertEqual(profile.sources(), [source, layer2, layer3])
+
+        project.layoutManager().addLayout(layout)
+
+        # test that custom sources are written/restored
+        with tempfile.TemporaryDirectory() as temp_dir:
+            self.assertTrue(project.write(os.path.join(temp_dir, "s.qgs")))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(os.path.join(temp_dir, "s.qgs")))
+
+            layout2 = p2.layoutManager().printLayouts()[0]
+            profile2 = [
+                i
+                for i in layout2.items()
+                if isinstance(i, QgsLayoutItemElevationProfile)
+            ][0]
+
+            self.assertEqual(
+                [m.profileSourceId() for m in profile2.sources()],
+                [source_id, layer2.id(), layer3.id()],
+            )
+
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(source_id)
+        self.assertTrue(res)
 
 
 if __name__ == "__main__":
