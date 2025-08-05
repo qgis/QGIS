@@ -390,7 +390,7 @@ bool QgsSfcgalGeometry::intersects( const QgsSfcgalGeometry &otherGeom ) const
   return out;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *otherGeom, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsAbstractGeometry *otherGeom ) const
 {
   sfcgal::errorHandler()->clearText( &mLastError );
   sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, &mLastError );
@@ -404,7 +404,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsAbs
   return resultGeom;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsSfcgalGeometry &otherGeom, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsSfcgalGeometry &otherGeom ) const
 {
   sfcgal::errorHandler()->clearText( &mLastError );
   sfcgal::shared_geom result = QgsSfcgalEngine::intersection( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), &mLastError );

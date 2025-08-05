@@ -485,27 +485,25 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Calculate the intersection of this and \a otherGeom.
      *
      * \param otherGeom geometry to perform the operation
-     * \param parameters can be used to specify parameters which control the intersection results
      * \return new geometry
      *
      * If an error was encountered during the operation, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
      */
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const;
 
     /**
      * Calculate the intersection of this and \a otherGeom.
      *
      * \param otherGeom geometry to perform the operation
-     * \param parameters can be used to specify parameters which control the intersection results
      * \return new geometry
      *
      * If an error was encountered during the operation, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
      */
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const;
 
     /**
      * Calculate the combination of this and \a geomList.
