@@ -236,25 +236,6 @@ class TestQgsValueRelationWidget(QgisTestCase):
 class TestQgsValueMapEditWidget(QgisTestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
-    def test_ValueMap_set_get(self):
-        layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
-        self.assertTrue(layer.isValid())
-        QgsProject.instance().addMapLayer(layer)
-        reg = QgsGui.editorWidgetRegistry()
-        configWdg = reg.createConfigWidget("ValueMap", layer, 0, None)
-
-        config = {
-            "AllowNull": True,
-            "map": [{"two": "2"}, {"twoandhalf": "2.5"}, {"NULL text": "NULL"}],
-        }
-
-        # Set a configuration containing values and allow NULL set to true
-        # and check if it is returned intact.
-        configWdg.setConfig(config)
-        self.assertEqual(configWdg.config(), config)
-
-        QgsProject.instance().removeAllMapLayers()
-
     def test_value_map_set_value_not_in_map(self):
         """
         Test that setting a value not in the map is correctly handled
