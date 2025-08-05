@@ -4565,12 +4565,12 @@ QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) 
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::chamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                                  const QgsPoint &seg2Start, const QgsPoint &seg2End,
+QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                  const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                   double distance1, double distance2 ) const
 {
   std::unique_ptr<QgsLineString> result( QgsGeometryUtils::createChamferGeometry(
-      seg1Start, seg1End, seg2Start, seg2End, distance1, distance2 ) );
+      segment1Start, segment1End, segment2Start, segment2End, distance1, distance2 ) );
 
   if ( !result )
   {
@@ -4580,12 +4580,12 @@ QgsGeometry QgsGeometry::chamfer( const QgsPoint &seg1Start, const QgsPoint &seg
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::fillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                                 const QgsPoint &seg2Start, const QgsPoint &seg2End,
+QgsGeometry QgsGeometry::fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                 const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                  double radius, int segments ) const
 {
   std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::createFilletGeometry(
-        seg1Start, seg1End, seg2Start, seg2End, radius, segments ) );
+        segment1Start, segment1End, segment2Start, segment2End, radius, segments ) );
 
   if ( !result )
   {

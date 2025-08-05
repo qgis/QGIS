@@ -739,8 +739,8 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
 }
 
 bool QgsGeometryUtilsBase::createFillet(
-  const double seg1StartX, const double seg1StartY, const double seg1EndX, const double seg1EndY,
-  const double seg2StartX, const double seg2StartY, const double seg2EndX, const double seg2EndY,
+  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+  const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
   const double radius,
   double *filletPointsX, double *filletPointsY,
   double *trim1StartX, double *trim1StartY,
@@ -753,8 +753,8 @@ bool QgsGeometryUtilsBase::createFillet(
   double intersectionX, intersectionY;
   bool isIntersection;
   QgsGeometryUtilsBase::segmentIntersection(
-    seg1StartX, seg1StartY, seg1EndX, seg1EndY,
-    seg2StartX, seg2StartY, seg2EndX, seg2EndY,
+    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
     intersectionX, intersectionY, isIntersection, epsilon, true );
 
   if ( !isIntersection )
@@ -763,10 +763,10 @@ bool QgsGeometryUtilsBase::createFillet(
   }
 
   // Calculate distances from intersection to all segment endpoints
-  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1StartX, seg1StartY );
-  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1EndX, seg1EndY );
-  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2StartX, seg2StartY );
-  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2EndX, seg2EndY );
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1StartX, segment1StartY );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1EndX, segment1EndY );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2StartX, segment2StartY );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2EndX, segment2EndY );
 
   // Determine directional points for angle calculation
   // These points define the rays extending from the intersection
@@ -774,20 +774,20 @@ bool QgsGeometryUtilsBase::createFillet(
 
   if ( dist1ToStart > epsilon )
   {
-    dir1X = seg1StartX; dir1Y = seg1StartY;
+    dir1X = segment1StartX; dir1Y = segment1StartY;
   }
   else
   {
-    dir1X = seg1EndX; dir1Y = seg1EndY;
+    dir1X = segment1EndX; dir1Y = segment1EndY;
   }
 
   if ( dist2ToStart > epsilon )
   {
-    dir2X = seg2StartX; dir2Y = seg2StartY;
+    dir2X = segment2StartX; dir2Y = segment2StartY;
   }
   else
   {
-    dir2X = seg2EndX; dir2Y = seg2EndY;
+    dir2X = segment2EndX; dir2Y = segment2EndY;
   }
 
   // Calculate the angle between the two rays
@@ -823,8 +823,8 @@ bool QgsGeometryUtilsBase::createFillet(
   const double maxDist2 = ( dist2ToStart > epsilon ) ? dist2ToStart : dist2ToEnd;
 
   // Check if intersection is actually on the segments (not just on infinite lines)
-  const double seg1Length = QgsGeometryUtilsBase::distance2D( seg1StartX, seg1StartY, seg1EndX, seg1EndY );
-  const double seg2Length = QgsGeometryUtilsBase::distance2D( seg2StartX, seg2StartY, seg2EndX, seg2EndY );
+  const double seg1Length = QgsGeometryUtilsBase::distance2D( segment1StartX, segment1StartY, segment1EndX, segment1EndY );
+  const double seg2Length = QgsGeometryUtilsBase::distance2D( segment2StartX, segment2StartY, segment2EndX, segment2EndY );
 
   const bool intersectionOnSeg1 = std::abs( ( dist1ToStart + dist1ToEnd ) - seg1Length ) < epsilon;
   const bool intersectionOnSeg2 = std::abs( ( dist2ToStart + dist2ToEnd ) - seg2Length ) < epsilon;
@@ -887,13 +887,13 @@ bool QgsGeometryUtilsBase::createFillet(
   {
     if ( dist1ToStart > epsilon )
     {
-      *trim1StartX = seg1StartX;
-      *trim1StartY = seg1StartY;
+      *trim1StartX = segment1StartX;
+      *trim1StartY = segment1StartY;
     }
     else
     {
-      *trim1StartX = seg1EndX;
-      *trim1StartY = seg1EndY;
+      *trim1StartX = segment1EndX;
+      *trim1StartY = segment1EndY;
     }
     *trim1EndX = T1x;
     *trim1EndY = T1y;
@@ -902,13 +902,13 @@ bool QgsGeometryUtilsBase::createFillet(
   {
     if ( dist2ToStart > epsilon )
     {
-      *trim2StartX = seg2StartX;
-      *trim2StartY = seg2StartY;
+      *trim2StartX = segment2StartX;
+      *trim2StartY = segment2StartY;
     }
     else
     {
-      *trim2StartX = seg2EndX;
-      *trim2StartY = seg2EndY;
+      *trim2StartX = segment2EndX;
+      *trim2StartY = segment2EndY;
     }
     *trim2EndX = T2x;
     *trim2EndY = T2y;
@@ -918,8 +918,8 @@ bool QgsGeometryUtilsBase::createFillet(
 }
 
 bool QgsGeometryUtilsBase::createChamfer(
-  const double seg1StartX, const double seg1StartY, const double seg1EndX, const double seg1EndY,
-  const double seg2StartX, const double seg2StartY, const double seg2EndX, const double seg2EndY,
+  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+  const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
   double distance1, double distance2,
   double &chamferStartX, double &chamferStartY,
   double &chamferEndX, double &chamferEndY,
@@ -941,8 +941,8 @@ bool QgsGeometryUtilsBase::createChamfer(
   double intersectionX, intersectionY;
   bool isIntersection;
   QgsGeometryUtilsBase::segmentIntersection(
-    seg1StartX, seg1StartY, seg1EndX, seg1EndY,
-    seg2StartX, seg2StartY, seg2EndX, seg2EndY,
+    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
     intersectionX, intersectionY, isIntersection, epsilon, true );
 
   if ( !isIntersection )
@@ -955,10 +955,10 @@ bool QgsGeometryUtilsBase::createChamfer(
     distance2 = distance1;
 
   // Calculate distances from intersection to all segment endpoints
-  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1StartX, seg1StartY );
-  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1EndX, seg1EndY );
-  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2StartX, seg2StartY );
-  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2EndX, seg2EndY );
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1StartX, segment1StartY );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1EndX, segment1EndY );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2StartX, segment2StartY );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2EndX, segment2EndY );
 
   // Calculate chamfer points along each segment
   // Choose the endpoint farthest from intersection as direction
@@ -967,7 +967,7 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     QgsGeometryUtilsBase::pointOnLineWithDistance(
       intersectionX, intersectionY,
-      seg1StartX, seg1StartY,
+      segment1StartX, segment1StartY,
       distance1, T1x, T1y
     );
   }
@@ -975,7 +975,7 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     QgsGeometryUtilsBase::pointOnLineWithDistance(
       intersectionX, intersectionY,
-      seg1EndX, seg1EndY,
+      segment1EndX, segment1EndY,
       distance1, T1x, T1y
     );
   }
@@ -985,7 +985,7 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     QgsGeometryUtilsBase::pointOnLineWithDistance(
       intersectionX, intersectionY,
-      seg2StartX, seg2StartY,
+      segment2StartX, segment2StartY,
       distance2, T2x, T2y
     );
   }
@@ -993,7 +993,7 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     QgsGeometryUtilsBase::pointOnLineWithDistance(
       intersectionX, intersectionY,
-      seg2EndX, seg2EndY,
+      segment2EndX, segment2EndY,
       distance2, T2x, T2y
     );
   }
@@ -1008,7 +1008,7 @@ bool QgsGeometryUtilsBase::createChamfer(
     {
       QgsGeometryUtilsBase::pointOnLineWithDistance(
         intersectionX, intersectionY,
-        seg1StartX, seg1StartY,
+        segment1StartX, segment1StartY,
         distToSeg1Target, T1x, T1y
       );
     }
@@ -1016,7 +1016,7 @@ bool QgsGeometryUtilsBase::createChamfer(
     {
       QgsGeometryUtilsBase::pointOnLineWithDistance(
         intersectionX, intersectionY,
-        seg1EndX, seg1EndY,
+        segment1EndX, segment1EndY,
         distToSeg1Target, T1x, T1y
       );
     }
@@ -1028,7 +1028,7 @@ bool QgsGeometryUtilsBase::createChamfer(
     {
       QgsGeometryUtilsBase::pointOnLineWithDistance(
         intersectionX, intersectionY,
-        seg2StartX, seg2StartY,
+        segment2StartX, segment2StartY,
         distToSeg2Target, T2x, T2y
       );
     }
@@ -1036,7 +1036,7 @@ bool QgsGeometryUtilsBase::createChamfer(
     {
       QgsGeometryUtilsBase::pointOnLineWithDistance(
         intersectionX, intersectionY,
-        seg2EndX, seg2EndY,
+        segment2EndX, segment2EndY,
         distToSeg2Target, T2x, T2y
       );
     }
@@ -1052,12 +1052,12 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     if ( dist1ToStart > epsilon )
     {
-      *trim1StartX = seg1StartX; *trim1StartY = seg1StartY;
+      *trim1StartX = segment1StartX; *trim1StartY = segment1StartY;
       *trim1EndX = T1x; *trim1EndY = T1y;
     }
     else
     {
-      *trim1StartX = seg1EndX; *trim1StartY = seg1EndY;
+      *trim1StartX = segment1EndX; *trim1StartY = segment1EndY;
       *trim1EndX = T1x; *trim1EndY = T1y;
     }
   }
@@ -1065,12 +1065,12 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     if ( dist2ToStart > epsilon )
     {
-      *trim2StartX = seg2StartX; *trim2StartY = seg2StartY;
+      *trim2StartX = segment2StartX; *trim2StartY = segment2StartY;
       *trim2EndX = T2x; *trim2EndY = T2y;
     }
     else
     {
-      *trim2StartX = seg2EndX; *trim2StartY = seg2EndY;
+      *trim2StartX = segment2EndX; *trim2StartY = segment2EndY;
       *trim2EndX = T2x; *trim2EndY = T2y;
     }
   }

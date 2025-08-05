@@ -564,14 +564,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * intersection point. The chamfer distances can be specified independently for each
      * segment, allowing for both symmetric and asymmetric chamfers.
      *
-     * \param seg1StartX x-coordinate of first segment start point
-     * \param seg1StartY y-coordinate of first segment start point
-     * \param seg1EndX x-coordinate of first segment end point
-     * \param seg1EndY y-coordinate of first segment end point
-     * \param seg2StartX x-coordinate of second segment start point
-     * \param seg2StartY y-coordinate of second segment start point
-     * \param seg2EndX x-coordinate of second segment end point
-     * \param seg2EndY y-coordinate of second segment end point
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment (if < 0, uses distance1)
      * \param chamferStartX output x-coordinate of chamfer start point
@@ -591,8 +591,8 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static bool createChamfer( const double seg1StartX, const double seg1StartY, const double seg1EndX, const double seg1EndY,
-                               const double seg2StartX, const double seg2StartY, const double seg2EndX, const double seg2EndY,
+    static bool createChamfer( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                               const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
                                const double distance1, const double distance2,
                                double &chamferStartX SIP_OUT, double &chamferStartY SIP_OUT,
                                double &chamferEndX SIP_OUT, double &chamferEndY SIP_OUT,
@@ -609,14 +609,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * intersection point. The fillet returns exactly 3 points defining a CircularString:
      * start point, middle point, and end point of the arc.
      *
-     * \param seg1StartX x-coordinate of first segment start point
-     * \param seg1StartY y-coordinate of first segment start point
-     * \param seg1EndX x-coordinate of first segment end point
-     * \param seg1EndY y-coordinate of first segment end point
-     * \param seg2StartX x-coordinate of second segment start point
-     * \param seg2StartY y-coordinate of second segment start point
-     * \param seg2EndX x-coordinate of second segment end point
-     * \param seg2EndY y-coordinate of second segment end point
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
      * \param radius radius of the fillet arc
      * \param filletPointsX output array of x-coordinates for 3 fillet points (start, middle, end)
      * \param filletPointsY output array of y-coordinates for 3 fillet points (start, middle, end)
@@ -636,8 +636,8 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static bool createFillet( const double seg1StartX, const double seg1StartY, const double seg1EndX, const double seg1EndY,
-                              const double seg2StartX, const double seg2StartY, const double seg2EndX, const double seg2EndY,
+    static bool createFillet( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                              const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
                               const double radius,
                               double *filletPointsX, double *filletPointsY,
                               double *trim1StartX = nullptr, double *trim1StartY = nullptr,

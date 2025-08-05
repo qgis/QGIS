@@ -3220,18 +3220,18 @@ class CORE_EXPORT QgsGeometry
      *
      * This method creates a smooth circular arc connecting two line segments.
      *
-     * \param seg1Start start point of first segment
-     * \param seg1End end point of first segment
-     * \param seg2Start start point of second segment
-     * \param seg2End end point of second segment
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
      * \param radius radius of the fillet arc
      * \param segments number of segments to use for LineString approximation (returns a CircularString when segments = 0)
      * \returns new geometry with fillet applied, or invalid geometry on failure
      *
      * \since QGIS 4.0
      */
-    QgsGeometry fillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                        const QgsPoint &seg2Start, const QgsPoint &seg2End,
+    QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                        const QgsPoint &segment2Start, const QgsPoint &segment2End,
                         double radius, int segments = 8 ) const;
 
     /**
@@ -3254,18 +3254,18 @@ class CORE_EXPORT QgsGeometry
      *
      * This method creates a straight line connecting two line segments at specified distances.
      *
-     * \param seg1Start start point of first segment
-     * \param seg1End end point of first segment
-     * \param seg2Start start point of second segment
-     * \param seg2End end point of second segment
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
      * \param distance1 distance along the first segment from intersection
      * \param distance2 distance along the second segment from intersection (if < 0, uses distance1)
      * \returns new geometry with chamfer applied, or invalid geometry on failure
      *
      * \since QGIS 4.0
      */
-    QgsGeometry chamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                         const QgsPoint &seg2Start, const QgsPoint &seg2End,
+    QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                         const QgsPoint &segment2Start, const QgsPoint &segment2End,
                          double distance1, double distance2 = -1.0 ) const;
 
 

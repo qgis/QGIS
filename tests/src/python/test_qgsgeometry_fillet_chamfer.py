@@ -43,13 +43,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1 0, 0 0, 0 1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
 
         expected_wkt = "LineString (1 0, 0.1 0, 0 0.1, 0 1)"
@@ -61,13 +61,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0 1, 0 0, -1 0)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 1.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(-1.0, 0.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.0, 1.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(-1.0, 0.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
 
         expected_wkt = "LineString (0 1, 0 0.1, -0.1 0, -1 0)"
@@ -79,13 +79,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (-1 0, 0 0, 0 -1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(-1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, -1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(-1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, -1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
 
         expected_wkt = "LineString (-1 0, -0.1 0, 0 -0.1, 0 -1)"
@@ -97,13 +97,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0 -1, 0 0, 1 0)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, -1.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(1.0, 0.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.0, -1.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(1.0, 0.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
 
         expected_wkt = "LineString (0 -1, 0 -0.1, 0.1 0, 1 0)"
@@ -114,12 +114,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("MultiLineString ((0 0, 10 0), (5 1, 5 5))")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 0.0)
-        seg1_end = QgsPoint(10.0, 0.0)
-        seg2_start = QgsPoint(5.0, 1.0)
-        seg2_end = QgsPoint(5.0, 5.0)
+        segment1_start = QgsPoint(0.0, 0.0)
+        segment1_end = QgsPoint(10.0, 0.0)
+        segment2_start = QgsPoint(5.0, 1.0)
+        segment2_end = QgsPoint(5.0, 5.0)
 
-        result = QgsGeometry().chamfer(seg1_start, seg1_end, seg2_start, seg2_end, 1, 1)
+        result = QgsGeometry().chamfer(
+            segment1_start, segment1_end, segment2_start, segment2_end, 1, 1
+        )
 
         expected_wkt = "LineString (0 0, 4 0, 5 1, 5 1)"
         self.assertEqual(result.asWkt(1), expected_wkt)
@@ -129,12 +131,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("MultiLineString ((0 0, 2 0), (5 1, 5 5))")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 0.0)
-        seg1_end = QgsPoint(2.0, 0.0)
-        seg2_start = QgsPoint(5.0, 1.0)
-        seg2_end = QgsPoint(5.0, 5.0)
+        segment1_start = QgsPoint(0.0, 0.0)
+        segment1_end = QgsPoint(2.0, 0.0)
+        segment2_start = QgsPoint(5.0, 1.0)
+        segment2_end = QgsPoint(5.0, 5.0)
 
-        result = QgsGeometry().chamfer(seg1_start, seg1_end, seg2_start, seg2_end, 1, 1)
+        result = QgsGeometry().chamfer(
+            segment1_start, segment1_end, segment2_start, segment2_end, 1, 1
+        )
 
         expected_wkt = "LineString (0 0, 4 0, 5 1, 5 1)"
         self.assertEqual(result.asWkt(1), expected_wkt)
@@ -145,13 +149,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (2 0, 0 0, 0 3)")
 
         # Extract segment points
-        seg1_start = QgsPoint(2.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 3.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(2.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 3.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.5, 0.3
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.5, 0.3
         )
 
         expected_wkt = "LineString (2 0, 0.5 0, 0 0.3, 0 3)"
@@ -163,12 +167,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1 0, 0 0, 0 1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().chamfer(seg1_start, seg1_end, seg2_start, seg2_end, 0.15)
+        result = QgsGeometry().chamfer(
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.15
+        )
 
         expected_wkt = "LineString (1 0, 0.15 0, 0 0.15, 0 1)"
         self.assertEqual(result.asWkt(2), expected_wkt)
@@ -179,13 +185,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineStringZ (1 0 10, 0 0 0, 0 1 5)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0, 10.0)
-        seg1_end = QgsPoint(0.0, 0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0, 5.0)
-        seg2_end = QgsPoint(0.0, 0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0, 10.0)
+        segment1_end = QgsPoint(0.0, 0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0, 5.0)
+        segment2_end = QgsPoint(0.0, 0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.2, 0.2
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.2, 0.2
         )
 
         expected_wkt = "LineString Z (1 0 10, 0.2 0 2, 0 0.2 1, 0 1 5)"
@@ -197,13 +203,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineStringM (1 0 100, 0 0 0, 0 1 50)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0, m=100.0)
-        seg1_end = QgsPoint(0.0, 0.0, m=0.0)
-        seg2_start = QgsPoint(0.0, 1.0, m=50.0)
-        seg2_end = QgsPoint(0.0, 0.0, m=0.0)
+        segment1_start = QgsPoint(1.0, 0.0, m=100.0)
+        segment1_end = QgsPoint(0.0, 0.0, m=0.0)
+        segment2_start = QgsPoint(0.0, 1.0, m=50.0)
+        segment2_end = QgsPoint(0.0, 0.0, m=0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
 
         expected_wkt = "LineString M (1 0 100, 0.1 0 10, 0 0.1 5, 0 1 50)"
@@ -215,13 +221,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("MultiLineString ((0 0, 1 0), (0 1, 1 1))")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 0.0)
-        seg1_end = QgsPoint(1.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(1.0, 1.0)
+        segment1_start = QgsPoint(0.0, 0.0)
+        segment1_end = QgsPoint(1.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(1.0, 1.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
 
         self.assertTrue(result.isEmpty())
@@ -232,13 +238,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1 0, 0 0, 0 1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, -0.1, 0.1
+            segment1_start, segment1_end, segment2_start, segment2_end, -0.1, 0.1
         )
 
         self.assertTrue(result.isEmpty())
@@ -313,12 +319,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("MultiLineString ((0 0, 10 0), (5 1, 5 5))")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 0.0)
-        seg1_end = QgsPoint(10.0, 0.0)
-        seg2_start = QgsPoint(5.0, 1.0)
-        seg2_end = QgsPoint(5.0, 5.0)
+        segment1_start = QgsPoint(0.0, 0.0)
+        segment1_end = QgsPoint(10.0, 0.0)
+        segment2_start = QgsPoint(5.0, 1.0)
+        segment2_end = QgsPoint(5.0, 5.0)
 
-        result = QgsGeometry().fillet(seg1_start, seg1_end, seg2_start, seg2_end, 1, 0)
+        result = QgsGeometry().fillet(
+            segment1_start, segment1_end, segment2_start, segment2_end, 1, 0
+        )
 
         expected_wkt = (
             "CompoundCurve ((0 0, 4 0),CircularString (4 0, 4.7 0.3, 5 1),(5 1, 5 5))"
@@ -330,12 +338,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("MultiLineString ((0 0, 2 0), (5 1, 5 5))")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 0.0)
-        seg1_end = QgsPoint(2.0, 0.0)
-        seg2_start = QgsPoint(5.0, 1.0)
-        seg2_end = QgsPoint(5.0, 5.0)
+        segment1_start = QgsPoint(0.0, 0.0)
+        segment1_end = QgsPoint(2.0, 0.0)
+        segment2_start = QgsPoint(5.0, 1.0)
+        segment2_end = QgsPoint(5.0, 5.0)
 
-        result = QgsGeometry().fillet(seg1_start, seg1_end, seg2_start, seg2_end, 1, 0)
+        result = QgsGeometry().fillet(
+            segment1_start, segment1_end, segment2_start, segment2_end, 1, 0
+        )
 
         expected_wkt = (
             "CompoundCurve ((0 0, 4 0),CircularString (4 0, 4.7 0.3, 5 1),(5 1, 5 5))"
@@ -348,13 +358,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1 0, 0 0, 0 1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0
         )
 
         expected_wkt = "CompoundCurve ((1 0, 0.1 0),CircularString (0.1 0, 0.03 0.03, 0 0.1),(0 0.1, 0 1))"
@@ -366,13 +376,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0 1, 0 0, -1 0)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 1.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(-1.0, 0.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.0, 1.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(-1.0, 0.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
@@ -386,13 +396,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (-1 0, 0 0, 0 -1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(-1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, -1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(-1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, -1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
@@ -406,13 +416,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0 -1, 0 0, 1 0)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, -1.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(1.0, 0.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.0, -1.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(1.0, 0.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
@@ -426,13 +436,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1 0, 0 0, 0 1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 8
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 8
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.LineString)
@@ -454,13 +464,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0 1, 0 0, -1 0)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, 1.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(-1.0, 0.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.0, 1.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(-1.0, 0.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 8
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 8
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.LineString)
@@ -482,13 +492,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (-1 0, 0 0, 0 -1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(-1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, -1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(-1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, -1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 8
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 8
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.LineString)
@@ -510,13 +520,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0 -1, 0 0, 1 0)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.0, -1.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(1.0, 0.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.0, -1.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(1.0, 0.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 8
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 8
         )
 
         self.assertEqual(result.wkbType(), QgsWkbTypes.LineString)
@@ -538,13 +548,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineStringZ (1 0 10, 0 0 0, 0 1 8)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0, 10.0)
-        seg1_end = QgsPoint(0.0, 0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0, 8.0)
-        seg2_end = QgsPoint(0.0, 0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0, 10.0)
+        segment1_end = QgsPoint(0.0, 0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0, 8.0)
+        segment2_end = QgsPoint(0.0, 0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0
         )
 
         expected_wkt = "CompoundCurve Z ((1 0 10, 0.1 0 1),CircularString Z (0.1 0 1, 0.03 0.03 0.9, 0 0.1 0.8),(0 0.1 0.8, 0 1 8))"
@@ -556,12 +566,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0.1 0, 0 0, 0 0.1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.1, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 0.1)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.1, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 0.1)
+        segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().fillet(seg1_start, seg1_end, seg2_start, seg2_end, 1.0)
+        result = QgsGeometry().fillet(
+            segment1_start, segment1_end, segment2_start, segment2_end, 1.0
+        )
 
         self.assertTrue(result.isEmpty())
 
@@ -571,12 +583,14 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1 0, 0 0, 0 1)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().fillet(seg1_start, seg1_end, seg2_start, seg2_end, 0.0)
+        result = QgsGeometry().fillet(
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.0
+        )
 
         self.assertTrue(result.isEmpty())
 
@@ -586,13 +600,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (2 0, 0 0, 1 1.732)")
 
         # Extract segment points
-        seg1_start = QgsPoint(2.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(1.0, 1.732)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(2.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(1.0, 1.732)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.1, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0
         )
 
         expected_wkt = "CompoundCurve ((2 0, 0.17 0),CircularString (0.17 0, 0.09 0.05, 0.09 0.15),(0.09 0.15, 1 1.73))"
@@ -741,13 +755,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0.001 0, 0 0, 0 0.001)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.001, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 0.001)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.001, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 0.001)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.0001, 0.0001
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.0001, 0.0001
         )
 
         expected_wkt = "LineString (0 0, 0 0, 0 0, 0 0)"
@@ -759,13 +773,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (0.001 0, 0 0, 0 0.001)")
 
         # Extract segment points
-        seg1_start = QgsPoint(0.001, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 0.001)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(0.001, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 0.001)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 0.0001, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 0.0001, 0
         )
 
         expected_wkt = (
@@ -779,13 +793,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1000 0, 0 0, 0 1000)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1000.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1000.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1000.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1000.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().chamfer(
-            seg1_start, seg1_end, seg2_start, seg2_end, 10.0, 10.0
+            segment1_start, segment1_end, segment2_start, segment2_end, 10.0, 10.0
         )
 
         expected_wkt = "LineString (1000 0, 10 0, 0 10, 0 1000)"
@@ -797,13 +811,13 @@ class TestQgsGeometry(QgisTestCase):
         original_geom = QgsGeometry.fromWkt("LineString (1000 0, 0 0, 0 1000)")
 
         # Extract segment points
-        seg1_start = QgsPoint(1000.0, 0.0)
-        seg1_end = QgsPoint(0.0, 0.0)
-        seg2_start = QgsPoint(0.0, 1000.0)
-        seg2_end = QgsPoint(0.0, 0.0)
+        segment1_start = QgsPoint(1000.0, 0.0)
+        segment1_end = QgsPoint(0.0, 0.0)
+        segment2_start = QgsPoint(0.0, 1000.0)
+        segment2_end = QgsPoint(0.0, 0.0)
 
         result = QgsGeometry().fillet(
-            seg1_start, seg1_end, seg2_start, seg2_end, 10.0, 0
+            segment1_start, segment1_end, segment2_start, segment2_end, 10.0, 0
         )
 
         expected_wkt = "CompoundCurve ((1000 0, 10 0),CircularString (10 0, 2.93 2.93, 0 10),(0 10, 0 1000))"

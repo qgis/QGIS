@@ -1288,22 +1288,22 @@ class CORE_EXPORT QgsGeometryUtils
      * Interpolates a point on a segment with proper Z and M value interpolation.
      * \param x x-coordinate of the point to interpolate
      * \param y y-coordinate of the point to interpolate
-     * \param segStart start point of the segment
-     * \param segEnd end point of the segment
+     * \param segmentStart start point of the segment
+     * \param segmentEnd end point of the segment
      * \param distanceFromStart distance from segment start to the interpolated point
      * \returns QgsPoint with proper Z and M interpolation
      * \since QGIS 4.0
      */
     static QgsPoint interpolatePointOnSegment( double x, double y,
-        const QgsPoint &segStart, const QgsPoint &segEnd,
+        const QgsPoint &segmentStart, const QgsPoint &segmentEnd,
         double distanceFromStart ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer between two line segments using QgsPoint.
-     * \param seg1Start start point of first segment
-     * \param seg1End end point of first segment
-     * \param seg2Start start point of second segment
-     * \param seg2End end point of second segment
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment (if negative, uses distance1)
      * \param chamferStart calculated start point of the chamfer
@@ -1312,8 +1312,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns true if chamfer was successfully created
      * \since QGIS 4.0
      */
-    static bool createChamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                               const QgsPoint &seg2Start, const QgsPoint &seg2End,
+    static bool createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                               const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                double distance1, double distance2,
                                QgsPoint &chamferStart SIP_OUT, QgsPoint &chamferEnd SIP_OUT,
                                double epsilon = 1e-8 ) SIP_HOLDGIL;
@@ -1321,10 +1321,10 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Creates a fillet (rounded corner) between two line segments using QgsPoint.
      * Returns the three fillet arc points via output parameters.
-     * \param seg1Start start point of first segment
-     * \param seg1End end point of first segment
-     * \param seg2Start start point of second segment
-     * \param seg2End end point of second segment
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
      * \param radius fillet radius
      * \param filletPoint1 first tangent point of the fillet arc
      * \param filletMidPoint midpoint of the fillet arc
@@ -1333,8 +1333,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns true if fillet was successfully created
      * \since QGIS 4.0
      */
-    static bool createFillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                              const QgsPoint &seg2Start, const QgsPoint &seg2End,
+    static bool createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                              const QgsPoint &segment2Start, const QgsPoint &segment2End,
                               double radius,
                               QgsPoint &filletPoint1 SIP_OUT,
                               QgsPoint &filletMidPoint SIP_OUT,
@@ -1343,34 +1343,34 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Creates a complete chamfer geometry connecting two segments.
-     * \param seg1Start start point of first segment
-     * \param seg1End end point of first segment
-     * \param seg2Start start point of second segment
-     * \param seg2End end point of second segment
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment (if negative, uses distance1)
      * \returns QgsLineString geometry connecting the segments through the chamfer
      * \since QGIS 4.0
      */
     static QgsLineString *createChamferGeometry(
-      const QgsPoint &seg1Start, const QgsPoint &seg1End,
-      const QgsPoint &seg2Start, const QgsPoint &seg2End,
+      const QgsPoint &segment1Start, const QgsPoint &segment1End,
+      const QgsPoint &segment2Start, const QgsPoint &segment2End,
       double distance1, double distance2 ) SIP_FACTORY;
 
     /**
      * Creates a complete fillet geometry connecting two segments.
-     * \param seg1Start start point of first segment
-     * \param seg1End end point of first segment
-     * \param seg2Start start point of second segment
-     * \param seg2End end point of second segment
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
      * \param radius fillet radius
      * \param segments number of segments for arc discretization (≤0 for circular arc)
      * \returns geometry connecting the segments through the fillet
      * \since QGIS 4.0
      */
     static QgsAbstractGeometry *createFilletGeometry(
-      const QgsPoint &seg1Start, const QgsPoint &seg1End,
-      const QgsPoint &seg2Start, const QgsPoint &seg2End,
+      const QgsPoint &segment1Start, const QgsPoint &segment1End,
+      const QgsPoint &segment2Start, const QgsPoint &segment2End,
       double radius, int segments ) SIP_FACTORY;
 
     /**
@@ -1404,8 +1404,8 @@ class CORE_EXPORT QgsGeometryUtils
      * This method is not available in Python bindings.
      * \note Not available in Python bindings.
      */
-    static bool createFilletArray( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                                   const QgsPoint &seg2Start, const QgsPoint &seg2End,
+    static bool createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                   const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                    double radius,
                                    QgsPoint filletPoints[3],
                                    double epsilon = 1e-8 ) SIP_SKIP;

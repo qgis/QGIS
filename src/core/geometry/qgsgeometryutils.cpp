@@ -1279,31 +1279,31 @@ QgsPoint QgsGeometryUtils::createPointWithMatchingDimensions( double x, double y
 }
 
 QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
-    const QgsPoint &segStart, const QgsPoint &segEnd,
+    const QgsPoint &segmentStart, const QgsPoint &segmentEnd,
     double distanceFromStart )
 {
-  QgsPoint result = createPointWithMatchingDimensions( x, y, segStart );
+  QgsPoint result = createPointWithMatchingDimensions( x, y, segmentStart );
 
-  if ( segStart.is3D() && segEnd.is3D() && result.is3D() )
+  if ( segmentStart.is3D() && segmentEnd.is3D() && result.is3D() )
   {
-    double z1 = segStart.z();
-    double z2 = segEnd.z();
+    double z1 = segmentStart.z();
+    double z2 = segmentEnd.z();
     double interpolatedZ;
     double tempX, tempY;
     QgsGeometryUtilsBase::pointOnLineWithDistance(
-      segStart.x(), segStart.y(), segEnd.x(), segEnd.y(),
+      segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(),
       distanceFromStart, tempX, tempY, &z1, &z2, &interpolatedZ );
     result.setZ( interpolatedZ );
   }
 
-  if ( segStart.isMeasure() && segEnd.isMeasure() && result.isMeasure() )
+  if ( segmentStart.isMeasure() && segmentEnd.isMeasure() && result.isMeasure() )
   {
-    double m1 = segStart.m();
-    double m2 = segEnd.m();
+    double m1 = segmentStart.m();
+    double m2 = segmentEnd.m();
     double interpolatedM;
     double tempX, tempY;
     QgsGeometryUtilsBase::pointOnLineWithDistance(
-      segStart.x(), segStart.y(), segEnd.x(), segEnd.y(),
+      segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(),
       distanceFromStart, tempX, tempY, nullptr, nullptr, nullptr, &m1, &m2, &interpolatedM );
     result.setM( interpolatedM );
   }
@@ -1311,8 +1311,8 @@ QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
   return result;
 }
 
-bool QgsGeometryUtils::createChamfer( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                                      const QgsPoint &seg2Start, const QgsPoint &seg2End,
+bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                      const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                       double distance1, double distance2,
                                       QgsPoint &chamferStart, QgsPoint &chamferEnd,
                                       double epsilon )
@@ -1329,8 +1329,8 @@ bool QgsGeometryUtils::createChamfer( const QgsPoint &seg1Start, const QgsPoint 
   double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
 
   if ( !QgsGeometryUtilsBase::createChamfer(
-         seg1Start.x(), seg1Start.y(), seg1End.x(), seg1End.y(),
-         seg2Start.x(), seg2Start.y(), seg2End.x(), seg2End.y(),
+         segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+         segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
          distance1, distance2,
          chamferStartX, chamferStartY,
          chamferEndX, chamferEndY,
@@ -1341,16 +1341,16 @@ bool QgsGeometryUtils::createChamfer( const QgsPoint &seg1Start, const QgsPoint 
     return false;
   }
 
-  chamferStart = interpolatePointOnSegment( chamferStartX, chamferStartY, seg1Start, seg1End,
-                 seg1Start.distance( QgsPoint( chamferStartX, chamferStartY ) ) );
-  chamferEnd = interpolatePointOnSegment( chamferEndX, chamferEndY, seg2Start, seg2End,
-                                          seg2Start.distance( QgsPoint( chamferEndX, chamferEndY ) ) );
+  chamferStart = interpolatePointOnSegment( chamferStartX, chamferStartY, segment1Start, segment1End,
+                 segment1Start.distance( QgsPoint( chamferStartX, chamferStartY ) ) );
+  chamferEnd = interpolatePointOnSegment( chamferEndX, chamferEndY, segment2Start, segment2End,
+                                          segment2Start.distance( QgsPoint( chamferEndX, chamferEndY ) ) );
 
   return true;
 }
 
-bool QgsGeometryUtils::createFillet( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-                                     const QgsPoint &seg2Start, const QgsPoint &seg2End,
+bool QgsGeometryUtils::createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                     const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                      double radius,
                                      QgsPoint &filletPoint1,
                                      QgsPoint &filletMidPoint,
@@ -1364,8 +1364,8 @@ bool QgsGeometryUtils::createFillet( const QgsPoint &seg1Start, const QgsPoint &
   double filletPointsX[3], filletPointsY[3];
 
   if ( !QgsGeometryUtilsBase::createFillet(
-         seg1Start.x(), seg1Start.y(), seg1End.x(), seg1End.y(),
-         seg2Start.x(), seg2Start.y(), seg2End.x(), seg2End.y(),
+         segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+         segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
          radius,
          filletPointsX, filletPointsY,
          nullptr, nullptr, nullptr, nullptr,
@@ -1375,18 +1375,18 @@ bool QgsGeometryUtils::createFillet( const QgsPoint &seg1Start, const QgsPoint &
     return false;
   }
 
-  filletPoint1 = interpolatePointOnSegment( filletPointsX[0], filletPointsY[0], seg1Start, seg1End,
-                 seg1Start.distance( QgsPoint( filletPointsX[0], filletPointsY[0] ) ) );
-  filletMidPoint = createPointWithMatchingDimensions( filletPointsX[1], filletPointsY[1], seg1Start );
-  filletPoint2 = interpolatePointOnSegment( filletPointsX[2], filletPointsY[2], seg2Start, seg2End,
-                 seg2Start.distance( QgsPoint( filletPointsX[2], filletPointsY[2] ) ) );
+  filletPoint1 = interpolatePointOnSegment( filletPointsX[0], filletPointsY[0], segment1Start, segment1End,
+                 segment1Start.distance( QgsPoint( filletPointsX[0], filletPointsY[0] ) ) );
+  filletMidPoint = createPointWithMatchingDimensions( filletPointsX[1], filletPointsY[1], segment1Start );
+  filletPoint2 = interpolatePointOnSegment( filletPointsX[2], filletPointsY[2], segment2Start, segment2End,
+                 segment2Start.distance( QgsPoint( filletPointsX[2], filletPointsY[2] ) ) );
 
   // Interpolate Z and M for midpoint
-  if ( seg1Start.is3D() && seg1End.is3D() && seg2Start.is3D() && seg2End.is3D() )
+  if ( segment1Start.is3D() && segment1End.is3D() && segment2Start.is3D() && segment2End.is3D() )
   {
     filletMidPoint.setZ( ( filletPoint1.z() + filletPoint2.z() ) / 2.0 );
   }
-  if ( seg1Start.isMeasure() && seg1End.isMeasure() && seg2Start.isMeasure() && seg2End.isMeasure() )
+  if ( segment1Start.isMeasure() && segment1End.isMeasure() && segment2Start.isMeasure() && segment2End.isMeasure() )
   {
     filletMidPoint.setM( ( filletPoint1.m() + filletPoint2.m() ) / 2.0 );
   }
@@ -1394,14 +1394,14 @@ bool QgsGeometryUtils::createFillet( const QgsPoint &seg1Start, const QgsPoint &
   return true;
 }
 
-bool QgsGeometryUtils::createFilletArray( const QgsPoint &seg1Start, const QgsPoint &seg1End,
-    const QgsPoint &seg2Start, const QgsPoint &seg2End,
+bool QgsGeometryUtils::createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+    const QgsPoint &segment2Start, const QgsPoint &segment2End,
     double radius,
     QgsPoint filletPoints[3],
     double epsilon )
 {
   QgsPoint p1, p2, p3;
-  if ( createFillet( seg1Start, seg1End, seg2Start, seg2End, radius, p1, p2, p3, epsilon ) )
+  if ( createFillet( segment1Start, segment1End, segment2Start, segment2End, radius, p1, p2, p3, epsilon ) )
   {
     filletPoints[0] = p1;
     filletPoints[1] = p2;
@@ -1412,47 +1412,47 @@ bool QgsGeometryUtils::createFilletArray( const QgsPoint &seg1Start, const QgsPo
 }
 
 QgsLineString *QgsGeometryUtils::createChamferGeometry(
-  const QgsPoint &seg1Start, const QgsPoint &seg1End,
-  const QgsPoint &seg2Start, const QgsPoint &seg2End,
+  const QgsPoint &segment1Start, const QgsPoint &segment1End,
+  const QgsPoint &segment2Start, const QgsPoint &segment2End,
   double distance1, double distance2 )
 {
   QgsPoint chamferStart, chamferEnd;
-  if ( !createChamfer( seg1Start, seg1End, seg2Start, seg2End, distance1, distance2, chamferStart, chamferEnd ) )
+  if ( !createChamfer( segment1Start, segment1End, segment2Start, segment2End, distance1, distance2, chamferStart, chamferEnd ) )
     return nullptr;
 
   QgsLineString *completeLine = new QgsLineString();
-  completeLine->addVertex( seg1Start );     // Start of first segment
+  completeLine->addVertex( segment1Start );     // Start of first segment
   completeLine->addVertex( chamferStart );  // First chamfer point
   completeLine->addVertex( chamferEnd );    // Second chamfer point
-  completeLine->addVertex( seg2Start );     // Start of second segment
+  completeLine->addVertex( segment2Start );     // Start of second segment
 
   return completeLine;
 }
 
 QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
-  const QgsPoint &seg1Start, const QgsPoint &seg1End,
-  const QgsPoint &seg2Start, const QgsPoint &seg2End,
+  const QgsPoint &segment1Start, const QgsPoint &segment1End,
+  const QgsPoint &segment2Start, const QgsPoint &segment2End,
   double radius, int segments )
 {
   QgsPoint filletPoints[3];
-  if ( !createFilletArray( seg1Start, seg1End, seg2Start, seg2End, radius, filletPoints ) )
+  if ( !createFilletArray( segment1Start, segment1End, segment2Start, segment2End, radius, filletPoints ) )
     return nullptr;
 
   // Calculate far endpoints for complete geometry
   double intersectionX, intersectionY;
   bool isIntersection;
   QgsGeometryUtilsBase::segmentIntersection(
-    seg1Start.x(), seg1Start.y(), seg1End.x(), seg1End.y(),
-    seg2Start.x(), seg2Start.y(), seg2End.x(), seg2End.y(),
+    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
     intersectionX, intersectionY, isIntersection, 1e-8, true );
 
-  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1Start.x(), seg1Start.y() );
-  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg1End.x(), seg1End.y() );
-  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2Start.x(), seg2Start.y() );
-  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, seg2End.x(), seg2End.y() );
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1Start.x(), segment1Start.y() );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1End.x(), segment1End.y() );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2Start.x(), segment2Start.y() );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2End.x(), segment2End.y() );
 
-  const QgsPoint seg1FarEnd = ( dist1ToStart < dist1ToEnd ) ? seg1End : seg1Start;
-  const QgsPoint seg2FarEnd = ( dist2ToStart < dist2ToEnd ) ? seg2End : seg2Start;
+  const QgsPoint segment1FarEnd = ( dist1ToStart < dist1ToEnd ) ? segment1End : segment1Start;
+  const QgsPoint segment2FarEnd = ( dist2ToStart < dist2ToEnd ) ? segment2End : segment2Start;
 
   if ( segments <= 0 )
   {
@@ -1461,7 +1461,7 @@ QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
 
     // First linear segment
     QgsLineString *firstSegment = new QgsLineString();
-    firstSegment->addVertex( seg1FarEnd );
+    firstSegment->addVertex( segment1FarEnd );
     firstSegment->addVertex( filletPoints[0] );
     completeCurve->addCurve( firstSegment );
 
@@ -1473,7 +1473,7 @@ QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
     // Last linear segment
     QgsLineString *lastSegment = new QgsLineString();
     lastSegment->addVertex( filletPoints[2] );
-    lastSegment->addVertex( seg2FarEnd );
+    lastSegment->addVertex( segment2FarEnd );
     completeCurve->addCurve( lastSegment );
 
     return completeCurve;
@@ -1483,7 +1483,7 @@ QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
     // Return segmented LineString
     QgsLineString *completeLine = new QgsLineString();
 
-    completeLine->addVertex( seg1FarEnd );
+    completeLine->addVertex( segment1FarEnd );
 
     // Convert circular arc to line segments with specified number of segments
     QgsCircularString tempArc;
@@ -1500,7 +1500,7 @@ QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
       completeLine->addVertex( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
 
-    completeLine->addVertex( seg2FarEnd );
+    completeLine->addVertex( segment2FarEnd );
 
     return completeLine;
   }
