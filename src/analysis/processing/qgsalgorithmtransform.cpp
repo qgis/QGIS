@@ -152,7 +152,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
 
       const QString msg = QObject::tr( "Coordinate transformation failed for feature id %1 (likely due to missing or inaccessible grid shift file). Error details: %2" )
                             .arg( f.id() )
-                            .arg( QString::fromUtf8( ex.what() ) );
+                            .arg( ex.what() );
       throw QgsProcessingException( msg );
     }
   }
