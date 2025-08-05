@@ -693,3 +693,7 @@ if (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServerConfigCache test_qgsserver_configcache.py)
   ADD_PYTHON_TEST(PyQgsServerWMSGetCapabilitiesGroupName test_qgsserver_wms_getcapabilities_group_name.py)
 endif()
+
+if (WITH_SFCGAL)
+  ADD_PYTHON_TEST(PyQgsSfcgal test_qgssfcgal.py)
+endif()
