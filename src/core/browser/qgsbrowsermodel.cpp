@@ -426,6 +426,9 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( !model )
     return QModelIndex();
 
+  // Normalize path separators to forward slashes for consistent comparison
+  QString normalizedPath = QString( path ).replace( '\\', '/' );
+
   QModelIndex index; // starting from root
   bool foundChild = true;
 
@@ -438,14 +441,14 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
       QModelIndex idx = model->index( i, 0, index );
 
       QString itemPath = model->data( idx, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
-      if ( itemPath == path )
+      if ( itemPath == normalizedPath )
       {
         QgsDebugMsgLevel( "Arrived " + itemPath, 4 );
         return idx; // we have found the item we have been looking for
       }
 
       // paths are slash separated identifier
-      if ( path.startsWith( itemPath + '/' ) )
+      if ( normalizedPath.startsWith( itemPath + '/' ) )
       {
         foundChild = true;
         index = idx;
