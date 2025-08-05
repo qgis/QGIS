@@ -1284,7 +1284,7 @@ QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
 {
   QgsPoint result = createPointWithMatchingDimensions( x, y, segmentStart );
 
-  if ( segmentStart.is3D() && segmentEnd.is3D() && result.is3D() )
+  if ( segmentStart.is3D() && segmentEnd.is3D() )
   {
     double z1 = segmentStart.z();
     double z2 = segmentEnd.z();
@@ -1296,7 +1296,7 @@ QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
     result.setZ( interpolatedZ );
   }
 
-  if ( segmentStart.isMeasure() && segmentEnd.isMeasure() && result.isMeasure() )
+  if ( segmentStart.isMeasure() && segmentEnd.isMeasure() )
   {
     double m1 = segmentStart.m();
     double m2 = segmentEnd.m();
