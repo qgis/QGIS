@@ -417,14 +417,14 @@ Calculate the intersection of this and ``otherGeom``.
          - errorMsg: Error message returned by SFGCAL
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const;
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Calculate the combination of this and ``geomList``.
 
 :param geomList: list of geometries to perform the operation
-:param errorMsg: Error message returned by SFGCAL
 
-:return: new geometry
+:return: - new geometry
+         - errorMsg: Error message returned by SFGCAL
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom, QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
