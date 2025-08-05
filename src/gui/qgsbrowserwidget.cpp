@@ -584,13 +584,16 @@ void QgsBrowserWidget::navigateToPath()
   if ( path.isEmpty() )
     return;
 
+  
   const QString normalizedPath = QDir::cleanPath( path );
+  
+  const QString displayPath = QDir::toNativeSeparators( normalizedPath );
   
   if ( !QFileInfo::exists( normalizedPath ) )
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Path does not exist: %1" ).arg( normalizedPath ) );
+      mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Path does not exist: %1" ).arg( displayPath ) );
     }
     return;
   }
@@ -603,7 +606,7 @@ void QgsBrowserWidget::navigateToPath()
     mLeLocationBar->clear();
     if ( mMessageBar )
     {
-      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( normalizedPath ) );
+      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
     }
     return;
   }
@@ -619,7 +622,7 @@ void QgsBrowserWidget::navigateToPath()
       mLeLocationBar->clear();
       if ( mMessageBar )
       {
-        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( normalizedPath ) );
+        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
       }
       return;
     }
@@ -636,7 +639,7 @@ void QgsBrowserWidget::navigateToPath()
         mLeLocationBar->clear();
         if ( mMessageBar )
         {
-          mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( normalizedPath ) );
+          mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
         }
         return;
       }
@@ -652,7 +655,7 @@ void QgsBrowserWidget::navigateToPath()
       mLeLocationBar->clear();
       if ( mMessageBar )
       {
-        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( normalizedPath ) );
+        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
       }
       return;
     }
@@ -660,7 +663,7 @@ void QgsBrowserWidget::navigateToPath()
   
   if ( mMessageBar )
   {
-    mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser." ).arg( normalizedPath ) );
+    mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser." ).arg( displayPath ) );
   }
 }
 

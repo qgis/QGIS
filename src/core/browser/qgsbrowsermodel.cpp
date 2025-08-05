@@ -426,7 +426,6 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( !model )
     return QModelIndex();
 
-  
   QString normalizedPath = QString( path ).replace( '\\', '/' );
 
   QModelIndex index; // starting from root
