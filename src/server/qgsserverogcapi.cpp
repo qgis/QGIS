@@ -61,20 +61,20 @@ void QgsServerOgcApi::registerHandler( QgsServerOgcApiHandler *handler )
   mHandlers.emplace_back( std::move( hp ) );
 }
 
-QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
+QUrl QgsServerOgcApi::sanitizeUrl( const QString &url )
 {
   // Since QT 5.12 NormalizePathSegments does not collapse double slashes
-  QUrl u { url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments ) };
-  if ( u.path().contains( QLatin1String( "//" ) ) )
+  QString u = url;
+  if ( u.contains( QLatin1String( "//" ) ) )
   {
-    u.setPath( u.path().replace( QLatin1String( "//" ), QChar( '/' ) ) );
+    u = u.replace( QLatin1String( "//" ), QChar( '/' ) );
   }
   // Make sure the path starts with '/'
-  if ( !u.path().startsWith( '/' ) )
+  if ( !u.startsWith( '/' ) )
   {
-    u.setPath( u.path().prepend( '/' ) );
+    u = u.prepend( '/' );
   }
-  return u;
+  return QUrl(u).adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments );
 }
 
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const

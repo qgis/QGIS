@@ -172,7 +172,7 @@ std::string QgsServerOgcApiHandler::href( const QgsServerApiContext &context, co
     }
     url.setPath( path + '.' + extension );
   }
-  return QgsServerOgcApi::sanitizeUrl( url ).toString( QUrl::FullyEncoded ).toStdString();
+  return QgsServerOgcApi::sanitizeUrl( url.path() ).toString( QUrl::FullyEncoded ).toStdString();
 }
 
 void QgsServerOgcApiHandler::jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType ) const

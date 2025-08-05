@@ -142,7 +142,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
      * Returns a sanitized \a url with extra slashes removed and the path URL component that
      * always starts with a slash.
      */
-    static QUrl sanitizeUrl( const QUrl &url );
+    static QUrl sanitizeUrl( const QString &url );
 
     /**
      * Returns the string representation of \a rel attribute.
