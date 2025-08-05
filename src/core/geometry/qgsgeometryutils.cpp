@@ -1279,10 +1279,10 @@ QgsPoint QgsGeometryUtils::createPointWithMatchingDimensions( double x, double y
 }
 
 QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
-    const QgsPoint &segmentStart, const QgsPoint &segmentEnd,
-    double distanceFromStart )
+    const QgsPoint &segmentStart, const QgsPoint &segmentEnd )
 {
   QgsPoint result = createPointWithMatchingDimensions( x, y, segmentStart );
+  const double distanceFromStart = QgsGeometryUtilsBase::distance2D( segmentStart.x(), segmentStart.y(), x, y );
 
   if ( segmentStart.is3D() && segmentEnd.is3D() )
   {
@@ -1341,10 +1341,8 @@ bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPo
     return false;
   }
 
-  chamferStart = interpolatePointOnSegment( chamferStartX, chamferStartY, segment1Start, segment1End,
-                 segment1Start.distance( QgsPoint( chamferStartX, chamferStartY ) ) );
-  chamferEnd = interpolatePointOnSegment( chamferEndX, chamferEndY, segment2Start, segment2End,
-                                          segment2Start.distance( QgsPoint( chamferEndX, chamferEndY ) ) );
+  chamferStart = interpolatePointOnSegment( chamferStartX, chamferStartY, segment1Start, segment1End );
+  chamferEnd = interpolatePointOnSegment( chamferEndX, chamferEndY, segment2Start, segment2End );
 
   return true;
 }
@@ -1375,11 +1373,9 @@ bool QgsGeometryUtils::createFillet( const QgsPoint &segment1Start, const QgsPoi
     return false;
   }
 
-  filletPoint1 = interpolatePointOnSegment( filletPointsX[0], filletPointsY[0], segment1Start, segment1End,
-                 segment1Start.distance( QgsPoint( filletPointsX[0], filletPointsY[0] ) ) );
+  filletPoint1 = interpolatePointOnSegment( filletPointsX[0], filletPointsY[0], segment1Start, segment1End );
   filletMidPoint = createPointWithMatchingDimensions( filletPointsX[1], filletPointsY[1], segment1Start );
-  filletPoint2 = interpolatePointOnSegment( filletPointsX[2], filletPointsY[2], segment2Start, segment2End,
-                 segment2Start.distance( QgsPoint( filletPointsX[2], filletPointsY[2] ) ) );
+  filletPoint2 = interpolatePointOnSegment( filletPointsX[2], filletPointsY[2], segment2Start, segment2End );
 
   // Interpolate Z and M for midpoint
   if ( segment1Start.is3D() && segment1End.is3D() && segment2Start.is3D() && segment2End.is3D() )

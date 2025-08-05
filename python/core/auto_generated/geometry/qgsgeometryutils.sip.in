@@ -1171,8 +1171,7 @@ point.
 %End
 
     static QgsPoint interpolatePointOnSegment( double x, double y,
-        const QgsPoint &segmentStart, const QgsPoint &segmentEnd,
-        double distanceFromStart ) /HoldGIL/;
+        const QgsPoint &segmentStart, const QgsPoint &segmentEnd ) /HoldGIL/;
 %Docstring
 Interpolates a point on a segment with proper Z and M value
 interpolation.
@@ -1181,8 +1180,6 @@ interpolation.
 :param y: y-coordinate of the point to interpolate
 :param segmentStart: start point of the segment
 :param segmentEnd: end point of the segment
-:param distanceFromStart: distance from segment start to the
-                          interpolated point
 
 :return: :py:class:`QgsPoint` with proper Z and M interpolation
 

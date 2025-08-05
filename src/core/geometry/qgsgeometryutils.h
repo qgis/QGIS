@@ -1290,13 +1290,11 @@ class CORE_EXPORT QgsGeometryUtils
      * \param y y-coordinate of the point to interpolate
      * \param segmentStart start point of the segment
      * \param segmentEnd end point of the segment
-     * \param distanceFromStart distance from segment start to the interpolated point
      * \returns QgsPoint with proper Z and M interpolation
      * \since QGIS 4.0
      */
     static QgsPoint interpolatePointOnSegment( double x, double y,
-        const QgsPoint &segmentStart, const QgsPoint &segmentEnd,
-        double distanceFromStart ) SIP_HOLDGIL;
+        const QgsPoint &segmentStart, const QgsPoint &segmentEnd ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer between two line segments using QgsPoint.
