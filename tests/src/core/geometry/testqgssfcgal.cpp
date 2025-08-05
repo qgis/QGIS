@@ -32,6 +32,7 @@
 // qgis includes...
 #include <qgsapplication.h>
 #include "qgsgeometry.h"
+#include "qgstriangulatedsurface.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsgeometryengine.h"
