@@ -4533,7 +4533,12 @@ bool QgsGeometry::Error::hasWhere() const
 
 QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
 {
-  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() );
+  if ( isNull() )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
   if ( !curve )
   {
     return QgsGeometry();
@@ -4550,7 +4555,12 @@ QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double dist
 
 QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
 {
-  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() );
+  if ( isNull() )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
   if ( !curve )
   {
     return QgsGeometry();
