@@ -521,27 +521,25 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Calculate the difference of this and \a otherGeom.
      *
      * \param otherGeom geometry to perform the operation
-     * \param parameters can be used to specify parameters which control the difference results
      * \return new geometry
      *
      * If an error was encountered during the operation, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
      */
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const;
 
     /**
      * Calculate the difference of this and \a otherGeom.
      *
      * \param otherGeom geometry to perform the operation
-     * \param parameters can be used to specify parameters which control the difference results
      * \return new geometry
      *
      * If an error was encountered during the operation, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
      */
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const;
 
     /**
      * Triangulates this geometry using constraint 2D Delaunay Triangulation (keep Z if defined)
