@@ -1320,7 +1320,8 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * Creates a fillet (rounded corner) between two line segments using QgsPoint.
-     * Returns the three fillet arc points via output parameters.
+     * Returns the three fillet arc points (\a filletPoint1, \a filletMidPoint, \a filletPoint2)
+     * via output parameters to define a CircularString.
      * \param segment1Start start point of first segment
      * \param segment1End end point of first segment
      * \param segment2Start start point of second segment
