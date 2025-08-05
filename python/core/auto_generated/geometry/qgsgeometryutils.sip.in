@@ -1240,10 +1240,10 @@ parameters.
 .. versionadded:: 4.0
 %End
 
-    static QgsLineString *createChamferGeometry(
+    static std::unique_ptr< QgsLineString >createChamferGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double distance1, double distance2 ) /Factory/;
+      double distance1, double distance2 );
 %Docstring
 Creates a complete chamfer geometry connecting two segments.
 
@@ -1261,10 +1261,10 @@ Creates a complete chamfer geometry connecting two segments.
 .. versionadded:: 4.0
 %End
 
-    static QgsAbstractGeometry *createFilletGeometry(
+    static std::unique_ptr< QgsAbstractGeometry >createFilletGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double radius, int segments ) /Factory/;
+      double radius, int segments );
 %Docstring
 Creates a complete fillet geometry connecting two segments.
 
@@ -1281,9 +1281,9 @@ Creates a complete fillet geometry connecting two segments.
 .. versionadded:: 4.0
 %End
 
-    static QgsAbstractGeometry *chamferVertex(
+    static std::unique_ptr< QgsAbstractGeometry >chamferVertex(
       const QgsCurve *curve, int vertexIndex,
-      double distance1, double distance2 ) /Factory/;
+      double distance1, double distance2 );
 %Docstring
 Applies chamfer to a vertex in a curve geometry.
 
@@ -1297,9 +1297,9 @@ Applies chamfer to a vertex in a curve geometry.
 .. versionadded:: 4.0
 %End
 
-    static QgsAbstractGeometry *filletVertex(
+    static std::unique_ptr< QgsAbstractGeometry >filletVertex(
       const QgsCurve *curve, int vertexIndex,
-      double radius, int segments ) /Factory/;
+      double radius, int segments );
 %Docstring
 Applies fillet to a vertex in a curve geometry.
 

@@ -1411,7 +1411,7 @@ bool QgsGeometryUtils::createFilletArray( const QgsPoint &segment1Start, const Q
   return false;
 }
 
-QgsLineString *QgsGeometryUtils::createChamferGeometry(
+std::unique_ptr<QgsLineString> QgsGeometryUtils::createChamferGeometry(
   const QgsPoint &segment1Start, const QgsPoint &segment1End,
   const QgsPoint &segment2Start, const QgsPoint &segment2End,
   double distance1, double distance2 )
@@ -1420,16 +1420,16 @@ QgsLineString *QgsGeometryUtils::createChamferGeometry(
   if ( !createChamfer( segment1Start, segment1End, segment2Start, segment2End, distance1, distance2, chamferStart, chamferEnd ) )
     return nullptr;
 
-  QgsLineString *completeLine = new QgsLineString();
+  auto completeLine = std::make_unique<QgsLineString>();
   completeLine->addVertex( segment1Start );     // Start of first segment
-  completeLine->addVertex( chamferStart );  // First chamfer point
-  completeLine->addVertex( chamferEnd );    // Second chamfer point
-  completeLine->addVertex( segment2Start );     // Start of second segment
+  completeLine->addVertex( chamferStart );     // First chamfer point
+  completeLine->addVertex( chamferEnd );       // Second chamfer point
+  completeLine->addVertex( segment2Start );    // Start of second segment
 
   return completeLine;
 }
 
-QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
   const QgsPoint &segment1Start, const QgsPoint &segment1End,
   const QgsPoint &segment2Start, const QgsPoint &segment2End,
   double radius, int segments )
@@ -1457,31 +1457,31 @@ QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
   if ( segments <= 0 )
   {
     // Return CompoundCurve with circular arc
-    QgsCompoundCurve *completeCurve = new QgsCompoundCurve();
+    auto completeCurve = std::make_unique<QgsCompoundCurve>();
 
     // First linear segment
-    QgsLineString *firstSegment = new QgsLineString();
+    auto firstSegment = std::make_unique<QgsLineString>();
     firstSegment->addVertex( segment1FarEnd );
     firstSegment->addVertex( filletPoints[0] );
-    completeCurve->addCurve( firstSegment );
+    completeCurve->addCurve( firstSegment.release() );
 
     // Circular arc segment
-    QgsCircularString *circularString = new QgsCircularString();
+    auto circularString = std::make_unique<QgsCircularString>();
     circularString->setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
-    completeCurve->addCurve( circularString );
+    completeCurve->addCurve( circularString.release() );
 
     // Last linear segment
-    QgsLineString *lastSegment = new QgsLineString();
+    auto lastSegment = std::make_unique<QgsLineString>();
     lastSegment->addVertex( filletPoints[2] );
     lastSegment->addVertex( segment2FarEnd );
-    completeCurve->addCurve( lastSegment );
+    completeCurve->addCurve( lastSegment.release() );
 
     return completeCurve;
   }
   else
   {
     // Return segmented LineString
-    QgsLineString *completeLine = new QgsLineString();
+    auto completeLine = std::make_unique<QgsLineString>();
 
     completeLine->addVertex( segment1FarEnd );
 
@@ -1506,7 +1506,7 @@ QgsAbstractGeometry *QgsGeometryUtils::createFilletGeometry(
   }
 }
 
-QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
   const QgsCurve *curve, int vertexIndex,
   double distance1, double distance2 )
 {
@@ -1533,7 +1533,7 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
-    QgsLineString *newLine = new QgsLineString();
+    auto newLine = std::make_unique<QgsLineString>();
 
     // Add points before the chamfered vertex
     for ( int i = 0; i < vertexIndex; ++i )
@@ -1559,7 +1559,7 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
   // Handle CompoundCurve geometries
   if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( curve ) )
   {
-    QgsCompoundCurve *newCompound = new QgsCompoundCurve();
+    auto newCompound = std::make_unique<QgsCompoundCurve>();
 
     // Find which subcurve contains the vertex to chamfer
     int globalVertexIndex = 0;
@@ -1582,7 +1582,6 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
 
     if ( targetCurveIndex == -1 )
     {
-      delete newCompound;
       return nullptr;
     }
 
@@ -1597,7 +1596,7 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
     // Handle the curve containing the vertex
     if ( vertexInCurve > 0 )
     {
-      QgsLineString *beforeVertex = new QgsLineString();
+      auto beforeVertex = std::make_unique<QgsLineString>();
       for ( int j = 0; j < vertexInCurve; ++j )
       {
         beforeVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
@@ -1605,19 +1604,17 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
       beforeVertex->addVertex( chamferStart );
 
       if ( beforeVertex->numPoints() > 1 )
-        newCompound->addCurve( beforeVertex );
-      else
-        delete beforeVertex;
+        newCompound->addCurve( beforeVertex.release() );
     }
 
-    QgsLineString *chamferLine = new QgsLineString();
+    auto chamferLine = std::make_unique<QgsLineString>();
     chamferLine->addVertex( chamferStart );
     chamferLine->addVertex( chamferEnd );
-    newCompound->addCurve( chamferLine );
+    newCompound->addCurve( chamferLine.release() );
 
     if ( vertexInCurve < targetCurve->numPoints() - 1 )
     {
-      QgsLineString *afterVertex = new QgsLineString();
+      auto afterVertex = std::make_unique<QgsLineString>();
       afterVertex->addVertex( chamferEnd );
       for ( int j = vertexInCurve + 1; j < targetCurve->numPoints(); ++j )
       {
@@ -1625,9 +1622,7 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
       }
 
       if ( afterVertex->numPoints() > 1 )
-        newCompound->addCurve( afterVertex );
-      else
-        delete afterVertex;
+        newCompound->addCurve( afterVertex.release() );
     }
 
     // Add curves after the target curve
@@ -1642,7 +1637,7 @@ QgsAbstractGeometry *QgsGeometryUtils::chamferVertex(
   return nullptr;
 }
 
-QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
   const QgsCurve *curve, int vertexIndex,
   double radius, int segments )
 {
@@ -1662,7 +1657,7 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
-    QgsLineString *newLine = new QgsLineString();
+    auto newLine = std::make_unique<QgsLineString>();
 
     // Add points before the filleted vertex
     for ( int i = 0; i < vertexIndex; ++i )
@@ -1698,7 +1693,7 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
   // Handle CompoundCurve geometries
   if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( curve ) )
   {
-    QgsCompoundCurve *newCompound = new QgsCompoundCurve();
+    auto newCompound = std::make_unique<QgsCompoundCurve>();
 
     // Find which subcurve contains the vertex to fillet
     int globalVertexIndex = 0;
@@ -1721,7 +1716,6 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
 
     if ( targetCurveIndex == -1 )
     {
-      delete newCompound;
       return nullptr;
     }
 
@@ -1736,7 +1730,7 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
     // Handle the curve containing the vertex
     if ( vertexInCurve > 0 )
     {
-      QgsLineString *beforeVertex = new QgsLineString();
+      auto beforeVertex = std::make_unique<QgsLineString>();
       for ( int j = 0; j < vertexInCurve; ++j )
       {
         beforeVertex->addVertex( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
@@ -1744,18 +1738,16 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
       beforeVertex->addVertex( filletPoints[0] );
 
       if ( beforeVertex->numPoints() > 1 )
-        newCompound->addCurve( beforeVertex );
-      else
-        delete beforeVertex;
+        newCompound->addCurve( beforeVertex.release() );
     }
 
     // Add the fillet arc - for CompoundCurve, preserve circular nature unless segments > 0
     if ( segments <= 0 )
     {
       // Preserve circular arc
-      QgsCircularString *filletArc = new QgsCircularString();
+      auto filletArc = std::make_unique<QgsCircularString>();
       filletArc->setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
-      newCompound->addCurve( filletArc );
+      newCompound->addCurve( filletArc.release() );
     }
     else
     {
@@ -1771,7 +1763,7 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
 
     if ( vertexInCurve < targetCurve->numPoints() - 1 )
     {
-      QgsLineString *afterVertex = new QgsLineString();
+      auto afterVertex = std::make_unique<QgsLineString>();
       afterVertex->addVertex( filletPoints[2] );
       for ( int j = vertexInCurve + 1; j < targetCurve->numPoints(); ++j )
       {
@@ -1779,9 +1771,7 @@ QgsAbstractGeometry *QgsGeometryUtils::filletVertex(
       }
 
       if ( afterVertex->numPoints() > 1 )
-        newCompound->addCurve( afterVertex );
-      else
-        delete afterVertex;
+        newCompound->addCurve( afterVertex.release() );
     }
 
     // Add curves after the target curve

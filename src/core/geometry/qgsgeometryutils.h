@@ -1352,10 +1352,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns QgsLineString geometry connecting the segments through the chamfer
      * \since QGIS 4.0
      */
-    static QgsLineString *createChamferGeometry(
+    static std::unique_ptr< QgsLineString >createChamferGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double distance1, double distance2 ) SIP_FACTORY;
+      double distance1, double distance2 );
 
     /**
      * Creates a complete fillet geometry connecting two segments.
@@ -1368,10 +1368,10 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns geometry connecting the segments through the fillet
      * \since QGIS 4.0
      */
-    static QgsAbstractGeometry *createFilletGeometry(
+    static std::unique_ptr< QgsAbstractGeometry >createFilletGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double radius, int segments ) SIP_FACTORY;
+      double radius, int segments );
 
     /**
      * Applies chamfer to a vertex in a curve geometry.
@@ -1382,9 +1382,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns new geometry with chamfer applied, or None on failure
      * \since QGIS 4.0
      */
-    static QgsAbstractGeometry *chamferVertex(
+    static std::unique_ptr< QgsAbstractGeometry >chamferVertex(
       const QgsCurve *curve, int vertexIndex,
-      double distance1, double distance2 ) SIP_FACTORY;
+      double distance1, double distance2 );
 
     /**
      * Applies fillet to a vertex in a curve geometry.
@@ -1395,14 +1395,14 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns new geometry with fillet applied, or None on failure
      * \since QGIS 4.0
      */
-    static QgsAbstractGeometry *filletVertex(
+    static std::unique_ptr< QgsAbstractGeometry >filletVertex(
       const QgsCurve *curve, int vertexIndex,
-      double radius, int segments ) SIP_FACTORY;
+      double radius, int segments );
 
     /**
      * Convenient method of createFillet using array output.
-     * This method is not available in Python bindings.
      * \note Not available in Python bindings.
+     * \since QGIS 4.0
      */
     static bool createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
                                    const QgsPoint &segment2Start, const QgsPoint &segment2End,
