@@ -28,10 +28,7 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 
-class QgsLineString;
-class QgsPolygon;
 class QgsGeometry;
-class QgsGeometryCollection;
 class QgsSfcgalGeometry;
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
