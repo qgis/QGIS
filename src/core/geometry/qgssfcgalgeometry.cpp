@@ -436,7 +436,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::combine( const QVector<Qgs
   return resultGeom;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsAbstractGeometry *otherGeom, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsAbstractGeometry *otherGeom ) const
 {
   sfcgal::errorHandler()->clearText( &mLastError );
   sfcgal::shared_geom otherSharedr = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, &mLastError );
@@ -450,7 +450,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsAbstr
   return resultGeom;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsSfcgalGeometry &otherGeom, const QgsGeometryParameters & ) const
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsSfcgalGeometry &otherGeom ) const
 {
   sfcgal::errorHandler()->clearText( &mLastError );
 
