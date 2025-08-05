@@ -95,7 +95,6 @@ Qgis::WkbType QgsSfcgalGeometry::wkbType( QString *errorMsg ) const
   return out;
 }
 
-
 QString QgsSfcgalGeometry::geometryType( QString *errorMsg ) const
 {
   sfcgal::errorHandler()->clearText( errorMsg );
@@ -162,11 +161,16 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary( QString *errorMs
 
 bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 {
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+  ( void )other;
+  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.1 or later" ) );
+#else
   bool out = false;
   QString errorMsg; // used to retrieve failure messages if any
   out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), other.mSfcgalGeom.get(), 0.0, &errorMsg );
   CHECK_SUCCESS_LOG( &errorMsg, false );
   return out;
+#endif
 }
 
 bool QgsSfcgalGeometry::operator!=( const QgsSfcgalGeometry &other ) const

@@ -95,6 +95,11 @@ Returns type of the geometry as a OGC string in CamelCase
 
 :return: - type of the geometry as a OGC string in CamelCase
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> clone() const;
@@ -158,6 +163,11 @@ ring in the polygon.
 :return: - boundary for geometry. May be ``None`` for some geometry
            types.
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     bool operator==( const QgsSfcgalGeometry &other ) const;
@@ -173,6 +183,11 @@ Returns true if this == other geometry modulo ``epsilon`` distance
 
 :return: - true if this == other geometry modulo ``epsilon`` distance
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     int dimension( QString *errorMsg /Out/ = 0 ) const;
@@ -184,6 +199,11 @@ for a point geometry, 1 for a linestring and 2 for a polygon.
 
 :return: - geometry dimension
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     int partCount( QString *errorMsg /Out/ = 0 ) const;
@@ -213,6 +233,11 @@ Adds a z-dimension to the geometry, initialized to a preset value
 :return: - true if success
          - errorMsg: pointer to string to receive the error message if
            any
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     bool addMValue( double mValue = 0, QString *errorMsg /Out/ = 0 );
@@ -225,6 +250,11 @@ Adds a m-dimension to the geometry, initialized to a preset value
 :return: - true if success
          - errorMsg: pointer to string to receive the error message if
            any
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     bool dropZValue( QString *errorMsg /Out/ = 0 );
@@ -236,6 +266,11 @@ Drops the z coordinate of the geometry
 :return: - true if success
          - errorMsg: pointer to string to receive the error message if
            any
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     bool dropMValue( QString *errorMsg /Out/ = 0 );
@@ -247,6 +282,11 @@ Drops the m coordinate of the geometry
 :return: - true if success
          - errorMsg: pointer to string to receive the error message if
            any
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     void swapXy( QString *errorMsg /Out/ = 0 );
@@ -254,6 +294,11 @@ Drops the m coordinate of the geometry
 Swaps the x and y coordinates of the geometry
 
 
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 
 :return: pointer to string to receive the error message if any
 %End
@@ -299,6 +344,11 @@ Computes the max length of ``geom``.
 
 :return: - geometry length
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     bool isSimple( QString *errorMsg /Out/ = 0 ) const;
@@ -311,6 +361,11 @@ Checks this geometry is simple.
 
 :return: - true if simple
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     QgsPoint centroid( QString *errorMsg ) const;
@@ -320,6 +375,11 @@ Calculates the centroid of this geometry.
 :param errorMsg: Error message returned by SFCGAL
 
 :return: geometry centroid
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation, QString *errorMsg /Out/ = 0 ) const;
@@ -330,6 +390,11 @@ Translate this geometry by vector ``translation``.
 
 :return: - new geometry
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg /Out/ = 0 ) const;
@@ -475,6 +540,11 @@ Calculate the envelope (bounding box).
 
 :return: - new geometry
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     bool covers( const QgsSfcgalGeometry &otherGeom, QString *errorMsg /Out/ = 0 ) const;
@@ -529,6 +599,11 @@ Simplifies a geometry using the CGAL algorithm
 
 :return: - new geometry
          - errorMsg: Error message returned by SFCGAL
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
+                                  earlier.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion, QString *errorMsg /Out/ = 0 ) const;

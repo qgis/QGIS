@@ -193,6 +193,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static QString geometryType( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -242,6 +244,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static int dimension( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -264,6 +268,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geom geometry to perform the operation
      * \param zValue z value to use
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool addZValue( sfcgal::geometry *geom, double zValue = 0, QString *errorMsg = nullptr );
 
@@ -274,6 +280,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geom geometry to perform the operation
      * \param mValue m value to use
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool addMValue( sfcgal::geometry *geom, double mValue = 0, QString *errorMsg = nullptr );
 
@@ -283,6 +291,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \return true if success
      * \param geom geometry to perform the operation
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool dropZValue( sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -292,6 +302,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \return true if success
      * \param geom geometry to perform the operation
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool dropMValue( sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -300,6 +312,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static void swapXy( sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -310,6 +324,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geomB second geometry to perform the operation
      * \param tolerance max distance allowed between each point
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool isEqual( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance = 0.0, QString *errorMsg = nullptr );
 
@@ -344,6 +360,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static bool isSimple( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -352,6 +370,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static sfcgal::shared_geom boundary( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -360,6 +380,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static QgsPoint centroid( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -369,6 +391,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geom geometry to perform the operation
      * \param translation translation vector (2D or 3D)
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static sfcgal::shared_geom translate( const sfcgal::geometry *geom, const QgsVector3D &translation, QString *errorMsg = nullptr );
 
@@ -435,6 +459,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static double length( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -506,6 +532,8 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static sfcgal::shared_geom envelope( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
@@ -562,6 +590,8 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param tolerance The distance (in geometry unit) threshold
      * \param preserveTopology Whether to preserve topology during simplification
      * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static sfcgal::shared_geom simplify( const sfcgal::geometry *geom, double tolerance, bool preserveTopology, QString *errorMsg = nullptr );
 };

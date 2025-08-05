@@ -111,6 +111,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Returns type of the geometry as a OGC string in CamelCase
      * \param errorMsg Error message returned by SFCGAL
      * \return type of the geometry as a OGC string in CamelCase
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     QString geometryType( QString *errorMsg SIP_OUT = nullptr ) const SIP_HOLDGIL;
 
@@ -158,18 +162,30 @@ class CORE_EXPORT QgsSfcgalGeometry
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * \param errorMsg Error message returned by SFCGAL
      * \return boundary for geometry. May be NULLPTR for some geometry types.
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     std::unique_ptr<QgsSfcgalGeometry> boundary( QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns true if this == other geometry
      * \param other geometry to perform the operation
+     *
+     * This operator requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool operator==( const QgsSfcgalGeometry &other ) const;
 
     /**
      * Returns true if this != other geometry
      * \param other geometry to perform the operation
+     *
+     * This operator requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool operator!=( const QgsSfcgalGeometry &other ) const;
 
@@ -179,6 +195,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param epsilon tolerance
      * \param errorMsg Error message returned by SFCGAL
      * \return true if this == other geometry modulo \a epsilon distance
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon, QString *errorMsg SIP_OUT = nullptr ) const;
 
@@ -187,6 +207,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * 1 for a linestring and 2 for a polygon.
      * \param errorMsg Error message returned by SFCGAL
      * \return geometry dimension
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     int dimension( QString *errorMsg SIP_OUT = nullptr ) const;
 
@@ -207,6 +231,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param zValue z value to use
      * \param errorMsg pointer to QString to receive the error message if any
      * \return true if success
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool addZValue( double zValue = 0, QString *errorMsg SIP_OUT = nullptr );
 
@@ -215,6 +243,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param mValue m value to use
      * \param errorMsg pointer to QString to receive the error message if any
      * \return true if success
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool addMValue( double mValue = 0, QString *errorMsg SIP_OUT = nullptr );
 
@@ -222,6 +254,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Drops the z coordinate of the geometry
      * \param errorMsg pointer to QString to receive the error message if any
      * \return true if success
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool dropZValue( QString *errorMsg SIP_OUT = nullptr );
 
@@ -229,12 +265,20 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Drops the m coordinate of the geometry
      * \param errorMsg pointer to QString to receive the error message if any
      * \return true if success
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool dropMValue( QString *errorMsg SIP_OUT = nullptr );
 
     /**
      * Swaps the x and y coordinates of the geometry
      * \param errorMsg pointer to QString to receive the error message if any
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     void swapXy( QString *errorMsg SIP_OUT = nullptr );
 
@@ -266,6 +310,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Computes the max length of \a geom.
      * \param errorMsg Error message returned by SFCGAL
      * \return geometry length
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     double length( QString *errorMsg SIP_OUT = nullptr ) const;
 
@@ -276,6 +324,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \param errorMsg Error message returned by SFCGAL
      * \return true if simple
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     bool isSimple( QString *errorMsg SIP_OUT = nullptr ) const;
 
@@ -284,6 +336,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \param errorMsg Error message returned by SFCGAL
      * \return geometry centroid
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     QgsPoint centroid( QString *errorMsg ) const;
 
@@ -293,6 +349,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param translation translation vector (2D or 3D)
      * \param errorMsg Error message returned by SFCGAL
      * \return new geometry
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation, QString *errorMsg SIP_OUT = nullptr ) const;
 
@@ -412,6 +472,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Calculate the envelope (bounding box).
      * \param errorMsg Error message returned by SFCGAL
      * \return new geometry
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     std::unique_ptr<QgsSfcgalGeometry> envelope( QString *errorMsg SIP_OUT = nullptr ) const;
 
@@ -460,6 +524,10 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param preserveTopology Whether to preserve topology during simplification
      * \param errorMsg Error message returned by SFCGAL
      * \return new geometry
+     *
+     * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology, QString *errorMsg SIP_OUT = nullptr ) const;
 
