@@ -477,8 +477,12 @@ if(WITH_CORE)
 
     find_package(SFCGAL) # SFCGAL provider
     message(STATUS "Found SFCGAL: ${SFCGAL_VERSION} ${SFCGAL_DIR}")
-    if(SFCGAL_VERSION VERSION_LESS "2.1")
-      message(FATAL_ERROR "Cannot build QGIS using SFCGAL older than 2.1")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\1" SFCGAL_VERSION_MAJOR_INT "${SFCGAL_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\2" SFCGAL_VERSION_MINOR_INT "${SFCGAL_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\3" SFCGAL_VERSION_PATCH_INT "${SFCGAL_VERSION}")
+
+    if(SFCGAL_VERSION VERSION_LESS "2.0")
+      message(FATAL_ERROR "Cannot build QGIS using SFCGAL older than 2.0")
     endif()
     if (WITH_SFCGAL)
       add_definitions(-DWITH_SFCGAL)

@@ -404,7 +404,7 @@ void TestQgsSfcgal::isEqual()
   QCOMPARE( geomA.wkbType(), cloneGeomA->wkbType() );
 
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
-  QVERIFY_EXCEPTION_THROWN( geomA == *cloneGeomA.get(), QgsNotSupportedException );
+  QVERIFY_EXCEPTION_THROWN( { bool res = (geomA == *cloneGeomA.get()); Q_UNUSED(res); }, QgsNotSupportedException );
 #else
   QVERIFY2( geomA == *cloneGeomA.get(), "Should be equals" );
   QVERIFY2( sfcgal::errorHandler()->isTextEmpty(), "isEquals should not fail" );
