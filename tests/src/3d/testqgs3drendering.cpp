@@ -2847,7 +2847,7 @@ void TestQgs3DRendering::docCheckElevationDtm( const QgsRectangle &fullExtent, c
     for ( int y = -100; y <= 100; y += 50 )
     // for ( int h = 100; h < 1000; h += 100 )
     {
-      QgsVector3D inWorld = mapSettings->mapToWorldCoordinates( QgsVector3D( centroid.y() + y, centroid.x() + x, 0.0 ) );
+      // QgsVector3D inWorld = mapSettings->mapToWorldCoordinates( QgsVector3D( centroid.y() + y, centroid.x() + x, 0.0 ) );
       qDebug() << "=============== before setLookingAtPoint2" << centroid.x() + x << centroid.y() + y; //<< inWorld.x() << inWorld.y();
       scene->cameraController()->setLookingAtPoint( QgsVector3D( x, y, 0 ), h, 0.0, 0.0 );
       Qgs3DUtils::captureSceneImage( engine, scene );
