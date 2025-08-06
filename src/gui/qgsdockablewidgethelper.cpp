@@ -257,6 +257,9 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 
   if ( docked )
   {
+    if (mDialog)
+      disconnect( mDialog, &QDialog::finished, this, &QgsDockableWidgetHelper::onDialogFinished );
+
     // going from window -> dock
     mDock = new QgsDockWidget( mOwnerWindow );
     mDock->setWindowTitle( mWindowTitle );
@@ -267,18 +270,10 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 
     if ( !mSettingKeyDockId.isEmpty() )
     {
-      connect( mDock, &QgsDockWidget::dockLocationChanged, this, [this]( Qt::DockWidgetArea area ) {
-        sSettingsDockArea->setValue( area, mSettingKeyDockId );
-      } );
+      connect( mDock, &QgsDockWidget::dockLocationChanged, this, &QgsDockableWidgetHelper::onDockLocationChanged );
     }
 
-    connect( mDock, &QgsDockWidget::closed, this, [this]() {
-      mDockGeometry = mDock->geometry();
-      mIsDockFloating = mDock->isFloating();
-      if ( mOwnerWindow )
-        mDockArea = mOwnerWindow->dockWidgetArea( mDock );
-      emit closed();
-    } );
+    connect( mDock, &QgsDockWidget::closed, this, &QgsDockableWidgetHelper::onDockClosed );
 
     if ( mOptions.testFlag( Option::PermanentWidget ) )
       mDock->installEventFilter( this );
@@ -292,6 +287,14 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     // going from dock -> window
     // note -- we explicitly DO NOT set the parent for the dialog, as we want these treated as
     // proper top level windows and have their own taskbar entries. See https://github.com/qgis/QGIS/issues/49286
+    
+    if ( mDock )
+    {
+      disconnect( mDock, &QgsDockWidget::dockLocationChanged, this, &QgsDockableWidgetHelper::onDockLocationChanged );
+      disconnect( mDock, &QgsDockWidget::closed, this, &QgsDockableWidgetHelper::onDockClosed );
+      disconnect( mDock, &QgsDockWidget::visibilityChanged, this, &QgsDockableWidgetHelper::visibilityChanged );
+    }
+
     if ( mOptions.testFlag( Option::PermanentWidget ) )
       mDialog = new QgsNonRejectableDialog( nullptr, Qt::Window );
     else
@@ -323,11 +326,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDialog->raise();
     mDialog->show();
 
-    connect( mDialog, &QDialog::finished, this, [this]() {
-      mDialogGeometry = mDialog->geometry();
-      emit closed();
-      emit visibilityChanged( false );
-    } );
+    connect( mDialog, &QDialog::finished, this, &QgsDockableWidgetHelper::onDialogFinished );
 
     emit visibilityChanged( true );
   }
@@ -479,6 +478,27 @@ bool QgsDockableWidgetHelper::eventFilter( QObject *watched, QEvent *event )
     }
   }
   return QObject::eventFilter( watched, event );
+}
+
+void QgsDockableWidgetHelper::onDockLocationChanged( Qt::DockWidgetArea area )
+{
+  sSettingsDockArea->setValue( area, mSettingKeyDockId );
+}
+
+void QgsDockableWidgetHelper::onDockClosed()
+{
+  mDockGeometry = mDock->geometry();
+  mIsDockFloating = mDock->isFloating();
+  if ( mOwnerWindow )
+    mDockArea = mOwnerWindow->dockWidgetArea( mDock );
+  emit closed();
+}
+
+void QgsDockableWidgetHelper::onDialogFinished()
+{
+  mDialogGeometry = mDialog->geometry();
+  emit closed();
+  emit visibilityChanged( false );
 }
 
 //

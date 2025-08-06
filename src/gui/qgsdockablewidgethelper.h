@@ -165,6 +165,11 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     void setUserVisible( bool visible );
 
+  private slots:
+    void onDockLocationChanged( Qt::DockWidgetArea area );
+    void onDockClosed();
+    void onDialogFinished();
+
   private:
     void setupDockWidget( const QStringList &tabSiblings = QStringList() );
 
