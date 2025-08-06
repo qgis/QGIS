@@ -69,17 +69,6 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &ur
   return connectDb( dsUri, transaction );
 }
 
-std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction )
-{
-  QgsDataSourceUri uri;
-  uri.setService( service );
-  uri.setHost( host );
-  uri.setDatabase( database );
-  uri.setUsername( username );
-  uri.setPassword( password );
-  return connectDb( uri, transaction );
-}
-
 std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
   // try to use existing conn or create a new one
