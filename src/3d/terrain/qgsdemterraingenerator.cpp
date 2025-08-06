@@ -73,19 +73,170 @@ QgsRectangle QgsDemTerrainGenerator::rootChunkExtent() const
   return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
+void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap )
+{
+  QMutexLocker locker( &mRootNodeMutex );
+  const QgsChunkNodeId nodeId = node->tileId();
+
+  if ( !mLoaderMap.contains( nodeId.text() ) )
+  {
+    // save height map data in cache
+    mLoaderMap[nodeId.text()] = heightMap;
+    cleanupHeightMapCache( node );
+    // if ( nodeId.d >= mMaxLevel / 2 )
+    {
+      // emit only when tile is at the deepest level to update entity elevation with the hi-res tiles
+      qDebug() << "onHeightMapReceived emit for" << nodeId.text();
+      emit maxResTileReceived( nodeId, extent );
+    }
+  }
+}
+
+void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentNode ) const
+{
+  ( void ) currentNode;
+  // // check if all sibling are ok then delete parent height map in cache
+  // QgsChunkNode *parent = currentNode->parent();
+
+  // if ( parent && mLoaderMap.contains( parent->tileId().text() ) )
+  // {
+  //   QgsChunkNode *const *children = parent->children();
+  //   bool deleteParentData = true;
+  //   for ( int i = 0; i < parent->childCount(); ++i )
+  //   {
+  //     // if QgsChunkNode state is Loading, this means that the texture has been retrieved
+  //     // C VRAI CA ???
+  //     if ( children[i]->state() != QgsChunkNode::Loading && children[i]->state() != QgsChunkNode::Loaded )
+  //     {
+  //       deleteParentData = false;
+  //       break;
+  //     }
+  //   }
+
+  //   if ( deleteParentData )
+  //   {
+  //     qDebug() << "cleanupHeightMapCache cleaning up" << parent->tileId().text();
+
+  //     mLoaderMap.remove( parent->tileId().text() );
+  //   }
+  // }
+}
+
 float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
 {
   Q_UNUSED( context )
+  if ( mRootNode != nullptr )
+  {
+    QMutexLocker locker( &mRootNodeMutex );
+
+    // search the best chunk node for x/y
+    QgsPoint searched( x, y );
+    QgsChunkNode *current = mRootNode;
+    QgsChunkNode *found = mRootNode;
+    while ( current->hasChildrenPopulated() )
+    {
+      QgsChunkNode *const *children = current->children();
+      bool deeper = false;
+      for ( int i = 0; !deeper && i < current->childCount(); ++i )
+      {
+        if ( children[i]->box3D().contains( searched ) )
+        {
+          found = children[i];
+          current = children[i];
+          deeper = true;
+        }
+      }
+      if ( !deeper )
+      {
+        break;
+      }
+    }
+
+    QString foundKey = found->tileId().text();
+    qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "foundKey:" << foundKey;
+
+    // search in cache if we know this chunk node/tile
+    const char *heightMapData = nullptr;
+    if ( mLoaderMap.contains( foundKey ) )
+    {
+      heightMapData = mLoaderMap[foundKey].constData();
+    }
+    else
+    {
+      // try to load height map from the current tile loader
+      QgsDemTerrainTileLoader *loader = dynamic_cast<QgsDemTerrainTileLoader *>( found->loader() );
+      if ( loader && !loader->heightMap().isEmpty() )
+      {
+        mLoaderMap.insert( foundKey, loader->heightMap() );
+        cleanupHeightMapCache( found );
+        heightMapData = loader->heightMap();
+      }
+      else // no load in current tile, check for map in parents
+      {
+        QgsChunkNode *parent = found->parent();
+        while ( parent )
+        {
+          loader = dynamic_cast<QgsDemTerrainTileLoader *>( parent->loader() );
+          if ( loader )
+          {
+            if ( !loader->heightMap().isEmpty() )
+            {
+              heightMapData = loader->heightMap();
+              break;
+            }
+          }
+          else if ( mLoaderMap.contains( parent->tileId().text() ) )
+          {
+            heightMapData = mLoaderMap[parent->tileId().text()].constData();
+            break;
+          }
+          parent = parent->parent();
+        }
+      }
+    }
+
+    // retrieve height from extracted heightMapData. We do not save parent height map in the cache
+    if ( heightMapData )
+    {
+      const QgsRectangle extent = found->box3D().toRectangle();
+
+      int cellX = static_cast<int>( lround( ( x - extent.xMinimum() ) / extent.width() * mResolution ) );
+      int cellY = static_cast<int>( lround( ( extent.yMaximum() - y ) / extent.height() * mResolution ) );
+      cellX = std::clamp( cellX, 0, mResolution - 1 );
+      cellY = std::clamp( cellY, 0, mResolution - 1 );
+
+      const float *data = ( const float * ) heightMapData;
+      qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "in cache";
+      return data[cellX + cellY * mResolution];
+    }
+  }
+
+  // if we have no rootNode or if we were not able to find better height map data, we fallback to coarse DEM data
   if ( mHeightMapGenerator )
+  {
+    qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "in coarse";
     return mHeightMapGenerator->heightAt( x, y );
+  }
   else
+  {
+    qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y << "in nothing";
     return 0;
+  }
 }
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
+  // save root node for futur height map searches
+  if ( node->parent() == nullptr )
+  {
+    QMutexLocker locker( &mRootNodeMutex );
+    mRootNode = node;
+  }
+
   // A bit of a hack to make cloning terrain generator work properly
-  return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
+  if ( mTerrain )
+    return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
+  return nullptr;
 }
 
 void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
@@ -106,6 +257,8 @@ void QgsDemTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( intersectExtent, mCrs );
     delete mHeightMapGenerator;
     mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+    connect( mHeightMapGenerator, &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainGenerator::onHeightMapReceived );
+
     mIsValid = true;
   }
   else
