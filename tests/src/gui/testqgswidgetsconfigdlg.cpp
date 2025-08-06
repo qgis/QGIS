@@ -21,15 +21,11 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributeform.h"
-<<<<<<< Updated upstream
-=======
 #include "editorwidgets/qgsuniquevaluesconfigdlg.h"
-#include "qgsfieldformatter.h"
-  >>>>>>> Stashed changes
 
 #include <QComboBox>
 
-  class TestQgsWidgetsConfigDlg : public QObject
+class TestQgsWidgetsConfigDlg : public QObject
 {
     Q_OBJECT
   public:
@@ -41,6 +37,8 @@
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
 
+    void testUniqueValuesAllowNull();
+
   private:
     void testAllowNull( const QString &widgetType );
 
@@ -48,6 +46,7 @@
     QgsAttributeForm *mForm;
     QVariantMap *mConfig;
     QComboBox *mComboBox;
+    QgsUniqueValuesConfigDlg *mUniqueValuesConfigDlg;
 };
 
 void TestQgsWidgetsConfigDlg::initTestCase()
@@ -73,6 +72,7 @@ void TestQgsWidgetsConfigDlg::initTestCase()
 void TestQgsWidgetsConfigDlg::cleanupTestCase()
 {
   delete mLayer;
+  delete mUniqueValuesConfigDlg;
   QgsApplication::exitQgis();
 }
 
@@ -103,6 +103,15 @@ void TestQgsWidgetsConfigDlg::testAllowNull( const QString &widgetType )
 
   mConfig->insert( QStringLiteral( "AllowNull" ), false );
   QCOMPARE( mComboBox->currentText(), "(2)" );
+}
+
+void TestQgsWidgetsConfigDlg::testUniqueValuesAllowNull()
+{
+  //create a configuration
+  const QString widgetType = QStringLiteral( "UniqueValues" );
+  mUniqueValuesConfigDlg = static_cast<QgsUniqueValuesConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( widgetType, mLayer, 1, nullptr ) );
+  mConfig = new QVariantMap( mUniqueValuesConfigDlg->config() );
+  testAllowNull( widgetType );
 }
 
 QGSTEST_MAIN( TestQgsWidgetsConfigDlg )
