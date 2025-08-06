@@ -81,7 +81,7 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QgsDataSour
   if ( existingConnectionIt != sConnections.constEnd() && !existingConnectionIt->expired() )
     return existingConnectionIt->lock();
 
-  QSqlDatabase db = getDatabase( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), transaction );
+  QSqlDatabase db = getDatabase( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), transaction, uri.hasParam( QStringLiteral( "timeout" ) ) ? uri.param( QStringLiteral( "timeout" ) ).toInt() : 0 );
 
   std::shared_ptr<QgsMssqlDatabase> c( new QgsMssqlDatabase( db, uri, transaction ) );
 
@@ -417,7 +417,7 @@ bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &qu
 // -------------------
 
 
-QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction )
+QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction, int timeout )
 {
   QSqlDatabase db;
 
@@ -430,7 +430,11 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
     db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), threadSafeConnectionName );
-    db.setConnectOptions( QStringLiteral( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" ) );
+    QString connectOptions = QStringLiteral( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" );
+    if ( timeout != 0 )
+      connectOptions += QStringLiteral( ";SQL_ATTR_LOGIN_TIMEOUT=%1;SQL_ATTR_CONNECTION_TIMEOUT=%1" ).arg( timeout );
+
+    db.setConnectOptions( connectOptions );
 
     // for background threads, remove database when current thread finishes
     if ( QThread::currentThread() != QCoreApplication::instance()->thread() )

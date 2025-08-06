@@ -124,7 +124,7 @@ class QgsMssqlDatabase
      * The database may not be open -- openDatabase() should be called to
      * ensure that it is ready for use.
      */
-    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
+    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false, int timeout = 0 );
 
     static QMap<QString, std::weak_ptr<QgsMssqlDatabase>> sConnections;
 
