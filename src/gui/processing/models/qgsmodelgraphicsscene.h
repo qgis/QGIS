@@ -186,7 +186,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
      * The bounding rectangle of the model is calculated off all components of the model, with an additional margin arounds items.
      *  
-     * \since QGIS 3.44
+     * \since QGIS 4.0
      */
     void updateBounds();
 

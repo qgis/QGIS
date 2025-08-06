@@ -183,7 +183,7 @@ Updates the scene rect based on the bounds of the model.
 The bounding rectangle of the model is calculated off all components of
 the model, with an additional margin arounds items.
 
-.. versionadded:: 3.44
+.. versionadded:: 4.0
 %End
 
   signals:
