@@ -2698,6 +2698,18 @@ static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext
   return string.right( pos );
 }
 
+static QVariant fcnCountSubstring( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString input = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString substring = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+
+  if ( substring.isEmpty() )
+    return QVariant( 0 );
+
+  int count = input.count( substring );
+  return QVariant( count );
+}
+
 static QVariant fcnLeft( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -8714,6 +8726,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "set_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnSetTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "convert_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnConvertTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "count_substring" ), { QgsExpressionFunction::Parameter( QStringLiteral( "input" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "substring" ) ) }, fcnCountSubstring, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "trim" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTrim, QStringLiteral( "String" ) )
