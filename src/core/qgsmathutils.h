@@ -29,6 +29,8 @@
  */
 class CORE_EXPORT QgsMathUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsMathUtils
      * \param tolerance desired precision. The returned fraction will be at within this tolerance of the original value.
      * \param maxIterations maximum number of iterations. Higher values result in better approximations, but at the cost of additional computation.
      */
-    static void doubleToRational( double value, qlonglong &numerator SIP_OUT, qlonglong &denominator SIP_OUT, double tolerance = 1.0e-9, int maxIterations = 100 );
+    Q_INVOKABLE static void doubleToRational( double value, qlonglong &numerator SIP_OUT, qlonglong &denominator SIP_OUT, double tolerance = 1.0e-9, int maxIterations = 100 );
 
 };
 
