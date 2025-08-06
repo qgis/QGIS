@@ -94,6 +94,7 @@ void QgsDemTerrainGenerator::onHeightMapReceived( int, const QgsChunkNode *node,
 
 void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentNode ) const
 {
+  ( void ) currentNode;
   // // check if all sibling are ok then delete parent height map in cache
   // QgsChunkNode *parent = currentNode->parent();
 
