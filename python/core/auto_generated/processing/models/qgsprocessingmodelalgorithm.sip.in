@@ -174,11 +174,15 @@ algorithms which depend on the child algorithm will also be deactivated.
 .. seealso:: :py:func:`activateChildAlgorithm`
 %End
 
-    bool activateChildAlgorithm( const QString &id );
+    bool activateChildAlgorithm( const QString &id, bool recursive = false );
 %Docstring
-Attempts to activate the child algorithm with matching ``id``. If any
-child algorithms on which the child depends are not active, then the
-child will not be activated and ``False`` will be returned.
+Attempts to activate the child algorithm with matching ``id`` and
+returns ``True`` if all the child algorithms on which it depends are
+also active.
+
+If any child algorithms on which the child depends are not active, and
+``recursive`` is set to ``False`` then the child will not be activated
+and ``False`` will be returned.
 
 .. seealso:: :py:func:`deactivateChildAlgorithm`
 %End

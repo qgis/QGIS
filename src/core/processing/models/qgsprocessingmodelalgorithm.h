@@ -150,12 +150,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void deactivateChildAlgorithm( const QString &id );
 
     /**
-     * Attempts to activate the child algorithm with matching \a id.
+     * Attempts to activate the child algorithm with matching \a id
+     * and returns TRUE if all the child algorithms on which it depends are also active.
+     *
      * If any child algorithms on which the child depends are not active,
-     * then the child will not be activated and FALSE will be returned.
+     * and \a recursive is set to FALSE then the child will not be activated
+     * and FALSE will be returned.
      * \see deactivateChildAlgorithm()
      */
-    bool activateChildAlgorithm( const QString &id );
+    bool activateChildAlgorithm( const QString &id, bool recursive = false );
 
     /**
      * Returns a list of the child algorithm IDs depending on the child

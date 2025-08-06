@@ -1973,13 +1973,17 @@ void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
   updateDestinationParameters();
 }
 
-bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
+bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id, bool recursive )
 {
   const auto constDependsOnChildAlgorithms = dependsOnChildAlgorithms( id );
   for ( const QString &child : constDependsOnChildAlgorithms )
   {
-    if ( !childAlgorithm( child ).isActive() )
-      return false;
+    if ( !recursive )
+    {
+      if ( !childAlgorithm( child ).isActive() )
+        return false;
+    }
+    activateChildAlgorithm( child, true );
   }
   childAlgorithm( id ).setActive( true );
   updateDestinationParameters();

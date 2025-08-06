@@ -1219,12 +1219,17 @@ void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
     }
     else
     {
-      QMessageBox::warning( nullptr, QObject::tr( "Could not activate algorithm" ), QObject::tr( "The selected algorithm depends on other currently non-active algorithms.\n"
-                                                                                                 "Activate them them before trying to activate it.." ) );
+      int res = QMessageBox::warning( nullptr, QObject::tr( "Could not activate algorithm" ), QObject::tr( "The selected algorithm depends on other currently non-active algorithms.\n"
+                                                                                                 "These need to be activated before you can activate this algorithm.\n"
+                                                                                                 "Do you want to activate them also?" ),
+                                                                                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if ( res != QMessageBox::Yes )
+          return;
+        // Reactivate also the algorithms the child algorithm depends on
+        model()->activateChildAlgorithm( child->childId(), true );     
     }
   }
 }
-
 
 QgsModelOutputGraphicItem::QgsModelOutputGraphicItem( QgsProcessingModelOutput *output, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( output, model, parent )
