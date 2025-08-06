@@ -598,24 +598,19 @@ void QgsBrowserWidget::navigateToPath()
     return;
   }
 
-  //is path already loaded in model?
-  QModelIndex index = mModel->findPath( normalizedPath );
-  if ( index.isValid() )
+#ifdef Q_OS_WIN
+  if ( normalizedPath.length() <= 3 && normalizedPath.contains( ':' ) )
   {
-    setActiveIndex( index );
-    mLeLocationBar->clear();
-    if ( mMessageBar )
-    {
-      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
-    }
-    return;
+    
+    mModel->refreshDrives();
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 100 );
   }
-
+#endif
   QStringList pathVariants = generatePathVariants( normalizedPath );
   
   for ( const QString &variant : pathVariants )
   {
-    index = mModel->findPath( variant );
+    QModelIndex index = mModel->findPath( variant );
     if ( index.isValid() )
     {
       setActiveIndex( index );
@@ -628,11 +623,16 @@ void QgsBrowserWidget::navigateToPath()
     }
   }
 
-  if ( populatePathHierarchy( normalizedPath ) )
+  // Path not found, try to populate it
+  if ( ensurePathInModel( normalizedPath ) )
   {
+    // Give the model time to update
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+    
+    // Try to find the path again
     for ( const QString &variant : pathVariants )
     {
-      index = mModel->findPath( variant );
+      QModelIndex index = mModel->findPath( variant );
       if ( index.isValid() )
       {
         setActiveIndex( index );
@@ -643,21 +643,6 @@ void QgsBrowserWidget::navigateToPath()
         }
         return;
       }
-    }
-  }
- 
-  for ( const QString &variant : pathVariants )
-  {
-    index = mModel->findPath( variant, Qt::MatchExactly );
-    if ( index.isValid() )
-    {
-      setActiveIndex( index );
-      mLeLocationBar->clear();
-      if ( mMessageBar )
-      {
-        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
-      }
-      return;
     }
   }
   
@@ -739,126 +724,164 @@ void QgsBrowserWidget::copySelectedPath()
   }
 }
 
-bool QgsBrowserWidget::populatePathHierarchy( const QString &targetPath )
+bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
 {
   if ( !mModel || !mBrowserView )
     return false;
 
-  
   QString normalizedPath = QDir::cleanPath( targetPath );
   QFileInfo pathInfo( normalizedPath );
   
-  
-
+  // Make sure we have an absolute path
   if ( pathInfo.isRelative() )
   {
     normalizedPath = QDir::current().absoluteFilePath( normalizedPath );
     normalizedPath = QDir::cleanPath( normalizedPath );
   }
 
-  // Build complete path hierarchy from root to target
-  QStringList pathComponents;
+  // Build path hierarchy from root to target
+  QStringList pathHierarchy;
   QString currentPath = normalizedPath;
   
-  
-  
+  // Build the hierarchy from target to root
   while ( !currentPath.isEmpty() )
   {
-    pathComponents.prepend( currentPath );
-    
+    pathHierarchy.prepend( currentPath );
     
     QDir dir( currentPath );
-    QString parentPath = dir.absolutePath();
     
-    
-    bool isRoot = false;
-    
+    // Check if we've reached a root
 #ifdef Q_OS_WIN
-    
+    // Windows drive root check (e.g., "C:", "C:\")
     if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
-      isRoot = true;
+    {
+      // Make sure we have the drive in the correct format
+      if ( !currentPath.endsWith( '/' ) && !currentPath.endsWith( '\\' ) )
+      {
+        pathHierarchy[0] = currentPath + '/';
+      }
+      break;
+    }
 #else
     if ( currentPath == "/" )
-      isRoot = true;
+      break;
 #endif
     
-    if ( isRoot )
+    if ( !dir.cdUp() || dir.absolutePath() == currentPath )
       break;
-    
-    if ( dir.cdUp() )
-    {
-      QString newPath = dir.absolutePath();
       
-      if ( newPath == currentPath || newPath == parentPath )
-        break;
-      currentPath = newPath;
-    }
-    else
-    {
-      break;
-    }
+    currentPath = dir.absolutePath();
   }
-  
-  // Progressive expansion: expand each level and wait for loading
-  QModelIndex lastValidIndex;
-  bool foundAnyPath = false;
-  
-  for ( const QString &pathComponent : pathComponents )
-  {
-    
-    QStringList pathVariants = generatePathVariants( pathComponent );
-    
-    QModelIndex componentIndex;
-    
 
-    for ( const QString &variant : pathVariants )
+  // Find the deepest existing parent in the model
+  QModelIndex deepestParent;
+  int startIndex = 0;
+  
+  for ( int i = 0; i < pathHierarchy.size(); ++i )
+  {
+    const QString &pathComponent = pathHierarchy[i];
+    QStringList variants = generatePathVariants( pathComponent );
+    
+    bool found = false;
+    for ( const QString &variant : variants )
     {
-      componentIndex = mModel->findPath( variant, Qt::MatchStartsWith );
-      if ( componentIndex.isValid() )
+      QModelIndex index = mModel->findPath( variant );
+      if ( index.isValid() )
+      {
+        deepestParent = index;
+        startIndex = i + 1;
+        found = true;
         break;
+      }
     }
     
-    if ( componentIndex.isValid() )
+    if ( !found )
+      break;
+  }
+
+  // If we haven't found any parent, try to find and expand drives on Windows
+#ifdef Q_OS_WIN
+  if ( !deepestParent.isValid() && pathHierarchy.size() > 0 )
+  {
+    // Get the drive from the path
+    QString drive = pathHierarchy[0];
+    if ( drive.contains( ':' ) )
     {
-      foundAnyPath = true;
-      lastValidIndex = componentIndex;
- 
-      QModelIndex proxyIndex = mProxyModel->mapFromSource( componentIndex );
-      if ( proxyIndex.isValid() )
+      // Refresh drives to ensure they're loaded
+      mModel->refreshDrives();
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 100 );
+      
+      // Try to find the drive again
+      QStringList driveVariants = generatePathVariants( drive );
+      for ( const QString &variant : driveVariants )
       {
-        if ( !mBrowserView->isExpanded( proxyIndex ) )
+        QModelIndex index = mModel->findPath( variant );
+        if ( index.isValid() )
         {
-          mBrowserView->expand( proxyIndex );
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+          deepestParent = index;
+          startIndex = 1;
+          break;
         }
       }
     }
-    else if ( lastValidIndex.isValid() )
+  }
+#endif
+
+  // Now expand from the deepest parent to the target
+  for ( int i = startIndex; i < pathHierarchy.size(); ++i )
+  {
+    if ( deepestParent.isValid() )
     {
-      QgsDataItem *parentItem = mModel->dataItem( lastValidIndex );
+      // Expand the parent to populate its children
+      QModelIndex proxyIndex = mProxyModel->mapFromSource( deepestParent );
+      if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
+      {
+        mBrowserView->expand( proxyIndex );
+        
+        // Force the item to populate if needed
+        QgsDataItem *item = mModel->dataItem( deepestParent );
+        if ( item && item->state() == Qgis::BrowserItemState::NotPopulated )
+        {
+          item->populate();
+        }
+        
+        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 100 );
+      }
+      
+      // Also refresh the parent to ensure children are loaded
+      QgsDataItem *parentItem = mModel->dataItem( deepestParent );
       if ( parentItem )
       {
         parentItem->refresh();
-        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
-        
-        for ( const QString &variant : pathVariants )
-        {
-          componentIndex = mModel->findPath( variant, Qt::MatchStartsWith );
-          if ( componentIndex.isValid() )
-          {
-            foundAnyPath = true;
-            lastValidIndex = componentIndex;
-            break;
-          }
-        }
+        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 100 );
       }
+    }
+    
+    // Try to find the next level
+    const QString &targetComponent = pathHierarchy[i];
+    QStringList variants = generatePathVariants( targetComponent );
+    
+    bool found = false;
+    for ( const QString &variant : variants )
+    {
+      QModelIndex index = mModel->findPath( variant );
+      if ( index.isValid() )
+      {
+        deepestParent = index;
+        found = true;
+        break;
+      }
+    }
+    
+    if ( !found && i == pathHierarchy.size() - 1 )
+    {
+      // Last component - it might be a file rather than a directory
+      // The parent directory should be enough
+      return deepestParent.isValid();
     }
   }
   
-  // Final processing to ensure all operations complete
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
-  
-  return foundAnyPath;
+  return deepestParent.isValid();
 }
 
 QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
