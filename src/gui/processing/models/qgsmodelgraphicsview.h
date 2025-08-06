@@ -69,10 +69,12 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     /**
      * Sets the scene rect used for scrollbar without disturbing the user
      * i.e:
-     *  - We growth the scene rect as the model growth
+     *  - We grow the scene rect as the model grows
      *  - We shrink only if the model scene rect is outside the current viewed viewport
      * 
      * Called each time the view viewport moved or the model scene changed
+     * 
+     * \since QGIS 4.0
      */
     void friendlySetSceneRect();
 
