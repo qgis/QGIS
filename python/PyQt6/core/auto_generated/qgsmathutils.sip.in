@@ -21,6 +21,9 @@ Contains utility functions for mathematical operations.
 #include "qgsmathutils.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     static void doubleToRational( double value, qlonglong &numerator /Out/, qlonglong &denominator /Out/, double tolerance = 1.0e-9, int maxIterations = 100 );
 %Docstring
