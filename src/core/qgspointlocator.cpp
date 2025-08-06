@@ -1167,11 +1167,14 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   QgsPointLocator_Stream stream( dataList );
-  try {
+  try
+  {
     mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
-                leafCapacity, dimension, variant, indexId ) );
-  } catch (const std::exception& e) {
-    QgsDebugError(QStringLiteral("An exception has occurred during the creation of RTree: %1").arg(e.what()));
+                  leafCapacity, dimension, variant, indexId ) );
+  }
+  catch ( const std::exception &e )
+  {
+    QgsDebugError( QStringLiteral( "An exception has occurred during the creation of RTree: %1" ).arg( e.what() ) );
     destroyIndex();
     return false;
   }
