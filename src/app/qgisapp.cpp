@@ -2998,6 +2998,7 @@ void QgisApp::createActions()
   mStatisticalSummaryDockWidget->setToggleVisibilityAction( mActionStatisticalSummary );
   connect( mActionManage3DMapViews, &QAction::triggered, this, &QgisApp::show3DMapViewsManager );
   connect( mActionElevationProfile, &QAction::triggered, this, &QgisApp::createNewElevationProfile );
+  connect( mActionManageElevationProfiles, &QAction::triggered, this, &QgisApp::showElevationProfileManager );
 
   // Layer Menu Items
 
@@ -13011,13 +13012,18 @@ void QgisApp::reloadConnections()
 
 void QgisApp::showLayoutManager()
 {
-  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::DialogLayoutManager );
+  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::ApplicationDialog::LayoutManager );
+}
+
+void QgisApp::showElevationProfileManager()
+{
+  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::ApplicationDialog::ElevationProfileManager );
 }
 
 void QgisApp::show3DMapViewsManager()
 {
 #ifdef HAVE_3D
-  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::Dialog3DMapViewsManager );
+  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::ApplicationDialog::Dialog3DMapViewsManager );
 #endif
 }
 
