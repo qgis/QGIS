@@ -52,7 +52,7 @@ RUN  apt-get update \
     libqt6sql6-odbc \
     libqt6sql6-sqlite \
     libqt6xml6 \
-    libspatialindex6 \
+    libspatialindex7 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
