@@ -584,12 +584,12 @@ void QgsBrowserWidget::navigateToPath()
   if ( path.isEmpty() )
     return;
 
-  
   const QString normalizedPath = QDir::cleanPath( path );
-  
   const QString displayPath = QDir::toNativeSeparators( normalizedPath );
   
-  if ( !QFileInfo::exists( normalizedPath ) )
+  // Check if path exists
+  QFileInfo pathInfo( normalizedPath );
+  if ( !pathInfo.exists() )
   {
     if ( mMessageBar )
     {
@@ -598,16 +598,7 @@ void QgsBrowserWidget::navigateToPath()
     return;
   }
 
-#ifdef Q_OS_WIN
-  if ( normalizedPath.length() <= 3 && normalizedPath.contains( ':' ) )
-  {
-    
-    mModel->refreshDrives();
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 100 );
-  }
-#endif
   QStringList pathVariants = generatePathVariants( normalizedPath );
-  
   for ( const QString &variant : pathVariants )
   {
     QModelIndex index = mModel->findPath( variant );
@@ -623,13 +614,72 @@ void QgsBrowserWidget::navigateToPath()
     }
   }
 
-  // Path not found, try to populate it
-  if ( ensurePathInModel( normalizedPath ) )
+  // Path not in model, need to navigate to parent and expand
+  QString parentPath;
+  QString targetName;
+  
+  if ( pathInfo.isFile() )
   {
-    // Give the model time to update
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+    // For files, navigate to parent directory
+    parentPath = pathInfo.absolutePath();
+    targetName = pathInfo.fileName();
+  }
+  else
+  {
+    // For directories, get parent directory
+    QDir dir( normalizedPath );
+    if ( dir.cdUp() )
+    {
+      parentPath = dir.absolutePath();
+      targetName = pathInfo.fileName();
+    }
+    else
+    {
+      // This is a root directory
+      parentPath = normalizedPath;
+    }
+  }
+
+  // Special handling for Windows drives
+#ifdef Q_OS_WIN
+  // Ensure drives are loaded
+  mModel->refreshDrives();
+  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+  if ( normalizedPath.length() <= 3 && normalizedPath.contains( ':' ) )
+  {
+    QString driveLetterUpper = normalizedPath.left( 2 ).toUpper();
+    QStringList driveVariants;
+    driveVariants << driveLetterUpper
+                  << driveLetterUpper + "/"
+                  << driveLetterUpper + "\\"
+                  << driveLetterUpper.toLower()
+                  << driveLetterUpper.toLower() + "/"
+                  << driveLetterUpper.toLower() + "\\";
     
-    // Try to find the path again
+    for ( const QString &variant : driveVariants )
+    {
+      QModelIndex index = mModel->findPath( variant );
+      if ( index.isValid() )
+      {
+        setActiveIndex( index );
+        mLeLocationBar->clear();
+        if ( mMessageBar )
+        {
+          mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
+        }
+        return;
+      }
+    }
+  }
+#endif
+
+  // Try to populate the path 
+  bool populated = ensurePathInModel( normalizedPath );
+  
+  if ( populated )
+  {
+    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+    
     for ( const QString &variant : pathVariants )
     {
       QModelIndex index = mModel->findPath( variant );
@@ -645,10 +695,173 @@ void QgsBrowserWidget::navigateToPath()
       }
     }
   }
+
+  
+  if ( !parentPath.isEmpty() && parentPath != normalizedPath )
+  {
+    QStringList parentVariants = generatePathVariants( parentPath );
+    for ( const QString &variant : parentVariants )
+    {
+      QModelIndex parentIndex = mModel->findPath( variant );
+      if ( parentIndex.isValid() )
+      {
+        // Navigate to parent
+        setActiveIndex( parentIndex );
+        
+        // Refresh the parent to ensure children are loaded
+        QgsDataItem *parentItem = mModel->dataItem( parentIndex );
+        if ( parentItem )
+        {
+          parentItem->refresh();
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+          
+          // Now try to find the target again
+          for ( const QString &targetVariant : pathVariants )
+          {
+            QModelIndex targetIndex = mModel->findPath( targetVariant );
+            if ( targetIndex.isValid() )
+            {
+              setActiveIndex( targetIndex );
+              mLeLocationBar->clear();
+              if ( mMessageBar )
+              {
+                mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
+              }
+              return;
+            }
+          }
+        }
+        
+        mLeLocationBar->clear();
+        if ( mMessageBar )
+        {
+          if ( pathInfo.isFile() )
+          {
+            mMessageBar->pushInfo( tr( "Navigate to Path" ), tr( "Navigated to parent directory of: %1" ).arg( displayPath ) );
+          }
+          else
+          {
+            mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not fully navigate to: %1. Showing parent directory." ).arg( displayPath ) );
+          }
+        }
+        return;
+      }
+    }
+  }
+  
+  QStringList pathHierarchy;
+  QString currentPath = normalizedPath;
+  
+  // Build hierarchy from target to root
+  while ( !currentPath.isEmpty() )
+  {
+    pathHierarchy.prepend( currentPath );
+    
+    QDir dir( currentPath );
+    
+#ifdef Q_OS_WIN
+    // Windows drive root check
+    if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
+      break;
+#else
+    if ( currentPath == "/" )
+      break;
+#endif
+    
+    if ( !dir.cdUp() || dir.absolutePath() == currentPath )
+      break;
+      
+    currentPath = dir.absolutePath();
+  }
+  
+  // Try to find the deepest available parent 
+  QModelIndex bestParentIndex;
+  QString bestParentPath;
+  
+  for ( const QString &hierarchyPath : pathHierarchy )
+  {
+    if ( hierarchyPath == normalizedPath )
+      continue; 
+      
+    QStringList variants = generatePathVariants( hierarchyPath );
+    for ( const QString &variant : variants )
+    {
+      QModelIndex index = mModel->findPath( variant );
+      if ( index.isValid() )
+      {
+        bestParentIndex = index;
+        bestParentPath = hierarchyPath;
+      }
+    }
+  }
+  
+  // If we found any parent, navigate to it
+  if ( bestParentIndex.isValid() )
+  {
+    // Navigate to the best parent we found
+    setActiveIndex( bestParentIndex );
+    
+    // Expand and refresh the parent to load its children
+    QModelIndex proxyIndex = mProxyModel->mapFromSource( bestParentIndex );
+    if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
+    {
+      mBrowserView->expand( proxyIndex );
+    }
+    
+    QgsDataItem *parentItem = mModel->dataItem( bestParentIndex );
+    if ( parentItem )
+    {
+      // Force population and refresh
+      if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
+      {
+        parentItem->populate();
+      }
+      parentItem->refresh();
+      
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+      
+      for ( const QString &targetVariant : pathVariants )
+      {
+        QModelIndex targetIndex = mModel->findPath( targetVariant );
+        if ( targetIndex.isValid() )
+        {
+          setActiveIndex( targetIndex );
+          mLeLocationBar->clear();
+          if ( mMessageBar )
+          {
+            mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
+          }
+          return;
+        }
+      }
+    }
+    
+    //this is partial success
+    mLeLocationBar->clear();
+    if ( mMessageBar )
+    {
+      QString parentDisplayPath = QDir::toNativeSeparators( bestParentPath );
+      if ( pathInfo.isFile() )
+      {
+        mMessageBar->pushInfo( tr( "Navigate to Path" ), 
+                               tr( "File not found in browser. Navigated to parent directory: %1" ).arg( parentDisplayPath ) );
+      }
+      else
+      {
+        mMessageBar->pushInfo( tr( "Navigate to Path" ), 
+                               tr( "Could not find '%1' in browser. Navigated to nearest parent: %2" )
+                               .arg( pathInfo.fileName() )
+                               .arg( parentDisplayPath ) );
+      }
+    }
+    return;
+  }
   
   if ( mMessageBar )
   {
-    mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser." ).arg( displayPath ) );
+    mMessageBar->pushWarning( tr( "Navigate to Path" ), 
+                              tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser. "
+                                  "Try navigating to a parent directory first." ).arg( displayPath ) );
   }
 }
 
@@ -747,7 +960,6 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
       return true;
   }
 
-  // Build path hierarchy from root to target
   QStringList pathHierarchy;
   QString currentPath = normalizedPath;
   
