@@ -9817,6 +9817,8 @@ QgsMasterLayoutInterface.setName: src/core/layout/qgsmasterlayoutinterface.h#L99
 QgsMasterLayoutInterface.updateSettings: src/core/layout/qgsmasterlayoutinterface.h#L122
 QgsMasterLayoutInterface.writeLayoutXml: src/core/layout/qgsmasterlayoutinterface.h#L111
 QgsMasterLayoutInterface: src/core/layout/qgsmasterlayoutinterface.h#L41
+QgsMathUtils.doubleToRational: src/core/qgsmathutils.h#L44
+QgsMathUtils: src/core/qgsmathutils.h#L29
 QgsMatrix4x4.__repr__: src/core/qgsmatrix4x4.h#L91
 QgsMatrix4x4.isIdentity: src/core/qgsmatrix4x4.h#L86
 QgsMatrix4x4.map: src/core/qgsmatrix4x4.h#L83
