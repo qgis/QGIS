@@ -238,6 +238,8 @@ if(WITH_CORE)
       endif()
   endif()
 
+  set (WITH_SFCGAL FALSE CACHE BOOL "Determines whether SFCGAL geometry support should be built")
+
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
   set (NATIVE_CRSSYNC_BIN "" CACHE PATH "Path to a natively compiled synccrsdb binary. If set, crssync will not build but use provided bin instead.")
@@ -458,6 +460,29 @@ if(WITH_CORE)
   find_package(EXIV2 REQUIRED)
 
   # optional
+  if (WITH_SFCGAL)
+
+    if(POLICY CMP0167) # avoid deprecation warning from CGAL
+      cmake_policy(SET CMP0167 NEW)
+    endif()
+
+    find_package(SFCGAL) # SFCGAL provider
+    message(STATUS "Found SFCGAL: ${SFCGAL_VERSION} ${SFCGAL_DIR}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\1" SFCGAL_VERSION_MAJOR_INT "${SFCGAL_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\2" SFCGAL_VERSION_MINOR_INT "${SFCGAL_VERSION}")
+    string(REGEX REPLACE "^.*([0-9]+)\\.([0-9]+)\\.([0-9]+).*$" "\\3" SFCGAL_VERSION_PATCH_INT "${SFCGAL_VERSION}")
+
+    if(SFCGAL_VERSION VERSION_LESS "2.0")
+      message(FATAL_ERROR "Cannot build QGIS using SFCGAL older than 2.0")
+    endif()
+    if (WITH_SFCGAL)
+      add_definitions(-DWITH_SFCGAL)
+      message(STATUS "SFCGAL support enabled")
+    else()
+      message(STATUS "SFCGAL support DISABLED.")
+    endif()
+  endif()
+
   if (WITH_POSTGRESQL)
     find_package(Postgres) # PostgreSQL provider
   endif()
