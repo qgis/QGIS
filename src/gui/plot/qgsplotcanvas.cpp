@@ -166,7 +166,7 @@ void QgsPlotCanvas::mousePressEvent( QMouseEvent *event )
       setTool( mMidMouseButtonPanTool );
       event->accept();
     }
-    else if ( event->button() == Qt::RightButton && mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu )
+    else if ( event->button() == Qt::RightButton && mTool && mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu )
     {
       auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
       showContextMenu( me.get() );
