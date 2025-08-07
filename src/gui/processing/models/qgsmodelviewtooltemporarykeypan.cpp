@@ -37,7 +37,6 @@ void QgsModelViewToolTemporaryKeyPan::keyReleaseEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
   {
     view()->setTool( mPreviousViewTool );
-    view()->friendlySetSceneRect();
   }
 }
 
