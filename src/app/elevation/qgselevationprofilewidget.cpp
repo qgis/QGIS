@@ -367,6 +367,19 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mOptionsMenu->addAction( mScaleRatioSettingsAction );
 
+  mOptionsMenu->addSeparator();
+
+  mToleranceSettingsAction = new QgsElevationProfileToleranceWidgetSettingsAction( mOptionsMenu );
+
+  mToleranceSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
+  connect( mToleranceSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
+    settingTolerance->setValue( value );
+    createOrUpdateRubberBands();
+    scheduleUpdate();
+  } );
+
+  mOptionsMenu->addAction( mToleranceSettingsAction );
+
   mDistanceUnitMenu = new QMenu( tr( "Distance Units" ), this );
   QActionGroup *unitGroup = new QActionGroup( this );
   for ( Qgis::DistanceUnit unit :
@@ -413,20 +426,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   } );
 
   mOptionsMenu->addMenu( mDistanceUnitMenu );
-  mOptionsMenu->addSeparator();
-
-  mToleranceSettingsAction = new QgsElevationProfileToleranceWidgetSettingsAction( mOptionsMenu );
-
-  mToleranceSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
-  connect( mToleranceSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
-    settingTolerance->setValue( value );
-    createOrUpdateRubberBands();
-    scheduleUpdate();
-  } );
-
-  mOptionsMenu->addAction( mToleranceSettingsAction );
-
-  mOptionsMenu->addSeparator();
 
   // show Subsections Indicator Action
   // create a default simple symbology
