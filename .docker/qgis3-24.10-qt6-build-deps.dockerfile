@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=25.04
+ARG DISTRO_VERSION=24.10
 ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
@@ -32,7 +32,7 @@ RUN  apt-get update \
     graphviz \
     'libaio1|libaio1t64' \
     'libdraco4|libdraco8' \
-    libexiv2-28 \
+    libexiv2-27 \
     'libfcgi0ldbl|libfcgi0t64' \
     libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
@@ -52,7 +52,7 @@ RUN  apt-get update \
     libqt6sql6-odbc \
     libqt6sql6-sqlite \
     libqt6xml6 \
-    libspatialindex8 \
+    libspatialindex7 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
@@ -72,7 +72,6 @@ RUN  apt-get update \
     python3-pyqt6.qtpositioning \
     python3-pyqt6.qtmultimedia \
     python3-pyqt6.qtserialport \
-    python3-sip \
     python3-termcolor \
     python3-yaml \
     qpdf \
@@ -197,6 +196,7 @@ RUN  apt-get update \
     clang \
     cmake \
     flex \
+    mold \
     grass-dev \
     libdraco-dev \
     libexiv2-dev \
@@ -206,12 +206,11 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libprotobuf-dev \
-    libqca-qt6-2-dev \
+    libqca-qt6-dev \
     libqt6opengl6-dev \
-    libqt6scintilla2-dev \
+    libqscintilla2-qt6-dev \
     libqt6svg6-dev \
     libqt6serialport6-dev \
-    libqwt-qt6-dev \
     libspatialindex-dev \
     libspatialite-dev \
     libsqlite3-dev \
@@ -222,18 +221,22 @@ RUN  apt-get update \
     pyqt6-dev \
     pyqt6-dev-tools \
     pyqt6.qsci-dev \
+    python3-pyqt6.sip \
     python3-all-dev \
     python3-dev \
-    python3-sip-dev \
-    qt3d6-dev \
-    qt6keychain-dev \
-    qtbase6-dev \
-    qtdeclarative6-dev-tools \
-    qtpositioning6-dev \
-    qtmultimedia6-dev \
-    qttools6-dev \
-    qttools6-dev-tools \
-    qtbase6-private-dev \
+    python3-sipbuild \
+    python3-pyqtbuild \
+    sip-tools \
+    qt6-3d-dev \
+    qtkeychain-qt6-dev \
+    qt6-base-dev \
+    qt6-declarative-dev-tools \
+    qt6-positioning-dev \
+    qt6-multimedia-dev \
+    qt6-tools-dev \
+    qt6-tools-dev-tools \
+    qt6-base-private-dev \
+    qt6-5compat-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
