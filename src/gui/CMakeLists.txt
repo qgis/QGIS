@@ -37,6 +37,10 @@ set(QGIS_GUI_SRCS
   vector/qgsattributesforminitcode.cpp
   vector/qgsattributesformmodel.cpp
   vector/qgsattributesformproperties.cpp
+  vector/qgsattributesformtreeviewindicator.cpp
+  vector/qgsattributesformtreeviewindicatorprovider.cpp
+  vector/qgsattributesformtreeviewitemdelegate.cpp
+  vector/qgsattributesformview.cpp
   vector/qgsdiagramproperties.cpp
   vector/qgsdiagramwidget.cpp
   vector/qgsfieldcalculator.cpp
@@ -1536,6 +1540,10 @@ set(QGIS_GUI_HDRS
   vector/qgsattributesforminitcode.h
   vector/qgsattributesformmodel.h
   vector/qgsattributesformproperties.h
+  vector/qgsattributesformtreeviewindicator.h
+  vector/qgsattributesformtreeviewindicatorprovider.h
+  vector/qgsattributesformtreeviewitemdelegate.h
+  vector/qgsattributesformview.h
   vector/qgsdiagramproperties.h
   vector/qgsdiagramwidget.h
   vector/qgsfieldcalculator.h

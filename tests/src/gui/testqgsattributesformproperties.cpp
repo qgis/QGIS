@@ -18,6 +18,7 @@
 
 #include "qgsattributesformmodel.h"
 #include "qgsattributesformproperties.h"
+#include "qgsattributesformview.h"
 #include "qgsattributetypedialog.h"
 #include "qgsvectorlayer.h"
 
