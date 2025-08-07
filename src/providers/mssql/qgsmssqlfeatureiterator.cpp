@@ -454,7 +454,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
     {
       // No existing connection, so set it up now. It's safe to do here as we're now in
       // the thread were iteration is actually occurring.
-      mDatabase = QgsMssqlDatabase::connectDb( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+      mDatabase = QgsMssqlDatabase::connectDb( mSource->mUri );
     }
 
     if ( !mDatabase->isValid() )
@@ -710,11 +710,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
   , mQuery( p->mQuery )
-  , mUserName( p->mUserName )
-  , mPassword( p->mPassword )
-  , mService( p->mService )
-  , mDatabaseName( p->mDatabaseName )
-  , mHost( p->mHost )
+  , mUri( p->mUri )
   , mSqlWhereClause( p->mSqlWhereClause )
   , mDisableInvalidGeometryHandling( p->mDisableInvalidGeometryHandling )
   , mCrs( p->crs() )

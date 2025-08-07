@@ -404,7 +404,14 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     mConnInfo += " service='" + service + '\'';
 
   QgsDebugMsgLevel( QStringLiteral( "GetDatabase" ), 2 );
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( service, host, database, username, password );
+
+  QgsDataSourceUri uri;
+  uri.setService( service );
+  uri.setHost( host );
+  uri.setDatabase( database );
+  uri.setUsername( username );
+  uri.setPassword( password );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
 
   if ( !db->isValid() )
   {
