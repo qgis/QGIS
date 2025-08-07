@@ -621,7 +621,10 @@ bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, 
   CHECK_SUCCESS( errorMsg, false );
 
   if ( reason && strlen( reason ) )
+  {
     sfcgal::errorHandler()->addText( QString( reason ) );
+    free( reason );
+  }
 
   if ( location && errorLoc )
   {
