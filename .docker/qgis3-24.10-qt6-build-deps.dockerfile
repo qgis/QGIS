@@ -197,6 +197,7 @@ RUN  apt-get update \
     clang \
     cmake \
     flex \
+    mold \
     grass-dev \
     libdraco-dev \
     libexiv2-dev \
