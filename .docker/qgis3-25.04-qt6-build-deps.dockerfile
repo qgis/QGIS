@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=24.04
+ARG DISTRO_VERSION=25.04
 ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
@@ -36,24 +36,23 @@ RUN  apt-get update \
     'libfcgi0ldbl|libfcgi0t64' \
     libgsl27 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
-    libqca-qt5-2-plugins \
-    libqt53dextras5 \
-    libqt53drender5 \
-    'libqt5concurrent5|libqt5concurrent5t64' \
-    libqt5keychain1 \
-    libqt5positioning5 \
-    libqt5multimedia5 \
-    libqt5multimediawidgets5 \
-    libqt5qml5 \
-    libqt5quick5 \
-    libqt5quickcontrols2-5 \
-    libqt5quickwidgets5 \
-    libqt5serialport5 \
-    libqt5sql5-odbc \
-    libqt5sql5-sqlite \
-    'libqt5xml5|libqt5xml5t64' \
-    libqt5webkit5 \
-    libqwt-qt5-6 \
+    libqca-qt6-plugins \
+    libqt53dextras6 \
+    libqt53drender6 \
+    libqt5concurrent6 \
+    libqt6keychain1 \
+    libqt6positioning6 \
+    libqt6multimedia6 \
+    libqt6multimediawidgets6 \
+    libqt6qml6 \
+    libqt6quick6 \
+    libqt6quickcontrols2-6 \
+    libqt6quickwidgets6 \
+    libqt6serialport6 \
+    libqt6sql6-odbc \
+    libqt6sql6-sqlite \
+    libqt5xml6 \
+    libqwt-qt6-6 \
     libspatialindex6 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
@@ -69,23 +68,23 @@ RUN  apt-get update \
     python3-pip \
     python3-psycopg2 \
     python3-pyproj \
-    python3-pyqt5 \
-    python3-pyqt5.qsci \
-    python3-pyqt5.qtsql \
-    python3-pyqt5.qtsvg \
-    python3-pyqt5.qtwebkit \
-    python3-pyqt5.qtpositioning \
-    python3-pyqt5.qtmultimedia \
-    python3-pyqt5.qtserialport \
+    python3-pyqt6 \
+    python3-pyqt6.qsci \
+    python3-pyqt6.qtsql \
+    python3-pyqt6.qtsvg \
+    python3-pyqt6.qtwebkit \
+    python3-pyqt6.qtpositioning \
+    python3-pyqt6.qtmultimedia \
+    python3-pyqt6.qtserialport \
     python3-sip \
     python3-termcolor \
     python3-yaml \
     qpdf \
-    qt3d-assimpsceneimport-plugin \
-    qt3d-defaultgeometryloader-plugin \
-    qt3d-gltfsceneio-plugin \
-    qt3d-scene2d-plugin \
-    qt5-image-formats-plugins \
+    qt6-3d-assimpsceneimport-plugin \
+    qt6-3d-defaultgeometryloader-plugin \
+    qt6-3d-gltfsceneio-plugin \
+    qt6-3d-scene2d-plugin \
+    qt6-image-formats-plugins \
     saga \
     supervisor \
     unzip \
@@ -211,13 +210,12 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libprotobuf-dev \
-    libqca-qt5-2-dev \
-    libqt5opengl5-dev \
-    libqt5scintilla2-dev \
-    libqt5svg5-dev \
-    libqt5webkit5-dev \
-    libqt5serialport5-dev \
-    libqwt-qt5-dev \
+    libqca-qt6-2-dev \
+    libqt6opengl6-dev \
+    libqt6scintilla2-dev \
+    libqt6svg6-dev \
+    libqt6serialport6-dev \
+    libqwt-qt6-dev \
     libspatialindex-dev \
     libspatialite-dev \
     libsqlite3-dev \
@@ -225,21 +223,21 @@ RUN  apt-get update \
     libzip-dev \
     libzstd-dev \
     protobuf-compiler \
-    pyqt5-dev \
-    pyqt5-dev-tools \
-    pyqt5.qsci-dev \
+    pyqt6-dev \
+    pyqt6-dev-tools \
+    pyqt6.qsci-dev \
     python3-all-dev \
     python3-dev \
     python3-sip-dev \
-    qt3d5-dev \
-    qt5keychain-dev \
-    qtbase5-dev \
-    qtdeclarative5-dev-tools \
-    qtpositioning5-dev \
-    qtmultimedia5-dev \
-    qttools5-dev \
-    qttools5-dev-tools \
-    qtbase5-private-dev \
+    qt3d6-dev \
+    qt6keychain-dev \
+    qtbase6-dev \
+    qtdeclarative6-dev-tools \
+    qtpositioning6-dev \
+    qtmultimedia6-dev \
+    qttools6-dev \
+    qttools6-dev-tools \
+    qtbase6-private-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean

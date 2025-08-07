@@ -42,11 +42,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
+          - distro-version: '25.04'
+            qt-version: 6
             run-tests: true
-            with-qt6: OFF
-            with-qt5: ON
+            with-qt6: ON
+            with-qt5: OFF
             with-3d: ON
             with-quick: ON
             with-clazy: ON
@@ -129,7 +129,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          file: .docker/qgis3-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
           tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
@@ -242,32 +242,22 @@ jobs:
 
     strategy:
       matrix:
-        qt-version: [5, 6]
+        qt-version: [6]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
 
         include:
-          - qt-version: 5
-            distro-version: 24.04
+          - qt-version: 6
+            distro-version: 25.04
             docker-target: binary-only
 
           - qt-version: 6
             distro-version: 39
             docker-target: binary-only
 
-          - qt-version: 5
-            distro-version: 24.04
+          - qt-version: 6
+            distro-version: 25.04
             test-batch: ORACLE
             docker-target: binary-for-oracle
-
-        exclude:
-          - qt-version: 6
-            test-batch: HANA
-
-          - qt-version: 6
-            test-batch: POSTGRES
-
-          - qt-version: 6
-            test-batch: SQLSERVER
 
       fail-fast: false
 
@@ -394,8 +384,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
+          - distro-version: '25.04'
+            qt-version: 6
 
     steps:
       - name: Free Disk Space (Ubuntu)
