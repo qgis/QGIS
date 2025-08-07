@@ -124,6 +124,9 @@ void TestQgsCopcProvider::encodeUri()
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
   QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+
+  parts.insert( QStringLiteral( "authcfg" ), QStringLiteral( "abc1234" ) );
+  QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/dataset.copc.laz authcfg='abc1234'" ) );
 }
 
 void TestQgsCopcProvider::decodeUri()
@@ -131,8 +134,14 @@ void TestQgsCopcProvider::decodeUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
   QVERIFY( metadata );
 
-  const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  QCOMPARE( parts.value( QStringLiteral( "file-name" ) ).toString(), QStringLiteral( "dataset.copc.laz" ) );
+  QVERIFY( parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() );
+
+  parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz authcfg='abc1234'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  QCOMPARE( parts.value( QStringLiteral( "authcfg" ) ).toString(), QStringLiteral( "abc1234" ) );
 }
 
 void TestQgsCopcProvider::absoluteRelativeUri()
@@ -175,6 +184,7 @@ void TestQgsCopcProvider::layerTypesForUri()
   QVERIFY( copcMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
   QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz authcfg='abc1234'" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
   QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList<Qgis::LayerType>() );
 }
 

@@ -338,10 +338,10 @@ QgsPointCloudIndex::operator bool() const
   return mIndex != nullptr;
 }
 
-void QgsPointCloudIndex::load( const QString &fileName )
+void QgsPointCloudIndex::load( const QString &fileName, const QString &authcfg )
 {
   Q_ASSERT( mIndex );
-  mIndex->load( fileName );
+  mIndex->load( fileName, authcfg );
 }
 
 bool QgsPointCloudIndex::isValid() const
