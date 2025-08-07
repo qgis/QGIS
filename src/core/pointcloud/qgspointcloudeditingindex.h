@@ -38,7 +38,7 @@ class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
     //! Ctor
     explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
 
-    void load( const QString &fileName ) override;
+    void load( const QString &fileName, const QString &authcfg = QString() ) override;
     bool isValid() const override;
     Qgis::PointCloudAccessType accessType() const override;
     QgsCoordinateReferenceSystem crs() const override;

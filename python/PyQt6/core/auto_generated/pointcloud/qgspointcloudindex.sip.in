@@ -170,7 +170,7 @@ concurrent access to the index is memory safe.
     operator bool() const;
 
 
-    void load( const QString &fileName );
+    void load( const QString &fileName, const QString &authcfg = QString() );
 %Docstring
 Loads the index from the file
 
