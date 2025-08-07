@@ -233,6 +233,7 @@ RUN  apt-get update \
     qt6-tools-dev \
     qt6-tools-dev-tools \
     qt6-base-private-dev \
+    qt6-5compat-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
