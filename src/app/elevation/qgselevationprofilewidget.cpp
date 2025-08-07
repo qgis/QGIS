@@ -1201,6 +1201,8 @@ QgsElevationProfileScaleRatioWidgetSettingsAction::QgsElevationProfileScaleRatio
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
+
+  w->setToolTip( tr( "Specifies the ratio of distance to elevation units used for the profile's scale" ) );
   setDefaultWidget( w );
 }
 
