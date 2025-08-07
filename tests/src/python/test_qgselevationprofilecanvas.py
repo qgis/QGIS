@@ -256,24 +256,24 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
 
         canvas.setAxisScaleRatio(0.5)
         self.assertAlmostEqual(canvas.axisScaleRatio(), 0.5, 1)
-        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, 1)
-        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, 1)
-        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 50.0, 1)
-        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 150.0, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, delta=1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 50.0, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 150.0, delta=1)
 
         canvas.setAxisScaleRatio(1.0)
         self.assertAlmostEqual(canvas.axisScaleRatio(), 1.0, 1)
-        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, 1)
-        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, 1)
-        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 75.0, 1)
-        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 125.0, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, delta=1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 75.0, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 125.0, delta=1)
 
         canvas.setAxisScaleRatio(2.0)
         self.assertAlmostEqual(canvas.axisScaleRatio(), 2.0, 1)
-        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, 1)
-        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, 1)
-        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 87.5, 1)
-        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 112.5, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, delta=1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 87.5, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 112.5, delta=1)
 
 
 if __name__ == "__main__":
