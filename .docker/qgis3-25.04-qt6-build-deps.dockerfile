@@ -32,14 +32,14 @@ RUN  apt-get update \
     graphviz \
     'libaio1|libaio1t64' \
     'libdraco4|libdraco8' \
-    libexiv2-27 \
+    libexiv2-28 \
     'libfcgi0ldbl|libfcgi0t64' \
-    libgsl27 \
+    libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
     libqca-qt6-plugins \
-    libqt53dextras6 \
-    libqt53drender6 \
-    libqt5concurrent6 \
+    libqt63dextras6 \
+    libqt63drender6 \
+    libqt6concurrent6 \
     libqt6keychain1 \
     libqt6positioning6 \
     libqt6multimedia6 \
@@ -51,15 +51,13 @@ RUN  apt-get update \
     libqt6serialport6 \
     libqt6sql6-odbc \
     libqt6sql6-sqlite \
-    libqt5xml6 \
-    libqwt-qt6-6 \
-    libspatialindex6 \
+    libqt6xml6 \
+    libspatialindex8 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
     locales \
     poppler-utils \
-    python3-future \
     python3-gdal \
     python3-mock \
     python3-nose2 \
@@ -70,9 +68,7 @@ RUN  apt-get update \
     python3-pyproj \
     python3-pyqt6 \
     python3-pyqt6.qsci \
-    python3-pyqt6.qtsql \
     python3-pyqt6.qtsvg \
-    python3-pyqt6.qtwebkit \
     python3-pyqt6.qtpositioning \
     python3-pyqt6.qtmultimedia \
     python3-pyqt6.qtserialport \
