@@ -37,7 +37,6 @@ void QgsModelViewToolTemporaryMousePan::modelReleaseEvent( QgsModelViewMouseEven
   if ( event->button() == Qt::MiddleButton )
   {
     view()->setTool( mPreviousViewTool );
-    view()->friendlySetSceneRect();
   }
 }
 

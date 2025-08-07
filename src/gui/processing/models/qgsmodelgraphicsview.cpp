@@ -52,8 +52,8 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
-  connect( horizontalScrollBar(), &QScrollBar::sliderReleased, this, [=] { friendlySetSceneRect(); } );
-  connect( verticalScrollBar(), &QScrollBar::sliderReleased, this, [=] { friendlySetSceneRect(); } );
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, [=] { friendlySetSceneRect(); } );
+  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, [=] { friendlySetSceneRect(); } );
 
   mSnapper.setSnapToGrid( true );
 }
@@ -498,6 +498,9 @@ void QgsModelGraphicsView::snapSelected()
 
 void QgsModelGraphicsView::friendlySetSceneRect()
 {
+  if ( mBlockScrollbarSignals )
+    return;
+
   QRectF modelSceneRect = modelScene()->sceneRect();
   QRectF viewSceneRect = sceneRect();
 
@@ -508,7 +511,9 @@ void QgsModelGraphicsView::friendlySetSceneRect()
   viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
   viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
 
+  mBlockScrollbarSignals++;
   setSceneRect( viewSceneRect );
+  mBlockScrollbarSignals--;
 }
 
 void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )

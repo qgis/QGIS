@@ -81,7 +81,6 @@ void QgsModelViewToolPan::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   mIsPanning = false;
   view()->viewport()->setCursor( Qt::OpenHandCursor );
-  view()->friendlySetSceneRect();
 }
 
 void QgsModelViewToolPan::deactivate()
