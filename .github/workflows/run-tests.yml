@@ -82,7 +82,7 @@ jobs:
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
       tests_failing: ${{ steps.tests.outputs.TESTS_FAILING }}
-      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
+      # cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
       runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
