@@ -206,12 +206,11 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libprotobuf-dev \
-    libqca-qt6-2-dev \
+    libqca-qt6-dev \
     libqt6opengl6-dev \
-    libqt6scintilla2-dev \
+    libqscintilla2-qt6-dev \
     libqt6svg6-dev \
     libqt6serialport6-dev \
-    libqwt-qt6-dev \
     libspatialindex-dev \
     libspatialite-dev \
     libsqlite3-dev \
@@ -225,15 +224,15 @@ RUN  apt-get update \
     python3-all-dev \
     python3-dev \
     python3-sip-dev \
-    qt3d6-dev \
-    qt6keychain-dev \
-    qtbase6-dev \
-    qtdeclarative6-dev-tools \
-    qtpositioning6-dev \
-    qtmultimedia6-dev \
-    qttools6-dev \
-    qttools6-dev-tools \
-    qtbase6-private-dev \
+    qt6-3d-dev \
+    qtkeychain-qt6-dev \
+    qt6-base-dev \
+    qt6-declarative-dev-tools \
+    qt6-positioning-dev \
+    qt6-multimedia-dev \
+    qt6-tools-dev \
+    qt6-tools-dev-tools \
+    qt6-base-private-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
