@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributeform.h"
+#include "editorwidgets/qgsclassificationconfigdlg.h"
 
 #include <QComboBox>
 
@@ -37,6 +38,8 @@ class TestQgsWidgetsConfigDlg : public QObject
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
 
+    void testClassificationAllowNull();
+
   private:
     void testAllowNull( const QString &widgetType );
 
@@ -44,6 +47,7 @@ class TestQgsWidgetsConfigDlg : public QObject
     QgsAttributeForm *mForm;
     QVariantMap *mConfig;
     QComboBox *mComboBox;
+    QgsClassificationConfigDlg *mClassificationConfigDlg;
 };
 
 void TestQgsWidgetsConfigDlg::initTestCase()
@@ -69,6 +73,7 @@ void TestQgsWidgetsConfigDlg::initTestCase()
 void TestQgsWidgetsConfigDlg::cleanupTestCase()
 {
   delete mLayer;
+  delete mClassificationConfigDlg;
   QgsApplication::exitQgis();
 }
 
@@ -102,6 +107,15 @@ void TestQgsWidgetsConfigDlg::testAllowNull( const QString &widgetType )
 
   mConfig->insert( QStringLiteral( "AllowNull" ), false );
   QCOMPARE( mComboBox->currentText(), "(2)" );
+}
+
+void TestQgsWidgetsConfigDlg::testClassificationAllowNull()
+{
+  // create a configuration
+  const QString widgetType = QStringLiteral( "Classification" );
+  mClassificationConfigDlg = static_cast<QgsClassificationConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( widgetType, mLayer, 1, nullptr ) );
+  mConfig = new QVariantMap( mClassificationConfigDlg->config() );
+  testAllowNull( widgetType );
 }
 
 QGSTEST_MAIN( TestQgsWidgetsConfigDlg )
