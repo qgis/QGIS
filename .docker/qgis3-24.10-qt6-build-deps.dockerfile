@@ -222,9 +222,13 @@ RUN  apt-get update \
     pyqt6-dev \
     pyqt6-dev-tools \
     pyqt6.qsci-dev \
+    python3-pyqt6.sip \
     python3-all-dev \
     python3-dev \
     python3-sip-dev \
+    python3-sipbuild \
+    sip-tools \
+    sip6_6 \
     qt6-3d-dev \
     qtkeychain-qt6-dev \
     qt6-base-dev \
