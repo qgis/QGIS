@@ -72,7 +72,6 @@ RUN  apt-get update \
     python3-pyqt6.qtpositioning \
     python3-pyqt6.qtmultimedia \
     python3-pyqt6.qtserialport \
-    python3-sip \
     python3-termcolor \
     python3-yaml \
     qpdf \
@@ -225,9 +224,9 @@ RUN  apt-get update \
     python3-pyqt6.sip \
     python3-all-dev \
     python3-dev \
-    python3-sip-dev \
     python3-sipbuild \
     python3-pyqtbuild \
+    sip-tools \
     qt6-3d-dev \
     qtkeychain-qt6-dev \
     qt6-base-dev \
