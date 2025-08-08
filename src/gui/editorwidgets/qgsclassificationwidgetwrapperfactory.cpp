@@ -16,7 +16,7 @@
 #include "qgsclassificationwidgetwrapperfactory.h"
 
 #include "qgsclassificationwidgetwrapper.h"
-#include "qgsdummyconfigdlg.h"
+#include "qgsclassificationconfigdlg.h"
 
 QgsClassificationWidgetWrapperFactory::QgsClassificationWidgetWrapperFactory( const QString &name )
   : QgsEditorWidgetFactory( name )
@@ -31,5 +31,5 @@ QgsEditorWidgetWrapper *QgsClassificationWidgetWrapperFactory::create( QgsVector
 
 QgsEditorConfigWidget *QgsClassificationWidgetWrapperFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
-  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Displays a combo box containing values of attributes used for classification.\nOnly available when the layer uses a categorized symbol renderer." ) );
+  return new QgsClassificationConfigDlg( vl, fieldIdx, parent );
 }
