@@ -226,7 +226,6 @@ RUN  apt-get update \
     python3-all-dev \
     python3-dev \
     python3-sip-dev \
-    python3-sipbuild \
     python3-pyqtbuild \
     sip-tools \
     qt6-3d-dev \
