@@ -2608,8 +2608,15 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     std::unique_ptr< QgsLineString > newLine( line->clone() );
-    newLine->extend( startDistance, endDistance );
-    return QgsGeometry( std::move( newLine ) );
+    try
+    {
+      newLine->extend( startDistance, endDistance );
+      return QgsGeometry( std::move( newLine ) );
+    }
+    catch ( const QgsException & )
+    {
+      return QgsGeometry();
+    }
   }
 }
 
