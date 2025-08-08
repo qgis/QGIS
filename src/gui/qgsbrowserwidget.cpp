@@ -1078,6 +1078,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
             // Try to find the child
             QStringList variants = generatePathVariants( targetComponent );
             bool found = false;
+            
             for ( const QString &variant : variants )
             {
               QModelIndex childIndex = mModel->findPath( variant );
@@ -1089,13 +1090,61 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
               }
             }
             
+            // If not found, try by refreshing parent and checking again
+            if ( !found && parentItem )
+            {
+              // Force a more thorough refresh
+              parentItem->refresh();
+              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+              
+              // Try finding the child again after refresh
+              for ( const QString &variant : variants )
+              {
+                QModelIndex childIndex = mModel->findPath( variant );
+                if ( childIndex.isValid() )
+                {
+                  currentParent = childIndex;
+                  found = true;
+                  break;
+                }
+              }
+              
+              // If still not found, check if it's a directory that exists on filesystem
+              if ( !found )
+              {
+                QFileInfo targetInfo( targetComponent );
+                if ( targetInfo.exists() && targetInfo.isDir() )
+                {
+                  
+                  if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+                  {
+                    parentItem->depopulate();
+                    parentItem->populate();
+                    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+          
+                    // Final attempt to find the child
+                    for ( const QString &variant : variants )
+                    {
+                      QModelIndex childIndex = mModel->findPath( variant );
+                      if ( childIndex.isValid() )
+                      {
+                        currentParent = childIndex;
+                        found = true;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            
             if ( !found && i == pathHierarchy.size() - 1 )
             {
               return true;
             }
             else if ( !found )
             {
-              // Intermediate directory not found, can't continue
+              // Intermediate directory not found even after refresh attempts
               return false;
             }
           }
@@ -1107,7 +1156,6 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
   }
 #endif
 
-  // For non-Windows or if drive handling failed, use the general approach
   QModelIndex deepestParent;
   int startIndex = 0;
   
@@ -1175,6 +1223,55 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         deepestParent = index;
         found = true;
         break;
+      }
+    }
+    
+    if ( !found && deepestParent.isValid() )
+    {
+      QgsDataItem *parentItem = mModel->dataItem( deepestParent );
+      if ( parentItem )
+      {
+        parentItem->refresh();
+        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+        
+        for ( const QString &variant : variants )
+        {
+          QModelIndex index = mModel->findPath( variant );
+          if ( index.isValid() )
+          {
+            deepestParent = index;
+            found = true;
+            break;
+          }
+        }
+        
+        // If still not found check if it's a directory that exists on filesystem
+        if ( !found )
+        {
+          QFileInfo targetInfo( targetComponent );
+          if ( targetInfo.exists() && targetInfo.isDir() )
+          {
+            
+            if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+            {
+              parentItem->depopulate();
+              parentItem->populate();
+              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+              
+              
+              for ( const QString &variant : variants )
+              {
+                QModelIndex index = mModel->findPath( variant );
+                if ( index.isValid() )
+                {
+                  deepestParent = index;
+                  found = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
       }
     }
     
