@@ -101,7 +101,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     {
       if ( wkbType == Qgis::WkbType::Unknown )
       {
-        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Spatial Type" ) );
       }
       else if ( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() )
       {
@@ -395,7 +395,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
     {
-      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Spatial Type" ) );
     }
     else if ( wkbType != Qgis::WkbType::NoGeometry )
     {
