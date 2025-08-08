@@ -522,8 +522,8 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
   scene->disableClipping();
   QImage img_no_clipping_final = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  delete map;
   delete scene;
+  delete map;
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img_no_clipping_final, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
