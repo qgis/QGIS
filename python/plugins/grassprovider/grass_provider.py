@@ -222,7 +222,5 @@ class GrassProvider(QgsProcessingProvider):
     def canBeActivated(self):
         return not bool(GrassUtils.checkGrassIsInstalled())
 
-    def tr(self, string, context=""):
-        if context == "":
-            context = "Grass7AlgorithmProvider"
-        return QCoreApplication.translate(context, string)
+    def tr(self, string: str):
+        return QCoreApplication.translate(self.__class__.__name__, string)
