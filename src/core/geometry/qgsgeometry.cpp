@@ -678,6 +678,94 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+bool QgsGeometry::deleteVertices( const QList<int> &vertices )
+{
+  if ( isEmpty() )
+  {
+    return false;
+  }
+
+  if ( vertices.isEmpty() )
+  {
+    return true;
+  }
+
+  // If it's a point and we're deleting any vertex, set geometry to null
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
+  {
+    reset( nullptr );
+    return true;
+  }
+
+  // remove duplicates
+  QSet<int> uniqueVertices( vertices.begin(), vertices.end() );
+
+  // prevent deleting first and last vertex of each ring in a polygon
+  // this prevents deleting the wrong vertex
+  // as the first and last vertex are the same point in a ring
+  // and deletion of any endpoint, shifts the other endpoint
+  if ( type() == Qgis::GeometryType::Polygon )
+  {
+    int partIndex = 0;
+    QgsGeometryConstPartIterator it = constParts();
+    
+    while ( it.hasNext() )
+    {
+      const QgsAbstractGeometry *part = it.next();
+      for ( int ringIndex = 0; ringIndex < part->ringCount(); ringIndex++ )
+      {
+        int firstVertex = vertexNrFromVertexId( QgsVertexId( partIndex, ringIndex, 0 ) );
+        int lastVertex = vertexNrFromVertexId( QgsVertexId( partIndex, ringIndex, part->vertexCount( partIndex, ringIndex ) - 1 ) );
+
+        if ( uniqueVertices.contains( firstVertex ) && uniqueVertices.contains( lastVertex ) )
+        {
+          uniqueVertices.remove( firstVertex );
+        }
+      }
+      partIndex++;
+    }
+  }
+  
+  // create a copy of the original geometry to restore it in case of failure
+  std::unique_ptr< QgsAbstractGeometry > originalGeometry( d->geometry->clone() );
+
+  QList<int> sortedVertices = uniqueVertices.values();
+  std::sort( sortedVertices.begin(), sortedVertices.end(), std::greater<int>() );
+
+  detach();
+  QList<QgsVertexId> vertexIds;
+
+  for ( int vertex : sortedVertices )
+  {
+    QgsVertexId id;
+    if ( !vertexIdFromVertexNr( vertex, id ) )
+    {
+      QgsDebugError( QStringLiteral( "Invalid vertex number %1" ).arg( vertex ) );
+      return false;
+    }
+    vertexIds.append( id );
+  }  
+
+  for ( QgsVertexId &vertexId : vertexIds )
+  {
+    // it is possible that multiple vertices were removed and now vertexId is invalid
+    if ( !vertexId.isValid( constGet() ) )
+    {
+      continue;
+    }
+
+    if ( !d->geometry->deleteVertex( vertexId ) )
+    {
+      QgsDebugError( QStringLiteral( "Failed to delete vertex %1" ).arg( vertexId.vertex ) );
+      // restore the original geometry if deletion of any single vertex fails
+      reset( std::move( originalGeometry ) );
+      return false;
+    } 
+  }
+  
+  return true;
+}
+
 bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
 
