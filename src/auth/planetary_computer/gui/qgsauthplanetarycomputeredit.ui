@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsAuthPlanetaryComputerEdit</class>
+ <widget class="QWidget" name="QgsAuthPlanetaryComputerEdit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>604</width>
+    <height>358</height>
+   </rect>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="lblType">
+     <property name="text">
+      <string>Server type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="cbType">
+     <item>
+      <property name="text">
+       <string>Open Planetary Computer</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Planetary Computer Pro</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblRootUrl">
+     <property name="text">
+      <string>GeoCatalog URI</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="leRootUrl">
+     <property name="toolTip">
+      <string>Enter the URL used to access your planetary computer Pro STAC catalog</string>
+     </property>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lblClientId">
+     <property name="text">
+      <string>Application (client) ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="leClientId">
+     <property name="toolTip">
+      <string>Enter the Application ID for the QGIS application in your organization's Entra ID configuration</string>
+     </property>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblTenantId">
+     <property name="text">
+      <string>Directory (tenant) ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="leTenantId">
+     <property name="toolTip">
+      <string>Enter the tenant ID of your organization's Entra ID. This is only required for single tenant configurations and can be skipped for multi tenant configurations</string>
+     </property>
+     <property name="placeholderText">
+      <string>Optional</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="lblHelp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;The Directory (tenant) and Application (client) IDs can be found in your organization's MS Entra ID main and application page respectively.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>cbType</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

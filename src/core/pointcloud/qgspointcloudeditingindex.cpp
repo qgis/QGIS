@@ -48,7 +48,7 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mIsValid = true;
 }
 
-void QgsPointCloudEditingIndex::load( const QString & )
+void QgsPointCloudEditingIndex::load( const QString &, const QString & )
 {
   return;
 }
