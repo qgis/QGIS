@@ -1952,18 +1952,18 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
                                  .arg( QgsPostgresConn::quotedIdentifier( sourceSchema ) )
                                  .arg( QgsPostgresConn::quotedIdentifier( tableName ) )
                                  .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) );
-  executeSqlPrivate( sqlMoveTable );
 
   std::shared_ptr<QgsPoolPostgresConn> conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
   QgsPostgresLayerProperty property;
   // need property from target schema, it is already moved
-  bool ok = conn->get()->supportedLayer( property, targetSchema, tableName );
+  bool ok = conn->get()->supportedLayer( property, sourceSchema, tableName );
 
   if ( !ok )
   {
     return;
   }
 
+  QString sqlAdditionalCommands;
   // if raster table is moved the overview info is not updated so we need to do it manually
   // also the overviews are moved to the same schema as the raster
   if ( property.isRaster )
@@ -1983,21 +1983,21 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
       const QVariant overviewFactor = result.at( 3 );
 
       // drop the overview constraint
-      const QString sqlDropConstraint = QStringLiteral( "SELECT DropOverviewConstraints(%1, %2, %3)" )
+      const QString sqlDropConstraint = QStringLiteral( "SELECT DropOverviewConstraints(%1, %2, %3);" )
                                           .arg( QgsPostgresConn::quotedValue( overviewSchema ) )
                                           .arg( QgsPostgresConn::quotedValue( overviewTableName ) )
                                           .arg( QgsPostgresConn::quotedValue( overviewRastCol ) );
-      executeSqlPrivate( sqlDropConstraint );
+      sqlAdditionalCommands.append( sqlDropConstraint );
 
       // move overview table to the target schema
       const QString sqlMoveOverview = sqlMoveToSchema
                                         .arg( QgsPostgresConn::quotedIdentifier( overviewSchema ) )
                                         .arg( QgsPostgresConn::quotedIdentifier( overviewTableName ) )
                                         .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) );
-      executeSqlPrivate( sqlMoveOverview );
+      sqlAdditionalCommands.append( sqlMoveOverview );
 
       // create the overview constraint with updated info
-      const QString sqlAddConstraint = QStringLiteral( "SELECT AddOverviewConstraints(%1, %2, %3, %4, %5, %6, %7)" )
+      const QString sqlAddConstraint = QStringLiteral( "SELECT AddOverviewConstraints(%1, %2, %3, %4, %5, %6, %7);" )
                                          .arg( QgsPostgresConn::quotedValue( targetSchema ) )
                                          .arg( QgsPostgresConn::quotedValue( overviewTableName ) )
                                          .arg( QgsPostgresConn::quotedValue( overviewRastCol ) )
@@ -2005,7 +2005,10 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
                                          .arg( QgsPostgresConn::quotedValue( tableName ) )
                                          .arg( QgsPostgresConn::quotedValue( property.geometryColName ) )
                                          .arg( QgsPostgresConn::quotedValue( overviewFactor ) );
-      executeSqlPrivate( sqlAddConstraint );
+      sqlAdditionalCommands.append( sqlAddConstraint );
     }
   }
+
+  const QString sqlCompleteCommand = QStringLiteral( "BEGIN; %1 %2 COMMIT;" ).arg( sqlMoveTable ).arg( sqlAdditionalCommands );
+  executeSqlPrivate( sqlCompleteCommand );
 }
