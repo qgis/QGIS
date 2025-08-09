@@ -65,6 +65,8 @@ Custom properties that have already been used within QGIS:
 .. seealso:: :py:class:`QgsLayerTreeLayer`
 
 .. seealso:: :py:class:`QgsLayerTreeGroup`
+
+.. seealso:: :py:class:`QgsLayerTreeCustomNode`
 %End
 
 %TypeHeaderCode
@@ -81,6 +83,8 @@ Custom properties that have already been used within QGIS:
         sipType = sipType_QgsLayerTree;
       else if ( QgsLayerTree::isGroup( node ) )
         sipType = sipType_QgsLayerTreeGroup;
+      else if ( QgsLayerTree::isCustomNode( node ) )
+        sipType = sipType_QgsLayerTreeCustomNode;
     }
     else
       sipType = 0;
@@ -90,7 +94,8 @@ Custom properties that have already been used within QGIS:
     enum NodeType /BaseType=IntEnum/
     {
       NodeGroup,
-      NodeLayer
+      NodeLayer,
+      NodeCustom
     };
 
     ~QgsLayerTreeNode();

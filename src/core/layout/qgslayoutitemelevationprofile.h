@@ -86,6 +86,22 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     void setLayers( const QList< QgsMapLayer * > &layers );
 
     /**
+     * Returns the list of sources participating in the elevation profile.
+     *
+     * It includes both layer profile sources and custom sources from the profile source registry.
+     *
+     * \see setSources()
+     */
+    QList<QgsAbstractProfileSource *> sources() const;
+
+    /**
+     * Sets the list of \a sources participating in the elevation profile.
+     *
+     * \see sources()
+     */
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+
+    /**
      * Sets the cross section profile \a curve, which represents the line along which the profile should be generated.
      *
      * Ownership of \a curve is transferred to the item.
@@ -229,11 +245,14 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     void recreateCachedImageInBackground();
     void profileGenerationFinished();
+    void setSourcesPrivate();
+
   private:
 
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
     QList< QgsMapLayerRef > mLayers;
+    QList< QgsAbstractProfileSource * > mSources;
 
     QgsCoordinateReferenceSystem mCrs;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;

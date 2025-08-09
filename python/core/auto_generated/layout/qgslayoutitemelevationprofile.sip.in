@@ -71,6 +71,23 @@ Sets the list of map ``layers`` participating in the elevation profile.
 .. seealso:: :py:func:`layers`
 %End
 
+    QList<QgsAbstractProfileSource *> sources() const;
+%Docstring
+Returns the list of sources participating in the elevation profile.
+
+It includes both layer profile sources and custom sources from the
+profile source registry.
+
+.. seealso:: :py:func:`setSources`
+%End
+
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+%Docstring
+Sets the list of ``sources`` participating in the elevation profile.
+
+.. seealso:: :py:func:`sources`
+%End
+
     void setProfileCurve( QgsCurve *curve /Transfer/ );
 %Docstring
 Sets the cross section profile ``curve``, which represents the line
