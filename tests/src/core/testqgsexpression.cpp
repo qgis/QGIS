@@ -1841,6 +1841,11 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
       QTest::newRow( "regexp_replace cap group" ) << "regexp_replace('HeLLo','(eL)', 'x\\\\1x')" << false << QVariant( "HxeLxLo" );
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
+      QTest::newRow( "count_substring basic" ) << "count_substring('banana', 'an')" << false << QVariant( 2 );
+      QTest::newRow( "count_substring basic funny" )  << "count_substring('Funniness', 'n')" << false << QVariant( 3 );
+      QTest::newRow( "count_substring overlapping not counted" )  << "count_substring('aaaaa', 'aa')" << false << QVariant( 2 );
+      QTest::newRow( "count_substring empty needle" )  << "count_substring('abc', '')" << false << QVariant( 0 );
+      QTest::newRow( "count_substring case sensitivity" )  << "count_substring('BANANA', 'an')" << false << QVariant( 0 );
       QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
       QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
