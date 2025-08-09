@@ -237,6 +237,15 @@ Controls if the constraint result should be visualized on the widget
                                 (mostly editable status)
 %End
 
+    void updateComboBoxValues( const QVariant &value, QComboBox *comboBox );
+%Docstring
+Is called when the value of the widget containing a combobox needs to be
+changed. Updates the combobox to reflect the new value.
+
+:param value: The new value of the attribute
+:param comboBox: Pointer to the combobox of the widget
+%End
+
   signals:
 
  void valueChanged( const QVariant &value );
