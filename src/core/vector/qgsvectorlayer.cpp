@@ -5921,6 +5921,11 @@ QString QgsVectorLayer::htmlMetadata() const
 
   if ( isSpatial() )
   {
+    // geom column name
+    if ( const QgsVectorDataProvider *provider = dataProvider() )
+    {
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry name" ) + QStringLiteral( "</td><td>" ) + provider->geometryColumnName() + QStringLiteral( "</td></tr>\n" );
+    }
     // geom type
     Qgis::GeometryType type = geometryType();
     if ( static_cast<int>( type ) < 0 || static_cast< int >( type ) > static_cast< int >( Qgis::GeometryType::Null ) )
@@ -5931,7 +5936,7 @@ QString QgsVectorLayer::htmlMetadata() const
     {
       QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
                           QgsWkbTypes::displayString( wkbType() ) ) );
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry type" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
     }
 
     // Extent
