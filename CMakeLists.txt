@@ -112,13 +112,16 @@ if (USE_CCACHE)
   find_program(CCACHE_EXE ccache)
   if(CCACHE_EXE)
     message(STATUS "ccache found")
+
     execute_process(COMMAND ${CCACHE_EXE} --help OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_HELP)
     execute_process(COMMAND ${CCACHE_EXE} --get-config sloppiness OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_SLOPPINESS)
     execute_process(COMMAND ${CCACHE_EXE} --get-config compiler_type OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_COMPILER_TYPE)
+
     string(FIND "${CCACHE_SLOPPINESS}" "pch_defines" fpch_defines_found_index)
     string(FIND "${CCACHE_SLOPPINESS}" "time_macros" time_macros_found_index)
     string(FIND "${CCACHE_SLOPPINESS}" "include_file_mtime" include_file_mtime_found_index)
     string(FIND "${CCACHE_SLOPPINESS}" "include_file_ctime" include_file_ctime_found_index)
+
     # Detect if we have ccache >= 4.8 which accepts passing configuration settings when invoking the compiler
     string(FIND "${CCACHE_HELP}" "ccache [KEY=VALUE ...] compiler" ccache_key_value_found_index)
     if (fpch_defines_found_index EQUAL -1 OR time_macros_found_index EQUAL -1 OR
@@ -130,13 +133,16 @@ if (USE_CCACHE)
     else()
         set(CCACHE_SLOPPINESS_REQUIRED "")
     endif()
+
     if (BUILD_WITH_QT6 AND CMAKE_CXX_COMPILER STREQUAL "/usr/bin/c++" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT "${CCACHE_COMPILER_TYPE}" STREQUAL "gcc")
         # Cf https://github.com/ccache/ccache/discussions/959
         set(CCACHE_COMPILER_TYPE_GCC_REQUIRED ON)
     else()
         set(CCACHE_COMPILER_TYPE_GCC_REQUIRED OFF)
     endif()
+
     set(CCACHE_INVOCATION_COMMAND "ccache")
+
     if (MSVC)
        # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
        # so no need to set specific ccache configuration items
@@ -149,12 +155,13 @@ if (USE_CCACHE)
       endif()
     else()
       if (CCACHE_SLOPPINESS_REQUIRED)
-        string(APPEND CCACHE_INVOCATION_COMMAND " sloppiness=${CCACHE_SLOPPINESS_REQUIRED}")
+        string(APPEND CCACHE_INVOCATION_COMMAND ";sloppiness=${CCACHE_SLOPPINESS_REQUIRED}")
       endif()
       if (CCACHE_COMPILER_TYPE_GCC_REQUIRED)
-        string(APPEND CCACHE_INVOCATION_COMMAND " compiler_type=gcc")
+        string(APPEND CCACHE_INVOCATION_COMMAND ";compiler_type=gcc")
       endif()
     endif()
+
     set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_INVOCATION_COMMAND})
     set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_INVOCATION_COMMAND})
   endif(CCACHE_EXE)
