@@ -80,7 +80,7 @@ void QgsHubDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 
   const QStringList options = QStringList()
                               << QObject::tr( "Meters" )
-                              << QObject::tr( "Feets" )
+                              << QObject::tr( "Feet" )
                               << QObject::tr( "Miles" )
                               << QObject::tr( "Kilometers" )
                               << QObject::tr( "Layer Units" );
