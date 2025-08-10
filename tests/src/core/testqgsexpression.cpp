@@ -1851,6 +1851,15 @@ class TestQgsExpression : public QObject
       QTest::newRow( "unaccent noop ascii" ) << "unaccent('plain ASCII')" << false << QVariant( "plain ASCII" );
       QTest::newRow( "unaccent empty" ) << "unaccent('')" << false << QVariant( "" );
       QTest::newRow( "unaccent null" ) << "unaccent(NULL)" << false << QVariant();
+      QTest::newRow( "unaccent cyrillic small yo" ) << "unaccent('ёлка')" << false << QVariant( "елка" );
+      QTest::newRow( "unaccent cyrillic Cyrillic capital yo: Ё → Е" ) << "unaccent('ЁЖИК')" << false << QVariant( "ЕЖИК" );
+      QTest::newRow( "unaccent modifier symbols" ) << "unaccent('˃˖˗˜')" << false << QVariant( ">+-~" );
+      QTest::newRow( "unaccent combining grave" ) << "unaccent('À')" << false << QVariant( "A" );
+      QTest::newRow( "unaccent degree celsius fahrenheit" ) << "unaccent('℃℉')" << false << QVariant( "°C°F" );
+      QTest::newRow( "unaccent sound recording copyright ℗ → P" ) << "unaccent('℗')" << false << QVariant( "P" );
+      QTest::newRow( "unaccent vulgar fraction" ) << "unaccent('1½')" << false << QVariant( "1 1/2" );
+      QTest::newRow( "unaccent quotation mark variant" ) << "unaccent('〝')" << false << QVariant( "\"" );
+      QTest::newRow( "unaccent blackletter H" ) << "unaccent('ℌ')" << false << QVariant( "H" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
