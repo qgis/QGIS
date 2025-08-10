@@ -1,0 +1,44 @@
+{
+  "name": "substr_count",
+  "type": "function",
+  "groups": [
+    "String"
+  ],
+  "description": "Counts the number of overlapping occurrences of a substring within a string.",
+  "arguments": [
+    {
+      "arg": "input",
+      "description": "input string to search in"
+    },
+    {
+      "arg": "substring",
+      "description": "substring to search for"
+    }
+  ],
+  "examples": [
+    {
+      "expression": "substr_count('banana', 'an')",
+      "returns": "2"
+    },
+    {
+      "expression": "substr_count('Funniness', 'n')",
+      "returns": "3"
+    },
+    {
+      "expression": "substr_count('aaaaa', 'aa')",
+      "returns": "4"
+    },
+    {
+      "expression": "substr_count('BANANA', 'an')",
+      "returns": "0"
+    }
+  ],
+  "tags": [
+    "text",
+    "find",
+    "string",
+    "substring",
+    "count",
+    "occurrence"
+  ]
+}
