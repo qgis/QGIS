@@ -1843,6 +1843,14 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
       QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
       QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
+      QTest::newRow( "unaccent basic french" ) << "unaccent('Hôtel crème brûlée')" << false << QVariant( "Hotel creme brulee" );
+      QTest::newRow( "unaccent basic romanian" ) << "unaccent('Românește')" << false << QVariant( "Romaneste" );
+      QTest::newRow( "unaccent ligatures and Polish" ) << "unaccent('Æsir & Œuvre, Łódź')" << false << QVariant( "AEsir & OEuvre, Lodz" );
+      QTest::newRow( "unaccent lowercase accents" ) << "unaccent('crème brûlée')" << false << QVariant( "creme brulee" );
+      QTest::newRow( "unaccent special letters" ) << "unaccent('straße, Łódź')" << false << QVariant( "strasse, Lodz" );
+      QTest::newRow( "unaccent noop ascii" ) << "unaccent('plain ASCII')" << false << QVariant( "plain ASCII" );
+      QTest::newRow( "unaccent empty" ) << "unaccent('')" << false << QVariant( "" );
+      QTest::newRow( "unaccent null" ) << "unaccent(NULL)" << false << QVariant();
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
