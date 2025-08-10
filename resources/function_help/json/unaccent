@@ -1,0 +1,16 @@
+{
+  "name": "unaccent",
+  "type": "function",
+  "groups": ["String"],
+  "description": "Removes accents/diacritics from a string using a mapping file (compatible with PostgreSQL's unaccent rules).",
+  "arguments": [
+    { "arg": "string", "description": "Input string." }
+  ],
+  "examples": [
+    { "expression": "unaccent('Românește')", "returns": "Romaneste" },
+    { "expression": "unaccent('Hôtel')", "returns": "Hotel" },
+    { "expression": "unaccent('Æsir & Œuvre, Łódź')\"", "returns": "AEsir & OEuvre, Lodz" },
+    { "expression": "unaccent('crème brûlée')", "returns": "creme brulee" }
+  ],
+  "tags": ["string", "accent", "diacritic", "normalize", "unaccent"]
+}
