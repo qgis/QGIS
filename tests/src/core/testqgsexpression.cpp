@@ -1849,6 +1849,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "substr_count case sensitivity" ) << "substr_count('BANANA', 'an')" << false << QVariant( 0 );
       QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
       QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
+      // unaccent() tests aligned with PostgreSQL's contrib/unaccent/sql/unaccent.sql and some more tests
+      // Source: https://raw.githubusercontent.com/postgres/postgres/refs/heads/master/contrib/unaccent/sql/unaccent.sql
       QTest::newRow( "unaccent basic french" ) << "unaccent('Hôtel crème brûlée')" << false << QVariant( "Hotel creme brulee" );
       QTest::newRow( "unaccent basic romanian" ) << "unaccent('Românește')" << false << QVariant( "Romaneste" );
       QTest::newRow( "unaccent ligatures and Polish" ) << "unaccent('Æsir & Œuvre, Łódź')" << false << QVariant( "AEsir & OEuvre, Lodz" );
