@@ -1,3 +1,11 @@
+# -------------------------------------------------------------------------
+# This unaccent.rules file is derived from the output of:
+#   https://github.com/postgres/postgres/blob/master/contrib/unaccent/generate_unaccent_rules.py
+# in the PostgreSQL source tree.
+#
+# The original script and generated data are licensed under the PostgreSQL License
+# (a permissive, BSD-style license). This file has been adapted for use in QGIS.
+# -------------------------------------------------------------------------
 ¡	!
 ©	(C)
 ª	a
