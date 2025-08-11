@@ -62,6 +62,9 @@
 #include <mutex>
 #include <QTextStream>
 #include <QFile>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QStringConverter>
+#endif
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
@@ -2764,7 +2767,12 @@ namespace
             return;
 
           QTextStream ts( &f );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+          ts.setEncoding( QStringConverter::Utf8 );
+#else
           ts.setCodec( "UTF-8" );
+#endif
+
           static const QRegularExpression wsRe( QStringLiteral( "\\s+" ) );
           QVector<QPair<QString, QString>> parsed;
           parsed.reserve( 1024 );
