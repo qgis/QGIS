@@ -1858,7 +1858,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "unaccent modifier symbols" ) << "unaccent('˃˖˗˜')" << false << QVariant( ">+-~" );
       QTest::newRow( "unaccent combining grave" ) << "unaccent('À')" << false << QVariant( "A" );
       QTest::newRow( "unaccent degree celsius fahrenheit" ) << "unaccent('℃℉')" << false << QVariant( "°C°F" );
-      QTest::newRow( "unaccent sound recording copyright ℗ → P" ) << "unaccent('℗')" << false << QVariant( "P" );
+      QTest::newRow( "unaccent sound recording copyright ℗ → P" ) << "unaccent('℗')" << false << QVariant( "(P)" );
       QTest::newRow( "unaccent vulgar fraction" ) << "unaccent('1½')" << false << QVariant( "1 1/2" );
       QTest::newRow( "unaccent quotation mark variant" ) << "unaccent('〝')" << false << QVariant( "\"" );
       QTest::newRow( "unaccent blackletter H" ) << "unaccent('ℌ')" << false << QVariant( "H" );

@@ -2845,7 +2845,7 @@ namespace
       int m_maxLen = 0;
       QHash<int, QVector<QPair<QString, QString>>> m_rulesByLen;
   };
-} // anonymous namespace
+}
 
 static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
