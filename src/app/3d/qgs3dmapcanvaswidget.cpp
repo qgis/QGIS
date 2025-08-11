@@ -680,12 +680,7 @@ void Qgs3DMapCanvasWidget::toggleDebugWidget() const
 
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
-  whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
-  whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
-  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
-  whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
-  whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
-  whileBlocking( mShowFrustumPolygon )->setChecked( map->viewFrustumVisualizationEnabled() );
+  updateCheckedActionsFromMapSettings( map );
 
   mCanvas->setMapSettings( map );
   connect( map, &Qgs3DMapSettings::showDebugPanelChanged, this, qOverload<bool>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
@@ -816,12 +811,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   mConfigureDialog->show();
 
-  whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
-  whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
-  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
-  whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
-  whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
-  whileBlocking( mShowFrustumPolygon )->setChecked( map->viewFrustumVisualizationEnabled() );
+  updateCheckedActionsFromMapSettings( map );
 }
 
 void Qgs3DMapCanvasWidget::exportScene()
@@ -1231,6 +1221,16 @@ void Qgs3DMapCanvasWidget::disableClippingPlanes() const
   mCanvas->scene()->disableClipping();
   mMapToolClippingPlanes->clearHighLightedArea();
   mActionDisableClippingPlanes->setDisabled( true );
+}
+
+void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const
+{
+  whileBlocking( mActionEnableShadows )->setChecked( mapSettings->shadowSettings().renderShadows() );
+  whileBlocking( mActionEnableEyeDome )->setChecked( mapSettings->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( mapSettings->ambientOcclusionSettings().isEnabled() );
+  whileBlocking( mActionSync2DNavTo3D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
+  whileBlocking( mActionSync3DNavTo2D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
+  whileBlocking( mShowFrustumPolygon )->setChecked( mapSettings->viewFrustumVisualizationEnabled() );
 }
 
 ClassValidator::ClassValidator( QWidget *parent )
