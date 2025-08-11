@@ -5787,6 +5787,35 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
         )
 
+    def test_legend_settings(self):
+        vl = QgsVectorLayer(
+            "Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer",
+            "test",
+            "memory",
+        )
+        self.assertTrue(vl.isValid())
+
+        self.assertFalse(vl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        vl.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        self.assertTrue(vl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+
+        p = QgsProject()
+        p.addMapLayer(vl)
+
+        # test saving and restoring
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + "/test.qgs"))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + "/test.qgs"))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertTrue(
+                vl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
+            )
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
