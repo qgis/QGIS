@@ -2010,5 +2010,11 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
   }
 
   const QString sqlCompleteCommand = QStringLiteral( "BEGIN; %1 %2 COMMIT;" ).arg( sqlMoveTable ).arg( sqlAdditionalCommands );
-  executeSqlPrivate( sqlCompleteCommand );
+
+  QgsPostgresResult res( conn->get()->LoggedPQexec( "QgsPostgresRasterProviderMetadata", sqlCompleteCommand ) );
+
+  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    throw QgsProviderConnectionException( QStringLiteral( "Cannot safely move `%1` to schema `%2`." ).arg( tableName ).arg( targetSchema ) );
+  }
 }
