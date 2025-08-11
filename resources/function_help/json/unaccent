@@ -9,7 +9,6 @@
   "examples": [
     { "expression": "unaccent('Românește')", "returns": "Romaneste" },
     { "expression": "unaccent('Hôtel')", "returns": "Hotel" },
-    { "expression": "unaccent('Æsir & Œuvre, Łódź')\"", "returns": "AEsir & OEuvre, Lodz" },
     { "expression": "unaccent('crème brûlée')", "returns": "creme brulee" }
   ],
   "tags": ["string", "accent", "diacritic", "normalize", "unaccent"]
