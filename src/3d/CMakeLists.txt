@@ -27,6 +27,7 @@ set(QGIS_3D_SRCS
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
+  qgsmapoverlayentity.cpp
   qgsmapoverlaytexturegenerator_p.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
@@ -160,6 +161,7 @@ set(QGIS_3D_HDRS
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
+  qgsmapoverlayentity.h
   qgsmapoverlaytexturegenerator_p.h
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
