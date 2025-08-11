@@ -524,3 +524,9 @@ QgsAmbientOcclusionRenderView &QgsFrameGraph::ambientOcclusionRenderView()
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW].get();
   return *( dynamic_cast<QgsAmbientOcclusionRenderView *>( rv ) );
 }
+
+QgsDebugTextureRenderView &QgsFrameGraph::debugTextureRenderView()
+{
+  QgsAbstractRenderView *renderView = mRenderViewMap[QgsFrameGraph::DEBUG_RENDERVIEW].get();
+  return *( dynamic_cast<QgsDebugTextureRenderView *>( renderView ) );
+}
