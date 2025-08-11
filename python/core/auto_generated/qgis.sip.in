@@ -2498,6 +2498,14 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+    enum class MapLayerLegendFlag
+    {
+      ExcludeByDefault,
+    };
+
+    typedef QFlags<Qgis::MapLayerLegendFlag> MapLayerLegendFlags;
+
+
     enum class LegendComponent
       {
       Undefined,
@@ -3675,6 +3683,8 @@ QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability 
 QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
 
 QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
+
+QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
 
 
 
