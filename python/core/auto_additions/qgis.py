@@ -7914,6 +7914,19 @@ Qgis.LayerTreeFilterFlag.__doc__ = """Layer tree filter flags.
 Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.MapLayerLegendFlag.ExcludeByDefault.__doc__ = "If set, the layer should not be included in legends by default, and must be manually added by a user"
+Qgis.MapLayerLegendFlag.__doc__ = """Map layer legend flags.
+
+.. versionadded:: 4.0
+
+* ``ExcludeByDefault``: If set, the layer should not be included in legends by default, and must be manually added by a user
+
+"""
+# --
+Qgis.MapLayerLegendFlag.baseClass = Qgis
+Qgis.MapLayerLegendFlags.baseClass = Qgis
+MapLayerLegendFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLegendStyle.Style = Qgis.LegendComponent
 # monkey patching scoped based enum
 QgsLegendStyle.Undefined = Qgis.LegendComponent.Undefined
