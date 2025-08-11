@@ -1960,7 +1960,7 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
 
   if ( !ok )
   {
-    return;
+    throw QgsProviderConnectionException( QStringLiteral( "Table `%1` requested for move, does not exist." ).arg( tableName ) );
   }
 
   QString sqlAdditionalCommands;
