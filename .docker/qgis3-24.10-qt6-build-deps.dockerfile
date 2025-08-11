@@ -16,6 +16,7 @@ ARG PDAL_VERSION
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
 
 RUN  apt-get update \
+  && apt-get upgrade \
   && apt-get install -y software-properties-common \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
