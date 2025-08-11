@@ -54,6 +54,33 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     // TODO: type
 
     /**
+     * Returns flags associated with the legend.
+     *
+     * \see setFlag()
+     * \see setFlags()
+     * \since QGIS 4.0
+     */
+    Qgis::MapLayerLegendFlags flags() const { return mFlags; }
+
+    /**
+     * Enables or disables a particular \a flag (other flags are not affected).
+     *
+     * \see flags()
+     * \see setFlags()
+     * \since QGIS 4.0
+     */
+    void setFlag( Qgis::MapLayerLegendFlag flag, bool on = true ) { mFlags.setFlag( flag, on ); }
+
+    /**
+     * Sets the \a flags associated with the legend.
+     *
+     * \see setFlag()
+     * \see flags()
+     * \since QGIS 4.0
+     */
+    void setFlags( Qgis::MapLayerLegendFlags flags ) { mFlags = flags; }
+
+    /**
      * Reads configuration from a DOM element previously written by writeXml()
      * \since QGIS 3.2
      */
@@ -91,6 +118,10 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
     void itemsChanged();
+
+  private:
+
+    Qgis::MapLayerLegendFlags mFlags;
 };
 
 

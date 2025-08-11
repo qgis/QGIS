@@ -39,17 +39,20 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 {
 }
 
-void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  Q_UNUSED( elem )
-  Q_UNUSED( context )
+  mFlags = Qgis::MapLayerLegendFlags();
+  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "showLabelLegend" ), QStringLiteral( "0" ) ).toInt() );
 }
 
-QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  Q_UNUSED( doc )
-  Q_UNUSED( context )
-  return QDomElement();
+  QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
+
+  if ( mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+    elem.setAttribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "1" ) );
+
+  return elem.attributes().isEmpty() ? QDomElement() : elem;
 }
 
 QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl )
@@ -443,6 +446,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 
 void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  QgsMapLayerLegend::readXml( elem, context );
+
   mTextOnSymbolEnabled = false;
   mTextOnSymbolTextFormat = QgsTextFormat();
   mTextOnSymbolContent.clear();
@@ -467,7 +472,7 @@ void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsRea
 
 QDomElement QgsDefaultVectorLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
+  QDomElement elem = QgsMapLayerLegend::writeXml( doc, context );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "default-vector" ) );
   elem.setAttribute( QStringLiteral( "showLabelLegend" ), mShowLabelLegend );
 
