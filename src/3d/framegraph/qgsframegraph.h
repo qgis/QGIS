@@ -44,6 +44,7 @@ class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 class QgsCameraController;
 class QgsDebugTextureEntity;
+class QgsDebugTextureRenderView;
 class QgsDepthRenderView;
 class QgsDirectionalLightSettings;
 class QgsForwardRenderView;
@@ -192,6 +193,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.44
      */
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
+
+    /**
+     * Returns debug texture renderview
+     * \since QGIS 4.0
+     */
+    QgsDebugTextureRenderView &debugTextureRenderView();
 
     /**
      * Returns the highlights renderview, used for rendering highlight overlays of identified features

@@ -538,3 +538,9 @@ QgsHighlightsRenderView &QgsFrameGraph::highlightsRenderView()
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::HIGHLIGHTS_RENDERVIEW].get();
   return *( dynamic_cast<QgsHighlightsRenderView *>( rv ) );
 }
+
+QgsDebugTextureRenderView &QgsFrameGraph::debugTextureRenderView()
+{
+  QgsAbstractRenderView *renderView = mRenderViewMap[QgsFrameGraph::DEBUG_RENDERVIEW].get();
+  return *( dynamic_cast<QgsDebugTextureRenderView *>( renderView ) );
+}
