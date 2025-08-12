@@ -128,4 +128,4 @@ void QgsAbstractProjectStoredObjectManager<T>::setupObjectConnections( T * )
 
 #include "qgsmasterlayoutinterface.h"
 
-template class QgsAbstractProjectStoredObjectManager<QgsMasterLayoutInterface>;
+template class QgsAbstractProjectStoredObjectManager<QgsMasterLayoutInterface>;  // clazy:exclude=missing-qobject-macro

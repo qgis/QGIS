@@ -393,5 +393,5 @@ bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int s
 }
 
 ///@cond PRIVATE
-template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;
+template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;  // clazy:exclude=missing-qobject-macro
 ///@endcond
