@@ -5126,6 +5126,94 @@ bool QgsPostgresProvider::hasMetadata() const
   return hasMetadata;
 }
 
+QString QgsPostgresProvider::htmlMetadata() const
+{
+  const QString sqlTableOid = QStringLiteral( "SELECT oid FROM pg_class "
+                                              "WHERE relname = %1 AND relnamespace = %2::regnamespace;" )
+                                .arg( QgsPostgresConn::quotedValue( mTableName ) )
+                                .arg( QgsPostgresConn::quotedValue( mSchemaName ) );
+
+  QgsPostgresResult resTableOid( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlTableOid ) );
+
+  if ( resTableOid.PQntuples() != 1 )
+  {
+    return QString();
+  }
+
+  qlonglong tableOid = resTableOid.PQgetvalue( 0, 0 ).toLongLong();
+
+  const QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName ).arg( mTableName );
+
+  const QString sqlPrivileges = QStringLiteral( "SELECT "
+                                                "has_table_privilege(%1, 'SELECT'), "
+                                                "has_table_privilege(%1, 'INSERT'), "
+                                                "has_table_privilege(%1, 'UPDATE'), "
+                                                "has_table_privilege(%1, 'DELETE')" )
+                                  .arg( QgsPostgresConn::quotedValue( tableOid ) );
+
+  QgsPostgresResult resPrivileges( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlPrivileges ) );
+
+  QStringList privileges;
+  if ( resPrivileges.PQntuples() > 0 )
+  {
+    if ( resPrivileges.PQgetvalue( 0, 0 ) == "t" )
+    {
+      privileges.append( "SELECT" );
+    }
+    if ( resPrivileges.PQgetvalue( 0, 1 ) == "t" )
+    {
+      privileges.append( "INSERT" );
+    }
+    if ( resPrivileges.PQgetvalue( 0, 2 ) == "t" )
+    {
+      privileges.append( "UPDATE" );
+    }
+    if ( resPrivileges.PQgetvalue( 0, 3 ) == "t" )
+    {
+      privileges.append( "DELETE" );
+    }
+  }
+
+  const QString sqlEstimatedRowCount = QStringLiteral( "SELECT "
+                                                       "reltuples::bigint AS estimate FROM pg_class "
+                                                       "WHERE oid = %1" )
+                                         .arg( QgsPostgresConn::quotedValue( tableOid ) );
+
+  QgsPostgresResult resRowCount( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlEstimatedRowCount ) );
+
+  long long estimateRowCount = -1;
+  if ( resRowCount.PQntuples() > 0 )
+  {
+    estimateRowCount = QVariant( resRowCount.PQgetvalue( 0, 0 ) ).toLongLong();
+  }
+
+  const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE '%gist%'" )
+                                    .arg( QgsPostgresConn::quotedValue( mSchemaName ) )
+                                    .arg( QgsPostgresConn::quotedValue( mTableName ) );
+
+  QgsPostgresResult resSpatialIndexes( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlSpatialIndex ) );
+  QString spatialIndexText = QStringLiteral( "No spatial index." );
+
+  if ( resSpatialIndexes.PQntuples() > 0 )
+  {
+    QStringList spatialIndexes;
+    for ( int i = 0; i < resSpatialIndexes.PQntuples(); ++i )
+    {
+      spatialIndexes.append( resSpatialIndexes.PQgetvalue( i, 2 ) );
+    }
+
+    spatialIndexText = QStringLiteral( "Spatial index/indices exists (%1)." ).arg( spatialIndexes.join( ", " ) );
+  }
+
+  const QVariantMap additionalInformation {
+    { tr( "Privileges" ), privileges.join( ", " ) },
+    { tr( "Rows (estimation)" ), estimateRowCount },
+    { tr( "Spatial Index" ), spatialIndexText },
+  };
+
+  return QgsPostgresUtils::dumpVariantMap( additionalInformation, tr( "Additional information" ) );
+}
+
 QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsPostgresProvider( uri, options, flags );
@@ -5236,7 +5324,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
       QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
       {
-        errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+        errCause = QObject::tr( "Unable to add column type to layer_.PQgetvaluestyles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
         conn->unref();
         return false;
       }
