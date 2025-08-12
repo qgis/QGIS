@@ -39,7 +39,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex();
 
-    void load( const QString &fileName, const QString &authcfg = QString() ) override;
+    void load( const QString &urlString, const QString &authcfg = QString() ) override;
 
     std::unique_ptr<QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
