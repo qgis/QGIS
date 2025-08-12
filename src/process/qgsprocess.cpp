@@ -872,7 +872,6 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
       std::cout << "Notes\n";
       std::cout << "----------------\n\n";
 
-      QStringList flags;
       for ( Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList<Qgis::ProcessingAlgorithmDocumentationFlag>() )
       {
         if ( alg->documentationFlags() & flag )
