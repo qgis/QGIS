@@ -32,7 +32,7 @@
     },
     {
       "expression": "substr_count('aaaaa', 'aa')",
-      "returns": "4",
+      "returns": "2",
       "description": "Counts non-overlapping occurrences of 'aa' in 'aaaaa'."
     },
     {
