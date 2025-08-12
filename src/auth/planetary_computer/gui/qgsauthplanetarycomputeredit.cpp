@@ -28,7 +28,7 @@ QgsAuthPlanetaryComputerEdit::QgsAuthPlanetaryComputerEdit( QWidget *parent )
 {
   setupUi( this );
 
-  connect( cbType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthPlanetaryComputerEdit::updateServerType ); // also updates GUI
+  connect( cbType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsAuthPlanetaryComputerEdit::updateServerType ); // also updates GUI
   connect( leRootUrl, &QLineEdit::textChanged, this, [this] { validateConfig(); } );
   connect( leClientId, &QLineEdit::textChanged, this, [this] { validateConfig(); } );
   updateServerType( 0 );
