@@ -1841,11 +1841,12 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
       QTest::newRow( "regexp_replace cap group" ) << "regexp_replace('HeLLo','(eL)', 'x\\\\1x')" << false << QVariant( "HxeLxLo" );
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
-      // QTest::newRow( "substr_count basic" ) << "substr_count('banana', 'an')" << false << QVariant( 2 );
-      // QTest::newRow( "substr_count basic funny" )  << "substr_count('Funniness', 'n')" << false << QVariant( 3 );
-      // QTest::newRow( "substr_count overlapping counted" )  << "substr_count('aaaaa', 'aa')" << false << QVariant( 4 );
-      // QTest::newRow( "substr_count empty needle" )  << "substr_count('abc', '')" << false << QVariant( 0 );
-      // QTest::newRow( "substr_count case sensitivity" )  << "substr_count('BANANA', 'an')" << false << QVariant( 0 );
+      QTest::newRow( "substr_count basic" ) << "substr_count('banana', 'an')" << false << QVariant( 2 );
+      QTest::newRow( "substr_count basic funny" )  << "substr_count('Funniness', 'n')" << false << QVariant( 3 );
+      QTest::newRow( "substr_count non-overlapping counted" )  << "substr_count('aaaaa', 'aa')" << false << QVariant( 2 );
+      QTest::newRow( "substr_count overlapping counted" ) << "substr_count('aaaaa', 'aa', true)" << false << QVariant( 4 );
+      QTest::newRow( "substr_count empty needle" )  << "substr_count('abc', '')" << false << QVariant( 0 );
+      QTest::newRow( "substr_count case sensitivity" )  << "substr_count('BANANA', 'an')" << false << QVariant( 0 );
       QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
       QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
