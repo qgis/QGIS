@@ -420,11 +420,13 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     QgsAbstractPointCloudIndex *get() SIP_SKIP { return mIndex.get(); }
 
     /**
-    * Loads the index from the file
+    * Loads the index from a \a url
     *
+    * \param url The URL to load the index from. Can be a local file or an http(s) URL.
+    * \param authcfg Optionally apply this authentication configuration for network requests (since QGIS 4.0)
     * \see QgsAbstractPointCloudIndex::load
     */
-    void load( const QString &fileName, const QString &authcfg = QString() );
+    void load( const QString &url, const QString &authcfg = QString() );
 
     /**
     * Returns whether index is loaded and valid
