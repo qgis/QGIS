@@ -317,7 +317,7 @@ QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInte
     return nullptr;
 }
 
-template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>;
+template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>; // clazy:exclude=missing-qobject-macro
 
 ///@endcond
 
