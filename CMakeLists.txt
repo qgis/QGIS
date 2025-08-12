@@ -162,9 +162,16 @@ endif(USE_CCACHE)
 
 if (USE_CCACHE AND MSVC)
   # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
-  set(USE_PRECOMPILED_HEADERS OFF)
+  set(DEFAULT_USE_PRECOMPILED_HEADERS OFF)
 else()
-  set(USE_PRECOMPILED_HEADERS ON)
+  set(DEFAULT_USE_PRECOMPILED_HEADERS ON)
+endif()
+
+set (USE_PRECOMPILED_HEADERS ${DEFAULT_USE_PRECOMPILED_HEADERS} CACHE BOOL "Determines whether precompiled headers should be used")
+mark_as_advanced(USE_PRECOMPILED_HEADERS)
+
+if(USE_PRECOMPILED_HEADERS)
+  message(STATUS "Using precompiled headers")
 endif()
 
 if (IOS)
