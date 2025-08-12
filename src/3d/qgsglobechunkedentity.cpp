@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsglobechunkedentity.h"
+#include "moc_qgsglobechunkedentity.cpp"
 
 #include <QByteArray>
 #include <QImage>
