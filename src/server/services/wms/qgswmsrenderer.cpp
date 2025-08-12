@@ -3562,9 +3562,9 @@ namespace QgsWms
         {
           // OGC filter
           QDomDocument filterXml;
-          QString errorMsg;
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 5, 0 )
+          QString errorMsg;
           if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
           {
             throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
