@@ -207,7 +207,7 @@ void QgsAuthPlanetaryComputerMethod::updateUri( QString &uri, const QgsAuthMetho
     const QString query( url.query() );
     if ( query.isEmpty() )
       url.setQuery( token );
-    else if ( !token.isEmpty() )
+    else
       url.setQuery( QStringLiteral( "%1&%2" ).arg( query, token ) );
 
     if ( isVsi )
