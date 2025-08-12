@@ -127,6 +127,15 @@ class QgsPostgresUtils
     * \since QGIS 3.44
     */
     static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
+
+    /*
+    * Dump
+    *
+    * \returns true on success
+    *
+    * \since QGIS 3.46
+    */
+    static QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() );
 };
 
 #endif
