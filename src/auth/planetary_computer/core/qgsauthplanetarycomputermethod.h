@@ -57,7 +57,7 @@ class QgsAuthPlanetaryComputerMethod : public QgsAuthMethod
   private:
     struct SasToken
     {
-        bool isValid() { return !token.isEmpty() && !( expiry < QDateTime::currentDateTimeUtc().addSecs( 300 ) ); }
+        bool isValid() const { return !token.isEmpty() && !( expiry < QDateTime::currentDateTimeUtc().addSecs( 300 ) ); }
         QDateTime expiry;
         QString token;
     };
