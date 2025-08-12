@@ -228,6 +228,7 @@ RUN  apt-get update \
     python3-sipbuild \
     python3-pyqtbuild \
     sip-tools \
+    qmake6 \
     qt6-3d-dev \
     qtkeychain-qt6-dev \
     qt6-base-dev \
