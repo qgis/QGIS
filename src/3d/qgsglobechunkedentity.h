@@ -45,6 +45,8 @@ class QgsGlobeMapUpdateJobFactory;
  */
 class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
 {
+    Q_OBJECT
+
   public:
     QgsGlobeEntity( Qgs3DMapSettings *mapSettings );
     ~QgsGlobeEntity();
