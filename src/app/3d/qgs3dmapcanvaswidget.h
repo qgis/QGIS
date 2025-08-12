@@ -54,6 +54,7 @@ class QgsDoubleSpinBox;
 //! Helper validator for classification classes
 class ClassValidator : public QValidator
 {
+    Q_OBJECT
   public:
     ClassValidator( QWidget *parent );
     QValidator::State validate( QString &input, int &pos ) const override;
