@@ -37,8 +37,8 @@
 
 
 const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_KEY = QStringLiteral( "PlanetaryComputer" );
-const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "MS Planetary Computer" );
-const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "MS Planetary Computer" );
+const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "Microsoft Planetary Computer" );
+const QString QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "Microsoft Planetary Computer" );
 
 const QString QgsAuthPlanetaryComputerMethod::OPEN_SAS_SIGN_URL = QStringLiteral( "https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" );
 const QString QgsAuthPlanetaryComputerMethod::PRO_SAS_SIGN_URL = QStringLiteral( "%1://%2/sas/sign?api-version=2025-04-30-preview&href=" );
@@ -51,7 +51,7 @@ QMap<QString, QgsAuthPlanetaryComputerMethod::SasToken> QgsAuthPlanetaryComputer
 QgsAuthPlanetaryComputerMethod::QgsAuthPlanetaryComputerMethod()
 {
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList() << QStringLiteral( "gdal" ) << QStringLiteral( "copc" ) << QStringLiteral( "stac" ) );
+  setDataProviders( { QStringLiteral( "gdal" ), QStringLiteral( "copc" ), QStringLiteral( "stac" ) } );
 
   mOauth2 = QgsApplication::authManager()->authMethod( QStringLiteral( "OAuth2" ) );
 }
