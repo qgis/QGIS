@@ -792,11 +792,14 @@ void Qgs3DMapCanvasWidget::configure()
   };
 
   connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
-  connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [this, buttons, applyConfig]( QAbstractButton *button ) {
+  connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [this, buttons, applyConfig, map]( QAbstractButton *button ) {
     if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
       applyConfig();
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
+    {
       mConfigureDialog->accept();
+      updateCheckedActionsFromMapSettings( map );
+    }
   } );
   connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
 
@@ -810,8 +813,6 @@ void Qgs3DMapCanvasWidget::configure()
   layout->addWidget( buttons );
 
   mConfigureDialog->show();
-
-  updateCheckedActionsFromMapSettings( map );
 }
 
 void Qgs3DMapCanvasWidget::exportScene()
