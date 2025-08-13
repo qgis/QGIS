@@ -673,19 +673,149 @@ void QgsBrowserWidget::navigateToPath()
   }
 #endif
 
-  // Try to populate the path 
-  bool populated = ensurePathInModel( normalizedPath );
+  // Build path hierarchy and ensure all directories exist
+  QStringList pathComponents;
+  QString currentPath = normalizedPath;
   
-  if ( populated )
+  // Build hierarchy from target to root
+  while ( !currentPath.isEmpty() )
   {
-    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+    pathComponents.prepend( currentPath );
+    QDir dir( currentPath );
     
-    for ( const QString &variant : pathVariants )
+#ifdef Q_OS_WIN
+    if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
+      break;
+#else
+    if ( currentPath == "/" )
+      break;
+#endif
+    
+    if ( !dir.cdUp() || dir.absolutePath() == currentPath )
+      break;
+    currentPath = dir.absolutePath();
+  }
+  
+  // Try to navigate by creating the directory hierarchy
+  QModelIndex parentIndex;
+  
+  // Start from root or drive
+  if ( !pathComponents.isEmpty() )
+  {
+    QString rootPath = pathComponents[0];
+    
+#ifdef Q_OS_WIN
+    // Ensure Windows drives are loaded
+    if ( rootPath.contains( ':' ) )
     {
-      QModelIndex index = mModel->findPath( variant );
-      if ( index.isValid() )
+      mModel->refreshDrives();
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+    }
+#endif
+    
+    // Find or create root
+    QStringList rootVariants = generatePathVariants( rootPath );
+    for ( const QString &variant : rootVariants )
+    {
+      parentIndex = mModel->findPath( variant );
+      if ( parentIndex.isValid() )
+        break;
+    }
+    
+    // If we have a valid root, navigate through the hierarchy
+    if ( parentIndex.isValid() )
+    {
+      // Navigate through each level
+      for ( int i = 1; i < pathComponents.size(); ++i )
       {
-        setActiveIndex( index );
+        QString targetPath = pathComponents[i];
+        QFileInfo targetInfo( targetPath );
+        
+        // Check if this path exists on the filesystem
+        if ( !targetInfo.exists() )
+          break;
+        
+        // Get parent item
+        QgsDataItem *parentItem = mModel->dataItem( parentIndex );
+        if ( !parentItem )
+          break;
+        
+        // Force populate and refresh parent
+        if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
+        {
+          parentItem->populate();
+        }
+        parentItem->refresh();
+        
+        // Expand in view to trigger UI update
+        QModelIndex proxyIndex = mProxyModel->mapFromSource( parentIndex );
+        if ( proxyIndex.isValid() )
+        {
+          mBrowserView->expand( proxyIndex );
+        }
+        
+        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+        
+        // Now try to find the child
+        bool foundChild = false;
+        QStringList childVariants = generatePathVariants( targetPath );
+        for ( const QString &variant : childVariants )
+        {
+          QModelIndex childIndex = mModel->findPath( variant );
+          if ( childIndex.isValid() )
+          {
+            parentIndex = childIndex;
+            foundChild = true;
+            break;
+          }
+        }
+        
+        // If child not found but exists on disk, force creation
+        if ( !foundChild && targetInfo.isDir() )
+        {
+          // Force re-population
+          parentItem->depopulate();
+          parentItem->populate();
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+          
+          // Try finding again
+          for ( const QString &variant : childVariants )
+          {
+            QModelIndex childIndex = mModel->findPath( variant );
+            if ( childIndex.isValid() )
+            {
+              parentIndex = childIndex;
+              foundChild = true;
+              break;
+            }
+          }
+        }
+        
+        // If still not found, we can't continue
+        if ( !foundChild )
+        {
+          // Navigate to the parent at least
+          if ( parentIndex.isValid() )
+          {
+            setActiveIndex( parentIndex );
+            mLeLocationBar->clear();
+            if ( mMessageBar )
+            {
+              QString parentPath = mModel->dataItem( parentIndex )->path();
+              mMessageBar->pushWarning( tr( "Navigate to Path" ), 
+                                       tr( "Could not navigate to: %1. Showing parent directory: %2" )
+                                       .arg( displayPath )
+                                       .arg( QDir::toNativeSeparators( parentPath ) ) );
+            }
+          }
+          return;
+        }
+      }
+      
+      // Successfully navigated to target
+      if ( parentIndex.isValid() )
+      {
+        setActiveIndex( parentIndex );
         mLeLocationBar->clear();
         if ( mMessageBar )
         {
@@ -1047,6 +1177,10 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
             QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
           }
           
+          // Force refresh to get all children
+          driveItem->refresh();
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+          
           QModelIndex proxyIndex = mProxyModel->mapFromSource( driveIndex );
           if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
           {
@@ -1059,19 +1193,30 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
           {
             const QString &targetComponent = pathHierarchy[i];
             
-            // Refresh parent to ensure children are loaded
+            // Ensure parent is populated and refreshed
             QgsDataItem *parentItem = mModel->dataItem( currentParent );
             if ( parentItem )
             {
-              parentItem->refresh();
-              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+              // Force population of children if not already done
+              if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
+              {
+                parentItem->populate();
+                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+              }
+              else if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+              {
+                // Force re-population to ensure all children are loaded
+                parentItem->depopulate();
+                parentItem->populate();
+                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+              }
               
-              // Expand parent in view
+              // Expand parent in view to trigger child creation
               QModelIndex parentProxy = mProxyModel->mapFromSource( currentParent );
-              if ( parentProxy.isValid() && !mBrowserView->isExpanded( parentProxy ) )
+              if ( parentProxy.isValid() )
               {
                 mBrowserView->expand( parentProxy );
-                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
               }
             }
             
