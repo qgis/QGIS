@@ -638,24 +638,42 @@ void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  // Filter out non-existent feature IDs to ensure only valid features are selected
+  QgsFeatureIds validIds;
+  if ( !ids.isEmpty() )
+  {
+    // request only feature IDs without geometry or attributes
+    QgsFeatureRequest request;
+    request.setFilterFids( ids );
+    request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+    request.setNoAttributes();
+
+    QgsFeatureIterator it = getFeatures( request );
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
+    {
+      validIds.insert( feature.id() );
+    }
+  }
+
   QgsFeatureIds newSelection;
 
   switch ( behavior )
   {
     case Qgis::SelectBehavior::SetSelection:
-      newSelection = ids;
+      newSelection = validIds;
       break;
 
     case Qgis::SelectBehavior::AddToSelection:
-      newSelection = mSelectedFeatureIds + ids;
+      newSelection = mSelectedFeatureIds + validIds;
       break;
 
     case Qgis::SelectBehavior::RemoveFromSelection:
-      newSelection = mSelectedFeatureIds - ids;
+      newSelection = mSelectedFeatureIds - validIds;
       break;
 
     case Qgis::SelectBehavior::IntersectSelection:
-      newSelection = mSelectedFeatureIds.intersect( ids );
+      newSelection = mSelectedFeatureIds.intersect( validIds );
       break;
   }
 
