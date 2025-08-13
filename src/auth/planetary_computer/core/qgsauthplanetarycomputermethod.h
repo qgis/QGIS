@@ -93,7 +93,6 @@ class QgsAuthPlanetaryComputerMethodMetadata : public QgsAuthMethodMetadata
       : QgsAuthMethodMetadata( QgsAuthPlanetaryComputerMethod::AUTH_METHOD_KEY, QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DESCRIPTION )
     {}
     QgsAuthPlanetaryComputerMethod *createAuthMethod() const override { return new QgsAuthPlanetaryComputerMethod; }
-    //QStringList supportedDataProviders() const override;
 };
 
 #endif // QGSAUTHPLANETARYCOMPUTERMETHOD_H
