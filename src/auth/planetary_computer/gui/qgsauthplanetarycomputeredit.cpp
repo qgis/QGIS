@@ -37,17 +37,21 @@ QgsAuthPlanetaryComputerEdit::QgsAuthPlanetaryComputerEdit( QWidget *parent )
 
 bool QgsAuthPlanetaryComputerEdit::validateConfig()
 {
-  bool curvalid = true;
-  if ( cbType->currentIndex() == 1 )
+  bool currentValid = false;
+  if ( cbType->currentIndex() == 0 )
   {
-    curvalid = !leClientId->text().isEmpty() && !leRootUrl->text().isEmpty();
+    currentValid = true;
   }
-  if ( mValid != curvalid )
+  else if ( cbType->currentIndex() == 1 )
   {
-    mValid = curvalid;
-    emit validityChanged( curvalid );
+    currentValid = !leClientId->text().isEmpty() && !leRootUrl->text().isEmpty();
   }
-  return curvalid;
+  if ( mValid != currentValid )
+  {
+    mValid = currentValid;
+    emit validityChanged( currentValid );
+  }
+  return currentValid;
 }
 
 
@@ -152,7 +156,15 @@ void QgsAuthPlanetaryComputerEdit::updateServerType( int indx )
   leClientId->setVisible( isPro );
   lblTenantId->setVisible( isPro );
   leTenantId->setVisible( isPro );
-  lblHelp->setVisible( isPro );
+
+  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( QStringLiteral( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>" ) );
+  const QString proHelp = tr(
+    "Use this server type for <a href=\"https://learn.microsoft.com/en-us/azure/planetary-computer/get-started-planetary-computer\">Planetary Computer Pro</a> instances.<br/>"
+    "The Directory (tenant) and Application (client) IDs can be found in your organization's Microsoft Entra ID main and application page respectively.<br/>"
+    "This authentication method expects to receive an OAuth2 token using the redirect url http://127.0.0.1:7070/"
+  );
+
+  lblHelp->setText( QStringLiteral( "<html><head/><body><p><span style=\" font-style:italic;\">%1</span></p></body></html>" ).arg( isPro ? proHelp : openHelp ) );
 
   validateConfig(); // NOLINT
 }
