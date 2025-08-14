@@ -249,8 +249,15 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 2 );
 
-  const QMatrix4x4 transformMatrix = symbol->transform();
-  QMatrix3x3 normalMatrix = transformMatrix.normalMatrix(); // transponed inverse of 3x3 sub-matrix
+  const QMatrix4x4 tempTransformMatrix = symbol->transform();
+  // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
+  // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
+  QMatrix4x4 id;
+  id.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );
+  QMatrix4x4 transformMatrix = tempTransformMatrix * id;
+
+  // transponed inverse of 3x3 sub-matrix
+  QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();
 
   // QMatrix3x3 is not supported for passing to shaders, so we pass QMatrix4x4
   float *n = normalMatrix.data();
