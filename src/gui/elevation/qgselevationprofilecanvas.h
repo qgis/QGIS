@@ -322,6 +322,13 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
 
+    /**
+     * Emitted when the plot scale is changed.
+     *
+     * \since QGIS 4.0
+     */
+    void scaleChanged();
+
   public slots:
 
     /**

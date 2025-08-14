@@ -330,6 +330,13 @@ The ``profilePoint`` argument gives the hovered profile point, which may
 be snapped.
 %End
 
+    void scaleChanged();
+%Docstring
+Emitted when the plot scale is changed.
+
+.. versionadded:: 4.0
+%End
+
   public slots:
 
     void zoomFull();

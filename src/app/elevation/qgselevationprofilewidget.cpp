@@ -355,15 +355,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   mOptionsMenu->addAction( mLockRatioAction );
 
   mScaleRatioSettingsAction = new QgsElevationProfileScaleRatioWidgetSettingsAction( mOptionsMenu );
-  connect( mScaleRatioSettingsAction->scaleRatioWidget(), &QgsScaleComboBox::scaleChanged, this, [this]( double scale ) {
-    const double distanceToElevationRatio = 1.0 / scale;
-    if ( mBlockScaleRatioChanges )
-      return;
-
-    mCanvas->setAxisScaleRatio( distanceToElevationRatio );
-    createOrUpdateRubberBands();
-    scheduleUpdate();
-  } );
 
   mOptionsMenu->addAction( mScaleRatioSettingsAction );
 
@@ -457,13 +448,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   toolBar->addWidget( mBtnOptions );
 
-  connect( mOptionsMenu, &QMenu::aboutToShow, this, [this] {
-    mBlockScaleRatioChanges++;
-    const double distanceToElevationScaleRatio = mCanvas->axisScaleRatio();
-    mScaleRatioSettingsAction->scaleRatioWidget()->setScale( 1.0 / distanceToElevationScaleRatio );
-    mBlockScaleRatioChanges--;
-  } );
-
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
   mProgressPendingJobs->hide();
@@ -517,6 +501,23 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
+
+  connect( mCanvas, &QgsElevationProfileCanvas::scaleChanged, this, [this] {
+    mBlockScaleRatioChanges++;
+    const double distanceToElevationScaleRatio = mCanvas->axisScaleRatio();
+    mScaleRatioSettingsAction->scaleRatioWidget()->setScale( 1.0 / distanceToElevationScaleRatio );
+    mBlockScaleRatioChanges--;
+  } );
+
+  connect( mScaleRatioSettingsAction->scaleRatioWidget(), &QgsScaleComboBox::scaleChanged, this, [this]( double scale ) {
+    const double distanceToElevationRatio = 1.0 / scale;
+    if ( mBlockScaleRatioChanges )
+      return;
+
+    mCanvas->setAxisScaleRatio( distanceToElevationRatio );
+    createOrUpdateRubberBands();
+    scheduleUpdate();
+  } );
 
   updateCanvasLayers();
 }

@@ -639,6 +639,7 @@ void QgsElevationProfileCanvas::setDistanceUnit( Qgis::DistanceUnit unit )
   mPlotItem->setXMinimum( oldMin / mPlotItem->mXScaleFactor );
   mPlotItem->setXMaximum( oldMax / mPlotItem->mXScaleFactor );
   mPlotItem->updatePlot();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::setBackgroundColor( const QColor &color )
@@ -700,6 +701,7 @@ void QgsElevationProfileCanvas::setLockAxisScales( bool lock )
     refineResults();
     mPlotItem->updatePlot();
     emit plotAreaChanged();
+    emit scaleChanged();
   }
 }
 
@@ -727,6 +729,7 @@ void QgsElevationProfileCanvas::setAxisScaleRatio( double scale )
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
@@ -774,6 +777,7 @@ void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
@@ -798,6 +802,7 @@ void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
@@ -854,6 +859,7 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
     scalePlot( 1 / zoomFactor );
   }
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
@@ -1226,6 +1232,8 @@ void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 
   mPlotItem->updateRect();
   mCrossHairsItem->updateRect();
+
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::paintEvent( QPaintEvent *event )
@@ -1344,6 +1352,7 @@ void QgsElevationProfileCanvas::zoomFull()
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation )
@@ -1360,6 +1369,7 @@ void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, dou
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 QgsDoubleRange QgsElevationProfileCanvas::visibleDistanceRange() const
