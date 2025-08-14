@@ -40,6 +40,8 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include <limits>
+
 #include "qgs3daxis.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
@@ -54,10 +56,12 @@
 #include "qgseventtracing.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgsmapoverlayentity.h"
 #include "qgsmaterial.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
+#include "qgsrectangle.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -87,6 +91,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsforwardrenderview.h"
 #include "qgsambientocclusionrenderview.h"
+#include "qgsdebugtexturerenderview.h"
 #include "qgspostprocessingentity.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
@@ -154,6 +159,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
   connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
+  connect( &map, &Qgs3DMapSettings::showMapOverlayChanged, this, &Qgs3DMapScene::onShowMapOverlayChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
@@ -210,6 +216,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   onDebugDepthMapSettingsChanged();
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
+
+  // force initial update of map overlay entity
+  onShowMapOverlayChanged();
 
   onCameraMovementSpeedChanged();
 
@@ -327,8 +336,9 @@ void Qgs3DMapScene::onCameraChanged()
 
   onShadowSettingsChanged();
 
-  QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   emit viewed2DExtentFrom3DChanged( extent2D );
+  update2DMapOverlay( extent2D );
 
   // The magic to make things work better in large scenes (e.g. more than 50km across)
   // is here: we will simply move the origin of the scene, and update transforms
@@ -480,6 +490,56 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
     accumulatedTime = 0.0f;
     emit fpsCountChanged( fps );
   }
+}
+
+void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
+{
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  QgsDebugTextureRenderView &debugRenderView = frameGraph->debugTextureRenderView();
+
+  if ( !mMap.isMapOverlayEnabled() )
+  {
+    if ( mMapOverlayEntity )
+    {
+      mMapOverlayEntity->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+      mMapOverlayEntity->deleteLater();
+      mMapOverlayEntity = nullptr;
+    }
+    debugRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
+    return;
+  }
+
+  if ( !mMapOverlayEntity )
+  {
+    QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
+    mMapOverlayEntity = new QgsMapOverlayEntity( engine, &debugRenderView, &mMap, this );
+    mMapOverlayEntity->setEnabled( true );
+    debugRenderView.setEnabled( true );
+  }
+
+
+  Qt3DRender::QCamera *camera = mEngine->camera();
+  const QgsVector3D extentCenter3D = mMap.worldToMapCoordinates( camera->position() );
+  const QgsPointXY extentCenter2D( extentCenter3D.x(), extentCenter3D.y() );
+
+  // Compute an extent that provides an overview around the camera position.
+  // With a view from top (pitch near 0°), the extent of the scene is reduced. The greater the pitch (up to 90°),
+  // the wider, the visible scene becomes. The smoothing factor allows to reproduce the behavior of the max extent
+  // as the pitch increases. The calculated extent is bounded to ensure that it does not cover too wide a scene.
+  double minHalfExtent = std::numeric_limits<double>::max();
+  double maxHalfExtent = 0.0;
+  for ( const QgsPointXY &extentPoint : extent2DAsPoints )
+  {
+    const double distance = extentCenter2D.distance( extentPoint );
+    minHalfExtent = std::min( minHalfExtent, distance );
+    maxHalfExtent = std::max( maxHalfExtent, distance );
+  }
+
+  const double smoothFactor = std::sin( mCameraController->pitch() / 90.0 * M_PI_2 );
+  const double adjustedHalfExtent = std::min( minHalfExtent + smoothFactor * ( 0.5 * maxHalfExtent - minHalfExtent ), 100.0 );
+
+  const QgsRectangle overviewExtent = QgsRectangle::fromCenterAndSize( extentCenter2D, adjustedHalfExtent, adjustedHalfExtent );
+  mMapOverlayEntity->update( overviewExtent, mCameraController->yaw() );
 }
 
 void Qgs3DMapScene::createTerrain()
@@ -1038,6 +1098,12 @@ void Qgs3DMapScene::onDebugOverlayEnabledChanged()
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   mEngine->frameGraph()->updateEyeDomeSettings( mMap );
+}
+
+void Qgs3DMapScene::onShowMapOverlayChanged()
+{
+  const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+  update2DMapOverlay( extent2D );
 }
 
 void Qgs3DMapScene::onCameraMovementSpeedChanged()

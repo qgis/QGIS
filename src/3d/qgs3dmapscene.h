@@ -49,6 +49,7 @@ class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
 class Qgs3DMapSettings;
+class QgsMapOverlayEntity;
 class QgsTerrainEntity;
 class QgsGlobeEntity;
 class QgsChunkedEntity;
@@ -365,6 +366,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+    void onShowMapOverlayChanged();
 
     void onOriginChanged();
 
@@ -389,6 +391,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
 
+    void update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
+
   private:
     Qgs3DMapSettings &mMap;
     QgsAbstract3DEngine *mEngine = nullptr;
@@ -397,6 +401,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
     QgsGlobeEntity *mGlobe = nullptr;
+    QgsMapOverlayEntity *mMapOverlayEntity = nullptr;
     QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
