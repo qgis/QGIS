@@ -97,6 +97,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryString *settingLastExportDir;
     static const QgsSettingsEntryColor *settingBackgroundColor;
     static const QgsSettingsEntryBool *settingShowSubsections;
+    static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -214,6 +215,7 @@ class QgsElevationProfileScaleRatioWidgetSettingsAction : public QWidgetAction
 
   public:
     QgsElevationProfileScaleRatioWidgetSettingsAction( QWidget *parent = nullptr );
+    QWidget *newWidget();
 
     QgsScaleComboBox *scaleRatioWidget() { return mScaleRatioWidget; }
 

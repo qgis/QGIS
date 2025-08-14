@@ -78,6 +78,7 @@ const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new Qgs
 const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( QStringLiteral( "last-export-dir" ), QgsSettingsTree::sTreeElevationProfile, QString(), QStringLiteral( "Last elevation profile export directory" ) );
 const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor = new QgsSettingsEntryColor( QStringLiteral( "background-color" ), QgsSettingsTree::sTreeElevationProfile, QColor(), QStringLiteral( "Elevation profile chart background color" ) );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowSubsections = new QgsSettingsEntryBool( QStringLiteral( "show-sub-sections" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether to display subsections" ) );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowScaleRatioInToolbar = new QgsSettingsEntryBool( QStringLiteral( "show-scale-ratio-in-toolbar" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "If true, the scale ratio widget will be moved to the toolbar instead of the options menu" ) );
 //
 // QgsElevationProfileLayersDialog
 //
@@ -356,7 +357,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   mScaleRatioSettingsAction = new QgsElevationProfileScaleRatioWidgetSettingsAction( mOptionsMenu );
 
-  mOptionsMenu->addAction( mScaleRatioSettingsAction );
+  if ( !settingShowScaleRatioInToolbar->value() )
+  {
+    mScaleRatioSettingsAction->setDefaultWidget( mScaleRatioSettingsAction->newWidget() );
+    mOptionsMenu->addAction( mScaleRatioSettingsAction );
+  }
 
   mOptionsMenu->addSeparator();
 
@@ -489,6 +494,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
     close();
   } );
+
+  if ( settingShowScaleRatioInToolbar->value() )
+  {
+    toolBar->addWidget( mScaleRatioSettingsAction->newWidget() );
+  }
 
   // updating the profile plot is deferred on a timer, so that we don't trigger it too often
   mSetCurveTimer = new QTimer( this );
@@ -1187,6 +1197,10 @@ QgsElevationProfileToleranceWidgetSettingsAction::QgsElevationProfileToleranceWi
 QgsElevationProfileScaleRatioWidgetSettingsAction::QgsElevationProfileScaleRatioWidgetSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
 {
+}
+
+QWidget *QgsElevationProfileScaleRatioWidgetSettingsAction::newWidget()
+{
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
@@ -1204,7 +1218,7 @@ QgsElevationProfileScaleRatioWidgetSettingsAction::QgsElevationProfileScaleRatio
   w->setLayout( gLayout );
 
   w->setToolTip( tr( "Specifies the ratio of distance to elevation units used for the profile's scale" ) );
-  setDefaultWidget( w );
+  return w;
 }
 
 QgsAppElevationProfileLayerTreeView::QgsAppElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
