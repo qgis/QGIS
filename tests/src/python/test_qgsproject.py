@@ -512,6 +512,27 @@ class TestQgsProject(QgisTestCase):
 
         QgsProject.instance().removeAllMapLayers()
 
+    def test_mapLayer(self):
+        """test retrieving map layers by ID"""
+        p = QgsProject()
+        self.assertIsNone(p.mapLayer("nope"))
+
+        l1 = createLayer("test")
+        self.assertIsNone(p.mapLayer(l1.id()))
+        p.addMapLayer(l1)
+        self.assertEqual(p.mapLayer(l1.id()), l1)
+
+        l2 = createLayer("test2")
+        self.assertIsNone(p.mapLayer(l2.id()))
+        p.addMapLayer(l2)
+        self.assertEqual(p.mapLayer(l1.id()), l1)
+        self.assertEqual(p.mapLayer(l2.id()), l2)
+
+        # ensure main annotation layer can be retrieved by id
+        self.assertEqual(
+            p.mapLayer(p.mainAnnotationLayer().id()), p.mainAnnotationLayer()
+        )
+
     def test_addMapLayerAlreadyAdded(self):
         """test that already added layers can't be readded to registry"""
         QgsProject.instance().removeAllMapLayers()
