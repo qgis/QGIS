@@ -60,7 +60,6 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 
 QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator )
   : QgsTerrainTileLoader( terrain, node )
-  , mResolution( 0 )
   , mTerrainGenerator( terrainGenerator )
 {}
 

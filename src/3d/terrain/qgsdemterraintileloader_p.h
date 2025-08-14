@@ -64,10 +64,10 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     void onHeightMapReady( int jobId, const QByteArray &heightMap );
 
   private:
-    int mHeightMapJobId;
+    int mHeightMapJobId = -1;
     QByteArray mHeightMap;
-    int mResolution;
-    float mSkirtHeight;
+    int mResolution = 0;
+    float mSkirtHeight = 0;
     QgsTerrainGenerator *mTerrainGenerator;
 };
 
