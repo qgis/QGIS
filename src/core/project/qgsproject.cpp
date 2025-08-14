@@ -4592,6 +4592,9 @@ QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
   // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
+  if ( mMainAnnotationLayer && layerId == mMainAnnotationLayer->id() )
+    return mMainAnnotationLayer;
+
   return mLayerStore->mapLayer( layerId );
 }
 
