@@ -26,6 +26,7 @@ import platform
 import re
 import warnings
 from dataclasses import dataclass
+import xml.etree.ElementTree as ET
 
 import psycopg2
 
@@ -46,6 +47,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsMapLayer,
     QgsProcessingContext,
+    QgsRectangle,
 )
 
 from qgis.PyQt.QtCore import QCoreApplication, QProcess
@@ -609,3 +611,66 @@ class GdalUtils:
         if context == "":
             context = cls.__name__
         return QCoreApplication.translate(context, string)
+
+    @staticmethod
+    def gdal_wms_xml_description_file(
+        uri: str,
+        version: str,
+        extent: QgsRectangle,
+        width: int,
+        height: int,
+        out_path: str,
+    ) -> tuple[bool, str]:
+        """
+        Creates an XML description file to access a WMS via GDAL.
+
+        Returns True if the file was created, or False if it was not.
+        An additional returned value provides callers with more details on an eventual write error.
+        """
+        # Prepare data
+        source = QgsProviderRegistry.instance().decodeUri("wms", uri)
+        base_url = source.get("url", "")
+        crs = source.get("crs", "EPSG:4326")
+        crs_string = GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem(crs))
+        image_format = source.get("format", "")
+        service = {"SERVICE": "WMS"}
+        request = {"REQUEST": "GetMap"}
+        sublayers = source["layers"] if "layers" in source and source["layers"] else []
+        if isinstance(sublayers, str):
+            sublayers = [sublayers]  # If only one layer, it is given as string
+        styles = source["styles"] if "styles" in source and source["styles"] else []
+        if isinstance(styles, str):
+            styles = [styles]  # If only one style, it is given as string
+
+        # Set up XML doc
+        root = ET.Element("GDAL_WMS")
+
+        service = ET.SubElement(root, "Service", name="WMS")
+        ET.SubElement(service, "Version").text = version
+        ET.SubElement(service, "ServerUrl").text = base_url
+        ET.SubElement(service, "Layers").text = ",".join(sublayers)
+        if styles:
+            ET.SubElement(service, "Styles").text = ",".join(styles)
+        ET.SubElement(service, "ImageFormat").text = image_format
+
+        if version == "1.3.0" or version == "1.3":
+            ET.SubElement(service, "CRS").text = crs_string
+        else:
+            ET.SubElement(service, "SRS").text = crs_string
+
+        data = ET.SubElement(root, "DataWindow")
+        ET.SubElement(data, "UpperLeftX").text = str(extent.xMinimum())
+        ET.SubElement(data, "UpperLeftY").text = str(extent.yMaximum())
+        ET.SubElement(data, "LowerRightX").text = str(extent.xMaximum())
+        ET.SubElement(data, "LowerRightY").text = str(extent.yMinimum())
+        ET.SubElement(data, "SizeX").text = str(width)
+        ET.SubElement(data, "SizeY").text = str(height)
+
+        tree = ET.ElementTree(root)
+        ET.indent(tree)
+        try:
+            tree.write(out_path)
+        except (FileNotFoundError, PermissionError) as e:
+            return False, str(e)
+
+        return True, ""
