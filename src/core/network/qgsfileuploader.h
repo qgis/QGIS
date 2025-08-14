@@ -1,0 +1,134 @@
+/***************************************************************************
+  qgsfileuploader.h
+  --------------------------------------
+  Date                 : November 2016
+  Copyright            : (C) 2016 by Alessandro Pasotti
+  Email                : apasotti at boundlessgeo dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSFILEUPLOADER_H
+#define QGSFILEUPLOADER_H
+
+#include <QObject>
+#include <QFile>
+#include <QNetworkReply>
+#include <QUrl>
+
+#include "qgis.h"
+#include "qgis_core.h"
+
+#ifndef QT_NO_SSL
+#include <QSslError>
+#endif
+
+/**
+ * \ingroup core
+ * \brief A utility class for downloading files.
+ *
+ * To use this class, it is necessary to pass the URL and an output file name as
+ * arguments to the constructor, the download will start immediately.
+ *
+ * The download is asynchronous.
+ *
+ * The object will destroy itself when the request completes, errors or is canceled.
+ * An optional authentication configuration can be specified.
+ *
+ * \note This class was part of the GUI library from QGIS 2.18.1 until QGIS 3.0
+ */
+class CORE_EXPORT QgsFileUploader : public QObject
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * QgsFileUploader
+     * \param url the download URL
+     * \param outputFileName file name where the downloaded content will be stored
+     * \param authcfg optionally apply this authentication configuration
+     * \param delayStart if TRUE, the download will not be commenced immediately and must
+     * be triggered by a later call to startUpload(). This can be useful if connections need
+     * to be made to the downloader and there's a chance the download will emit
+     * signals before these connections have been made.
+     * \param httpMethod Method for the HTTP request : GET or POST, since QGIS 3.22
+     * \param data If the request is POST, some data can be added, since QGIS 3.22
+     */
+    QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get, const QByteArray &data = QByteArray() );
+
+  signals:
+    //! Emitted when the download has completed successfully
+    void uploadCompleted( const QUrl &url );
+    //! Emitted always when the downloader exits
+    void uploadExited();
+
+    /**
+     * Emitted when the download was canceled by the user.
+     * \see cancelUpload()
+     */
+    void uploadCanceled();
+
+    //! Emitted when an error makes the download fail
+    void uploadError( QStringList errorMessages );
+    //! Emitted when data are ready to be processed
+    void uploadProgress( qint64 bytesSent, qint64 bytesTotal );
+
+  public slots:
+
+    /**
+     * Call to abort the download and delete this object after the cancellation
+     * has been processed.
+     * \see uploadCanceled()
+     */
+    void cancelUpload();
+
+    //! Called to start the download
+    void startUpload();
+
+  private slots:
+    //! Called when the network reply data are ready
+    void onReadyRead();
+    //! Called when the network reply has finished
+    void onFinished();
+    //! Called on data ready to be processed
+    void onUploadProgress( qint64 bytesSent, qint64 bytesTotal );
+    //! Called when a network request times out
+    void onRequestTimedOut( QNetworkReply *reply );
+
+#ifndef QT_NO_SSL
+
+    /**
+     * Called on SSL network Errors
+     * \param reply
+     * \param errors
+     */
+    void onSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
+#endif
+
+  protected:
+    ~QgsFileUploader() override;
+
+  private:
+
+    /**
+     * Abort current request and show an error if the instance has GUI
+     * notifications enabled.
+     */
+    void error( const QStringList &errorMessages );
+    void error( const QString &errorMessage );
+    QUrl mUrl;
+    QNetworkReply *mReply = nullptr;
+    QFile mFile;
+    bool mUploadCanceled;
+    Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
+    QByteArray mData;
+    QStringList mErrors;
+    QString mAuthCfg;
+};
+
+#endif // QGSFILEUPLOADER_H

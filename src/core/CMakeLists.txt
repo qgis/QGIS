@@ -252,6 +252,7 @@ set(QGIS_CORE_SRCS
 
   network/qgsblockingnetworkrequest.cpp
   network/qgsfiledownloader.cpp
+  network/qgsfileuploader.cpp
   network/qgsnetworkaccessmanager.cpp
   network/qgsnetworkdiskcache.cpp
   network/qgsnetworkcontentfetcher.cpp
@@ -1790,6 +1791,7 @@ set(QGIS_CORE_HDRS
 
   network/qgsblockingnetworkrequest.h
   network/qgsfiledownloader.h
+  network/qgsfileuploader.h
   network/qgsnetworkaccessmanager.h
   network/qgsnetworkcontentfetcher.h
   network/qgsnetworkcontentfetcherregistry.h
