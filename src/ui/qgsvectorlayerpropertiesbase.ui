@@ -359,7 +359,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>18</number>
+          <number>17</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -435,8 +435,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>271</width>
-                <height>532</height>
+                <width>677</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -539,7 +539,7 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -547,7 +547,7 @@
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -594,7 +594,7 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -729,8 +729,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>677</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -946,8 +946,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>116</width>
-                <height>97</height>
+                <width>677</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1091,7 +1091,7 @@
                 <property name="checkable">
                  <bool>false</bool>
                 </property>
-                <property name="syncGroup">
+                <property name="syncGroup" stdset="0">
                  <string notr="true">vectormeta</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_11">
@@ -1341,8 +1341,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>677</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1425,7 +1425,7 @@
                 </property>
                 <layout class="QGridLayout" name="gridLayout_50">
                  <item row="0" column="0">
-                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget">
+                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget" native="true">
                    <property name="focusPolicy">
                     <enum>Qt::StrongFocus</enum>
                    </property>
@@ -1529,7 +1529,7 @@
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
-                         <property name="allowEmptyFieldName">
+                         <property name="allowEmptyFieldName" stdset="0">
                           <bool>true</bool>
                          </property>
                         </widget>
@@ -1640,8 +1640,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>601</width>
-                <height>688</height>
+                <width>677</width>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1667,7 +1667,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -1804,7 +1804,7 @@
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
@@ -1823,7 +1823,7 @@
                    </widget>
                   </item>
                   <item row="2" column="1">
-                   <widget class="QgsScaleWidget" name="mReferenceScaleWidget">
+                   <widget class="QgsScaleWidget" name="mReferenceScaleWidget" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -2167,7 +2167,11 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QgsVectorLayerLegendWidget" name="mLegendWidget" native="true"/>
+            <widget class="QgsVectorLayerLegendWidget" name="mLegendWidget" native="true">
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
@@ -2188,7 +2192,11 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true"/>
+               <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -2223,7 +2231,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>677</width>
-                <height>712</height>
+                <height>715</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2535,6 +2543,8 @@
   <tabstop>mNotificationMessageCheckBox</tabstop>
   <tabstop>mNotifyMessageValueLineEdit</tabstop>
   <tabstop>mLayersDependenciesTreeView</tabstop>
+  <tabstop>mLegendWidget</tabstop>
+  <tabstop>mLegendConfigEmbeddedWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mWmsDimensionsTreeWidget</tabstop>
   <tabstop>mButtonAddWmsDimension</tabstop>
@@ -2546,6 +2556,9 @@
   <tabstop>mRadioOverrideSelectionColor</tabstop>
   <tabstop>mSelectionColorButton</tabstop>
   <tabstop>mSelectionSymbolButton</tabstop>
+  <tabstop>mMapTipFieldComboBox</tabstop>
+  <tabstop>mMapTipInsertFieldButton</tabstop>
+  <tabstop>mMapTipInsertExpressionButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
@@ -2574,12 +2587,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>260</x>
-     <y>363</y>
+     <x>359</x>
+     <y>619</y>
     </hint>
     <hint type="destinationlabel">
-     <x>587</x>
-     <y>364</y>
+     <x>838</x>
+     <y>618</y>
     </hint>
    </hints>
   </connection>
@@ -2590,12 +2603,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>426</x>
-     <y>363</y>
+     <x>500</x>
+     <y>619</y>
     </hint>
     <hint type="destinationlabel">
-     <x>652</x>
-     <y>364</y>
+     <x>829</x>
+     <y>618</y>
     </hint>
    </hints>
   </connection>

@@ -42,7 +42,7 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mFlags = Qgis::MapLayerLegendFlags();
-  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "showLabelLegend" ), QStringLiteral( "0" ) ).toInt() );
+  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "0" ) ).toInt() );
 }
 
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
