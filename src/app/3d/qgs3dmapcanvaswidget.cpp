@@ -63,6 +63,8 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudquerybuilder.h"
 
+#include "qgsannotationlayer.h"
+
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
   , mCanvasName( name )
@@ -851,7 +853,10 @@ void Qgs3DMapCanvasWidget::exportScene()
 
 void Qgs3DMapCanvasWidget::onMainCanvasLayersChanged()
 {
-  mCanvas->mapSettings()->setLayers( mMainCanvas->layers( true ) );
+  QList<QgsMapLayer *> layers = mMainCanvas->layers( true );
+  layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+
+  mCanvas->mapSettings()->setLayers( layers );
 }
 
 void Qgs3DMapCanvasWidget::onMainCanvasColorChanged()
