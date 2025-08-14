@@ -3149,7 +3149,7 @@ bool WriteWholeFile(std::string *err, const std::string &filepath,
 #ifdef _WIN32
 #if defined(__GLIBCXX__)  // mingw
   int file_descriptor = _wopen(UTF8ToWchar(filepath).c_str(),
-                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY);
+                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY, _S_IREAD | _S_IWRITE);
   __gnu_cxx::stdio_filebuf<char> wfile_buf(
       file_descriptor, std::ios_base::out | std::ios_base::binary);
   std::ostream f(&wfile_buf);
@@ -7089,7 +7089,7 @@ static bool SerializeGltfBufferData(const std::vector<unsigned char> &data,
 #ifdef _WIN32
 #if defined(__GLIBCXX__)  // mingw
   int file_descriptor = _wopen(UTF8ToWchar(binFilename).c_str(),
-                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY);
+                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY, _S_IREAD | _S_IWRITE);
   __gnu_cxx::stdio_filebuf<char> wfile_buf(
       file_descriptor, std::ios_base::out | std::ios_base::binary);
   std::ostream output(&wfile_buf);
@@ -8254,7 +8254,7 @@ static bool WriteGltfFile(const std::string &output,
   std::ofstream gltfFile(UTF8ToWchar(output).c_str());
 #elif defined(__GLIBCXX__)
   int file_descriptor = _wopen(UTF8ToWchar(output).c_str(),
-                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY);
+                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY, _S_IREAD | _S_IWRITE);
   __gnu_cxx::stdio_filebuf<char> wfile_buf(
       file_descriptor, std::ios_base::out | std::ios_base::binary);
   std::ostream gltfFile(&wfile_buf);
@@ -8339,7 +8339,7 @@ static bool WriteBinaryGltfFile(const std::string &output,
   std::ofstream gltfFile(UTF8ToWchar(output).c_str(), std::ios::binary);
 #elif defined(__GLIBCXX__)
   int file_descriptor = _wopen(UTF8ToWchar(output).c_str(),
-                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY);
+                               _O_CREAT | _O_WRONLY | _O_TRUNC | _O_BINARY, _S_IREAD | _S_IWRITE);
   __gnu_cxx::stdio_filebuf<char> wfile_buf(
       file_descriptor, std::ios_base::out | std::ios_base::binary);
   std::ostream gltfFile(&wfile_buf);
