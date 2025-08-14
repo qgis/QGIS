@@ -32,6 +32,10 @@ QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, Q
   , mTriangularMesh( triangularMesh )
   , mSymbol( symbol->clone() )
 {
+}
+
+void QgsMeshTerrainTileLoader::start()
+{
   loadTexture();
 }
 

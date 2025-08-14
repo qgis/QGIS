@@ -45,6 +45,11 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   , mRenderContext( factory->mRenderContext )
   , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
 {
+}
+
+void QgsVectorLayerChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
   if ( node->level() < mFactory->mLeafLevel )
   {
     QTimer::singleShot( 0, this, &QgsVectorLayerChunkLoader::finished );

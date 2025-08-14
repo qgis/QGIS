@@ -65,6 +65,7 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
     Q_OBJECT
   public:
     QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node );
+    void start() override;
 
     void cancel() override;
 

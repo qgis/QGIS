@@ -58,6 +58,7 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
     QgsQuantizedMeshTerrainChunkLoader(
       QgsTerrainEntity *terrain, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs
     );
+    void start() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   protected:
@@ -68,11 +69,23 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
     bool mMeshLoaded = false;
     bool mTextureLoaded = false;
     std::mutex mFinishedMutex;
+    long long mTileId;
+    QgsTiledSceneIndex mIndex;
+    QgsCoordinateTransform mTileCrsToMapCrs;
 };
 
 QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerrainEntity *terrain_, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs )
   : QgsTerrainTileLoader( terrain_, node )
+  , mTileId( tileId )
+  , mIndex (index )
+  , mTileCrsToMapCrs( tileCrsToMapCrs )
 {
+}
+
+void QgsQuantizedMeshTerrainChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
+
   loadTexture(); // Start loading texture
 
   // Access terrain only on the original thread.
@@ -81,28 +94,26 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
   bool shadingEnabled = map->isTerrainShadingEnabled();
   QgsVector3D chunkOrigin = node->box3D().center();
 
-  QThreadPool::globalInstance()->start( [this, node, tileId, index, tileCrsToMapCrs, vertScale, chunkOrigin, shadingEnabled]() {
-    if ( tileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
+  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled]() {
+    if ( mTileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
     {
       // Nothing to load for imaginary root tile
       emit finished();
       return;
     }
 
-    // We need to copy index, since capture makes it const. It's just a wrapped smart pointer anyway.
-    QgsTiledSceneIndex index2 = index;
-    QgsTiledSceneTile tile = index2.getTile( tileId );
+    QgsTiledSceneTile tile = mIndex.getTile( mTileId );
 
     QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
     Q_ASSERT( !uri.isEmpty() );
 
     uri = tile.baseUrl().resolved( uri ).toString();
-    QByteArray content = index2.retrieveContent( uri );
+    QByteArray content = mIndex.retrieveContent( uri );
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.chunkOriginTargetCrs = chunkOrigin;
-    entityTransform.ecefToTargetCrs = &tileCrsToMapCrs;
+    entityTransform.ecefToTargetCrs = &mTileCrsToMapCrs;
     entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     try
