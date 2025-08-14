@@ -100,6 +100,10 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromOriginal );
   connect( mButtonDrawOnCanvas, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromDrawOnCanvas );
+  
+  // Initialize snap-to-grid button
+  mSnapToGridButton->setVisible( false ); // Hidden by default, shown when snap-to-grid is available
+  connect( mSnapToGridButton, &QAbstractButton::toggled, this, &QgsExtentWidget::snapToGridToggled );
 
   switch ( style )
   {
@@ -575,7 +579,22 @@ QgsRectangle QgsExtentWidget::outputExtent() const
   if ( !ok )
     return QgsRectangle();
 
-  return QgsRectangle( xmin, ymin, xmax, ymax );
+  QgsRectangle extent( xmin, ymin, xmax, ymax );
+  
+  if ( mSnapToGridEnabled && mRasterXRes > 0 && mRasterYRes > 0 )
+  {
+    double snappedXmin = mRasterMinX + std::floor( ( extent.xMinimum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double snappedYmin = mRasterMinY + std::floor( ( extent.yMinimum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    double snappedXmax = mRasterMinX + std::ceil( ( extent.xMaximum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double snappedYmax = mRasterMinY + std::ceil( ( extent.yMaximum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    
+    extent.setXMinimum( snappedXmin );
+    extent.setYMinimum( snappedYmin );
+    extent.setXMaximum( snappedXmax );
+    extent.setYMaximum( snappedYmax );
+  }
+  
+  return extent;
 }
 
 void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
@@ -683,5 +702,49 @@ void QgsExtentWidget::showEvent( QShowEvent * )
       }
     }
     mFirstShow = false;
+  }
+}
+
+void QgsExtentWidget::setSnapToGridAvailable( bool available, bool enabled, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY )
+{
+  mSnapToGridEnabled = enabled;
+  mRasterXRes = rasterXRes;
+  mRasterYRes = rasterYRes;
+  mRasterMinX = rasterMinX;
+  mRasterMinY = rasterMinY;
+  
+  mSnapToGridButton->setVisible( available );
+  mSnapToGridButton->setChecked( enabled );
+  
+  updateSnapToGridButtonStyle();
+}
+
+bool QgsExtentWidget::snapToGridEnabled() const
+{
+  return mSnapToGridEnabled;
+}
+
+void QgsExtentWidget::snapToGridToggled( bool enabled )
+{
+  mSnapToGridEnabled = enabled;
+  updateSnapToGridButtonStyle();
+  emit snapToGridChanged( enabled );
+  emit extentChanged( outputExtent() );
+}
+
+void QgsExtentWidget::updateSnapToGridButtonStyle()
+{
+  if ( !mSnapToGridButton )
+    return;
+    
+  mSnapToGridButton->setStyleSheet( QString() );
+  
+  if ( mSnapToGridEnabled )
+  {
+    mSnapToGridButton->setToolTip( tr( "Snap extent to raster grid (enabled)" ) );
+  }
+  else
+  {
+    mSnapToGridButton->setToolTip( tr( "Snap extent to raster grid (disabled)" ) );
   }
 }
