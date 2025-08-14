@@ -13314,10 +13314,12 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
 
-    const QList<QgsMapLayer *> layers = mMapCanvas->layers( true );
+    QList<QgsMapLayer *> layers = mMapCanvas->layers( true );
     const bool has3DBasemap = std::any_of( layers.begin(), layers.end(), []( QgsMapLayer *layer ) {
       return layer->properties().testFlag( Qgis::MapLayerProperty::Is3DBasemapLayer );
     } );
+
+    layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
 
     map->setLayers( layers );
     map->setTemporalRange( mMapCanvas->temporalRange() );
