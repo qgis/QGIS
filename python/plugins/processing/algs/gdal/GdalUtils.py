@@ -27,6 +27,7 @@ import re
 import warnings
 from dataclasses import dataclass
 import xml.etree.ElementTree as ET
+import math
 
 import psycopg2
 
@@ -48,6 +49,7 @@ from qgis.core import (
     QgsMapLayer,
     QgsProcessingContext,
     QgsRectangle,
+    QgsUnitTypes,
 )
 
 from qgis.PyQt.QtCore import QCoreApplication, QProcess
@@ -674,3 +676,44 @@ class GdalUtils:
             return False, str(e)
 
         return True, ""
+
+    @staticmethod
+    def _wms_dimensions_for_scale(
+        bbox: QgsCoordinateReferenceSystem, scale: int, dpi: float = 96.0
+    ) -> tuple[int, int]:
+        """
+        Returns a tuple with WIDTH and HEIGHT in pixels that would match
+        a bounding box for a particular map scale and DPI.
+        """
+        if bbox.isNull() or bbox.isEmpty():
+            return -1, -1
+
+        meters_per_inch = QgsUnitTypes.fromUnitToUnitFactor(
+            Qgis.DistanceUnit.Inches, QgsUnitTypes.DistanceUnit.DistanceMeters
+        )
+
+        bbox_width = bbox.xMaximum() - bbox.xMinimum()
+        bbox_height = bbox.yMaximum() - bbox.yMinimum()
+        bbox_ratio = bbox_height / bbox_width
+        width = bbox_width * dpi / (scale * meters_per_inch)
+
+        return math.ceil(width), math.ceil(width * bbox_ratio)
+
+    @staticmethod
+    def _get_wms_version(layer):
+        """
+        This should be replaced as soon as we have a better way
+        to get the WMS version from a layer or its provider.
+        """
+        version = None
+        provider = layer.dataProvider()
+        string = (
+            "<td>"
+            + QCoreApplication.translate("QgsWmsProvider", "WMS Version")
+            + "</td><td>(.+?)</td>"
+        )
+        result = re.search(string, provider.htmlMetadata())
+        if result:
+            version = result.group(1)
+
+        return version
