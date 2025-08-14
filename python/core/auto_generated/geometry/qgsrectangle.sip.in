@@ -322,9 +322,24 @@ segment).
 %Docstring
 Test if the rectangle is null (holding no spatial information).
 
-A null rectangle is also an empty rectangle.
+A rectangle is considered null if all its coordinates are NaN, if it has
+not been defined yet, or if it has been explicitly initialized as null.
+A null rectangle is also an empty rectangle and an invalid rectangle.
 
 .. seealso:: :py:func:`setNull`
+%End
+
+    bool isValid() const;
+%Docstring
+Test if the rectangle is valid
+
+A rectangle is considered invalid if at least one of its coordinates is
+NaN or infinite, or if a maximum coordinate is less than or equal to the
+corresponding minimum coordinate.
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 4.0
 %End
 
     bool isMaximal() const;
