@@ -42,11 +42,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
+          - distro-version: '24.10'
+            qt-version: 6
             run-tests: true
-            with-qt6: OFF
-            with-qt5: ON
+            with-qt6: ON
+            with-qt5: OFF
             with-3d: ON
             with-quick: ON
             with-clazy: ON
@@ -59,30 +59,12 @@ jobs:
             experimental: false
             unity-builds: ON
 
-          - distro-version: '39'
-            qt-version: 6
-            run-tests: true
-            with-qt6: ON
-            with-qt5: OFF
-            with-3d: ON
-            with-quick: ON
-            with-clazy: OFF
-            with-grass7: OFF
-            with-grass8: ON
-            with-webengine: ON
-            with-pdf4qt: ON
-            with-compile-commands: OFF
-            LD_PRELOAD: ''
-            experimental: false
-            unity-builds: ON
-
-
       fail-fast: false
 
     outputs:
       compile_outcome: ${{ steps.compile.outcome }}
       tests_failing: ${{ steps.tests.outputs.TESTS_FAILING }}
-      cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
+      # cdash_url: ${{ steps.tests.outputs.CDASH_URL }}
       runners_outcome: ${{ steps.runners.outcome }}
 
     steps:
@@ -129,7 +111,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          file: .docker/qgis3-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
           tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
@@ -242,32 +224,22 @@ jobs:
 
     strategy:
       matrix:
-        qt-version: [5, 6]
+        qt-version: [6]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
 
         include:
-          - qt-version: 5
-            distro-version: 24.04
+          - qt-version: 6
+            distro-version: 24.10
             docker-target: binary-only
 
           - qt-version: 6
             distro-version: 39
             docker-target: binary-only
 
-          - qt-version: 5
-            distro-version: 24.04
+          - qt-version: 6
+            distro-version: 24.10
             test-batch: ORACLE
             docker-target: binary-for-oracle
-
-        exclude:
-          - qt-version: 6
-            test-batch: HANA
-
-          - qt-version: 6
-            test-batch: POSTGRES
-
-          - qt-version: 6
-            test-batch: SQLSERVER
 
       fail-fast: false
 
@@ -394,8 +366,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
+          - distro-version: '24.10'
+            qt-version: 6
 
     steps:
       - name: Free Disk Space (Ubuntu)

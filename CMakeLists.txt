@@ -169,9 +169,16 @@ endif(USE_CCACHE)
 
 if (USE_CCACHE AND MSVC)
   # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
-  set(USE_PRECOMPILED_HEADERS OFF)
+  set(DEFAULT_USE_PRECOMPILED_HEADERS OFF)
 else()
-  set(USE_PRECOMPILED_HEADERS ON)
+  set(DEFAULT_USE_PRECOMPILED_HEADERS ON)
+endif()
+
+set (USE_PRECOMPILED_HEADERS ${DEFAULT_USE_PRECOMPILED_HEADERS} CACHE BOOL "Determines whether precompiled headers should be used")
+mark_as_advanced(USE_PRECOMPILED_HEADERS)
+
+if(USE_PRECOMPILED_HEADERS)
+  message(STATUS "Using precompiled headers")
 endif()
 
 if (IOS)
@@ -622,6 +629,7 @@ if(WITH_CORE)
 
   # get the Qt plugins directory
   get_target_property(QMAKE_EXECUTABLE ${QT_VERSION_BASE}::qmake LOCATION)
+  message(STATUS "Found qmake: ${QMAKE_EXECUTABLE}")
 
   execute_process(COMMAND ${QMAKE_EXECUTABLE} -query QT_INSTALL_PLUGINS RESULT_VARIABLE return_code OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
   set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
