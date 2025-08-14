@@ -31,6 +31,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   connect( mWidget, &QgsExtentWidget::extentChanged, this, &QgsExtentGroupBox::widgetExtentChanged );
   connect( mWidget, &QgsExtentWidget::validationChanged, this, &QgsExtentGroupBox::validationChanged );
   connect( mWidget, &QgsExtentWidget::extentLayerChanged, this, &QgsExtentGroupBox::extentLayerChanged );
+  connect( mWidget, &QgsExtentWidget::snapToGridChanged, this, &QgsExtentGroupBox::snapToGridChanged );
 
   connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [this]( bool visible ) {
     QWidget *w = window();
@@ -142,6 +143,8 @@ void QgsExtentGroupBox::setSnapToGrid( bool snapToGrid, double rasterXRes, doubl
   mRasterYRes = rasterYRes;
   mRasterMinX = rasterMinX;
   mRasterMinY = rasterMinY;
+
+  mWidget->setSnapToGridAvailable( true, snapToGrid, rasterXRes, rasterYRes, rasterMinX, rasterMinY );
 
   // Update the displayed extent fields so that the north/south/east/west values reflect
   // the current snapping mode. We retrieve the (potentially) snapped extent using the

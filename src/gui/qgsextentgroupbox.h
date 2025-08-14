@@ -253,6 +253,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      */
     void extentLayerChanged( QgsMapLayer *layer );
 
+    /**
+     * Emitted when the snap-to-grid state is changed.
+     * \param enabled whether snap-to-grid is enabled
+     * \since QGIS 3.46
+     */
+    void snapToGridChanged( bool enabled );
+
   private slots:
 
     void groupBoxClicked();
