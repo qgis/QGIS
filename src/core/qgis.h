@@ -6941,7 +6941,6 @@ typedef unsigned long long qgssize;
   __pragma(warning(disable:4702))
 #define Q_NOWARN_UNREACHABLE_POP \
   __pragma(warning(pop))
-
 #else
 
 #define Q_NOWARN_DEPRECATED_PUSH
