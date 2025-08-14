@@ -408,6 +408,51 @@ class TestGdalAlgorithms(QgisTestCase):
             '1 -srcnodata --srcnodata "-9999 9999"',
         )
 
+    def test_gdal_wms_xml_description_file(self):
+        checked_count = 0
+
+        # Version 1.1.1
+        with tempfile.TemporaryDirectory() as outdir:
+            uri = "contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=OSM-WMS&styles&tilePixelRatio=0&url=http://ows.terrestris.de/osm/service"
+            version = "1.1.1"
+            extent = QgsRectangle(955435.75, 6465956.5, 960260.5625, 6469745.0)
+            width = 489
+            height = 384
+
+            out_path = os.path.join(outdir, "osm_xml_01.xml")
+            res, _ = GdalUtils.gdal_wms_xml_description_file(
+                uri, version, extent, width, height, out_path
+            )
+            self.assertTrue(res)
+
+            # Compare obtained and expected files
+            expected_file = os.path.join(testDataPath, "wms_description_file_01.xml")
+            self.assertFilesEqual(out_path, expected_file)
+            checked_count += 1
+
+        # Version 1.3.0
+        with tempfile.TemporaryDirectory() as outdir:
+            uri = "contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
+            version = "1.3.0"
+            extent = QgsRectangle(
+                472036.22487, 5552340.41684, 472376.9869, 5552638.65929
+            )
+            width = 215
+            height = 188
+
+            out_path = os.path.join(outdir, "osm_xml_02.xml")
+            res, _ = GdalUtils.gdal_wms_xml_description_file(
+                uri, version, extent, width, height, out_path
+            )
+            self.assertTrue(res)
+
+            # Compare obtained and expected files
+            expected_file = os.path.join(testDataPath, "wms_description_file_02.xml")
+            self.assertFilesEqual(out_path, expected_file)
+            checked_count += 1
+
+        self.assertEqual(checked_count, 2)
+
 
 if __name__ == "__main__":
     nose2.main()
