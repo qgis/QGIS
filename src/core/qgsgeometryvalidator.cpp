@@ -217,7 +217,13 @@ void QgsGeometryValidator::validatePolygon( int partIndex, const QgsCurvePolygon
     {
       const QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i + 1 ).arg( partIndex );
       QgsDebugMsgLevel( msg, 2 );
-      emit errorFound( QgsGeometry::Error( msg ) );
+      const QgsCurve *interiorRing = polygon->interiorRing( i );
+
+      if ( interiorRing->numPoints() == 0 )
+        emit errorFound( QgsGeometry::Error( msg ) );
+      else
+        emit errorFound( QgsGeometry::Error( msg, QgsPointXY( interiorRing->startPoint() ) ) );
+
       mErrorCount++;
     }
   }
