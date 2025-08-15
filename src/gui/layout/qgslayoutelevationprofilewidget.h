@@ -30,6 +30,7 @@
 
 class QgsElevationProfileLayerTreeView;
 class QgsElevationProfileCanvas;
+class QgsProfileSourceRegistry;
 
 /**
  * \ingroup gui
@@ -64,10 +65,13 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget : public QgsLayoutItemBaseWidge
 
     void setGuiElementValues();
     void updateItemLayers();
+    void updateItemSources();
     void layoutAtlasToggled( bool atlasEnabled );
     void atlasLayerChanged( QgsVectorLayer *layer );
 
   private:
+    void syncLayerTreeAndProfileItemSources();
+
     int mBlockChanges = 0;
 
     QgsLayoutDesignerInterface *mInterface = nullptr;

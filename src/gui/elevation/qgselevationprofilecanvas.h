@@ -115,6 +115,22 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QList<QgsMapLayer *> layers() const;
 
     /**
+     * Sets the list of \a sources to include in the profile.
+     *
+     * \see sources()
+     */
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+
+    /**
+     * Returns the list of sources included in the profile.
+     *
+     * It includes both layer profile sources and custom sources from the profile source registry.
+     *
+     * \see setSources()
+     */
+    QList<QgsAbstractProfileSource *> sources() const;
+
+    /**
      * Sets the \a crs associated with the canvas' map coordinates.
      *
      * \see crs()
@@ -327,6 +343,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void startDeferredRegeneration();
     void startDeferredRedraw();
     void refineResults();
+    void setSourcesPrivate();
 
   private:
     void updateChartFromPalette();
@@ -346,6 +363,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
+    QList< QgsAbstractProfileSource * > mSources;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;

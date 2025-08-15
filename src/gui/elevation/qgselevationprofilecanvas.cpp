@@ -442,6 +442,11 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mDeferredRedrawTimer->setSingleShot( true );
   mDeferredRedrawTimer->stop();
   connect( mDeferredRedrawTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredRedraw );
+
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -878,19 +883,10 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  const QList<QgsMapLayer *> layersToGenerate = layers();
-  QList<QgsAbstractProfileSource *> sources;
-  const QList<QgsAbstractProfileSource *> registrySources = QgsApplication::profileSourceRegistry()->profileSources();
-  sources.reserve( layersToGenerate.size() + registrySources.size() );
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-  sources << registrySources;
-  for ( QgsMapLayer *layer : layersToGenerate )
-  {
-    if ( QgsAbstractProfileSource *source = layer->profileSource() )
-      sources.append( source );
-  }
-
-  mCurrentJob = new QgsProfilePlotRenderer( sources, request );
+  mCurrentJob = new QgsProfilePlotRenderer( sourcesToRender, request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
@@ -1178,6 +1174,39 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
+void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
+}
+
+QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
+{
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+
+    // More legacy: canvas layers are in the same direction as the renderer
+    // expects, but since we reverse sources() (i.e., layers) before passing
+    // them to the renderer, then we need to reverse them here first.
+    std::reverse( sources.begin(), sources.end() );
+    return sources;
+  }
+
+  return mSources;
+}
+
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsPlotCanvas::resizeEvent( event );
@@ -1447,4 +1476,9 @@ void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
   mSubsectionsSymbol.reset( symbol );
   std::unique_ptr<QgsLineSymbol> plotItemSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
   mPlotItem->setSubsectionsSymbol( plotItemSymbol.release() );
+}
+
+void QgsElevationProfileCanvas::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
 }
