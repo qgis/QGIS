@@ -133,6 +133,32 @@ Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featu
   return !geometry.isNull() ? Qgis::VectorEditResult::Success : Qgis::VectorEditResult::EmptyGeometry;
 }
 
+Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertices( QgsFeatureId featureId, const QList<int> &vertices )
+{
+  if ( !mLayer->isSpatial() )
+    return Qgis::VectorEditResult::InvalidLayer;
+
+  if ( vertices.isEmpty() )
+    return Qgis::VectorEditResult::Success;
+
+  QgsFeature f;
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
+    return Qgis::VectorEditResult::FetchFeatureFailed;
+
+  QgsGeometry geometry = f.geometry();
+
+  if ( !geometry.deleteVertices( vertices ) )
+    return Qgis::VectorEditResult::EditFailed;
+
+  if ( geometry.constGet() && geometry.constGet()->nCoordinates() == 0 )
+  {
+    // Last vertex deleted, set geometry to null
+    geometry.set( nullptr );
+  }
+
+  mLayer->changeGeometry( featureId, geometry );
+  return !geometry.isNull() ? Qgis::VectorEditResult::Success : Qgis::VectorEditResult::EmptyGeometry;
+}
 
 static
 Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_ptr< QgsCurve > &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
