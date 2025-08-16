@@ -101,12 +101,12 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
     /**
      * Returns the line symbol at a given \a index.
      */
-    QgsLineSymbol *lineSymbol( int seriesIndex ) const;
+    QgsLineSymbol *lineSymbol( int index ) const;
 
     /**
      * Sets the marker \a symbol at a given \a index.
      */
-    void setLineSymbol( int seriesIndex, QgsLineSymbol *symbol SIP_TRANSFER );
+    void setLineSymbol( int index, QgsLineSymbol *symbol SIP_TRANSFER );
 
     //! Returns a new line chart.
     static QgsLineChartPlot *create();
