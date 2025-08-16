@@ -240,6 +240,29 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void setLockAxisScales( bool lock );
 
     /**
+     * Returns the current ratio of horizontal (distance) to vertical (elevation) scale
+     * for the plot.
+     *
+     * \see setAxisScaleRatio()
+     * \since QGIS 4.0
+     */
+    double axisScaleRatio() const;
+
+    /**
+     * Sets the ratio of horizontal (distance) to vertical (elevation) scale for the plot.
+     *
+     * E.g. a \a scale of 3 indicates a ratio of 3:1 for distance vs elevation, whereas a scale
+     * of 0.3333 indicates a ratio of 1:3 for distance vs elevation.
+     *
+     * This will immediately update the visible plot area to match the specified scale.
+     *
+     * \see axisScaleRatio()
+     * \see setLockAxisScales()
+     * \since QGIS 4.0
+     */
+    void setAxisScaleRatio( double scale );
+
+    /**
      * Returns the distance unit used by the canvas.
      *
      * \see setDistanceUnit()
@@ -299,6 +322,13 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
 
+    /**
+     * Emitted when the plot scale is changed.
+     *
+     * \since QGIS 4.0
+     */
+    void scaleChanged();
+
   public slots:
 
     /**
@@ -340,6 +370,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsScreenHelper *mScreenHelper = nullptr;
 
     bool mLockAxisScales = false;
+    double mLockedAxisScale = 1;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
