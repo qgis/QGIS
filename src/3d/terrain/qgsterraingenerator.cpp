@@ -42,7 +42,7 @@ void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
   // TODO: makes sense to have kind of default implementation?
   hMin = 0;
-  hMax = 400;
+  hMax = 8848;
 }
 
 float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
