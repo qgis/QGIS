@@ -703,7 +703,8 @@ void QgsChunkedEntity::startJobs()
     delete entry;
 
     QgsChunkQueueJob *job = startJob( node );
-    mActiveJobs.append( job );
+    if ( !job->isFinished() )
+      mActiveJobs.append( job );
   }
 }
 
@@ -716,6 +717,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
 
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
     connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
+    loader->start();
     node->setLoading( loader );
     return loader;
   }
@@ -725,6 +727,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
 
     node->setUpdating();
     connect( node->updater(), &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
+    node->updater()->start();
     return node->updater();
   }
   else

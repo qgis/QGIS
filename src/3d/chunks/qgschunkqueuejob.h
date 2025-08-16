@@ -42,9 +42,9 @@ namespace Qt3DCore
  * \ingroup qgis_3d
  * \brief  Base class for chunk queue jobs.
  *
- * Job implementations start their work when they are created
- * and all work is done asynchronously, i.e. constructor should exit as soon as possible and
- * all work should be done in a worker thread. Once the job is done, finished() signal is emitted
+ * Job implementations do all their work asynchronously,
+ * i.e. all work should be done in a worker thread once start() is called.
+ * Once the job is done, finished() signal is emitted
  * and will be processed by the parent chunked entity.
  *
  * There are currently two types of queue jobs:
@@ -58,10 +58,13 @@ class QgsChunkQueueJob : public QObject
     Q_OBJECT
   public:
     //! Constructs a job for given chunk node
-    QgsChunkQueueJob( QgsChunkNode *node )
-      : mNode( node )
-    {
-    }
+    QgsChunkQueueJob( QgsChunkNode *node );
+
+    /**
+     * Start the actual work, make sure you have connected to `finished()`
+     * before calling start().
+     */
+    virtual void start() = 0;
 
     //! Returns chunk node of this job
     QgsChunkNode *chunk() { return mNode; }
@@ -76,12 +79,20 @@ class QgsChunkQueueJob : public QObject
      */
     virtual void cancel();
 
+    /**
+     * Returns if this job is finished.
+     * A job is initialized as not finished and will be set to finished, once the `finished` signal
+     * has been emitted.
+     */
+    bool isFinished() const;
+
   signals:
     //! Emitted when the asynchronous job has finished. Not emitted if the job got canceled.
     void finished();
 
   protected:
     QgsChunkNode *mNode = nullptr;
+    bool mFinished = false;
 };
 
 /**

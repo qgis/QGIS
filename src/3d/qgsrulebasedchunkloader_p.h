@@ -89,6 +89,7 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
     QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node );
     ~QgsRuleBasedChunkLoader() override;
 
+    void start() override;
     virtual void cancel() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 

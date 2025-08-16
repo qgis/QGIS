@@ -44,6 +44,11 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   , mContext( factory->mRenderContext )
   , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
 {
+}
+
+void QgsRuleBasedChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
   if ( node->level() < mFactory->mLeafLevel )
   {
     QTimer::singleShot( 0, this, &QgsRuleBasedChunkLoader::finished );

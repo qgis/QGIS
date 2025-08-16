@@ -60,18 +60,23 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 
 QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator )
   : QgsTerrainTileLoader( terrain, node )
-  , mResolution( 0 )
+  , mTerrainGenerator( terrainGenerator )
+{}
+
+void QgsDemTerrainTileLoader::start()
 {
+  QgsChunkNode *node = chunk();
+
   QgsDemHeightMapGenerator *heightMapGenerator = nullptr;
-  if ( terrainGenerator->type() == QgsTerrainGenerator::Dem )
+  if ( mTerrainGenerator->type() == QgsTerrainGenerator::Dem )
   {
-    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( terrainGenerator );
+    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( mTerrainGenerator );
     heightMapGenerator = generator->heightMapGenerator();
     mSkirtHeight = generator->skirtHeight();
   }
-  else if ( terrainGenerator->type() == QgsTerrainGenerator::Online )
+  else if ( mTerrainGenerator->type() == QgsTerrainGenerator::Online )
   {
-    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( terrainGenerator );
+    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( mTerrainGenerator );
     heightMapGenerator = generator->heightMapGenerator();
     mSkirtHeight = generator->skirtHeight();
   }
