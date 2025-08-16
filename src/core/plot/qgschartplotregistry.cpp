@@ -1,5 +1,5 @@
 /***************************************************************************
-                            qgschartregistry.cpp
+                            qgschartplotregistry.cpp
                             ------------------------
     begin                : June 2025
     copyright            : (C) 2025 by Mathieu Pellerin
@@ -16,38 +16,38 @@
 
 #include "qgsconfig.h"
 
-#include "qgschartregistry.h"
-#include "moc_qgschartregistry.cpp"
-#include "qgschart.h"
+#include "qgschartplotregistry.h"
+#include "moc_qgschartplotregistry.cpp"
+#include "qgschartplot.h"
 #include "qgsplot.h"
 
-QgsChartRegistry::QgsChartRegistry( QObject *parent )
+QgsChartPlotRegistry::QgsChartPlotRegistry( QObject *parent )
   : QObject( parent )
 {
 }
 
-QgsChartRegistry::~QgsChartRegistry()
+QgsChartPlotRegistry::~QgsChartPlotRegistry()
 {
   qDeleteAll( mMetadata );
 }
 
-bool QgsChartRegistry::populate()
+bool QgsChartPlotRegistry::populate()
 {
   if ( !mMetadata.isEmpty() )
     return false;
 
-  addChartType( new QgsChartMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChart::create ) );
-  addChartType( new QgsChartMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChart::create ) );
+  addChartType( new QgsChartPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create ) );
+  addChartType( new QgsChartPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create ) );
 
   return true;
 }
 
-QgsChartAbstractMetadata *QgsChartRegistry::chartMetadata( const QString &type ) const
+QgsChartPlotAbstractMetadata *QgsChartPlotRegistry::chartMetadata( const QString &type ) const
 {
   return mMetadata.value( type );
 }
 
-bool QgsChartRegistry::addChartType( QgsChartAbstractMetadata *metadata )
+bool QgsChartPlotRegistry::addChartType( QgsChartPlotAbstractMetadata *metadata )
 {
   if ( !metadata || mMetadata.contains( metadata->type() ) )
     return false;
@@ -57,7 +57,7 @@ bool QgsChartRegistry::addChartType( QgsChartAbstractMetadata *metadata )
   return true;
 }
 
-bool QgsChartRegistry::removeChartType( const QString &type )
+bool QgsChartPlotRegistry::removeChartType( const QString &type )
 {
   if ( !mMetadata.contains( type ) )
     return false;
@@ -67,7 +67,7 @@ bool QgsChartRegistry::removeChartType( const QString &type )
   return true;
 }
 
-QgsPlot *QgsChartRegistry::createChart( const QString &type ) const
+QgsPlot *QgsChartPlotRegistry::createChart( const QString &type ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
@@ -75,7 +75,7 @@ QgsPlot *QgsChartRegistry::createChart( const QString &type ) const
   return mMetadata[type]->createChart();
 }
 
-QMap<QString, QString> QgsChartRegistry::chartTypes() const
+QMap<QString, QString> QgsChartPlotRegistry::chartTypes() const
 {
   QMap<QString, QString> types;
   for ( auto it = mMetadata.constBegin(); it != mMetadata.constEnd(); ++it )

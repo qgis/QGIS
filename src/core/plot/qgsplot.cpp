@@ -965,36 +965,6 @@ void QgsAbstractPlotSeries::setName( const QString &name )
   mName = name;
 }
 
-QgsMarkerSymbol *QgsAbstractPlotSeries::markerSymbol() const
-{
-  return mMarkerSymbol.get();
-}
-
-void QgsAbstractPlotSeries::setMarkerSymbol( QgsMarkerSymbol *markerSymbol )
-{
-  mMarkerSymbol.reset( markerSymbol );
-}
-
-QgsLineSymbol *QgsAbstractPlotSeries::lineSymbol() const
-{
-  return mLineSymbol.get();
-}
-
-void QgsAbstractPlotSeries::setLineSymbol( QgsLineSymbol *lineSymbol )
-{
-  mLineSymbol.reset( lineSymbol );
-}
-
-QgsFillSymbol *QgsAbstractPlotSeries::fillSymbol() const
-{
-  return mFillSymbol.get();
-}
-
-void QgsAbstractPlotSeries::setFillSymbol( QgsFillSymbol *fillSymbol )
-{
-  mFillSymbol.reset( fillSymbol );
-}
-
 //
 // QgsXyPlotSeries
 //

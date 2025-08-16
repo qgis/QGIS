@@ -1,5 +1,5 @@
 /***************************************************************************
-                            qgschartregistry.h
+                            qgschartplotregistry.h
                             ------------------------
     begin                : June 2025
     copyright            : (C) 2025 by Mathieu Pellerin
@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCHARTREGISTRY_H
-#define QGSCHARTREGISTRY_H
+#ifndef QGSCHARTPLOTREGISTRY_H
+#define QGSCHARTPLOTREGISTRY_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -23,24 +23,25 @@
 
 /**
  * \ingroup core
+ * \class QgsChartPlotAbstractMetadata
  * \brief Stores metadata about a chart class.
  *
- * \note In C++ you can use QgsChartAbstractMetadata convenience class.
+ * \note In C++ you can use QgsChartPlotAbstractMetadata convenience class.
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsChartAbstractMetadata
+class CORE_EXPORT QgsChartPlotAbstractMetadata
 {
   public:
 
     /**
-     * Constructor for QgsChartAbstractMetadata with the specified class \a type.
+     * Constructor for QgsChartPlotAbstractMetadata with the specified class \a type.
      */
-    QgsChartAbstractMetadata( const QString &type, const QString &visibleName )
+    QgsChartPlotAbstractMetadata( const QString &type, const QString &visibleName )
       : mType( type )
       , mVisibleName( visibleName )
     {}
 
-    virtual ~QgsChartAbstractMetadata() = default;
+    virtual ~QgsChartPlotAbstractMetadata() = default;
 
     /**
      * Returns the unique type code for the chart class.
@@ -79,37 +80,38 @@ class CORE_EXPORT QgsChartAbstractMetadata
 };
 
 //! Chart creation function
-typedef std::function<QgsPlot *()> QgsChartCreateFunc SIP_SKIP;
+typedef std::function<QgsPlot *()> QgsChartPlotCreateFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
 /**
  * \ingroup core
+ * \class QgsChartPlotMetadata
  * \brief Convenience metadata class that uses static functions to create charts and their configuration widgets.
  * \note not available in Python bindings
  */
-class CORE_EXPORT QgsChartMetadata : public QgsChartAbstractMetadata
+class CORE_EXPORT QgsChartPlotMetadata : public QgsChartPlotAbstractMetadata
 {
   public:
 
     /**
      * Constructor for QgsChartMetadata with the specified class \a type.
      */
-    QgsChartMetadata( const QString &type, const QString &visibleName,
-                      const QgsChartCreateFunc &pfCreate )
-      : QgsChartAbstractMetadata( type, visibleName )
+    QgsChartPlotMetadata( const QString &type, const QString &visibleName,
+                          const QgsChartPlotCreateFunc &pfCreate )
+      : QgsChartPlotAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
     {}
 
     /**
      * Returns the classes' chart creation function.
      */
-    QgsChartCreateFunc createFunction() const { return mCreateFunc; }
+    QgsChartPlotCreateFunc createFunction() const { return mCreateFunc; }
 
     QgsPlot *createChart() override { return mCreateFunc ? mCreateFunc() : nullptr; }
 
   protected:
-    QgsChartCreateFunc mCreateFunc = nullptr;
+    QgsChartPlotCreateFunc mCreateFunc = nullptr;
 
 };
 
@@ -117,15 +119,15 @@ class CORE_EXPORT QgsChartMetadata : public QgsChartAbstractMetadata
 
 /**
  * \ingroup core
- * \class QgsChartRegistry
+ * \class QgsChartPlotRegistry
  * \brief Registry of available chart types.
  *
- * QgsChartRegistry is not usually directly created, but rather accessed through
+ * QgsChartPlotRegistry is not usually directly created, but rather accessed through
  * QgsApplication::chartRegistry().
  *
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsChartRegistry : public QObject
+class CORE_EXPORT QgsChartPlotRegistry : public QObject
 {
     Q_OBJECT
 
@@ -134,13 +136,13 @@ class CORE_EXPORT QgsChartRegistry : public QObject
     /**
      * Creates a new empty item registry.
      *
-     * QgsChartRegistry is not usually directly created, but rather accessed through
+     * QgsChartPlotRegistry is not usually directly created, but rather accessed through
      * QgsApplication::chartRegistry().
      *
      * \see populate()
     */
-    QgsChartRegistry( QObject *parent = nullptr );
-    ~QgsChartRegistry() override;
+    QgsChartPlotRegistry( QObject *parent = nullptr );
+    ~QgsChartPlotRegistry() override;
 
     /**
      * Populates the registry with standard chart types. If called on a non-empty registry
@@ -148,14 +150,14 @@ class CORE_EXPORT QgsChartRegistry : public QObject
      */
     bool populate();
 
-    QgsChartRegistry( const QgsChartRegistry &rh ) = delete;
-    QgsChartRegistry &operator=( const QgsChartRegistry &rh ) = delete;
+    QgsChartPlotRegistry( const QgsChartPlotRegistry &rh ) = delete;
+    QgsChartPlotRegistry &operator=( const QgsChartPlotRegistry &rh ) = delete;
 
     /**
      * Returns the metadata for the specified chart \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      */
-    QgsChartAbstractMetadata *chartMetadata( const QString &type ) const;
+    QgsChartPlotAbstractMetadata *chartMetadata( const QString &type ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -176,7 +178,7 @@ class CORE_EXPORT QgsChartRegistry : public QObject
      * Registers a new chart type.
      * \note Takes ownership of the metadata instance.
      */
-    bool addChartType( QgsChartAbstractMetadata *metadata SIP_TRANSFER );
+    bool addChartType( QgsChartPlotAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
      * Removes a new a chart type from the registry.
@@ -210,14 +212,14 @@ class CORE_EXPORT QgsChartRegistry : public QObject
   private:
 
 #ifdef SIP_RUN
-    QgsChartRegistry( const QgsChartRegistry &rh );
+    QgsChartPlotRegistry( const QgsChartPlotRegistry &rh );
 #endif
 
-    QMap<QString, QgsChartAbstractMetadata *> mMetadata;
+    QMap<QString, QgsChartPlotAbstractMetadata *> mMetadata;
 
 };
 
-#endif //QGSCHARTREGISTRY_H
+#endif //QGSCHARTPLOTREGISTRY_H
 
 
 

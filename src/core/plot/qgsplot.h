@@ -95,52 +95,12 @@ class CORE_EXPORT QgsAbstractPlotSeries
      */
     void setName( const QString &name );
 
-    /**
-     * Returns the marker symbol to be used by various chart types when
-     * rendering the series' data.
-     */
-    QgsMarkerSymbol *markerSymbol() const;
-
-    /**
-     * Sets the marker symbol to be used by various chart types when
-     * rendering the series' data.
-     */
-    void setMarkerSymbol( QgsMarkerSymbol *markerSymbol SIP_TRANSFER );
-
-    /**
-     * Returns the line symbol to be used by various chart types when
-     * rendering the series' data.
-     */
-    QgsLineSymbol *lineSymbol() const;
-
-    /**
-     * Sets the line symbol to be used by various chart types when
-     * rendering the series' data.
-     */
-    void setLineSymbol( QgsLineSymbol *lineSymbol SIP_TRANSFER );
-
-    /**
-     * Returns the fill symbol to be used by various chart types when
-     * rendering the series' data.
-     */
-    QgsFillSymbol *fillSymbol() const;
-
-    /**
-     * Sets the fill symbol to be used by various chart types when
-     * rendering the series' data.
-     */
-    void setFillSymbol( QgsFillSymbol *fillSymbol SIP_TRANSFER );
-
   private:
 #ifdef SIP_RUN
     QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
 #endif
 
     QString mName;
-
-    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
-    std::unique_ptr<QgsLineSymbol> mLineSymbol;
-    std::unique_ptr<QgsFillSymbol> mFillSymbol;
 };
 
 /**

@@ -63,7 +63,7 @@ class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
 class QgsCalloutRegistry;
-class QgsChartRegistry;
+class QgsChartPlotRegistry;
 class QgsBookmarkManager;
 class QgsStyleModel;
 class QgsNumericFormatRegistry;
@@ -876,7 +876,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Returns the application's chart registry, used for chart types.
      * \since QGIS 4.0
      */
-    static QgsChartRegistry *chartRegistry() SIP_KEEPREFERENCE;
+    static QgsChartPlotRegistry *chartPlotRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's message log.
@@ -1211,7 +1211,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       std::unique_ptr<QgsLayoutItemRegistry > mLayoutItemRegistry;
       std::unique_ptr<QgsAnnotationItemRegistry > mAnnotationItemRegistry;
       std::unique_ptr<QgsSensorRegistry > mSensorRegistry;
-      std::unique_ptr<QgsChartRegistry > mChartRegistry;
+      std::unique_ptr<QgsChartPlotRegistry > mChartPlotRegistry;
       std::unique_ptr<QgsBookmarkManager > mBookmarkManager;
       std::unique_ptr<QgsTileDownloadManager > mTileDownloadManager;
       std::unique_ptr<QgsStyleModel > mStyleModel;
