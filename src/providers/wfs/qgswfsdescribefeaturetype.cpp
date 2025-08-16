@@ -39,14 +39,17 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion, c
       query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
     }
   }
+  else
+  {
+    if ( !namespaceValue.isEmpty() )
+    {
+      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    }
+  }
 
   // Always add singular form for broken servers
   // See: https://github.com/qgis/QGIS/issues/41087
   query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-  if ( !namespaceValue.isEmpty() )
-  {
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
-  }
 
   url.setQuery( query );
   return sendGET( url, QString(), true, false );
