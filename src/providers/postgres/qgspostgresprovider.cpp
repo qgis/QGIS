@@ -4638,7 +4638,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
 
     if ( !srs.authid().isEmpty() )
     {
-      QStringList authId_list = srs.authid().split(':');
+      QStringList authId_list = srs.authid().split( ':' );
 
       sql = QStringLiteral( "SELECT srid FROM public.spatial_ref_sys WHERE auth_name = %1 AND auth_srid = %2" )
               .arg( quotedValue( authId_list[0] ) )
@@ -4652,15 +4652,15 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer(
       if ( result.PQntuples() < 1 )
       {
         if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of data source %1 failed: \n No record matching %2 found in public.spatial_ref_sys" )
-                        .arg( schemaTableName, srs.authid() );
+          *errorMessage = QObject::tr( "Creation of data source %1 failed: \n No record matching %2 found in public.spatial_ref_sys" )
+                            .arg( schemaTableName, srs.authid() );
 
         conn->LoggedPQexecNR( "QgsPostgresProvider", QStringLiteral( "ROLLBACK" ) );
         conn->unref();
         return Qgis::VectorExportResult::ErrorCreatingLayer;
       }
 
-    srid = result.PQgetvalue( 0, 0 ).toLong();
+      srid = result.PQgetvalue( 0, 0 ).toLong();
     }
 
     postgisGeometryType( wkbType, geometryType, dim );
