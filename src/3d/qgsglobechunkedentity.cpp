@@ -275,37 +275,17 @@ QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureG
   , mTextureGenerator( textureGenerator )
   , mGlobeCrsToLatLon( globeCrsToLatLon )
 {
-<<<<<<< HEAD
+}
+
+void QgsGlobeChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
+
   connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this]( int job, const QImage &img ) {
     if ( job == mJobId )
     {
       mTexture = img;
       emit finished();
-=======
-  public:
-    QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon )
-      : QgsChunkLoader( node )
-      , mTextureGenerator( textureGenerator )
-      , mGlobeCrsToLatLon( globeCrsToLatLon )
-    {}
-
-    void start() override
-    {
-      QgsChunkNode *node = chunk();
-
-      connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this]( int job, const QImage &img ) {
-        if ( job == mJobId )
-        {
-          mTexture = img;
-          emit finished();
-        }
-      } );
-
-      double latMin, latMax, lonMin, lonMax;
-      globeNodeIdToLatLon( node->tileId(), latMin, latMax, lonMin, lonMax );
-      QgsRectangle extent( lonMin, latMin, lonMax, latMax );
-      mJobId = mTextureGenerator->render( extent, node->tileId(), node->tileId().text() );
->>>>>>> 6b7c743bb1e (Cleaner approach)
     }
   } );
 

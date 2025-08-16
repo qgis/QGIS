@@ -48,6 +48,7 @@ class QgsGlobeChunkLoader : public QgsChunkLoader
     Q_OBJECT
   public:
     QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon );
+    void start() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
