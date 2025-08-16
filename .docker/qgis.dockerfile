@@ -46,12 +46,14 @@ RUN SUCCESS=OK \
   -DENABLE_TESTS=OFF \
   -DWITH_QSPATIALITE=ON \
   -DWITH_APIDOC=OFF \
+  -DWITH_ASTYLE=OFF \
   .. \
   && ninja install || SUCCESS=FAILED \
   && echo "$SUCCESS" > /QGIS/build_exit_value
 
 # Additional run-time dependencies
-RUN pip3 install jinja2 pexpect && apt install -y expect
+#RUN pip3 install jinja2 pygments pexpect && apt install -y expect
+RUN apt install -y expect python3-jinja2 python3-pygments python3-pexpect
 
 ################################################################################
 # Python testing environment setup
