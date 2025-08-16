@@ -1138,14 +1138,30 @@ Q_NOWARN_DEPRECATED_POP
 
 void QgsGraduatedSymbolRenderer::updateRangeLabels()
 {
-  for ( int i = 0; i < mRanges.count(); i++ )
+  // Make auto-generated labels unambiguous using inequalities.
+  // First range:  lower ≤ x ≤ upper
+  // Others:       lower < x ≤ upper
+  for ( int i = 0; i < mRanges.size(); ++i )
   {
-    QgsClassificationMethod::ClassPosition pos = QgsClassificationMethod::Inner;
-    if ( i == 0 )
-      pos = QgsClassificationMethod::LowerBound;
-    else if ( i == mRanges.count() - 1 )
-      pos = QgsClassificationMethod::UpperBound;
-    mRanges[i].setLabel( mClassificationMethod->labelForRange( mRanges[i], pos ) );
+      const bool isFirst = ( i == 0 );
+      const bool shouldUpdate = mAutoUpdateRangeLabels || mRanges[i].label().isEmpty();
+      if ( !shouldUpdate )
+          continue;
+  
+      const double lo = mRanges[i].lowerValue();
+      const double hi = mRanges[i].upperValue();
+  
+      // Respect number formatting (precision, scaling, suffix) from the label format.
+      const QString loStr = mLabelFormat.formatNumber( lo );
+      const QString hiStr = mLabelFormat.formatNumber( hi );
+  
+      const QString lowerOp = isFirst ? QString::fromUtf8("≤") : QString::fromUtf8("<");
+      const QString upperOp = QString::fromUtf8("≤");
+  
+      // “x” keeps the legend readable and localization-neutral.
+      const QString lbl = QStringLiteral("%1 %2 x %3 %4")
+                            .arg( loStr, lowerOp, upperOp, hiStr );
+      mRanges[i].setLabel( lbl );
   }
 }
 
