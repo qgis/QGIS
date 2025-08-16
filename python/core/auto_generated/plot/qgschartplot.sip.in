@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/plot/qgschart.h                                             *
+ * src/core/plot/qgschartplot.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -9,7 +9,7 @@
 
 
 
-class QgsBarChart : Qgs2DXyPlot
+class QgsBarChartPlot : Qgs2DXyPlot
 {
 %Docstring(signature="appended")
 A simple bar chart class.
@@ -22,12 +22,12 @@ A simple bar chart class.
 %End
 
 %TypeHeaderCode
-#include "qgschart.h"
+#include "qgschartplot.h"
 %End
   public:
 
-    QgsBarChart();
-    ~QgsBarChart();
+    QgsBarChartPlot();
+    ~QgsBarChartPlot();
 
     virtual QString type() const;
 
@@ -39,7 +39,17 @@ A simple bar chart class.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    static QgsBarChart *create();
+    QgsFillSymbol *fillSymbol( int index ) const;
+%Docstring
+Returns the fill symbol at a given ``index``.
+%End
+
+    void setFillSymbol( int index, QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the marker ``symbol`` at a given ``index``.
+%End
+
+    static QgsBarChartPlot *create();
 %Docstring
 Returns a new bar chart.
 %End
@@ -47,7 +57,7 @@ Returns a new bar chart.
 };
 
 
-class QgsLineChart : Qgs2DXyPlot
+class QgsLineChartPlot : Qgs2DXyPlot
 {
 %Docstring(signature="appended")
 A simple line chart class.
@@ -60,12 +70,12 @@ A simple line chart class.
 %End
 
 %TypeHeaderCode
-#include "qgschart.h"
+#include "qgschartplot.h"
 %End
   public:
 
-    QgsLineChart();
-    ~QgsLineChart();
+    QgsLineChartPlot();
+    ~QgsLineChartPlot();
 
     virtual QString type() const;
 
@@ -77,7 +87,27 @@ A simple line chart class.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    static QgsLineChart *create();
+    QgsMarkerSymbol *markerSymbol( int index ) const;
+%Docstring
+Returns the marker symbol at a given ``index``.
+%End
+
+    void setMarkerSymbol( int index, QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+Sets the marker ``symbol`` at a given ``index``.
+%End
+
+    QgsLineSymbol *lineSymbol( int seriesIndex ) const;
+%Docstring
+Returns the line symbol at a given ``index``.
+%End
+
+    void setLineSymbol( int seriesIndex, QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the marker ``symbol`` at a given ``index``.
+%End
+
+    static QgsLineChartPlot *create();
 %Docstring
 Returns a new line chart.
 %End
@@ -87,7 +117,7 @@ Returns a new line chart.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/plot/qgschart.h                                             *
+ * src/core/plot/qgschartplot.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

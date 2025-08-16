@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgschart.h
+                         qgschartplot.h
                          ---------------
     begin                : June 2025
     copyright            : (C) 2025 by Mathieu
@@ -14,11 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCHART_H
-#define QGSCHART_H
+#ifndef QGSCHARTPLOT_H
+#define QGSCHARTPLOT_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgsplot.h"
 
 
@@ -30,12 +33,12 @@
  * \ingroup core
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsBarChart : public Qgs2DXyPlot
+class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
 {
   public:
 
-    QgsBarChart() = default;
-    ~QgsBarChart() = default;
+    QgsBarChartPlot() = default;
+    ~QgsBarChartPlot() = default;
 
     QString type() const override { return QStringLiteral( "bar" ); }
 
@@ -44,11 +47,22 @@ class CORE_EXPORT QgsBarChart : public Qgs2DXyPlot
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns the fill symbol at a given \a index.
+     */
+    QgsFillSymbol *fillSymbol( int index ) const;
+
+    /**
+     * Sets the marker \a symbol at a given \a index.
+     */
+    void setFillSymbol( int index, QgsFillSymbol *symbol SIP_TRANSFER );
+
     //! Returns a new bar chart.
-    static QgsBarChart *create();
+    static QgsBarChartPlot *create();
 
   private:
 
+    std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
 };
 
 
@@ -60,12 +74,12 @@ class CORE_EXPORT QgsBarChart : public Qgs2DXyPlot
  * \ingroup core
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsLineChart : public Qgs2DXyPlot
+class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
 {
   public:
 
-    QgsLineChart() = default;
-    ~QgsLineChart() = default;
+    QgsLineChartPlot() = default;
+    ~QgsLineChartPlot() = default;
 
     QString type() const override { return QStringLiteral( "line" ); }
 
@@ -74,11 +88,33 @@ class CORE_EXPORT QgsLineChart : public Qgs2DXyPlot
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns the marker symbol at a given \a index.
+     */
+    QgsMarkerSymbol *markerSymbol( int index ) const;
+
+    /**
+     * Sets the marker \a symbol at a given \a index.
+     */
+    void setMarkerSymbol( int index, QgsMarkerSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol at a given \a index.
+     */
+    QgsLineSymbol *lineSymbol( int seriesIndex ) const;
+
+    /**
+     * Sets the marker \a symbol at a given \a index.
+     */
+    void setLineSymbol( int seriesIndex, QgsLineSymbol *symbol SIP_TRANSFER );
+
     //! Returns a new line chart.
-    static QgsLineChart *create();
+    static QgsLineChartPlot *create();
 
   private:
 
+    std::vector<std::unique_ptr<QgsMarkerSymbol>> mMarkerSymbols;
+    std::vector<std::unique_ptr<QgsLineSymbol>> mLineSymbols;
 };
 
-#endif
+#endif // QGSCHARTPLOT_H

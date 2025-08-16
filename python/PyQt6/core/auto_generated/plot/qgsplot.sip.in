@@ -81,42 +81,6 @@ Returns the series' name.
 Sets the series' name.
 %End
 
-    QgsMarkerSymbol *markerSymbol() const;
-%Docstring
-Returns the marker symbol to be used by various chart types when
-rendering the series' data.
-%End
-
-    void setMarkerSymbol( QgsMarkerSymbol *markerSymbol /Transfer/ );
-%Docstring
-Sets the marker symbol to be used by various chart types when rendering
-the series' data.
-%End
-
-    QgsLineSymbol *lineSymbol() const;
-%Docstring
-Returns the line symbol to be used by various chart types when rendering
-the series' data.
-%End
-
-    void setLineSymbol( QgsLineSymbol *lineSymbol /Transfer/ );
-%Docstring
-Sets the line symbol to be used by various chart types when rendering
-the series' data.
-%End
-
-    QgsFillSymbol *fillSymbol() const;
-%Docstring
-Returns the fill symbol to be used by various chart types when rendering
-the series' data.
-%End
-
-    void setFillSymbol( QgsFillSymbol *fillSymbol /Transfer/ );
-%Docstring
-Sets the fill symbol to be used by various chart types when rendering
-the series' data.
-%End
-
   private:
     QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
 };

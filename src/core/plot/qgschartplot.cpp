@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsplot.cpp
+                         qgschartplot.cpp
                          ---------------
-    begin                : March 2022
-    copyright            : (C) 2022 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
+    begin                : June 2025
+    copyright            : (C) 2025 by Mathieu
+    email                : mathieu at opengis dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgschart.h"
+#include "qgschartplot.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
@@ -23,8 +23,13 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 
-void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
+void QgsBarChartPlot::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
 {
+  if ( mFillSymbols.empty() )
+  {
+    return;
+  }
+
   const QList<QgsAbstractPlotSeries *> seriesList = plotData.series();
   if ( seriesList.isEmpty() )
   {
@@ -51,11 +56,12 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    if ( !series->fillSymbol() )
+    QgsFillSymbol *symbol = fillSymbol( seriesIndex % mFillSymbols.size() );
+    if ( !symbol )
     {
       continue;
     }
-    series->fillSymbol()->startRender( context );
+    symbol->startRender( context );
 
     const double barStartAdjustement = -( barsWidth / 2 ) + barWidth * seriesIndex;
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
@@ -86,40 +92,70 @@ void QgsBarChart::renderContent( QgsRenderContext &context, const QRectF &plotAr
                                   plotArea.y() + plotArea.height() - zero );
 
         chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
-        series->fillSymbol()->renderPolygon( QPolygonF( QRectF( topLeft, bottomRight ) ), nullptr, nullptr, context );
+        symbol->renderPolygon( QPolygonF( QRectF( topLeft, bottomRight ) ), nullptr, nullptr, context );
       }
     }
 
-    series->fillSymbol()->stopRender( context );
+    symbol->stopRender( context );
     seriesIndex++;
   }
 
   context.painter()->restore();
 }
 
-bool QgsBarChart::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+QgsFillSymbol *QgsBarChartPlot::fillSymbol( int index ) const
+{
+  if ( index < 0 || index >= static_cast<int>( mFillSymbols.size() ) )
+  {
+    return nullptr;
+  }
+
+  return mFillSymbols[index].get();
+}
+
+void QgsBarChartPlot::setFillSymbol( int index, QgsFillSymbol *symbol )
+{
+  if ( index < 0 )
+  {
+    return;
+  }
+
+  if ( index + 1 >= static_cast<int>( mFillSymbols.size() ) )
+  {
+    mFillSymbols.resize( index + 1 );
+  }
+
+  mFillSymbols[index].reset( symbol );
+}
+
+bool QgsBarChartPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   Qgs2DXyPlot::writeXml( element, document, context );
   return true;
 }
 
-bool QgsBarChart::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Qgs2DXyPlot::readXml( element, context );
   return true;
 }
 
-QgsBarChart *QgsBarChart::create()
+QgsBarChartPlot *QgsBarChartPlot::create()
 {
-  return new QgsBarChart();
+  return new QgsBarChartPlot();
 }
 
 //
-// QgsLineChart
+// QgsLineChartPlot
 //
 
-void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
+void QgsLineChartPlot::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
 {
+  if ( mLineSymbols.empty() && mMarkerSymbols.empty() )
+  {
+    return;
+  }
+
   const QList<QgsAbstractPlotSeries *> seriesList = plotData.series();
   if ( seriesList.isEmpty() )
   {
@@ -144,19 +180,21 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    if ( !series->lineSymbol() && !series->markerSymbol() )
+    QgsLineSymbol *lSymbol = !mLineSymbols.empty() ? lineSymbol( seriesIndex % mLineSymbols.size() ) : nullptr;
+    QgsMarkerSymbol *mSymbol = !mMarkerSymbols.empty() ? markerSymbol( seriesIndex % mMarkerSymbols.size() ) : nullptr;
+    if ( !lSymbol && !mSymbol )
     {
       continue;
     }
 
-    if ( series->lineSymbol() )
+    if ( lSymbol )
     {
-      series->lineSymbol()->startRender( context );
+      lSymbol->startRender( context );
     }
 
-    if ( series->markerSymbol() )
+    if ( mSymbol )
     {
-      series->markerSymbol()->startRender( context );
+      mSymbol->startRender( context );
     }
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
@@ -191,7 +229,7 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
         dataIndex++;
       }
 
-      if ( series->lineSymbol() )
+      if ( lSymbol )
       {
         chartScope->removeVariable( QStringLiteral( "chart_value" ) );
         QVector<QPointF> line;
@@ -205,58 +243,55 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
           {
             if ( !line.isEmpty() )
             {
-              series->lineSymbol()->renderPolyline( QPolygonF( line ), nullptr, context );
+              lSymbol->renderPolyline( QPolygonF( line ), nullptr, context );
               line.clear();
             }
           }
         }
         if ( !line.isEmpty() )
         {
-          series->lineSymbol()->renderPolyline( QPolygonF( line ), nullptr, context );
+          lSymbol->renderPolyline( QPolygonF( line ), nullptr, context );
         }
       }
-      if ( series->markerSymbol() )
+      if ( mSymbol )
       {
         int pointIndex = 0;
         for ( const QPointF &point : points )
         {
           if ( !point.isNull() )
           {
-            if ( series->markerSymbol() )
+            double value = 0;
+            if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
             {
-              double value = 0;
-              if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
+              value = data.at( pointIndex ).second;
+            }
+            else
+            {
+              for ( const std::pair<double, double> &pair : data )
               {
-                value = data.at( pointIndex ).second;
-              }
-              else
-              {
-                for ( const std::pair<double, double> &pair : data )
+                if ( pair.first == pointIndex )
                 {
-                  if ( pair.first == pointIndex )
-                  {
-                    value = pair.second;
-                    break;
-                  }
+                  value = pair.second;
+                  break;
                 }
               }
-
-              chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), value, true ) );
-              series->markerSymbol()->renderPoint( point, nullptr, context );
             }
+
+            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), value, true ) );
+            mSymbol->renderPoint( point, nullptr, context );
           }
           pointIndex++;
         }
       }
     }
 
-    if ( series->lineSymbol() )
+    if ( lSymbol )
     {
-      series->lineSymbol()->stopRender( context );
+      lSymbol->stopRender( context );
     }
-    if ( series->markerSymbol() )
+    if ( mSymbol )
     {
-      series->markerSymbol()->stopRender( context );
+      mSymbol->stopRender( context );
     }
 
     seriesIndex++;
@@ -265,19 +300,69 @@ void QgsLineChart::renderContent( QgsRenderContext &context, const QRectF &plotA
   context.painter()->restore();
 }
 
-bool QgsLineChart::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+QgsMarkerSymbol *QgsLineChartPlot::markerSymbol( int index ) const
+{
+  if ( index < 0 || index >= static_cast<int>( mMarkerSymbols.size() ) )
+  {
+    return nullptr;
+  }
+
+  return mMarkerSymbols[index].get();
+}
+
+void QgsLineChartPlot::setMarkerSymbol( int index, QgsMarkerSymbol *symbol )
+{
+  if ( index < 0 )
+  {
+    return;
+  }
+
+  if ( index + 1 >= static_cast<int>( mMarkerSymbols.size() ) )
+  {
+    mMarkerSymbols.resize( index + 1 );
+  }
+
+  mMarkerSymbols[index].reset( symbol );
+}
+
+QgsLineSymbol *QgsLineChartPlot::lineSymbol( int index ) const
+{
+  if ( index < 0 || index >= static_cast<int>( mLineSymbols.size() ) )
+  {
+    return nullptr;
+  }
+
+  return mLineSymbols[index].get();
+}
+
+void QgsLineChartPlot::setLineSymbol( int index, QgsLineSymbol *symbol )
+{
+  if ( index < 0 )
+  {
+    return;
+  }
+
+  if ( index + 1 >= static_cast<int>( mLineSymbols.size() ) )
+  {
+    mLineSymbols.resize( index + 1 );
+  }
+
+  mLineSymbols[index].reset( symbol );
+}
+
+bool QgsLineChartPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   Qgs2DXyPlot::writeXml( element, document, context );
   return true;
 }
 
-bool QgsLineChart::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Qgs2DXyPlot::readXml( element, context );
   return true;
 }
 
-QgsLineChart *QgsLineChart::create()
+QgsLineChartPlot *QgsLineChartPlot::create()
 {
-  return new QgsLineChart();
+  return new QgsLineChartPlot();
 }

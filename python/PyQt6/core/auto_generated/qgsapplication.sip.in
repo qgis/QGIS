@@ -926,7 +926,7 @@ Returns the application's sensor registry, used for sensor types.
 .. versionadded:: 3.32
 %End
 
-    static QgsChartRegistry *chartRegistry() /KeepReference/;
+    static QgsChartPlotRegistry *chartPlotRegistry() /KeepReference/;
 %Docstring
 Returns the application's chart registry, used for chart types.
 
