@@ -74,7 +74,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, const QRectF &pl
           continue;
         }
 
-        double x, y;
+        double x = 0;
         if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
         {
           x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
@@ -83,7 +83,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, const QRectF &pl
         {
           x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
         }
-        y = ( pair.second - yMinimum() ) * yScale;
+        double y = ( pair.second - yMinimum() ) * yScale;
 
         const double zero = ( 0.0 - yMinimum() ) * yScale;
         const QPoint topLeft( plotArea.left() + x,
@@ -212,7 +212,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, const QRectF &p
 
         if ( !std::isnan( pair.second ) )
         {
-          double x, y;
+          double x = 0;
           if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
           {
             x = ( pair.first - xMinimum() ) * xScale;
@@ -221,7 +221,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, const QRectF &p
           {
             x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
           }
-          y = ( pair.second - yMinimum() ) * yScale;
+          double y = ( pair.second - yMinimum() ) * yScale;
 
           const QPointF point( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
           points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, point );

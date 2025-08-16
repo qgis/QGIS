@@ -97,12 +97,12 @@ Returns the marker symbol at a given ``index``.
 Sets the marker ``symbol`` at a given ``index``.
 %End
 
-    QgsLineSymbol *lineSymbol( int seriesIndex ) const;
+    QgsLineSymbol *lineSymbol( int index ) const;
 %Docstring
 Returns the line symbol at a given ``index``.
 %End
 
-    void setLineSymbol( int seriesIndex, QgsLineSymbol *symbol /Transfer/ );
+    void setLineSymbol( int index, QgsLineSymbol *symbol /Transfer/ );
 %Docstring
 Sets the marker ``symbol`` at a given ``index``.
 %End

@@ -164,7 +164,22 @@ Clears all series from the plot data.
 %End
 
     QStringList categories() const;
+%Docstring
+Returns the name of the series' categories.
+
+.. note::
+
+   Used when the x asis type is set to category.
+%End
+
     void setCategories( const QStringList &categories );
+%Docstring
+Sets the name of the series' ``categories``.
+
+.. note::
+
+   Used when the x asis type is set to category.
+%End
 
 };
 

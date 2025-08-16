@@ -89,6 +89,7 @@ typedef std::function<QgsPlot *()> QgsChartPlotCreateFunc SIP_SKIP;
  * \class QgsChartPlotMetadata
  * \brief Convenience metadata class that uses static functions to create charts and their configuration widgets.
  * \note not available in Python bindings
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsChartPlotMetadata : public QgsChartPlotAbstractMetadata
 {

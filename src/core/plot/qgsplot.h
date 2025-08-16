@@ -173,7 +173,16 @@ class CORE_EXPORT QgsPlotData
      */
     void clearSeries();
 
+    /**
+     * Returns the name of the series' categories.
+     * \note Used when the x asis type is set to category.
+     */
     QStringList categories() const;
+
+    /**
+     * Sets the name of the series' \a categories.
+     * \note Used when the x asis type is set to category.
+     */
     void setCategories( const QStringList &categories );
 
   private:
