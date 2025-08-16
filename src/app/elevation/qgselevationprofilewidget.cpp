@@ -842,7 +842,7 @@ void QgsElevationProfileWidget::exportAsPdf()
   rc.setTextRenderFormat( Qgis::TextRenderFormat::AlwaysText );
   rc.setPainterFlagsUsingContext( &p );
 
-  Qgs2DPlot plotSettings;
+  Qgs2DXyPlot plotSettings;
   dialog.updatePlotSettings( plotSettings );
 
   mCanvas->render( rc, rc.convertToPainterUnits( pageSizeMM.width(), Qgis::RenderUnit::Millimeters ), rc.convertToPainterUnits( pageSizeMM.height(), Qgis::RenderUnit::Millimeters ), plotSettings );
@@ -892,7 +892,7 @@ void QgsElevationProfileWidget::exportAsImage()
   rc.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
   rc.setPainterFlagsUsingContext( &p );
 
-  Qgs2DPlot plotSettings;
+  Qgs2DXyPlot plotSettings;
   dialog.updatePlotSettings( plotSettings );
 
   mCanvas->render( rc, image.width(), image.height(), plotSettings );

@@ -44,7 +44,7 @@
 #include <QPalette>
 
 ///@cond PRIVATE
-class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
+class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
 {
   public:
     QgsElevationProfilePlotItem( QgsElevationProfileCanvas *canvas )
@@ -206,7 +206,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       return QgsPointXY( x, y );
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -1382,13 +1382,13 @@ QgsDoubleRange QgsElevationProfileCanvas::visibleElevationRange() const
   return QgsDoubleRange( mPlotItem->yMinimum(), mPlotItem->yMaximum() );
 }
 
-const Qgs2DPlot &QgsElevationProfileCanvas::plot() const
+const Qgs2DXyPlot &QgsElevationProfileCanvas::plot() const
 {
   return *mPlotItem;
 }
 
 ///@cond PRIVATE
-class QgsElevationProfilePlot : public Qgs2DPlot
+class QgsElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
     QgsElevationProfilePlot( QgsProfilePlotRenderer *renderer )
@@ -1396,7 +1396,7 @@ class QgsElevationProfilePlot : public Qgs2DPlot
     {
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( !mRenderer )
         return;
@@ -1413,7 +1413,7 @@ class QgsElevationProfilePlot : public Qgs2DPlot
 };
 ///@endcond PRIVATE
 
-void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings )
+void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings )
 {
   if ( !mCurrentJob )
     return;

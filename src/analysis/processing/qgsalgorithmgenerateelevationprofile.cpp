@@ -31,7 +31,7 @@
 
 ///@cond PRIVATE
 
-class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
+class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
 {
   public:
     explicit QgsAlgorithmElevationProfilePlotItem( int width, int height, int dpi )
@@ -63,7 +63,7 @@ class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
       return mPlotArea;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 

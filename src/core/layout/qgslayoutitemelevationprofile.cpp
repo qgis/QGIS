@@ -41,7 +41,7 @@
 #define CACHE_SIZE_LIMIT 5000
 
 ///@cond PRIVATE
-class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
+class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
 
@@ -55,7 +55,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
       mRenderer = renderer;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( mRenderer )
       {
@@ -467,12 +467,12 @@ bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const
   return mEvaluatedOpacity < 1.0;
 }
 
-Qgs2DPlot *QgsLayoutItemElevationProfile::plot()
+Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot()
 {
   return mPlot.get();
 }
 
-const Qgs2DPlot *QgsLayoutItemElevationProfile::plot() const
+const Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() const
 {
   return mPlot.get();
 }

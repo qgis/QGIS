@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgschartregistry.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+class QgsChartAbstractMetadata
+{
+%Docstring(signature="appended")
+Stores metadata about a chart class.
+
+.. note::
+
+   In C++ you can use :py:class:`QgsChartAbstractMetadata` convenience class.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgschartregistry.h"
+%End
+  public:
+
+    QgsChartAbstractMetadata( const QString &type, const QString &visibleName );
+%Docstring
+Constructor for QgsChartAbstractMetadata with the specified class
+``type``.
+%End
+
+    virtual ~QgsChartAbstractMetadata();
+
+    QString type() const;
+%Docstring
+Returns the unique type code for the chart class.
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns a translated, user visible name for the chart class.
+%End
+
+
+    virtual QgsPlot *createChart() = 0 /TransferBack/;
+%Docstring
+Creates a chart of this class.
+%End
+
+};
+
+
+
+class QgsChartRegistry : QObject
+{
+%Docstring(signature="appended")
+Registry of available chart types.
+
+:py:class:`QgsChartRegistry` is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.chartRegistry()`.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgschartregistry.h"
+%End
+  public:
+
+    QgsChartRegistry( QObject *parent = 0 );
+%Docstring
+Creates a new empty item registry.
+
+QgsChartRegistry is not usually directly created, but rather accessed
+through :py:func:`QgsApplication.chartRegistry()`.
+
+.. seealso:: :py:func:`populate`
+%End
+    ~QgsChartRegistry();
+
+    bool populate();
+%Docstring
+Populates the registry with standard chart types. If called on a
+non-empty registry then this will have no effect and will return
+``False``.
+%End
+
+
+    QgsChartAbstractMetadata *chartMetadata( const QString &type ) const;
+%Docstring
+Returns the metadata for the specified chart ``type``. Returns ``None``
+if a corresponding type was not found in the registry.
+%End
+
+
+    bool addChartType( QgsChartAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new chart type.
+
+.. note::
+
+   Takes ownership of the metadata instance.
+%End
+
+    bool removeChartType( const QString &type );
+%Docstring
+Removes a new a chart type from the registry.
+%End
+
+    QgsPlot *createChart( const QString &type ) const /TransferBack/;
+%Docstring
+Creates a new instance of a chart given the ``type``.
+%End
+
+    QMap<QString, QString> chartTypes() const;
+%Docstring
+Returns a map of available charts types to translated name.
+%End
+
+  signals:
+
+    void chartAdded( const QString &type, const QString &name );
+%Docstring
+Emitted whenever a new chart type is added to the registry, with the
+specified ``type`` and visible ``name``.
+%End
+
+    void chartAboutToBeRemoved( const QString &type );
+%Docstring
+Emitted whenever a new chart type is added to the registry, with the
+specified ``type`` and visible ``name``.
+%End
+
+  private:
+    QgsChartRegistry( const QgsChartRegistry &rh );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgschartregistry.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -71,12 +71,12 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   mPageOrientationComboBox->setCurrentIndex( mPageOrientationComboBox->findData( QgsLayoutItemPage::Landscape ) );
 }
 
-void QgsElevationProfilePdfExportDialog::setPlotSettings( const Qgs2DPlot &plot )
+void QgsElevationProfilePdfExportDialog::setPlotSettings( const Qgs2DXyPlot &plot )
 {
   mProfileSettingsWidget->setPlotSettings( plot );
 }
 
-void QgsElevationProfilePdfExportDialog::updatePlotSettings( Qgs2DPlot &plot )
+void QgsElevationProfilePdfExportDialog::updatePlotSettings( Qgs2DXyPlot &plot )
 {
   mProfileSettingsWidget->updatePlotSettings( plot );
 }

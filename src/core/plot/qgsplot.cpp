@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsplot.h"
+#include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
@@ -29,8 +30,9 @@
 
 QgsPlot::~QgsPlot() = default;
 
-bool QgsPlot::writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
+bool QgsPlot::writeXml( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
 {
+  element.setAttribute( QStringLiteral( "plotType" ), type() );
   return true;
 }
 
@@ -52,8 +54,20 @@ QgsPlotAxis::QgsPlotAxis()
 
 QgsPlotAxis::~QgsPlotAxis() = default;
 
+
+Qgis::PlotAxisType QgsPlotAxis::type() const
+{
+  return mType;
+}
+
+void QgsPlotAxis::setType( Qgis::PlotAxisType type )
+{
+  mType = type;
+}
+
 bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
+  element.setAttribute( QStringLiteral( "type" ), qgsEnumValueToKey( mType ) );
   element.setAttribute( QStringLiteral( "gridIntervalMinor" ), qgsDoubleToString( mGridIntervalMinor ) );
   element.setAttribute( QStringLiteral( "gridIntervalMajor" ), qgsDoubleToString( mGridIntervalMajor ) );
   element.setAttribute( QStringLiteral( "labelInterval" ), qgsDoubleToString( mLabelInterval ) );
@@ -80,6 +94,7 @@ bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const 
 
 bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
+  mType = qgsEnumKeyToValue( element.attribute( QStringLiteral( "type" ) ), Qgis::PlotAxisType::ValueType );
   mGridIntervalMinor = element.attribute( QStringLiteral( "gridIntervalMinor" ) ).toDouble();
   mGridIntervalMajor = element.attribute( QStringLiteral( "gridIntervalMajor" ) ).toDouble();
   mLabelInterval = element.attribute( QStringLiteral( "labelInterval" ) ).toDouble();
@@ -169,14 +184,84 @@ void QgsPlotAxis::setTextFormat( const QgsTextFormat &format )
 Qgs2DPlot::Qgs2DPlot()
   : mMargins( 2, 2, 2, 2 )
 {
-  // setup default style
-  mChartBackgroundSymbol.reset( QgsPlotDefaultSettings::chartBackgroundSymbol() );
-  mChartBorderSymbol.reset( QgsPlotDefaultSettings::chartBorderSymbol() );
 }
 
 bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QgsPlot::writeXml( element, document, context );
+
+  element.setAttribute( QStringLiteral( "margins" ), mMargins.toString() );
+
+  return true;
+}
+
+bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  QgsPlot::readXml( element, context );
+
+  mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
+
+  return true;
+}
+
+void Qgs2DPlot::render( QgsRenderContext &context, const QgsPlotData &plotData )
+{
+  QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
+  const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
+
+  const QRectF plotArea = interiorPlotArea( context );
+
+  // give subclasses a chance to draw their content
+  renderContent( context, plotArea, plotData );
+}
+
+void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF &, const QgsPlotData & )
+{
+}
+
+Qgs2DPlot::~Qgs2DPlot() = default;
+
+QSizeF Qgs2DPlot::size() const
+{
+  return mSize;
+}
+
+void Qgs2DPlot::setSize( QSizeF size )
+{
+  mSize = size;
+}
+
+QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext & ) const
+{
+  return QRectF( 0, 0, mSize.width(), mSize.height() );
+}
+
+const QgsMargins &Qgs2DPlot::margins() const
+{
+  return mMargins;
+}
+
+void Qgs2DPlot::setMargins( const QgsMargins &margins )
+{
+  mMargins = margins;
+}
+
+
+//
+// Qgs2DPlot
+//
+
+Qgs2DXyPlot::Qgs2DXyPlot()
+  : Qgs2DPlot()
+{
+  // setup default style
+  mChartBackgroundSymbol.reset( QgsPlotDefaultSettings::chartBackgroundSymbol() );
+  mChartBorderSymbol.reset( QgsPlotDefaultSettings::chartBorderSymbol() );
+}
+
+bool Qgs2DXyPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  Qgs2DPlot::writeXml( element, document, context );
 
   element.setAttribute( QStringLiteral( "minX" ), qgsDoubleToString( mMinX ) );
   element.setAttribute( QStringLiteral( "maxX" ), qgsDoubleToString( mMaxX ) );
@@ -197,14 +282,12 @@ bool Qgs2DPlot::writeXml( QDomElement &element, QDomDocument &document, const Qg
   borderElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mChartBorderSymbol.get(), document, context ) );
   element.appendChild( borderElement );
 
-  element.setAttribute( QStringLiteral( "margins" ), mMargins.toString() );
-
   return true;
 }
 
-bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool Qgs2DXyPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsPlot::readXml( element, context );
+  Qgs2DPlot::readXml( element, context );
 
   mMinX = element.attribute( QStringLiteral( "minX" ) ).toDouble();
   mMaxX = element.attribute( QStringLiteral( "maxX" ) ).toDouble();
@@ -221,12 +304,10 @@ bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &
   const QDomElement borderElement = element.firstChildElement( QStringLiteral( "borderSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
   mChartBorderSymbol = QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context );
 
-  mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
-
   return true;
 }
 
-void Qgs2DPlot::render( QgsRenderContext &context )
+void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData )
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -255,10 +336,13 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   QgsNumericFormatContext numericContext;
 
+  // categories
+  const QStringList categories = plotData.categories();
+
   // calculate text metrics
   double maxYAxisLabelWidth = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  if ( mYAxis.labelInterval() > 0 )
+  if ( mYAxis.type() == Qgis::PlotAxisType::ValueType && mYAxis.labelInterval() > 0 )
   {
     for ( double currentY = firstYLabel; ; currentY += mYAxis.labelInterval() )
     {
@@ -295,6 +379,13 @@ void Qgs2DPlot::render( QgsRenderContext &context )
         break;
     }
   }
+  else if ( mYAxis.type() == Qgis::PlotAxisType::CategoryType )
+  {
+    for ( int i = 0; i < categories.size(); i++ )
+    {
+      maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, mYAxis.textFormat(), { categories.at( i ) } ) );
+    }
+  }
 
   const double chartAreaLeft = plotArea.left();
   const double chartAreaRight = plotArea.right();
@@ -319,144 +410,183 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   // grid lines
 
   // x
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
-  double nextMajorXGrid = firstMajorXGrid;
-  int objectNumber = 0;
-  for ( double currentX = firstMinorXGrid; objectNumber < MAX_OBJECTS && ( currentX <= mMaxX && !qgsDoubleNear( currentX, mMaxX, xTolerance ) ); currentX += mXAxis.gridIntervalMinor(), ++objectNumber )
+  if ( mXAxis.type() == Qgis::PlotAxisType::ValueType )
   {
-    bool isMinor = true;
-    if ( qgsDoubleNear( currentX, nextMajorXGrid, xTolerance ) )
+    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
+    double nextMajorXGrid = firstMajorXGrid;
+    int objectNumber = 0;
+    for ( double currentX = firstMinorXGrid; objectNumber < MAX_OBJECTS && ( currentX <= mMaxX && !qgsDoubleNear( currentX, mMaxX, xTolerance ) ); currentX += mXAxis.gridIntervalMinor(), ++objectNumber )
     {
-      isMinor = false;
-      nextMajorXGrid += mXAxis.gridIntervalMajor();
+      bool isMinor = true;
+      if ( qgsDoubleNear( currentX, nextMajorXGrid, xTolerance ) )
+      {
+        isMinor = false;
+        nextMajorXGrid += mXAxis.gridIntervalMajor();
+      }
+
+      plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
+
+      QgsLineSymbol *currentGridSymbol = isMinor ? mXAxis.gridMinorSymbol() : mXAxis.gridMajorSymbol();
+      currentGridSymbol->renderPolyline( QPolygonF(
+                                           QVector<QPointF>
+      {
+        QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
+        QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
+      } ), nullptr, context );
     }
-
-    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
-
-    QgsLineSymbol *currentGridSymbol = isMinor ? mXAxis.gridMinorSymbol() : mXAxis.gridMajorSymbol();
-    currentGridSymbol->renderPolyline( QPolygonF(
-                                         QVector<QPointF>
-    {
-      QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
-      QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
-    } ), nullptr, context );
   }
 
   // y
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  double nextMajorYGrid = firstMajorYGrid;
-  objectNumber = 0;
-  for ( double currentY = firstMinorYGrid; objectNumber < MAX_OBJECTS && ( currentY <= mMaxY && !qgsDoubleNear( currentY, mMaxY, yTolerance ) ); currentY += mYAxis.gridIntervalMinor(), ++objectNumber )
+  if ( mYAxis.type() == Qgis::PlotAxisType::ValueType )
   {
-    bool isMinor = true;
-    if ( qgsDoubleNear( currentY, nextMajorYGrid, yTolerance ) )
+    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
+    double nextMajorYGrid = firstMajorYGrid;
+    int objectNumber = 0;
+    for ( double currentY = firstMinorYGrid; objectNumber < MAX_OBJECTS && ( currentY <= mMaxY && !qgsDoubleNear( currentY, mMaxY, yTolerance ) ); currentY += mYAxis.gridIntervalMinor(), ++objectNumber )
     {
-      isMinor = false;
-      nextMajorYGrid += mYAxis.gridIntervalMajor();
+      bool isMinor = true;
+      if ( qgsDoubleNear( currentY, nextMajorYGrid, yTolerance ) )
+      {
+        isMinor = false;
+        nextMajorYGrid += mYAxis.gridIntervalMajor();
+      }
+
+      plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
+
+      QgsLineSymbol *currentGridSymbol = isMinor ? mYAxis.gridMinorSymbol() : mYAxis.gridMajorSymbol();
+      currentGridSymbol->renderPolyline( QPolygonF(
+                                           QVector<QPointF>
+      {
+        QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
+        QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
+      } ), nullptr, context );
     }
-
-    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
-
-    QgsLineSymbol *currentGridSymbol = isMinor ? mYAxis.gridMinorSymbol() : mYAxis.gridMajorSymbol();
-    currentGridSymbol->renderPolyline( QPolygonF(
-                                         QVector<QPointF>
-    {
-      QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
-      QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
-    } ), nullptr, context );
   }
 
   // axis labels
 
   // x
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
-  objectNumber = 0;
-  if ( mXAxis.labelInterval() > 0 )
+  if ( mXAxis.type() == Qgis::PlotAxisType::ValueType )
   {
-    for ( double currentX = firstXLabel; ; currentX += mXAxis.labelInterval(), ++objectNumber )
+    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
+    int objectNumber = 0;
+    if ( mXAxis.labelInterval() > 0 )
     {
-      const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentX + mXAxis.labelInterval() <= mMaxX || qgsDoubleNear( currentX + mXAxis.labelInterval(), mMaxX, xTolerance ) );
-      plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
-      QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
-      switch ( mXAxis.labelSuffixPlacement() )
+      for ( double currentX = firstXLabel; ; currentX += mXAxis.labelInterval(), ++objectNumber )
       {
-        case Qgis::PlotAxisSuffixPlacement::NoLabels:
-          break;
+        const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentX + mXAxis.labelInterval() <= mMaxX || qgsDoubleNear( currentX + mXAxis.labelInterval(), mMaxX, xTolerance ) );
+        plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
+        QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
+        switch ( mXAxis.labelSuffixPlacement() )
+        {
+          case Qgis::PlotAxisSuffixPlacement::NoLabels:
+            break;
 
-        case Qgis::PlotAxisSuffixPlacement::EveryLabel:
-          text += xAxisSuffix;
-          break;
-
-        case Qgis::PlotAxisSuffixPlacement::FirstLabel:
-          if ( objectNumber == 0 )
+          case Qgis::PlotAxisSuffixPlacement::EveryLabel:
             text += xAxisSuffix;
-          break;
+            break;
 
-        case Qgis::PlotAxisSuffixPlacement::LastLabel:
-          if ( !hasMoreLabels )
-            text += xAxisSuffix;
-          break;
+          case Qgis::PlotAxisSuffixPlacement::FirstLabel:
+            if ( objectNumber == 0 )
+              text += xAxisSuffix;
+            break;
 
-        case Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels:
-          if ( objectNumber == 0 || !hasMoreLabels )
-            text += xAxisSuffix;
+          case Qgis::PlotAxisSuffixPlacement::LastLabel:
+            if ( !hasMoreLabels )
+              text += xAxisSuffix;
+            break;
+
+          case Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels:
+            if ( objectNumber == 0 || !hasMoreLabels )
+              text += xAxisSuffix;
+            break;
+        }
+
+        QgsTextRenderer::drawText( QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), Qgis::RenderUnit::Millimeters ) ),
+                                   0, Qgis::TextHorizontalAlignment::Center, { text }, context, mXAxis.textFormat() );
+        if ( !hasMoreLabels )
           break;
       }
-
-      QgsTextRenderer::drawText( QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), Qgis::RenderUnit::Millimeters ) ),
-                                 0, Qgis::TextHorizontalAlignment::Center, { text }, context, mXAxis.textFormat() );
-      if ( !hasMoreLabels )
-        break;
+    }
+  }
+  else if ( mXAxis.type() == Qgis::PlotAxisType::CategoryType )
+  {
+    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
+    const double categoryWidth = plotArea.width() / categories.size();
+    for ( int i = 0; i < categories.size(); i++ )
+    {
+      const double currentX = ( i * categoryWidth ) + categoryWidth / 2.0;
+      plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), categories.at( i ), true ) );
+      QgsTextRenderer::drawText( QPointF( currentX + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), Qgis::RenderUnit::Millimeters ) ),
+                                 0, Qgis::TextHorizontalAlignment::Center, { categories.at( i ) }, context, mXAxis.textFormat() );
     }
   }
 
   // y
-  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  objectNumber = 0;
-  if ( mYAxis.labelInterval() > 0 )
+  if ( mYAxis.type() == Qgis::PlotAxisType::ValueType )
   {
-    for ( double currentY = firstYLabel; ; currentY += mYAxis.labelInterval(), ++objectNumber )
+    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
+    int objectNumber = 0;
+    if ( mYAxis.labelInterval() > 0 )
     {
-      const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentY + mYAxis.labelInterval() <= mMaxY || qgsDoubleNear( currentY + mYAxis.labelInterval(), mMaxY, yTolerance ) );
-      plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
-      QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
-      switch ( mYAxis.labelSuffixPlacement() )
+      for ( double currentY = firstYLabel; ; currentY += mYAxis.labelInterval(), ++objectNumber )
       {
-        case Qgis::PlotAxisSuffixPlacement::NoLabels:
-          break;
+        const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentY + mYAxis.labelInterval() <= mMaxY || qgsDoubleNear( currentY + mYAxis.labelInterval(), mMaxY, yTolerance ) );
+        plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
+        QString text = mYAxis.numericFormat()->formatDouble( currentY, numericContext );
+        switch ( mYAxis.labelSuffixPlacement() )
+        {
+          case Qgis::PlotAxisSuffixPlacement::NoLabels:
+            break;
 
-        case Qgis::PlotAxisSuffixPlacement::EveryLabel:
-          text += yAxisSuffix;
-          break;
-
-        case Qgis::PlotAxisSuffixPlacement::FirstLabel:
-          if ( objectNumber == 0 )
+          case Qgis::PlotAxisSuffixPlacement::EveryLabel:
             text += yAxisSuffix;
-          break;
+            break;
 
-        case Qgis::PlotAxisSuffixPlacement::LastLabel:
-          if ( !hasMoreLabels )
-            text += yAxisSuffix;
-          break;
+          case Qgis::PlotAxisSuffixPlacement::FirstLabel:
+            if ( objectNumber == 0 )
+              text += yAxisSuffix;
+            break;
 
-        case Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels:
-          if ( objectNumber == 0 || !hasMoreLabels )
-            text += yAxisSuffix;
+          case Qgis::PlotAxisSuffixPlacement::LastLabel:
+            if ( !hasMoreLabels )
+              text += yAxisSuffix;
+            break;
+
+          case Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels:
+            if ( objectNumber == 0 || !hasMoreLabels )
+              text += yAxisSuffix;
+            break;
+        }
+
+        const double height = QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text } );
+        QgsTextRenderer::drawText( QPointF(
+                                     maxYAxisLabelWidth + context.convertToPainterUnits( mMargins.left(), Qgis::RenderUnit::Millimeters ),
+                                     chartAreaBottom - ( currentY - mMinY ) * yScale + height / 2 ),
+                                   0, Qgis::TextHorizontalAlignment::Right, { text }, context, mYAxis.textFormat(), false );
+        if ( !hasMoreLabels )
           break;
       }
-
-      const double height = QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text } );
+    }
+  }
+  else if ( mYAxis.type() == Qgis::PlotAxisType::CategoryType )
+  {
+    plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
+    const double categoryHeight = plotArea.height() / categories.size();
+    for ( int i = 0; i < categories.size(); i++ )
+    {
+      const double currentY = ( i * categoryHeight ) + categoryHeight / 2.0;
+      plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), categories.at( i ), true ) );
+      const double height = QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { categories.at( i ) } );
       QgsTextRenderer::drawText( QPointF(
                                    maxYAxisLabelWidth + context.convertToPainterUnits( mMargins.left(), Qgis::RenderUnit::Millimeters ),
-                                   chartAreaBottom - ( currentY - mMinY ) * yScale + height / 2 ),
-                                 0, Qgis::TextHorizontalAlignment::Right, { text }, context, mYAxis.textFormat(), false );
-      if ( !hasMoreLabels )
-        break;
+                                   chartAreaBottom - currentY + height / 2 ),
+                                 0, Qgis::TextHorizontalAlignment::Right, { categories.at( i ) }, context, mYAxis.textFormat(), false );
     }
   }
 
   // give subclasses a chance to draw their content
-  renderContent( context, plotArea );
+  renderContent( context, plotArea, plotData );
 
   // border
   mChartBorderSymbol->renderPolygon( QPolygonF(
@@ -476,24 +606,9 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   mYAxis.gridMajorSymbol()->stopRender( context );
 }
 
-void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF & )
-{
+Qgs2DXyPlot::~Qgs2DXyPlot() = default;
 
-}
-
-Qgs2DPlot::~Qgs2DPlot() = default;
-
-QSizeF Qgs2DPlot::size() const
-{
-  return mSize;
-}
-
-void Qgs2DPlot::setSize( QSizeF size )
-{
-  mSize = size;
-}
-
-QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
+QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context ) const
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -608,7 +723,7 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
-void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
+void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context )
 {
   if ( !mSize.isValid() )
     return;
@@ -743,34 +858,24 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   }
 }
 
-QgsFillSymbol *Qgs2DPlot::chartBackgroundSymbol()
+QgsFillSymbol *Qgs2DXyPlot::chartBackgroundSymbol()
 {
   return mChartBackgroundSymbol.get();
 }
 
-void Qgs2DPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol )
+void Qgs2DXyPlot::setChartBackgroundSymbol( QgsFillSymbol *symbol )
 {
   mChartBackgroundSymbol.reset( symbol );
 }
 
-QgsFillSymbol *Qgs2DPlot::chartBorderSymbol()
+QgsFillSymbol *Qgs2DXyPlot::chartBorderSymbol()
 {
   return mChartBorderSymbol.get();
 }
 
-void Qgs2DPlot::setChartBorderSymbol( QgsFillSymbol *symbol )
+void Qgs2DXyPlot::setChartBorderSymbol( QgsFillSymbol *symbol )
 {
   mChartBorderSymbol.reset( symbol );
-}
-
-const QgsMargins &Qgs2DPlot::margins() const
-{
-  return mMargins;
-}
-
-void Qgs2DPlot::setMargins( const QgsMargins &margins )
-{
-  mMargins = margins;
 }
 
 //
@@ -806,4 +911,75 @@ QgsFillSymbol *QgsPlotDefaultSettings::chartBorderSymbol()
 {
   auto chartBorder = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20 ), 0.1 );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartBorder.release() } ) );
+}
+
+//
+// QgsPlotData
+//
+
+QgsPlotData::~QgsPlotData()
+{
+  clearSeries();
+}
+
+QList<QgsAbstractPlotSeries *> QgsPlotData::series() const
+{
+  return mSeries;
+}
+
+void QgsPlotData::addSeries( QgsAbstractPlotSeries *series )
+{
+  if ( !mSeries.contains( series ) )
+  {
+    mSeries << series;
+  }
+}
+
+void QgsPlotData::clearSeries()
+{
+  qDeleteAll( mSeries );
+  mSeries.clear();
+}
+
+QStringList QgsPlotData::categories() const
+{
+  return mCategories;
+}
+
+void QgsPlotData::setCategories( const QStringList &categories )
+{
+  mCategories = categories;
+}
+
+//
+// QgsAbstractPlotSeries
+//
+
+QString QgsAbstractPlotSeries::name() const
+{
+  return mName;
+}
+
+void QgsAbstractPlotSeries::setName( const QString &name )
+{
+  mName = name;
+}
+
+//
+// QgsXyPlotSeries
+//
+
+QList<std::pair<double, double>> QgsXyPlotSeries::data() const
+{
+  return mData;
+}
+
+void QgsXyPlotSeries::append( const double &x, const double &y )
+{
+  mData << std::make_pair( x, y );
+}
+
+void QgsXyPlotSeries::clear()
+{
+  mData.clear();
 }
