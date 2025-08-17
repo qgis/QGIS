@@ -19,6 +19,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
@@ -131,12 +132,46 @@ void QgsBarChartPlot::setFillSymbol( int index, QgsFillSymbol *symbol )
 bool QgsBarChartPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   Qgs2DXyPlot::writeXml( element, document, context );
+
+  QDomElement fillSymbolsElement = document.createElement( QStringLiteral( "fillSymbols" ) );
+  for ( int i = 0; i < static_cast<int>( mFillSymbols.size() ); i++ )
+  {
+    QDomElement fillSymbolElement = document.createElement( QStringLiteral( "fillSymbol" ) );
+    fillSymbolElement.setAttribute( QStringLiteral( "index" ), QString::number( i ) );
+    if ( mFillSymbols[i] )
+    {
+      fillSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mFillSymbols[i].get(), document, context ) );
+    }
+    fillSymbolsElement.appendChild( fillSymbolElement );
+  }
+  element.appendChild( fillSymbolsElement );
+
   return true;
 }
 
 bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Qgs2DXyPlot::readXml( element, context );
+
+  const QDomNodeList fillSymbolsList = element.firstChildElement( QStringLiteral( "fillSymbols" ) ).childNodes();
+  for ( int i = 0; i < fillSymbolsList.count(); i++ )
+  {
+    const QDomElement fillSymbolElement = fillSymbolsList.at( i ).toElement();
+    const int index = fillSymbolElement.attribute( QStringLiteral( "index" ), QStringLiteral( "-1" ) ).toInt();
+    if ( index >= 0 )
+    {
+      if ( fillSymbolElement.hasChildNodes() )
+      {
+        const QDomElement symbolElement = fillSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
+        setFillSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
+      }
+      else
+      {
+        setFillSymbol( index, nullptr );
+      }
+    }
+  }
+
   return true;
 }
 
@@ -353,12 +388,78 @@ void QgsLineChartPlot::setLineSymbol( int index, QgsLineSymbol *symbol )
 bool QgsLineChartPlot::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   Qgs2DXyPlot::writeXml( element, document, context );
+
+  QDomElement markerSymbolsElement = document.createElement( QStringLiteral( "markerSymbols" ) );
+  for ( int i = 0; i < static_cast<int>( mMarkerSymbols.size() ); i++ )
+  {
+    QDomElement markerSymbolElement = document.createElement( QStringLiteral( "markerSymbol" ) );
+    markerSymbolElement.setAttribute( QStringLiteral( "index" ), QString::number( i ) );
+    if ( mMarkerSymbols[i] )
+    {
+      markerSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mMarkerSymbols[i].get(), document, context ) );
+    }
+    markerSymbolsElement.appendChild( markerSymbolElement );
+  }
+  element.appendChild( markerSymbolsElement );
+
+  QDomElement lineSymbolsElement = document.createElement( QStringLiteral( "lineSymbols" ) );
+  for ( int i = 0; i < static_cast<int>( mLineSymbols.size() ); i++ )
+  {
+    QDomElement lineSymbolElement = document.createElement( QStringLiteral( "lineSymbol" ) );
+    lineSymbolElement.setAttribute( QStringLiteral( "index" ), QString::number( i ) );
+    if ( mLineSymbols[i] )
+    {
+      lineSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbols[i].get(), document, context ) );
+    }
+    lineSymbolsElement.appendChild( lineSymbolElement );
+  }
+  element.appendChild( lineSymbolsElement );
+
   return true;
 }
 
 bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Qgs2DXyPlot::readXml( element, context );
+
+  const QDomNodeList markerSymbolsList = element.firstChildElement( QStringLiteral( "markerSymbols" ) ).childNodes();
+  for ( int i = 0; i < markerSymbolsList.count(); i++ )
+  {
+    const QDomElement markerSymbolElement = markerSymbolsList.at( i ).toElement();
+    const int index = markerSymbolElement.attribute( QStringLiteral( "index" ), QStringLiteral( "-1" ) ).toInt();
+    if ( index >= 0 )
+    {
+      if ( markerSymbolElement.hasChildNodes() )
+      {
+        const QDomElement symbolElement = markerSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
+        setMarkerSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ).release() );
+      }
+      else
+      {
+        setMarkerSymbol( index, nullptr );
+      }
+    }
+  }
+
+  const QDomNodeList lineSymbolsList = element.firstChildElement( QStringLiteral( "lineSymbols" ) ).childNodes();
+  for ( int i = 0; i < lineSymbolsList.count(); i++ )
+  {
+    const QDomElement lineSymbolElement = lineSymbolsList.at( i ).toElement();
+    const int index = lineSymbolElement.attribute( QStringLiteral( "index" ), QStringLiteral( "-1" ) ).toInt();
+    if ( index >= 0 )
+    {
+      if ( lineSymbolElement.hasChildNodes() )
+      {
+        const QDomElement symbolElement = lineSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
+        setLineSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElement, context ).release() );
+      }
+      else
+      {
+        setLineSymbol( index, nullptr );
+      }
+    }
+  }
+
   return true;
 }
 
