@@ -410,7 +410,7 @@ QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureG
 {
 }
 
-QgsGlobeMapUpdateJob::start()
+void QgsGlobeMapUpdateJob::start()
 {
   QgsChunkNode *node = chunk();
 
