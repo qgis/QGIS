@@ -176,6 +176,16 @@ Requests a complete rebuild of a model by emitting the according signal
 .. versionadded:: 3.44
 %End
 
+    void updateBounds();
+%Docstring
+Updates the scene rect based on the bounds of the model.
+
+The bounding rectangle of the model is calculated off all components of
+the model, with an additional margin arounds items.
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
     void rebuildRequired();

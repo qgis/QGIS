@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "bceab4650d942b31b8d13e484b4096e85546e697",
+        "baseline": "41cf51e71be4bdbb8ee03ceabfdcb390c908c1ae",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -67,6 +67,7 @@
     "meshoptimizer",
     "nlohmann-json",
     "o2",
+    "opencl",
     "pdal",
     "proj",
     "protobuf",

@@ -59,8 +59,8 @@ namespace pal
   {
     int degree;
     double delta;
-    int *feat = nullptr;
-    int *label = nullptr;
+    std::vector< int > feat;
+    std::vector< int > label;
   };
 
   /**
@@ -228,7 +228,7 @@ namespace pal
       double mNbOverlap = 0.0;
 
       // seed is actually a feature ID, maybe it should be renamed?
-      Chain *chain( int seed );
+      std::unique_ptr< Chain > chain( int seed );
 
       Pal *pal = nullptr;
 

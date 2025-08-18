@@ -124,6 +124,7 @@
 %Include auto_generated/qgsmargins.sip
 %Include auto_generated/qgsmaskidprovider.sip
 %Include auto_generated/qgsmaskrendersettings.sip
+%Include auto_generated/qgsmathutils.sip
 %Include auto_generated/qgsmatrix4x4.sip
 %Include auto_generated/qgsmessagelog.sip
 %Include auto_generated/qgsmessageoutput.sip
@@ -299,6 +300,9 @@
 %Include auto_generated/editform/qgsattributeeditorspacerelement.sip
 %Include auto_generated/elevation/qgsabstractprofilegenerator.sip
 %Include auto_generated/elevation/qgsabstractprofilesource.sip
+%Include auto_generated/elevation/qgselevationprofile.sip
+%Include auto_generated/elevation/qgselevationprofilemanager.sip
+%Include auto_generated/elevation/qgselevationprofilemanagermodel.sip
 %Include auto_generated/elevation/qgsprofileexporter.sip
 %Include auto_generated/elevation/qgsprofilepoint.sip
 %Include auto_generated/elevation/qgsprofilerenderer.sip
@@ -453,6 +457,7 @@
 %Include auto_generated/layout/qgslayoutitemshape.sip
 %Include auto_generated/layout/qgslayoutitemtexttable.sip
 %Include auto_generated/layout/qgslayoutmanager.sip
+%Include auto_generated/layout/qgslayoutmanagermodel.sip
 %Include auto_generated/layout/qgslayoutmeasurement.sip
 %Include auto_generated/layout/qgslayoutmeasurementconverter.sip
 %Include auto_generated/layout/qgslayoutmodel.sip
@@ -610,6 +615,8 @@
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip
 %Include auto_generated/project/qgsprojectstorageregistry.sip
+%Include auto_generated/project/qgsprojectstoredobjectmanager.sip
+%Include auto_generated/project/qgsprojectstoredobjectmanagermodel.sip
 %Include auto_generated/project/qgsprojectstylesettings.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip

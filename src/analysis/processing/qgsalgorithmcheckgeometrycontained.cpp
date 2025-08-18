@@ -92,10 +92,10 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
 
   // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    QStringLiteral( "ERRORS" ), QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorPoint
+    QStringLiteral( "OUTPUT" ), QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(

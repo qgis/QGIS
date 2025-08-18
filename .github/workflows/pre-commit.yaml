@@ -3,6 +3,9 @@ name: Pre-commit checks
 on:
   pull_request_target:
   push:
+    branches:
+      - master
+      - release-*
   issue_comment:
     types: [created]
 

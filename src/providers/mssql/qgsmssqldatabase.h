@@ -63,7 +63,6 @@ class QgsMssqlDatabase
      * \note The function is thread-safe
      */
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &uri, bool transaction = false );
-    static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QgsDataSourceUri &uri, bool transaction = false );
 
     /////
@@ -125,7 +124,7 @@ class QgsMssqlDatabase
      * The database may not be open -- openDatabase() should be called to
      * ensure that it is ready for use.
      */
-    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
+    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false, int timeout = 0 );
 
     static QMap<QString, std::weak_ptr<QgsMssqlDatabase>> sConnections;
 

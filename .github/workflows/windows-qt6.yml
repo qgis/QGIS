@@ -89,9 +89,7 @@ jobs:
                 -D ENABLE_UNITY_BUILDS=ON \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
-                -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
-                -D CMAKE_C_COMPILER_LAUNCHER=ccache \
-                -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
+                -D USE_CCACHE=ON \
                 -D WITH_QTWEBKIT=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=${{ github.actor }} \

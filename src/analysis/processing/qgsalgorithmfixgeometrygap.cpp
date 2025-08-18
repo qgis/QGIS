@@ -188,7 +188,6 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext(
     mTolerance, input->sourceCrs(), project->transformContext(), project
   );
-  QStringList messages;
 
   const QgsGeometryGapCheck check( &checkContext, QVariantMap() );
 

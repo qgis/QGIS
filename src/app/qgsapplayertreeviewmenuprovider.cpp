@@ -670,7 +670,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
             menuExportRaster->setObjectName( QStringLiteral( "exportMenu" ) );
-            if ( mView->selectedLayerNodes().count() == 1 )
+            if ( mView->selectedLayerNodes().count() == 1 && ( ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) || ( rlayer && rlayer->isValid() ) ) )
             {
               QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
               connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveAsFile(); } );

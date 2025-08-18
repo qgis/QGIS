@@ -1838,6 +1838,9 @@ endif()
 #############################################################
 # qgis_gui library
 
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS GUI Library" "qgis_gui" QGIS_GUI_SRCS)
+endif()
 add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )

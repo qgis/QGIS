@@ -107,7 +107,7 @@ bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
   const QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
   const QString schema = dsUri.schema();
   const QString table = dsUri.table();
 
@@ -134,7 +134,7 @@ bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
   const QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
   const QString schema = dsUri.schema();
   const QString table = dsUri.table();
 
@@ -165,7 +165,7 @@ bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessag
   const QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
   const QString schema = dsUri.schema();
   const QString table = dsUri.table();
 
@@ -194,7 +194,7 @@ bool QgsMssqlConnection::createSchema( const QString &uri, const QString &schema
   const QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -221,7 +221,7 @@ QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessa
   const QgsDataSourceUri dsUri( uri );
 
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   return schemas( std::move( db ), errorMessage );
 }

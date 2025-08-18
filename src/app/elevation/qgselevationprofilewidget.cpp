@@ -78,6 +78,7 @@ const QgsSettingsEntryBool *QgsElevationProfileWidget::settingLockAxis = new Qgs
 const QgsSettingsEntryString *QgsElevationProfileWidget::settingLastExportDir = new QgsSettingsEntryString( QStringLiteral( "last-export-dir" ), QgsSettingsTree::sTreeElevationProfile, QString(), QStringLiteral( "Last elevation profile export directory" ) );
 const QgsSettingsEntryColor *QgsElevationProfileWidget::settingBackgroundColor = new QgsSettingsEntryColor( QStringLiteral( "background-color" ), QgsSettingsTree::sTreeElevationProfile, QColor(), QStringLiteral( "Elevation profile chart background color" ) );
 const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowSubsections = new QgsSettingsEntryBool( QStringLiteral( "show-sub-sections" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "Whether to display subsections" ) );
+const QgsSettingsEntryBool *QgsElevationProfileWidget::settingShowScaleRatioInToolbar = new QgsSettingsEntryBool( QStringLiteral( "show-scale-ratio-in-toolbar" ), QgsSettingsTree::sTreeElevationProfile, false, QStringLiteral( "If true, the scale ratio widget will be moved to the toolbar instead of the options menu" ) );
 //
 // QgsElevationProfileLayersDialog
 //
@@ -359,6 +360,27 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mLockRatioAction, &QAction::toggled, this, &QgsElevationProfileWidget::axisScaleLockToggled );
   mOptionsMenu->addAction( mLockRatioAction );
 
+  mScaleRatioSettingsAction = new QgsElevationProfileScaleRatioWidgetSettingsAction( mOptionsMenu );
+
+  if ( !settingShowScaleRatioInToolbar->value() )
+  {
+    mScaleRatioSettingsAction->setDefaultWidget( mScaleRatioSettingsAction->newWidget() );
+    mOptionsMenu->addAction( mScaleRatioSettingsAction );
+  }
+
+  mOptionsMenu->addSeparator();
+
+  mToleranceSettingsAction = new QgsElevationProfileToleranceWidgetSettingsAction( mOptionsMenu );
+
+  mToleranceSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
+  connect( mToleranceSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
+    settingTolerance->setValue( value );
+    createOrUpdateRubberBands();
+    scheduleUpdate();
+  } );
+
+  mOptionsMenu->addAction( mToleranceSettingsAction );
+
   mDistanceUnitMenu = new QMenu( tr( "Distance Units" ), this );
   QActionGroup *unitGroup = new QActionGroup( this );
   for ( Qgis::DistanceUnit unit :
@@ -405,20 +427,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   } );
 
   mOptionsMenu->addMenu( mDistanceUnitMenu );
-  mOptionsMenu->addSeparator();
-
-  mSettingsAction = new QgsElevationProfileWidgetSettingsAction( mOptionsMenu );
-
-  mSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
-  connect( mSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
-    settingTolerance->setValue( value );
-    createOrUpdateRubberBands();
-    scheduleUpdate();
-  } );
-
-  mOptionsMenu->addAction( mSettingsAction );
-
-  mOptionsMenu->addSeparator();
 
   // show Subsections Indicator Action
   // create a default simple symbology
@@ -492,6 +500,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
     close();
   } );
 
+  if ( settingShowScaleRatioInToolbar->value() )
+  {
+    toolBar->addWidget( mScaleRatioSettingsAction->newWidget() );
+  }
+
   // updating the profile plot is deferred on a timer, so that we don't trigger it too often
   mSetCurveTimer = new QTimer( this );
   mSetCurveTimer->setSingleShot( true );
@@ -503,6 +516,23 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
+
+  connect( mCanvas, &QgsElevationProfileCanvas::scaleChanged, this, [this] {
+    mBlockScaleRatioChanges++;
+    const double distanceToElevationScaleRatio = mCanvas->axisScaleRatio();
+    mScaleRatioSettingsAction->scaleRatioWidget()->setScale( 1.0 / distanceToElevationScaleRatio );
+    mBlockScaleRatioChanges--;
+  } );
+
+  connect( mScaleRatioSettingsAction->scaleRatioWidget(), &QgsScaleComboBox::scaleChanged, this, [this]( double scale ) {
+    const double distanceToElevationRatio = 1.0 / scale;
+    if ( mBlockScaleRatioChanges )
+      return;
+
+    mCanvas->setAxisScaleRatio( distanceToElevationRatio );
+    createOrUpdateRubberBands();
+    scheduleUpdate();
+  } );
 
   updateCanvasSources();
 }
@@ -739,7 +769,7 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const 
 
 void QgsElevationProfileWidget::updatePlot()
 {
-  mCanvas->setTolerance( mSettingsAction->toleranceSpinBox()->value() );
+  mCanvas->setTolerance( mToleranceSettingsAction->toleranceSpinBox()->value() );
   mCanvas->setCrs( QgsProject::instance()->crs3D() );
   showSubsectionsTriggered();
 
@@ -933,7 +963,7 @@ void QgsElevationProfileWidget::exportResults( Qgis::ProfileExportType type )
 
   QgsProfileRequest request( profileCurve.release() );
   request.setCrs( QgsProject::instance()->crs3D() );
-  request.setTolerance( mSettingsAction->toleranceSpinBox()->value() );
+  request.setTolerance( mToleranceSettingsAction->toleranceSpinBox()->value() );
   request.setTransformContext( QgsProject::instance()->transformContext() );
   request.setTerrainProvider( QgsProject::instance()->elevationProperties()->terrainProvider() ? QgsProject::instance()->elevationProperties()->terrainProvider()->clone() : nullptr );
   QgsExpressionContext context;
@@ -988,7 +1018,7 @@ void QgsElevationProfileWidget::nudgeCurve( Qgis::BufferSide side )
   // for now we match the nudge distance to the tolerance distance, so that nudging results in
   // a completely different set of point features in the curve. We may want to revisit and expose
   // this as a user configurable setting at some point...
-  const double distance = mSettingsAction->toleranceSpinBox()->value() * 2;
+  const double distance = mToleranceSettingsAction->toleranceSpinBox()->value() * 2;
 
   const QgsGeometry nudgedCurve = mProfileCurve.offsetCurve( side == Qgis::BufferSide::Left ? distance : -distance, 8, Qgis::JoinStyle::Miter, 2 );
   setProfileCurve( nudgedCurve, false );
@@ -1091,7 +1121,7 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
 
   mRubberBand->setToGeometry( mProfileCurve );
 
-  const double tolerance = mSettingsAction->toleranceSpinBox()->value();
+  const double tolerance = mToleranceSettingsAction->toleranceSpinBox()->value();
   if ( !qgsDoubleNear( tolerance, 0, 0.000001 ) )
   {
     if ( !mToleranceRubberBand )
@@ -1147,7 +1177,11 @@ void QgsElevationProfileWidget::onProjectElevationPropertiesChanged()
   }
 }
 
-QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction( QWidget *parent )
+//
+// QgsElevationProfileToleranceWidgetSettingsAction
+//
+
+QgsElevationProfileToleranceWidgetSettingsAction::QgsElevationProfileToleranceWidgetSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
 {
   QGridLayout *gLayout = new QGridLayout();
@@ -1169,6 +1203,38 @@ QgsElevationProfileWidgetSettingsAction::QgsElevationProfileWidgetSettingsAction
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
+}
+
+
+//
+// QgsElevationProfileScaleRatioWidgetSettingsAction
+//
+
+QgsElevationProfileScaleRatioWidgetSettingsAction::QgsElevationProfileScaleRatioWidgetSettingsAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+}
+
+QWidget *QgsElevationProfileScaleRatioWidgetSettingsAction::newWidget()
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  mScaleRatioWidget = new QgsScaleComboBox();
+  mScaleRatioWidget->setRatioMode( QgsScaleComboBox::RatioMode::Flexible );
+  mScaleRatioWidget->setScale( 1.0 );
+  mScaleRatioWidget->setMaximumWidth( QFontMetrics( mScaleRatioWidget->font() ).horizontalAdvance( '0' ) * 50 );
+  mScaleRatioWidget->setPredefinedScales( { 0.01, 0.1, 0.5, 1, 2.0, 10, 100 } );
+
+  QLabel *label = new QLabel( tr( "Scale Ratio" ) );
+  gLayout->addWidget( label, 0, 0 );
+  gLayout->addWidget( mScaleRatioWidget, 0, 1 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+
+  w->setToolTip( tr( "Specifies the ratio of distance to elevation units used for the profile's scale" ) );
+  return w;
 }
 
 QgsAppElevationProfileLayerTreeView::QgsAppElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )

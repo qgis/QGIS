@@ -26,11 +26,11 @@ Content-Type: text/xml; charset=utf-8
     </DCPType>
    </GetCapabilities>
    <GetMap>
-    <Format>image/jpeg</Format>
     <Format>image/png</Format>
     <Format>image/png; mode=16bit</Format>
     <Format>image/png; mode=8bit</Format>
     <Format>image/png; mode=1bit</Format>
+    <Format>image/jpeg</Format>
     <Format>application/dxf</Format>
     <Format>application/pdf</Format>
     <DCPType>

@@ -19,7 +19,9 @@
 #include <QComboBox>
 #include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgslayoutmanager.h"
+#include "qgslayoutmanagermodel.h"
+
+class QgsLayoutManager;
 
 /**
  * \class QgsLayoutComboBox

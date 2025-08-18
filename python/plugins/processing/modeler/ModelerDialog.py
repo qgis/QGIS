@@ -71,7 +71,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ModelerDialog(QgsModelDesignerDialog):
-    CANVAS_SIZE = 4000
 
     update_model = pyqtSignal()
 
@@ -97,7 +96,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
         scene = ModelerScene(self)
-        scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
         self.setModelScene(scene)
 
         self.view().ensureVisible(0, 0, 10, 10)
@@ -244,8 +242,6 @@ class ModelerDialog(QgsModelDesignerDialog):
 
     def repaintModel(self, showControls=True):
         scene = ModelerScene(self)
-        scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
-
         if not showControls:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
 
@@ -259,6 +255,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setModelScene(scene)
         # create items later that setModelScene to setup link to messageBar to the scene
         scene.createItems(self.model(), context)
+        scene.updateBounds()
 
     def create_widget_context(self):
         """
@@ -347,7 +344,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                     for i in list(self.model().parameterComponents().values())
                 ]
             )
-            newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
+            newX = MARGIN + BOX_WIDTH + maxX
         else:
             newX = MARGIN + BOX_WIDTH / 2
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
@@ -415,8 +412,8 @@ class ModelerDialog(QgsModelDesignerDialog):
                     for alg in list(self.model().childAlgorithms().values())
                 ]
             )
-            newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE - BOX_HEIGHT)
+            newX = MARGIN + BOX_WIDTH + maxX
+            newY = MARGIN + BOX_HEIGHT + maxY
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
