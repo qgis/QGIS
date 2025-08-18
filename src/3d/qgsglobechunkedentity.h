@@ -72,7 +72,7 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    int mJobId;
+    int mJobId = -1;
 };
 
 class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
