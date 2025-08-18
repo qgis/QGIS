@@ -40,11 +40,49 @@
 #include "qgslayoutreportcontext.h"
 #include "qgslayertreefiltersettings.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsmaplayerlegend.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
 #include "qgsexpressioncontext.h"
+
+//
+// QgsLegendFilterProxyModel
+//
+
+QgsLegendFilterProxyModel::QgsLegendFilterProxyModel( QObject *parent )
+  : QgsLayerTreeFilterProxyModel( parent )
+{
+  setIsDefaultLegend( true );
+}
+
+void QgsLegendFilterProxyModel::setIsDefaultLegend( bool isDefault )
+{
+  mIsDefaultLegend = isDefault;
+
+  // only show private layers when not in default mode
+  setShowPrivateLayers( !mIsDefaultLegend );
+
+  invalidateFilter();
+}
+
+bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
+{
+  if ( !layer )
+    return true;
+
+  if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+//
+// QgsLayoutItemLegend
+//
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -330,9 +368,8 @@ QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
 {
   QgsLegendRenderer res( mLegendModel.get(), mSettings );
 
-  // only show private layers when not in auto update mode
-  QgsLayerTreeFilterProxyModel *proxy = new QgsLayerTreeFilterProxyModel();
-  proxy->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+  QgsLegendFilterProxyModel *proxy = new QgsLegendFilterProxyModel();
+  proxy->setIsDefaultLegend( !static_cast< bool >( mCustomLayerTree ) );
   res.setProxyModel( proxy );
 
   return res;
