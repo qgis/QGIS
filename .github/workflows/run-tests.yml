@@ -55,6 +55,13 @@ jobs:
             with-webengine: OFF
             with-pdf4qt: OFF
             with-compile-commands: ON
+            with-model-test: ON
+            with-pg-test: ON
+            with-mssql-test: ON
+            with-hana-test: ON
+            with-oracle-test: ON
+            with-qspatialite: ON
+            with-server-landingpage-webapp: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
             unity-builds: ON
@@ -72,6 +79,13 @@ jobs:
             with-webengine: ON
             with-pdf4qt: ON
             with-compile-commands: OFF
+            with-model-test: OFF
+            with-pg-test: OFF
+            with-mssql-test: OFF
+            with-hana-test: OFF
+            with-oracle-test: OFF
+            with-qspatialite: OFF
+            with-server-landingpage-webapp: OFF
             LD_PRELOAD: ''
             experimental: false
             unity-builds: ON
@@ -168,6 +182,13 @@ jobs:
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
                      --env ENABLE_UNITY_BUILDS=${{ matrix.unity-builds }} \
+                     --env WITH_MODEL_TEST=${{ matrix.with-model-test }} \
+                     --env WITH_PG_TEST=${{ matrix.with-pg-test }} \
+                     --env WITH_MSSQL_TEST=${{ matrix.with-mssql-test }} \
+                     --env WITH_HANA_TEST=${{ matrix.with-hana-test }} \
+                     --env WITH_ORACLE_TEST=${{ matrix.with-oracle-test }} \
+                     --env WITH_QSPATIALITE=${{ matrix.with-qspatialite-test }} \
+                     --env WITH_SERVER_LANDINGPAGE_WEBAPP=${{ matrix.with-server-landingpage-webapp }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
