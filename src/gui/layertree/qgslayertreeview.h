@@ -45,6 +45,15 @@ class QgsLayerTreeFilterProxyModel;
  */
 class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayerTreeProxyModel *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsLayerTreeProxyModel;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:
