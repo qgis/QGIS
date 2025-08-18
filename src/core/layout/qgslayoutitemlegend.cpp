@@ -392,7 +392,51 @@ void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : mLayout->project()->layerTreeRoot()->clone() );
+  if ( autoUpdate )
+  {
+    setCustomLayerTree( nullptr );
+  }
+  else
+  {
+    std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
+
+    // filter out excluded by default items
+    std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
+    filterNodeChildren = [&filterNodeChildren]( QgsLayerTreeGroup * group )
+    {
+      if ( !group )
+        return;
+
+      const QList<QgsLayerTreeNode *> children = group->children();
+      for ( QgsLayerTreeNode *child : children )
+      {
+        if ( !child )
+        {
+          group->removeChildNode( child );
+          continue;
+        }
+        else if ( QgsLayerTree::isGroup( child ) )
+        {
+          filterNodeChildren( QgsLayerTree::toGroup( child ) );
+        }
+        else if ( QgsLayerTree::isLayer( child ) )
+        {
+          QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
+          if ( QgsMapLayer *mapLayer = layer->layer() )
+          {
+            if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+            {
+              group->removeChildNode( child );
+            }
+          }
+        }
+      }
+    };
+    filterNodeChildren( customTree.get() );
+
+    setCustomLayerTree( customTree.release() );
+  }
+
   adjustBoxSize();
   updateFilterByMap( false );
 }
