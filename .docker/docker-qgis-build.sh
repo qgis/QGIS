@@ -40,13 +40,13 @@ echo "::group::cmake"
 
 BUILD_TYPE=Release
 
-export CC=/usr/bin/clang
-export CXX=/usr/bin/clang++
+CMAKE_C_COMPILER=/usr/bin/clang
+CMAKE_CXX_COMPILER=/usr/bin/clang++
 
 if [[ "${WITH_CLAZY}" = "ON" ]]; then
   # In release mode, all variables in QgsDebugMsg would be considered unused
   BUILD_TYPE=Debug
-  export CXX=clazy
+  CMAKE_CXX_COMPILER=clazy
 
   # ignore sip and external libraries
   export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"
@@ -79,6 +79,8 @@ fi
 cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+ -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} \
+ -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} \
  -DUSE_CCACHE=ON \
  -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
  -DWITH_DESKTOP=ON \
