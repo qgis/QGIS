@@ -115,7 +115,7 @@ QStringList QgsFileWidget::splitFilePaths( const QString &path )
 
   QgsMessageLog::logMessage( "# Final Paths", "PathQuoteProcessing", Qgis::MessageLevel::Warning );
 
-  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*$)" ) );
+  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*('|\"))|(('|\")\\s*$)" ) );
   paths.reserve( pathParts.size() );
   for ( const QString &pathsPart : pathParts )
   {
