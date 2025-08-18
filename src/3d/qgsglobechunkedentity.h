@@ -55,7 +55,7 @@ class QgsGlobeChunkLoader : public QgsChunkLoader
   private:
     QgsTerrainTextureGenerator *mTextureGenerator;
     QgsCoordinateTransform mGlobeCrsToLatLon;
-    int mJobId;
+    int mJobId = -1;
     QImage mTexture;
 };
 
