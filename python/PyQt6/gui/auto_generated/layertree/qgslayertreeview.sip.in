@@ -23,6 +23,12 @@ layers and text filtering.
 %TypeHeaderCode
 #include "qgslayertreeview.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsLayerTreeProxyModel *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsLayerTreeProxyModel;
+    else
+      sipType = nullptr;
+%End
   public:
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 %Docstring
