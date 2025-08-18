@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsabstractmaterialsettings.h>
+#include "qgsabstractmaterialsettings.h"
 
 QgsPropertiesDefinition QgsAbstractMaterialSettings::sPropertyDefinitions;
 

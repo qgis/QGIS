@@ -18,8 +18,8 @@
 
 #include "qgis_3d.h"
 
-#include <qgscoordinatereferencesystem.h>
-#include <qgspointxy.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgspointxy.h"
 
 class QgsRectangle;
 struct QgsChunkNodeId;
