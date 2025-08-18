@@ -34,6 +34,8 @@
 #include "qgsfileutils.h"
 #include "qgsmimedatautils.h"
 
+#include "qgsmessagelog.h"
+
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -83,16 +85,44 @@ QString QgsFileWidget::filePath()
 QStringList QgsFileWidget::splitFilePaths( const QString &path )
 {
   QStringList paths;
-  const thread_local QRegularExpression partsRegex = QRegularExpression( QStringLiteral( "\"\\s+\"" ) );
-  const QStringList pathParts = path.split( partsRegex, Qt::SkipEmptyParts );
+  QStringList pathParts;
 
-  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*)" ) );
+  const thread_local QRegularExpression partSeparatorsRegex = QRegularExpression( QStringLiteral( "(?:\"'?)(\\s+)(?:'?\")" ) );
+  QRegularExpressionMatchIterator partSeparatorMatches = partSeparatorsRegex.globalMatch( path );
+  int substringStart = 0;
+  int substringEnd;
+  while ( partSeparatorMatches.hasNext() )
+  {
+    QRegularExpressionMatch match = partSeparatorMatches.next();
+    substringEnd = match.capturedStart();
+    pathParts.append( path.mid( substringStart, substringEnd - substringStart ) );
+    substringStart = match.capturedEnd();
+    if ( !partSeparatorMatches.hasNext() )
+    {
+      pathParts.append( path.mid( substringStart ) );
+    }
+  }
+  if ( pathParts.length() == 0 )
+  {
+    pathParts.append( path );
+  }
+
+  QgsMessageLog::logMessage( "# Separated Paths", "PathQuoteProcessing", Qgis::MessageLevel::Warning );
+  for ( const QString &part : pathParts )
+  {
+    QgsMessageLog::logMessage( part, "PathQuoteProcessing", Qgis::MessageLevel::Warning );
+  }
+
+  QgsMessageLog::logMessage( "# Final Paths", "PathQuoteProcessing", Qgis::MessageLevel::Warning );
+
+  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*$)" ) );
   paths.reserve( pathParts.size() );
   for ( const QString &pathsPart : pathParts )
   {
     QString cleaned = pathsPart;
     cleaned.remove( cleanRe );
     paths.append( cleaned );
+    QgsMessageLog::logMessage( cleaned, "PathQuoteProcessing", Qgis::MessageLevel::Warning );
   }
   return paths;
 }
