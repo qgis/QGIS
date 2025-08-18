@@ -331,7 +331,9 @@ QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
   QgsLegendRenderer res( mLegendModel.get(), mSettings );
 
   // only show private layers when not in auto update mode
-  res.proxyModel()->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+  QgsLayerTreeFilterProxyModel *proxy = new QgsLayerTreeFilterProxyModel();
+  proxy->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+  res.setProxyModel( proxy );
 
   return res;
 }
