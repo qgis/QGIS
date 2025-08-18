@@ -60,7 +60,7 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 
     ~QgsTiledSceneChunkLoader();
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
+    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
