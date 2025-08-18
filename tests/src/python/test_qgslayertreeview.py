@@ -22,7 +22,11 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsMapLayerLegend,
 )
-from qgis.gui import QgsLayerTreeView, QgsLayerTreeViewDefaultActions
+from qgis.gui import (
+    QgsLayerTreeView,
+    QgsLayerTreeViewDefaultActions,
+    QgsLayerTreeProxyModel,
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -813,6 +817,24 @@ class TestQgsLayerTreeView(QgisTestCase):
         self.assertCountEqual(
             view.selectedLegendNodes(), [legend_nodes[0], legend_nodes[2]]
         )
+
+    def test_set_model_and_proxy(self):
+        root = QgsLayerTree()
+        model = QgsLayerTreeModel(root)
+        view = QgsLayerTreeView()
+
+        view.setModel(model)
+        self.assertEqual(view.layerTreeModel(), model)
+        # a proxy should have been auto-created
+        self.assertIsInstance(view.model(), QgsLayerTreeProxyModel)
+
+        # set an explicit proxy
+        root2 = QgsLayerTree()
+        model2 = QgsLayerTreeModel(root2)
+        my_proxy = QgsLayerTreeProxyModel(model2, None)
+        view.setModel(model2, my_proxy)
+        self.assertEqual(view.layerTreeModel(), model2)
+        self.assertEqual(view.model(), my_proxy)
 
 
 if __name__ == "__main__":

@@ -75,6 +75,13 @@ shown).
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 
+    virtual bool nodeShown( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns ``True`` if the specified ``node`` should be shown.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 
@@ -118,6 +125,19 @@ Constructor for QgsLayerTreeView
 %Docstring
 Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only
 :py:class:`QgsLayerTreeModel` is an acceptable model.
+
+.. note::
+
+   This method automatically creates a :py:class:`QgsLayerTreeProxyModel` to use as a proxy.
+%End
+
+    void setModel( QgsLayerTreeModel *model, QgsLayerTreeProxyModel *proxyModel );
+%Docstring
+Sets the ``model`` and ``proxyModel`` for the view.
+
+Use this method when a custom proxy model is required.
+
+.. versionadded:: 4.0
 %End
 
     QgsLayerTreeModel *layerTreeModel() const;
