@@ -286,6 +286,15 @@ Emitted when the extent layer is changed.
 .. versionadded:: 3.44
 %End
 
+    void snapToGridChanged( bool enabled );
+%Docstring
+Emitted when the snap-to-grid state is changed.
+
+:param enabled: whether snap-to-grid is enabled
+
+.. versionadded:: 3.46
+%End
+
 };
 
 /************************************************************************
