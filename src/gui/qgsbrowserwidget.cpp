@@ -598,110 +598,36 @@ void QgsBrowserWidget::navigateToPath()
     return;
   }
 
+  // Make sure we have an absolute path
   if ( pathInfo.isRelative() )
   {
     normalizedPath = pathInfo.absoluteFilePath();
     normalizedPath = QDir::cleanPath( normalizedPath );
   }
 
-  // Try to find the path directly in the model
-  QStringList pathVariants = generatePathVariants( normalizedPath );
-  for ( const QString &variant : pathVariants )
-  {
-    QModelIndex index = mModel->findPath( variant );
-    if ( index.isValid() )
-    {
-      setActiveIndex( index );
-      mLeLocationBar->clear();
-      if ( mMessageBar )
-      {
-        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
-      }
-      return;
-    }
-  }
-
-  // If not found directly, try to navigate to the parent directory
-  QString parentPath;
+  // Use the existing expandPath functionality to properly expand the browser tree
+  QString targetPath = normalizedPath;
   if ( pathInfo.isFile() )
   {
-    parentPath = pathInfo.absolutePath();
-  }
-  else
-  {
-    QDir dir( normalizedPath );
-    if ( dir.cdUp() )
-    {
-      parentPath = dir.absolutePath();
-    }
+    // For files, expand to the parent directory
+    targetPath = pathInfo.absolutePath();
   }
 
-  if ( !parentPath.isEmpty() )
-  {
-    QStringList parentVariants = generatePathVariants( parentPath );
-    for ( const QString &variant : parentVariants )
-    {
-      QModelIndex index = mModel->findPath( variant );
-      if ( index.isValid() )
-      {
-        setActiveIndex( index );
-        mLeLocationBar->clear();
-        if ( mMessageBar )
-        {
-          if ( pathInfo.isFile() )
-          {
-            mMessageBar->pushInfo( tr( "Navigate to Path" ), tr( "Could not find file '%1' in browser. Navigated to parent directory: %2" ).arg( pathInfo.fileName(), QDir::toNativeSeparators( parentPath ) ) );
-          }
-          else
-          {
-            mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Could not fully navigate to: %1. Showing parent directory." ).arg( displayPath ) );
-          }
-        }
-        return;
-      }
-    }
-  }
-
-  // Try to find the nearest accessible parent directory
-  QString currentPath = normalizedPath;
-  while ( !currentPath.isEmpty() )
-  {
-    QDir dir( currentPath );
-    if ( !dir.cdUp() )
-      break;
-      
-    currentPath = dir.absolutePath();
-    
-    // Stop at root
-#ifdef Q_OS_WIN
-    if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
-      break;
-#else
-    if ( currentPath == "/" )
-      break;
-#endif
-
-    QStringList currentVariants = generatePathVariants( currentPath );
-    for ( const QString &variant : currentVariants )
-    {
-      QModelIndex index = mModel->findPath( variant );
-      if ( index.isValid() )
-      {
-        setActiveIndex( index );
-        mLeLocationBar->clear();
-        if ( mMessageBar )
-        {
-          mMessageBar->pushInfo( tr( "Navigate to Path" ), tr( "Could not find '%1' in browser. Navigated to nearest parent: %2" ).arg( pathInfo.fileName(), QDir::toNativeSeparators( currentPath ) ) );
-        }
-        return;
-      }
-    }
-  }
-
-  // If we get here, we couldn't find any accessible path
+  // Expand the path in the browser tree
+  mBrowserView->expandPath( targetPath, true );
+  
+  // Clear the location bar and show success message
+  mLeLocationBar->clear();
   if ( mMessageBar )
   {
-    mMessageBar->pushCritical( tr( "Navigate to Path" ), tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser." ).arg( displayPath ) );
+    if ( pathInfo.isFile() )
+    {
+      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to parent directory of file: %1" ).arg( displayPath ) );
+    }
+    else
+    {
+      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
+    }
   }
 }
 
