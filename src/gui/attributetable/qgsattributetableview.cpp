@@ -81,6 +81,25 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
         mFeatureSelectionModel->enableSync( true );
         break;
 
+      case QEvent::MouseButtonDblClick:
+      {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+        if ( mouseEvent->button() == Qt::LeftButton )
+        {
+          const int row = verticalHeader()->logicalIndexAt( mouseEvent->pos() );
+          if ( row >= 0 && mFilterModel )
+          {
+            const QModelIndex index = mFilterModel->index( row, 0 );
+            if ( index.isValid() )
+            {
+              const QgsFeatureId fid = mFilterModel->rowToId( index.row() );
+              emit zoomToFeatureRequested( fid );
+            }
+          }
+        }
+        break;
+      }
+
       default:
         break;
     }
