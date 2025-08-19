@@ -935,7 +935,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
         self.assertEqual(f["pk1"], 1)
         self.assertEqual(f["pk2"], 2)
 
-        self.assertEqual(round(f["pk3"], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f["pk3"], 3.14159274, 5)
         self.assertEqual(f["value"], "test 2")
 
         # can we edit a field?
@@ -957,7 +957,7 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
 
         # just making sure we have the correct feature
         # Only 6 decimals for PostgreSQL 11.
-        self.assertEqual(round(f2["pk3"], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f2["pk3"], 3.14159274, 5)
 
         # Then, making sure we really did change our value.
         self.assertEqual(f2["value"], "Edited Test 2")
