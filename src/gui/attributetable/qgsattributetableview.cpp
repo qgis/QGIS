@@ -92,7 +92,7 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
             const QModelIndex index = mFilterModel->index( row, 0 );
             if ( index.isValid() )
             {
-              const QgsFeatureId fid = mFilterModel->rowToId( index.row() );
+              const QgsFeatureId fid = mFilterModel->rowToId( index );
               emit zoomToFeatureRequested( fid );
             }
           }
