@@ -145,12 +145,12 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
         // test bad layers through restrictedlayers
         const QStringList badLayerIds = badLayerHandler->badLayers();
         const QMap<QString, QString> badLayerNames = badLayerHandler->badLayerNames();
-        const QStringList resctrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *prj );
+        const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *prj );
         for ( const QString &badLayerId : badLayerIds )
         {
           // if this bad layer is in restricted layers
           // it doesn't need to be added to unrestricted bad layers
-          if ( badLayerNames.contains( badLayerId ) && resctrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
+          if ( badLayerNames.contains( badLayerId ) && restrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
           {
             continue;
           }
