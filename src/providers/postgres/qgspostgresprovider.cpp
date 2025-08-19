@@ -1186,7 +1186,11 @@ bool QgsPostgresProvider::loadFields()
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     newField.setConstraints( constraints );
 
-    mIdentityFields.insert( mAttributeFields.size(), identityMap[tableoid][attnum][0].toLatin1() );
+    const QString identity = identityMap[tableoid][attnum];
+    if ( !identity.isEmpty() )
+    {
+      mIdentityFields.insert( mAttributeFields.size(), identity[0].toLatin1() );
+    }
     mAttributeFields.append( newField );
 
     // if we know for sure that this field is not enumerated type or a domain type, let's
@@ -2346,7 +2350,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         for ( int idx : std::as_const( mPrimaryKeyAttrs ) )
         {
-          if ( mIdentityFields[idx] == 'a' )
+          auto identityIt = mIdentityFields.constFind( idx );
+          if ( identityIt != mIdentityFields.constEnd() && *identityIt == 'a' )
             overrideIdentity = true;
           insert += delim + quotedIdentifier( field( idx ).name() );
           values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
@@ -2398,7 +2403,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       insert += delim + quotedIdentifier( fieldName );
 
-      if ( mIdentityFields[idx] == 'a' )
+      auto identityIt = mIdentityFields.constFind( idx );
+      if ( identityIt != mIdentityFields.constEnd() && *identityIt == 'a' )
         overrideIdentity = true;
 
       QString defVal = defaultValueClause( idx );
