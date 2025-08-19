@@ -172,6 +172,13 @@ Emitted when a column in the view has been resized.
    No longer used.
 %End
 
+    /**
+     * Emitted when a row header is double-clicked to request zooming to the feature.
+     * \param fid the feature ID of the double-clicked row
+     * \since QGIS 3.46
+     */
+    void zoomToFeatureRequested( QgsFeatureId fid );
+
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
