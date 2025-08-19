@@ -66,7 +66,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mDevicePixelRatio = ms.devicePixelRatio();
   mLockAspectRatio->setLocked( true );
 
-  mResolutionSpinBox->setValue( static_cast<int>( std::round( mDpi ) ) );
+  QgsSettings settings;
+  mResolutionSpinBox->setValue( settings.value( QStringLiteral( "UI/lastExportDpi" ), static_cast<int>( std::round( mDpi ) ) ).toInt() );
 
   mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
@@ -393,6 +394,9 @@ void QgsMapSaveDialog::lockChanged( const bool locked )
 
 void QgsMapSaveDialog::copyToClipboard()
 {
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/lastExportDpi" ), mResolutionSpinBox->value() );
+
   QgsMapSettings ms = QgsMapSettings();
   applyMapSettings( ms );
 
@@ -457,6 +461,9 @@ void QgsMapSaveDialog::accept()
 
 void QgsMapSaveDialog::onAccepted()
 {
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/lastExportDpi" ), mResolutionSpinBox->value() );
+
   switch ( mDialogType )
   {
     case Image:
