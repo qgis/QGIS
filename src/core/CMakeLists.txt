@@ -90,7 +90,8 @@ set(QGIS_CORE_SRCS
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
-  plot/qgschartplot.cpp
+  plot/qgsbarchartplot.cpp
+  plot/qgslinechartplot.cpp
   plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
 
@@ -1741,7 +1742,8 @@ set(QGIS_CORE_HDRS
 
   pdf/qgspdfrenderer.h
 
-  plot/qgschartplot.h
+  plot/qgsbarchartplot.h
+  plot/qgslinechartplot.h
   plot/qgsplotregistry.h
   plot/qgsplot.h
 
