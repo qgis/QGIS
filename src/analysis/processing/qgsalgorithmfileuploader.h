@@ -28,7 +28,9 @@ class QgsProcessingFeedback;
 ///@cond PRIVATE
 
 /**
- * Native file downloader algorithm.
+ * Native file uploader algorithm.
+ *
+ * \since QGIS 4.0
  */
 class QgsFileUploaderAlgorithm : public QObject, public QgsProcessingAlgorithm
 {

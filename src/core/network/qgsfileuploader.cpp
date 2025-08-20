@@ -22,24 +22,26 @@
 #include "qgsvariantutils.h"
 #include "qgslogger.h"
 
+#include <QFileInfo>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QHttpMultiPart>
+#include <qmimedatabase.h>
 #ifndef QT_NO_SSL
 #include <QSslError>
 #endif
 
-QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &authcfg, bool delayStart, Qgis::HttpMethod httpMethod, const QByteArray &data )
+QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName, const QString &authcfg )
   : mUrl( url )
+  , mFormName( formName )
   , mUploadCanceled( false )
-  , mHttpMethod( httpMethod )
-  , mData( data )
 {
   if ( !uploadFileName.isEmpty() )
     mFile.setFileName( uploadFileName );
-  mAuthCfg = authcfg; // Do I need auth ?
-  if ( !delayStart ) // Do I need this
-    startUpload();
+  mAuthCfg = authcfg;
+
+  startUpload();
 }
 
 
@@ -57,7 +59,6 @@ void QgsFileUploader::startUpload()
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
-  // request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::RedirectPolicy::NoLessSafeRedirectPolicy );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsFileUploader" ) );
   if ( !mAuthCfg.isEmpty() )
   {
@@ -66,7 +67,6 @@ void QgsFileUploader::startUpload()
 
   if ( mReply )
   {
-    disconnect( mReply, &QNetworkReply::readyRead, this, &QgsFileUploader::onReadyRead );
     disconnect( mReply, &QNetworkReply::finished, this, &QgsFileUploader::onFinished );
     disconnect( mReply, &QNetworkReply::uploadProgress, this, &QgsFileUploader::onUploadProgress );
     mReply->abort();
@@ -74,41 +74,41 @@ void QgsFileUploader::startUpload()
   }
 
 
-  // QFile *file = new QFile(filePath);
+  QHttpMultiPart *multiPart = new QHttpMultiPart( QHttpMultiPart::FormDataType );
 
-  mReply = nam->post( request, mFile.readAll() );
-  // mReply = nam->get(request);
+  QHttpPart filePart;
+  QFile *file = new QFile( mFile.fileName() );
+  QFileInfo fi = QFileInfo( file->fileName() );
 
-  // switch ( mHttpMethod )
-  // {
+  QMimeDatabase db;
+  QMimeType mimeType = db.mimeTypeForFile( file->fileName() );
 
-  //   case Qgis::HttpMethod::Post:
-  //   {
-  //     mReply = nam->post( request, mData );
-  //     break;
-  //   }
-  //   case Qgis::HttpMethod::Get:
-  //   {
-  //     mReply = nam->get( request );
-  //     break;
-  //   }
+  filePart.setHeader( QNetworkRequest::ContentTypeHeader, mimeType.name() );
+  filePart.setHeader( QNetworkRequest::ContentDispositionHeader, QStringLiteral( "form-data; %1filename=\"%2\"" ).arg(
+                        ( mFormName.isEmpty() ) ? QString( "" ) : QStringLiteral( "name=\"%1\"; " ).arg( mFormName ),
+                        fi.fileName()
+                      ) );
 
-  //   case Qgis::HttpMethod::Head:
-  //   case Qgis::HttpMethod::Put:
-  //   case Qgis::HttpMethod::Delete:
-  //     QgsDebugError( QStringLiteral( "Unsupported HTTP method: %1" ).arg( qgsEnumValueToKey( mHttpMethod ) ) );
-  //     // not supported
-  //     break;
-  // }
+  if ( !file->open( QIODevice::ReadOnly ) )
+  {
+    error( tr( "Error reading file %1" ).arg( mFile.fileName() ) );
+    return;
+  }
+  filePart.setBodyDevice( file );
+  file->setParent( multiPart );
+
+  multiPart->append( filePart );
+
+  mReply = nam->post( request, multiPart );
+  multiPart->setParent( mReply );
 
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
   }
 
-  // connect( mReply, &QNetworkReply::readyRead, this, &QgsFileUploader::onReadyRead );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileUploader::onFinished );
-  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileUploader::onUploadProgress );
+  connect( mReply, &QNetworkReply::uploadProgress, this, &QgsFileUploader::onUploadProgress );
   connect( nam, qOverload< QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileUploader::onRequestTimedOut, Qt::UniqueConnection );
 #ifndef QT_NO_SSL
   connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileUploader::onSslErrors, Qt::UniqueConnection );
@@ -161,29 +161,9 @@ void QgsFileUploader::error( const QString &errorMessage )
   error( QStringList() << errorMessage );
 }
 
-void QgsFileUploader::onReadyRead()
-{
-  // Q_ASSERT( mReply );
-  // if ( mFile.fileName().isEmpty() )
-  // {
-  //   error( tr( "No output filename specified" ) );
-  //   onFinished();
-  // }
-  // else if ( ! mFile.isOpen() && ! mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  // {
-  //   error( tr( "Cannot open output file: %1" ).arg( mFile.fileName() ) );
-  //   onFinished();
-  // }
-  // else
-  // {
-  //   const QByteArray data = mReply->readAll();
-  //   mFile.write( data );
-  // }
-}
 
 void QgsFileUploader::onFinished()
 {
-  qDebug() << "finished ! ";
   // when canceled
   if ( ! mErrors.isEmpty() || mUploadCanceled )
   {
@@ -201,12 +181,12 @@ void QgsFileUploader::onFinished()
 
     if ( mReply->error() )
     {
-      // mFile.remove();
-      qDebug() << "ERROR:" << mReply->readAll();
       error( tr( "Upload failed: %1" ).arg( mReply->errorString() ) );
+      error( tr( "Server returned: %1" ).arg( QString::fromUtf8( mReply->readAll() ) ) );
     }
     else
     {
+      QVariant statusCode = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
       emit uploadCompleted( mReply->url() );
     }
   }

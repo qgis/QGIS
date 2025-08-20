@@ -19,7 +19,6 @@
 #include "moc_qgsalgorithmfileuploader.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
-#include "qgsfiledownloader.h"
 #include "qgsfileuploader.h"
 #include "qgsfileutils.h"
 #include "qgsnetworkaccessmanager.h"
@@ -48,7 +47,7 @@ QString QgsFileUploaderAlgorithm::shortDescription() const
 
 QStringList QgsFileUploaderAlgorithm::tags() const
 {
-  return tr( "file,uploader,internet,url,fetch,get,post,request,https" ).split( ',' );
+  return tr( "file,uploader,internet,url,upload,post,request,https" ).split( ',' );
 }
 
 QString QgsFileUploaderAlgorithm::group() const
@@ -63,7 +62,8 @@ QString QgsFileUploaderAlgorithm::groupId() const
 
 QString QgsFileUploaderAlgorithm::shortHelpString() const
 {
-  return tr( "This algorithm upload a file to the URL with an HTTP(S) request" );
+  return tr( "This algorithm upload a file to the URL with an HTTP(S) request\n\n"
+             "The optional form name field parameter emulate a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point require a form name key" );
 }
 
 QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
@@ -74,30 +74,12 @@ QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
 void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FILE" ), QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All file (%1)" ).arg( QLatin1String( "*.*" ) ) ) );
-
-
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "To URL" ), QVariant(), false, false ) );
 
-  auto methodParam = std::make_unique<QgsProcessingParameterEnum>(
-    QStringLiteral( "METHOD" ),
-    QObject::tr( "Method" ),
-    QStringList()
-      << QObject::tr( "GET" )
-      << QObject::tr( "POST" ),
-    false,
-    0
-  );
-  methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
-  methodParam->setFlags( methodParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  addParameter( methodParam.release() );
-
-  auto dataParam = std::make_unique<QgsProcessingParameterString>(
-    QStringLiteral( "DATA" ), tr( "Data" ), QVariant(), false, true
-  );
-  dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
-  dataParam->setFlags( dataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
-  addParameter( dataParam.release() );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), false ) );
+  auto formNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMNAME" ), tr( "Form name field" ), QStringLiteral( "" ), false, true );
+  formNameParam->setHelp( QObject::tr( "The optional form name field parameter emulate a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point require a form name key" ) );
+  formNameParam->setFlags( formNameParam->flags() | Qgis::ProcessingParameterFlag::Optional );
+  addParameter( formNameParam.release() );
 }
 
 QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -108,7 +90,11 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
     throw QgsProcessingException( tr( "No URL specified" ) );
 
   const QString filePath = parameterAsFile( parameters, QStringLiteral( "FILE" ), context );
-  QString data = parameterAsString( parameters, QStringLiteral( "DATA" ), context );
+  const bool exists = QFileInfo::exists( filePath );
+  if ( !feedback->isCanceled() && !exists )
+    throw QgsProcessingException( tr( "The file %1 doesn't exist." ).arg( filePath ) );
+
+  const QString formNameKey = parameterAsString( parameters, QStringLiteral( "FORMNAME" ), context );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QEventLoop loop;
@@ -116,35 +102,8 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   QUrl uploadUrl;
   QStringList errors;
 
-  Qgis::HttpMethod httpMethod = static_cast<Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
 
-  if ( httpMethod == Qgis::HttpMethod::Get && !data.isEmpty() )
-  {
-    feedback->pushWarning( tr( "DATA parameter is not used when it's a GET request." ) );
-    data = QString();
-  }
-
-  // QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
-
-
-  // QNetworkRequest request( url );
-
-  // const QByteArray file_data;
-
-  // QFile *file = new QFile(filePath);
-  // // file->read()
-  // QNetworkReply *reply = nam->post(request, file->readAll());
-
-  // connect( reply, &QNetworkReply::uploadProgress, this, &QgsFileUploaderAlgorithm::receiveProgressFromUploader);
-  // connect( reply, &QNetworkReply::finished, this, [&loop]() { loop.exit(); }  );
-  // // connect( reply, &QNetworkReply::errorOccurred,  this, [&errors, &loop]( const QStringList &e ) { errors = e; loop.exit(); } );
-
-
-  // // const QByteArray data = mReply->readAll();
-  // // mFile.write( data );
-
-
-  QgsFileUploader *uploader = new QgsFileUploader( filePath, url, QString(), true, httpMethod, data.toUtf8() );
+  QgsFileUploader *uploader = new QgsFileUploader( filePath, url, formNameKey );
 
   connect( mFeedback, &QgsFeedback::canceled, uploader, &QgsFileUploader::cancelUpload );
   connect( uploader, &QgsFileUploader::uploadError, this, [&errors, &loop]( const QStringList &e ) { errors = e; loop.exit(); } );
@@ -152,17 +111,8 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   connect( uploader, &QgsFileUploader::uploadCompleted, this, [&uploadUrl]( const QUrl url ) { uploadUrl = url; } );
   connect( uploader, &QgsFileUploader::uploadExited, this, [&loop]() { loop.exit(); } );
   connect( &timer, &QTimer::timeout, this, &QgsFileUploaderAlgorithm::sendProgressFeedback );
-
   uploader->startUpload();
 
-  // QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true, httpMethod, data.toUtf8() );
-  // connect( mFeedback, &QgsFeedback::canceled, downloader, &QgsFileDownloader::cancelDownload );
-  // connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList &e ) { errors = e; loop.exit(); } );
-  // connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileUploaderAlgorithm::receiveProgressFromUploader );
-  // connect( downloader, &QgsFileDownloader::downloadCompleted, this, [&downloadedUrl]( const QUrl url ) { downloadedUrl = url; } );
-  // connect( downloader, &QgsFileDownloader::downloadExited, this, [&loop]() { loop.exit(); } );
-  // connect( &timer, &QTimer::timeout, this, &QgsFileUploaderAlgorithm::sendProgressFeedback );
-  // downloader->startDownload();
   timer.start( 1000 );
 
   loop.exec();
@@ -171,29 +121,11 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   if ( errors.size() > 0 )
     throw QgsProcessingException( errors.join( '\n' ) );
 
-  // const bool exists = QFileInfo::exists( outputFile );
-  // if ( !feedback->isCanceled() && !exists )
-  //   throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
   url = uploadUrl.toDisplayString();
-  feedback->pushInfo( QObject::tr( "Successfully downloaded %1" ).arg( url ) );
-
-  if ( parameters.value( QStringLiteral( "OUTPUT" ) ) == QgsProcessing::TEMPORARY_OUTPUT )
-  {
-    // the output is temporary and its file name automatically generated, try to add a file extension
-    const int length = url.size();
-    const int lastDotIndex = url.lastIndexOf( "." );
-    const int lastSlashIndex = url.lastIndexOf( "/" );
-    if ( lastDotIndex > -1 && lastDotIndex > lastSlashIndex && length - lastDotIndex <= 6 )
-    {
-      QFile tmpFile( outputFile );
-      tmpFile.rename( tmpFile.fileName() + url.mid( lastDotIndex ) );
-      outputFile += url.mid( lastDotIndex );
-    }
-  }
+  feedback->pushInfo( QObject::tr( "Successfully upload file to %1" ).arg( url ) );
 
   QVariantMap outputs;
-  // outputs.insert( QStringLiteral( "OUTPUT" ), exists ? outputFile : QString() );
   return outputs;
 }
 
@@ -203,9 +135,9 @@ void QgsFileUploaderAlgorithm::sendProgressFeedback()
   {
     mLastReport = mSent;
     if ( mTotal.isEmpty() )
-      mFeedback->pushInfo( tr( "%1 downloaded" ).arg( mSent ) );
+      mFeedback->pushInfo( tr( "%1 uploaded" ).arg( mSent ) );
     else
-      mFeedback->pushInfo( tr( "%1 of %2 downloaded" ).arg( mSent, mTotal ) );
+      mFeedback->pushInfo( tr( "%1 of %2 uploaded" ).arg( mSent, mTotal ) );
   }
 }
 

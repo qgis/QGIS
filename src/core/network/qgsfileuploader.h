@@ -30,17 +30,17 @@
 
 /**
  * \ingroup core
- * \brief A utility class for downloading files.
+ * \brief A utility class for uploading files.
  *
- * To use this class, it is necessary to pass the URL and an output file name as
- * arguments to the constructor, the download will start immediately.
+ * To use this class, it is necessary to pass the URL and a the file name of the file to upload as
+ * arguments to the constructor, the upload will start immediately.
  *
- * The download is asynchronous.
+ * The upload is asynchronous.
  *
  * The object will destroy itself when the request completes, errors or is canceled.
  * An optional authentication configuration can be specified.
  *
- * \note This class was part of the GUI library from QGIS 2.18.1 until QGIS 3.0
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsFileUploader : public QObject
 {
@@ -49,31 +49,26 @@ class CORE_EXPORT QgsFileUploader : public QObject
 
     /**
      * QgsFileUploader
-     * \param url the download URL
-     * \param outputFileName file name where the downloaded content will be stored
+     * \param uploadFileName file name of the file to upload to the server
+     * \param url the upload URL
+     * \param formName the upload URL
      * \param authcfg optionally apply this authentication configuration
-     * \param delayStart if TRUE, the download will not be commenced immediately and must
-     * be triggered by a later call to startUpload(). This can be useful if connections need
-     * to be made to the downloader and there's a chance the download will emit
-     * signals before these connections have been made.
-     * \param httpMethod Method for the HTTP request : GET or POST, since QGIS 3.22
-     * \param data If the request is POST, some data can be added, since QGIS 3.22
      */
-    QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &authcfg = QString(), bool delayStart = false, Qgis::HttpMethod httpMethod = Qgis::HttpMethod::Get, const QByteArray &data = QByteArray() );
+    QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName = QString(), const QString &authcfg = QString() );
 
   signals:
-    //! Emitted when the download has completed successfully
+    //! Emitted when the upload has completed successfully
     void uploadCompleted( const QUrl &url );
-    //! Emitted always when the downloader exits
+    //! Emitted always when the uploader exits
     void uploadExited();
 
     /**
-     * Emitted when the download was canceled by the user.
+     * Emitted when the upload was canceled by the user.
      * \see cancelUpload()
      */
     void uploadCanceled();
 
-    //! Emitted when an error makes the download fail
+    //! Emitted when an error makes the upload fail
     void uploadError( QStringList errorMessages );
     //! Emitted when data are ready to be processed
     void uploadProgress( qint64 bytesSent, qint64 bytesTotal );
@@ -81,18 +76,16 @@ class CORE_EXPORT QgsFileUploader : public QObject
   public slots:
 
     /**
-     * Call to abort the download and delete this object after the cancellation
+     * Call to abort the upload and delete this object after the cancellation
      * has been processed.
      * \see uploadCanceled()
      */
     void cancelUpload();
 
-    //! Called to start the download
+    //! Called to start the upload
     void startUpload();
 
   private slots:
-    //! Called when the network reply data are ready
-    void onReadyRead();
     //! Called when the network reply has finished
     void onFinished();
     //! Called on data ready to be processed
@@ -122,11 +115,10 @@ class CORE_EXPORT QgsFileUploader : public QObject
     void error( const QStringList &errorMessages );
     void error( const QString &errorMessage );
     QUrl mUrl;
+    QString mFormName;
     QNetworkReply *mReply = nullptr;
     QFile mFile;
     bool mUploadCanceled;
-    Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
-    QByteArray mData;
     QStringList mErrors;
     QString mAuthCfg;
 };
