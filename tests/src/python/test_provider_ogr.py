@@ -2234,6 +2234,10 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertFalse(res)
         self.assertEqual(msg, "Storing metadata for the specified uri is not supported")
 
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) == GDAL_COMPUTE_VERSION(3, 9, 1),
+        "Skipping due to GDAL 3.9.1 regression, see https://github.com/OSGeo/gdal/pull/10473",
+    )
     def testEmbeddedSymbolsKml(self):
         """
         Test retrieving embedded symbols from a KML file
