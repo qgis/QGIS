@@ -350,7 +350,21 @@ uint qHash( const QVariant &variant )
 
 bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 {
-  return ( lhs.isNull() == rhs.isNull() && lhs == rhs ) || ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
+  if ( lhs.isNull() == rhs.isNull() )
+  {
+    if ( lhs.type() == QVariant::String && rhs.type() == QVariant::String )
+    {
+      const QString lhsString = lhs.toString();
+      const QString rhsString = rhs.toString();
+      return lhsString.isNull() == rhsString.isNull()
+             && lhsString.isEmpty() == rhsString.isEmpty()
+             && lhsString == rhsString;
+    }
+    if ( lhs == rhs )
+      return true;
+  }
+
+  return ( lhs.isNull() && rhs.isNull() && lhs.isValid() && rhs.isValid() );
 }
 
 QString Qgis::defaultProjectScales()
