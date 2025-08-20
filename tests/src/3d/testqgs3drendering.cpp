@@ -101,6 +101,7 @@ class TestQgs3DRendering : public QgsTest
     void testAnimationExport();
     void testBillboardRendering();
     void testInstancedRendering();
+    void testModelPointRendering();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
     void testFilteredExtrudedPolygons();
@@ -1763,6 +1764,78 @@ void TestQgs3DRendering::testInstancedRendering()
   delete scene;
   delete mapSettings;
   QGSVERIFYIMAGECHECK( "cylinder_rendering", "cylinder_rendering", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testModelPointRendering()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  QVariantMap vMap;
+  vMap[QStringLiteral( "model" )] = testDataPath( "/mesh/tree.obj" );
+  symbol->setShapeProperties( vMap );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::green );
+  symbol->setMaterialSettings( materialSettings.clone() );
+  QMatrix4x4 id;
+  id.scale( 100.0f );
+  symbol->setTransform( id );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
+                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
+                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering_clipping", "model_rendering_clipping", imgModel, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testBillboardRendering()
