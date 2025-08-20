@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsplotregistry.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+class QgsPlotAbstractMetadata
+{
+%Docstring(signature="appended")
+Stores metadata about a plot class.
+
+.. note::
+
+   In C++ you can use :py:class:`QgsPlotAbstractMetadata` convenience class.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotregistry.h"
+%End
+  public:
+
+    QgsPlotAbstractMetadata( const QString &type, const QString &visibleName );
+%Docstring
+Constructor for QgsPlotAbstractMetadata with the specified class
+``type``.
+%End
+
+    virtual ~QgsPlotAbstractMetadata();
+
+    QString type() const;
+%Docstring
+Returns the unique type code for the plot class.
+%End
+
+    QString visibleName() const;
+%Docstring
+Returns a translated, user visible name for the plot class.
+%End
+
+
+    virtual QgsPlot *createPlot() = 0 /TransferBack/;
+%Docstring
+Creates a plot of this class.
+%End
+
+};
+
+
+
+class QgsPlotRegistry : QObject
+{
+%Docstring(signature="appended")
+Registry of available plot types.
+
+:py:class:`QgsPlotRegistry` is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.plotRegistry()`.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotregistry.h"
+%End
+  public:
+
+    QgsPlotRegistry( QObject *parent = 0 );
+%Docstring
+Creates a new empty plot registry.
+
+QgsPlotRegistry is not usually directly created, but rather accessed
+through :py:func:`QgsApplication.plotRegistry()`.
+
+.. seealso:: :py:func:`populate`
+%End
+    ~QgsPlotRegistry();
+
+    bool populate();
+%Docstring
+Populates the registry with standard plot types. If called on a
+non-empty registry then this will have no effect and will return
+``False``.
+%End
+
+
+    QgsPlotAbstractMetadata *plotMetadata( const QString &type ) const;
+%Docstring
+Returns the metadata for the specified plot ``type``. Returns ``None``
+if a corresponding type was not found in the registry.
+%End
+
+
+    bool addPlotType( QgsPlotAbstractMetadata *metadata /Transfer/ );
+%Docstring
+Registers a new plot type.
+
+.. note::
+
+   Takes ownership of the metadata instance.
+%End
+
+    bool removePlotType( const QString &type );
+%Docstring
+Removes a new a plot type from the registry.
+%End
+
+    QgsPlot *createPlot( const QString &type ) const /TransferBack/;
+%Docstring
+Creates a new instance of a plot given the ``type``.
+%End
+
+    QMap<QString, QString> plotTypes() const;
+%Docstring
+Returns a map of available plot types to translated name.
+%End
+
+  signals:
+
+    void plotAdded( const QString &type, const QString &name );
+%Docstring
+Emitted whenever a new plot type is added to the registry, with the
+specified ``type`` and visible ``name``.
+%End
+
+    void plotAboutToBeRemoved( const QString &type );
+%Docstring
+Emitted whenever a plot type is about to be remove from the registry,
+with the specified ``type`` and visible ``name``.
+%End
+
+  private:
+    QgsPlotRegistry( const QgsPlotRegistry &rh );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsplotregistry.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

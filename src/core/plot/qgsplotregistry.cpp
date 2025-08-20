@@ -1,5 +1,5 @@
 /***************************************************************************
-                            qgschartplotregistry.cpp
+                            qgsplotregistry.cpp
                             ------------------------
     begin                : June 2025
     copyright            : (C) 2025 by Mathieu Pellerin
@@ -16,66 +16,66 @@
 
 #include "qgsconfig.h"
 
-#include "qgschartplotregistry.h"
-#include "moc_qgschartplotregistry.cpp"
+#include "qgsplotregistry.h"
+#include "moc_qgsplotregistry.cpp"
 #include "qgschartplot.h"
 #include "qgsplot.h"
 
-QgsChartPlotRegistry::QgsChartPlotRegistry( QObject *parent )
+QgsPlotRegistry::QgsPlotRegistry( QObject *parent )
   : QObject( parent )
 {
 }
 
-QgsChartPlotRegistry::~QgsChartPlotRegistry()
+QgsPlotRegistry::~QgsPlotRegistry()
 {
   qDeleteAll( mMetadata );
 }
 
-bool QgsChartPlotRegistry::populate()
+bool QgsPlotRegistry::populate()
 {
   if ( !mMetadata.isEmpty() )
     return false;
 
-  addChartType( new QgsChartPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create ) );
-  addChartType( new QgsChartPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create ) );
 
   return true;
 }
 
-QgsChartPlotAbstractMetadata *QgsChartPlotRegistry::chartMetadata( const QString &type ) const
+QgsPlotAbstractMetadata *QgsPlotRegistry::plotMetadata( const QString &type ) const
 {
   return mMetadata.value( type );
 }
 
-bool QgsChartPlotRegistry::addChartType( QgsChartPlotAbstractMetadata *metadata )
+bool QgsPlotRegistry::addPlotType( QgsPlotAbstractMetadata *metadata )
 {
   if ( !metadata || mMetadata.contains( metadata->type() ) )
     return false;
 
   mMetadata[metadata->type()] = metadata;
-  emit chartAdded( metadata->type(), metadata->visibleName() );
+  emit plotAdded( metadata->type(), metadata->visibleName() );
   return true;
 }
 
-bool QgsChartPlotRegistry::removeChartType( const QString &type )
+bool QgsPlotRegistry::removePlotType( const QString &type )
 {
   if ( !mMetadata.contains( type ) )
     return false;
 
-  emit chartAboutToBeRemoved( type );
+  emit plotAboutToBeRemoved( type );
   delete mMetadata.take( type );
   return true;
 }
 
-QgsPlot *QgsChartPlotRegistry::createChart( const QString &type ) const
+QgsPlot *QgsPlotRegistry::createPlot( const QString &type ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->createChart();
+  return mMetadata[type]->createPlot();
 }
 
-QMap<QString, QString> QgsChartPlotRegistry::chartTypes() const
+QMap<QString, QString> QgsPlotRegistry::plotTypes() const
 {
   QMap<QString, QString> types;
   for ( auto it = mMetadata.constBegin(); it != mMetadata.constEnd(); ++it )
