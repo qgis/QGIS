@@ -186,7 +186,6 @@ void QgsFileUploader::onFinished()
     }
     else
     {
-      QVariant statusCode = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
       emit uploadCompleted( mReply->url() );
     }
   }

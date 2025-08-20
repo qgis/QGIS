@@ -76,7 +76,7 @@ void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FILE" ), QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All file (%1)" ).arg( QLatin1String( "*.*" ) ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "To URL" ), QVariant(), false, false ) );
 
-  auto formNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMNAME" ), tr( "Form name field" ), QStringLiteral( "" ), false, true );
+  auto formNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FORMNAME" ), tr( "Form name field" ), QString(), false, true );
   formNameParam->setHelp( QObject::tr( "The optional form name field parameter emulate a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point require a form name key" ) );
   formNameParam->setFlags( formNameParam->flags() | Qgis::ProcessingParameterFlag::Optional );
   addParameter( formNameParam.release() );

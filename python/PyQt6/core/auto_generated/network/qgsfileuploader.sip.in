@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/network/qgsfileuploader.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFileUploader : QObject
+{
+%Docstring(signature="appended")
+A utility class for uploading files.
+
+To use this class, it is necessary to pass the URL and a the file name
+of the file to upload as arguments to the constructor, the upload will
+start immediately.
+
+The upload is asynchronous.
+
+The object will destroy itself when the request completes, errors or is
+canceled. An optional authentication configuration can be specified.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsfileuploader.h"
+%End
+  public:
+
+    QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName = QString(), const QString &authcfg = QString() );
+%Docstring
+QgsFileUploader
+
+:param uploadFileName: file name of the file to upload to the server
+:param url: the upload URL
+:param formName: the upload URL
+:param authcfg: optionally apply this authentication configuration
+%End
+
+  signals:
+    void uploadCompleted( const QUrl &url );
+%Docstring
+Emitted when the upload has completed successfully
+%End
+    void uploadExited();
+%Docstring
+Emitted always when the uploader exits
+%End
+
+    void uploadCanceled();
+%Docstring
+Emitted when the upload was canceled by the user.
+
+.. seealso:: :py:func:`cancelUpload`
+%End
+
+    void uploadError( QStringList errorMessages );
+%Docstring
+Emitted when an error makes the upload fail
+%End
+    void uploadProgress( qint64 bytesSent, qint64 bytesTotal );
+%Docstring
+Emitted when data are ready to be processed
+%End
+
+  public slots:
+
+    void cancelUpload();
+%Docstring
+Call to abort the upload and delete this object after the cancellation
+has been processed.
+
+.. seealso:: :py:func:`uploadCanceled`
+%End
+
+    void startUpload();
+%Docstring
+Called to start the upload
+%End
+
+  protected:
+    ~QgsFileUploader();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/network/qgsfileuploader.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

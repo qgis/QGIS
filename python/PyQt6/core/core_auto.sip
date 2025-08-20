@@ -553,6 +553,7 @@
 %Include auto_generated/metadata/qgslayermetadataproviderregistry.sip
 %Include auto_generated/network/qgsblockingnetworkrequest.sip
 %Include auto_generated/network/qgsfiledownloader.sip
+%Include auto_generated/network/qgsfileuploader.sip
 %Include auto_generated/network/qgsnetworkaccessmanager.sip
 %Include auto_generated/network/qgsnetworkcontentfetcher.sip
 %Include auto_generated/network/qgsnetworkcontentfetcherregistry.sip
