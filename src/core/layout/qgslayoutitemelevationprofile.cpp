@@ -55,7 +55,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
       mRenderer = renderer;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( mRenderer )
       {
@@ -699,7 +699,8 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         // size must be in pixels, not layout units
         mPlot->setSize( layoutSize );
 
-        mPlot->render( rc );
+        QgsPlotRenderContext plotContext;
+        mPlot->render( rc, plotContext );
 
         mPlot->setRenderer( nullptr );
 
@@ -760,7 +761,8 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         // size must be in pixels, not layout units
         mPlot->setSize( layoutSize );
 
-        mPlot->render( rc );
+        QgsPlotRenderContext plotContext;
+        mPlot->render( rc, plotContext );
 
         mPlot->setRenderer( nullptr );
 
@@ -1025,7 +1027,8 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   // size must be in pixels, not layout units
   mPlot->setSize( mCacheRenderingImage->size() );
 
-  mPlot->render( rc );
+  QgsPlotRenderContext plotContext;
+  mPlot->render( rc, plotContext );
 
   mPlot->setRenderer( nullptr );
 

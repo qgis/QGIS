@@ -91,7 +91,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot
       return mPlotArea;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -316,8 +316,9 @@ void QgsQuickElevationProfileCanvas::generationFinished()
   rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
   rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
 
-  mPlotItem->calculateOptimisedIntervals( rc );
-  mPlotItem->render( rc );
+  QgsPlotRenderContext plotContext;
+  mPlotItem->calculateOptimisedIntervals( rc, plotContext );
+  mPlotItem->render( rc, plotContext );
   imagePainter.end();
 
   mDirty = true;

@@ -41,7 +41,7 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
 
     QString type() const override { return QStringLiteral( "line" ); }
 
-    void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
+    void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
 
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;

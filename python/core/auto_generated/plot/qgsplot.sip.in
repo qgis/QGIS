@@ -50,6 +50,28 @@ Reads the plot's properties from an XML ``element``.
 
 };
 
+
+class QgsPlotRenderContext
+{
+%Docstring(signature="appended")
+Contains information about the context of a plot rendering operation.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsPlotRenderContext();
+%Docstring
+Constructor for QgsPlotRenderContext.
+%End
+    ~QgsPlotRenderContext();
+};
+
+
 class QgsAbstractPlotSeries
 {
 %Docstring(signature="appended")
@@ -169,6 +191,8 @@ Returns the name of the series' categories.
 Sets the name of the series' ``categories``.
 %End
 
+  private:
+    QgsPlotData( const QgsPlotData &other );
 };
 
 class QgsPlotAxis
@@ -400,12 +424,12 @@ Constructor for Qgs2DPlot.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    virtual void render( QgsRenderContext &context, const QgsPlotData &plotData = QgsPlotData() );
+    virtual void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() );
 %Docstring
 Renders the plot.
 %End
 
-    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+    virtual void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
 %Docstring
 Renders the plot content.
 
@@ -438,7 +462,7 @@ components which sit outside the plot area).
 .. seealso:: :py:func:`size`
 %End
 
-    virtual QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
 content (excluding all titles and other components which sit outside the
@@ -459,6 +483,8 @@ Sets the ``margins`` of the plot area (in millimeters)
 .. seealso:: :py:func:`setMargins`
 %End
 
+  private:
+    Qgs2DPlot( const Qgs2DPlot &other );
 };
 
 class Qgs2DXyPlot : Qgs2DPlot
@@ -495,13 +521,13 @@ Constructor for Qgs2DXyPlot.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    virtual void render( QgsRenderContext &context, const QgsPlotData &plotData = QgsPlotData() );
+    virtual void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() );
 
 %Docstring
 Renders the plot.
 %End
 
-    virtual QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
 
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
@@ -509,7 +535,7 @@ content (excluding all titles and other components which sit outside the
 plot area).
 %End
 
-    void calculateOptimisedIntervals( QgsRenderContext &context );
+    void calculateOptimisedIntervals( QgsRenderContext &context, QgsPlotRenderContext &plotContext );
 %Docstring
 Automatically sets the grid and label intervals to optimal values for
 display in the given render ``context``.

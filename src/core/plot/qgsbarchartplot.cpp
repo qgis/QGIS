@@ -22,7 +22,7 @@
 #include "qgssymbollayerutils.h"
 
 
-void QgsBarChartPlot::renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData )
+void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
 {
   if ( mFillSymbols.empty() )
   {
