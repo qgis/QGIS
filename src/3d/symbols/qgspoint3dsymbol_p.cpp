@@ -254,7 +254,7 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
   QMatrix4x4 id;
   id.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );
-  QMatrix4x4 transformMatrix = tempTransformMatrix * id;
+  const QMatrix4x4 transformMatrix = tempTransformMatrix * id;
 
   // transponed inverse of 3x3 sub-matrix
   QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();
