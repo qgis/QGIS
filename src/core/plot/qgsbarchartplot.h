@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgschartplot.h
-                         ---------------
+                         qgsbarchartplot.h
+                         -----------------
     begin                : June 2025
     copyright            : (C) 2025 by Mathieu
     email                : mathieu at opengis dot ch
@@ -14,14 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCHARTPLOT_H
-#define QGSCHARTPLOT_H
+#ifndef QGSBARCHARTPLOT_H
+#define QGSBARCHARTPLOT_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
 #include "qgsplot.h"
 
 
@@ -65,56 +63,4 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
 };
 
-
-/**
- * \brief A simple line chart class.
- *
- * \warning This class is not considered stable API, and may change in future!
- *
- * \ingroup core
- * \since QGIS 4.0
- */
-class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
-{
-  public:
-
-    QgsLineChartPlot() = default;
-    ~QgsLineChartPlot() = default;
-
-    QString type() const override { return QStringLiteral( "line" ); }
-
-    void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
-
-    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-
-    /**
-     * Returns the marker symbol at a given \a index.
-     */
-    QgsMarkerSymbol *markerSymbol( int index ) const;
-
-    /**
-     * Sets the marker \a symbol at a given \a index.
-     */
-    void setMarkerSymbol( int index, QgsMarkerSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns the line symbol at a given \a index.
-     */
-    QgsLineSymbol *lineSymbol( int index ) const;
-
-    /**
-     * Sets the marker \a symbol at a given \a index.
-     */
-    void setLineSymbol( int index, QgsLineSymbol *symbol SIP_TRANSFER );
-
-    //! Returns a new line chart.
-    static QgsLineChartPlot *create();
-
-  private:
-
-    std::vector<std::unique_ptr<QgsMarkerSymbol>> mMarkerSymbols;
-    std::vector<std::unique_ptr<QgsLineSymbol>> mLineSymbols;
-};
-
-#endif // QGSCHARTPLOT_H
+#endif // QGSBARCHARTPLOT_H

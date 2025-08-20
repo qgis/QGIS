@@ -18,7 +18,8 @@
 
 #include "qgsplotregistry.h"
 #include "moc_qgsplotregistry.cpp"
-#include "qgschartplot.h"
+#include "qgsbarchartplot.h"
+#include "qgslinechartplot.h"
 #include "qgsplot.h"
 
 QgsPlotRegistry::QgsPlotRegistry( QObject *parent )
