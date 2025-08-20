@@ -36,9 +36,17 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, const QRectF &p
   }
 
   const QStringList categories = plotData.categories();
-  if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && categories.isEmpty() )
+  switch ( xAxis().type() )
   {
-    return;
+    case Qgis::PlotAxisType::CategoryType:
+      if ( categories.isEmpty() )
+      {
+        return;
+      }
+      break;
+
+    case Qgis::PlotAxisType::ValueType:
+      break;
   }
 
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( QStringLiteral( "chart" ) );
@@ -78,21 +86,21 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, const QRectF &p
       int dataIndex = 0;
       for ( const std::pair<double, double> &pair : data )
       {
-        if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && ( pair.first < 0 || pair.first >= categories.size() ) )
-        {
-          continue;
-        }
-
         if ( !std::isnan( pair.second ) )
         {
           double x = 0;
-          if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
+          switch ( xAxis().type() )
           {
-            x = ( pair.first - xMinimum() ) * xScale;
-          }
-          else if ( xAxis().type() == Qgis::PlotAxisType::CategoryType )
-          {
-            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
+            case Qgis::PlotAxisType::CategoryType:
+              if ( pair.first < 0 || pair.first >= categories.size() )
+              {
+                continue;
+              }
+              x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
+              break;
+            case Qgis::PlotAxisType::ValueType:
+              x = ( pair.first - xMinimum() ) * xScale;
+              break;
           }
           double y = ( pair.second - yMinimum() ) * yScale;
 
@@ -134,20 +142,22 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, const QRectF &p
           if ( !point.isNull() )
           {
             double value = 0;
-            if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
+            switch ( xAxis().type() )
             {
-              value = data.at( pointIndex ).second;
-            }
-            else
-            {
-              for ( const std::pair<double, double> &pair : data )
-              {
-                if ( pair.first == pointIndex )
+              case Qgis::PlotAxisType::ValueType:
+                value = data.at( pointIndex ).second;
+                break;
+
+              case Qgis::PlotAxisType::CategoryType:
+                for ( const std::pair<double, double> &pair : data )
                 {
-                  value = pair.second;
-                  break;
+                  if ( pair.first == pointIndex )
+                  {
+                    value = pair.second;
+                    break;
+                  }
                 }
-              }
+                break;
             }
 
             chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), value, true ) );

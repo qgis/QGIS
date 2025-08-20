@@ -53,8 +53,7 @@ Reads the plot's properties from an XML ``element``.
 class QgsAbstractPlotSeries
 {
 %Docstring(signature="appended")
-An abstract class used to encapsulates the data and styling of a plot
-series.
+An abstract class used to encapsulate the data for a plot series.
 
 .. warning::
 
@@ -81,14 +80,12 @@ Returns the series' name.
 Sets the series' name.
 %End
 
-  private:
-    QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
 };
 
 class QgsXyPlotSeries : QgsAbstractPlotSeries
 {
 %Docstring(signature="appended")
-Encapsulates the data and styling of an XY plot series.
+Encapsulates the data for an XY plot series.
 
 .. warning::
 
@@ -108,7 +105,7 @@ Encapsulates the data and styling of an XY plot series.
 
     void append( const double &x, const double &y );
 %Docstring
-Appends a pair for of XY double values to the series.
+Appends a pair of X/Y double values to the series.
 %End
 
     void clear();
@@ -116,8 +113,6 @@ Appends a pair for of XY double values to the series.
 Clears the series' data.
 %End
 
-  private:
-    QgsXyPlotSeries( const QgsXyPlotSeries &other );
 };
 
 class QgsPlotData
@@ -139,6 +134,7 @@ Encapsulates one or more plot series.
 
     QgsPlotData();
     ~QgsPlotData();
+
 
     QList<QgsAbstractPlotSeries *> series() const;
 %Docstring
@@ -166,19 +162,11 @@ Clears all series from the plot data.
     QStringList categories() const;
 %Docstring
 Returns the name of the series' categories.
-
-.. note::
-
-   Used when the x asis type is set to category.
 %End
 
     void setCategories( const QStringList &categories );
 %Docstring
 Sets the name of the series' ``categories``.
-
-.. note::
-
-   Used when the x asis type is set to category.
 %End
 
 };
@@ -471,8 +459,6 @@ Sets the ``margins`` of the plot area (in millimeters)
 .. seealso:: :py:func:`setMargins`
 %End
 
-  private:
-    Qgs2DPlot( const Qgs2DPlot &other );
 };
 
 class Qgs2DXyPlot : Qgs2DPlot

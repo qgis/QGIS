@@ -41,25 +41,25 @@ A simple line chart class.
 
     QgsMarkerSymbol *markerSymbol( int index ) const;
 %Docstring
-Returns the marker symbol at a given ``index``.
+Returns the marker symbol for the series with matching ``index``.
 %End
 
     void setMarkerSymbol( int index, QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
-Sets the marker ``symbol`` at a given ``index``.
+Sets the fill ``symbol`` to use for the series with matching ``index``.
 %End
 
     QgsLineSymbol *lineSymbol( int index ) const;
 %Docstring
-Returns the line symbol at a given ``index``.
+Returns the line symbol for the series with matching ``index``.
 %End
 
     void setLineSymbol( int index, QgsLineSymbol *symbol /Transfer/ );
 %Docstring
-Sets the marker ``symbol`` at a given ``index``.
+Sets the line ``symbol`` to use for the series with matching ``index``.
 %End
 
-    static QgsLineChartPlot *create();
+    static QgsLineChartPlot *create() /Factory/;
 %Docstring
 Returns a new line chart.
 %End
