@@ -976,6 +976,11 @@ QString QgsProcessingAlgorithm::invalidRasterError( const QVariantMap &parameter
   else
   {
     QVariant var = parameters.value( name );
+    if ( var.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+    {
+      QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( var );
+      var = fromVar.source;
+    }
     if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
       QgsProperty p = var.value< QgsProperty >();
