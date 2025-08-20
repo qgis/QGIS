@@ -25,6 +25,10 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsPlotRenderContext.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
     QgsAbstractPlotSeries.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

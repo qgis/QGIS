@@ -204,18 +204,18 @@ bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &
   return true;
 }
 
-void Qgs2DPlot::render( QgsRenderContext &context, const QgsPlotData &plotData )
+void Qgs2DPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData )
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
 
-  const QRectF plotArea = interiorPlotArea( context );
+  const QRectF plotArea = interiorPlotArea( context, plotContext );
 
   // give subclasses a chance to draw their content
-  renderContent( context, plotArea, plotData );
+  renderContent( context, plotContext, plotArea, plotData );
 }
 
-void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF &, const QgsPlotData & )
+void Qgs2DPlot::renderContent( QgsRenderContext &, QgsPlotRenderContext &, const QRectF &, const QgsPlotData & )
 {
 }
 
@@ -231,7 +231,7 @@ void Qgs2DPlot::setSize( QSizeF size )
   mSize = size;
 }
 
-QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext & ) const
+QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &, QgsPlotRenderContext & ) const
 {
   return QRectF( 0, 0, mSize.width(), mSize.height() );
 }
@@ -307,7 +307,7 @@ bool Qgs2DXyPlot::readXml( const QDomElement &element, const QgsReadWriteContext
   return true;
 }
 
-void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData )
+void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData )
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -329,7 +329,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
   const QString xAxisSuffix = mXAxis.labelSuffix();
   const QString yAxisSuffix = mYAxis.labelSuffix();
 
-  const QRectF plotArea = interiorPlotArea( context );
+  const QRectF plotArea = interiorPlotArea( context, plotContext );
 
   const double xTolerance = mXAxis.gridIntervalMinor() / 100000;
   const double yTolerance = mYAxis.gridIntervalMinor() / 100000;
@@ -619,7 +619,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
   }
 
   // give subclasses a chance to draw their content
-  renderContent( context, plotArea, plotData );
+  renderContent( context, plotContext, plotArea, plotData );
 
   // border
   mChartBorderSymbol->renderPolygon( QPolygonF(
@@ -641,7 +641,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, const QgsPlotData &plotData
 
 Qgs2DXyPlot::~Qgs2DXyPlot() = default;
 
-QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context ) const
+QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext & ) const
 {
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -756,7 +756,7 @@ QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context ) const
   return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
-void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context )
+void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context, QgsPlotRenderContext & )
 {
   if ( !mSize.isValid() )
     return;

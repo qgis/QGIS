@@ -70,6 +70,25 @@ class CORE_EXPORT QgsPlot
 
 };
 
+
+/**
+ * \ingroup core
+ * \class QgsPlotRenderContext
+ * \brief Contains information about the context of a plot rendering operation.
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsPlotRenderContext
+{
+  public:
+
+    /**
+     * Constructor for QgsPlotRenderContext.
+     */
+    QgsPlotRenderContext() = default;
+    ~QgsPlotRenderContext() = default;
+};
+
+
 /**
  * \brief An abstract class used to encapsulate the data for a plot series.
  *
@@ -181,6 +200,10 @@ class CORE_EXPORT QgsPlotData
     void setCategories( const QStringList &categories );
 
   private:
+
+#ifdef SIP_RUN
+    QgsPlotData( const QgsPlotData &other );
+#endif
 
     QList<QgsAbstractPlotSeries *> mSeries;
     QStringList mCategories;
@@ -423,7 +446,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     /**
      * Renders the plot.
      */
-    virtual void render( QgsRenderContext &context, const QgsPlotData &plotData = QgsPlotData() );
+    virtual void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() );
 
     /**
      * Renders the plot content.
@@ -436,7 +459,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * The \a plotArea argument specifies that area of the plot which corresponds to the actual plot content. Implementations
      * should take care to scale values accordingly to render points correctly inside this plot area.
      */
-    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+    virtual void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
 
     /**
      * Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
@@ -456,7 +479,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      */
-    virtual QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
 
     /**
      * Returns the margins of the plot area (in millimeters)
@@ -473,6 +496,10 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void setMargins( const QgsMargins &margins );
 
   private:
+
+#ifdef SIP_RUN
+    Qgs2DPlot( const Qgs2DPlot &other );
+#endif
 
     QSizeF mSize;
     QgsMargins mMargins;
@@ -511,13 +538,13 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
     /**
      * Renders the plot.
      */
-    void render( QgsRenderContext &context, const QgsPlotData &plotData = QgsPlotData() ) override;
+    void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) override;
 
     /**
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      */
-    QRectF interiorPlotArea( QgsRenderContext &context ) const override;
+    QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const override;
 
     /**
      * Automatically sets the grid and label intervals to optimal values
@@ -526,7 +553,7 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
      * Intervals will be calculated in order to avoid overlapping axis labels and to ensure
      * round values are shown.
      */
-    void calculateOptimisedIntervals( QgsRenderContext &context );
+    void calculateOptimisedIntervals( QgsRenderContext &context, QgsPlotRenderContext &plotContext );
 
     /**
      * Returns the minimum value of the x axis.

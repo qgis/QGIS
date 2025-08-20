@@ -178,8 +178,9 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
       if ( !scene()->views().isEmpty() )
         context.setScaleFactor( scene()->views().at( 0 )->logicalDpiX() / 25.4 );
 
-      calculateOptimisedIntervals( context );
-      mPlotArea = interiorPlotArea( context );
+      QgsPlotRenderContext plotContext;
+      calculateOptimisedIntervals( context, plotContext );
+      mPlotArea = interiorPlotArea( context, plotContext );
       return mPlotArea;
     }
 
@@ -206,7 +207,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
       return QgsPointXY( x, y );
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -259,8 +260,9 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
         rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
         rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
 
-        calculateOptimisedIntervals( rc );
-        render( rc );
+        QgsPlotRenderContext plotContext;
+        calculateOptimisedIntervals( rc, plotContext );
+        render( rc, plotContext );
         imagePainter.end();
 
         painter->drawImage( QPointF( 0, 0 ), mImage );
@@ -1396,7 +1398,7 @@ class QgsElevationProfilePlot : public Qgs2DXyPlot
     {
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea, const QgsPlotData & ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( !mRenderer )
         return;
@@ -1435,7 +1437,8 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
   profilePlot.xAxis().setLabelSuffixPlacement( mPlotItem->xAxis().labelSuffixPlacement() );
 
   profilePlot.setSize( QSizeF( width, height ) );
-  profilePlot.render( context );
+  QgsPlotRenderContext plotContext;
+  profilePlot.render( context, plotContext );
 }
 
 QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( QPointF point )
