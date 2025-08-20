@@ -47,27 +47,27 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     /**
-     * Returns the marker symbol at a given \a index.
+     * Returns the marker symbol for the series with matching \a index.
      */
     QgsMarkerSymbol *markerSymbol( int index ) const;
 
     /**
-     * Sets the marker \a symbol at a given \a index.
+     * Sets the fill \a symbol to use for the series with matching \a index.
      */
     void setMarkerSymbol( int index, QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
-     * Returns the line symbol at a given \a index.
+     * Returns the line symbol for the series with matching \a index.
      */
     QgsLineSymbol *lineSymbol( int index ) const;
 
     /**
-     * Sets the marker \a symbol at a given \a index.
+     * Sets the line \a symbol to use for the series with matching \a index.
      */
     void setLineSymbol( int index, QgsLineSymbol *symbol SIP_TRANSFER );
 
     //! Returns a new line chart.
-    static QgsLineChartPlot *create();
+    static QgsLineChartPlot *create() SIP_FACTORY;
 
   private:
 

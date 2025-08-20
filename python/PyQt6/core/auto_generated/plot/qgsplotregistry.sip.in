@@ -93,7 +93,6 @@ Returns the metadata for the specified plot ``type``. Returns ``None``
 if a corresponding type was not found in the registry.
 %End
 
-
     bool addPlotType( QgsPlotAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new plot type.
@@ -107,6 +106,7 @@ Registers a new plot type.
 %Docstring
 Removes a new a plot type from the registry.
 %End
+
 
     QgsPlot *createPlot( const QString &type ) const /TransferBack/;
 %Docstring

@@ -36,9 +36,17 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, const QRectF &pl
   }
 
   const QStringList categories = plotData.categories();
-  if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && categories.isEmpty() )
+  switch ( xAxis().type() )
   {
-    return;
+    case Qgis::PlotAxisType::CategoryType:
+      if ( categories.isEmpty() )
+      {
+        return;
+      }
+      break;
+
+    case Qgis::PlotAxisType::ValueType:
+      break;
   }
 
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( QStringLiteral( "chart" ) );
@@ -68,20 +76,22 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, const QRectF &pl
       const QList<std::pair<double, double>> data = xySeries->data();
       for ( const std::pair<double, double> &pair : data )
       {
-        if ( xAxis().type() == Qgis::PlotAxisType::CategoryType && ( pair.first < 0 || pair.first >= categories.size() ) )
+        double x = 0;
+        switch ( xAxis().type() )
         {
-          continue;
+          case Qgis::PlotAxisType::CategoryType:
+            if ( pair.first < 0 || pair.first >= categories.size() )
+            {
+              continue;
+            }
+            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+            break;
+
+          case Qgis::PlotAxisType::ValueType:
+            x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
+            break;
         }
 
-        double x = 0;
-        if ( xAxis().type() == Qgis::PlotAxisType::ValueType )
-        {
-          x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
-        }
-        else if ( xAxis().type() == Qgis::PlotAxisType::CategoryType )
-        {
-          x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
-        }
         double y = ( pair.second - yMinimum() ) * yScale;
 
         const double zero = ( 0.0 - yMinimum() ) * yScale;

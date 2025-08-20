@@ -41,15 +41,15 @@ A simple bar chart class.
 
     QgsFillSymbol *fillSymbol( int index ) const;
 %Docstring
-Returns the fill symbol at a given ``index``.
+Returns the fill symbol for the series with matching ``index``.
 %End
 
     void setFillSymbol( int index, QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the marker ``symbol`` at a given ``index``.
+Sets the fill ``symbol`` to use for the series with matching ``index``.
 %End
 
-    static QgsBarChartPlot *create();
+    static QgsBarChartPlot *create() /Factory/;
 %Docstring
 Returns a new bar chart.
 %End

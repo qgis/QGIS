@@ -46,17 +46,17 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     /**
-     * Returns the fill symbol at a given \a index.
+     * Returns the fill symbol for the series with matching \a index.
      */
     QgsFillSymbol *fillSymbol( int index ) const;
 
     /**
-     * Sets the marker \a symbol at a given \a index.
+     * Sets the fill \a symbol to use for the series with matching \a index.
      */
     void setFillSymbol( int index, QgsFillSymbol *symbol SIP_TRANSFER );
 
     //! Returns a new bar chart.
-    static QgsBarChartPlot *create();
+    static QgsBarChartPlot *create() SIP_FACTORY;
 
   private:
 

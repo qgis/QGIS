@@ -71,7 +71,7 @@ class CORE_EXPORT QgsPlot
 };
 
 /**
- * \brief An abstract class used to encapsulates the data and styling of a plot series.
+ * \brief An abstract class used to encapsulate the data for a plot series.
  *
  * \warning This class is not considered stable API, and may change in future!
  *
@@ -96,15 +96,12 @@ class CORE_EXPORT QgsAbstractPlotSeries
     void setName( const QString &name );
 
   private:
-#ifdef SIP_RUN
-    QgsAbstractPlotSeries( const QgsAbstractPlotSeries &other );
-#endif
 
     QString mName;
 };
 
 /**
- * \brief Encapsulates the data and styling of an XY plot series.
+ * \brief Encapsulates the data for an XY plot series.
  *
  * \warning This class is not considered stable API, and may change in future!
  *
@@ -116,7 +113,7 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
   public:
 
     QgsXyPlotSeries() = default;
-    ~QgsXyPlotSeries() = default;
+    ~QgsXyPlotSeries() override = default;
 
     /**
      * Returns the series' list of XY pairs of double.
@@ -124,7 +121,7 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QList<std::pair<double, double>> data() const SIP_SKIP;
 
     /**
-     * Appends a pair for of XY  double values to the series.
+     * Appends a pair of X/Y double values to the series.
      */
     void append( const double &x, const double &y );
 
@@ -134,9 +131,6 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     void clear();
 
   private:
-#ifdef SIP_RUN
-    QgsXyPlotSeries( const QgsXyPlotSeries &other );
-#endif
 
     QList<std::pair<double, double>> mData;
 };
@@ -155,6 +149,9 @@ class CORE_EXPORT QgsPlotData
 
     QgsPlotData() = default;
     ~QgsPlotData();
+
+    QgsPlotData( const QgsPlotData &rh ) = delete;
+    QgsPlotData &operator=( const QgsPlotData &rh ) = delete;
 
     /**
      * Returns the list of series forming the plot data.
@@ -175,13 +172,11 @@ class CORE_EXPORT QgsPlotData
 
     /**
      * Returns the name of the series' categories.
-     * \note Used when the x asis type is set to category.
      */
     QStringList categories() const;
 
     /**
      * Sets the name of the series' \a categories.
-     * \note Used when the x asis type is set to category.
      */
     void setCategories( const QStringList &categories );
 
@@ -478,10 +473,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void setMargins( const QgsMargins &margins );
 
   private:
-
-#ifdef SIP_RUN
-    Qgs2DPlot( const Qgs2DPlot &other );
-#endif
 
     QSizeF mSize;
     QgsMargins mMargins;
