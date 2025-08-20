@@ -101,7 +101,6 @@ class TestQgs3DRendering : public QgsTest
     void testAnimationExport();
     void testBillboardRendering();
     void testInstancedRendering();
-    void testInstancedRenderingClipping();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
     void testFilteredExtrudedPolygons();
@@ -1714,91 +1713,11 @@ void TestQgs3DRendering::testInstancedRendering()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
 
-  // When running the test on Travis, it would initially return empty rendered image.
-  // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  // find a better fix in the future.
-  Qgs3DUtils::captureSceneImage( engine, scene );
-
-  QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
-
-  QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
-  cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
-  QVariantMap vmCylinder;
-  vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 300.0f;
-  cylinder3DSymbol->setShapeProperties( vmCylinder );
-  cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
-
-  // simulate call to set transform as the symbol widget will do
-  QMatrix4x4 id;
-  id.translate( 10.0, 0.0, 10.0 );
-  cylinder3DSymbol->setTransform( id );
-
-  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
-
-  QImage imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
-  delete scene;
-  delete mapSettings;
-  QGSVERIFYIMAGECHECK( "cylinder_rendering", "cylinder_rendering", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
-}
-
-
-void TestQgs3DRendering::testInstancedRenderingClipping()
-{
-  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
-
-  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
-
-  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
-  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
-  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
-
-  QgsFeature f1( layerPointsZ->fields() );
-  QgsFeature f2( layerPointsZ->fields() );
-  QgsFeature f3( layerPointsZ->fields() );
-
-  f1.setGeometry( QgsGeometry( p1 ) );
-  f2.setGeometry( QgsGeometry( p2 ) );
-  f3.setGeometry( QgsGeometry( p3 ) );
-
-  QgsFeatureList featureList;
-  featureList << f1 << f2 << f3;
-  layerPointsZ->dataProvider()->addFeatures( featureList );
-
-  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
-  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
-  QVariantMap vmSphere;
-  vmSphere[QStringLiteral( "radius" )] = 80.0f;
-  sphere3DSymbol->setShapeProperties( vmSphere );
-  QgsPhongMaterialSettings materialSettings;
-  materialSettings.setAmbient( Qt::gray );
-  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
-
-  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
-
-  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
-  mapSettings->setCrs( mProject->crs() );
-  mapSettings->setExtent( fullExtent );
-  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
-
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
-  mapSettings->setTerrainGenerator( flatTerrain );
-
-  QgsOffscreen3DEngine engine;
-  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
-  engine.setRootEntity( scene );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
-
-  QList<QVector4D> clipPlanesEquationsSphere = QList<QVector4D>()
-                                               << QVector4D( 0.866025, -0.5, 0, 660.0 )
-                                               << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                               << QVector4D( -0.5, -0.866025, 0, 650.0 );
-  scene->enableClipping( clipPlanesEquationsSphere );
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 0.866025, -0.5, 0, 660.0 )
+                                         << QVector4D( 0.5, 0.866025, 0, 685.0 )
+                                         << QVector4D( -0.5, -0.866025, 0, 650.0 );
+  scene->enableClipping( clipPlanesEquations );
 
   // When running the test on Travis, it would initially return empty rendered image.
   // Capturing the initial image and throwing it away fixes that. Hopefully we will
@@ -1814,6 +1733,7 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
   imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
 
+  // ====================== CYLINDER
   QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
@@ -1831,13 +1751,7 @@ void TestQgs3DRendering::testInstancedRenderingClipping()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
-  QList<QVector4D> clipPlanesEquationsCylinder = QList<QVector4D>()
-                                                 << QVector4D( 0.866025, -0.5, 0, 678.0 )
-                                                 << QVector4D( 0.5, 0.866025, 0, 685.0 )
-                                                 << QVector4D( -0.5, -0.866025, 0, 680.0 );
-  scene->enableClipping( clipPlanesEquationsSphere );
-
-  scene->enableClipping( clipPlanesEquationsCylinder );
+  scene->enableClipping( clipPlanesEquations );
 
   QImage imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "cylinder_rendering_clipping", "cylinder_rendering_clipping", imgCylinder, QString(), 40, QSize( 0, 0 ), 2 );
