@@ -88,7 +88,7 @@ set(QGIS_CORE_SRCS
   gps/qgsvectorlayergpslogger.cpp
 
   plot/qgschartplot.cpp
-  plot/qgschartplotregistry.cpp
+  plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
 
   symbology/qgs25drenderer.cpp
@@ -1736,7 +1736,7 @@ set(QGIS_CORE_HDRS
   pdf/qgspdfrenderer.h
 
   plot/qgschartplot.h
-  plot/qgschartplotregistry.h
+  plot/qgsplotregistry.h
   plot/qgsplot.h
 
   pointcloud/qgspointcloudattribute.h

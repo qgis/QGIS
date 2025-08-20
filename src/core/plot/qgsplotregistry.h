@@ -1,6 +1,6 @@
 /***************************************************************************
-                            qgschartplotregistry.h
-                            ------------------------
+                            qgsplotregistry.h
+                            -----------------
     begin                : June 2025
     copyright            : (C) 2025 by Mathieu Pellerin
     email                : mathieu at opengis dot ch
@@ -13,8 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCHARTPLOTREGISTRY_H
-#define QGSCHARTPLOTREGISTRY_H
+#ifndef QGSPLOTREGISTRY_H
+#define QGSPLOTREGISTRY_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -23,33 +23,33 @@
 
 /**
  * \ingroup core
- * \class QgsChartPlotAbstractMetadata
- * \brief Stores metadata about a chart class.
+ * \class QgsPlotAbstractMetadata
+ * \brief Stores metadata about a plot class.
  *
- * \note In C++ you can use QgsChartPlotAbstractMetadata convenience class.
+ * \note In C++ you can use QgsPlotAbstractMetadata convenience class.
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsChartPlotAbstractMetadata
+class CORE_EXPORT QgsPlotAbstractMetadata
 {
   public:
 
     /**
-     * Constructor for QgsChartPlotAbstractMetadata with the specified class \a type.
+     * Constructor for QgsPlotAbstractMetadata with the specified class \a type.
      */
-    QgsChartPlotAbstractMetadata( const QString &type, const QString &visibleName )
+    QgsPlotAbstractMetadata( const QString &type, const QString &visibleName )
       : mType( type )
       , mVisibleName( visibleName )
     {}
 
-    virtual ~QgsChartPlotAbstractMetadata() = default;
+    virtual ~QgsPlotAbstractMetadata() = default;
 
     /**
-     * Returns the unique type code for the chart class.
+     * Returns the unique type code for the plot class.
      */
     QString type() const { return mType; }
 
     /**
-     * Returns a translated, user visible name for the chart class.
+     * Returns a translated, user visible name for the plot class.
      */
     QString visibleName() const { return mVisibleName; }
 
@@ -69,9 +69,9 @@ class CORE_EXPORT QgsChartPlotAbstractMetadata
      */
 
     /**
-     * Creates a chart of this class.
+     * Creates a plot of this class.
      */
-    virtual QgsPlot *createChart() = 0 SIP_TRANSFERBACK;
+    virtual QgsPlot *createPlot() = 0 SIP_TRANSFERBACK;
 
   private:
 
@@ -79,40 +79,40 @@ class CORE_EXPORT QgsChartPlotAbstractMetadata
     QString mVisibleName;
 };
 
-//! Chart creation function
-typedef std::function<QgsPlot *()> QgsChartPlotCreateFunc SIP_SKIP;
+//! Plot creation function
+typedef std::function<QgsPlot *()> QgsPlotCreateFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
 /**
  * \ingroup core
- * \class QgsChartPlotMetadata
- * \brief Convenience metadata class that uses static functions to create charts and their configuration widgets.
+ * \class QgsPlotMetadata
+ * \brief Convenience metadata class that uses static functions to create plots and their configuration widgets.
  * \note not available in Python bindings
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsChartPlotMetadata : public QgsChartPlotAbstractMetadata
+class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
 {
   public:
 
     /**
-     * Constructor for QgsChartMetadata with the specified class \a type.
+     * Constructor for QgsPlotMetadata with the specified class \a type.
      */
-    QgsChartPlotMetadata( const QString &type, const QString &visibleName,
-                          const QgsChartPlotCreateFunc &pfCreate )
-      : QgsChartPlotAbstractMetadata( type, visibleName )
+    QgsPlotMetadata( const QString &type, const QString &visibleName,
+                          const QgsPlotCreateFunc &pfCreate )
+      : QgsPlotAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
     {}
 
     /**
-     * Returns the classes' chart creation function.
+     * Returns the classes' plot creation function.
      */
-    QgsChartPlotCreateFunc createFunction() const { return mCreateFunc; }
+    QgsPlotCreateFunc createFunction() const { return mCreateFunc; }
 
-    QgsPlot *createChart() override { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsPlot *createPlot() override { return mCreateFunc ? mCreateFunc() : nullptr; }
 
   protected:
-    QgsChartPlotCreateFunc mCreateFunc = nullptr;
+    QgsPlotCreateFunc mCreateFunc = nullptr;
 
 };
 
@@ -120,45 +120,45 @@ class CORE_EXPORT QgsChartPlotMetadata : public QgsChartPlotAbstractMetadata
 
 /**
  * \ingroup core
- * \class QgsChartPlotRegistry
- * \brief Registry of available chart types.
+ * \class QgsPlotRegistry
+ * \brief Registry of available plot types.
  *
- * QgsChartPlotRegistry is not usually directly created, but rather accessed through
- * QgsApplication::chartRegistry().
+ * QgsPlotRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::plotRegistry().
  *
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsChartPlotRegistry : public QObject
+class CORE_EXPORT QgsPlotRegistry : public QObject
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Creates a new empty item registry.
+     * Creates a new empty plot registry.
      *
-     * QgsChartPlotRegistry is not usually directly created, but rather accessed through
-     * QgsApplication::chartRegistry().
+     * QgsPlotRegistry is not usually directly created, but rather accessed through
+     * QgsApplication::plotRegistry().
      *
      * \see populate()
     */
-    QgsChartPlotRegistry( QObject *parent = nullptr );
-    ~QgsChartPlotRegistry() override;
+    QgsPlotRegistry( QObject *parent = nullptr );
+    ~QgsPlotRegistry() override;
 
     /**
-     * Populates the registry with standard chart types. If called on a non-empty registry
+     * Populates the registry with standard plot types. If called on a non-empty registry
      * then this will have no effect and will return FALSE.
      */
     bool populate();
 
-    QgsChartPlotRegistry( const QgsChartPlotRegistry &rh ) = delete;
-    QgsChartPlotRegistry &operator=( const QgsChartPlotRegistry &rh ) = delete;
+    QgsPlotRegistry( const QgsPlotRegistry &rh ) = delete;
+    QgsPlotRegistry &operator=( const QgsPlotRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified chart \a type. Returns NULLPTR if
+     * Returns the metadata for the specified plot \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      */
-    QgsChartPlotAbstractMetadata *chartMetadata( const QString &type ) const;
+    QgsPlotAbstractMetadata *plotMetadata( const QString &type ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -176,51 +176,51 @@ class CORE_EXPORT QgsChartPlotRegistry : public QObject
      */
 
     /**
-     * Registers a new chart type.
+     * Registers a new plot type.
      * \note Takes ownership of the metadata instance.
      */
-    bool addChartType( QgsChartPlotAbstractMetadata *metadata SIP_TRANSFER );
+    bool addPlotType( QgsPlotAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
-     * Removes a new a chart type from the registry.
+     * Removes a new a plot type from the registry.
      */
-    bool removeChartType( const QString &type );
+    bool removePlotType( const QString &type );
 
     /**
-     * Creates a new instance of a chart  given the \a type.
+     * Creates a new instance of a plot  given the \a type.
      */
-    QgsPlot *createChart( const QString &type ) const SIP_TRANSFERBACK;
+    QgsPlot *createPlot( const QString &type ) const SIP_TRANSFERBACK;
 
     /**
-     * Returns a map of available charts types to translated name.
+     * Returns a map of available plot types to translated name.
      */
-    QMap<QString, QString> chartTypes() const;
+    QMap<QString, QString> plotTypes() const;
 
   signals:
 
     /**
-     * Emitted whenever a new chart type is added to the registry, with the specified
+     * Emitted whenever a new plot type is added to the registry, with the specified
      * \a type and visible \a name.
      */
-    void chartAdded( const QString &type, const QString &name );
+    void plotAdded( const QString &type, const QString &name );
 
     /**
-     * Emitted whenever a new chart type is added to the registry, with the specified
+     * Emitted whenever a plot type is about to be remove from the registry, with the specified
      * \a type and visible \a name.
      */
-    void chartAboutToBeRemoved( const QString &type );
+    void plotAboutToBeRemoved( const QString &type );
 
   private:
 
 #ifdef SIP_RUN
-    QgsChartPlotRegistry( const QgsChartPlotRegistry &rh );
+    QgsPlotRegistry( const QgsPlotRegistry &rh );
 #endif
 
-    QMap<QString, QgsChartPlotAbstractMetadata *> mMetadata;
+    QMap<QString, QgsPlotAbstractMetadata *> mMetadata;
 
 };
 
-#endif //QGSCHARTPLOTREGISTRY_H
+#endif //QGSPLOTREGISTRY_H
 
 
 
