@@ -137,7 +137,7 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     /**
      * Returns the series' list of XY pairs of double.
      */
-    QList<std::pair<double, double>> data() const SIP_SKIP;
+    QList<std::pair<double, double>> data() const;
 
     /**
      * Appends a pair of X/Y double values to the series.

@@ -124,6 +124,10 @@ Encapsulates the data for an XY plot series.
     QgsXyPlotSeries();
     ~QgsXyPlotSeries();
 
+    QList<std::pair<double, double>> data() const;
+%Docstring
+Returns the series' list of XY pairs of double.
+%End
 
     void append( const double &x, const double &y );
 %Docstring
