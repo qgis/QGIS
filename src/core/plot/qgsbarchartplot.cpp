@@ -58,7 +58,8 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   const double xScale = plotArea.width() / ( xMaximum() - xMinimum() );
   const double yScale = plotArea.height() / ( yMaximum() - yMinimum() );
   const double categoriesWidth = plotArea.width() / categories.size();
-  const double barsWidth = categoriesWidth / 2;
+  const double valuesWidth = plotArea.width() * ( xAxis().gridIntervalMinor() / ( xMaximum() - xMinimum() ) );
+  const double barsWidth = xAxis().type() == Qgis::PlotAxisType::CategoryType ? categoriesWidth / 2 : valuesWidth / 2;
   const double barWidth = barsWidth / seriesList.size();
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
