@@ -15,16 +15,22 @@ from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgs2DXyPlot,
+    QgsBarChartPlot,
     QgsBasicNumericFormat,
     QgsFillSymbol,
     QgsFontUtils,
+    QgsLineChartPlot,
     QgsLineSymbol,
     QgsPalLayerSettings,
+    QgsPlotData,
+    QgsPlotRenderContext,
     QgsProperty,
+    QgsMarkerSymbol,
     QgsReadWriteContext,
     QgsRenderContext,
     QgsSymbolLayer,
     QgsTextFormat,
+    QgsXyPlotSeries,
     Qgis,
 )
 import unittest
@@ -108,12 +114,13 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check("plot_2d_base", "plot_2d_base", im)
 
-        plot_rect = plot.interiorPlotArea(rc)
+        plot_rect = plot.interiorPlotArea(rc, prc)
         self.assertAlmostEqual(plot_rect.left(), 64.8, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
@@ -193,14 +200,15 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check(
             "plot_2d_base_suffix_all", "plot_2d_base_suffix_all", im
         )
 
-        plot_rect = plot.interiorPlotArea(rc)
+        plot_rect = plot.interiorPlotArea(rc, prc)
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
@@ -280,14 +288,15 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check(
             "plot_2d_base_suffix_first", "plot_2d_base_suffix_first", im
         )
 
-        plot_rect = plot.interiorPlotArea(rc)
+        plot_rect = plot.interiorPlotArea(rc, prc)
         self.assertAlmostEqual(plot_rect.left(), 64.82, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
@@ -367,14 +376,15 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check(
             "plot_2d_base_suffix_last", "plot_2d_base_suffix_last", im
         )
 
-        plot_rect = plot.interiorPlotArea(rc)
+        plot_rect = plot.interiorPlotArea(rc, prc)
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
@@ -458,7 +468,8 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check(
@@ -467,7 +478,7 @@ class TestQgsPlot(QgisTestCase):
             im,
         )
 
-        plot_rect = plot.interiorPlotArea(rc)
+        plot_rect = plot.interiorPlotArea(rc, prc)
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
@@ -540,7 +551,8 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check("plot_2d_intervals", "plot_2d_intervals", im)
@@ -639,12 +651,13 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
-        plot.render(rc)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc)
         painter.end()
 
         assert self.image_check("plot_2d_data_defined", "plot_2d_data_defined", im)
 
-        plot_rect = plot.interiorPlotArea(rc)
+        plot_rect = plot.interiorPlotArea(rc, prc)
         self.assertAlmostEqual(plot_rect.left(), 44.71, 0)
         self.assertAlmostEqual(plot_rect.right(), 592.44, 0)
         self.assertAlmostEqual(plot_rect.top(), 7.559, 0)
@@ -674,9 +687,10 @@ class TestQgsPlot(QgisTestCase):
 
         painter = QPainter(im)
         rc = QgsRenderContext.fromQPainter(painter)
+        prc = QgsPlotRenderContext()
         painter.end()
 
-        plot.calculateOptimisedIntervals(rc)
+        plot.calculateOptimisedIntervals(rc, prc)
         self.assertEqual(plot.xAxis().labelInterval(), 1)
         self.assertEqual(plot.yAxis().labelInterval(), 2)
         self.assertEqual(plot.xAxis().gridIntervalMinor(), 1)
@@ -689,7 +703,7 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(112)
 
-        plot.calculateOptimisedIntervals(rc)
+        plot.calculateOptimisedIntervals(rc, prc)
         self.assertEqual(plot.xAxis().labelInterval(), 20)
         self.assertEqual(plot.yAxis().labelInterval(), 20)
         self.assertEqual(plot.xAxis().gridIntervalMinor(), 10)
@@ -702,7 +716,7 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(1.1)
         plot.setYMaximum(2)
 
-        plot.calculateOptimisedIntervals(rc)
+        plot.calculateOptimisedIntervals(rc, prc)
         self.assertEqual(plot.xAxis().labelInterval(), 0.05)
         self.assertEqual(plot.yAxis().labelInterval(), 0.2)
         self.assertEqual(plot.xAxis().gridIntervalMinor(), 0.025)
@@ -715,7 +729,7 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(-10000)
         plot.setYMaximum(-500)
 
-        plot.calculateOptimisedIntervals(rc)
+        plot.calculateOptimisedIntervals(rc, prc)
         self.assertEqual(plot.xAxis().labelInterval(), 2)
         self.assertEqual(plot.yAxis().labelInterval(), 2000)
         self.assertEqual(plot.xAxis().gridIntervalMinor(), 1)
@@ -726,7 +740,7 @@ class TestQgsPlot(QgisTestCase):
         plot.setXMinimum(100000)
         plot.setXMaximum(200000)
 
-        plot.calculateOptimisedIntervals(rc)
+        plot.calculateOptimisedIntervals(rc, prc)
         self.assertEqual(plot.xAxis().labelInterval(), 100000)
         self.assertEqual(plot.xAxis().gridIntervalMinor(), 50000)
         self.assertEqual(plot.xAxis().gridIntervalMajor(), 200000)
@@ -850,6 +864,452 @@ class TestQgsPlot(QgisTestCase):
         self.assertEqual(
             res.yAxis().labelSuffixPlacement(),
             Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels,
+        )
+
+    def testBarChartPlotXAxisCategory(self):
+        width = 600
+        height = 500
+        dpi = 96
+
+        plot = QgsBarChartPlot()
+        plot.setSize(QSizeF(width, height))
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.CategoryType)
+        plot.setYMinimum(-10)
+        plot.setYMaximum(10)
+
+        # set symbol for first series
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#00BB00",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbol(0, series_symbol)
+
+        # set symbol for second series
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#330000",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbol(1, series_symbol)
+
+        data = QgsPlotData()
+        series = QgsXyPlotSeries()
+        series.append(0, 1)
+        series.append(1, 5)
+        series.append(2, 5)
+        series.append(3, 9)
+        data.addSeries(series)
+        series = QgsXyPlotSeries()
+        series.append(0, -5)
+        series.append(1, -2)
+        series.append(2, 5)
+        series.append(3, 4)
+        data.addSeries(series)
+        data.setCategories(["Q1", "Q2", "Q3", "Q4"])
+
+        im = QImage(width, height, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
+        im.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        im.setDotsPerMeterY(int(dpi / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        rc.setScaleFactor(dpi / 25.4)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc, data)
+        painter.end()
+
+        assert self.image_check(
+            "bar_chart_plot_x_axis_category", "bar_chart_plot_x_axis_category", im
+        )
+
+    def testBarChartPlotXAxisValue(self):
+        width = 600
+        height = 500
+        dpi = 96
+
+        plot = QgsBarChartPlot()
+        plot.setSize(QSizeF(width, height))
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.ValueType)
+        plot.setXMinimum(-10)
+        plot.setXMaximum(10)
+        plot.setYMinimum(-10)
+        plot.setYMaximum(10)
+
+        # set symbol for first series
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#00BB00",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbol(0, series_symbol)
+
+        # set symbol for second series
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#330000",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbol(1, series_symbol)
+
+        data = QgsPlotData()
+        series = QgsXyPlotSeries()
+        series.append(-8, 1)
+        series.append(0, 5)
+        series.append(4, 5)
+        series.append(9, 9)
+        data.addSeries(series)
+        series = QgsXyPlotSeries()
+        series.append(-7, -5)
+        series.append(1, -2)
+        series.append(4, 5)
+        series.append(8, 4)
+        data.addSeries(series)
+
+        im = QImage(width, height, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
+        im.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        im.setDotsPerMeterY(int(dpi / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        rc.setScaleFactor(dpi / 25.4)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc, data)
+        painter.end()
+
+        assert self.image_check(
+            "bar_chart_plot_x_axis_value", "bar_chart_plot_x_axis_value", im
+        )
+
+    def testBarChartPlotXAxisCategory(self):
+        width = 600
+        height = 500
+        dpi = 96
+
+        plot = QgsLineChartPlot()
+        plot.setSize(QSizeF(width, height))
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.CategoryType)
+        plot.setYMinimum(-10)
+        plot.setYMaximum(10)
+
+        # set symbol for first series
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#00BB00",
+                "outline_style": "dash",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbol(0, series_symbol)
+
+        # set symbols for second series
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#BB0000",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbol(1, series_symbol)
+        series_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#330000",
+                "outline_style": "solid",
+                "outline_width": 1,
+                "width": 3,
+            }
+        )
+        plot.setMarkerSymbol(1, series_symbol)
+
+        data = QgsPlotData()
+        series = QgsXyPlotSeries()
+        series.append(0, 1)
+        series.append(1, 2)
+        series.append(2, 5)
+        series.append(3, 9)
+        data.addSeries(series)
+        series = QgsXyPlotSeries()
+        series.append(0, -5)
+        series.append(1, -2)
+        # skip 3rd category to test disconnected lines
+        series.append(3, 4)
+        data.addSeries(series)
+        data.setCategories(["Q1", "Q2", "Q3", "Q4"])
+
+        im = QImage(width, height, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
+        im.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        im.setDotsPerMeterY(int(dpi / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        rc.setScaleFactor(dpi / 25.4)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc, data)
+        painter.end()
+
+        assert self.image_check(
+            "line_chart_plot_x_axis_category", "line_chart_plot_x_axis_category", im
+        )
+
+    def testLineChartPlotXAxisValue(self):
+        width = 600
+        height = 500
+        dpi = 96
+
+        plot = QgsLineChartPlot()
+        plot.setSize(QSizeF(width, height))
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.ValueType)
+        plot.setXMinimum(-10)
+        plot.setXMaximum(10)
+        plot.setYMinimum(-10)
+        plot.setYMaximum(10)
+
+        # set symbol for first series
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#00BB00",
+                "outline_style": "dash",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbol(0, series_symbol)
+
+        # set symbols for second series
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#BB0000",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbol(1, series_symbol)
+        series_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#330000",
+                "outline_style": "solid",
+                "outline_width": 1,
+                "width": 3,
+            }
+        )
+        plot.setMarkerSymbol(1, series_symbol)
+
+        data = QgsPlotData()
+        series = QgsXyPlotSeries()
+        series.append(-8, 1)
+        series.append(0, 5)
+        series.append(4, 5)
+        series.append(9, 9)
+        data.addSeries(series)
+        series = QgsXyPlotSeries()
+        series.append(-7, -5)
+        series.append(1, -2)
+        series.append(4, 5)
+        series.append(8, 4)
+        # Test data() to insure SIP conversion works well
+        self.assertEqual(
+            series.data(), [(-7.0, -5.0), (1.0, -2.0), (4.0, 5.0), (8.0, 4.0)]
+        )
+        data.addSeries(series)
+
+        im = QImage(width, height, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
+        im.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        im.setDotsPerMeterY(int(dpi / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        rc.setScaleFactor(dpi / 25.4)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc, data)
+        painter.end()
+
+        assert self.image_check(
+            "line_chart_plot_x_axis_value", "line_chart_plot_x_axis_value", im
         )
 
 
