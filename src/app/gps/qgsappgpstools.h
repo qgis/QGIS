@@ -15,7 +15,7 @@
 #ifndef QGSAPPGPSTOOLS_H
 #define QGSAPPGPSTOOLS_H
 
-#include <qgsgpstoolsinterface.h>
+#include "qgsgpstoolsinterface.h"
 
 /**
  * \brief QgsAppGpsTools

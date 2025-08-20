@@ -293,7 +293,13 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlNewConnection::getDatabase( const QStr
     database = item->text();
   }
 
-  return QgsMssqlDatabase::connectDb( txtService->text().trimmed(), txtHost->text().trimmed(), database, txtUsername->text().trimmed(), txtPassword->text().trimmed() );
+  QgsDataSourceUri uri;
+  uri.setService( txtService->text().trimmed() );
+  uri.setHost( txtHost->text().trimmed() );
+  uri.setDatabase( database );
+  uri.setUsername( txtUsername->text().trimmed() );
+  uri.setPassword( txtPassword->text().trimmed() );
+  return QgsMssqlDatabase::connectDb( uri );
 }
 
 

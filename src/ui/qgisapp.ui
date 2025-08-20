@@ -160,6 +160,13 @@
      <addaction name="mActionTemporalController"/>
      <addaction name="mActionElevationController"/>
     </widget>
+    <widget class="QMenu" name="menuElevation_Profiles">
+     <property name="title">
+      <string>Elevation Profiles</string>
+     </property>
+     <addaction name="mActionElevationProfile"/>
+     <addaction name="mActionManageElevationProfiles"/>
+    </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="m3DMapViewsMenu"/>
     <addaction name="mActionPan"/>
@@ -171,7 +178,7 @@
     <addaction name="mActionIdentify"/>
     <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
-    <addaction name="mActionElevationProfile"/>
+    <addaction name="menuElevation_Profiles"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
@@ -912,7 +919,7 @@
     <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::QuitRole</enum>
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="mActionUndo">
@@ -1903,7 +1910,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>&amp;Options…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1924,7 +1931,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>Keyboard Shortcuts…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -1994,7 +2001,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::AboutRole</enum>
+    <enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="mActionSponsors">
@@ -3317,7 +3324,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   </action>
   <action name="mActionManage3DMapViews">
    <property name="text">
-    <string>Manage 3D Map Views</string>
+    <string>Manage 3D Map Views…</string>
    </property>
   </action>
   <action name="mActionDigitizeWithSegment">
@@ -3350,10 +3357,10 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionNewElevationProfile.svg</normaloff>:/images/themes/default/mActionNewElevationProfile.svg</iconset>
    </property>
    <property name="text">
-    <string>Elevation Profile</string>
+    <string>New Elevation Profile</string>
    </property>
    <property name="toolTip">
-    <string>Open an interactive elevation profile chart</string>
+    <string>Create a new interactive elevation profile chart</string>
    </property>
   </action>
   <action name="mActionDonate">
@@ -3409,7 +3416,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Database Query History</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionManageElevationProfiles">
+   <property name="text">
+    <string>Manage Elevation Profiles…</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage Elevation Profiles</string>
    </property>
   </action>
  </widget>

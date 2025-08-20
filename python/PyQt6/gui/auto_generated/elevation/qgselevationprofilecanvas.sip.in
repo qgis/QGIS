@@ -237,6 +237,35 @@ Sets whether the distance and elevation scales are locked to each other.
 .. versionadded:: 3.32
 %End
 
+    double axisScaleRatio() const;
+%Docstring
+Returns the current ratio of horizontal (distance) to vertical
+(elevation) scale for the plot.
+
+.. seealso:: :py:func:`setAxisScaleRatio`
+
+.. versionadded:: 4.0
+%End
+
+    void setAxisScaleRatio( double scale );
+%Docstring
+Sets the ratio of horizontal (distance) to vertical (elevation) scale
+for the plot.
+
+E.g. a ``scale`` of 3 indicates a ratio of 3:1 for distance vs
+elevation, whereas a scale of 0.3333 indicates a ratio of 1:3 for
+distance vs elevation.
+
+This will immediately update the visible plot area to match the
+specified scale.
+
+.. seealso:: :py:func:`axisScaleRatio`
+
+.. seealso:: :py:func:`setLockAxisScales`
+
+.. versionadded:: 4.0
+%End
+
     Qgis::DistanceUnit distanceUnit() const;
 %Docstring
 Returns the distance unit used by the canvas.
@@ -299,6 +328,13 @@ coordinates).
 
 The ``profilePoint`` argument gives the hovered profile point, which may
 be snapped.
+%End
+
+    void scaleChanged();
+%Docstring
+Emitted when the plot scale is changed.
+
+.. versionadded:: 4.0
 %End
 
   public slots:
