@@ -6,6 +6,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingRasterLayerDefinition.__attribute_docs__ = {'source': "Source definition. Usually a static property set to a source layer's ID or file name.", 'referenceScale': 'If set to a value > 0, sets a scale at which a raster (e.g., a WMS) should be requested or rendered.', 'dpi': 'Indicates the resolution of the raster source (e.g., a WMS server). By default 96 DPI.'}
+    QgsProcessingRasterLayerDefinition.__annotations__ = {'source': 'QgsProperty', 'referenceScale': int, 'dpi': int}
+    QgsProcessingRasterLayerDefinition.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingOutputLayerDefinition.__attribute_docs__ = {'sink': "Sink/layer definition. Usually a static property set to the destination file name for the sink's layer.", 'destinationProject': 'Destination project. Can be set to a :py:class:`QgsProject` instance in which\nto automatically load the resulting sink/layer after completing processing.\nThe default behavior is not to load the result into any project (``None``).', 'destinationName': "Name to use for sink if it's to be loaded into a destination project.", 'createOptions': "Map of optional sink/layer creation options, which\nare passed to the underlying provider when creating new layers. Known options also\ninclude 'fileEncoding', which is used to specify a file encoding to use for created\nfiles."}
     QgsProcessingOutputLayerDefinition.__annotations__ = {'sink': 'QgsProperty', 'destinationProject': 'QgsProject', 'destinationName': str, 'createOptions': 'Dict[str, object]'}
     QgsProcessingOutputLayerDefinition.__group__ = ['processing']
