@@ -77,7 +77,7 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
 QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerrainEntity *terrain_, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs )
   : QgsTerrainTileLoader( terrain_, node )
   , mTileId( tileId )
-  , mIndex (index )
+  , mIndex( index )
   , mTileCrsToMapCrs( tileCrsToMapCrs )
 {
 }
