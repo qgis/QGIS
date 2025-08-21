@@ -3204,11 +3204,11 @@ template <TYPE>
     return NULL;
 
   // Set the list elements.
-  QList< std::pair < double, double > >::iterator it = sipCpp->begin();
-  for (int i = 0; it != sipCpp->end(); ++it, ++i)
+  auto it = sipCpp->constBegin();
+  for (int i = 0; it != sipCpp->constEnd(); ++it, ++i)
   {
-    PyObject *obj;
-    if ( ( obj = PyTuple_New( 2 ) ) == NULL )
+    PyObject *obj = PyTuple_New( 2 );
+    if ( obj == NULL )
     {
       Py_DECREF( l );
       return NULL;
@@ -3235,12 +3235,10 @@ template <TYPE>
     return 1;
   }
 
-
   QList< std::pair < double, double > > *ql = new QList< std::pair< double, double > >;
+  ql->reserve( PyList_GET_SIZE(sipPy) );
   for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
   {
-    int state;
-    
     PyObject *sipFirst  = PyTuple_GetItem( PyList_GET_ITEM(sipPy, i), 0 );
     double v1 = PyFloat_AsDouble(sipFirst);
 

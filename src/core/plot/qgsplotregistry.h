@@ -60,7 +60,7 @@ class CORE_EXPORT QgsPlotAbstractMetadata
      *
      * "
      * /Factory/ is used when the instance returned is guaranteed to be new to Python.
-     * In this case it isn't because it has already been seen when being returned by createChart()
+     * In this case it isn't because it has already been seen when being returned by createPlot()
      * (However for a different sub-class implemented in C++ then it would be the first time it was seen
      * by Python so the /Factory/ on create() would be correct.)
      *
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsPlotRegistry : public QObject
      *
      * "
      * /Factory/ is used when the instance returned is guaranteed to be new to Python.
-     * In this case it isn't because it has already been seen when being returned by createChart()
+     * In this case it isn't because it has already been seen when being returned by createPlot()
      * (However for a different sub-class implemented in C++ then it would be the first time it was seen
      * by Python so the /Factory/ on create() would be correct.)
      *

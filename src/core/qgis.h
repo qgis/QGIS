@@ -3262,8 +3262,8 @@ class CORE_EXPORT Qgis
      */
     enum class PlotAxisType
     {
-      ValueType, //!< The axis represents a range of values
-      CategoryType, //!< The axis represents categories
+      Interval, //!< The axis represents a range of values
+      Categorical, //!< The axis represents categories
     };
     Q_ENUM( PlotAxisType )
 

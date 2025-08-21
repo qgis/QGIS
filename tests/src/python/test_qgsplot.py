@@ -915,7 +915,7 @@ class TestQgsPlot(QgisTestCase):
         y_axis_format = QgsTextFormat.fromQFont(font)
         plot.yAxis().setTextFormat(y_axis_format)
 
-        plot.xAxis().setType(Qgis.PlotAxisType.CategoryType)
+        plot.xAxis().setType(Qgis.PlotAxisType.Categorical)
         plot.setYMinimum(-10)
         plot.setYMaximum(10)
 
@@ -1021,7 +1021,7 @@ class TestQgsPlot(QgisTestCase):
         y_axis_format = QgsTextFormat.fromQFont(font)
         plot.yAxis().setTextFormat(y_axis_format)
 
-        plot.xAxis().setType(Qgis.PlotAxisType.ValueType)
+        plot.xAxis().setType(Qgis.PlotAxisType.Interval)
         plot.setXMinimum(-10)
         plot.setXMaximum(10)
         plot.setYMinimum(-10)
@@ -1128,7 +1128,7 @@ class TestQgsPlot(QgisTestCase):
         y_axis_format = QgsTextFormat.fromQFont(font)
         plot.yAxis().setTextFormat(y_axis_format)
 
-        plot.xAxis().setType(Qgis.PlotAxisType.CategoryType)
+        plot.xAxis().setType(Qgis.PlotAxisType.Categorical)
         plot.setYMinimum(-10)
         plot.setYMaximum(10)
 
@@ -1242,7 +1242,7 @@ class TestQgsPlot(QgisTestCase):
         y_axis_format = QgsTextFormat.fromQFont(font)
         plot.yAxis().setTextFormat(y_axis_format)
 
-        plot.xAxis().setType(Qgis.PlotAxisType.ValueType)
+        plot.xAxis().setType(Qgis.PlotAxisType.Interval)
         plot.setXMinimum(-10)
         plot.setXMaximum(10)
         plot.setYMinimum(-10)
@@ -1286,11 +1286,8 @@ class TestQgsPlot(QgisTestCase):
         series.append(9, 9)
         data.addSeries(series)
         series = QgsXyPlotSeries()
-        series.append(-7, -5)
-        series.append(1, -2)
-        series.append(4, 5)
-        series.append(8, 4)
         # Test data() to insure SIP conversion works well
+        series.setData([(-7.0, -5.0), (1.0, -2.0), (4.0, 5.0), (8.0, 4.0)])
         self.assertEqual(
             series.data(), [(-7.0, -5.0), (1.0, -2.0), (4.0, 5.0), (8.0, 4.0)]
         )

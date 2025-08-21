@@ -38,14 +38,14 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   const QStringList categories = plotData.categories();
   switch ( xAxis().type() )
   {
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
       if ( categories.isEmpty() )
       {
         return;
       }
       break;
 
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
       break;
   }
 
@@ -59,7 +59,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   const double yScale = plotArea.height() / ( yMaximum() - yMinimum() );
   const double categoriesWidth = plotArea.width() / categories.size();
   const double valuesWidth = plotArea.width() * ( xAxis().gridIntervalMinor() / ( xMaximum() - xMinimum() ) );
-  const double barsWidth = xAxis().type() == Qgis::PlotAxisType::CategoryType ? categoriesWidth / 2 : valuesWidth / 2;
+  const double barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
   const double barWidth = barsWidth / seriesList.size();
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
@@ -80,7 +80,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         double x = 0;
         switch ( xAxis().type() )
         {
-          case Qgis::PlotAxisType::CategoryType:
+          case Qgis::PlotAxisType::Categorical:
             if ( pair.first < 0 || pair.first >= categories.size() )
             {
               continue;
@@ -88,7 +88,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
             x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
             break;
 
-          case Qgis::PlotAxisType::ValueType:
+          case Qgis::PlotAxisType::Interval:
             x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
             break;
         }

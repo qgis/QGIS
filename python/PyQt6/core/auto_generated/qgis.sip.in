@@ -1888,8 +1888,8 @@ The development version
 
     enum class PlotAxisType
     {
-      ValueType,
-      CategoryType,
+      Interval,
+      Categorical,
     };
 
     enum class DpiMode

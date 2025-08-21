@@ -38,14 +38,14 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   const QStringList categories = plotData.categories();
   switch ( xAxis().type() )
   {
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
       if ( categories.isEmpty() )
       {
         return;
       }
       break;
 
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
       break;
   }
 
@@ -82,7 +82,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
     {
       const QList<std::pair<double, double>> data = xySeries->data();
       QVector<QPointF> points;
-      points.fill( QPointF(), xAxis().type() == Qgis::PlotAxisType::ValueType ? data.size() : categories.size() );
+      points.fill( QPointF(), xAxis().type() == Qgis::PlotAxisType::Interval ? data.size() : categories.size() );
       int dataIndex = 0;
       for ( const std::pair<double, double> &pair : data )
       {
@@ -91,21 +91,21 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
           double x = 0;
           switch ( xAxis().type() )
           {
-            case Qgis::PlotAxisType::CategoryType:
+            case Qgis::PlotAxisType::Categorical:
               if ( pair.first < 0 || pair.first >= categories.size() )
               {
                 continue;
               }
               x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
               break;
-            case Qgis::PlotAxisType::ValueType:
+            case Qgis::PlotAxisType::Interval:
               x = ( pair.first - xMinimum() ) * xScale;
               break;
           }
           double y = ( pair.second - yMinimum() ) * yScale;
 
           const QPointF point( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
-          points.replace( xAxis().type() == Qgis::PlotAxisType::ValueType ? dataIndex : pair.first, point );
+          points.replace( xAxis().type() == Qgis::PlotAxisType::Interval ? dataIndex : pair.first, point );
         }
         dataIndex++;
       }
@@ -144,11 +144,11 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
             double value = 0;
             switch ( xAxis().type() )
             {
-              case Qgis::PlotAxisType::ValueType:
+              case Qgis::PlotAxisType::Interval:
                 value = data.at( pointIndex ).second;
                 break;
 
-              case Qgis::PlotAxisType::CategoryType:
+              case Qgis::PlotAxisType::Categorical:
                 for ( const std::pair<double, double> &pair : data )
                 {
                   if ( pair.first == pointIndex )

@@ -43,6 +43,41 @@ class QgsNumericFormat;
  */
 class CORE_EXPORT QgsPlot
 {
+    //SIP_TYPEHEADER_INCLUDE( "qgsbarchartplot.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslinechartplot.h" );
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsBarChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsBarChartPlot;
+      }
+      else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DXyPlot;
+      }
+      else if ( dynamic_cast<Qgs2DPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DPlot;
+      }
+      else
+      {
+        sipType = sipType_QgsPlot;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
+
   public:
 
     QgsPlot() = default;
@@ -99,6 +134,25 @@ class CORE_EXPORT QgsPlotRenderContext
  */
 class CORE_EXPORT QgsAbstractPlotSeries
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsAbstractPlotSeries *item = dynamic_cast< QgsAbstractPlotSeries * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsXyPlotSeries *>( item ) != NULL )
+      {
+        sipType = sipType_QgsXyPlotSeries;
+      }
+      else
+      {
+        sipType = sipType_QgsAbstractPlotSeries;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
   public:
 
     QgsAbstractPlotSeries() = default;
@@ -140,9 +194,14 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     QList<std::pair<double, double>> data() const;
 
     /**
+     * Sets the series' list of XY pairs of double.
+     */
+    void setData( const QList<std::pair<double, double>> &data );
+
+    /**
      * Appends a pair of X/Y double values to the series.
      */
-    void append( const double &x, const double &y );
+    void append( double x, double y );
 
     /**
      * Clears the series' data.
@@ -399,7 +458,7 @@ class CORE_EXPORT QgsPlotAxis
     QgsPlotAxis( const QgsPlotAxis &other );
 #endif
 
-    Qgis::PlotAxisType mType = Qgis::PlotAxisType::ValueType;
+    Qgis::PlotAxisType mType = Qgis::PlotAxisType::Interval;
 
     double mGridIntervalMinor = 1;
     double mGridIntervalMajor = 5;
