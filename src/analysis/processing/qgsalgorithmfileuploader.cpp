@@ -98,7 +98,7 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QEventLoop loop;
-  QTimer timer;
+  QTimer progressTimer;
   QUrl uploadUrl;
   QStringList errors;
 
@@ -110,14 +110,14 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   connect( uploader, &QgsFileUploader::uploadProgress, this, &QgsFileUploaderAlgorithm::receiveProgressFromUploader );
   connect( uploader, &QgsFileUploader::uploadCompleted, this, [&uploadUrl]( const QUrl url ) { uploadUrl = url; } );
   connect( uploader, &QgsFileUploader::uploadExited, this, [&loop]() { loop.exit(); } );
-  connect( &timer, &QTimer::timeout, this, &QgsFileUploaderAlgorithm::sendProgressFeedback );
+  connect( &progressTimer, &QTimer::timeout, this, &QgsFileUploaderAlgorithm::sendProgressFeedback );
   uploader->startUpload();
 
-  timer.start( 1000 );
+  progressTimer.start( 1000 );
 
   loop.exec();
 
-  timer.stop();
+  progressTimer.stop();
   if ( errors.size() > 0 )
     throw QgsProcessingException( errors.join( '\n' ) );
 
