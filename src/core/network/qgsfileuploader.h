@@ -53,6 +53,8 @@ class CORE_EXPORT QgsFileUploader : public QObject
      * \param url the upload URL
      * \param formName the upload URL
      * \param authcfg optionally apply this authentication configuration
+     * \param delayStart if TRUE, the download will not be commenced immediately and must
+     * be triggered by a later call to startUpload(). This can be useful to setup connections
      */
     QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName = QString(), const QString &authcfg = QString(), bool delayStart = true );
 
