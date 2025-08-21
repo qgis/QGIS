@@ -4,6 +4,7 @@
 *.aux
 *.bak
 *.diff
+!vcpkg/**/*.diff
 *.gpkg-shm
 *.gpkg-wal
 *.log*
