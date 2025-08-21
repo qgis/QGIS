@@ -1,9 +1,9 @@
 /***************************************************************************
   qgsfileuploader.h
   --------------------------------------
-  Date                 : November 2016
-  Copyright            : (C) 2016 by Alessandro Pasotti
-  Email                : apasotti at boundlessgeo dot com
+  Date                 : August 2025
+  Copyright            : (C) 2025 by Valentin Buira
+  Email                : valentin dot buira at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

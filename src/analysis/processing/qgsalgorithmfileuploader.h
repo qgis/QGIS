@@ -1,9 +1,9 @@
 /***************************************************************************
                          qgsalgorithmfileuploader.h
                          ---------------------
-    begin                : October 2017
-    copyright            : (C) 2017 by Etienne Trimaille
-    email                : etienne at kartoza dot com
+  Date                 : August 2025
+  Copyright            : (C) 2025 by Valentin Buira
+  Email                : valentin dot buira at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
