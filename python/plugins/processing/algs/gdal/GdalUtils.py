@@ -19,12 +19,10 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from typing import Dict, List, Optional
+from typing import Optional
 import os
-import subprocess
 import platform
 import re
-import warnings
 from dataclasses import dataclass
 import xml.etree.ElementTree as ET
 import math
@@ -50,6 +48,8 @@ from qgis.core import (
     QgsProcessingContext,
     QgsRectangle,
     QgsUnitTypes,
+    QgsPointXY,
+    QgsDistanceArea,
 )
 
 from qgis.PyQt.QtCore import QCoreApplication, QProcess
@@ -633,10 +633,10 @@ class GdalUtils:
         source = QgsProviderRegistry.instance().decodeUri("wms", uri)
         base_url = source.get("url", "")
         crs = source.get("crs", "EPSG:4326")
-        crs_string = GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem(crs))
+        crs_obj = QgsCoordinateReferenceSystem(crs)
+        crs_string = GdalUtils.gdal_crs_string(crs_obj)
         image_format = source.get("format", "")
         service = {"SERVICE": "WMS"}
-        request = {"REQUEST": "GetMap"}
         sublayers = source["layers"] if "layers" in source and source["layers"] else []
         if isinstance(sublayers, str):
             sublayers = [sublayers]  # If only one layer, it is given as string
@@ -657,6 +657,8 @@ class GdalUtils:
 
         if version == "1.3.0" or version == "1.3":
             ET.SubElement(service, "CRS").text = crs_string
+            if crs_obj.hasAxisInverted():
+                ET.SubElement(service, "BBoxOrder").text = "yxYX"
         else:
             ET.SubElement(service, "SRS").text = crs_string
 
@@ -679,11 +681,18 @@ class GdalUtils:
 
     @staticmethod
     def _wms_dimensions_for_scale(
-        bbox: QgsCoordinateReferenceSystem, scale: int, dpi: float = 96.0
+        bbox: QgsRectangle,
+        crs: QgsCoordinateReferenceSystem,
+        scale: int,
+        dpi: float = 96.0,
+        distanceArea=Optional[QgsDistanceArea],
     ) -> tuple[int, int]:
         """
         Returns a tuple with WIDTH and HEIGHT in pixels that would match
-        a bounding box for a particular map scale and DPI.
+        a bounding box (in a given crs) for a particular map scale and DPI.
+
+        An optional QgsDistanceArea object can be used to get ellipsoidal
+        distances on GCSs, based on which dimensions will be calculated.
         """
         if bbox.isNull() or bbox.isEmpty():
             return -1, -1
@@ -692,9 +701,22 @@ class GdalUtils:
             Qgis.DistanceUnit.Inches, QgsUnitTypes.DistanceUnit.DistanceMeters
         )
 
-        bbox_width = bbox.xMaximum() - bbox.xMinimum()
-        bbox_height = bbox.yMaximum() - bbox.yMinimum()
-        bbox_ratio = bbox_height / bbox_width
+        if crs.isGeographic() and distanceArea:
+            # Use ellipsoidal distances to get the projected extent
+            x, X, y, Y = (
+                bbox.xMinimum(),
+                bbox.xMaximum(),
+                bbox.yMinimum(),
+                bbox.yMaximum(),
+            )
+            bbox_width = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(X, Y))
+            bbox_height = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(x, y))
+            bbox_ratio = bbox.height() / bbox.width()
+        else:
+            bbox_width = bbox.xMaximum() - bbox.xMinimum()
+            bbox_height = bbox.yMaximum() - bbox.yMinimum()
+            bbox_ratio = bbox_height / bbox_width
+
         width = bbox_width * dpi / (scale * meters_per_inch)
 
         return math.ceil(width), math.ceil(width * bbox_ratio)
