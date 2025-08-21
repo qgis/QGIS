@@ -24,6 +24,37 @@ Base class for plot/chart/graphs.
 
 %TypeHeaderCode
 #include "qgsplot.h"
+#include "qgsbarchartplot.h"
+#include "qgslinechartplot.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsBarChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsBarChartPlot;
+      }
+      else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DXyPlot;
+      }
+      else if ( dynamic_cast<Qgs2DPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DPlot;
+      }
+      else
+      {
+        sipType = sipType_QgsPlot;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
 %End
   public:
 
@@ -87,6 +118,23 @@ An abstract class used to encapsulate the data for a plot series.
 %TypeHeaderCode
 #include "qgsplot.h"
 %End
+%ConvertToSubClassCode
+    if ( QgsAbstractPlotSeries *item = dynamic_cast< QgsAbstractPlotSeries * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsXyPlotSeries *>( item ) != NULL )
+      {
+        sipType = sipType_QgsXyPlotSeries;
+      }
+      else
+      {
+        sipType = sipType_QgsAbstractPlotSeries;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+%End
   public:
 
     QgsAbstractPlotSeries();
@@ -129,7 +177,12 @@ Encapsulates the data for an XY plot series.
 Returns the series' list of XY pairs of double.
 %End
 
-    void append( const double &x, const double &y );
+    void setData( const QList<std::pair<double, double>> &data );
+%Docstring
+Sets the series' list of XY pairs of double.
+%End
+
+    void append( double x, double y );
 %Docstring
 Appends a pair of X/Y double values to the series.
 %End

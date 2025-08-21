@@ -94,7 +94,7 @@ bool QgsPlotAxis::writeXml( QDomElement &element, QDomDocument &document, const 
 
 bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mType = qgsEnumKeyToValue( element.attribute( QStringLiteral( "type" ) ), Qgis::PlotAxisType::ValueType );
+  mType = qgsEnumKeyToValue( element.attribute( QStringLiteral( "type" ) ), Qgis::PlotAxisType::Interval );
   mGridIntervalMinor = element.attribute( QStringLiteral( "gridIntervalMinor" ) ).toDouble();
   mGridIntervalMajor = element.attribute( QStringLiteral( "gridIntervalMajor" ) ).toDouble();
   mLabelInterval = element.attribute( QStringLiteral( "labelInterval" ) ).toDouble();
@@ -344,7 +344,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
   switch ( mYAxis.type() )
   {
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
       if ( mYAxis.labelInterval() > 0 )
       {
         for ( double currentY = firstYLabel; ; currentY += mYAxis.labelInterval() )
@@ -384,7 +384,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
       }
       break;
 
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
       for ( int i = 0; i < categories.size(); i++ )
       {
         maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, mYAxis.textFormat(), { categories.at( i ) } ) );
@@ -417,7 +417,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   // x
   switch ( mXAxis.type() )
   {
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
       double nextMajorXGrid = firstMajorXGrid;
@@ -444,7 +444,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
       break;
     }
 
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
       // No grid lines here, skipping
       break;
   }
@@ -452,7 +452,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   // y
   switch ( mYAxis.type() )
   {
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
       double nextMajorYGrid = firstMajorYGrid;
@@ -479,7 +479,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
       break;
     }
 
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
       // No grid lines here, skipping
       break;
   }
@@ -489,7 +489,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   // x
   switch ( mXAxis.type() )
   {
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
       int objectNumber = 0;
@@ -534,7 +534,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
       break;
     }
 
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
       const double categoryWidth = plotArea.width() / categories.size();
@@ -552,7 +552,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   // y
   switch ( mYAxis.type() )
   {
-    case Qgis::PlotAxisType::ValueType:
+    case Qgis::PlotAxisType::Interval:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
       int objectNumber = 0;
@@ -600,7 +600,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
       break;
     }
 
-    case Qgis::PlotAxisType::CategoryType:
+    case Qgis::PlotAxisType::Categorical:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
       const double categoryHeight = plotArea.height() / categories.size();
@@ -1007,7 +1007,12 @@ QList<std::pair<double, double>> QgsXyPlotSeries::data() const
   return mData;
 }
 
-void QgsXyPlotSeries::append( const double &x, const double &y )
+void QgsXyPlotSeries::setData( const QList<std::pair<double, double>> &data )
+{
+  mData = data;
+}
+
+void QgsXyPlotSeries::append( double x, double y )
 {
   mData << std::make_pair( x, y );
 }
