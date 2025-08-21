@@ -199,7 +199,11 @@ class TinyGltfTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGe
 
     qintptr id() const override
     {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TinyGltfTextureImageDataGenerator>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TinyGltfTextureImageDataGenerator>::id );
+#endif
     }
 
     bool operator==( const QTextureImageDataGenerator &other ) const override

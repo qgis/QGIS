@@ -236,7 +236,11 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
 
     qintptr id() const override
     {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneVertexBufferFunctor>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id );
+#endif
     }
 
     bool operator==( const Qt3DQAbstractFunctor &other ) const
@@ -276,7 +280,11 @@ class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
 
     qintptr id() const override
     {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneIndexBufferFunctor>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneIndexBufferFunctor>::id );
+#endif
     }
 
     bool operator==( const Qt3DQAbstractFunctor &other ) const
