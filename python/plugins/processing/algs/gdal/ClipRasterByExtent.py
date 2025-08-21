@@ -20,10 +20,12 @@ __date__ = "September 2013"
 __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
+import tempfile
 
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (
+    QgsDistanceArea,
     QgsRasterFileWriter,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
@@ -34,9 +36,10 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingRasterLayerDefinition,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -180,21 +183,54 @@ class ClipRasterByExtent(GdalAlgorithm):
                     parameters[self.INPUT] if self.INPUT in parameters else "INPUT"
                 )
             )
-        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
-        override_crs = self.parameterAsBoolean(parameters, self.OVERCRS, context)
-        if self.NODATA in parameters and parameters[self.NODATA] is not None:
-            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
-        else:
-            nodata = None
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
-        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        self.setOutputValue(self.OUTPUT, out)
+        if bbox.isNull() or bbox.isEmpty():
+            raise QgsProcessingException(
+                "Invalid extent {}".format(
+                    parameters[self.EXTENT] if self.EXTENT in parameters else "EXTENT"
+                )
+            )
 
         arguments = []
 
-        if not bbox.isNull():
+        if inLayer.providerType() == "wms" and isinstance(
+            parameters[self.INPUT], QgsProcessingRasterLayerDefinition
+        ):
+            # If the scale is greater than 0, we'll have a QgsProcessingRasterLayerDefinition
+            param_def = parameters[self.INPUT]
+            scale = param_def.referenceScale
+            dpi = param_def.dpi
+
+            distanceArea = None
+            if inLayer.crs().isGeographic():
+                distanceArea = QgsDistanceArea()
+                distanceArea.setSourceCrs(inLayer.crs(), context.transformContext())
+                distanceArea.setEllipsoid(context.ellipsoid())
+
+            width, height = GdalUtils._wms_dimensions_for_scale(
+                bbox, inLayer.crs(), scale, dpi, distanceArea
+            )
+            wms_description_file_path = tempfile.mktemp("_wms_description_file.xml")
+            res_xml_wms, xml_wms_error = GdalUtils.gdal_wms_xml_description_file(
+                inLayer.publicSource(),
+                GdalUtils._get_wms_version(inLayer),
+                bbox,
+                width,
+                height,
+                wms_description_file_path,
+            )
+            if not res_xml_wms:
+                raise QgsProcessingException(
+                    "Cannot create XML description file for WMS layer. Details: {}".format(
+                        xml_wms_error
+                    )
+                )
+            input_details = GdalConnectionDetails(
+                connection_string=wms_description_file_path
+            )
+        else:
+            input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
             arguments.extend(
                 [
                     "-projwin",
@@ -204,6 +240,14 @@ class ClipRasterByExtent(GdalAlgorithm):
                     str(bbox.yMinimum()),
                 ]
             )
+
+        override_crs = self.parameterAsBoolean(parameters, self.OVERCRS, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         crs = inLayer.crs()
         if override_crs and crs.isValid():
