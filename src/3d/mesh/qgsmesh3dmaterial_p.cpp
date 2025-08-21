@@ -52,7 +52,11 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 
     qintptr id() const override
     {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<ArrowsTextureGenerator>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id );
+#endif
     }
 
     Qt3DRender::QTextureImageDataPtr operator()() override
