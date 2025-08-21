@@ -54,7 +54,7 @@ class CORE_EXPORT QgsFileUploader : public QObject
      * \param formName the upload URL
      * \param authcfg optionally apply this authentication configuration
      */
-    QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName = QString(), const QString &authcfg = QString() );
+    QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName = QString(), const QString &authcfg = QString(), bool delayStart = true );
 
   signals:
     //! Emitted when the upload has completed successfully

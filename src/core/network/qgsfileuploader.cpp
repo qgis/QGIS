@@ -32,7 +32,7 @@
 #include <QSslError>
 #endif
 
-QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName, const QString &authcfg )
+QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName, const QString &authcfg, bool delayStart )
   : mUrl( url )
   , mFormName( formName )
   , mUploadCanceled( false )
@@ -40,8 +40,8 @@ QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url
   if ( !uploadFileName.isEmpty() )
     mFile.setFileName( uploadFileName );
   mAuthCfg = authcfg;
-
-  startUpload();
+  if ( !delayStart )
+    startUpload();
 }
 
 
@@ -56,6 +56,7 @@ QgsFileUploader::~QgsFileUploader()
 
 void QgsFileUploader::startUpload()
 {
+  qDebug() << "in start dowload";
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
@@ -65,6 +66,7 @@ void QgsFileUploader::startUpload()
     QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
   }
 
+  qDebug() << "UPLA 1";
   if ( mReply )
   {
     disconnect( mReply, &QNetworkReply::finished, this, &QgsFileUploader::onFinished );
@@ -88,20 +90,24 @@ void QgsFileUploader::startUpload()
                         ( mFormName.isEmpty() ) ? QString( "" ) : QStringLiteral( "name=\"%1\"; " ).arg( mFormName ),
                         fi.fileName()
                       ) );
-
+  qDebug() << "UPLA 2";
   if ( !file->open( QIODevice::ReadOnly ) )
   {
+    qDebug() << "UPLA 2.1";
     error( tr( "Error reading file %1" ).arg( mFile.fileName() ) );
+    qDebug() << "UPLA 2.2";
+    onFinished();
     return;
   }
   filePart.setBodyDevice( file );
   file->setParent( multiPart );
 
+  qDebug() << "UPLA 3.0";
   multiPart->append( filePart );
 
   mReply = nam->post( request, multiPart );
   multiPart->setParent( mReply );
-
+  qDebug() << "UPLA 3";
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
