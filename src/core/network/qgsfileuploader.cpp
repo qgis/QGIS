@@ -74,10 +74,10 @@ void QgsFileUploader::startUpload()
   }
 
 
-  QHttpMultiPart *multiPart = new QHttpMultiPart( QHttpMultiPart::FormDataType );
+  std::unique_ptr<QHttpMultiPart> multiPart = std::make_unique<QHttpMultiPart>( QHttpMultiPart::FormDataType );
 
   QHttpPart filePart;
-  QFile *file = new QFile( mFile.fileName() );
+  std::unique_ptr<QFile> file = std::make_unique<QFile>( mFile.fileName() );
   QFileInfo fi = QFileInfo( file->fileName() );
 
   QMimeDatabase db;
@@ -94,13 +94,13 @@ void QgsFileUploader::startUpload()
     onFinished();
     return;
   }
-  filePart.setBodyDevice( file );
-  file->setParent( multiPart );
+  filePart.setBodyDevice( file.get() );
+  file.release()->setParent( multiPart.get() );
 
   multiPart->append( filePart );
 
-  mReply = nam->post( request, multiPart );
-  multiPart->setParent( mReply );
+  mReply = nam->post( request, multiPart.get() );
+  multiPart.release()->setParent( mReply );
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
