@@ -68,7 +68,7 @@
        <item>
         <widget class="QLabel" name="mLabelLocation">
          <property name="text">
-          <string>Location:</string>
+          <string></string>
          </property>
         </widget>
        </item>
@@ -98,7 +98,7 @@
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionFolder.svg</normaloff>:/images/themes/default/mActionFolder.svg</iconset>
+           <normaloff>:/images/themes/default/mActionExpandTree.svg</normaloff>:/images/themes/default/mActionExpandTree.svg</iconset>
          </property>
         </widget>
        </item>

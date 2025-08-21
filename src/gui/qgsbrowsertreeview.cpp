@@ -280,6 +280,12 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
     }
     else
     {
+      // Ensure the parent directory is properly populated before adding new child
+      if ( currentDirectoryItem->state() == Qgis::BrowserItemState::NotPopulated )
+      {
+        currentDirectoryItem->populate();
+      }
+      
       QgsDirectoryItem *newDir = new QgsDirectoryItem( nullptr, currentFolderName, thisPath );
       pathItems << newDir;
       currentDirectoryItem->addChildItem( newDir, true );
@@ -292,13 +298,23 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
   QgsDirectoryItem *lastItem = nullptr;
   for ( QgsDirectoryItem *i : std::as_const( pathItems ) )
   {
+    // Ensure the directory item is properly populated before expanding
+    if ( i->state() == Qgis::BrowserItemState::NotPopulated )
+    {
+      i->populate();
+    }
+    
     QModelIndex index = mBrowserModel->findItem( i );
     if ( QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
     {
       index = proxyModel->mapFromSource( index );
     }
-    expand( index );
-    lastItem = i;
+    
+    if ( index.isValid() )
+    {
+      expand( index );
+      lastItem = i;
+    }
   }
 
   if ( selectPath && lastItem )

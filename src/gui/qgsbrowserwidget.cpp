@@ -613,20 +613,29 @@ void QgsBrowserWidget::navigateToPath()
     targetPath = pathInfo.absolutePath();
   }
 
-  // Expand the path in the browser tree
-  mBrowserView->expandPath( targetPath, true );
-  
-  // Clear the location bar and show success message
-  mLeLocationBar->clear();
-  if ( mMessageBar )
+  try
   {
-    if ( pathInfo.isFile() )
+    mBrowserView->expandPath( targetPath, true );
+    
+    // Clear the location bar and show success message
+    mLeLocationBar->clear();
+    if ( mMessageBar )
     {
-      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to parent directory of file: %1" ).arg( displayPath ) );
+      if ( pathInfo.isFile() )
+      {
+        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to parent directory of file: %1" ).arg( displayPath ) );
+      }
+      else
+      {
+        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
+      }
     }
-    else
+  }
+  catch ( ... )
+  {
+    if ( mMessageBar )
     {
-      mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
+      mMessageBar->pushCritical( tr( "Navigate to Path" ), tr( "Failed to navigate to path: %1. The folder may contain problematic files." ).arg( displayPath ) );
     }
   }
 }
@@ -807,13 +816,16 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         {
           if ( driveItem->state() == Qgis::BrowserItemState::NotPopulated )
           {
-            driveItem->populate();
-            QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+            try
+            {
+              driveItem->populate();
+              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+            }
+            catch ( ... )
+            {
+              return false;
+            }
           }
-          
-          // Force refresh to get all children
-          driveItem->refresh();
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
           
           QModelIndex proxyIndex = mProxyModel->mapFromSource( driveIndex );
           if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
@@ -831,21 +843,12 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
             QgsDataItem *parentItem = mModel->dataItem( currentParent );
             if ( parentItem )
             {
-              // Force population of children if not already done
               if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
               {
                 parentItem->populate();
-                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
-              }
-              else if ( parentItem->state() == Qgis::BrowserItemState::Populated )
-              {
-                // Force re-population to ensure all children are loaded
-                parentItem->depopulate();
-                parentItem->populate();
-                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
               }
               
-              // Expand parent in view to trigger child creation
               QModelIndex parentProxy = mProxyModel->mapFromSource( currentParent );
               if ( parentProxy.isValid() )
               {
@@ -869,51 +872,31 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
               }
             }
             
-            // If not found, try by refreshing parent and checking again
             if ( !found && parentItem )
             {
-              // Force a more thorough refresh
-              parentItem->refresh();
-              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
-              
-              // Try finding the child again after refresh
-              for ( const QString &variant : variants )
+              try
               {
-                QModelIndex childIndex = mModel->findPath( variant );
-                if ( childIndex.isValid() )
+                // Only refresh if it's safe to do so
+                if ( parentItem->state() == Qgis::BrowserItemState::Populated )
                 {
-                  currentParent = childIndex;
-                  found = true;
-                  break;
-                }
-              }
-              
-              // If still not found, check if it's a directory that exists on filesystem
-              if ( !found )
-              {
-                QFileInfo targetInfo( targetComponent );
-                if ( targetInfo.exists() && targetInfo.isDir() )
-                {
+                  parentItem->refresh();
+                  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
                   
-                  if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+                  for ( const QString &variant : variants )
                   {
-                    parentItem->depopulate();
-                    parentItem->populate();
-                    QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
-          
-                    // Final attempt to find the child
-                    for ( const QString &variant : variants )
+                    QModelIndex childIndex = mModel->findPath( variant );
+                    if ( childIndex.isValid() )
                     {
-                      QModelIndex childIndex = mModel->findPath( variant );
-                      if ( childIndex.isValid() )
-                      {
-                        currentParent = childIndex;
-                        found = true;
-                        break;
-                      }
+                      currentParent = childIndex;
+                      found = true;
+                      break;
                     }
                   }
                 }
+              }
+              catch ( ... )
+              {
+                break;
               }
             }
             
@@ -923,7 +906,6 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
             }
             else if ( !found )
             {
-              // Intermediate directory not found even after refresh attempts
               return false;
             }
           }
@@ -971,14 +953,16 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         // Populate if needed
         if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
         {
-          parentItem->populate();
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+          try
+          {
+            parentItem->populate();
+            QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+          }
+          catch ( ... )
+          {
+            continue;
+          }
         }
-        
-        // Refresh to ensure children are current
-        parentItem->refresh();
-        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
-        
         // Expand in view
         QModelIndex proxyIndex = mProxyModel->mapFromSource( deepestParent );
         if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
@@ -1010,46 +994,28 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
       QgsDataItem *parentItem = mModel->dataItem( deepestParent );
       if ( parentItem )
       {
-        parentItem->refresh();
-        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
-        
-        for ( const QString &variant : variants )
+        try
         {
-          QModelIndex index = mModel->findPath( variant );
-          if ( index.isValid() )
+          if ( parentItem->state() == Qgis::BrowserItemState::Populated )
           {
-            deepestParent = index;
-            found = true;
-            break;
-          }
-        }
-        
-        // If still not found check if it's a directory that exists on filesystem
-        if ( !found )
-        {
-          QFileInfo targetInfo( targetComponent );
-          if ( targetInfo.exists() && targetInfo.isDir() )
-          {
+            parentItem->refresh();
+            QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
             
-            if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+            for ( const QString &variant : variants )
             {
-              parentItem->depopulate();
-              parentItem->populate();
-              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
-              
-              
-              for ( const QString &variant : variants )
+              QModelIndex index = mModel->findPath( variant );
+              if ( index.isValid() )
               {
-                QModelIndex index = mModel->findPath( variant );
-                if ( index.isValid() )
-                {
-                  deepestParent = index;
-                  found = true;
-                  break;
-                }
+                deepestParent = index;
+                found = true;
+                break;
               }
             }
           }
+        }
+        catch ( ... )
+        {
+          break;
         }
       }
     }
