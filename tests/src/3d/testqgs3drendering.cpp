@@ -140,14 +140,14 @@ class TestQgs3DRendering : public QgsTest
 
     /**
      * Checks projet demgenerator has got fine dtm elevation data and checks feature Z coordinates
-     * @param fullExtent
-     * @param crs
-     * @param dataPath data layer path
-     * @param dtmPath dtm layer path
-     * @param dtmHiResPath dtm layer path will be used with no cache
-     * @param featExtent extent to find the feature
-     * @param expectedZ feature Z coordinate values
-     * @param expectedCacheSize 
+     * \param fullExtent
+     * \param crs
+     * \param dataPath data layer path
+     * \param dtmPath dtm layer path
+     * \param dtmHiResPath dtm layer path will be used with no cache
+     * \param featExtent extent to find the feature
+     * \param expectedZ feature Z coordinate values
+     * \param expectedCacheSize 
      */
     void doCheckElevation( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs, const QString &dataPath, const QString &dtmPath, //
                            const QString &dtmHiResPath, const QgsRectangle &featExtent, const QVector<float> &expectedZ, float expectedCacheSize );

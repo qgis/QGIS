@@ -89,10 +89,10 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 
     /**
      * Returns height quality at point, the higher the better (max is the mMaxLevel). -1 = no data, 0 = coarse data.
-     * @param x coordinate in map's CRS
-     * @param y coordinate in map's CRS
-     * @param context 3d render context
-     * @return height quality at (x,y) in map's CRS
+     * \param x coordinate in map's CRS
+     * \param y coordinate in map's CRS
+     * \param context 3d render context
+     * \return height quality at (x,y) in map's CRS
      */
     virtual int qualityAt( double x, double y, const Qgs3DRenderContext &context ) const;
 

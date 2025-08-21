@@ -88,8 +88,8 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 
     /**
      * Checks if the tile is in the cache
-     * @param tileText text version of the tile
-     * @return true if the tile is in the cache
+     * \param tileText text version of the tile
+     * \return true if the tile is in the cache
      */
     bool isTileInCache( const QString &tileText );
 
