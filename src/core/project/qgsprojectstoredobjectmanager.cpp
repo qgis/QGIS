@@ -47,6 +47,7 @@ QgsAbstractProjectStoredObjectManager<T>::QgsAbstractProjectStoredObjectManager(
 template<class T>
 QgsAbstractProjectStoredObjectManager<T>::~QgsAbstractProjectStoredObjectManager()
 {
+  Q_ASSERT_X( mObjects.isEmpty(), "~QgsAbstractProjectStoredObjectManager", "Subclasses of QgsAbstractProjectStoredObjectManager MUST explicitly call clearObjects() in their class destructor." );
   clearObjects();
 }
 

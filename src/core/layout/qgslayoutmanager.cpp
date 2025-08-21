@@ -35,7 +35,10 @@ QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsLayoutManager::layoutAboutToBeRemoved );
 }
 
-QgsLayoutManager::~QgsLayoutManager() = default;
+QgsLayoutManager::~QgsLayoutManager()
+{
+  clearObjects();
+}
 
 bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
 {
