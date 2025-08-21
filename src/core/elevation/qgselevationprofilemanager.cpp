@@ -29,7 +29,10 @@ QgsElevationProfileManager::QgsElevationProfileManager( QgsProject *project )
   connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsElevationProfileManager::profileAboutToBeRemoved );
 }
 
-QgsElevationProfileManager::~QgsElevationProfileManager() = default;
+QgsElevationProfileManager::~QgsElevationProfileManager()
+{
+  clearObjects();
+}
 
 bool QgsElevationProfileManager::addProfile( QgsElevationProfile *profile )
 {
