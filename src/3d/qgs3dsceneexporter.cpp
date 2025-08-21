@@ -308,6 +308,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
 {
   QgsFlatTerrainGenerator *generator = dynamic_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
+  flatTerrainLoader->start();
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
   // the entity we created will be deallocated once the scene exporter is deallocated
@@ -323,6 +324,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   QgsDemTerrainGenerator *generator = dynamic_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
   QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
+  loader->start();
   generator->heightMapGenerator()->waitForFinished();
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
@@ -335,6 +337,7 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity
 {
   QgsMeshTerrainGenerator *generator = dynamic_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
+  loader->start();
   // TODO: export textures
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
   return tileEntity;
