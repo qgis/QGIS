@@ -10,7 +10,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "20/05/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType
 from qgis.PyQt.QtWidgets import QTextEdit
 from qgis.core import (
     NULL,
@@ -80,8 +80,8 @@ class TestQgsTextEditWidget(QgisTestCase):
         self.assertTrue(layer.isValid())
         layer.dataProvider().addAttributes(
             [
-                QgsField("max", QVariant.String, "string", 10),
-                QgsField("nomax", QVariant.String, "string", 0),
+                QgsField("max", QMetaType.QString, "QString", 10),
+                QgsField("nomax", QMetaType.QString, "QString", 0),
             ]
         )
         layer.updateFields()
