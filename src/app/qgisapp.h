@@ -571,6 +571,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionVertexToolActiveLayer() { return mActionVertexToolActiveLayer; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
+    QAction *actionChamferFillet() { return mActionChamferFillet; }
     QAction *actionPan() { return mActionPan; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
@@ -1843,6 +1844,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void moveFeatureCopy();
     //! activates the offset curve tool
     void offsetCurve();
+    //! activates the chamfer fillet tool
+    void chamferFillet();
     //! activates the reshape features tool
     void reshapeFeatures();
     //! activates the split features tool

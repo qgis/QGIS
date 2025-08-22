@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgsmaptooloffsetcurve.h
+                              qgsmaptoolchamferfillet.h
     ------------------------------------------------------------
-    begin                : February 2012
-    copyright            : (C) 2012 by Marco Hugentobler
-    email                : marco dot hugentobler at sourcepole dot ch
+    begin                : September 2025
+    copyright            : (C) 2025 by Oslandia
+    email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPTOOLOFFSETCURVE_H
-#define QGSMAPTOOLOFFSETCURVE_H
+#ifndef QGSMAPTOOLCHAMFERFILLET_H
+#define QGSMAPTOOLCHAMFERFILLET_H
 
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
 #include "qgis_app.h"
-#include "ui_qgsoffsetuserinputwidget.h"
+#include "ui_qgschamferfilletuserinputwidget.h"
 #include "qgspointlocator.h"
 #include "qgsfeature.h"
 
@@ -30,53 +30,53 @@ class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
 class QgsFeature;
 
-class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUserInputBase
+class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsChamferFilletUserInputBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsOffsetUserWidget( QWidget *parent = nullptr );
+    explicit QgsChamferFilletUserWidget( QWidget *parent = nullptr );
 
-    void setOffset( double offset );
-    double offset();
-    QDoubleSpinBox *editor() const { return mOffsetSpinBox; }
-
-    void setPolygonMode( bool polygon );
+    void setValue1( double value1 );
+    double value1() const;
+    void setValue2( double value2 );
+    double value2() const;
+    QDoubleSpinBox *editor() const { return mValue1SpinBox; }
+    QString operation() const;
 
   signals:
-    void offsetChanged( double offset );
-    void offsetEditingFinished( double offset, const Qt::KeyboardModifiers &modifiers );
-    void offsetEditingCanceled();
-    void offsetConfigChanged();
+    void distanceEditingFinished( const Qt::KeyboardModifiers &modifiers );
+    void distanceEditingCanceled();
+    void distanceConfigChanged();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 };
 
-class APP_EXPORT QgsMapToolOffsetCurve : public QgsMapToolEdit
+class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    QgsMapToolOffsetCurve( QgsMapCanvas *canvas );
-    ~QgsMapToolOffsetCurve() override;
+    QgsMapToolChamferFillet( QgsMapCanvas *canvas );
+    ~QgsMapToolChamferFillet() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   private slots:
-    //! Places curve offset from the mouse position or from the value entered in the spin box
-    void updateGeometryAndRubberBand( double offset );
+    //! Places curve chamfer from the mouse position or from the value entered in the spin box
+    void updateGeometryAndRubberBand( double value1, double value2 );
 
-    void applyOffsetFromWidget( double offset, Qt::KeyboardModifiers modifiers );
+    void applyOperationFromWidget( Qt::KeyboardModifiers modifiers );
 
-    //! Apply the offset either from the spin box or from the mouse event
-    void applyOffset( double offset, Qt::KeyboardModifiers modifiers );
+    //! Apply the chamfer either from the spin box or from the mouse event
+    void applyOperation( double value1, double value2, Qt::KeyboardModifiers modifiers );
 
     void cancel();
 
   private:
-    //! Rubberband that shows the position of the offset  curve
+    //! Rubberband that shows the position of the chamfer curve
     QgsRubberBand *mRubberBand = nullptr;
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
@@ -92,21 +92,18 @@ class APP_EXPORT QgsMapToolOffsetCurve : public QgsMapToolEdit
     QgsGeometry mModifiedGeometry;
     //! ID of manipulated feature
     QgsFeatureId mModifiedFeature = -1;
-    int mModifiedPart = -1;
-    int mModifiedRing = -1;
+    int mVertexIndex = -1;
+    QgsPoint mVertexPoint;
 
     //! Internal flag to distinguish move from click
     bool mGeometryModified = false;
 
     //! Shows current distance value and allows numerical editing
-    QgsOffsetUserWidget *mUserInputWidget = nullptr;
-
-    //! Forces geometry copy (no modification of geometry in current layer)
-    bool mCtrlHeldOnFirstClick = false;
+    QgsChamferFilletUserWidget *mUserInputWidget = nullptr;
 
     QgsFeature mSourceFeature;
 
-    double calculateOffset( const QgsPointXY &mapPoint );
+    void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
 
     void createUserInputWidget();
     void deleteUserInputWidget();
@@ -122,4 +119,4 @@ class APP_EXPORT QgsMapToolOffsetCurve : public QgsMapToolEdit
     QgsGeometry convertToSingleLine( const QgsGeometry &geom, int vertex );
 };
 
-#endif // QGSMAPTOOLOFFSETCURVE_H
+#endif // QGSMAPTOOLCHAMFERFILLET_H
