@@ -955,6 +955,32 @@ QgsPlotData::~QgsPlotData()
   clearSeries();
 }
 
+QgsPlotData::QgsPlotData( const QgsPlotData &other )
+{
+  clearSeries();
+
+  mCategories = other.mCategories;
+  for ( QgsAbstractPlotSeries *series : other.mSeries )
+  {
+    addSeries( series->clone() );
+  }
+}
+
+QgsPlotData &QgsPlotData::operator=( const QgsPlotData &other )
+{
+  if ( this != &other )
+  {
+    clearSeries();
+
+    mCategories = other.mCategories;
+    for ( QgsAbstractPlotSeries *series : other.mSeries )
+    {
+      addSeries( series->clone() );
+    }
+  }
+  return *this;
+}
+
 QList<QgsAbstractPlotSeries *> QgsPlotData::series() const
 {
   return mSeries;
@@ -998,6 +1024,13 @@ void QgsAbstractPlotSeries::setName( const QString &name )
   mName = name;
 }
 
+QgsAbstractPlotSeries *QgsAbstractPlotSeries::clone() const
+{
+  QgsAbstractPlotSeries *series = new QgsAbstractPlotSeries();
+  series->setName( mName );
+  return series;
+}
+
 //
 // QgsXyPlotSeries
 //
@@ -1020,4 +1053,12 @@ void QgsXyPlotSeries::append( double x, double y )
 void QgsXyPlotSeries::clear()
 {
   mData.clear();
+}
+
+QgsAbstractPlotSeries *QgsXyPlotSeries::clone() const
+{
+  QgsXyPlotSeries *series = new QgsXyPlotSeries();
+  series->setName( name() );
+  series->setData( mData );
+  return series;
 }

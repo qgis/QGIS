@@ -150,6 +150,11 @@ Returns the series' name.
 Sets the series' name.
 %End
 
+    virtual QgsAbstractPlotSeries *clone() const;
+%Docstring
+Clones the series
+%End
+
 };
 
 class QgsXyPlotSeries : QgsAbstractPlotSeries
@@ -192,6 +197,9 @@ Appends a pair of X/Y double values to the series.
 Clears the series' data.
 %End
 
+    virtual QgsAbstractPlotSeries *clone() const;
+
+
 };
 
 class QgsPlotData
@@ -214,6 +222,7 @@ Encapsulates one or more plot series.
     QgsPlotData();
     ~QgsPlotData();
 
+    QgsPlotData( const QgsPlotData &other );
 
     QList<QgsAbstractPlotSeries *> series() const;
 %Docstring
@@ -248,8 +257,6 @@ Returns the name of the series' categories.
 Sets the name of the series' ``categories``.
 %End
 
-  private:
-    QgsPlotData( const QgsPlotData &other );
 };
 
 class QgsPlotAxis

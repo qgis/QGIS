@@ -14,9 +14,19 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractPlotSeries.__virtual_methods__ = ['clone']
+    QgsAbstractPlotSeries.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
     Qgs2DPlot.__virtual_methods__ = ['render', 'renderContent', 'interiorPlotArea']
     Qgs2DPlot.__overridden_methods__ = ['writeXml', 'readXml']
     Qgs2DPlot.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsXyPlotSeries.__overridden_methods__ = ['clone']
+    QgsXyPlotSeries.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
 try:
@@ -26,14 +36,6 @@ except (NameError, AttributeError):
     pass
 try:
     QgsPlotRenderContext.__group__ = ['plot']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsAbstractPlotSeries.__group__ = ['plot']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsXyPlotSeries.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
 try:
