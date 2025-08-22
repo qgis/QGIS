@@ -80,8 +80,13 @@ void QgsAttributesFormBaseView::selectFirstMatchingItem( const QgsAttributesForm
 
   if ( index.isValid() )
   {
-    // TODO: compare with eventual single selected index, if they match, avoid calling next line
-    selectionModel()->setCurrentIndex( index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    // Check if selection is index is already selected (e.g., duplicate fields in
+    // form layout, and selecting one after the other), otherwise set new selection
+    const QModelIndexList selectedIndexes = selectionModel()->selectedRows( 0 );
+    if ( !( selectedIndexes.count() == 1 && selectedIndexes.at( 0 ) == index ) )
+    {
+      selectionModel()->setCurrentIndex( index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+    }
   }
   else
   {

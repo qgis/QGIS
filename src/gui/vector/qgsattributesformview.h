@@ -22,10 +22,9 @@
 #include "qgis_gui.h"
 #include "qgsattributesformmodel.h"
 
-class QgsAttributesFormTreeViewIndicator;
-
 #include <QTreeView>
 
+class QgsAttributesFormTreeViewIndicator;
 
 /**
  * \brief Graphical representation for the attribute drag and drop editor.
