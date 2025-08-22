@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsvectorlayerplotdatagatherer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayerAbstractPlotDataGatherer : QThread
+{
+%Docstring(signature="appended")
+An abstract vector layer plot data gatherer base class.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerplotdatagatherer.h"
+%End
+  public:
+
+    QgsVectorLayerAbstractPlotDataGatherer();
+    virtual ~QgsVectorLayerAbstractPlotDataGatherer();
+
+};
+
+
+class QgsVectorLayerXyPlotDataGatherer : QgsVectorLayerAbstractPlotDataGatherer
+{
+%Docstring(signature="appended")
+An vector layer plot data gatherer class for XY series.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerplotdatagatherer.h"
+%End
+  public:
+
+    struct XySeriesDetails
+    {
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression );
+
+      QString xExpression;
+      QString yExpression;
+      QString filterExpression;
+    };
+
+    QgsVectorLayerXyPlotDataGatherer( QgsVectorLayer *layer, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+    ~QgsVectorLayerXyPlotDataGatherer();
+
+    virtual void run();
+
+    void stop();
+%Docstring
+Informs the gatherer to immediately stop collecting data
+%End
+
+    bool wasCanceled() const;
+%Docstring
+Returns ``True`` if collection was canceled before completion
+%End
+
+    QgsPlotData data() const;
+%Docstring
+Returns the plot data
+%End
+
+  protected:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsvectorlayerplotdatagatherer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
