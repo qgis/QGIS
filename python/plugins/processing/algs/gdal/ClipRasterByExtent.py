@@ -194,6 +194,7 @@ class ClipRasterByExtent(GdalAlgorithm):
 
         arguments = []
 
+        # If it's a WMS layer and scale/DPI were given, craft a XML description file
         if inLayer.providerType() == "wms" and isinstance(
             parameters[self.INPUT], QgsProcessingRasterLayerDefinition
         ):
@@ -206,7 +207,7 @@ class ClipRasterByExtent(GdalAlgorithm):
             if inLayer.crs().isGeographic():
                 distanceArea = QgsDistanceArea()
                 distanceArea.setSourceCrs(inLayer.crs(), context.transformContext())
-                distanceArea.setEllipsoid(context.ellipsoid())
+                distanceArea.setEllipsoid(inLayer.crs().ellipsoidAcronym())
 
             width, height = GdalUtils._wms_dimensions_for_scale(
                 bbox, inLayer.crs(), scale, dpi, distanceArea

@@ -732,7 +732,7 @@ class GdalUtils:
         string = (
             "<td>"
             + QCoreApplication.translate("QgsWmsProvider", "WMS Version")
-            + "</td><td>(.+?)</td>"
+            + "</td><td>(\\d\\.\\d(\\.\\d)?)</td>"
         )
         result = re.search(string, provider.htmlMetadata())
         if result:
