@@ -79,6 +79,7 @@ set(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolchamferfillet.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptooldeletering.cpp
