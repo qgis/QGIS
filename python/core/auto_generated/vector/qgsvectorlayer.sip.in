@@ -2704,7 +2704,7 @@ this layer.
 Checks all commit permissions set during the runtime of the program and
 returns bool. It can be used to check if committing is fully allowed.
 
-.. versionadded:: 4.0
+.. versionadded:: 3.4
 %End
 
     LayerCommitBlockage allowCommit(const QString& appId) const;
@@ -2731,11 +2731,6 @@ Checks layer commit permissions set by a specific plugin by the id of
     }
     sipRes = pyList;
 %End
-%Docstring
-Returns std::list of ``LayerCommitBlockage`` objects which are currently imposed
-
-.. versionadded:: 4.0
-%End
 
     void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
 %Docstring
@@ -2754,8 +2749,8 @@ When calling :py:func:`commitChanges` this flag is checked just after
 the
 
 .. seealso:: :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust it from there.
-
-.. versionadded:: 4.0
+.. Breaking changes:: 4.0
+.. versionadded:: 3.40
 %End
 
     QgsStoredExpressionManager *storedExpressionManager();

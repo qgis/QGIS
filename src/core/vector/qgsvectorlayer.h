@@ -2471,7 +2471,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Checks all commit permissions set during the runtime of the program and returns bool. It can be used to check
      * if committing is fully allowed. 
-     * \since QGIS 4.0
+     * \since QGIS 3.40
      */
     bool allowCommit() const;
 
@@ -2495,8 +2495,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Controls, if the layer is allowed to commit changes. If this is set to ``False``
      * it will not be possible to commit changes on this layer. This can be used to
      * define checks on a layer that need to pass before the layer can be saved.
-     * ``pluginId`` specifies your unique plugin id. The third parameter ``reason`` can be used
-     * to specify the reason for the process of committing to be blocked.
+     * ``pluginId`` specifies your unique plugin id. The third parameter ``reasons`` can be used
+     * to specify the list of reasons for the process of committing to be blocked.
      *
      * When calling :py:func:`commitChanges` this flag is initially set to ``True`` and then checked
      * just after the :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust
@@ -2506,7 +2506,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
      *
-     * \since QGIS 4.0
+     * \since QGIS 3.40
+     * Breaking changes \since QGIS 4.0
      */
     void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
 
