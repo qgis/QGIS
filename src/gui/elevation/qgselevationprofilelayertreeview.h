@@ -125,9 +125,9 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     QgsMapLayer *indexToLayer( const QModelIndex &index );
 
     /**
-     * Initially populates the tree view using layers from a \a project.
+     * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.
      */
-    void populateInitialLayers( QgsProject *project );
+    void populateInitialSources( QgsProject *project );
 
     /**
      * Returns the view's proxy model.
@@ -135,6 +135,29 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      * \since QGIS 3.32
      */
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
+
+  public slots:
+    /**
+     * Adds a custom node in the layer tree corresponding to a registered profile source.
+     *
+     * The created node can be accessed via the source id.
+     * If the source already has a corresponding node in the layer tree, a second node won't be created.
+     *
+     * \param sourceId    Unique identifier of the registered profile source.
+     * \param sourceName  Name of the registered profile source.
+     *
+     * \since QGIS 4.0
+     */
+    void addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName );
+
+    /**
+     * Removes a custom node from the layer tree corresponding to an unregistered profile source.
+     *
+     * \param sourceId  Unique identifier of the unregistered profile source.
+     *
+     * \since QGIS 4.0
+     */
+    void removeNodeForUnregisteredSource( const QString &sourceId );
 
   signals:
 
@@ -149,6 +172,11 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
+    /**
+     * Initially populates the tree view using layers from a \a project.
+     */
+    void populateInitialLayers( QgsProject *project );
+
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
     QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
     QgsLayerTree *mLayerTree = nullptr;

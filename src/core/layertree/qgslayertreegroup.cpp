@@ -109,6 +109,50 @@ QgsLayerTreeLayer *QgsLayerTreeGroup::addLayer( QgsMapLayer *layer )
   return ll;
 }
 
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, const QString &id, const QString &name )
+{
+  if ( id.trimmed().isEmpty() )
+    return nullptr;
+
+  // Avoid registering two custom nodes with the same id
+  const QStringList customNodeIds = findCustomNodeIds();
+  if ( customNodeIds.contains( id ) )
+    return nullptr;
+
+  QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( id, name );
+  insertChildNode( index, customNode );
+  return customNode;
+}
+
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, QgsLayerTreeCustomNode *node SIP_TRANSFER )
+{
+  if ( node->nodeId().trimmed().isEmpty() )
+    return nullptr;
+
+  // Avoid registering two custom nodes with the same id
+  const QStringList customNodeIds = findCustomNodeIds();
+  if ( customNodeIds.contains( node->nodeId() ) )
+    return nullptr;
+
+  insertChildNode( index, node );
+  return node;
+}
+
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::addCustomNode( const QString &id, const QString &name )
+{
+  if ( id.trimmed().isEmpty() )
+    return nullptr;
+
+  // Avoid registering two custom nodes with the same id
+  const QStringList customNodeIds = findCustomNodeIds();
+  if ( customNodeIds.contains( id ) )
+    return nullptr;
+
+  QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( id, name );
+  addChildNode( customNode );
+  return customNode;
+}
+
 void QgsLayerTreeGroup::insertChildNode( int index, QgsLayerTreeNode *node )
 {
   QList<QgsLayerTreeNode *> nodes;
@@ -178,6 +222,15 @@ void QgsLayerTreeGroup::removeLayer( QgsMapLayer *layer )
   }
 
   updateGroupLayers();
+}
+
+void QgsLayerTreeGroup::removeCustomNode( const QString &id )
+{
+  QgsLayerTreeCustomNode *node = findCustomNode( id );
+  if ( node )
+  {
+    removeChildNode( node );
+  }
 }
 
 void QgsLayerTreeGroup::removeChildren( int from, int count )
@@ -265,6 +318,39 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeGroup::findLayers() const
   return list;
 }
 
+QgsLayerTreeCustomNode *QgsLayerTreeGroup::findCustomNode( const QString &id ) const
+{
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isCustomNode( child ) )
+    {
+      QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
+      if ( childCustom->nodeId() == id )
+        return childCustom;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      QgsLayerTreeCustomNode *res = QgsLayerTree::toGroup( child )->findCustomNode( id );
+      if ( res )
+        return res;
+    }
+  }
+  return nullptr;
+}
+
+QList<QgsLayerTreeNode *> QgsLayerTreeGroup::findLayersAndCustomNodes() const
+{
+  QList<QgsLayerTreeNode *> list;
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isLayer( child ) || QgsLayerTree::isCustomNode( child ) )
+      list << child;
+    else if ( QgsLayerTree::isGroup( child ) )
+      list << QgsLayerTree::toGroup( child )->findLayersAndCustomNodes();
+  }
+  return list;
+}
+
 void QgsLayerTreeGroup::reorderGroupLayers( const QList<QgsMapLayer *> &order )
 {
   const QList< QgsLayerTreeLayer * > childLayers = findLayers();
@@ -278,6 +364,26 @@ void QgsLayerTreeGroup::reorderGroupLayers( const QList<QgsMapLayer *> &order )
         QgsLayerTreeLayer *cloned = layerNode->clone();
         insertChildNode( targetIndex, cloned );
         removeChildNode( layerNode );
+        targetIndex++;
+        break;
+      }
+    }
+  }
+}
+
+void QgsLayerTreeGroup::reorderGroupLayersAndCustomNodes( const QList<QgsLayerTreeNode *> &order )
+{
+  const QList< QgsLayerTreeNode * > childNodes = findLayersAndCustomNodes();
+  int targetIndex = 0;
+  for ( QgsLayerTreeNode *targetNode : order )
+  {
+    for ( QgsLayerTreeNode *childNode : childNodes )
+    {
+      if ( childNode == targetNode )
+      {
+        QgsLayerTreeNode *cloned = childNode->clone();
+        insertChildNode( targetIndex, cloned );
+        removeChildNode( childNode );
         targetIndex++;
         break;
       }
@@ -307,6 +413,38 @@ QList<QgsMapLayer *> QgsLayerTreeGroup::layerOrderRespectingGroupLayers() const
       else
       {
         list << group->layerOrderRespectingGroupLayers();
+      }
+    }
+  }
+  return list;
+}
+
+QList<QgsLayerTreeNode *> QgsLayerTreeGroup::layerAndCustomNodeOrderRespectingGroupLayers() const
+{
+  QList<QgsLayerTreeNode *> list;
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isLayer( child ) )
+    {
+      QgsMapLayer *layer = QgsLayerTree::toLayer( child )->layer();
+      if ( !layer || !layer->isSpatial() )
+        continue;
+      list << child;
+    }
+    else if ( QgsLayerTree::isCustomNode( child ) )
+    {
+      list << child;
+    }
+    else if ( QgsLayerTree::isGroup( child ) )
+    {
+      QgsLayerTreeGroup *group = QgsLayerTree::toGroup( child );
+      if ( group->groupLayer() )
+      {
+        list << group;
+      }
+      else
+      {
+        list << group->layerAndCustomNodeOrderRespectingGroupLayers();
       }
     }
   }
@@ -578,6 +716,19 @@ QStringList QgsLayerTreeGroup::findLayerIds() const
       lst << QgsLayerTree::toGroup( child )->findLayerIds();
     else if ( QgsLayerTree::isLayer( child ) )
       lst << QgsLayerTree::toLayer( child )->layerId();
+  }
+  return lst;
+}
+
+QStringList QgsLayerTreeGroup::findCustomNodeIds() const
+{
+  QStringList lst;
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
+  {
+    if ( QgsLayerTree::isGroup( child ) )
+      lst << QgsLayerTree::toGroup( child )->findCustomNodeIds();
+    else if ( QgsLayerTree::isCustomNode( child ) )
+      lst << QgsLayerTree::toCustomNode( child )->nodeId();
   }
   return lst;
 }
