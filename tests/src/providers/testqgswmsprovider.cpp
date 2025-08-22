@@ -469,10 +469,27 @@ void TestQgsWmsProvider::absoluteRelativeUri()
   QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
   QVERIFY( wmsMetadata );
 
-  QString absoluteUri = "type=mbtiles&url=" + QString( QUrl::toPercentEncoding( "file://" + QStringLiteral( TEST_DATA_DIR ) + "/isle_of_man.mbtiles" ) );
-  QString relativeUri = "type=mbtiles&url=file%3A.%2Fisle_of_man.mbtiles";
-  QCOMPARE( wmsMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
-  QCOMPARE( wmsMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+  // from no encoded absolute url to encoded relative url
+  {
+    QString absoluteUri = QString( "type=mbtiles&url=" ) + "file://" + QStringLiteral( TEST_DATA_DIR ) + "/isle_of_man.mbtiles";
+    QString relativeUri = "type=mbtiles&url=file%3A.%2Fisle_of_man.mbtiles";
+    QCOMPARE( wmsMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  }
+
+  // from no encoded relative url to encoded absolute url
+  {
+    QString relativeUri = "type=mbtiles&url=file:./isle_of_man.mbtiles";
+    QString absoluteUri = "type=mbtiles&url=" + QString( QUrl::toPercentEncoding( "file://" + QStringLiteral( TEST_DATA_DIR ) + "/isle_of_man.mbtiles" ) );
+    QCOMPARE( wmsMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+  }
+
+  // from encoded to encoded
+  {
+    QString absoluteUri = "type=mbtiles&url=" + QString( QUrl::toPercentEncoding( "file://" + QStringLiteral( TEST_DATA_DIR ) + "/isle_of_man.mbtiles" ) );
+    QString relativeUri = "type=mbtiles&url=file%3A.%2Fisle_of_man.mbtiles";
+    QCOMPARE( wmsMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+    QCOMPARE( wmsMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
+  }
 }
 
 void TestQgsWmsProvider::testXyzIsBasemap()
