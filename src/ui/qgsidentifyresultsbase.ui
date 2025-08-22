@@ -417,6 +417,17 @@
     <string>Hide NULL Values from Results</string>
    </property>
   </action>
+  <action name="mActionShowFullText">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Full Text</string>
+   </property>
+   <property name="toolTip">
+    <string>Show full text instead of truncating with ...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

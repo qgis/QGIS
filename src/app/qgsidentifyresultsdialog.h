@@ -159,6 +159,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
 
     static const QgsSettingsEntryBool *settingHideNullValues;
     static const QgsSettingsEntryBool *settingShowRelations;
+    static const QgsSettingsEntryBool *settingShowFullText;
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes );
@@ -290,6 +291,8 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
 
     void mActionShowRelations_toggled( bool checked );
 
+    void mActionShowFullText_toggled( bool checked );
+
     void mExpandAction_triggered( bool checked )
     {
       Q_UNUSED( checked )
@@ -367,6 +370,9 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, QTreeWidgetItem *parentItem );
 
     static bool isFeatureInAncestors( QTreeWidgetItem *item, const QgsVectorLayer *vlayer, const QgsFeature &f );
+
+    void updateTextDisplay();
+    void updateTextDisplayForItem( QTreeWidgetItem *item, bool showFullText );
 
     friend class TestQgsIdentify;
 };
