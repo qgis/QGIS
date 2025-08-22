@@ -23,8 +23,6 @@ struct LayerCommitBlockage
     QStringList errors;
 };
 
-
-
 class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
@@ -2706,15 +2704,15 @@ this layer.
 Checks all commit permissions set during the runtime of the program and
 returns bool. It can be used to check if committing is fully allowed.
 
-.. versionadded:: 3.4
+.. versionadded:: 4.0
 %End
 
     LayerCommitBlockage allowCommit(const QString& appId) const;
 %Docstring
 Checks layer commit permissions set by a specific plugin by the id of
-``id`` and returns ``LayerCommitBlockage`` object.
+``appId`` and returns ``LayerCommitBlockage`` object.
 
-.. versionadded:: 3.4
+.. versionadded:: 4.0
 %End
 
     PyObject *getPluginsBlocking() const;
@@ -2732,6 +2730,11 @@ Checks layer commit permissions set by a specific plugin by the id of
         PyList_SET_ITEM(pyList, i++, pyBlockage);
     }
     sipRes = pyList;
+%End
+%Docstring
+Returns std::list of ``LayerCommitBlockage`` objects which are currently imposed
+
+.. versionadded:: 4.0
 %End
 
     void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
@@ -2752,7 +2755,7 @@ the
 
 .. seealso:: :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust it from there.
 
-.. versionadded:: 3.4
+.. versionadded:: 4.0
 %End
 
     QgsStoredExpressionManager *storedExpressionManager();
