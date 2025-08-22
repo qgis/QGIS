@@ -50,7 +50,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
 
-const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterised clipping masks, regardless of output format." ) );
+const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterized clipping masks, regardless of output format." ) );
 
 QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -1603,6 +1603,11 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   mExportLabelingResults.reset( job.takeLabelingResults() );
 
   mRenderingErrors = job.errors();
+  QgsExpressionContext expressionContext = createExpressionContext();
+  if ( layersToRender( &expressionContext, false ).size() != layersToRender( &expressionContext, true ).size() )
+  {
+    mRenderingErrors.append( QgsMapRendererJob::Error( QStringLiteral( "" ), QStringLiteral( "Invalid layer(s)" ) ) );
+  }
 }
 
 void QgsLayoutItemMap::recreateCachedImageInBackground()
@@ -2464,7 +2469,7 @@ QString QgsLayoutItemMap::themeToRender( const QgsExpressionContext &context ) c
   return presetName;
 }
 
-QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContext *context ) const
+QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContext *context, bool includeInvalidLayers ) const
 {
   QgsExpressionContext scopedContext;
   if ( !context )
@@ -2520,10 +2525,13 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   // remove any invalid layers
-  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
+  if ( !includeInvalidLayers )
   {
-    return !layer || !layer->isValid();
-  } ), renderLayers.end() );
+    renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
+    {
+      return !layer || !layer->isValid();
+    } ), renderLayers.end() );
+  }
 
   return renderLayers;
 }

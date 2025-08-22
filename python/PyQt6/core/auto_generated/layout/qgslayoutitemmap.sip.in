@@ -873,11 +873,13 @@ calculations only) then ``includeLayerSettings`` should be ``False``.
     virtual void finalizeRestoreFromXml();
 
 
-    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = 0 ) const;
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = 0, bool includeInvalidLayers = false ) const;
 %Docstring
 Returns a list of the layers which will be rendered within this map
 item, considering any locked layers, linked map theme, and data defined
 settings.
+
+:param includeInvalidLayers: include invalid layers in the maplayer list
 %End
 
     void addLabelBlockingItem( QgsLayoutItem *item );

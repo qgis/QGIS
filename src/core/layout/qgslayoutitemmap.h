@@ -323,7 +323,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
   public:
 
     /**
-     * Settings entry - Whether to force rasterised clipping masks, regardless of output format.
+     * Settings entry - Whether to force rasterized clipping masks, regardless of output format.
      *
      * \since QGIS 4.0
      */
@@ -776,8 +776,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     /**
      * Returns a list of the layers which will be rendered within this map item, considering
      * any locked layers, linked map theme, and data defined settings.
+     * \param includeInvalidLayers include invalid layers in the maplayer list
      */
-    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr, bool includeInvalidLayers = false ) const;
 
     /**
      * Sets the specified layout \a item as a "label blocking item" for this map.
