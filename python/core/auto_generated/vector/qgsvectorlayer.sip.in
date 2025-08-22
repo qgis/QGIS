@@ -20,7 +20,7 @@ typedef QSet<int> QgsAttributeIds;
 struct LayerCommitBlockage
 {
     QString pluginId;
-    QString reason;
+    QStringList errors;
 };
 
 
@@ -2734,13 +2734,13 @@ Checks layer commit permissions set by a specific plugin by the id of
     sipRes = pyList;
 %End
 
-    void setAllowCommit(const QString& pluginId, bool allow, const QString& reason = "");
+    void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
 %Docstring
 Controls, if the layer is allowed to commit changes. If this is set to
 ``False`` it will not be possible to commit changes on this layer. This
 can be used to define checks on a layer that need to pass before the
-layer can be saved. ``appId`` specifies your unique plugin id. The third
-parameter ``reason`` can be used to specify the reason for the process
+layer can be saved. ``pluginId`` specifies your unique plugin id. The third
+parameter ``reasons`` can be used to specify the reasons for the process
 of committing to be blocked.
 
 When calling :py:func:`commitChanges` this flag is initially set to

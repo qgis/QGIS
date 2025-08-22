@@ -111,6 +111,7 @@
 #include <qmessagebox.h>
 #include <qmutex.h>
 #include <qnamespace.h>
+#include <qstringliteral.h>
 #include <qvariant.h>
 
 #include <algorithm>
@@ -4046,7 +4047,16 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
     std::list<LayerCommitBlockage> pluginsBlocking = getPluginsBlocking();
 
     for(const LayerCommitBlockage& pluginBlocking: std::as_const(pluginsBlocking)) {
-      warningMessage.append(QString("<li><b>%1</b>: %2</li>").arg(pluginBlocking.pluginId).arg(pluginBlocking.reason));
+      QString pluginMessage;
+      if (pluginBlocking.errors.empty())
+        pluginMessage = QString("<li><b>%1</b>: Reasons not specified</li>").arg(pluginBlocking.pluginId);
+      else
+        pluginMessage = QString("<li><b>%1</b>: %2%3</li>")
+      .arg(pluginBlocking.pluginId)
+      .arg(pluginBlocking.errors[0])
+      .arg(pluginBlocking.errors.size() > 1? "..." : "");
+
+      warningMessage.append(pluginMessage);
     }
     warningMessage.append("</ul>");
 
@@ -6560,7 +6570,7 @@ std::list<LayerCommitBlockage> QgsVectorLayer::getPluginsBlocking() const
 }
 
 
-void QgsVectorLayer::setAllowCommit(const QString& appId, bool allowCommit, const QString& reason)
+void QgsVectorLayer::setAllowCommit(const QString& appId, bool allowCommit, const QStringList& reasons)
 {
   QMutexLocker mutexLocker(&commitMutex);
 
@@ -6575,8 +6585,14 @@ void QgsVectorLayer::setAllowCommit(const QString& appId, bool allowCommit, cons
   if (foundBlockage == commitBlockages.end()) {
     commitBlockages.push_back(LayerCommitBlockage{
       .pluginId = appId,
-      .reason = reason,
+      .errors = reasons,
     });
+
+    QString debugMessage = QStringLiteral("The ability to commit to the layer has been blocked by %1 due to errors:\n").arg(appId);
+    for (const QString& reason: reasons)
+      debugMessage.append(reason + '\n');
+    QgsDebugMsgLevel(debugMessage, 0);
+
     emit allowCommitChanged();    
     return;
   }
@@ -6584,6 +6600,7 @@ void QgsVectorLayer::setAllowCommit(const QString& appId, bool allowCommit, cons
   if (allowCommit && foundBlockage != commitBlockages.end())
   {
     commitBlockages.erase(foundBlockage);
+    QgsDebugMsgLevel(QStringLiteral("The layer blockage imposed by %1 has been lifted").arg(appId), 0);
     emit allowCommitChanged();
     return;
   }

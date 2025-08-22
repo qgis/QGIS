@@ -103,10 +103,10 @@ typedef QSet<int> QgsAttributeIds;
 /** 
  * Represents a blockage of the ability to commit the changes to the vector layer.
  */
-struct LayerCommitBlockage
+struct CORE_EXPORT LayerCommitBlockage
 {
   QString pluginId;
-  QString reason;
+  QStringList errors;
 };
 
 // TODO QGIS4: Remove virtual from non-inherited methods (like isModified)
@@ -2471,21 +2471,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Checks all commit permissions set during the runtime of the program and returns bool. It can be used to check
      * if committing is fully allowed. 
-     * \since QGIS 3.4
+     * \since QGIS 4.0
      */
     bool allowCommit() const;
 
     /**
      * Checks layer commit permissions set by a specific plugin by the id of ``pluginId`` and returns ``LayerCommitBlockage`` object.
      *
-     * \since QGIS 3.4
+     * \since QGIS 4.0
      */
     LayerCommitBlockage allowCommit(const QString& pluginId) const;
 
     /**
      * Returns a list of ``LayerCommitBlockage`` blockages which are currently imposed 
      *
-     * \since QGIS 3.4
+     * \since QGIS 4.0
      */
     std::list<LayerCommitBlockage> getPluginsBlocking() const;
 
@@ -2506,9 +2506,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
      *
-     * \since QGIS 3.4
+     * \since QGIS 4.0
      */
-    void setAllowCommit(const QString& pluginId, bool allow, const QString& reason = "");
+    void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
 
     /**
      * Returns the manager of the stored expressions for this layer.
