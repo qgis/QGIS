@@ -29,6 +29,7 @@
 #include "qgsdatasourceselectdialog.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingprovider.h"
+#include "qgsproviderregistry.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -650,7 +651,24 @@ void QgsProcessingMapLayerComboBox::onLayerChanged( QgsMapLayer *layer )
   if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
   {
     // Only WMS layers will access raster advanced options for now
-    mSettingsButton->setEnabled( layer && layer->providerType() == QStringLiteral( "wms" ) );
+    bool isWmsLayer = layer && layer->providerType() == QStringLiteral( "wms" );
+    if ( layer && isWmsLayer )
+    {
+      const QString url = layer->publicSource();
+      // Discard WMTS layers
+      if ( url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) || url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive ) )
+        isWmsLayer = false;
+    }
+
+    if ( layer && isWmsLayer )
+    {
+      // Discard XYZ layers
+      const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), layer->source() );
+      if ( parts.value( QStringLiteral( "type" ) ).toString() == QLatin1String( "xyz" ) )
+        isWmsLayer = false;
+    }
+
+    mSettingsButton->setEnabled( isWmsLayer );
   }
 
   mPrevLayer = layer;
