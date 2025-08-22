@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsElevationProfileExportSettingsWidget;
 
 /**
@@ -37,12 +37,12 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
     /**
      * Sets the initial plot settings to show in the widget.
      */
-    void setPlotSettings( const Qgs2DPlot &plot );
+    void setPlotSettings( const Qgs2DXyPlot &plot );
 
     /**
      * Updates plot settings based on the widget's state.
      */
-    void updatePlotSettings( Qgs2DPlot &plot );
+    void updatePlotSettings( Qgs2DXyPlot &plot );
 
     QgsLayoutSize pageSizeMM() const;
 

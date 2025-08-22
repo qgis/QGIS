@@ -48,13 +48,14 @@ class QgsGlobeChunkLoader : public QgsChunkLoader
     Q_OBJECT
   public:
     QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon );
+    void start() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator;
     QgsCoordinateTransform mGlobeCrsToLatLon;
-    int mJobId;
+    int mJobId = -1;
     QImage mTexture;
 };
 
@@ -65,12 +66,13 @@ class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
     Q_OBJECT
   public:
     QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node );
+    void start() override;
 
     void cancel() override;
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    int mJobId;
+    int mJobId = -1;
 };
 
 class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory

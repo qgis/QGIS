@@ -32,6 +32,9 @@
 
 FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
   : QgsTerrainTileLoader( terrain, node )
+{}
+
+void FlatTerrainChunkLoader::start()
 {
   loadTexture();
 }

@@ -319,6 +319,10 @@ QgsMasterLayoutInterface *QgsProjectStoredObjectManagerModel<QgsMasterLayoutInte
 
 template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>; // clazy:exclude=missing-qobject-macro
 
+
+#include "qgselevationprofile.h"
+template class QgsProjectStoredObjectManagerModel<QgsElevationProfile>; // clazy:exclude=missing-qobject-macro
+
 ///@endcond
 
 //
@@ -394,4 +398,5 @@ bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int s
 
 ///@cond PRIVATE
 template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;  // clazy:exclude=missing-qobject-macro
+template class QgsProjectStoredObjectManagerProxyModel<QgsElevationProfile>;  // clazy:exclude=missing-qobject-macro
 ///@endcond

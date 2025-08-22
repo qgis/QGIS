@@ -255,7 +255,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;20;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
-  attributes.append( qMakePair( QStringLiteral( "Value" ), QStringLiteral( "Real" ) ) );
+  attributes.append( qMakePair( QStringLiteral( "Value" ), QStringLiteral( "String;80" ) ) );
 
   QFileInfo fi( file );
   QString ext = fi.suffix();
@@ -295,7 +295,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
     f.setAttribute( fieldLayer, layerName );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
-    f.setAttribute( fieldValue, error->value() );
+    f.setAttribute( fieldValue, error->value().toString() );
     QgsGeometry geom( new QgsPoint( error->location() ) );
     f.setGeometry( geom );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );

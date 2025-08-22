@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=24.04
+ARG DISTRO_VERSION=24.10
 ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
@@ -34,7 +34,7 @@ RUN  apt-get update \
     'libdraco4|libdraco8' \
     libexiv2-27 \
     'libfcgi0ldbl|libfcgi0t64' \
-    libgsl27 \
+    libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
@@ -54,7 +54,7 @@ RUN  apt-get update \
     'libqt5xml5|libqt5xml5t64' \
     libqt5webkit5 \
     libqwt-qt5-6 \
-    libspatialindex6 \
+    libspatialindex7 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \

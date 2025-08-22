@@ -1885,6 +1885,13 @@ The development version
       FirstAndLastLabels,
     };
 
+
+    enum class PlotAxisType
+    {
+      Interval,
+      Categorical,
+    };
+
     enum class DpiMode
     {
       All,

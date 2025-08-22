@@ -6128,6 +6128,19 @@ Qgis.PlotAxisSuffixPlacement.__doc__ = """Placement options for suffixes in the 
 # --
 Qgis.PlotAxisSuffixPlacement.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PlotAxisType.Interval.__doc__ = "The axis represents a range of values"
+Qgis.PlotAxisType.Categorical.__doc__ = "The axis represents categories"
+Qgis.PlotAxisType.__doc__ = """Plots axis types.
+
+.. versionadded:: 4.0
+
+* ``Interval``: The axis represents a range of values
+* ``Categorical``: The axis represents categories
+
+"""
+# --
+Qgis.PlotAxisType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
 Qgis.DpiMode.QGIS.__doc__ = "QGIS"

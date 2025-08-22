@@ -300,6 +300,9 @@
 %Include auto_generated/editform/qgsattributeeditorspacerelement.sip
 %Include auto_generated/elevation/qgsabstractprofilegenerator.sip
 %Include auto_generated/elevation/qgsabstractprofilesource.sip
+%Include auto_generated/elevation/qgselevationprofile.sip
+%Include auto_generated/elevation/qgselevationprofilemanager.sip
+%Include auto_generated/elevation/qgselevationprofilemanagermodel.sip
 %Include auto_generated/elevation/qgsprofileexporter.sip
 %Include auto_generated/elevation/qgsprofilepoint.sip
 %Include auto_generated/elevation/qgsprofilerenderer.sip
@@ -515,6 +518,9 @@
 %Include auto_generated/painting/qgspaintenginehack.sip
 %Include auto_generated/painting/qgspainting.sip
 %Include auto_generated/pdf/qgspdfrenderer.sip
+%Include auto_generated/plot/qgsbarchartplot.sip
+%Include auto_generated/plot/qgslinechartplot.sip
+%Include auto_generated/plot/qgsplotregistry.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
 %Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip

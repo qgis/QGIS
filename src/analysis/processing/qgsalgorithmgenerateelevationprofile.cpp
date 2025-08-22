@@ -31,7 +31,7 @@
 
 ///@cond PRIVATE
 
-class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
+class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
 {
   public:
     explicit QgsAlgorithmElevationProfilePlotItem( int width, int height, int dpi )
@@ -58,12 +58,13 @@ class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
       QgsRenderContext context;
       context.setScaleFactor( mDpi / 25.4 );
 
-      calculateOptimisedIntervals( context );
-      mPlotArea = interiorPlotArea( context );
+      QgsPlotRenderContext plotContext;
+      calculateOptimisedIntervals( context, plotContext );
+      mPlotArea = interiorPlotArea( context, plotContext );
       return mPlotArea;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -312,8 +313,9 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setScaleFactor( dpi / 25.4 );
   renderContext.setExpressionContext( context.expressionContext() );
-  plotItem.calculateOptimisedIntervals( renderContext );
-  plotItem.render( renderContext );
+  QgsPlotRenderContext plotContext;
+  plotItem.calculateOptimisedIntervals( renderContext, plotContext );
+  plotItem.render( renderContext, plotContext );
   painter.end();
   image.save( outputImage );
 

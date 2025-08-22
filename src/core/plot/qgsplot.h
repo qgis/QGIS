@@ -25,11 +25,12 @@
 #include <QSizeF>
 #include <memory>
 
+class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsRenderContext;
+class QgsSymbol;
 class QgsNumericFormat;
-
 
 /**
  * \brief Base class for plot/chart/graphs.
@@ -42,11 +43,52 @@ class QgsNumericFormat;
  */
 class CORE_EXPORT QgsPlot
 {
+    //SIP_TYPEHEADER_INCLUDE( "qgsbarchartplot.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslinechartplot.h" );
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsBarChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsBarChartPlot;
+      }
+      else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DXyPlot;
+      }
+      else if ( dynamic_cast<Qgs2DPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DPlot;
+      }
+      else
+      {
+        sipType = sipType_QgsPlot;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
+
   public:
 
     QgsPlot() = default;
 
     virtual ~QgsPlot();
+
+    /**
+     * Returns the plot's type.
+     * \since QGIS 4.0
+     */
+    virtual QString type() const { return QString(); }
 
     /**
      * Writes the plot's properties into an XML \a element.
@@ -61,6 +103,169 @@ class CORE_EXPORT QgsPlot
   private:
 
 
+};
+
+
+/**
+ * \ingroup core
+ * \class QgsPlotRenderContext
+ * \brief Contains information about the context of a plot rendering operation.
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsPlotRenderContext
+{
+  public:
+
+    /**
+     * Constructor for QgsPlotRenderContext.
+     */
+    QgsPlotRenderContext() = default;
+    ~QgsPlotRenderContext() = default;
+};
+
+
+/**
+ * \brief An abstract class used to encapsulate the data for a plot series.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsAbstractPlotSeries
+{
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsAbstractPlotSeries *item = dynamic_cast< QgsAbstractPlotSeries * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsXyPlotSeries *>( item ) != NULL )
+      {
+        sipType = sipType_QgsXyPlotSeries;
+      }
+      else
+      {
+        sipType = sipType_QgsAbstractPlotSeries;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
+  public:
+
+    QgsAbstractPlotSeries() = default;
+    virtual ~QgsAbstractPlotSeries() = default;
+
+    /**
+     * Returns the series' name.
+     */
+    QString name() const;
+
+    /**
+     * Sets the series' name.
+     */
+    void setName( const QString &name );
+
+  private:
+
+    QString mName;
+};
+
+/**
+ * \brief Encapsulates the data for an XY plot series.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
+{
+  public:
+
+    QgsXyPlotSeries() = default;
+    ~QgsXyPlotSeries() override = default;
+
+    /**
+     * Returns the series' list of XY pairs of double.
+     */
+    QList<std::pair<double, double>> data() const;
+
+    /**
+     * Sets the series' list of XY pairs of double.
+     */
+    void setData( const QList<std::pair<double, double>> &data );
+
+    /**
+     * Appends a pair of X/Y double values to the series.
+     */
+    void append( double x, double y );
+
+    /**
+     * Clears the series' data.
+     */
+    void clear();
+
+  private:
+
+    QList<std::pair<double, double>> mData;
+};
+
+/**
+ * \brief Encapsulates one or more plot series.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsPlotData
+{
+  public:
+
+    QgsPlotData() = default;
+    ~QgsPlotData();
+
+    QgsPlotData( const QgsPlotData &rh ) = delete;
+    QgsPlotData &operator=( const QgsPlotData &rh ) = delete;
+
+    /**
+     * Returns the list of series forming the plot data.
+     * \note the series' ownership is retained by this object.
+     */
+    QList<QgsAbstractPlotSeries *> series() const;
+
+    /**
+     * Adds a series to the plot data.
+     * \note the series' ownership is transferred to this object.
+     */
+    void addSeries( QgsAbstractPlotSeries *series SIP_TRANSFER );
+
+    /**
+     * Clears all series from the plot data.
+     */
+    void clearSeries();
+
+    /**
+     * Returns the name of the series' categories.
+     */
+    QStringList categories() const;
+
+    /**
+     * Sets the name of the series' \a categories.
+     */
+    void setCategories( const QStringList &categories );
+
+  private:
+
+#ifdef SIP_RUN
+    QgsPlotData( const QgsPlotData &other );
+#endif
+
+    QList<QgsAbstractPlotSeries *> mSeries;
+    QStringList mCategories;
 };
 
 /**
@@ -90,6 +295,18 @@ class CORE_EXPORT QgsPlotAxis
      * Reads the axis' properties from an XML \a element.
      */
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Returns the axis type.
+     * \since QGIS 4.0
+     */
+    Qgis::PlotAxisType type() const;
+
+    /**
+     * Sets the axis type.
+     * \since QGIS 4.0
+     */
+    void setType( Qgis::PlotAxisType type );
 
     /**
      * Returns the interval of minor grid lines for the axis.
@@ -241,6 +458,8 @@ class CORE_EXPORT QgsPlotAxis
     QgsPlotAxis( const QgsPlotAxis &other );
 #endif
 
+    Qgis::PlotAxisType mType = Qgis::PlotAxisType::Interval;
+
     double mGridIntervalMinor = 1;
     double mGridIntervalMajor = 5;
 
@@ -260,9 +479,6 @@ class CORE_EXPORT QgsPlotAxis
 
 /**
  * \brief Base class for 2-dimensional plot/chart/graphs.
- *
- * The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
- * can implement the renderContent() method to render their actual plot content.
  *
  * \warning This class is not considered stable API, and may change in future!
  *
@@ -289,7 +505,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     /**
      * Renders the plot.
      */
-    void render( QgsRenderContext &context );
+    virtual void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() );
 
     /**
      * Renders the plot content.
@@ -302,7 +518,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * The \a plotArea argument specifies that area of the plot which corresponds to the actual plot content. Implementations
      * should take care to scale values accordingly to render points correctly inside this plot area.
      */
-    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea );
+    virtual void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
 
     /**
      * Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
@@ -322,7 +538,72 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      */
-    QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+
+    /**
+     * Returns the margins of the plot area (in millimeters)
+     *
+     * \see setMargins()
+     */
+    const QgsMargins &margins() const;
+
+    /**
+     * Sets the \a margins of the plot area (in millimeters)
+     *
+     * \see setMargins()
+     */
+    void setMargins( const QgsMargins &margins );
+
+  private:
+
+#ifdef SIP_RUN
+    Qgs2DPlot( const Qgs2DPlot &other );
+#endif
+
+    QSizeF mSize;
+    QgsMargins mMargins;
+
+    friend class Qgs2DXyPlot;
+};
+
+/**
+ * \brief Base class for 2-dimensional plot/chart/graphs with an X and Y axes.
+ *
+ * The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
+ * can implement the renderContent() method to render their actual plot content.
+ *
+ * \warning This class is not considered stable API, and may change in future!
+ *
+ * \ingroup core
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
+{
+  public:
+
+    /**
+     * Constructor for Qgs2DXyPlot.
+     */
+    Qgs2DXyPlot();
+
+    ~Qgs2DXyPlot() override;
+
+    Qgs2DXyPlot( const Qgs2DXyPlot &other ) = delete;
+    Qgs2DXyPlot &operator=( const Qgs2DXyPlot &other ) = delete;
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+
+    /**
+     * Renders the plot.
+     */
+    void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) override;
+
+    /**
+     * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
+     * outside the plot area).
+     */
+    QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const override;
 
     /**
      * Automatically sets the grid and label intervals to optimal values
@@ -331,7 +612,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * Intervals will be calculated in order to avoid overlapping axis labels and to ensure
      * round values are shown.
      */
-    void calculateOptimisedIntervals( QgsRenderContext &context );
+    void calculateOptimisedIntervals( QgsRenderContext &context, QgsPlotRenderContext &plotContext );
 
     /**
      * Returns the minimum value of the x axis.
@@ -449,27 +730,11 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      */
     void setChartBorderSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
-    /**
-     * Returns the margins of the plot area (in millimeters)
-     *
-     * \see setMargins()
-     */
-    const QgsMargins &margins() const;
-
-    /**
-     * Sets the \a margins of the plot area (in millimeters)
-     *
-     * \see setMargins()
-     */
-    void setMargins( const QgsMargins &margins );
-
   private:
 
 #ifdef SIP_RUN
-    Qgs2DPlot( const Qgs2DPlot &other );
+    Qgs2DXyPlot( const Qgs2DXyPlot &other );
 #endif
-
-    QSizeF mSize;
 
     double mMinX = 0;
     double mMinY = 0;
@@ -478,8 +743,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 
     std::unique_ptr< QgsFillSymbol > mChartBackgroundSymbol;
     std::unique_ptr< QgsFillSymbol > mChartBorderSymbol;
-
-    QgsMargins mMargins;
 
     QgsPlotAxis mXAxis;
     QgsPlotAxis mYAxis;

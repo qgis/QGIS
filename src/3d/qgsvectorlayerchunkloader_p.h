@@ -89,6 +89,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );
     ~QgsVectorLayerChunkLoader() override;
 
+    void start() override;
     virtual void cancel() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 

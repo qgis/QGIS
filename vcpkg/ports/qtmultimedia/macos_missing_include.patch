@@ -1,0 +1,30 @@
+From 5fea89d9de0409e8495528b3cb03c4f25a24d19b Mon Sep 17 00:00:00 2001
+From: Tim Blechmann <tim.blechmann@qt.io>
+Date: Fri, 27 Jun 2025 09:55:46 +0800
+Subject: [PATCH] darwin: include missing header
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fixes: QTBUG-138060
+Pick-to: 6.8 6.9 6.10
+Change-Id: Id0433597842c9e5b25101bf2f426b890db2f6e95
+Reviewed-by: Tim Blechmann <tim.blechmann@qt.io>
+Reviewed-by: Nils Petter Skålerud <nils.petter.skalerud@qt.io>
+---
+ src/plugins/multimedia/darwin/mediaplayer/avfdisplaylink.mm | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/plugins/multimedia/darwin/mediaplayer/avfdisplaylink.mm b/src/plugins/multimedia/darwin/mediaplayer/avfdisplaylink.mm
+index 8c375403af..1e707a1132 100644
+--- a/src/plugins/multimedia/darwin/mediaplayer/avfdisplaylink.mm
++++ b/src/plugins/multimedia/darwin/mediaplayer/avfdisplaylink.mm
+@@ -4,6 +4,8 @@
+ #include "avfdisplaylink_p.h"
+ #include <QtCore/qcoreapplication.h>
+ 
++#include <mutex>
++
+ #ifdef QT_DEBUG_AVF
+ #include <QtCore/qdebug.h>
+ #endif

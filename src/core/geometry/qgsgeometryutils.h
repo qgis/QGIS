@@ -1274,6 +1274,140 @@ class CORE_EXPORT QgsGeometryUtils
       return result;
     }
 
+    /**
+     * Creates a QgsPoint with dimensions matching a reference point.
+     * \param x x-coordinate for the new point
+     * \param y y-coordinate for the new point
+     * \param reference reference point providing dimension information (Z, M)
+     * \returns QgsPoint with matching dimensions, Z and M values set to 0.0
+     * \since QGIS 4.0
+     */
+    static QgsPoint createPointWithMatchingDimensions( double x, double y, const QgsPoint &reference ) SIP_HOLDGIL;
+
+    /**
+     * Interpolates a point on a segment with proper Z and M value interpolation.
+     * \param x x-coordinate of the point to interpolate
+     * \param y y-coordinate of the point to interpolate
+     * \param segmentStart start point of the segment
+     * \param segmentEnd end point of the segment
+     * \returns QgsPoint with proper Z and M interpolation
+     * \since QGIS 4.0
+     */
+    static QgsPoint interpolatePointOnSegment( double x, double y,
+        const QgsPoint &segmentStart, const QgsPoint &segmentEnd ) SIP_HOLDGIL;
+
+    /**
+     * Creates a chamfer between two line segments using QgsPoint.
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
+     * \param distance1 chamfer distance along first segment
+     * \param distance2 chamfer distance along second segment (if negative, uses distance1)
+     * \param chamferStart calculated start point of the chamfer
+     * \param chamferEnd calculated end point of the chamfer
+     * \param epsilon tolerance for geometric calculations
+     * \returns true if chamfer was successfully created
+     * \since QGIS 4.0
+     */
+    static bool createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                               const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                               double distance1, double distance2,
+                               QgsPoint &chamferStart SIP_OUT, QgsPoint &chamferEnd SIP_OUT,
+                               double epsilon = 1e-8 ) SIP_HOLDGIL;
+
+    /**
+     * Creates a fillet (rounded corner) between two line segments using QgsPoint.
+     * Returns the three fillet arc points (\a filletPoint1, \a filletMidPoint, \a filletPoint2)
+     * via output parameters to define a CircularString.
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
+     * \param radius fillet radius
+     * \param filletPoint1 first tangent point of the fillet arc
+     * \param filletMidPoint midpoint of the fillet arc
+     * \param filletPoint2 second tangent point of the fillet arc
+     * \param epsilon tolerance for geometric calculations
+     * \returns true if fillet was successfully created
+     * \since QGIS 4.0
+     */
+    static bool createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                              const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                              double radius,
+                              QgsPoint &filletPoint1 SIP_OUT,
+                              QgsPoint &filletMidPoint SIP_OUT,
+                              QgsPoint &filletPoint2 SIP_OUT,
+                              double epsilon = 1e-8 ) SIP_HOLDGIL;
+
+    /**
+     * Creates a complete chamfer geometry connecting two segments.
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
+     * \param distance1 chamfer distance along first segment
+     * \param distance2 chamfer distance along second segment (if negative, uses distance1)
+     * \returns QgsLineString geometry connecting the segments through the chamfer
+     * \since QGIS 4.0
+     */
+    static std::unique_ptr< QgsLineString >createChamferGeometry(
+      const QgsPoint &segment1Start, const QgsPoint &segment1End,
+      const QgsPoint &segment2Start, const QgsPoint &segment2End,
+      double distance1, double distance2 );
+
+    /**
+     * Creates a complete fillet geometry connecting two segments.
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
+     * \param radius fillet radius
+     * \param segments number of segments for arc discretization (≤0 for circular arc)
+     * \returns geometry connecting the segments through the fillet
+     * \since QGIS 4.0
+     */
+    static std::unique_ptr< QgsAbstractGeometry >createFilletGeometry(
+      const QgsPoint &segment1Start, const QgsPoint &segment1End,
+      const QgsPoint &segment2Start, const QgsPoint &segment2End,
+      double radius, int segments );
+
+    /**
+     * Applies chamfer to a vertex in a curve geometry.
+     * \param curve input curve geometry
+     * \param vertexIndex index of vertex to chamfer
+     * \param distance1 chamfer distance along first segment
+     * \param distance2 chamfer distance along second segment
+     * \returns new geometry with chamfer applied, or None on failure
+     * \since QGIS 4.0
+     */
+    static std::unique_ptr< QgsAbstractGeometry >chamferVertex(
+      const QgsCurve *curve, int vertexIndex,
+      double distance1, double distance2 );
+
+    /**
+     * Applies fillet to a vertex in a curve geometry.
+     * \param curve input curve geometry
+     * \param vertexIndex index of vertex to fillet
+     * \param radius fillet radius
+     * \param segments number of segments for arc discretization (≤0 for circular arc)
+     * \returns new geometry with fillet applied, or None on failure
+     * \since QGIS 4.0
+     */
+    static std::unique_ptr< QgsAbstractGeometry >filletVertex(
+      const QgsCurve *curve, int vertexIndex,
+      double radius, int segments );
+
+    /**
+     * Convenient method of createFillet using array output.
+     * \note Not available in Python bindings.
+     * \since QGIS 4.0
+     */
+    static bool createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                   const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                   double radius,
+                                   QgsPoint filletPoints[3],
+                                   double epsilon = 1e-8 ) SIP_SKIP;
 
 };
 #include "qgsgeometryutils_base.h"

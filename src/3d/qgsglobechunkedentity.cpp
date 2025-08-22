@@ -275,6 +275,12 @@ QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureG
   , mTextureGenerator( textureGenerator )
   , mGlobeCrsToLatLon( globeCrsToLatLon )
 {
+}
+
+void QgsGlobeChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
+
   connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this]( int job, const QImage &img ) {
     if ( job == mJobId )
     {
@@ -402,6 +408,12 @@ QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureG
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
 {
+}
+
+void QgsGlobeMapUpdateJob::start()
+{
+  QgsChunkNode *node = chunk();
+
   // extract our terrain texture image from the 3D entity
   QVector<QgsGlobeMaterial *> materials = node->entity()->componentsOfType<QgsGlobeMaterial>();
   Q_ASSERT( materials.count() == 1 );
@@ -410,7 +422,7 @@ QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureG
   QgsTerrainTextureImage *terrainTexImage = qobject_cast<QgsTerrainTextureImage *>( texImages[0] );
   Q_ASSERT( terrainTexImage );
 
-  connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this, terrainTexImage]( int jobId, const QImage &image ) {
+  connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this, terrainTexImage]( int jobId, const QImage &image ) {
     if ( mJobId == jobId )
     {
       terrainTexImage->setImage( image );
@@ -418,7 +430,7 @@ QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureG
       emit finished();
     }
   } );
-  mJobId = textureGenerator->render( terrainTexImage->imageExtent(), node->tileId(), terrainTexImage->imageDebugText() );
+  mJobId = mTextureGenerator->render( terrainTexImage->imageExtent(), node->tileId(), terrainTexImage->imageDebugText() );
 }
 
 void QgsGlobeMapUpdateJob::cancel()

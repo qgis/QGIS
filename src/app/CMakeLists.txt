@@ -187,6 +187,7 @@ set(QGIS_APP_SRCS
   elevation/qgselevationprofileexportsettingswidget.cpp
   elevation/qgselevationprofileimageexportdialog.cpp
   elevation/qgselevationprofilepdfexportdialog.cpp
+  elevation/qgselevationprofilemanagerdialog.cpp
   elevation/qgselevationprofiletoolidentify.cpp
   elevation/qgselevationprofiletoolmeasure.cpp
   elevation/qgselevationprofilewidget.cpp

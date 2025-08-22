@@ -71,7 +71,7 @@ Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
 
 bool QgsColorRampTextureGenerator::operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const
 {
-  const QgsColorRampTextureGenerator *otherFunctor = functor_cast<QgsColorRampTextureGenerator>( &other );
+  const QgsColorRampTextureGenerator *otherFunctor = dynamic_cast<const QgsColorRampTextureGenerator *>( &other );
   if ( !otherFunctor )
     return false;
 

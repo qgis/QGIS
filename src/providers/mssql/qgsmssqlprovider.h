@@ -213,18 +213,11 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     mutable Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
+    QgsDataSourceUri mUri;
+
     // current layer name
     QString mSchemaName;
     QString mTableName;
-
-    // login
-    QString mUserName;
-    QString mPassword;
-
-    // server access
-    QString mService;
-    QString mDatabaseName;
-    QString mHost;
 
     // available tables
     QStringList mTables;

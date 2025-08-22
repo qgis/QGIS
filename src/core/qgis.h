@@ -3254,6 +3254,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( PlotAxisSuffixPlacement )
 
+
+    /**
+     * Plots axis types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PlotAxisType
+    {
+      Interval, //!< The axis represents a range of values
+      Categorical, //!< The axis represents categories
+    };
+    Q_ENUM( PlotAxisType )
+
     /**
      * DpiMode enum
      * \since QGIS 3.26
@@ -6941,7 +6954,6 @@ typedef unsigned long long qgssize;
   __pragma(warning(disable:4702))
 #define Q_NOWARN_UNREACHABLE_POP \
   __pragma(warning(pop))
-
 #else
 
 #define Q_NOWARN_DEPRECATED_PUSH

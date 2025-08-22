@@ -907,6 +907,15 @@ atlases and reports within the project.
 %End
 
 
+    QgsElevationProfileManager *elevationProfileManager();
+%Docstring
+Returns the project's elevation profile manager, which manages elevation
+profiles within the project.
+
+.. versionadded:: 4.0
+%End
+
+
     QgsMapViewsManager *viewsManager();
 %Docstring
 Returns the project's views manager, which manages map views (including
