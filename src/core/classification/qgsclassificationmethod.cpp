@@ -351,10 +351,15 @@ QString QgsClassificationMethod::labelForRange( const QgsRendererRange &range, Q
 
 QString QgsClassificationMethod::labelForRange( const double lowerValue, const double upperValue, ClassPosition position ) const
 {
-  Q_UNUSED( position )
+  // Build unambiguous inequality labels:
+  // First class:   lower ≤ x ≤ upper
+  // Subsequent:    lower < x ≤ upper
+  const QString lo = valueToLabel( lowerValue );
+  const QString hi = valueToLabel( upperValue );
 
-  const QString lowerLabel = valueToLabel( lowerValue );
-  const QString upperLabel = valueToLabel( upperValue );
+  const bool isFirst = ( position == QgsClassificationMethod::LowerBound );
+  const QString lowerOp = isFirst ? QString::fromUtf8("≤") : QString::fromUtf8("<");
+  const QString upperOp = QString::fromUtf8("≤");
 
-  return labelFormat().replace( QLatin1String( "%1" ), lowerLabel ).replace( QLatin1String( "%2" ), upperLabel );
+  return QStringLiteral("%1 %2 x %3 %4").arg( lo, lowerOp, upperOp, hi );
 }
