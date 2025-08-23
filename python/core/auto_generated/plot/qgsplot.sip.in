@@ -760,6 +760,30 @@ Returns the default fill symbol to use for the chart area border.
 .. seealso:: :py:func:`chartBackgroundSymbol`
 %End
 
+    static QgsMarkerSymbol *lineChartMarkerSymbol() /Factory/;
+%Docstring
+Returns the default marker symbol to use for line charts.
+
+.. seealso:: :py:func:`lineChartLineSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    static QgsLineSymbol *lineChartLineSymbol() /Factory/;
+%Docstring
+Returns the default line symbol to use for line charts.
+
+.. seealso:: :py:func:`lineChartMarkerSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    static QgsFillSymbol *barChartFillSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for bar charts.
+
+.. versionadded:: 4.0
+%End
 };
 
 /************************************************************************

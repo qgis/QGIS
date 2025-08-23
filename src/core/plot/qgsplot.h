@@ -793,6 +793,27 @@ class CORE_EXPORT QgsPlotDefaultSettings
      */
     static QgsFillSymbol *chartBorderSymbol() SIP_FACTORY;
 
+    /**
+     * Returns the default marker symbol to use for line charts.
+     *
+     * \see lineChartLineSymbol()
+     * \since QGIS 4.0
+     */
+    static QgsMarkerSymbol *lineChartMarkerSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default line symbol to use for line charts.
+     *
+     * \see lineChartMarkerSymbol()
+     * \since QGIS 4.0
+     */
+    static QgsLineSymbol *lineChartLineSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default fill symbol to use for bar charts.
+     * \since QGIS 4.0
+     */
+    static QgsFillSymbol *barChartFillSymbol() SIP_FACTORY;
 };
 
 #endif // QGSPLOT_H

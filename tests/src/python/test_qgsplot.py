@@ -1141,6 +1141,8 @@ class TestQgsPlot(QgisTestCase):
             }
         )
         plot.setLineSymbol(0, series_symbol)
+        # remove default marker
+        plot.setMarkerSymbol(0, None)
 
         # set symbols for second series
         series_symbol = QgsLineSymbol.createSimple(
@@ -1257,6 +1259,8 @@ class TestQgsPlot(QgisTestCase):
             }
         )
         plot.setLineSymbol(0, series_symbol)
+        # remove default marker
+        plot.setMarkerSymbol(0, None)
 
         # set symbols for second series
         series_symbol = QgsLineSymbol.createSimple(
