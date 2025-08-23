@@ -59,6 +59,8 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QThread
  */
 class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstractPlotDataGatherer
 {
+    Q_OBJECT
+
   public:
 
     /**
