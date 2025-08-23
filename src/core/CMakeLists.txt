@@ -2216,6 +2216,7 @@ if(MSVC)
       expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
       textrenderer/qgsfontmanager.cpp
+      qgsapplication.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 else()
