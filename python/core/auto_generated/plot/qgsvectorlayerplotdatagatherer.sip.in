@@ -44,10 +44,11 @@ An vector layer plot data gatherer class for XY series.
 
     struct XySeriesDetails
     {
-      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression );
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &orderByExpression = QString(), const QString &filterExpression = QString() );
 
       QString xExpression;
       QString yExpression;
+      QString orderByExpression;
       QString filterExpression;
     };
 

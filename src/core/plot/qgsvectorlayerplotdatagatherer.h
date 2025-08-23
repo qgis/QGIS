@@ -66,14 +66,16 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
      */
     struct XySeriesDetails
     {
-      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression )
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &orderByExpression = QString(), const QString &filterExpression = QString() )
         : xExpression( xExpression )
         , yExpression( yExpression )
+        , orderByExpression( orderByExpression )
         , filterExpression( filterExpression )
       {}
 
       QString xExpression;
       QString yExpression;
+      QString orderByExpression;
       QString filterExpression;
     };
 

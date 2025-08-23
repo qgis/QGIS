@@ -52,6 +52,10 @@ void QgsVectorLayerXyPlotDataGatherer::run()
     {
       request.setFilterExpression( seriesDetails.filterExpression );
     }
+    if ( !seriesDetails.orderByExpression.isEmpty() )
+    {
+      request.addOrderBy( seriesDetails.orderByExpression );
+    }
     request.setSubsetOfAttributes( referencedColumns, mSource->fields() );
     if ( !xExpression.needsGeometry() && !yExpression.needsGeometry() )
     {
