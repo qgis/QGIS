@@ -26,6 +26,7 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QMultiMap>
+#include <QComboBox>
 
 #include "qgis_gui.h"
 
@@ -348,6 +349,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onConstraintStatusChanged( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
     void preventFeatureRefresh();
     void synchronizeState();
+    void disableCombobox( QgsWidgetWrapper *ww, QComboBox *combo, const QString& toolTipMsgAddition = QString() );
     void layerSelectionChanged();
 
     //! Save multi edit changes
