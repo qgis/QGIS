@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "moc_qgsvectorlayerplotdatagatherer.cpp"
 #include "qgsvectorlayerplotdatagatherer.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"

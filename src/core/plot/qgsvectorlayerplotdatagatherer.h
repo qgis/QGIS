@@ -79,7 +79,18 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
       QString filterExpression;
     };
 
+    /**
+     * The class constructor.
+     * \param layer a vector layer from which features will be iterated against
+     * \param seriesDetails a list of XY series details
+     * \param xAxisType the type of X axis - interval or categorical - which will decide whether X values are interval based of categories index
+     * \param predefinedCategories a list of predefined categories, only used then the X asis type is set to Qgis.PlotAxisType.Categorical
+     */
     QgsVectorLayerXyPlotDataGatherer( QgsVectorLayer *layer, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+
+    /**
+     * The class destructor.
+     */
     ~QgsVectorLayerXyPlotDataGatherer() override = default;
 
     void run() override;

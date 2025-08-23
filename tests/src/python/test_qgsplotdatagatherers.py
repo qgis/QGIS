@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsPlot
+"""QGIS Unit tests for various QgsPlotData gatherers
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -6,9 +6,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "28/3/2022"
-__copyright__ = "Copyright 2022, The QGIS Project"
+__author__ = "Mathieu Pellerin"
+__date__ = "22/8/2025"
+__copyright__ = "Copyright 2025, The QGIS Project"
 
 from qgis.PyQt.QtCore import QEventLoop
 from qgis.core import (
@@ -69,7 +69,7 @@ class TestQgsPlot(QgisTestCase):
         self.assertEqual(len(data.series()), 1)
         self.assertEqual(data.series()[0].data(), [(0, 21.0), (1, 11.0), (2, 3.0)])
 
-        # test a two series with the second series filtered and missing one category
+        # test two series with the second series filtered and missing one category
         series2_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
             '"category"',
             '"value"',
@@ -88,6 +88,27 @@ class TestQgsPlot(QgisTestCase):
         self.assertEqual(len(data.series()), 2)
         self.assertEqual(data.series()[0].data(), [(0, 21.0), (1, 11.0), (2, 3.0)])
         self.assertEqual(data.series()[1].data(), [(0, 10.0), (2, 3.0)])
+
+        # test a single series with predefined categories
+        series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
+            '"category"',
+            '"value"',
+        )
+
+        gatherer = QgsVectorLayerXyPlotDataGatherer(
+            layer,
+            [series1_details],
+            Qgis.PlotAxisType.Categorical,
+            ["category_c", "category_a"],
+        )
+        gatherer.finished.connect(loop.quit)
+
+        gatherer.start()
+        loop.exec()
+        data = gatherer.data()
+        self.assertEqual(data.categories(), ["category_c", "category_a"])
+        self.assertEqual(len(data.series()), 1)
+        self.assertEqual(data.series()[0].data(), [(0, 3.0), (1, 21.0)])
 
     def testInterval(self):
         loop = QEventLoop()
@@ -151,7 +172,7 @@ class TestQgsPlot(QgisTestCase):
             [(1.0, 10.0), (2.0, 3.0), (3.0, 5.0), (4.0, 11.0), (5.0, 6.0)],
         )
 
-        # test a two series with the second series filtered and missing one category
+        # test two series with the second series filtered and missing one category
         series2_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
             '"int"', '"value"', filterExpression='"int" < 3'
         )
