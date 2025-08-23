@@ -131,37 +131,130 @@ docker run --rm -w /QGIS -v $(pwd):/QGIS elpaso/qgis-deps-mingw:latest /QGIS/ms-
 
 **用途**: 为基于vcpkg的Windows开发环境提供环境变量配置模板。
 
-**配置变量**:
+**使用流程**:
+
+1. **自动处理**: 当满足以下条件时，CMake会自动处理此模板文件：
+   - 启用vcpkg构建 (`-DWITH_VCPKG=ON`)
+   - 在Windows平台构建 (`WIN32`)
+   - 不使用vcpkg的DLL自动复制功能 (`VCPKG_APPLOCAL_DEPS=OFF`)
+
+2. **模板处理**: CMake使用`configure_file()`命令将模板转换为实际配置文件：
+   ```cmake
+   configure_file("${CMAKE_SOURCE_DIR}/ms-windows/dev/qgis.env.in" 
+                  "${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgis.env")
+   ```
+
+3. **变量替换**: 模板中的占位符会被替换为实际路径：
+   - `@VCPKG_TARGET_PATH@` → 实际的vcpkg目标路径（如：`C:/vcpkg/installed/x64-windows-release`）
+   - `@QGIS_OUTPUT_DIRECTORY@` → QGIS输出目录路径
+
+**配置变量详解**:
 
 **PATH**: 设置可执行文件搜索路径
+```batch
+@VCPKG_TARGET_PATH@\bin;%WINDIR%;%WINDIR%\system32\WBem
 ```
-@VCPKG_TARGET_PATH@\bin;$ENV{WINDIR};$ENV{WINDIR}\system32\WBem
-```
+- 包含vcpkg安装的所有可执行文件
+- 保留Windows系统路径
 
 **PYTHONPATH**: 配置Python模块搜索路径
-```
+```batch
 @QGIS_OUTPUT_DIRECTORY@\python;@VCPKG_TARGET_PATH@/tools/python3/Lib;@VCPKG_TARGET_PATH@/tools/python3/Lib/site-packages
 ```
+- QGIS Python插件路径
+- vcpkg提供的Python标准库
+- vcpkg安装的Python第三方包
 
 **PROJ_DATA**: 设置PROJ坐标系统数据路径
-```
+```batch
 @VCPKG_TARGET_PATH@/share/proj
 ```
+- 包含坐标参考系统定义
+- 大地测量参数数据
 
 **QT_PLUGIN_PATH**: 配置Qt插件路径
-```
+```batch
 @VCPKG_TARGET_PATH@/Qt6/plugins;@VCPKG_TARGET_PATH@/bin/Qca
 ```
+- Qt6插件目录
+- QCA加密插件目录
 
 **PYTHONHOME**: 设置Python安装根目录
-```
+```batch
 @VCPKG_TARGET_PATH@\tools\python3
 ```
+- Python解释器位置
+- Python库文件根目录
 
-**使用说明**:
-- 模板中的`@VCPKG_TARGET_PATH@`和`@QGIS_OUTPUT_DIRECTORY@`会在构建时被实际路径替换
-- 此配置确保QGIS能够正确找到所有依赖库和插件
-- 支持Qt6环境下的开发和调试
+**实际使用示例**:
+
+1. **开发环境设置**:
+   ```cmd
+   # 构建后，在构建目录的bin文件夹中会生成qgis.env文件
+   # 例如：build/output/bin/qgis.env
+   
+   # 使用批处理脚本加载环境变量
+   @echo off
+   for /f "tokens=1,2 delims==" %%a in (qgis.env) do (
+       set %%a=%%b
+   )
+   
+   # 然后启动QGIS
+   qgis.exe
+   ```
+
+2. **Visual Studio集成**:
+   - 在Visual Studio项目属性中设置环境变量
+   - 调试时自动加载正确的路径配置
+   - 确保所有依赖库能被正确找到
+
+3. **PowerShell使用**:
+   ```powershell
+   # 读取环境变量文件
+   Get-Content qgis.env | ForEach-Object {
+       if ($_ -match "^([^=]+)=(.*)$") {
+           [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2], "Process")
+       }
+   }
+   
+   # 启动QGIS
+   .\qgis.exe
+   ```
+
+**注意事项**:
+
+1. **VCPKG_APPLOCAL_DEPS的作用**:
+   - `ON`: vcpkg会自动复制所有依赖DLL到输出目录，不需要环境变量
+   - `OFF`: 需要通过环境变量指定依赖库位置，适合开发调试
+
+2. **路径格式**:
+   - Windows路径使用反斜杠（`\`）
+   - Unix风格路径使用正斜杠（`/`）
+   - 模板中混用两种格式以保证兼容性
+
+3. **更新时机**:
+   - 每次CMake配置时重新生成
+   - vcpkg依赖更新时需要重新配置
+   - 修改模板文件后需要重新构建
+
+**故障排除**:
+
+1. **QGIS启动失败**:
+   - 检查qgis.env文件是否存在
+   - 验证路径变量是否正确
+   - 确认vcpkg依赖是否完整安装
+
+2. **Python插件问题**:
+   - 验证PYTHONPATH设置
+   - 检查Python版本兼容性
+   - 确认Python包完整性
+
+3. **坐标系统错误**:
+   - 检查PROJ_DATA路径
+   - 验证proj数据文件完整性
+   - 确认权限设置
+
+这个机制使得在Windows上使用vcpkg进行QGIS开发变得更加便捷，自动处理了复杂的环境配置问题。
 
 ## 构建流程对比
 

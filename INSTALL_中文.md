@@ -126,17 +126,17 @@ GDAL支持的一些专有格式（例如，ECW和MrSid）需要专有的第三�
 
 **要求：** Ubuntu / Debian派生发行版
 
-**注意：** 请参阅[构建Debian软件包](#310-构建debian软件包)部分以了解构建debian软件包的信息。除非您计划在QGIS上开发，否则这可能是编译和安装QGIS的最简单选项。
+**注意：** 请参阅[构建Debian软件包](#310-构建debian软件包)部分了解构建debian软件包的信息。除非您计划开发QGIS，否则这可能是编译和安装QGIS的最简单选项。
 
-这些注意事项适用于Ubuntu - 其他版本和Debian派生发行版可能需要在软件包名称上略有不同。
+这些说明适用于Ubuntu - 其他版本和Debian派生发行版可能在软件包名称上需要略微不同。
 
-这些注意事项适用于您想要从源代码构建QGIS的情况。这里的主要目标之一是展示如何使用***所有***依赖的二进制包来完成此操作 - 仅从源代码构建核心QGIS内容。我更喜欢这种方法，因为这意味着我们可以将管理系统包的业务留给apt，只关心编码QGIS！
+这些说明是针对您想要从源代码构建QGIS的情况。这里的一个主要目标是展示如何使用***所有***依赖项的二进制包来完成此操作 - 只从源代码构建核心QGIS内容。我更喜欢这种方法，因为这意味着我们可以将管理系统包的业务留给apt，只专注于编码QGIS！
 
-本文档假设您已进行了全新安装并拥有一个"干净"的系统。如果这是一个已经使用了一段时间的系统，这些说明应该能够正常工作，您可能只需要跳过那些与您无关的步骤。
+本文档假设您进行了全新安装并拥有一个"干净"的系统。如果这是一个已经使用了一段时间的系统，这些说明应该可以正常工作，您可能只需要跳过那些与您无关的步骤。
 
 ## 3.2. 准备apt
 
-您需要一个足够新的发行版，以便满足所有依赖关系。支持的发行版在以下部分中列出。
+您需要一个足够新的发行版以满足所有依赖项。支持的发行版在以下部分中列出。
 
 现在更新您的本地源数据库：
 
@@ -149,151 +149,195 @@ sudo apt-get update
 |发行版|软件包安装命令|
 |------|------------|
 | bookworm | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| trixie | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
 | jammy | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpdal-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pdal pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| kinetic | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| lunar | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| mantic | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
 | noble | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| oracular | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| plucky | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+| sid | ``apt-get install bison build-essential ca-certificates ccache cmake cmake-curses-gui dh-python expect flex flip gdal-bin git graphviz grass-dev libdraco-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev libzstd-dev lighttpd locales ninja-build nlohmann-json3-dev ocl-icd-opencl-dev opencl-headers pandoc pkgconf poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dev python3-gdal python3-jinja2 python3-lxml python3-mock python3-nose2 python3-owslib python3-packaging python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtmultimedia python3-pyqt5.qtpositioning python3-pyqt5.qtserialport python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqtbuild python3-sip python3-termcolor python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qtbase5-dev qtbase5-private-dev qtkeychain-qt5-dev qtmultimedia5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools sip-tools spawn-fcgi xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
 
-(从`debian/`中的control.in文件中提取)
+（从`debian/`中的control.in文件提取）
 
 请参阅[debian-ubuntu](https://qgis.org/resources/installation-guide/#debianubuntu)了解当前支持的发行版（例如，普通xenial的GDAL版本太旧，我们使用来自ubuntugis的GDAL2构建）。
 
+要构建[QGIS服务器登录页面/目录Web应用](https://docs.qgis.org/latest/en/docs/server_manual/catalog.html)，需要额外的依赖项：
+
+* Node.js（推荐当前LTS）: https://nodejs.org/en/download/
+* Yarn包管理器: https://yarnpkg.com/getting-started/install
+
+此外，需要打开cmake标志`WITH_SERVER_LANDINGPAGE_WEBAPP`。
+
 ## 3.4. 设置ccache（可选，但推荐）
 
-您可以选择设置ccache来加速重复构建：
+您还应该设置ccache来加速编译时间：
 
 ```bash
-ccache --max-size=2G
+cd /usr/local/bin
+sudo ln -s /usr/bin/ccache gcc
+sudo ln -s /usr/bin/ccache g++
 ```
 
-## 3.5. 准备开发环境
+或者简单地将`/usr/lib/ccache`添加到您的`PATH`中。
 
-为了在构建后更轻松地运行QGIS，创建一个目录来放置所有构建：
+## 3.5. 准备您的开发环境
+
+按照惯例，我在$HOME/dev/<语言>中进行所有开发工作，所以在这种情况下，我们将为C++开发工作创建一个工作环境，如下所示：
 
 ```bash
-mkdir -p ~/dev/cpp
-cd ~/dev/cpp
+mkdir -p ${HOME}/dev/cpp
+cd ${HOME}/dev/cpp
 ```
+
+以下所有说明都将假设此目录路径。
 
 ## 3.6. 检出QGIS源代码
 
-现在检出QGIS的源代码：
+有两种方式可以检出源代码。如果您没有QGIS源代码仓库的编辑权限，请使用匿名方法，或者如果您有提交源代码更改的权限，请使用开发者检出。
+
+1. 匿名检出
 
 ```bash
-git clone git://github.com/qgis/QGIS.git
+cd ${HOME}/dev/cpp
+git clone https://github.com/qgis/QGIS.git
+```
+
+2. 开发者检出
+
+```bash
+cd ${HOME}/dev/cpp
+git clone git@github.com:qgis/QGIS.git
 ```
 
 ## 3.7. 开始编译
 
-我建议使用构建目录来组织构建（这样您就不会将构建文件与源文件混合）：
+我将我的QGIS开发版本编译到我的~/apps目录中，以避免与/usr下可能存在的Ubuntu包发生冲突。这样，例如，您可以在系统上使用QGIS的二进制包，同时使用您的开发版本。我建议您也做类似的事情：
+
+```bash
+mkdir -p ${HOME}/apps
+```
+
+现在我们创建一个构建目录并运行ccmake：
 
 ```bash
 cd QGIS
 mkdir build-master
 cd build-master
-```
-
-现在配置您的构建：
-
-```bash
 ccmake ..
 ```
 
-当ccmake加载时，按'c'配置，按'e'退出显示的任何错误屏幕。您可能需要多次按'c'直到配置完成。一旦显示"按[g]生成并退出"，按'g'生成配置并退出。
+当您运行ccmake时（注意..是必需的！），会出现一个菜单，您可以在其中配置构建的各个方面：
 
-或者，您可以使用命令行配置：
+* 如果您希望QGIS具有调试功能，则将`CMAKE_BUILD_TYPE`设置为`Debug`。
+* 如果您没有root访问权限或不想覆盖现有的QGIS安装（例如，由您的包管理器），将`CMAKE_INSTALL_PREFIX`设置为您有写入权限的地方（例如`${HOME}/apps`）。
 
+现在按'c'配置，'e'关闭可能出现的任何错误消息，按'g'生成make文件。请注意，有时需要按几次'c'才能使'g'选项变为可用。在'g'生成完成后，按'q'退出ccmake交互式对话框。
+
+**警告：** 确保您输入命令时构建目录完全为空。永远不要尝试"重用"现有的**Qt5**构建目录。如果您想使用`ccmake`或其他交互式工具，请在开始使用交互式工具之前在空的构建目录中运行一次命令。
+
+现在继续构建：
 ```bash
-cmake -D CMAKE_INSTALL_PREFIX=~/dev/cpp/qgis-master ..
+make -jX
+```
+
+其中X是可用核心的数量。根据您的平台，这可以大大加快构建时间。
+
+然后您可以直接从构建目录运行：
+```bash
+./output/bin/qgis
+```
+另一个选项是安装到您的系统：
+```bash
+make install
+```
+
+之后您可以尝试运行QGIS：
+```bash
+$HOME/apps/bin/qgis
+```
+如果一切正常，QGIS应用程序应该启动并出现在您的屏幕上。如果您收到"加载共享库时出错"的错误消息，请在shell中执行此命令。
+```bash
+sudo ldconfig
+```
+如果这没有帮助，请将安装路径添加到LD_LIBRARY_PATH：
+```bash
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
+```
+或者，如果您已经知道自定义构建中需要哪些方面，那么您可以通过为每个方面使用cmake -D选项来跳过交互式ccmake ..部分，例如：
+```bash
+cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+```
+此外，如果您想加快构建时间，可以轻松使用ninja，这是make的替代品，具有类似的构建选项。
+
+例如，要配置构建，您可以执行以下任一操作：
+```bash
+ccmake -G Ninja ..
+cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+```
+使用ninja构建和安装：
+```bash
+ninja   # (默认使用所有核心；也支持上述描述的-jX选项)
+ninja install
+```
+要构建得更快，您可以只构建所需的目标，例如：
+```bash
+ninja qgis
+ninja pycore
+# 如果只是桌面相关代码：
+ninja qgis_desktop
 ```
 
 ### 3.7.1 可用的编译标志
 
-以下是一些有用的编译选项：
+QGIS构建可根据您的需求进行调整。有许多标志可用于激活或停用某些功能，以下是一个子集：
+
+* `BUILD_WITH_QT6`: 启用（实验性）Qt6支持
+* `WITH_3D`: 确定是否应构建QGIS 3D库
+* `WITH_ANALYSIS`: 确定是否应构建QGIS分析库
+* `WITH_AUTH`: 确定是否应构建QGIS身份验证方法
+* `WITH_BINDINGS`: 确定是否应构建Python绑定
+* `WITH_COPC`: 确定是否应构建云优化点云(COPC)支持
+* `WITH_DESKTOP`: 确定是否应构建QGIS桌面
+* `WITH_EPT`: 确定是否应构建Entwine点云(EPT)支持
+* `WITH_GRASS${GRASS_CACHE_VERSION}`: 确定是否应构建GRASS ${GRASS_SEARCH_VERSION}插件
+* `WITH_GUI`: 确定是否应构建QGIS GUI库（以及在其之上构建的所有内容）
+* `WITH_HANA`: 确定是否应构建SAP HANA Spatial支持
+* `WITH_ORACLE`: 确定是否应构建Oracle支持
+* `WITH_PDAL`: 确定是否应构建PDAL支持
+* `WITH_POSTGRESQL`: 确定是否应构建POSTGRESQL支持
+* `WITH_PYTHON`: 确定是否应构建Python支持（禁用它将特别禁用处理）
+* `WITH_QGIS_PROCESS`: 确定是否应构建独立的\"qgis_process\"工具
+* `WITH_QSPATIALITE`: 确定是否应构建QSPATIALITE sql驱动程序
+* `WITH_SERVER`: 确定是否应构建QGIS服务器
+* `WITH_SPATIALITE`: 确定是否应构建Spatialite支持（spatialite、虚拟、wfs提供者所需）
+
+完整列表可以使用以下命令行从源代码中提取：
 
 ```bash
--D CMAKE_BUILD_TYPE=Debug          # 调试构建
--D CMAKE_BUILD_TYPE=Release        # 发布构建
--D CMAKE_INSTALL_PREFIX=/path/to/install/dir  # 安装路径
--D ENABLE_TESTS=ON                 # 启用测试
--D WITH_3D=ON                      # 启用3D支持
--D WITH_GRASS=ON                   # 启用GRASS支持
--D WITH_QGIS_PROCESS=ON            # 启用qgis_process工具
-```
-
-现在编译：
-
-```bash
-make -j$(nproc)
-```
-
-或者，如果您想要查看编译器命令：
-
-```bash
-make -j$(nproc) VERBOSE=1
-```
-
-这将使用您系统上的所有可用处理器来编译。如果您在低内存机器上遇到问题，可以减少并行作业数量，例如：
-
-```bash
-make -j2
+cmake .. -N -LH | grep -B1 WITH_
 ```
 
 ## 3.8. 使用3D编译
 
-从QGIS 3.0开始，3D功能默认启用，需要Qt3D。确保您已安装Qt3D开发包。
-
-## 3.9. 构建不同的分支
-
-要构建不同的QGIS分支或标签，您需要检出相应的代码：
-
+在cmake中，您需要启用：
 ```bash
-cd ~/dev/cpp/QGIS
-git fetch
-git checkout branch-name
+WITH_3D=True
 ```
-
-然后重新配置和构建。
-
-## 3.10. 构建Debian软件包
-
-要构建Debian风格的软件包：
-
-```bash
-dpkg-buildpackage -us -uc -b
-```
-
-## 运行QGIS
-
-安装后，您可以尝试运行QGIS：
-
-```bash
-./output/bin/qgis
-```
-
-## 运行测试
-
-要运行测试套件：
-
-```bash
-cd build-master
-make check
-```
-
-或运行特定测试：
-
-```bash
-ctest -V -R PyQgsFeature
-```
-
-## 注意事项
-
-- 确保您的系统满足所有依赖要求
-- 对于生产使用，建议使用Release构建而不是Debug构建
-- 如果遇到问题，请查看构建日志中的具体错误信息
-- 您可以通过设置适当的环境变量来自定义构建
 
 ### 3.8.1. 在旧的基于Debian的发行版上使用3D编译
 
-上述说明不适用于较新版本的Debian和Ubuntu。
+QGIS 3D需要Qt53DExtras。这些头文件已从Debian Buster和Ubuntu focal (20.04)基础发行版的Qt上游中删除。在QGIS仓库的`external/qt3dextra-headers`中已制作了副本。要在这些发行版上启用3D编译，您需要添加一些cmake选项：
+
+```bash
+CMAKE_PREFIX_PATH={QGIS Git仓库路径}/external/qt3dextra-headers/cmake
+QT5_3DEXTRA_INCLUDE_DIR={QGIS Git仓库路径}/external/qt3dextra-headers
+QT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so
+Qt53DExtras_DIR={QGIS Git仓库路径}/external/qt3dextra-headers/cmake/Qt53DExtras
+```
+
+上述说明不适用于更新版本的Debian和Ubuntu。
 
 ## 3.9. 构建不同的分支
 
@@ -390,7 +434,7 @@ dnf install fcgi-devel
 dnf install nodejs yarnpkg
 ```
 
-此外，需要开启cmake标志`WITH_SERVER_LANDINGPAGE_WEBAPP`。
+此外，需要打开cmake标志`WITH_SERVER_LANDINGPAGE_WEBAPP`。
 
 确保在输入以下命令时您的构建目录完全为空。永远不要尝试"重用"现有的Qt5构建目录。如果您想使用`ccmake`或其他交互式工具，请在开始使用交互式工具之前在空的构建目录中运行一次以下命令。
 
@@ -398,7 +442,7 @@ dnf install nodejs yarnpkg
 cmake ..
 ```
 
-如果一切正常，您最终可以开始编译。（像往常一样，添加`-jX`选项，其中X是可用核心数，以加速构建过程）
+如果一切顺利，您最终可以开始编译。（像往常一样，添加`-jX`选项，其中X是可用核心数，以加速构建过程）
 
 ```bash
 make
@@ -453,6 +497,7 @@ dnf5 install -y --setopt=install_weak_deps=False proj-devel
 |------|------------|
 | Fedora 40 Workstation | ``dnf install qt6-qtbase-private-devel qt6-qtlocation-devel qt6-qtmultimedia-devel qt6-qttools-static qca-qt6-devel qca-qt6-ossl qt6-qt3d-devel qt6-qtwebengine-devel python3-pyqt6-devel python3-qscintilla-qt6-devel qscintilla-qt6-devel python3-qscintilla-qt6 clang flex bison geos-devel gdal gdal-devel hdf5-devel sqlite-devel libspatialite-devel qt6-qtsvg-devel spatialindex-devel expat-devel netcdf-devel proj-devel qwt-qt6-devel gsl-devel PDAL PDAL-devel postgresql-devel cmake python3-gdal gdal-python-tools python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt6-ossl qwt-qt6-devel qtkeychain-qt6-devel libzip-devel exiv2-devel PyQt-builder protobuf-lite protobuf-lite-devel libzstd-devel qt6-qtserialport-devel draco-devel python3-devel qt6-qt5compat-devel python3-pyqt6-webengine`` |
 | Fedora 39 Workstation | ``dnf install qt6-qtbase-private-devel qt6-qtwebkit-devel qt6-qtlocation-devel qt6-qtmultimedia-devel qt6-qttools-static qca-qt6-devel qt6-qtwebengine-devel qca-qt6-ossl qt6-qt3d-devel python3-qt6-devel python3-qscintilla-qt6-devel qscintilla-qt6-devel python3-qscintilla-qt6 clang flex bison geos-devel gdal gdal-devel hdf5-devel sqlite-devel libspatialite-devel qt6-qtsvg-devel spatialindex-devel expat-devel netcdf-devel proj-devel qwt-qt6-devel gsl-devel PDAL PDAL-devel postgresql-devel cmake python3-gdal gdal-python-tools python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt6-ossl qwt-qt6-devel qtkeychain-qt6-devel libzip-devel exiv2-devel PyQt-builder protobuf-lite protobuf-lite-devel libzstd-devel qt6-qtserialport-devel draco-devel python3-devel qt6-qt5compat-devel`` |
+
 
 要构建，使用：
 
