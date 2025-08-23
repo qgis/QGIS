@@ -22,6 +22,11 @@
 #include "qgssymbollayerutils.h"
 
 
+QgsBarChartPlot::QgsBarChartPlot()
+{
+  setFillSymbol( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
+}
+
 void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
 {
   if ( mFillSymbols.empty() )

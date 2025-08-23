@@ -36,7 +36,7 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
 {
   public:
 
-    QgsLineChartPlot() = default;
+    QgsLineChartPlot();
     ~QgsLineChartPlot() = default;
 
     QString type() const override { return QStringLiteral( "line" ); }

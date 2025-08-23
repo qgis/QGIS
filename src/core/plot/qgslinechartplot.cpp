@@ -22,6 +22,12 @@
 #include "qgssymbollayerutils.h"
 
 
+QgsLineChartPlot::QgsLineChartPlot()
+{
+  setMarkerSymbol( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol() );
+  setLineSymbol( 0, QgsPlotDefaultSettings::lineChartLineSymbol() );
+}
+
 void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
 {
   if ( mLineSymbols.empty() && mMarkerSymbols.empty() )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgsplot.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
@@ -944,6 +945,24 @@ QgsFillSymbol *QgsPlotDefaultSettings::chartBorderSymbol()
 {
   auto chartBorder = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20 ), 0.1 );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartBorder.release() } ) );
+}
+
+QgsMarkerSymbol *QgsPlotDefaultSettings::lineChartMarkerSymbol()
+{
+  auto chartMarker = std::make_unique< QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::Circle, 1.8, 0.0, DEFAULT_SCALE_METHOD, QColor( 89, 150, 50 ) );
+  return new QgsMarkerSymbol( QgsSymbolLayerList( { chartMarker.release() } ) );
+}
+
+QgsLineSymbol *QgsPlotDefaultSettings::lineChartLineSymbol()
+{
+  auto chartLine = std::make_unique< QgsSimpleLineSymbolLayer>( QColor( 89, 150, 50, 100 ), 0.6 );
+  return new QgsLineSymbol( QgsSymbolLayerList( { chartLine.release() } ) );
+}
+
+QgsFillSymbol *QgsPlotDefaultSettings::barChartFillSymbol()
+{
+  auto chartFill = std::make_unique< QgsSimpleFillSymbolLayer>( QColor( 89, 150, 50 ) );
+  return new QgsFillSymbol( QgsSymbolLayerList( { chartFill.release() } ) );
 }
 
 //

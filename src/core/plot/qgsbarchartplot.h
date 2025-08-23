@@ -35,7 +35,7 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
 {
   public:
 
-    QgsBarChartPlot() = default;
+    QgsBarChartPlot();
     ~QgsBarChartPlot() = default;
 
     QString type() const override { return QStringLiteral( "bar" ); }
