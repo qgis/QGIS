@@ -181,11 +181,11 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     Q_DECL_DEPRECATED void finished() SIP_DEPRECATED;
 
     /**
-     * Emitted when a row header is double-clicked to request zooming to the feature.
-     * \param fid the feature ID of the double-clicked row
-     * \since QGIS 3.46
+     * Emitted when a row header is double-clicked.
+     * \param fid the feature ID of the double-clicked row.
+     * \since QGIS 4.0
      */
-    void zoomToFeatureRequested( QgsFeatureId fid );
+    void rowHeaderDoubleClicked( QgsFeatureId fid );
 
   public slots:
     void repaintRequested( const QModelIndexList &indexes );

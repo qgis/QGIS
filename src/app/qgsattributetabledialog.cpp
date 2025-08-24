@@ -142,7 +142,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
   
   // Connect double-click zoom functionality
-  connect( mMainView->tableView(), &QgsAttributeTableView::zoomToFeatureRequested, this, &QgsAttributeTableDialog::zoomToFeature );
+  connect( mMainView->tableView(), &QgsAttributeTableView::rowHeaderDoubleClicked, this, &QgsAttributeTableDialog::zoomToFeature );
 
   mActionSelectAll->setShortcuts( QKeySequence::SelectAll );
   mActionSelectAll->setShortcutContext( Qt::WidgetWithChildrenShortcut );
@@ -830,9 +830,7 @@ void QgsAttributeTableDialog::mActionZoomMapToSelectedRows_triggered()
 
 void QgsAttributeTableDialog::zoomToFeature( QgsFeatureId fid )
 {
-  // Select the feature first, then zoom to it
-  mLayer->selectByIds( QgsFeatureIds() << fid );
-  QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
+  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( mLayer, { fid } );
 }
 
 void QgsAttributeTableDialog::mActionPanMapToSelectedRows_triggered()
