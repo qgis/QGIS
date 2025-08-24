@@ -90,7 +90,6 @@ jobs:
             experimental: false
             unity-builds: ON
 
-
       fail-fast: false
 
     outputs:
@@ -263,17 +262,42 @@ jobs:
 
     strategy:
       matrix:
-        qt-version: [6]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
 
         include:
           - qt-version: 6
             distro-version: '24.10'
             docker-target: binary-only
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            test-batch: ALL_BUT_PROVIDERS
+
+          - qt-version: 6
+            distro-version: '39'
+            docker-target: binary-only
+            test-blocklist-file: .ci/test_blocklist_qt6_fedora.txt
+            test-batch: ALL_BUT_PROVIDERS
+
+          - qt-version: 6
+            distro-version: '24.10'
+            test-batch: POSTGRES
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-only
+
+          - qt-version: 6
+            distro-version: '24.10'
+            test-batch: HANA
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-only
+
+          - qt-version: 6
+            distro-version: '24.10'
+            test-batch: SQLSERVER
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-only
 
           - qt-version: 6
             distro-version: '24.10'
             test-batch: ORACLE
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-for-oracle
 
       fail-fast: false
@@ -358,6 +382,7 @@ jobs:
           TEST_BATCH: ${{matrix.test-batch}}
           QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
           GITHUB_SHA: ${{ github.sha }}
+          TEST_BLOCKLIST_FILE: ${{matrix.test-blocklist-file}}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
@@ -366,9 +391,10 @@ jobs:
           [[ ${{ matrix.test-batch }} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
+          echo "TEST_BLOCKLIST_FILE=$TEST_BLOCKLIST_FILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
-          docker compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+          docker compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH $TEST_BLOCKLIST_FILE
 
       - name: Fix permissions on test report
         if: ${{ failure() }}
