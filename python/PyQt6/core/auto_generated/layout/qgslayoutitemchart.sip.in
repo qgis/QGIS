@@ -1,0 +1,112 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemchart.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutItemChart : QgsLayoutItem
+{
+%Docstring(signature="appended")
+A layout item subclass that renders chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemchart.h"
+%End
+  public:
+
+    struct SeriesDetails
+    {
+      explicit SeriesDetails( const QString &name );
+      bool operator==( const SeriesDetails &other ) const;
+
+      QString name;
+      QString xExpression;
+      QString yExpression;
+      QString filterExpression;
+    };
+
+    QgsLayoutItemChart( QgsLayout *layout );
+%Docstring
+Constructor for QgsLayoutItemChart, with the specified parent
+``layout``.
+%End
+
+    virtual int type() const;
+
+    virtual QIcon icon() const;
+
+
+    void setPlot( QgsPlot *plot );
+%Docstring
+Sets the ``plot`` used to render the chart.
+%End
+
+    QgsPlot *plot() const;
+%Docstring
+Returns the plot used the render the chart.
+%End
+
+    void setVectorLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the vector ``layer`` from which the plot data wil be gathered from.
+
+.. seealso:: :py:func:`vectorLayer`
+%End
+
+    QgsVectorLayer *vectorLayer() const;
+%Docstring
+Returns the vector layer from which the plot data will be gathered from.
+
+.. seealso:: :py:func:`setVectorLayer`
+%End
+
+    void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> seriesList );
+%Docstring
+Sets the plot series details used to generate the plot data.
+
+.. seealso:: :py:func:`seriesList`
+%End
+
+    QList<QgsLayoutItemChart::SeriesDetails> seriesList() const;
+%Docstring
+Returns the plot series details used to generate the plot data.
+
+.. seealso:: :py:func:`setSeriesList`
+%End
+
+    static QgsLayoutItemChart *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new chart item for the specified ``layout``.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+  protected:
+
+    virtual void draw( QgsLayoutItemRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemchart.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

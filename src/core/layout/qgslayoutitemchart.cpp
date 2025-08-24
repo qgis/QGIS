@@ -1,0 +1,304 @@
+/***************************************************************************
+                         qgslayoutitemchart.cpp
+                         -------------------
+     begin                : August 2025
+     copyright            : (C) 2025 by Mathieu
+     email                : mathieu at opengis dot ch
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgslayoutitemchart.h"
+#include "moc_qgslayoutitemchart.cpp"
+#include "qgsapplication.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayout.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
+#include "qgsplotregistry.h"
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QPainter>
+
+QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
+  : QgsLayoutItem( layout )
+{
+  // default to no background
+  setBackgroundEnabled( false );
+
+  mPlot.reset( dynamic_cast<Qgs2DPlot *>( QgsApplication::instance()->plotRegistry()->createPlot( "line" ) ) );
+
+  mGathererTimer.setInterval( 10 );
+  mGathererTimer.setSingleShot( true );
+  connect( &mGathererTimer, &QTimer::timeout, this, &QgsLayoutItemChart::gatherData );
+
+  // connect to atlas feature changing
+  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [this]
+  {
+    update();
+  } );
+
+  connect( this, &QgsLayoutItemChart::sizePositionChanged, this, [this]
+  {
+    update();
+  } );
+}
+
+int QgsLayoutItemChart::type() const
+{
+  return QgsLayoutItemRegistry::LayoutChart;
+}
+
+QIcon QgsLayoutItemChart::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPicture.svg" ) );
+}
+
+QgsLayoutItemChart *QgsLayoutItemChart::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemChart( layout );
+}
+
+void QgsLayoutItemChart::setPlot( QgsPlot *plot )
+{
+  if ( !dynamic_cast<Qgs2DPlot *>( plot ) )
+  {
+    return;
+  }
+
+  mPlot.reset( dynamic_cast<Qgs2DPlot *>( plot ) );
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::setVectorLayer( QgsVectorLayer *layer )
+{
+  if ( layer == mVectorLayer.get() )
+  {
+    return;
+  }
+
+  mVectorLayer.setLayer( layer );
+  refreshData();
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> seriesList )
+{
+  if ( mSeriesList == seriesList )
+  {
+    return;
+  }
+
+  mSeriesList = seriesList;
+  refreshData();
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::draw( QgsLayoutItemRenderContext & )
+{
+}
+
+void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
+{
+  if ( !mLayout || !painter || !painter->device() )
+  {
+    return;
+  }
+
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
+  if ( !mPlot )
+    return;
+
+  QPaintDevice *paintDevice = painter->device();
+  if ( !paintDevice )
+    return;
+
+  QRectF thisPaintRect = rect();
+  if ( qgsDoubleNear( thisPaintRect.width(), 0.0 ) || qgsDoubleNear( thisPaintRect.height(), 0 ) )
+    return;
+
+  if ( mLayout->renderContext().isPreviewRender() )
+  {
+    if ( mNeedsGathering || mIsGathering )
+    {
+      if ( mNeedsGathering )
+      {
+        mNeedsGathering = false;
+        refreshData();
+      }
+
+      QgsScopedQPainterState painterState( painter );
+      painter->setClipRect( thisPaintRect );
+
+      painter->setBrush( QBrush( QColor( 125, 125, 125, 125 ) ) );
+      painter->drawRect( thisPaintRect );
+      painter->setBrush( Qt::NoBrush );
+      QFont messageFont;
+      messageFont.setPointSize( 12 );
+      painter->setFont( messageFont );
+      painter->setPen( QColor( 255, 255, 255, 255 ) );
+      painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering chart" ) );
+      return;
+    }
+  }
+  else
+  {
+    if ( mNeedsGathering )
+    {
+      mNeedsGathering = false;
+      prepareGatherer();
+      QgsApplication::instance()->taskManager()->addTask( mGatherer.get() );
+      mGatherer->waitForFinished( 60000 );
+    }
+  }
+
+  const double scaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+  const QSizeF size = mLayout->convertToLayoutUnits( sizeWithUnits() ) * scaleFactor;
+  if ( size.width() == 0 || size.height() == 0 )
+    return;
+
+  mPlot->setSize( size );
+
+  QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+  renderContext.setExpressionContext( createExpressionContext() );
+
+  QgsScopedQPainterState painterState( painter );
+  painter->scale( 1 / scaleFactor, 1 / scaleFactor );
+
+  QgsPlotRenderContext plotRenderContext;
+  mPlot->render( renderContext, plotRenderContext, mPlotData );
+}
+
+void QgsLayoutItemChart::refreshData()
+{
+  mGathererTimer.start();
+}
+
+void QgsLayoutItemChart::gatherData()
+{
+  prepareGatherer();
+  QgsApplication::instance()->taskManager()->addTask( mGatherer.get() );
+
+  mIsGathering = true;
+  update();
+}
+
+void QgsLayoutItemChart::prepareGatherer()
+{
+  if ( mGatherer )
+  {
+    disconnect( mGatherer.get(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+    mGatherer->cancel();
+    mGatherer.reset();
+  }
+
+  if ( !mVectorLayer || mSeriesList.isEmpty() )
+  {
+    mPlotData.clearSeries();
+    mIsGathering = false;
+    update();
+  }
+
+  QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
+  for ( const SeriesDetails &series : mSeriesList )
+  {
+    xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression, series.yExpression, series.filterExpression );
+  }
+
+  QgsFeatureIterator featureIterator = mVectorLayer->getFeatures();
+  mGatherer.reset( dynamic_cast<QgsVectorLayerAbstractPlotDataGatherer *>( new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList ) ) );
+  connect( mGatherer.get(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+}
+
+void QgsLayoutItemChart::processData()
+{
+  mPlotData = mGatherer->data();
+  mGatherer.reset();
+
+  mIsGathering = false;
+  update();
+}
+
+bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  if ( mPlot )
+  {
+    QDomElement plotElement = document.createElement( QStringLiteral( "plot" ) );
+    mPlot->writeXml( plotElement, document, context );
+    element.appendChild( plotElement );
+  }
+
+  QDomElement seriesListElement = document.createElement( QStringLiteral( "seriesList" ) );
+  for ( const SeriesDetails &series : mSeriesList )
+  {
+    QDomElement seriesElement = document.createElement( QStringLiteral( "series" ) );
+    seriesElement.setAttribute( QStringLiteral( "name" ), series.name );
+    seriesElement.setAttribute( QStringLiteral( "xExpression" ), series.xExpression );
+    seriesElement.setAttribute( QStringLiteral( "yExpression" ), series.yExpression );
+    seriesElement.setAttribute( QStringLiteral( "filterExpression" ), series.filterExpression );
+    seriesListElement.appendChild( seriesElement );
+  }
+  element.appendChild( seriesListElement );
+
+  if ( mVectorLayer )
+  {
+    element.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer.layerId );
+    element.setAttribute( QStringLiteral( "vectorLayerName" ), mVectorLayer.name );
+    element.setAttribute( QStringLiteral( "vectorLayerSource" ), mVectorLayer.source );
+    element.setAttribute( QStringLiteral( "vectorLayerProvider" ), mVectorLayer.provider );
+  }
+
+  return true;
+}
+
+bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
+{
+  QDomElement plotElement = element.firstChildElement( QStringLiteral( "plot" ) );
+  if ( !plotElement.isNull() )
+  {
+    mPlot.reset( dynamic_cast<Qgs2DPlot *>( QgsApplication::instance()->plotRegistry()->createPlot( plotElement.attribute( QStringLiteral( "plotType" ) ) ) ) );
+    if ( mPlot )
+    {
+      mPlot->readXml( plotElement, context );
+    }
+  }
+
+  mSeriesList.clear();
+  const QDomNodeList seriesNodeList = element.firstChildElement( QStringLiteral( "seriesList" ) ).childNodes();
+  for ( int i = 0; i < seriesNodeList.count(); i++ )
+  {
+    const QDomElement seriesElement = seriesNodeList.at( i ).toElement();
+    SeriesDetails series( seriesElement.attribute( "name" ) );
+    series.xExpression = seriesElement.attribute( "xExpression" );
+    series.yExpression = seriesElement.attribute( "yExpression" );
+    series.filterExpression = seriesElement.attribute( "filterExpression" );
+    mSeriesList << series;
+  }
+
+  QString layerId = element.attribute( QStringLiteral( "vectorLayer" ) );
+  QString layerName = element.attribute( QStringLiteral( "vectorLayerName" ) );
+  QString layerSource = element.attribute( QStringLiteral( "vectorLayerSource" ) );
+  QString layerProvider = element.attribute( QStringLiteral( "vectorLayerProvider" ) );
+  mVectorLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
+  mVectorLayer.resolveWeakly( mLayout->project() );
+
+  mNeedsGathering = true;
+
+  return true;
+}

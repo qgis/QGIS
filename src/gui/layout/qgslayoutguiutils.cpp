@@ -19,6 +19,8 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgslayoutitemshape.h"
+#include "qgslayoutitemchart.h"
+#include "qgslayoutchartwidget.h"
 #include "qgslayoutmapwidget.h"
 #include "qgslayoutshapewidget.h"
 #include "qgslayoutmarkerwidget.h"
@@ -159,7 +161,6 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   // picture item
 
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutPictureWidget( qobject_cast<QgsLayoutItemPicture *>( item ) ); }, createRubberBand ) );
-
 
   // label item
 
@@ -579,4 +580,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return profileItem.release();
   } );
   registry->addLayoutItemGuiMetadata( elevationProfileItemMetadata.release() );
+
+  // chart item
+
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutChart, QObject::tr( "Chart" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutChartWidget( qobject_cast<QgsLayoutItemChart *>( item ) ); }, createRubberBand ) );
 }

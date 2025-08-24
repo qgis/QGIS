@@ -1,0 +1,266 @@
+/***************************************************************************
+                         qgslayoutchartwidget.cpp
+                         --------------------------
+     begin                : August 2025
+     copyright            : (C) 2025 by Mathieu
+     email                : mathieu at opengis dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgslayoutchartwidget.h"
+#include "moc_qgslayoutchartwidget.cpp"
+#include "qgsapplication.h"
+#include "qgslayout.h"
+#include "qgslayoutchartseriesdetailswidget.h"
+#include "qgslayoutitemchart.h"
+#include "qgsplotregistry.h"
+
+
+QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
+  : QgsLayoutItemBaseWidget( nullptr, chartItem )
+  , mChartItem( chartItem )
+{
+  setupUi( this );
+
+  //add widget for general composer item properties
+  mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, chartItem );
+  mainLayout->addWidget( mItemPropertiesWidget );
+
+  QMap<QString, QString> plotTypes = QgsApplication::instance()->plotRegistry()->plotTypes();
+  for ( auto plotTypesIterator = plotTypes.keyValueBegin(); plotTypesIterator != plotTypes.keyValueEnd(); ++plotTypesIterator )
+  {
+    mChartTypeComboBox->addItem( plotTypesIterator->second, plotTypesIterator->first );
+  }
+
+  mLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
+
+  connect( mChartTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged );
+  connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutChartWidget::changeLayer );
+  connect( mSeriesListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_currentItemChanged );
+  connect( mSeriesListWidget, &QListWidget::itemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_itemChanged );
+  connect( mAddSeriesPushButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mAddSeriesPushButton_clicked );
+  connect( mRemoveSeriesPushButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked );
+  connect( mSeriesPropertiesButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mSeriesPropertiesButton_clicked );
+
+  setGuiElementValues();
+
+  connect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
+}
+
+void QgsLayoutChartWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
+{
+  if ( mItemPropertiesWidget )
+    mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
+bool QgsLayoutChartWidget::setNewItem( QgsLayoutItem *item )
+{
+  if ( item->type() != QgsLayoutItemRegistry::LayoutChart )
+    return false;
+
+  if ( mChartItem )
+  {
+    disconnect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
+  }
+
+  mChartItem = qobject_cast<QgsLayoutItemChart *>( item );
+  mItemPropertiesWidget->setItem( mChartItem );
+
+  if ( mChartItem )
+  {
+    connect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
+  }
+
+  setGuiElementValues();
+
+  return true;
+}
+
+void QgsLayoutChartWidget::setGuiElementValues()
+{
+  if ( mChartItem )
+  {
+    whileBlocking( mChartTypeComboBox )->setCurrentIndex( mChartTypeComboBox->findData( mChartItem->plot()->type() ) );
+    whileBlocking( mLayerComboBox )->setLayer( mChartItem->vectorLayer() );
+
+    mSeriesListWidget->clear();
+    const QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
+    for ( const QgsLayoutItemChart::SeriesDetails &series : seriesList )
+    {
+      addSeriesListItem( series.name );
+    }
+  }
+  else
+  {
+    mSeriesListWidget->clear();
+  }
+}
+
+void QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged( int )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  const QString plotType = mChartTypeComboBox->currentData().toString();
+  if ( mChartItem->plot()->type() == plotType )
+  {
+    return;
+  }
+
+  QgsPlot *plot = QgsApplication::instance()->plotRegistry()->createPlot( plotType );
+
+  mChartItem->beginCommand( tr( "Change Chart Type" ) );
+  mChartItem->setPlot( plot );
+  mChartItem->update();
+  mChartItem->endCommand();
+}
+
+void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vl )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Change Chart Layer" ) );
+  mChartItem->setVectorLayer( vl );
+  mChartItem->update();
+  mChartItem->endCommand();
+}
+
+QListWidgetItem *QgsLayoutChartWidget::addSeriesListItem( const QString &name )
+{
+  QListWidgetItem *item = new QListWidgetItem( name, nullptr );
+  item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+  mSeriesListWidget->addItem( item );
+  return item;
+}
+
+void QgsLayoutChartWidget::mSeriesListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem * )
+{
+  mSeriesPropertiesButton->setEnabled( static_cast<bool>( current ) );
+}
+
+void QgsLayoutChartWidget::mSeriesListWidget_itemChanged( QListWidgetItem *item )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
+  const int idx = mSeriesListWidget->row( item );
+  if ( idx >= seriesList.size() )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Rename Chart Series" ) );
+  seriesList[idx].name = item->text();
+  mChartItem->setSeriesList( seriesList );
+  mChartItem->endCommand();
+}
+
+void QgsLayoutChartWidget::mAddSeriesPushButton_clicked()
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
+  const QString itemName = tr( "Series %1" ).arg( seriesList.size() + 1 );
+  addSeriesListItem( itemName );
+
+  mChartItem->beginCommand( tr( "Add Chart Series" ) );
+  seriesList << QgsLayoutItemChart::SeriesDetails( itemName );
+  mChartItem->setSeriesList( seriesList );
+  mChartItem->endCommand();
+  mChartItem->update();
+
+  mSeriesListWidget->setCurrentRow( mSeriesListWidget->count() - 1 );
+  mSeriesListWidget_currentItemChanged( mSeriesListWidget->currentItem(), nullptr );
+}
+
+void QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked()
+{
+  QListWidgetItem *item = mSeriesListWidget->currentItem();
+  if ( !item || !mChartItem )
+  {
+    return;
+  }
+
+  QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
+  const int idx = mSeriesListWidget->row( item );
+  if ( idx >= seriesList.size() )
+  {
+    return;
+  }
+
+  QListWidgetItem *deletedItem = mSeriesListWidget->takeItem( mSeriesListWidget->row( item ) );
+  delete deletedItem;
+
+  mChartItem->beginCommand( tr( "Remove Chart Series" ) );
+  seriesList.removeAt( idx );
+  mChartItem->setSeriesList( seriesList );
+  mChartItem->endCommand();
+  mChartItem->update();
+}
+
+void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
+{
+  QListWidgetItem *item = mSeriesListWidget->currentItem();
+  if ( !item || !mChartItem )
+  {
+    return;
+  }
+
+  QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
+  const int idx = mSeriesListWidget->row( item );
+  if ( idx >= seriesList.size() )
+  {
+    return;
+  }
+
+  QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->vectorLayer(), idx, seriesList[idx], this );
+  widget->setPanelTitle( tr( "Series Details" ) );
+  connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+    if ( !mChartItem )
+    {
+      return;
+    }
+
+    QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
+    const int idx = widget->index();
+    if ( idx >= seriesList.size() )
+    {
+      return;
+    }
+
+    mChartItem->beginCommand( tr( "Modify Chart Series" ) );
+    seriesList[idx].xExpression = widget->xExpression();
+    seriesList[idx].yExpression = widget->yExpression();
+    seriesList[idx].filterExpression = widget->filterExpression();
+    mChartItem->setSeriesList( seriesList );
+    mChartItem->endCommand();
+    mChartItem->update();
+  } );
+
+  openPanel( widget );
+}
