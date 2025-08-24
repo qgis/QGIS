@@ -416,7 +416,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-qt${{ matrix.qt-version }}
+          name: test-results-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}
           path: qgis_test_report
 
   clang-tidy:
