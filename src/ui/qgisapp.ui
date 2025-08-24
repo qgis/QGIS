@@ -20,6 +20,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
    <property name="toolTip">
     <string>Menu Toolbar</string>
    </property>

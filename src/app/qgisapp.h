@@ -190,6 +190,7 @@ class QgsAppCanvasFiltering;
 #include "qgis_app.h"
 #include "qgsappdevtoolutils.h"
 #include "qgsoptionsutils.h"
+#include "SARibbon/SARibbon.h"
 
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
@@ -1458,6 +1459,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   protected:
     void showEvent( QShowEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;  // 添加resize事件处理
 
     //! Handle state changes (WindowTitleChange)
     void changeEvent( QEvent *event ) override;
@@ -2250,6 +2252,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
 
     void showProgress( int progress, int totalSteps );
+
+    // SARibbon 菜单初始化
+    void initializeRibbonInterface();
+    void createFileRibbonCategory();
+    void createEditRibbonCategory();
+    void createViewRibbonCategory();
+    void createLayerRibbonCategory();
+    void createSettingsRibbonCategory();
+    
+    // SARibbon 成员变量
+    SARibbonBar* mRibbonBar = nullptr;
 
     /**
      * Add the current project to the recently opened/saved projects list

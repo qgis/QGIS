@@ -4,6 +4,9 @@ SUBDIRS(${CMAKE_SOURCE_DIR}/external/qt-unix-signals)
 endif()
 
 set(QGIS_APP_SRCS
+  SARibbon/SARibbon.h
+  SARibbon/SARibbon.cpp
+
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
 
@@ -511,6 +514,8 @@ endif()
 
 target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
+
+  ${CMAKE_SOURCE_DIR}/src/SARibbon
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations

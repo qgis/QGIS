@@ -996,6 +996,30 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   // load GUI: actions, menus, toolbars
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
+  
+  // 更早隐藏工具栏并初始化 SARibbon 界面，减少闪烁
+  QTimer::singleShot(100, this, [this] {
+    try {
+      qDebug() << "Starting early toolbar hiding and SARibbon initialization...";
+      
+      // 首先立即隐藏所有工具栏以减少闪烁
+      QList<QToolBar*> toolbars = findChildren<QToolBar*>();
+      for (QToolBar* toolbar : toolbars) {
+        if (toolbar && toolbar->isVisible()) {
+          toolbar->setVisible(false);
+          qDebug() << "Early hidden toolbar:" << toolbar->objectName();
+        }
+      }
+      
+      initializeRibbonInterface();
+      qDebug() << "Early SARibbon initialization completed";
+    } catch (const std::exception& e) {
+      qDebug() << "SARibbon initialization failed:" << e.what();
+    } catch (...) {
+      qDebug() << "Unknown exception in SARibbon initialization";
+    }
+  });
+  
   endProfile();
 
   mScreenHelper = new QgsScreenHelper( this );
@@ -17440,6 +17464,19 @@ void QgisApp::showEvent( QShowEvent *event )
   } );
 }
 
+void QgisApp::resizeEvent( QResizeEvent *event )
+{
+  QMainWindow::resizeEvent( event );
+  
+  // 当窗口大小改变时，调整Ribbon位置
+  if ( mRibbonBar && mRibbonBar->isVisible() )
+  {
+    int menuBarHeight = menuBar()->isVisible() ? menuBar()->height() : 0;
+    mRibbonBar->resize( this->width(), mRibbonBar->sizeHint().height() );
+    mRibbonBar->move( 0, menuBarHeight );
+  }
+}
+
 void QgisApp::handleRenderedLayerStatistics() const
 {
   const QgsRenderedItemResults *renderedItemResults = mMapCanvas->renderedItemResults( false );
@@ -17475,4 +17512,203 @@ void QgisApp::handleRenderedLayerStatistics() const
       }
     }
   }
+}
+
+
+//
+// SARibbon 界面初始化方法
+//
+
+void QgisApp::initializeRibbonInterface()
+{
+  qDebug() << "Starting minimal SARibbon initialization...";
+  
+  // 确保在主线程中创建
+  if (QThread::currentThread() != this->thread()) {
+    qDebug() << "Warning: initializeRibbonInterface called from wrong thread";
+    return;
+  }
+  
+  // 检查是否已经初始化
+  if (mRibbonBar) {
+    qDebug() << "SARibbon already initialized";
+    return;
+  }
+  
+  // 最简单的创建过程，避免所有可能的冲突
+  try {
+    qDebug() << "Creating minimal SARibbonBar...";
+    mRibbonBar = new SARibbonBar(this);
+    if (!mRibbonBar) {
+      qDebug() << "Failed to create ribbon bar";
+      return;
+    }
+    
+    // 设置style
+    mRibbonBar->setRibbonStyle(SARibbonBar::RibbonStyleCompactThreeRow);
+
+    qDebug() << "Setting minimal ribbon properties...";
+    mRibbonBar->setObjectName("SARibbonBar");
+    
+    // 只创建一个最基本的测试分类
+    // qDebug() << "Creating test category...";
+    // SARibbonCategory* testCategory = new SARibbonCategory("测试");
+    // mRibbonBar->addCategoryPage(testCategory);
+    
+    // // 创建一个最简单的面板
+    // SARibbonPannel* testPanel = new SARibbonPannel("基本功能");
+    
+    // // 只添加一个纯文本标签，不涉及任何复杂功能
+    // QLabel* testLabel = new QLabel("SARibbon 测试");
+    // testPanel->addWidget(testLabel, SARibbonPannelItem::Small);
+    // testCategory->addPannel(testPanel);
+    
+    // qDebug() << "Basic ribbon structure created";
+    
+    // 立即设置Ribbon位置和显示
+    // 计算正确的Y位置（菜单栏下方）
+    int ribbonY = 0;
+    if (menuBar() && menuBar()->isVisible()) {
+      ribbonY = menuBar()->y() + menuBar()->height();
+    }
+    
+    qDebug() << "Positioning ribbon immediately...";
+    qDebug() << "Window width:" << width() << "Menu bar height:" << (menuBar() ? menuBar()->height() : 0);
+    qDebug() << "Ribbon Y position:" << ribbonY;
+    
+    // 设置固定高度并显示
+    int ribbonHeight = 120;
+    mRibbonBar->setGeometry(0, ribbonY, width(), ribbonHeight);
+    mRibbonBar->setStyleSheet("background-color: #f0f0f0; border: 1px solid #ccc;"); // 临时样式，便于看到
+    mRibbonBar->show();
+    mRibbonBar->raise();
+    
+    // 强制更新主窗口布局
+    centralWidget()->setContentsMargins(0, ribbonHeight, 0, 0);
+    
+    qDebug() << "Ribbon positioned and displayed with background color for visibility";
+    qDebug() << "Minimal SARibbon initialization completed successfully";
+    
+    // 创建完整的Ribbon分类
+    createFileRibbonCategory();
+    createEditRibbonCategory();
+    createViewRibbonCategory();
+    createLayerRibbonCategory();
+    createSettingsRibbonCategory();
+    
+  } catch (const std::exception& e) {
+    qDebug() << "Exception in minimal ribbon initialization:" << e.what();
+    if (mRibbonBar) {
+      delete mRibbonBar;
+      mRibbonBar = nullptr;
+    }
+  } catch (...) {
+    qDebug() << "Unknown exception in minimal ribbon initialization";
+    if (mRibbonBar) {
+      delete mRibbonBar;
+      mRibbonBar = nullptr;
+    }
+  }
+}
+
+void QgisApp::createFileRibbonCategory()
+{
+  if (!mRibbonBar) {
+    return;
+  }
+  
+  // 创建"文件"分类
+  SARibbonCategory* fileCategory = new SARibbonCategory("文件");
+  mRibbonBar->addCategoryPage(fileCategory);
+  
+  // 创建"项目"面板
+  SARibbonPannel* projectPanel = new SARibbonPannel("项目");
+  if (mActionNewProject) projectPanel->addAction(mActionNewProject);
+  if (mActionOpenProject) projectPanel->addAction(mActionOpenProject);
+  if (mActionSaveProject) projectPanel->addAction(mActionSaveProject);
+  if (mActionSaveProjectAs) projectPanel->addAction(mActionSaveProjectAs);
+  fileCategory->addPannel(projectPanel);
+  
+  // 创建"导入/导出"面板
+  SARibbonPannel* importExportPanel = new SARibbonPannel("导入/导出");
+  // 这里可以添加导入导出相关的actions
+  fileCategory->addPannel(importExportPanel);
+}
+
+void QgisApp::createEditRibbonCategory()
+{
+  if (!mRibbonBar) {
+    return;
+  }
+  
+  // 创建"编辑"分类
+  SARibbonCategory* editCategory = new SARibbonCategory("编辑");
+  mRibbonBar->addCategoryPage(editCategory);
+  
+  // 创建"选择"面板
+  SARibbonPannel* selectionPanel = new SARibbonPannel("选择");
+  if (mActionSelectFeatures) selectionPanel->addAction(mActionSelectFeatures);
+  // 注意：QGIS中没有mActionDeselectFeatures，这里可以用其他相关的选择Action
+  editCategory->addPannel(selectionPanel);
+  
+  // 创建"编辑工具"面板
+  SARibbonPannel* editToolsPanel = new SARibbonPannel("编辑工具");
+  if (mActionToggleEditing) editToolsPanel->addAction(mActionToggleEditing);
+  editCategory->addPannel(editToolsPanel);
+}
+
+void QgisApp::createViewRibbonCategory()
+{
+  if (!mRibbonBar) {
+    return;
+  }
+  
+  // 创建"视图"分类
+  SARibbonCategory* viewCategory = new SARibbonCategory("视图");
+  mRibbonBar->addCategoryPage(viewCategory);
+  
+  // 创建"导航"面板
+  SARibbonPannel* navigationPanel = new SARibbonPannel("导航");
+  if (mActionPan) navigationPanel->addAction(mActionPan);
+  if (mActionZoomIn) navigationPanel->addAction(mActionZoomIn);
+  if (mActionZoomOut) navigationPanel->addAction(mActionZoomOut);
+  if (mActionZoomFullExtent) navigationPanel->addAction(mActionZoomFullExtent);
+  viewCategory->addPannel(navigationPanel);
+  
+  // 创建"显示"面板
+  SARibbonPannel* displayPanel = new SARibbonPannel("显示");
+  viewCategory->addPannel(displayPanel);
+}
+
+void QgisApp::createLayerRibbonCategory()
+{
+  if (!mRibbonBar) {
+    return;
+  }
+  
+  // 创建"图层"分类
+  SARibbonCategory* layerCategory = new SARibbonCategory("图层");
+  mRibbonBar->addCategoryPage(layerCategory);
+  
+  // 创建"数据源"面板
+  SARibbonPannel* dataSourcePanel = new SARibbonPannel("数据源");
+  if (mActionNewVectorLayer) dataSourcePanel->addAction(mActionNewVectorLayer);
+  if (mActionAddRasterLayer) dataSourcePanel->addAction(mActionAddRasterLayer);
+  layerCategory->addPannel(dataSourcePanel);
+}
+
+void QgisApp::createSettingsRibbonCategory()
+{
+  if (!mRibbonBar) {
+    return;
+  }
+  
+  // 创建"设置"分类
+  SARibbonCategory* settingsCategory = new SARibbonCategory("设置");
+  mRibbonBar->addCategoryPage(settingsCategory);
+  
+  // 创建"配置"面板
+  SARibbonPannel* configPanel = new SARibbonPannel("配置");
+  if (mActionOptions) configPanel->addAction(mActionOptions);
+  settingsCategory->addPannel(configPanel);
 }
