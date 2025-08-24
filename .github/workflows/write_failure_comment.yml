@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         qt-version: [ 5, 6 ]
+        distro-version: ['24.10', '39']
 
     permissions:
       pull-requests: write
@@ -31,7 +32,7 @@ jobs:
                run_id: context.payload.workflow_run.id,
             });
             let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "test-results-qt${{ matrix.qt-version }}"
+              return artifact.name == "test-results-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}"
             });
             if (matchArtifacts.length>0)
             {
@@ -42,7 +43,7 @@ jobs:
                  archive_format: 'zip',
               });
               let fs = require('fs');
-              fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/test-results-qt${{ matrix.qt-version }}.zip`, Buffer.from(download.data));
+              fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/test-results-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.zip`, Buffer.from(download.data));
               core.setOutput('artifact_id', matchArtifacts[0].id);
             }
             else
@@ -52,7 +53,7 @@ jobs:
 
       - name: 'Unzip artifact'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
-        run: unzip -j test-results-qt${{ matrix.qt-version }}.zip *.md pr_number git_commit || ( e=$? && if [ $e -ne 11 ]; then exit $e; fi )
+        run: unzip -j test-results-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.zip *.md pr_number git_commit || ( e=$? && if [ $e -ne 11 ]; then exit $e; fi )
 
       - name: 'Post test report markdown summary as comment on PR'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
@@ -71,7 +72,7 @@ jobs:
                 issue_number: issue_number,
               });
 
-              const PREFIX = "# Tests failed for Qt ${{ matrix.qt-version }}";
+              const PREFIX = "# Tests failed for Qt ${{ matrix.qt-version }} (${{ matrix.distro-version }})";
 
               let body = PREFIX + "\n\n";
               body += "*One or more tests failed using the build from commit " + git_sha + "*\n\n";
