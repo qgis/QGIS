@@ -102,7 +102,7 @@ jobs:
                 -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
 
-                fdupes -q -r -1 build/vcpkg_installed/${{ matrix.triplet }}/lib | grep -E '(so|dylib)' | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
+                fdupes -q -r -1 build/vcpkg_installed/${{ matrix.triplet }}/lib | grep -E '\.(so|dylib)' | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
 
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
