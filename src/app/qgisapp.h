@@ -1460,6 +1460,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   protected:
     void showEvent( QShowEvent *event ) override;
     void resizeEvent( QResizeEvent *event ) override;  // 添加resize事件处理
+    bool eventFilter( QObject *obj, QEvent *event ) override; // 添加事件过滤器
 
     //! Handle state changes (WindowTitleChange)
     void changeEvent( QEvent *event ) override;
@@ -2255,6 +2256,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // SARibbon 菜单初始化
     void initializeRibbonInterface();
+    void adjustDockWidgetsForRibbon(int ribbonBottom);
+    bool dockWidgetEventFilter(QObject *obj, QEvent *event); // 处理dock widget事件的过滤器
+    QRect dockWidgetAreaRect(Qt::DockWidgetArea area) const; // 重写dock widget区域计算
     void createFileRibbonCategory();
     void createEditRibbonCategory();
     void createViewRibbonCategory();
@@ -2263,6 +2267,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     
     // SARibbon 成员变量
     SARibbonBar* mRibbonBar = nullptr;
+    QTimer* mDockWidgetAdjustTimer = nullptr; // 定期调整dock widget位置的定时器
 
     /**
      * Add the current project to the recently opened/saved projects list

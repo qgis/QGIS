@@ -17472,9 +17472,27 @@ void QgisApp::resizeEvent( QResizeEvent *event )
   if ( mRibbonBar && mRibbonBar->isVisible() )
   {
     int menuBarHeight = menuBar()->isVisible() ? menuBar()->height() : 0;
-    mRibbonBar->resize( this->width(), mRibbonBar->sizeHint().height() );
+    int ribbonHeight = mRibbonBar->sizeHint().height();
+    
+    // 调整ribbon位置和大小
+    mRibbonBar->resize( this->width(), ribbonHeight );
     mRibbonBar->move( 0, menuBarHeight );
+    mRibbonBar->raise(); // 确保ribbon在顶层
+    
+    // 同时调整所有dock widget的位置
+    adjustDockWidgetsForRibbon(menuBarHeight + ribbonHeight + 10);
   }
+}
+
+bool QgisApp::eventFilter( QObject *obj, QEvent *event )
+{
+  // 调用dock widget专用的事件过滤器
+  if (dockWidgetEventFilter(obj, event)) {
+    return true;
+  }
+  
+  // 调用父类的事件过滤器
+  return QMainWindow::eventFilter(obj, event);
 }
 
 void QgisApp::handleRenderedLayerStatistics() const
@@ -17583,8 +17601,15 @@ void QgisApp::initializeRibbonInterface()
     mRibbonBar->show();
     mRibbonBar->raise();
     
-    // 强制更新主窗口布局
-    centralWidget()->setContentsMargins(0, ribbonHeight, 0, 0);
+    // 关键修复：设置主窗口的内容边距，这将影响所有dock widget和central widget的布局
+    // 这是Qt布局系统正确的方法来为ribbon保留空间
+    setContentsMargins(0, ribbonHeight + 10, 0, 0);
+    
+    // 同时设置centralWidget的内容边距（双重保险）
+    centralWidget()->setContentsMargins(0, 0, 0, 0); // 清除central widget边距，让主窗口边距生效
+    
+    // 立即调整dock widget位置
+    adjustDockWidgetsForRibbon(ribbonHeight + ribbonY + 10);
     
     qDebug() << "Ribbon positioned and displayed with background color for visibility";
     qDebug() << "Minimal SARibbon initialization completed successfully";
@@ -17609,6 +17634,92 @@ void QgisApp::initializeRibbonInterface()
       mRibbonBar = nullptr;
     }
   }
+}
+
+void QgisApp::adjustDockWidgetsForRibbon(int ribbonBottom)
+{
+  // 使用QTimer确保调整操作在Qt布局系统处理之后执行
+  QTimer::singleShot(0, this, [this, ribbonBottom]() {
+    // 获取所有dock widget
+    QList<QDockWidget*> dockWidgets = findChildren<QDockWidget*>();
+    for (QDockWidget* dock : dockWidgets) {
+      if (!dock || !dock->isVisible() || dock->isFloating()) {
+        continue;
+      }
+      
+      Qt::DockWidgetArea area = dockWidgetArea(dock);
+      
+      // 对于所有停靠的dock widget，需要调整其几何位置，避免与ribbon重叠
+      if (area != Qt::NoDockWidgetArea) {
+        // 获取dock widget的当前几何信息
+        QRect dockGeometry = dock->geometry();
+        
+        // 如果dock widget的顶部被ribbon遮挡，则直接调整其位置
+        if (dockGeometry.top() < ribbonBottom) {
+          int newTop = ribbonBottom;
+          int newHeight = dockGeometry.height() - (ribbonBottom - dockGeometry.top());
+          
+          // 确保高度为正数
+          if (newHeight > 20) { // 设置最小高度
+            QRect newGeometry(dockGeometry.left(), newTop, dockGeometry.width(), newHeight);
+            
+            // 使用多种方法确保位置调整生效
+            dock->setGeometry(newGeometry);
+            dock->move(newGeometry.topLeft());
+            dock->resize(newGeometry.size());
+            
+            // 强制更新dock widget的布局
+            dock->updateGeometry();
+            dock->update();
+          }
+        }
+      }
+    }
+    
+    // 强制更新主窗口布局
+    updateGeometry();
+    update();
+  });
+}
+
+bool QgisApp::dockWidgetEventFilter(QObject *obj, QEvent *event)
+{
+  // 简化事件过滤器，只处理最关键的几何事件
+  if (!mRibbonBar || !mRibbonBar->isVisible()) {
+    return false;
+  }
+  
+  QDockWidget* dock = qobject_cast<QDockWidget*>(obj);
+  if (!dock || dock->isFloating()) {
+    return false;
+  }
+  
+  // 只拦截Move和Resize事件
+  if (event->type() == QEvent::Move || event->type() == QEvent::Resize) {
+    // 计算ribbon底部位置
+    int menuBarHeight = menuBar()->isVisible() ? menuBar()->height() : 0;
+    int ribbonHeight = mRibbonBar->sizeHint().height();
+    int ribbonBottom = menuBarHeight + ribbonHeight + 10;
+    
+    QRect dockGeometry = dock->geometry();
+    Qt::DockWidgetArea area = dockWidgetArea(dock);
+    
+    // 如果dock widget被ribbon遮挡，进行调整
+    if (area != Qt::NoDockWidgetArea && dockGeometry.top() < ribbonBottom) {
+      qDebug() << "Adjusting dock widget due to event:" << dock->objectName();
+      
+      // 立即调整位置
+      int newTop = ribbonBottom;
+      int newHeight = dockGeometry.height() - (ribbonBottom - dockGeometry.top());
+      
+      if (newHeight > 20) {
+        QRect newGeometry(dockGeometry.left(), newTop, dockGeometry.width(), newHeight);
+        dock->setGeometry(newGeometry);
+      }
+    }
+  }
+  
+  return false;
 }
 
 void QgisApp::createFileRibbonCategory()
