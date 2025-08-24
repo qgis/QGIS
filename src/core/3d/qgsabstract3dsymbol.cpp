@@ -46,6 +46,9 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
   {
     { static_cast< int >( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( Property::ScaleX ), QgsPropertyDefinition( "scaleX", QObject::tr( "X-axis scale" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast< int >( Property::ScaleY ), QgsPropertyDefinition( "scaleY", QObject::tr( "Y-axis scale" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast< int >( Property::ScaleZ ), QgsPropertyDefinition( "scaleZ", QObject::tr( "Z-axis scale" ), QgsPropertyDefinition::Double, origin ) },
   };
 
 }
