@@ -5244,7 +5244,7 @@ QString QgsPostgresProvider::htmlMetadata() const
                                     .arg( QgsPostgresConn::quotedValue( mTableName ) );
 
   QgsPostgresResult resSpatialIndexes( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlSpatialIndex ) );
-  QString spatialIndexText = QStringLiteral( "No spatial index." );
+  QString spatialIndexText = tr( "No spatial index." );
 
   if ( resSpatialIndexes.PQntuples() > 0 )
   {
@@ -5254,7 +5254,7 @@ QString QgsPostgresProvider::htmlMetadata() const
       spatialIndexes.append( resSpatialIndexes.PQgetvalue( i, 2 ) );
     }
 
-    spatialIndexText = QStringLiteral( "Spatial index/indices exists (%1)." ).arg( spatialIndexes.join( ", " ) );
+    spatialIndexText = tr( "Spatial index/indices exists (%1)." ).arg( spatialIndexes.join( ", " ) );
   }
 
   const QVariantMap additionalInformation {
