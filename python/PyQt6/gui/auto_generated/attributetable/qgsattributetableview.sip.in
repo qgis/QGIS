@@ -172,14 +172,13 @@ Emitted when a column in the view has been resized.
    No longer used.
 %End
 
-    void zoomToFeatureRequested( QgsFeatureId fid );
+    void rowHeaderDoubleClicked( QgsFeatureId fid );
 %Docstring
-Emitted when a row header is double-clicked to request zooming to the
-feature.
+Emitted when a row header is double-clicked.
 
-:param fid: the feature ID of the double-clicked row
+:param fid: the feature ID of the double-clicked row.
 
-.. versionadded:: 3.46
+.. versionadded:: 4.0
 %End
 
   public slots:
