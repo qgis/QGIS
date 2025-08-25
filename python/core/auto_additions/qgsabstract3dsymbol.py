@@ -8,6 +8,15 @@ QgsAbstract3DSymbol.PropertyExtrusionHeight = QgsAbstract3DSymbol.Property.Extru
 QgsAbstract3DSymbol.Property.PropertyExtrusionHeight = QgsAbstract3DSymbol.Property.ExtrusionHeight
 QgsAbstract3DSymbol.PropertyExtrusionHeight.is_monkey_patched = True
 QgsAbstract3DSymbol.PropertyExtrusionHeight.__doc__ = "Extrusion height (zero means no extrusion)"
+QgsAbstract3DSymbol.ScaleX = QgsAbstract3DSymbol.Property.ScaleX
+QgsAbstract3DSymbol.ScaleX.is_monkey_patched = True
+QgsAbstract3DSymbol.ScaleX.__doc__ = "X-axis scaling \n.. versionadded:: 4.0"
+QgsAbstract3DSymbol.ScaleY = QgsAbstract3DSymbol.Property.ScaleY
+QgsAbstract3DSymbol.ScaleY.is_monkey_patched = True
+QgsAbstract3DSymbol.ScaleY.__doc__ = "Y-axis scaling \n.. versionadded:: 4.0"
+QgsAbstract3DSymbol.ScaleZ = QgsAbstract3DSymbol.Property.ScaleZ
+QgsAbstract3DSymbol.ScaleZ.is_monkey_patched = True
+QgsAbstract3DSymbol.ScaleZ.__doc__ = "Z-axis scaling \n.. versionadded:: 4.0"
 QgsAbstract3DSymbol.Property.__doc__ = """Data definable properties.
 
 * ``Height``: Height (altitude)
@@ -17,6 +26,18 @@ QgsAbstract3DSymbol.Property.__doc__ = """Data definable properties.
 * ``ExtrusionHeight``: Extrusion height (zero means no extrusion)
 
   Available as ``QgsAbstract3DSymbol.PropertyExtrusionHeight`` in older QGIS releases.
+
+* ``ScaleX``: X-axis scaling
+
+  .. versionadded:: 4.0
+
+* ``ScaleY``: Y-axis scaling
+
+  .. versionadded:: 4.0
+
+* ``ScaleZ``: Z-axis scaling
+
+  .. versionadded:: 4.0
 
 
 """

@@ -70,6 +70,9 @@ class CORE_EXPORT QgsAbstract3DSymbol
       {
       Height SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ) = 0, //!< Height (altitude)
       ExtrusionHeight SIP_MONKEYPATCH_COMPAT_NAME( PropertyExtrusionHeight ), //!< Extrusion height (zero means no extrusion)
+      ScaleX, //!< X-axis scaling \since QGIS 4.0
+      ScaleY, //!< Y-axis scaling \since QGIS 4.0
+      ScaleZ, //!< Z-axis scaling \since QGIS 4.0
     };
     // *INDENT-ON*
 
