@@ -2750,7 +2750,7 @@ the
 
 .. seealso:: :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust it from there.
 .. Breaking changes:: 4.0
-.. versionadded:: 3.40
+.. versionadded:: 3.4
 %End
 
     QgsStoredExpressionManager *storedExpressionManager();

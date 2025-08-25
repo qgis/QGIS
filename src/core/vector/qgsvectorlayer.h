@@ -2471,7 +2471,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Checks all commit permissions set during the runtime of the program and returns bool. It can be used to check
      * if committing is fully allowed. 
-     * \since QGIS 3.40
+     * \since QGIS 3.4
      */
     bool allowCommit() const;
 
@@ -2506,7 +2506,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
      *
-     * \since QGIS 3.40
+     * \since QGIS 3.4
      * Breaking changes \since QGIS 4.0
      */
     void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
