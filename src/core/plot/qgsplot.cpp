@@ -957,8 +957,6 @@ QgsPlotData::~QgsPlotData()
 
 QgsPlotData::QgsPlotData( const QgsPlotData &other )
 {
-  clearSeries();
-
   mCategories = other.mCategories;
   for ( QgsAbstractPlotSeries *series : other.mSeries )
   {
@@ -1022,13 +1020,6 @@ QString QgsAbstractPlotSeries::name() const
 void QgsAbstractPlotSeries::setName( const QString &name )
 {
   mName = name;
-}
-
-QgsAbstractPlotSeries *QgsAbstractPlotSeries::clone() const
-{
-  QgsAbstractPlotSeries *series = new QgsAbstractPlotSeries();
-  series->setName( mName );
-  return series;
 }
 
 //

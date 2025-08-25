@@ -21,10 +21,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsplot.h"
+#include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
 #include <qgsvectorlayerfeatureiterator.h>
-
-#include <QThread>
 
 
 /**
@@ -35,14 +34,39 @@
  *
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QThread
+class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
 {
     Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsVectorLayerAbstractPlotDataGatherer *item = dynamic_cast< QgsVectorLayerAbstractPlotDataGatherer * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( item ) != NULL )
+      {
+        sipType = sipType_QgsVectorLayerXyPlotDataGatherer;
+      }
+      else
+      {
+        sipType = sipType_QgsVectorLayerAbstractPlotDataGatherer;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+    SIP_END
+#endif
 
   public:
 
     QgsVectorLayerAbstractPlotDataGatherer() = default;
     virtual ~QgsVectorLayerAbstractPlotDataGatherer() = default;
+
+    bool run() override = 0;
+
+    //! Returns the plot data
+    virtual QgsPlotData data() const = 0;
 
   private:
 
@@ -95,23 +119,15 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
      */
     ~QgsVectorLayerXyPlotDataGatherer() override = default;
 
-    void run() override;
-    //! Informs the gatherer to immediately stop collecting data
-    void stop();
-
-    //! Returns TRUE if collection was canceled before completion
-    bool wasCanceled() const;
+    bool run() override;
 
     //! Returns the plot data
-    QgsPlotData data() const;
+    QgsPlotData data() const override;
 
   protected:
     QgsPlotData mData;
 
   private:
-
-    bool mWasCanceled = false;
-    mutable QMutex mCancelMutex;
 
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     QgsExpressionContext mExpressionContext;

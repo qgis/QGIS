@@ -9,8 +9,7 @@
 
 
 
-
-class QgsVectorLayerAbstractPlotDataGatherer : QThread
+class QgsVectorLayerAbstractPlotDataGatherer : QgsTask
 {
 %Docstring(signature="appended")
 An abstract vector layer plot data gatherer base class.
@@ -21,10 +20,35 @@ An abstract vector layer plot data gatherer base class.
 %TypeHeaderCode
 #include "qgsvectorlayerplotdatagatherer.h"
 %End
+%ConvertToSubClassCode
+    if ( QgsVectorLayerAbstractPlotDataGatherer *item = dynamic_cast< QgsVectorLayerAbstractPlotDataGatherer * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( item ) != NULL )
+      {
+        sipType = sipType_QgsVectorLayerXyPlotDataGatherer;
+      }
+      else
+      {
+        sipType = sipType_QgsVectorLayerAbstractPlotDataGatherer;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+%End
   public:
 
     QgsVectorLayerAbstractPlotDataGatherer();
     virtual ~QgsVectorLayerAbstractPlotDataGatherer();
+
+    virtual bool run() = 0;
+
+
+    virtual QgsPlotData data() const = 0;
+%Docstring
+Returns the plot data
+%End
 
 };
 
@@ -69,19 +93,11 @@ The class constructor.
 
     ~QgsVectorLayerXyPlotDataGatherer();
 
-    virtual void run();
+    virtual bool run();
 
-    void stop();
-%Docstring
-Informs the gatherer to immediately stop collecting data
-%End
 
-    bool wasCanceled() const;
-%Docstring
-Returns ``True`` if collection was canceled before completion
-%End
+    virtual QgsPlotData data() const;
 
-    QgsPlotData data() const;
 %Docstring
 Returns the plot data
 %End

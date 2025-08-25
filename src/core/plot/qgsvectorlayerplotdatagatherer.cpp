@@ -30,14 +30,12 @@ QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( QgsVectorLay
 {
 }
 
-void QgsVectorLayerXyPlotDataGatherer::run()
+bool QgsVectorLayerXyPlotDataGatherer::run()
 {
-  mWasCanceled = false;
-
   QStringList gatheredCategories;
   for ( const XySeriesDetails &seriesDetails : mSeriesDetails )
   {
-    std::unique_ptr<QgsXyPlotSeries> series = std::make_unique<QgsXyPlotSeries>();
+    auto series = std::make_unique<QgsXyPlotSeries>();
     QMap<QString, double> gatheredCategoriesSum;
 
     QgsExpression xExpression( seriesDetails.xExpression );
@@ -127,9 +125,8 @@ void QgsVectorLayerXyPlotDataGatherer::run()
         }
       }
 
-      const QMutexLocker locker( &mCancelMutex );
-      if ( mWasCanceled )
-        return;
+      if ( isCanceled() )
+        return false;
     }
 
     if ( mXAxisType == Qgis::PlotAxisType::Categorical )
@@ -163,18 +160,8 @@ void QgsVectorLayerXyPlotDataGatherer::run()
   {
     mData.setCategories( !mPredefinedCategories.isEmpty() ? mPredefinedCategories : gatheredCategories );
   }
-}
 
-void QgsVectorLayerXyPlotDataGatherer::stop()
-{
-  const QMutexLocker locker( &mCancelMutex );
-  mWasCanceled = true;
-}
-
-bool QgsVectorLayerXyPlotDataGatherer::wasCanceled() const
-{
-  const QMutexLocker locker( &mCancelMutex );
-  return mWasCanceled;
+  return true;
 }
 
 QgsPlotData QgsVectorLayerXyPlotDataGatherer::data() const
