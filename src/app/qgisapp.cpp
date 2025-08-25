@@ -17636,24 +17636,15 @@
    
    // 示例：使用自定义图标pointS.png创建一个action
    // 方法1：使用getThemeIcon（推荐方式）
-   QAction* customPointAction = new QAction(QgsApplication::getThemeIcon("/pointS.png"), "点工具", this);
+   QAction* customPointAction = new QAction("自定义点工具", this);
    
-   // 方法2：如果getThemeIcon不工作，直接从文件路径加载
-   if (customPointAction->icon().isNull()) {
-     QString iconPath = QgsApplication::pkgDataPath() + "/images/themes/default/pointS.png";
-     if (QFile::exists(iconPath)) {
-       customPointAction->setIcon(QIcon(iconPath));
-     } else {
-       // 方法3：从源码目录加载（开发环境）
-       QString devIconPath = "/home/sen/dev/cpp/QGIS/images/themes/default/pointS.png";
-       if (QFile::exists(devIconPath)) {
-         customPointAction->setIcon(QIcon(devIconPath));
-       } else {
-         // 如果都找不到，使用默认图标
-         customPointAction->setIcon(QgsApplication::getThemeIcon("/mActionAddRasterLayer.svg"));
-       }
-     }
+   // 跨平台标准方法：使用QGIS主题系统（不需要"/"前缀）
+   QIcon customIcon = QgsApplication::getThemeIcon("pointS.png");
+   if (customIcon.isNull()) {
+     // 备用方案：使用现有的类似图标
+     customIcon = QgsApplication::getThemeIcon("mActionCapturePoint.svg");
    }
+   customPointAction->setIcon(customIcon);
    
    customPointAction->setToolTip("这是一个使用自定义pointS.png图标的示例按钮");
    customPointAction->setStatusTip("演示如何在ribbon中使用自定义图标");
