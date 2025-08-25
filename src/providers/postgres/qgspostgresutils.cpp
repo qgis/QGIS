@@ -561,7 +561,7 @@ bool QgsPostgresUtils::projectsTableExists( QgsPostgresConn *conn, const QString
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
-QString QgsPostgresUtils::dumpVariantMap( const QVariantMap &variantMap, const QString &title )
+QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const QString &title )
 {
   QString result;
   if ( !title.isEmpty() )
@@ -580,7 +580,7 @@ QString QgsPostgresUtils::dumpVariantMap( const QVariantMap &variantMap, const Q
         const QVariantMap grandChildMap = v.toMap();
         if ( !grandChildMap.isEmpty() )
         {
-          result += QStringLiteral( "<li><table>%1</table></li>" ).arg( dumpVariantMap( grandChildMap ) );
+          result += QStringLiteral( "<li><table>%1</table></li>" ).arg( variantMapToHtml( grandChildMap ) );
         }
         else
         {
@@ -591,7 +591,7 @@ QString QgsPostgresUtils::dumpVariantMap( const QVariantMap &variantMap, const Q
     }
     else if ( !childMap.isEmpty() )
     {
-      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>" ).arg( it.key(), variantMapToHtml( childMap ) );
     }
     else
     {
