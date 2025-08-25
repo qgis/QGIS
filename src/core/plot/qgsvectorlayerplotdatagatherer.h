@@ -22,7 +22,6 @@
 #include "qgis_sip.h"
 #include "qgsplot.h"
 #include "qgstaskmanager.h"
-#include "qgsvectorlayer.h"
 #include <qgsvectorlayerfeatureiterator.h>
 
 
@@ -92,27 +91,26 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
      */
     struct XySeriesDetails
     {
-      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &orderByExpression = QString(), const QString &filterExpression = QString() )
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() )
         : xExpression( xExpression )
         , yExpression( yExpression )
-        , orderByExpression( orderByExpression )
         , filterExpression( filterExpression )
       {}
 
       QString xExpression;
       QString yExpression;
-      QString orderByExpression;
       QString filterExpression;
     };
 
     /**
      * The class constructor.
-     * \param layer a vector layer from which features will be iterated against
+     * \param iterator a feature iterator
+     * \param expressionContext an expression conext
      * \param seriesDetails a list of XY series details
      * \param xAxisType the type of X axis - interval or categorical - which will decide whether X values are interval based of categories index
      * \param predefinedCategories a list of predefined categories, only used then the X asis type is set to Qgis.PlotAxisType.Categorical
      */
-    QgsVectorLayerXyPlotDataGatherer( QgsVectorLayer *layer, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+    QgsVectorLayerXyPlotDataGatherer( const QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
 
     /**
      * The class destructor.
@@ -129,7 +127,7 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
 
   private:
 
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
+    QgsFeatureIterator mIterator;
     QgsExpressionContext mExpressionContext;
 
     Qgis::PlotAxisType mXAxisType = Qgis::PlotAxisType::Interval;

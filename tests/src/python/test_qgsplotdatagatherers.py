@@ -13,7 +13,10 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 from qgis.PyQt.QtCore import QEventLoop
 from qgis.core import (
     QgsApplication,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
     QgsFeature,
+    QgsFeatureRequest,
     QgsPlotData,
     QgsTaskManager,
     QgsVectorLayer,
@@ -53,14 +56,22 @@ class TestQgsPlot(QgisTestCase):
         assert provider.addFeatures([f, f2, f3, f4, f5])
         assert layer.featureCount() == 5
 
+        expression_context = QgsExpressionContext(
+            QgsExpressionContextUtils.globalProjectLayerScopes(layer)
+        )
+
         # test a single series
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
             '"category"',
             '"value"',
         )
 
+        iterator = layer.getFeatures()
         gatherer = QgsVectorLayerXyPlotDataGatherer(
-            layer, [series1_details], Qgis.PlotAxisType.Categorical
+            iterator,
+            expression_context,
+            [series1_details],
+            Qgis.PlotAxisType.Categorical,
         )
         gatherer.taskCompleted.connect(loop.quit)
 
@@ -78,8 +89,12 @@ class TestQgsPlot(QgisTestCase):
             filterExpression='"category" != \'category_b\' AND "value" <= 10',
         )
 
+        iterator = layer.getFeatures()
         gatherer = QgsVectorLayerXyPlotDataGatherer(
-            layer, [series1_details, series2_details], Qgis.PlotAxisType.Categorical
+            iterator,
+            expression_context,
+            [series1_details, series2_details],
+            Qgis.PlotAxisType.Categorical,
         )
         gatherer.taskCompleted.connect(loop.quit)
 
@@ -97,8 +112,10 @@ class TestQgsPlot(QgisTestCase):
             '"value"',
         )
 
+        iterator = layer.getFeatures()
         gatherer = QgsVectorLayerXyPlotDataGatherer(
-            layer,
+            iterator,
+            expression_context,
             [series1_details],
             Qgis.PlotAxisType.Categorical,
             ["category_c", "category_a"],
@@ -132,13 +149,18 @@ class TestQgsPlot(QgisTestCase):
         assert provider.addFeatures([f, f2, f3, f4, f5])
         assert layer.featureCount() == 5
 
+        expression_context = QgsExpressionContext(
+            QgsExpressionContextUtils.globalProjectLayerScopes(layer)
+        )
+
         # test a single series
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
             '"int"', '"value"'
         )
 
+        iterator = layer.getFeatures()
         gatherer = QgsVectorLayerXyPlotDataGatherer(
-            layer, [series1_details], Qgis.PlotAxisType.Interval
+            iterator, expression_context, [series1_details], Qgis.PlotAxisType.Interval
         )
         gatherer.taskCompleted.connect(loop.quit)
 
@@ -156,11 +178,13 @@ class TestQgsPlot(QgisTestCase):
         series1_details = QgsVectorLayerXyPlotDataGatherer.XySeriesDetails(
             '"int"',
             '"value"',
-            orderByExpression='"int"',
         )
 
+        request = QgsFeatureRequest()
+        request.addOrderBy('"int"')
+        iterator = layer.getFeatures(request)
         gatherer = QgsVectorLayerXyPlotDataGatherer(
-            layer, [series1_details], Qgis.PlotAxisType.Interval
+            iterator, expression_context, [series1_details], Qgis.PlotAxisType.Interval
         )
         gatherer.taskCompleted.connect(loop.quit)
 
@@ -179,8 +203,12 @@ class TestQgsPlot(QgisTestCase):
             '"int"', '"value"', filterExpression='"int" < 3'
         )
 
+        iterator = layer.getFeatures(request)
         gatherer = QgsVectorLayerXyPlotDataGatherer(
-            layer, [series1_details, series2_details], Qgis.PlotAxisType.Interval
+            iterator,
+            expression_context,
+            [series1_details, series2_details],
+            Qgis.PlotAxisType.Interval,
         )
         gatherer.taskCompleted.connect(loop.quit)
 

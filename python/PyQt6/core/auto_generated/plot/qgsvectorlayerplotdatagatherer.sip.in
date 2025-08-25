@@ -68,20 +68,19 @@ An vector layer plot data gatherer class for XY series.
 
     struct XySeriesDetails
     {
-      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &orderByExpression = QString(), const QString &filterExpression = QString() );
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() );
 
       QString xExpression;
       QString yExpression;
-      QString orderByExpression;
       QString filterExpression;
     };
 
-    QgsVectorLayerXyPlotDataGatherer( QgsVectorLayer *layer, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+    QgsVectorLayerXyPlotDataGatherer( const QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
 %Docstring
 The class constructor.
 
-:param layer: a vector layer from which features will be iterated
-              against
+:param iterator: a feature iterator
+:param expressionContext: an expression conext
 :param seriesDetails: a list of XY series details
 :param xAxisType: the type of X axis - interval or categorical - which
                   will decide whether X values are interval based of
