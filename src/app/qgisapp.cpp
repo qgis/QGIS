@@ -962,7 +962,7 @@
  const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
  
  QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
-   : SARibbonMainWindow( parent )
+   : SARibbonMainWindow( parent,  SARibbonMainWindowStyleFlag::UseNativeFrame )
    , mSplash( splash )
  {
    if ( sInstance )
@@ -3367,7 +3367,7 @@
  void QgisApp::setAppStyleSheet( const QString &stylesheet )
  {
   //  setStyleSheet( stylesheet );
- 
+  
   //  // cascade styles to any current layout designers
   //  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
   //  for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
@@ -17692,7 +17692,7 @@ void QgisApp::triterrainruggednessindexCacl()
      }
      
      // 设置ribbon样式
-    //  mRibbonBar->setRibbonStyle(SARibbonBar::RibbonStyleCompactThreeRow);
+     mRibbonBar->setRibbonStyle(SARibbonBar::RibbonStyleCompactThreeRow);
      mRibbonBar->setObjectName("SARibbonBar");
      
      mRibbonBar->show();
