@@ -12,8 +12,10 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 from qgis.PyQt.QtCore import QEventLoop
 from qgis.core import (
+    QgsApplication,
     QgsFeature,
     QgsPlotData,
+    QgsTaskManager,
     QgsVectorLayer,
     QgsVectorLayerXyPlotDataGatherer,
     QgsXyPlotSeries,
@@ -60,9 +62,9 @@ class TestQgsPlot(QgisTestCase):
         gatherer = QgsVectorLayerXyPlotDataGatherer(
             layer, [series1_details], Qgis.PlotAxisType.Categorical
         )
-        gatherer.finished.connect(loop.quit)
+        gatherer.taskCompleted.connect(loop.quit)
 
-        gatherer.start()
+        QgsApplication.taskManager().addTask(gatherer)
         loop.exec()
         data = gatherer.data()
         self.assertEqual(data.categories(), ["category_a", "category_b", "category_c"])
@@ -79,9 +81,9 @@ class TestQgsPlot(QgisTestCase):
         gatherer = QgsVectorLayerXyPlotDataGatherer(
             layer, [series1_details, series2_details], Qgis.PlotAxisType.Categorical
         )
-        gatherer.finished.connect(loop.quit)
+        gatherer.taskCompleted.connect(loop.quit)
 
-        gatherer.start()
+        QgsApplication.taskManager().addTask(gatherer)
         loop.exec()
         data = gatherer.data()
         self.assertEqual(data.categories(), ["category_a", "category_b", "category_c"])
@@ -101,9 +103,9 @@ class TestQgsPlot(QgisTestCase):
             Qgis.PlotAxisType.Categorical,
             ["category_c", "category_a"],
         )
-        gatherer.finished.connect(loop.quit)
+        gatherer.taskCompleted.connect(loop.quit)
 
-        gatherer.start()
+        QgsApplication.taskManager().addTask(gatherer)
         loop.exec()
         data = gatherer.data()
         self.assertEqual(data.categories(), ["category_c", "category_a"])
@@ -138,9 +140,9 @@ class TestQgsPlot(QgisTestCase):
         gatherer = QgsVectorLayerXyPlotDataGatherer(
             layer, [series1_details], Qgis.PlotAxisType.Interval
         )
-        gatherer.finished.connect(loop.quit)
+        gatherer.taskCompleted.connect(loop.quit)
 
-        gatherer.start()
+        QgsApplication.taskManager().addTask(gatherer)
         loop.exec()
         data = gatherer.data()
         self.assertEqual(data.categories(), [])
@@ -160,9 +162,9 @@ class TestQgsPlot(QgisTestCase):
         gatherer = QgsVectorLayerXyPlotDataGatherer(
             layer, [series1_details], Qgis.PlotAxisType.Interval
         )
-        gatherer.finished.connect(loop.quit)
+        gatherer.taskCompleted.connect(loop.quit)
 
-        gatherer.start()
+        QgsApplication.taskManager().addTask(gatherer)
         loop.exec()
         data = gatherer.data()
         self.assertEqual(data.categories(), [])
@@ -180,9 +182,9 @@ class TestQgsPlot(QgisTestCase):
         gatherer = QgsVectorLayerXyPlotDataGatherer(
             layer, [series1_details, series2_details], Qgis.PlotAxisType.Interval
         )
-        gatherer.finished.connect(loop.quit)
+        gatherer.taskCompleted.connect(loop.quit)
 
-        gatherer.start()
+        QgsApplication.taskManager().addTask(gatherer)
         loop.exec()
         data = gatherer.data()
         self.assertEqual(data.categories(), [])
