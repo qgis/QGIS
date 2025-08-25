@@ -11154,8 +11154,11 @@ QgsPlotData: src/core/plot/qgsplot.h#L224
 QgsPlotDefaultSettings.axisGridMajorSymbol: src/core/plot/qgsplot.h#L773
 QgsPlotDefaultSettings.axisGridMinorSymbol: src/core/plot/qgsplot.h#L780
 QgsPlotDefaultSettings.axisLabelNumericFormat: src/core/plot/qgsplot.h#L766
+QgsPlotDefaultSettings.barChartFillSymbol: src/core/plot/qgsplot.h#L816
 QgsPlotDefaultSettings.chartBackgroundSymbol: src/core/plot/qgsplot.h#L787
 QgsPlotDefaultSettings.chartBorderSymbol: src/core/plot/qgsplot.h#L794
+QgsPlotDefaultSettings.lineChartLineSymbol: src/core/plot/qgsplot.h#L810
+QgsPlotDefaultSettings.lineChartMarkerSymbol: src/core/plot/qgsplot.h#L802
 QgsPlotDefaultSettings: src/core/plot/qgsplot.h#L759
 QgsPlotRegistry.addPlotType: src/core/plot/qgsplotregistry.h#L167
 QgsPlotRegistry.createPlot: src/core/plot/qgsplotregistry.h#L192
