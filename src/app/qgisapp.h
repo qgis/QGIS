@@ -1914,6 +1914,32 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! select features by form
     void selectByForm();
 
+    // 分析工具
+    void BufferCalc();
+    void ClipCalc();
+    void ConvexhullCalc();
+    void DifferenceCalc();
+    void DissolveCalc();
+    void IntersectionCalc();
+    void SymmetricaldifferenceCalc();
+    void UnionCalc();
+    void EliminateselectedpolygonsCalc();
+
+    void aspectCacl();
+    void fillnodataCacl();
+    void gridaverageCacl();
+    void griddatametricsCacl();
+    void gridinversedistanceCacl();
+    void gridnearestneighborCacl();
+    void hillshadeCacl();
+    void nearblackCacl();
+    void proximityCacl();
+    void roughnessCacl();
+    void sieveCacl();
+    void slopeCacl();
+    void tpitopographicpositionindexCacl();
+    void triterrainruggednessindexCacl();
+
     //! refresh map canvas
     void refreshMapCanvas( bool redrawAllLayers = false );
 
@@ -2259,12 +2285,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void adjustDockWidgetsForRibbon(int ribbonBottom);
     bool dockWidgetEventFilter(QObject *obj, QEvent *event); // 处理dock widget事件的过滤器
     QRect dockWidgetAreaRect(Qt::DockWidgetArea area) const; // 重写dock widget区域计算
-    void createFileRibbonCategory();
-    void createEditRibbonCategory();
-    void createViewRibbonCategory();
-    void createLayerRibbonCategory();
-    void createSettingsRibbonCategory();
-    
+    void createProjectRibbonCategory();      //创建工程PAGE
+    void createMapRibbonCategory();          //创建地图PAGE
+    void createToolRibbonCategory();         //创建工具PAGE
+    void createPlotRibbonCategory();         //创建标绘PAGE
+    void createViewRibbonCategory();         //创建视图PAGE
+    void createAnalysisRibbonCategory();     //创建分析PAGE
+    void createEditRibbonCategory();         //创建编辑PAGE
+    void createHelpRibbonCategory();         //创建帮助PAGE
+
     // SARibbon 成员变量
     SARibbonBar* mRibbonBar = nullptr;
     QTimer* mDockWidgetAdjustTimer = nullptr; // 定期调整dock widget位置的定时器

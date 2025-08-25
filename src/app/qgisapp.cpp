@@ -10041,6 +10041,132 @@
  }
  
  
+#include <qgspythonrunner.h>
+
+void OpenAlgorithmDialogById(QString algId)
+{
+  QString code = QString(R"(
+from qgis.core import QgsProcessingAlgorithm, QgsProcessingRegistry
+from qgis.utils import iface
+from qgis import processing
+from PyQt5.QtCore import Qt
+
+def open_buffer_dialog():
+    # 获取算法
+    alg = QgsApplication.processingRegistry().algorithmById("%1")
+    if not alg:
+        return
+
+    # 创建对话框（模态模式）
+    dlg = alg.createCustomParametersWidget(iface.mainWindow())
+    if dlg:
+        dlg.setAttribute(Qt.WA_DeleteOnClose)  # 关闭时自动销毁
+        dlg.exec_()  # 阻塞直到关闭
+    else:
+        # 回退到默认对话框
+        processing.execAlgorithmDialog("%2")
+
+open_buffer_dialog()
+)").arg(algId, algId);
+
+  QgsPythonRunner::run(code);
+}
+void QgisApp::BufferCalc()
+{
+  OpenAlgorithmDialogById("native:buffer");
+}
+
+void QgisApp::ClipCalc()
+{
+  OpenAlgorithmDialogById("native:clip");
+}
+void QgisApp::ConvexhullCalc()
+{
+  OpenAlgorithmDialogById("native:convexhull");
+}
+void QgisApp::DifferenceCalc()
+{
+  OpenAlgorithmDialogById("native:difference");
+}
+void QgisApp::DissolveCalc()
+{
+  OpenAlgorithmDialogById("native:dissolve");
+}
+void QgisApp::IntersectionCalc()
+{
+  OpenAlgorithmDialogById("native:intersection");
+}
+void QgisApp::SymmetricaldifferenceCalc()
+{
+  OpenAlgorithmDialogById("native:symmetricaldifference");
+}
+void QgisApp::UnionCalc()
+{
+  OpenAlgorithmDialogById("native:union");
+}
+void QgisApp::EliminateselectedpolygonsCalc()
+{
+  OpenAlgorithmDialogById("qgis:eliminateselectedpolygons");
+}
+
+// raster Analysis
+void QgisApp::aspectCacl()
+{
+  OpenAlgorithmDialogById("gdal:aspect");
+}
+void QgisApp::fillnodataCacl()
+{
+  OpenAlgorithmDialogById("gdal:fillnodata");
+}
+void QgisApp::gridaverageCacl()
+{
+  OpenAlgorithmDialogById("gdal:gridaverage");
+}
+void QgisApp::griddatametricsCacl()
+{
+  OpenAlgorithmDialogById("gdal:griddatametrics");
+}
+void QgisApp::gridinversedistanceCacl()
+{
+  OpenAlgorithmDialogById("gdal:gridinversedistance");
+}
+void QgisApp::gridnearestneighborCacl()
+{
+  OpenAlgorithmDialogById("gdal:gridnearestneighbor");
+}
+void QgisApp::hillshadeCacl()
+{
+  OpenAlgorithmDialogById("gdal:hillshade");
+}
+void QgisApp::nearblackCacl()
+{
+  OpenAlgorithmDialogById("gdal:nearblack");
+}
+void QgisApp::proximityCacl()
+{
+  OpenAlgorithmDialogById("gdal:proximity");
+}
+void QgisApp::roughnessCacl()
+{
+  OpenAlgorithmDialogById("gdal:roughness");
+}
+void QgisApp::sieveCacl()
+{
+  OpenAlgorithmDialogById("gdal:sieve");
+}
+void QgisApp::slopeCacl()
+{
+  OpenAlgorithmDialogById("gdal:slope");
+}
+void QgisApp::tpitopographicpositionindexCacl()
+{
+  OpenAlgorithmDialogById("gdal:tpitopographicpositionindex");
+}
+void QgisApp::triterrainruggednessindexCacl()
+{
+  OpenAlgorithmDialogById("gdal:triterrainruggednessindex");
+}
+
  void QgisApp::cutSelectionToClipboard( QgsMapLayer *layerContainingSelection )
  {
    // Test for feature support in this layer
@@ -17582,11 +17708,14 @@
      setContentsMargins(0, ribbonHeight + ribbonY + 5, 0, 0);
      
      // 创建ribbon分类内容
-     createFileRibbonCategory();
-     createEditRibbonCategory();
+     createProjectRibbonCategory();
+     createMapRibbonCategory();
+     createToolRibbonCategory();
+     createPlotRibbonCategory();
      createViewRibbonCategory();
-     createLayerRibbonCategory();
-     createSettingsRibbonCategory();
+     createAnalysisRibbonCategory();
+     createEditRibbonCategory();
+     createHelpRibbonCategory();
      
      qDebug() << "SARibbon initialization completed successfully";
      qDebug() << "Ribbon geometry:" << mRibbonBar->geometry();
@@ -17612,133 +17741,630 @@
    // 此函数已不再需要，因为我们使用setContentsMargins让Qt自动处理布局
    // 保留函数声明以维持接口兼容性，但不执行任何操作
  }
- 
- void QgisApp::createFileRibbonCategory()
+
+ void QgisApp::createProjectRibbonCategory()
  {
    if (!mRibbonBar) {
      return;
    }
    
-   // 创建"文件"分类
-   SARibbonCategory* fileCategory = new SARibbonCategory("文件");
-   mRibbonBar->addCategoryPage(fileCategory);
+   // 创建"工程"PAGEC
+   SARibbonCategory* projectCategory = new SARibbonCategory("工程");
+   mRibbonBar->addCategoryPage(projectCategory);
    
-   // 创建"项目"面板
-   SARibbonPannel* projectPanel = new SARibbonPannel("项目");
-   if (mActionNewProject) projectPanel->addAction(mActionNewProject);
-   if (mActionOpenProject) projectPanel->addAction(mActionOpenProject);
-   if (mActionSaveProject) projectPanel->addAction(mActionSaveProject);
-   if (mActionSaveProjectAs) projectPanel->addAction(mActionSaveProjectAs);
-   fileCategory->addPannel(projectPanel);
-   
-   // 创建"导入/导出"面板
-   SARibbonPannel* importExportPanel = new SARibbonPannel("导入/导出");
-   
-   // 示例：使用自定义图标pointS.png创建一个action
-   // 方法1：使用getThemeIcon（推荐方式）
-   QAction* customPointAction = new QAction("自定义点工具", this);
-   
-   // 跨平台标准方法：使用QGIS主题系统（不需要"/"前缀）
-   QIcon customIcon = QgsApplication::getThemeIcon("pointS.png");
-   if (customIcon.isNull()) {
-     // 备用方案：使用现有的类似图标
-     customIcon = QgsApplication::getThemeIcon("mActionCapturePoint.svg");
-   }
-   customPointAction->setIcon(customIcon);
-   
-   customPointAction->setToolTip("这是一个使用自定义pointS.png图标的示例按钮");
-   customPointAction->setStatusTip("演示如何在ribbon中使用自定义图标");
-   
-   // 连接信号槽 - 这里只是一个示例，实际功能需要根据需求实现
-   connect(customPointAction, &QAction::triggered, this, [this]() {
-     // 这里可以添加具体的功能实现
-     QgsMessageBar* messageBar = this->messageBar();
-     if (messageBar) {
-       messageBar->pushInfo("自定义点工具", "您点击了使用自定义图标的按钮！");
-     }
-   });
-   
-   // 将自定义action添加到面板
-   importExportPanel->addAction(customPointAction, SARibbonPannelItem::Large);
-   
-   fileCategory->addPannel(importExportPanel);
+#pragma region 文件
+  SARibbonPannel* filePanel = new SARibbonPannel("文件");
+  if (mActionNewProject) {
+    mActionNewProject->setIcon(QgsApplication::getThemeIcon("ribbon/new.png"));
+    mActionNewProject->setText("新建");
+    filePanel->addAction(mActionNewProject);
+  }
+  if (mActionOpenProject) {
+    mActionOpenProject->setIcon(QgsApplication::getThemeIcon("ribbon/open.png"));
+    mActionOpenProject->setText("打开");
+    filePanel->addAction(mActionOpenProject);
+  }
+  /// todo:最近
+  if (mActionSaveProject) {
+    mActionSaveProject->setIcon(QgsApplication::getThemeIcon("ribbon/save.png"));
+    mActionSaveProject->setText("保存");
+    filePanel->addAction(mActionSaveProject);
+  }
+  if (mActionSaveProjectAs) {
+    mActionSaveProjectAs->setIcon(QgsApplication::getThemeIcon("ribbon/saveAs.png"));
+    mActionSaveProjectAs->setText("另存为");
+    filePanel->addAction(mActionSaveProjectAs);
+  }
+  /// todo:保存到
+  projectCategory->addPannel(filePanel);
+#pragma endregion
+
+#pragma region 打印
+  SARibbonPannel* printPanel = new SARibbonPannel("打印");
+  // 新建布局
+  if (mActionNewPrintLayout) {
+    mActionNewPrintLayout->setIcon(QgsApplication::getThemeIcon("ribbon/newLayout.png"));
+    mActionNewPrintLayout->setText("新建布局");
+    printPanel->addAction(mActionNewPrintLayout);
+  }
+  // 新建报告
+  if (mActionNewReport) {
+    mActionNewReport->setIcon(QgsApplication::getThemeIcon("ribbon/newReport.png"));
+    mActionNewReport->setText("新建报告");
+    printPanel->addAction(mActionNewReport);
+  }
+  // 布局管理
+  if (mActionShowLayoutManager) {
+    mActionShowLayoutManager->setIcon(QgsApplication::getThemeIcon("ribbon/layoutManage.png"));
+    mActionShowLayoutManager->setText("布局管理");
+    printPanel->addAction(mActionShowLayoutManager);
+  }
+  // 选择布局
+  if (mLayoutsMenu) {
+    mLayoutsMenu->setIcon(QgsApplication::getThemeIcon("ribbon/selectLayout.png"));
+    // mLayoutsMenu->setText("选择布局");
+    printPanel->addMenu(mLayoutsMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  }
+  projectCategory->addPannel(printPanel);
+#pragma endregion    
+
+#pragma region 输出
+  SARibbonPannel* outputPanel = new SARibbonPannel("输出");
+  // 导出图片
+  if (mActionSaveMapAsImage) {
+    mActionSaveMapAsImage->setIcon(QgsApplication::getThemeIcon("ribbon/asw_outputPIC.png"));
+    mActionSaveMapAsImage->setText("导出图片");
+    outputPanel->addAction(mActionSaveMapAsImage);
+  }
+  // 导出PDF
+  if (mActionSaveMapAsPdf) {
+    mActionSaveMapAsPdf->setIcon(QgsApplication::getThemeIcon("ribbon/asw_outputPDF.png"));
+    mActionSaveMapAsPdf->setText("导出PDF");
+    outputPanel->addAction(mActionSaveMapAsPdf);
+  }
+  // 导出DXF
+  if (mActionDxfExport) {
+    mActionDxfExport->setIcon(QgsApplication::getThemeIcon("ribbon/asw_outputDXF.png"));
+    mActionDxfExport->setText("导出DXF");
+    outputPanel->addAction(mActionDxfExport);
+  }
+  projectCategory->addPannel(outputPanel);
+#pragma endregion   
+
+#pragma region 选项
+  SARibbonPannel* optionsPanel = new SARibbonPannel("选项");
+  // 选项
+  if (mActionOptions) {
+    mActionOptions->setIcon(QgsApplication::getThemeIcon("ribbon/options.png"));
+    mActionOptions->setText("选项");
+    optionsPanel->addAction(mActionOptions);
+  }
+  projectCategory->addPannel(optionsPanel);
+#pragma endregion   
+ 
+#pragma region 样式管理
+  SARibbonPannel* styleManagePanel = new SARibbonPannel("样式管理");
+  // 样式管理
+  if (mActionStyleManager) {
+    mActionStyleManager->setIcon(QgsApplication::getThemeIcon("ribbon/styleManage.png"));
+    mActionStyleManager->setText("样式管理");
+    styleManagePanel->addAction(mActionStyleManager);
+  }
+  projectCategory->addPannel(styleManagePanel);
+#pragma endregion  
+ 
+#pragma region 工程属性
+  SARibbonPannel* projectPropertyPanel = new SARibbonPannel("工程属性");
+  // 工程属性
+  if (mActionProjectProperties) {
+    mActionProjectProperties->setIcon(QgsApplication::getThemeIcon("ribbon/projectProperty.png"));
+    mActionProjectProperties->setText("工程属性");
+    projectPropertyPanel->addAction(mActionProjectProperties);
+  }
+  projectCategory->addPannel(projectPropertyPanel);
+#pragma endregion  
+
+
+#pragma region 退出
+  SARibbonPannel* exitPanel = new SARibbonPannel("退出");
+  // 退出
+  if (mActionExit) {
+    mActionExit->setIcon(QgsApplication::getThemeIcon("ribbon/esc.png"));
+    mActionExit->setText("退出");
+    exitPanel->addAction(mActionExit);
+  }
+  projectCategory->addPannel(exitPanel);
+#pragma endregion   
+
  }
  
- void QgisApp::createEditRibbonCategory()
+ void QgisApp::createMapRibbonCategory()
  {
    if (!mRibbonBar) {
      return;
    }
    
-   // 创建"编辑"分类
-   SARibbonCategory* editCategory = new SARibbonCategory("编辑");
-   mRibbonBar->addCategoryPage(editCategory);
-   
-   // 创建"选择"面板
-   SARibbonPannel* selectionPanel = new SARibbonPannel("选择");
-   if (mActionSelectFeatures) selectionPanel->addAction(mActionSelectFeatures);
-   // 注意：QGIS中没有mActionDeselectFeatures，这里可以用其他相关的选择Action
-   editCategory->addPannel(selectionPanel);
-   
-   // 创建"编辑工具"面板
-   SARibbonPannel* editToolsPanel = new SARibbonPannel("编辑工具");
-   if (mActionToggleEditing) editToolsPanel->addAction(mActionToggleEditing);
-   editCategory->addPannel(editToolsPanel);
+   // 创建"地图"PAGEC
+   SARibbonCategory* mapCategory = new SARibbonCategory("地图");
+   mRibbonBar->addCategoryPage(mapCategory);
+
+#pragma region 本地数据
+  SARibbonPannel* localDataPanel = new SARibbonPannel("本地数据");
+  // 矢量数据
+  if (mActionNewVectorLayer) {
+    mActionNewVectorLayer->setIcon(QgsApplication::getThemeIcon("ribbon/vector.png"));
+    mActionNewVectorLayer->setText("矢量数据");
+    localDataPanel->addAction(mActionNewVectorLayer);
+  }
+  // 栅格数据
+  if (mActionAddRasterLayer) {
+    mActionAddRasterLayer->setIcon(QgsApplication::getThemeIcon("ribbon/raster.png"));
+    mActionAddRasterLayer->setText("栅格数据");
+    localDataPanel->addAction(mActionAddRasterLayer);
+  }
+  // 网格数据
+  if (mActionAddMeshLayer) {
+    mActionAddMeshLayer->setIcon(QgsApplication::getThemeIcon("ribbon/mesh.png"));
+    mActionAddMeshLayer->setText("网格数据");
+    localDataPanel->addAction(mActionAddMeshLayer);
+  }
+  // 点云数据
+  if (mActionAddPointCloudLayer) {
+    mActionAddPointCloudLayer->setIcon(QgsApplication::getThemeIcon("ribbon/pointcloud.png"));
+    mActionAddPointCloudLayer->setText("点云数据");
+    localDataPanel->addAction(mActionAddPointCloudLayer);
+  }
+  // 文本数据
+  if (mActionAddXyzLayer) {
+    mActionAddXyzLayer->setIcon(QgsApplication::getThemeIcon("ribbon/txt.png"));
+    mActionAddXyzLayer->setText("文本数据");
+    localDataPanel->addAction(mActionAddXyzLayer);
+  }
+  // GeoPackage
+  if (mActionNewGeoPackageLayer) {
+    mActionNewGeoPackageLayer->setIcon(QgsApplication::getThemeIcon("ribbon/gkpg.png"));
+    mActionNewGeoPackageLayer->setText("GeoPackage");
+    localDataPanel->addAction(mActionNewGeoPackageLayer);
+  }
+  // GPS数据
+  if (mActionAddGpsLayer) {
+    mActionAddGpsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/gps.png"));
+    mActionAddGpsLayer->setText("GPS数据");
+    localDataPanel->addAction(mActionAddGpsLayer);
+  }
+  mapCategory->addPannel(localDataPanel);
+#pragma endregion  
+
+#pragma region 数据库
+  SARibbonPannel* databasePanel = new SARibbonPannel("数据库");
+  // spatialite
+  if (mActionAddSpatiaLiteLayer) {
+    mActionAddSpatiaLiteLayer->setIcon(QgsApplication::getThemeIcon("ribbon/spatial.png"));
+    mActionAddSpatiaLiteLayer->setText("spatialite");
+    databasePanel->addAction(mActionAddSpatiaLiteLayer);
+  }
+  // PostgreSQL
+  if (mActionAddPgLayer) {
+    mActionAddPgLayer->setIcon(QgsApplication::getThemeIcon("ribbon/postgresql.png"));
+    mActionAddPgLayer->setText("PostgreSQL");
+    databasePanel->addAction(mActionAddPgLayer);
+  }
+  // MS SQLServer
+  if (mActionAddMssqlLayer) {
+    mActionAddMssqlLayer->setIcon(QgsApplication::getThemeIcon("ribbon/SQL server.png"));
+    mActionAddMssqlLayer->setText("MS SQLServer");
+    databasePanel->addAction(mActionAddMssqlLayer);
+  }
+  // Oracle
+  if (mActionAddOracleLayer) {
+    mActionAddOracleLayer->setIcon(QgsApplication::getThemeIcon("ribbon/oracle.png"));
+    mActionAddOracleLayer->setText("Oracle");
+    databasePanel->addAction(mActionAddOracleLayer);
+  }
+  mapCategory->addPannel(databasePanel);
+#pragma endregion
+
+#pragma region 地图服务
+  SARibbonPannel* mapServicePanel = new SARibbonPannel("地图服务");
+  mapCategory->addPannel(mapServicePanel);
+
+  if (mActionAddWmsLayer) {
+    mActionAddWmsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/WMTS.png"));
+    mActionAddWmsLayer->setText("WMS");
+    mapServicePanel->addAction(mActionAddWmsLayer);
+  }
+  if (mActionAddWfsLayer) {
+    mActionAddWfsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/WFS.png"));
+    mActionAddWfsLayer->setText("WFS");
+    mapServicePanel->addAction(mActionAddWfsLayer);
+  }
+  if (mActionAddXyzLayer) {
+    mActionAddXyzLayer->setIcon(QgsApplication::getThemeIcon("ribbon/xyz.png"));
+    mActionAddXyzLayer->setText("XYZ");
+    mapServicePanel->addAction(mActionAddXyzLayer);
+  }
+  if (mActionAddVectorTileLayer) {
+    mActionAddVectorTileLayer->setIcon(QgsApplication::getThemeIcon("ribbon/tile.png"));
+    mActionAddVectorTileLayer->setText("矢量瓦片");
+    mapServicePanel->addAction(mActionAddVectorTileLayer);
+  }
+  if (mActionNewVirtualLayer) {
+    mActionNewVirtualLayer->setIcon(QgsApplication::getThemeIcon("ribbon/3dtiles.png"));
+    mActionNewVirtualLayer->setText("3dtiles");
+    mapServicePanel->addAction(mActionNewVirtualLayer);
+  }
+  if (mActionAddAfsLayer) {
+    mActionAddAfsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/arcgis.png"));
+    mActionAddAfsLayer->setText("arcgisfeatureserver");
+    mapServicePanel->addAction(mActionAddAfsLayer);
+  }
+
+#pragma region 选择
+  SARibbonPannel* selectPanel = new SARibbonPannel("选择");
+  mapCategory->addPannel(selectPanel);
+
+  QMenu* selectMenu = new QMenu("选择", this);
+  selectMenu->setIcon(QgsApplication::getThemeIcon("ribbon/select.png"));
+  selectPanel->addMenu(selectMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  if (mActionSelectFeatures) {
+    mActionSelectFeatures->setIcon(QgsApplication::getThemeIcon("ribbon/pointS.png"));
+    mActionSelectFeatures->setText("点选");
+    selectMenu->addAction(mActionSelectFeatures);
+  }
+  if (mActionSelectPolygon) {
+    mActionSelectPolygon->setIcon(QgsApplication::getThemeIcon("ribbon/polygonS.png"));
+    mActionSelectPolygon->setText("多边形选择");
+    selectMenu->addAction(mActionSelectPolygon);
+  }
+  if (mActionSelectFreehand) {
+    mActionSelectFreehand->setIcon(QgsApplication::getThemeIcon("ribbon/freeS.png"));
+    mActionSelectFreehand->setText("自由选择");
+    selectMenu->addAction(mActionSelectFreehand);
+  }
+  if (mActionSelectRadius) {  
+    mActionSelectRadius->setIcon(QgsApplication::getThemeIcon("ribbon/circleS.png"));
+    mActionSelectRadius->setText("圆形选择");
+    selectMenu->addAction(mActionSelectRadius);
+  }
+  if (mActionSelectByForm) {
+    mActionSelectByForm->setIcon(QgsApplication::getThemeIcon("ribbon/keyword.png"));
+    mActionSelectByForm->setText("关键字选择");
+    selectMenu->addAction(mActionSelectByForm);
+  }
+  if (mActionSelectByExpression) {
+    mActionSelectByExpression->setIcon(QgsApplication::getThemeIcon("ribbon/expression.png"));
+    mActionSelectByExpression->setText("表达式选择");
+    selectMenu->addAction(mActionSelectByExpression);
+  }
+  if (mActionDeselectAll) { 
+    mActionDeselectAll->setIcon(QgsApplication::getThemeIcon("ribbon/allS.png"));
+    mActionDeselectAll->setText("全选要素");
+    selectMenu->addAction(mActionDeselectAll);
+  }
+  if (mActionInvertSelection) {
+    mActionInvertSelection->setIcon(QgsApplication::getThemeIcon("ribbon/deselect.png"));
+    mActionInvertSelection->setText("反选要素");
+    selectMenu->addAction(mActionInvertSelection);
+  }
+  if (mActionDeselectActiveLayer) {
+    mActionDeselectActiveLayer->setIcon(QgsApplication::getThemeIcon("ribbon/deselectCurrent.png"));
+    mActionDeselectActiveLayer->setText("当前图层取消选择");
+    selectMenu->addAction(mActionDeselectActiveLayer);
+  }
+  if (mActionDeselectAll) {
+    mActionDeselectAll->setIcon(QgsApplication::getThemeIcon("ribbon/deselectAll.png"));
+    mActionDeselectAll->setText("所有图层取消选择");
+    selectMenu->addAction(mActionDeselectAll);
+  }
+#pragma endregion
  }
- 
+
+ void QgisApp::createToolRibbonCategory()
+ {
+   if (!mRibbonBar) {
+     return;
+   }
+   
+   // 创建"工具"PAGE
+   SARibbonCategory* toolCategory = new SARibbonCategory("工具");
+   mRibbonBar->addCategoryPage(toolCategory);
+    
+
+   SARibbonPannel* toolBoxPanel = new SARibbonPannel("工具箱");
+   
+   // 导航menu
+   QMenu* naviMenu = new QMenu("导航", this);
+   naviMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/导航.png"));
+   toolBoxPanel->addMenu(naviMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+   if (mActionPan) {
+    mActionPan->setIcon(QgsApplication::getThemeIcon("ribbon/icon/漫游.png"));
+    mActionPan->setText("漫游");
+    naviMenu->addAction(mActionPan);
+  }
+  if (mActionPanToSelected) {
+    mActionPanToSelected->setIcon(QgsApplication::getThemeIcon("ribbon/icon/平移.png"));
+    mActionPanToSelected->setText("平移至选择");
+    naviMenu->addAction(mActionPanToSelected);
+  }
+  if (mActionZoomIn) {
+    mActionZoomIn->setIcon(QgsApplication::getThemeIcon("ribbon/icon/放大.png"));
+    mActionZoomIn->setText("放大");
+    naviMenu->addAction(mActionZoomIn);
+  }
+  if (mActionZoomOut) {
+    mActionZoomOut->setIcon(QgsApplication::getThemeIcon("ribbon/icon/缩小.png"));
+    mActionZoomOut->setText("缩小");
+    naviMenu->addAction(mActionZoomOut);
+  }
+  if (mActionZoomFullExtent) {
+    mActionZoomFullExtent->setIcon(QgsApplication::getThemeIcon("ribbon/icon/全图.png"));
+    mActionZoomFullExtent->setText("全图");
+    naviMenu->addAction(mActionZoomFullExtent);
+  }
+  if (mActionZoomToSelected) {
+    mActionZoomToSelected->setIcon(QgsApplication::getThemeIcon("ribbon/icon/缩放至选择.png"));
+    mActionZoomToSelected->setText("缩放至选择");
+    naviMenu->addAction(mActionZoomToSelected);
+  }
+  if (mActionZoomToLayers) {
+    mActionZoomToLayers->setIcon(QgsApplication::getThemeIcon("ribbon/icon/缩放至图层.png"));
+    mActionZoomToLayers->setText("缩放至图层");
+    naviMenu->addAction(mActionZoomToLayers);
+  }
+  if (mActionZoomActualSize) {
+    mActionZoomActualSize->setIcon(QgsApplication::getThemeIcon("ribbon/icon/分辨率.png"));
+    mActionZoomActualSize->setText("缩放至分辨率");
+    naviMenu->addAction(mActionZoomActualSize);
+  }
+  if (mActionZoomLast) {
+    mActionZoomLast->setIcon(QgsApplication::getThemeIcon("ribbon/icon/上一视图.png"));
+    mActionZoomLast->setText("上一视图");
+    naviMenu->addAction(mActionZoomLast);
+  }
+  if (mActionZoomNext) {
+    mActionZoomNext->setIcon(QgsApplication::getThemeIcon("ribbon/icon/下一视图.png"));
+    mActionZoomNext->setText("下一视图");
+    naviMenu->addAction(mActionZoomNext);
+  }
+  if (mActionDraw) {
+    mActionDraw->setIcon(QgsApplication::getThemeIcon("ribbon/icon/刷新.png"));
+    mActionDraw->setText("刷新");
+    naviMenu->addAction(mActionDraw);
+  }
+
+  // 测量menu
+  QMenu* measureMenu = new QMenu("测量", this);
+  measureMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/测量.png"));
+  toolBoxPanel->addMenu(measureMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  if (mActionMeasure) {
+    mActionMeasure->setIcon(QgsApplication::getThemeIcon("ribbon/icon/距离测量.png"));
+    mActionMeasure->setText("距离测量");
+    measureMenu->addAction(mActionMeasure);
+  }
+  if (mActionMeasureArea) {
+    mActionMeasureArea->setIcon(QgsApplication::getThemeIcon("ribbon/icon/面积测量.png"));
+    mActionMeasureArea->setText("面积测量");
+    measureMenu->addAction(mActionMeasureArea);
+  }
+  if (mActionMeasureBearing) {
+    mActionMeasureBearing->setIcon(QgsApplication::getThemeIcon("ribbon/icon/方位角测量.png"));
+    mActionMeasureBearing->setText("方位角测量");
+    measureMenu->addAction(mActionMeasureBearing);
+  }
+  if (mActionMeasureAngle) {
+    mActionMeasureAngle->setIcon(QgsApplication::getThemeIcon("ribbon/icon/角度测量.png"));
+    mActionMeasureAngle->setText("角度测量");
+    measureMenu->addAction(mActionMeasureAngle);
+  }
+
+  // 书签menu
+  QMenu* bookmarkMenu = new QMenu("书签", this);
+  bookmarkMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/书签.png"));
+  toolBoxPanel->addMenu(bookmarkMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+
+  // 查询menu
+  QMenu* queryMenu = new QMenu("查询", this);
+  queryMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/查询.png"));
+  toolBoxPanel->addMenu(queryMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  if (mActionIdentify) {
+    mActionIdentify->setIcon(QgsApplication::getThemeIcon("ribbon/icon/点击查询.png"));
+    mActionIdentify->setText("点击查询");
+    queryMenu->addAction(mActionIdentify);
+  }
+
+  toolCategory->addPannel(toolBoxPanel);
+
+ }
+
+  void QgisApp::createPlotRibbonCategory()
+ {
+   if (!mRibbonBar) {
+     return;
+   }
+   
+   // 创建"标绘"PAGEC
+   SARibbonCategory* plotCategory = new SARibbonCategory("标绘");
+   mRibbonBar->addCategoryPage(plotCategory);
+    
+
+ }
+
  void QgisApp::createViewRibbonCategory()
  {
    if (!mRibbonBar) {
      return;
    }
    
-   // 创建"视图"分类
+   // 创建"视图"PAGEC
    SARibbonCategory* viewCategory = new SARibbonCategory("视图");
    mRibbonBar->addCategoryPage(viewCategory);
-   
-   // 创建"导航"面板
-   SARibbonPannel* navigationPanel = new SARibbonPannel("导航");
-   if (mActionPan) navigationPanel->addAction(mActionPan);
-   if (mActionZoomIn) navigationPanel->addAction(mActionZoomIn);
-   if (mActionZoomOut) navigationPanel->addAction(mActionZoomOut);
-   if (mActionZoomFullExtent) navigationPanel->addAction(mActionZoomFullExtent);
-   viewCategory->addPannel(navigationPanel);
-   
-   // 创建"显示"面板
-   SARibbonPannel* displayPanel = new SARibbonPannel("显示");
-   viewCategory->addPannel(displayPanel);
+    
+
  }
- 
- void QgisApp::createLayerRibbonCategory()
+
+ void QgisApp::createAnalysisRibbonCategory()
  {
    if (!mRibbonBar) {
      return;
    }
    
-   // 创建"图层"分类
-   SARibbonCategory* layerCategory = new SARibbonCategory("图层");
-   mRibbonBar->addCategoryPage(layerCategory);
-   
-   // 创建"数据源"面板
-   SARibbonPannel* dataSourcePanel = new SARibbonPannel("数据源");
-   if (mActionNewVectorLayer) dataSourcePanel->addAction(mActionNewVectorLayer);
-   if (mActionAddRasterLayer) dataSourcePanel->addAction(mActionAddRasterLayer);
-   layerCategory->addPannel(dataSourcePanel);
- }
+   // 创建"分析"PAGE
+   SARibbonCategory* analysisCategory = new SARibbonCategory("分析");
+   mRibbonBar->addCategoryPage(analysisCategory);
+  
+   SARibbonPannel* analysisPannel = new SARibbonPannel("分析");
+   analysisCategory->addPannel(analysisPannel);
+
+   //矢量分析
+   QMenu* VectorAnalysisMenu = new QMenu("矢量分析", this);
+   VectorAnalysisMenu->setIcon(QgsApplication::getThemeIcon("ribbon/VectorAnalysis.png"));
+   analysisPannel->addMenu(VectorAnalysisMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
  
- void QgisApp::createSettingsRibbonCategory()
+  QAction* VectorAnalysisBuffer = new QAction("缓冲区", this);
+  QAction* VectorAnalysisClip = new QAction("裁剪", this);
+  QAction* VectorAnalysisConvex = new QAction("凸包", this);
+  QAction* VectorAnalysisDifference = new QAction("差集", this);
+  QAction* VectorAnalysisMix = new QAction("融合", this);
+  QAction* VectorAnalysisIntersect = new QAction("相交", this);
+  QAction* VectorAnalysisDeintersect = new QAction("交集取反", this);
+  QAction* VectorAnalysisUnit = new QAction("联合", this);
+  QAction* VectorAnalysisClearPolygon = new QAction("清除选中的多边形", this);
+
+
+  VectorAnalysisBuffer->setIcon(QgsApplication::getThemeIcon("ribbon/buffer.png"));
+  connect(VectorAnalysisBuffer, &QAction::triggered, this, &QgisApp::BufferCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisBuffer);
+
+  VectorAnalysisClip->setIcon(QgsApplication::getThemeIcon("ribbon/clip.png"));
+  connect(VectorAnalysisClip, &QAction::triggered, this, &QgisApp::ClipCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisClip);
+
+  VectorAnalysisConvex->setIcon(QgsApplication::getThemeIcon("ribbon/convex.png"));
+  connect(VectorAnalysisConvex, &QAction::triggered, this, &QgisApp::ConvexhullCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisConvex);
+
+  VectorAnalysisDifference->setIcon(QgsApplication::getThemeIcon("ribbon/difference.png"));
+  connect(VectorAnalysisDifference, &QAction::triggered, this, &QgisApp::DifferenceCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisDifference);
+
+  VectorAnalysisMix->setIcon(QgsApplication::getThemeIcon("ribbon/mix.png"));
+  connect(VectorAnalysisMix, &QAction::triggered, this, &QgisApp::DissolveCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisMix);
+
+  VectorAnalysisIntersect->setIcon(QgsApplication::getThemeIcon("ribbon/intersect.png"));
+  connect(VectorAnalysisIntersect, &QAction::triggered, this, &QgisApp::IntersectionCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisIntersect);
+
+  VectorAnalysisDeintersect->setIcon(QgsApplication::getThemeIcon("ribbon/Deintersect.png"));
+  connect(VectorAnalysisDeintersect, &QAction::triggered, this, &QgisApp::SymmetricaldifferenceCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisDeintersect);
+
+  VectorAnalysisUnit->setIcon(QgsApplication::getThemeIcon("ribbon/union.png"));
+  connect(VectorAnalysisUnit, &QAction::triggered, this, &QgisApp::UnionCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisUnit);
+
+  VectorAnalysisClearPolygon->setIcon(QgsApplication::getThemeIcon("ribbon/ClearPolygon.png"));
+  connect(VectorAnalysisClearPolygon, &QAction::triggered, this, &QgisApp::EliminateselectedpolygonsCalc);
+  VectorAnalysisMenu->addAction(VectorAnalysisClearPolygon);
+ 
+  // 栅格分析
+  QMenu* RasterAnalysisMenu = new QMenu("栅格分析", this);
+  RasterAnalysisMenu->setIcon(QgsApplication::getThemeIcon("ribbon/RasterAnalysis.png"));
+  analysisPannel->addMenu(RasterAnalysisMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+ 
+  QAction* RasterAnalysisAspect = new QAction("坡向", this);
+  QAction* RasterAnalysisFill = new QAction("填充无数据", this);
+  QAction* RasterAnalysisMesh1 = new QAction("网格化（滑动平均法）", this);
+  QAction* RasterAnalysisMesh2 = new QAction("网格化（数据度量）", this);
+  QAction* RasterAnalysisMesh3 = new QAction("网格化（距离倒数乘方法）", this);
+  QAction* RasterAnalysisMesh4 = new QAction("网格化（最邻近算法）", this);
+  QAction* RasterAnalysisMoutainShadow = new QAction("山体阴影", this);
+  QAction* RasterAnalysisBufferBorderTrans = new QAction("边框转换", this);
+  QAction* RasterAnalysisProximalAna = new QAction("邻近分析", this);
+  QAction* RasterAnalysisBufferRoughness = new QAction("粗糙度", this);
+  QAction* RasterAnalysisFliter = new QAction("滤除碎斑", this);
+  QAction* RasterAnalysisSlope = new QAction("坡度", this);
+  QAction* RasterAnalysisTPI = new QAction("地形位置指数（TPI）", this);
+  QAction* RasterAnalysisTRI = new QAction("地形耐用指数（TRI）", this);
+
+  RasterAnalysisAspect->setIcon(QgsApplication::getThemeIcon("ribbon/aspect.png"));
+  connect(RasterAnalysisAspect, &QAction::triggered, this, &QgisApp::aspectCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisAspect);
+
+  RasterAnalysisFill->setIcon(QgsApplication::getThemeIcon("ribbon/fill.png"));
+  connect(RasterAnalysisFill, &QAction::triggered, this, &QgisApp::fillnodataCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisFill);
+
+  RasterAnalysisMesh1->setIcon(QgsApplication::getThemeIcon("ribbon/meshing.png"));
+  connect(RasterAnalysisMesh1, &QAction::triggered, this, &QgisApp::gridaverageCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisMesh1);
+
+  RasterAnalysisMesh2->setIcon(QgsApplication::getThemeIcon("ribbon/meshing.png"));
+  connect(RasterAnalysisMesh2, &QAction::triggered, this, &QgisApp::griddatametricsCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisMesh2);
+
+  RasterAnalysisMesh3->setIcon(QgsApplication::getThemeIcon("ribbon/meshing.png"));
+  connect(RasterAnalysisMesh3, &QAction::triggered, this, &QgisApp::gridinversedistanceCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisMesh3);
+
+  RasterAnalysisMesh4->setIcon(QgsApplication::getThemeIcon("ribbon/meshing.png"));
+  connect(RasterAnalysisMesh4, &QAction::triggered, this, &QgisApp::gridnearestneighborCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisMesh4);
+
+  RasterAnalysisMoutainShadow->setIcon(QgsApplication::getThemeIcon("ribbon/shadow.png"));
+  connect(RasterAnalysisMoutainShadow, &QAction::triggered, this, &QgisApp::hillshadeCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisMoutainShadow);
+
+  RasterAnalysisBufferBorderTrans->setIcon(QgsApplication::getThemeIcon("ribbon/BorderTrans.png"));
+  connect(RasterAnalysisBufferBorderTrans, &QAction::triggered, this, &QgisApp::nearblackCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisBufferBorderTrans);
+
+  RasterAnalysisProximalAna->setIcon(QgsApplication::getThemeIcon("ribbon/ProximalAna.png"));
+  connect(RasterAnalysisProximalAna, &QAction::triggered, this, &QgisApp::proximityCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisProximalAna);
+
+  RasterAnalysisBufferRoughness->setIcon(QgsApplication::getThemeIcon("ribbon/roughness.png"));
+  connect(RasterAnalysisBufferRoughness, &QAction::triggered, this, &QgisApp::roughnessCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisBufferRoughness);
+
+  RasterAnalysisFliter->setIcon(QgsApplication::getThemeIcon("ribbon/fliter.png"));
+  connect(RasterAnalysisFliter, &QAction::triggered, this, &QgisApp::sieveCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisFliter);
+
+  RasterAnalysisSlope->setIcon(QgsApplication::getThemeIcon("ribbon/slope.png"));
+  connect(RasterAnalysisSlope, &QAction::triggered, this, &QgisApp::slopeCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisSlope);
+
+  RasterAnalysisTPI->setIcon(QgsApplication::getThemeIcon("ribbon/TRI.png"));
+  connect(RasterAnalysisTPI, &QAction::triggered, this, &QgisApp::tpitopographicpositionindexCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisTPI);
+
+  RasterAnalysisTRI->setIcon(QgsApplication::getThemeIcon("ribbon/.png"));
+  connect(RasterAnalysisTRI, &QAction::triggered, this, &QgisApp::triterrainruggednessindexCacl);
+  RasterAnalysisMenu->addAction(RasterAnalysisTRI);
+ 
+ }
+
+  void QgisApp::createEditRibbonCategory()
  {
    if (!mRibbonBar) {
      return;
    }
    
-   // 创建"设置"分类
-   SARibbonCategory* settingsCategory = new SARibbonCategory("设置");
-   mRibbonBar->addCategoryPage(settingsCategory);
-   
-   // 创建"配置"面板
-   SARibbonPannel* configPanel = new SARibbonPannel("配置");
-   if (mActionOptions) configPanel->addAction(mActionOptions);
-   settingsCategory->addPannel(configPanel);
+   // 创建"编辑"PAGEC
+   SARibbonCategory* editCategory = new SARibbonCategory("编辑");
+   mRibbonBar->addCategoryPage(editCategory);
+
  }
- 
+
+  void QgisApp::createHelpRibbonCategory()
+ {
+   if (!mRibbonBar) {
+     return;
+   }
+   
+   // 创建"帮助"PAGEC
+   SARibbonCategory* helpCategory = new SARibbonCategory("帮助");
+   mRibbonBar->addCategoryPage(helpCategory);
+
+ }
