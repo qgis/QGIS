@@ -788,7 +788,7 @@ QString QgsPostgresRasterProvider::htmlMetadata() const
     { tr( "Primary Keys SQL" ), pkSql() },
     { tr( "Temporal Column" ), mTemporalFieldIndex >= 0 && mAttributeFields.exists( mTemporalFieldIndex ) ? mAttributeFields.field( mTemporalFieldIndex ).name() : QString() },
   };
-  return QgsPostgresUtils::dumpVariantMap( additionalInformation, tr( "Additional information" ) );
+  return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
 }
 
 QString QgsPostgresRasterProvider::lastErrorTitle()

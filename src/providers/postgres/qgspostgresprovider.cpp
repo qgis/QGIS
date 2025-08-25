@@ -5263,7 +5263,7 @@ QString QgsPostgresProvider::htmlMetadata() const
     { tr( "Spatial Index" ), spatialIndexText },
   };
 
-  return QgsPostgresUtils::dumpVariantMap( additionalInformation, tr( "Additional information" ) );
+  return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
 }
 
 QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
