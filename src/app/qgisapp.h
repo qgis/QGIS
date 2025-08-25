@@ -209,7 +209,7 @@ class QgsGeoreferencerMainWindow;
  * \class QgisApp
  * \brief Main window for the QGIS application
  */
-class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
+class APP_EXPORT QgisApp : public SARibbonMainWindow, private Ui::MainWindow
 {
     Q_OBJECT
   public:
@@ -1459,8 +1459,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   protected:
     void showEvent( QShowEvent *event ) override;
-    void resizeEvent( QResizeEvent *event ) override;  // 添加resize事件处理
-    bool eventFilter( QObject *obj, QEvent *event ) override; // 添加事件过滤器
+    // void resizeEvent( QResizeEvent *event ) override;  // 添加resize事件处理
+    // bool eventFilter( QObject *obj, QEvent *event ) override; // 添加事件过滤器
 
     //! Handle state changes (WindowTitleChange)
     void changeEvent( QEvent *event ) override;

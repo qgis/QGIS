@@ -962,7 +962,7 @@
  const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
  
  QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
-   : QMainWindow( parent, fl )
+   : SARibbonMainWindow( parent )
    , mSplash( splash )
  {
    if ( sInstance )
@@ -2070,7 +2070,7 @@
  }
  
  QgisApp::QgisApp()
-   : QMainWindow( nullptr, Qt::WindowFlags() )
+   : SARibbonMainWindow( nullptr )
  #ifdef Q_OS_MAC
    , mWindowMenu( nullptr )
  #endif
@@ -3366,14 +3366,14 @@
  
  void QgisApp::setAppStyleSheet( const QString &stylesheet )
  {
-   setStyleSheet( stylesheet );
+  //  setStyleSheet( stylesheet );
  
-   // cascade styles to any current layout designers
-   const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
-   for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
-   {
-     d->setStyleSheet( stylesheet );
-   }
+  //  // cascade styles to any current layout designers
+  //  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
+  //  for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
+  //  {
+  //    d->setStyleSheet( stylesheet );
+  //  }
  }
  
  void QgisApp::createMenus()
@@ -10045,29 +10045,33 @@
 
 void OpenAlgorithmDialogById(QString algId)
 {
+  // 检查Python是否可用
+  if (!QgsPythonRunner::isValid()) {
+    qDebug() << "Python is not available, cannot open algorithm dialog for:" << algId;
+    return;
+  }
+
   QString code = QString(R"(
-from qgis.core import QgsProcessingAlgorithm, QgsProcessingRegistry
+from qgis.core import QgsApplication
 from qgis.utils import iface
 from qgis import processing
 from PyQt5.QtCore import Qt
 
-def open_buffer_dialog():
-    # 获取算法
-    alg = QgsApplication.processingRegistry().algorithmById("%1")
-    if not alg:
-        return
+def open_algorithm_dialog():
+    try:
+        # 获取算法
+        alg = QgsApplication.processingRegistry().algorithmById("%1")
+        if not alg:
+            print("Algorithm %1 not found")
+            return
 
-    # 创建对话框（模态模式）
-    dlg = alg.createCustomParametersWidget(iface.mainWindow())
-    if dlg:
-        dlg.setAttribute(Qt.WA_DeleteOnClose)  # 关闭时自动销毁
-        dlg.exec_()  # 阻塞直到关闭
-    else:
-        # 回退到默认对话框
-        processing.execAlgorithmDialog("%2")
+        # 直接使用processing模块打开对话框
+        processing.execAlgorithmDialog("%1")
+    except Exception as e:
+        print("Error opening algorithm dialog:", str(e))
 
-open_buffer_dialog()
-)").arg(algId, algId);
+open_algorithm_dialog()
+)").arg(algId);
 
   QgsPythonRunner::run(code);
 }
@@ -17590,35 +17594,35 @@ void QgisApp::triterrainruggednessindexCacl()
    } );
  }
  
- void QgisApp::resizeEvent( QResizeEvent *event )
- {
-   QMainWindow::resizeEvent( event );
+//  void QgisApp::resizeEvent( QResizeEvent *event )
+//  {
+//    QMainWindow::resizeEvent( event );
    
-   // 当窗口大小改变时，调整Ribbon位置和主窗口边距
-   if ( mRibbonBar && mRibbonBar->isVisible() )
-   {
-     // 计算ribbon位置
-     int ribbonY = 0;
-     if (menuBar() && menuBar()->isVisible()) {
-       ribbonY = menuBar()->y() + menuBar()->height();
-     }
+//    // 当窗口大小改变时，调整Ribbon位置和主窗口边距
+//    if ( mRibbonBar && mRibbonBar->isVisible() )
+//    {
+//      // 计算ribbon位置
+//      int ribbonY = 0;
+//      if (menuBar() && menuBar()->isVisible()) {
+//        ribbonY = menuBar()->y() + menuBar()->height();
+//      }
      
-     int ribbonHeight = 120; // 使用固定高度，保持一致
+//      int ribbonHeight = 120; // 使用固定高度，保持一致
      
-     // 调整ribbon几何
-     mRibbonBar->setGeometry( 0, ribbonY, width(), ribbonHeight );
+//      // 调整ribbon几何
+//      mRibbonBar->setGeometry( 0, ribbonY, width(), ribbonHeight );
      
-     // 重新设置内容边距，确保dock widget不被遮挡
-     setContentsMargins( 0, ribbonHeight + ribbonY + 5, 0, 0 );
-   }
- }
+//      // 重新设置内容边距，确保dock widget不被遮挡
+//      setContentsMargins( 0, ribbonHeight + ribbonY + 5, 0, 0 );
+//    }
+//  }
  
- bool QgisApp::eventFilter( QObject *obj, QEvent *event )
- {
-   // 简化事件过滤器，不处理dock widget相关事件
-   // 完全依赖setContentsMargins来处理布局
-   return QMainWindow::eventFilter(obj, event);
- }
+//  bool QgisApp::eventFilter( QObject *obj, QEvent *event )
+//  {
+//    // 简化事件过滤器，不处理dock widget相关事件
+//    // 完全依赖setContentsMargins来处理布局
+//    return QMainWindow::eventFilter(obj, event);
+//  }
  
  void QgisApp::handleRenderedLayerStatistics() const
  {
@@ -17680,32 +17684,24 @@ void QgisApp::triterrainruggednessindexCacl()
    
    try {
      qDebug() << "Creating SARibbonBar...";
-     mRibbonBar = new SARibbonBar(this);
+     mRibbonBar = ribbonBar();
+    //  mRibbonBar = new SARibbonBar(this);
      if (!mRibbonBar) {
        qDebug() << "Failed to create ribbon bar";
        return;
      }
      
      // 设置ribbon样式
-     mRibbonBar->setRibbonStyle(SARibbonBar::RibbonStyleCompactThreeRow);
+    //  mRibbonBar->setRibbonStyle(SARibbonBar::RibbonStyleCompactThreeRow);
      mRibbonBar->setObjectName("SARibbonBar");
      
-     // 计算ribbon位置（菜单栏下方）
-     int ribbonY = 0;
-     if (menuBar() && menuBar()->isVisible()) {
-       ribbonY = menuBar()->y() + menuBar()->height();
-     }
-     
-     // 设置ribbon几何和显示
-     int ribbonHeight = 120;
-     mRibbonBar->setGeometry(0, ribbonY, width(), ribbonHeight);
      mRibbonBar->show();
      mRibbonBar->raise();
      
      // 关键解决方案：设置主窗口内容边距，为ribbon预留空间
      // 这会让Qt的布局管理器自动处理所有dock widget的位置，
      // 避免它们与ribbon重叠，同时保持dock widget的正常停靠功能
-     setContentsMargins(0, ribbonHeight + ribbonY + 5, 0, 0);
+    //  setContentsMargins(0, ribbonHeight + ribbonY + 5, 0, 0);
      
      // 创建ribbon分类内容
      createProjectRibbonCategory();

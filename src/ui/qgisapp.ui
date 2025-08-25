@@ -11,15 +11,7 @@
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1368</width>
-     <height>23</height>
-    </rect>
-   </property>
+  <widget class="QToolBar" name="mTestToolBar">
    <property name="visible">
     <bool>false</bool>
    </property>
