@@ -168,6 +168,11 @@ class CORE_EXPORT QgsAbstractPlotSeries
      */
     void setName( const QString &name );
 
+    /**
+     * Clones the series
+     */
+    virtual QgsAbstractPlotSeries *clone() const = 0 SIP_FACTORY;
+
   private:
 
     QString mName;
@@ -208,6 +213,8 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
      */
     void clear();
 
+    QgsAbstractPlotSeries *clone() const override SIP_FACTORY;
+
   private:
 
     QList<std::pair<double, double>> mData;
@@ -228,8 +235,8 @@ class CORE_EXPORT QgsPlotData
     QgsPlotData() = default;
     ~QgsPlotData();
 
-    QgsPlotData( const QgsPlotData &rh ) = delete;
-    QgsPlotData &operator=( const QgsPlotData &rh ) = delete;
+    QgsPlotData( const QgsPlotData &other );
+    QgsPlotData &operator=( const QgsPlotData &other );
 
     /**
      * Returns the list of series forming the plot data.
@@ -259,10 +266,6 @@ class CORE_EXPORT QgsPlotData
     void setCategories( const QStringList &categories );
 
   private:
-
-#ifdef SIP_RUN
-    QgsPlotData( const QgsPlotData &other );
-#endif
 
     QList<QgsAbstractPlotSeries *> mSeries;
     QStringList mCategories;

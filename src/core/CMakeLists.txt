@@ -94,6 +94,7 @@ set(QGIS_CORE_SRCS
   plot/qgslinechartplot.cpp
   plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
+  plot/qgsvectorlayerplotdatagatherer.cpp
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
@@ -1746,6 +1747,7 @@ set(QGIS_CORE_HDRS
   plot/qgslinechartplot.h
   plot/qgsplotregistry.h
   plot/qgsplot.h
+  plot/qgsvectorlayerplotdatagatherer.cpp
 
   pointcloud/qgspointcloudattribute.h
   pointcloud/qgspointcloudattributebyramprenderer.h

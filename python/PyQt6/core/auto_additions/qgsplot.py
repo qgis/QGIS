@@ -23,20 +23,22 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsAbstractPlotSeries.__abstract_methods__ = ['clone']
+    QgsAbstractPlotSeries.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsXyPlotSeries.__overridden_methods__ = ['clone']
+    QgsXyPlotSeries.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
     Qgs2DXyPlot.__overridden_methods__ = ['writeXml', 'readXml', 'render', 'interiorPlotArea']
     Qgs2DXyPlot.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
 try:
     QgsPlotRenderContext.__group__ = ['plot']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsAbstractPlotSeries.__group__ = ['plot']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsXyPlotSeries.__group__ = ['plot']
 except (NameError, AttributeError):
     pass
 try:
