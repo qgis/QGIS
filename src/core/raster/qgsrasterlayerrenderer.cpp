@@ -550,7 +550,15 @@ bool QgsRasterLayerRenderer::render()
     bool needsPainterClipPath = false;
     const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::Raster, needsPainterClipPath );
     if ( needsPainterClipPath )
+    {
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+      // this is an exception to the earlier flag disabling antialiasing!
+      // If we are rendering with clip paths, we WANT the boundaries of the raster to be
+      // rendered using antialiasing along the clip path, or things are very ugly! And since we can't
+      // selectively antialias JUST the clip path boundary, we fallback to antialiasing the
+      // whole raster render
+      renderContext()->painter()->setRenderHint( QPainter::Antialiasing, true );
+    }
   }
 
   QgsRasterProjector *projector = mPipe->projector();
