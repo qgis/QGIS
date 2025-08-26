@@ -974,7 +974,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             id SERIAL PRIMARY KEY,
             geom geometry(Geometry,4326)
         );
-        CREATE SCHEMA IF NOT EXISTS schema_test;
+        CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
         """
 
         conn.executeSql(sql)
@@ -1018,7 +1018,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # create raster table
         sql = """
-        CREATE SCHEMA IF NOT EXISTS schema_test;
+        CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
         CREATE TABLE qgis_test.raster_for_move (
             id serial PRIMARY KEY,
             rast raster
@@ -1061,7 +1061,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         conn.moveTableToSchema(
             "qgis_test",
             "raster_for_move",
-            "schema_test",
+            "qgis_schema_test",
         )
 
         # test moved table exist in the schema
@@ -1071,7 +1071,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         # look at overviews after move
         sqlOverviews = """
         SELECT o_table_schema, o_table_name FROM public.raster_overviews 
-        WHERE r_table_schema = 'schema_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
+        WHERE r_table_schema = 'qgis_schema_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
         """
 
         overviews = conn.executeSql(sqlOverviews)
