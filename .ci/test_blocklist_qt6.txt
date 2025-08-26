@@ -30,7 +30,6 @@ PyQgsStyleStorageMssql
 # To be fixed
 PyQgsAnnotation
 PyQgsAuthenticationSystem
-PyQgsEditWidgets
 PyQgsLayoutHtml
 PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
