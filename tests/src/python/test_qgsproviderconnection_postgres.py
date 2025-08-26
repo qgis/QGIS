@@ -1065,7 +1065,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         )
 
         # test moved table exist in the schema
-        table = conn.table("schema_test", "raster_for_move")
+        table = conn.table("qgis_schema_test", "raster_for_move")
         self.assertEqual(table.tableName(), "raster_for_move")
 
         # look at overviews after move
