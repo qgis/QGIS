@@ -63,6 +63,7 @@ class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
 class QgsCalloutRegistry;
+class QgsPlotRegistry;
 class QgsBookmarkManager;
 class QgsStyleModel;
 class QgsNumericFormatRegistry;
@@ -872,6 +873,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSensorRegistry *sensorRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's plot registry, used for plot types.
+     * \since QGIS 4.0
+     */
+    static QgsPlotRegistry *plotRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's message log.
      */
     static QgsMessageLog *messageLog();
@@ -1204,6 +1211,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       std::unique_ptr<QgsLayoutItemRegistry > mLayoutItemRegistry;
       std::unique_ptr<QgsAnnotationItemRegistry > mAnnotationItemRegistry;
       std::unique_ptr<QgsSensorRegistry > mSensorRegistry;
+      std::unique_ptr<QgsPlotRegistry > mPlotRegistry;
       std::unique_ptr<QgsBookmarkManager > mBookmarkManager;
       std::unique_ptr<QgsTileDownloadManager > mTileDownloadManager;
       std::unique_ptr<QgsStyleModel > mStyleModel;

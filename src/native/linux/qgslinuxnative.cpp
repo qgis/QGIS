@@ -21,7 +21,11 @@
 #include <QCoreApplication>
 #include <QUrl>
 #include <QString>
-#include <QtDBus/QtDBus>
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusArgument>
+#include <QDBusMetaType>
+#include <QFile>
 #include <QtDebug>
 #include <QImage>
 #include <QProcess>

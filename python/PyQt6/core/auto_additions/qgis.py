@@ -6128,6 +6128,19 @@ Qgis.PlotAxisSuffixPlacement.__doc__ = """Placement options for suffixes in the 
 # --
 Qgis.PlotAxisSuffixPlacement.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PlotAxisType.Interval.__doc__ = "The axis represents a range of values"
+Qgis.PlotAxisType.Categorical.__doc__ = "The axis represents categories"
+Qgis.PlotAxisType.__doc__ = """Plots axis types.
+
+.. versionadded:: 4.0
+
+* ``Interval``: The axis represents a range of values
+* ``Categorical``: The axis represents categories
+
+"""
+# --
+Qgis.PlotAxisType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
 Qgis.DpiMode.QGIS.__doc__ = "QGIS"
@@ -7976,6 +7989,20 @@ Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags = lambda flags=0: Qgis.LayerTreeFilterFlag(flags)
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.MapLayerLegendFlag.ExcludeByDefault.__doc__ = "If set, the layer should not be included in legends by default, and must be manually added by a user"
+Qgis.MapLayerLegendFlag.__doc__ = """Map layer legend flags.
+
+.. versionadded:: 4.0
+
+* ``ExcludeByDefault``: If set, the layer should not be included in legends by default, and must be manually added by a user
+
+"""
+# --
+Qgis.MapLayerLegendFlag.baseClass = Qgis
+Qgis.MapLayerLegendFlags = lambda flags=0: Qgis.MapLayerLegendFlag(flags)
+Qgis.MapLayerLegendFlags.baseClass = Qgis
+MapLayerLegendFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLegendStyle.Style = Qgis.LegendComponent
 # monkey patching scoped based enum
 QgsLegendStyle.Undefined = Qgis.LegendComponent.Undefined

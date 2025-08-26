@@ -79,6 +79,11 @@ void QgsProcessingFieldMapPanelWidget::setLayer( QgsVectorLayer *layer )
     return;
   }
 
+  if ( mSkipConfirmDialog )
+  {
+    return;
+  }
+
   QMessageBox dlg( this );
   dlg.setText( tr( "Do you want to reset the field mapping?" ) );
   dlg.setStandardButtons(

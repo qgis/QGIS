@@ -1,9 +1,6 @@
 # Qt6 blocklist
 test_core_compositionconverter
-test_core_labelingengine
 test_core_layoutpicture
-test_core_vectortilelayer
-test_gui_processinggui
 test_app_advanceddigitizing
 test_app_vertextool
 
@@ -34,7 +31,6 @@ PyQgsStyleStorageMssql
 PyQgsAnnotation
 PyQgsAuthenticationSystem
 PyQgsEditWidgets
-PyQgsElevationProfileCanvas
 PyQgsLayoutHtml
 PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer

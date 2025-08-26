@@ -50,7 +50,7 @@ The caller takes responsibility for deleting the returned object.
     virtual bool containsAdvancedEffects() const;
 
 
-    Qgs2DPlot *plot();
+    Qgs2DXyPlot *plot();
 %Docstring
 Returns a reference to the elevation plot object, which can be used to
 set plot appearance and properties.

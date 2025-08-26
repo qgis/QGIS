@@ -737,7 +737,6 @@ Depends:
  python3-pygments,
  python3-pyproj,
  python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtsvg, python3-pyqt6.qtserialport, python3-pyqt6.sip,
- python3-sip,
  python3-yaml,
  python3-lxml,
  ${python3:Depends},

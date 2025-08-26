@@ -56,17 +56,25 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t, const QgsCoordinateTrans
 QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset )
   : QgsChunkLoader( node )
   , mFactory( factory )
+  , mZValueScale( zValueScale )
+  , mZValueOffset( zValueOffset )
   , mIndex( index )
 {
+}
+
+void QgsTiledSceneChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
+
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QgsCoordinateTransform &boundsTransform = factory.mBoundsTransform;
+  const QgsCoordinateTransform &boundsTransform = mFactory.mBoundsTransform;
 
   const QgsChunkNodeId tileId = node->tileId();
   const QgsVector3D chunkOrigin = node->box3D().center();
-  const bool isGlobe = factory.mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin, isGlobe] {
+  const bool isGlobe = mFactory.mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, boundsTransform, chunkOrigin, isGlobe] {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
     // we do not load tiles that are too big when not in globe scene mode...
@@ -96,8 +104,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
-    entityTransform.zValueScale = zValueScale;
-    entityTransform.zValueOffset = zValueOffset;
+    entityTransform.zValueScale = mZValueScale;
+    entityTransform.zValueOffset = mZValueOffset;
     entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();

@@ -18,9 +18,20 @@
 
 ///@cond PRIVATE
 
+QgsChunkQueueJob::QgsChunkQueueJob( QgsChunkNode *node )
+  : mNode( node )
+{
+  connect( this, &QgsChunkQueueJob::finished, this, [this]() { mFinished = true; } );
+}
+
 void QgsChunkQueueJob::cancel()
 {
   // TODO: what to do...
+}
+
+bool QgsChunkQueueJob::isFinished() const
+{
+  return mFinished;
 }
 
 /// @endcond
