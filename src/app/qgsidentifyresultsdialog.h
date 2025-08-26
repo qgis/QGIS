@@ -316,6 +316,14 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
 
   private:
     QString representValue( QgsVectorLayer *vlayer, const QgsEditorWidgetSetup &setup, const QString &fieldName, const QVariant &value );
+    
+    /**
+     * Creates a styled QLabel widget for displaying text in tree widget items
+     * \param text the text to display
+     * \param wordWrap whether to enable word wrapping
+     * \returns configured QLabel widget
+     */
+    QLabel *createStyledLabel( const QString &text, bool wordWrap = true );
 
     enum ItemDataRole
     {
