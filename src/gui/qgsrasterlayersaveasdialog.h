@@ -124,7 +124,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     void accept() override;
 
   private slots:
-    void snapToGridButtonClicked();
+    void snapToGridChanged( bool enabled );
     void mRawModeRadioButton_toggled( bool );
     void mFormatComboBox_currentIndexChanged( const QString &text );
     void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
@@ -174,8 +174,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     ResolutionState mResolutionState;
     QVector<bool> mNoDataToEdited;
 
-    //! Button for snap to grid option
-    QPushButton *mSnapToGridButton = nullptr;
 
     void setValidators();
     void toggleResolutionSize();
