@@ -2002,7 +2002,7 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
   if ( resMove.PQresultStatus() == PGRES_FATAL_ERROR )
   {
     conn->get()->rollback();
-    throw QgsProviderConnectionException( QStringLiteral( "Cannot safely move `%1` to schema `%2`." ).arg( tableName ).arg( targetSchema ) );
+    throw QgsProviderConnectionException( QStringLiteral( "Cannot move `%1` to schema `%2`." ).arg( tableName ).arg( targetSchema ) );
   }
 
   conn->get()->commit();
