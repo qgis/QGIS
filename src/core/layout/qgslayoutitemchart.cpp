@@ -198,7 +198,7 @@ void QgsLayoutItemChart::prepareGatherer()
     mGatherer.clear();
   }
 
-  if ( !mVectorLayer || mSeriesList.isEmpty() )
+  if ( !mVectorLayer || !mPlot || mSeriesList.isEmpty() )
   {
     mPlotData.clearSeries();
     mIsGathering = false;
@@ -211,9 +211,18 @@ void QgsLayoutItemChart::prepareGatherer()
     xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression(), series.yExpression(), series.filterExpression() );
   }
 
-  QgsFeatureIterator featureIterator = mVectorLayer->getFeatures();
-  mGatherer = new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList );
-  connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+  if ( Qgs2DXyPlot *xyPlot = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() ) )
+  {
+    QgsFeatureIterator featureIterator = mVectorLayer->getFeatures();
+    mGatherer = new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList, xyPlot->xAxis().type() );
+    connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+  }
+  else
+  {
+    mPlotData.clearSeries();
+    mIsGathering = false;
+    update();
+  }
 }
 
 void QgsLayoutItemChart::processData()
