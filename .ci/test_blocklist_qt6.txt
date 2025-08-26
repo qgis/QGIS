@@ -31,7 +31,6 @@ PyQgsStyleStorageMssql
 PyQgsAnnotation
 PyQgsAuthenticationSystem
 PyQgsLayoutHtml
-PyQgsRasterLayerRenderer
 PyQgsSettings
 PyQgsSettingsEntry
 ProcessingQgisAlgorithmsTestPt4
