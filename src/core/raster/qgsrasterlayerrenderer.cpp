@@ -540,6 +540,11 @@ bool QgsRasterLayerRenderer::render()
   //
 
   const QgsScopedQPainterState painterSate( renderContext()->painter() );
+
+  // important -- disable SmoothPixmapTransform and Antialiasing for raster layer renders. We want individual pixels to be clearly defined!
+  renderContext()->painter()->setRenderHint( QPainter::SmoothPixmapTransform, false );
+  renderContext()->painter()->setRenderHint( QPainter::Antialiasing, false );
+
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
@@ -566,9 +571,6 @@ bool QgsRasterLayerRenderer::render()
     }
     projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }
-
-  // important -- disable SmoothPixmapTransform for raster layer renders. We want individual pixels to be clearly defined!
-  renderContext()->painter()->setRenderHint( QPainter::SmoothPixmapTransform, false );
 
   preparingProfile.reset();
   std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
