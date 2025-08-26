@@ -583,5 +583,5 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // chart item
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutChart, QObject::tr( "Chart" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutChartWidget( qobject_cast<QgsLayoutItemChart *>( item ) ); }, createRubberBand ) );
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutChart, QObject::tr( "Chart" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddChart.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutChartWidget( qobject_cast<QgsLayoutItemChart *>( item ) ); }, createRubberBand ) );
 }

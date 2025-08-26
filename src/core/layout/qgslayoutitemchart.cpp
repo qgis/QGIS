@@ -49,7 +49,7 @@ int QgsLayoutItemChart::type() const
 
 QIcon QgsLayoutItemChart::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPicture.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemChart.svg" ) );
 }
 
 QgsLayoutItemChart *QgsLayoutItemChart::create( QgsLayout *layout )
