@@ -4297,8 +4297,6 @@
    mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCustomProjection.svg" ) ) );
    mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ) );
    mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ) );
-   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormAnnotation.svg" ) ) );
-   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHtmlAnnotation.svg" ) ) );
    mActionLabeling->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabeling.svg" ) ) );
    mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPinnedLabels.svg" ) ) );
    mActionPinLabels->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPinLabels.svg" ) ) );
@@ -4389,6 +4387,48 @@
    mActionIdentify->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/点击查询.png" ) ) );
 
    mActionSelectFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/点选-选中.png" ) ) );
+   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/多边形选择要素.png" ) ) );
+   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/自由绘制.png" ) ) );
+   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/圆形选中.png" ) ) );
+   mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/开始编辑.png" ) ) );
+   mActionUndo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/撤销.png" ) ) );
+   mActionRedo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/重做.png" ) ) );
+   mActionCutFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/剪切.png" ) ) );
+   mActionCopyFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/复制.png" ) ) );
+   mActionPasteFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/粘贴.png" ) ) );
+   mActionPasteAsNewVector->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/添加新图层.png" ) ) );
+   mActionPasteAsNewMemoryVector->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/临时图层蓝.png" ) ) );
+   mActionMultiEditAttributes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/27-修改属性.png" ) ) );
+   mActionMergeFeatureAttributes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/合并属性.png" ) ) );
+   mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/移动要素.png" ) ) );
+   mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/复制并移动.png" ) ) );
+   mActionRotateFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/旋转要素.png" ) ) );
+   mActionScaleFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/缩放.png" ) ) );
+   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/简化要素.png" ) ) );
+   mActionAddRing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/添加环.png" ) ) );
+   mActionAddPart->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/添加部件.png" ) ) );
+   mActionFillRing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/填充区域.png" ) ) );
+   mActionDeleteRing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/删除环.png" ) ) );
+   mActionDeletePart->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/删除部件.png" ) ) );
+   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/重塑要素.png" ) ) );
+   mActionOffsetCurve->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/偏移曲线.png" ) ) );
+   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/分割要素.png" ) ) );
+   mActionSplitParts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/分割表格.png" ) ) );
+   mActionMergeFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/合并要素.png" ) ) );
+   mActionVertexTool->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/顶点工具.png" ) ) );
+   mActionReverseLine->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/线型反转图.png" ) ) );
+   mActionTrimExtendFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/裁剪扩展.png" ) ) );
+   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/表单组件-表格.png" ) ) );
+   mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/html.png" ) ) );
+   mActionSnappingOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/捕捉设置.png" ) ) );
+
+   mActionHelpContents->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/帮助.png" ) ) );
+   mActionHelpAPI->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/c.png" ) ) );
+   mActionHelpPyQgisAPI->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/API.png" ) ) );
+   mActionNeedSupport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/维护人员.png" ) ) );
+   mActionQgisHomePage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/qgis.png" ) ) );
+   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/检查更新.png" ) ) );
+   mActionAbout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/关于.png" ) ) );
 
    emit currentThemeChanged( themeName );
  }
@@ -18543,7 +18583,7 @@ void QgisApp::triterrainruggednessindexCacl()
     geometryEditMenu->addAction(mActionTrimExtendFeature);
   }
 
-   // 几何编辑menu
+   // 添加注记menu
    QMenu* annotationMenu = new QMenu("添加注记", this);
    annotationMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/添加注记层.png" ) ) );
    editToolPanel->addMenu(annotationMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
@@ -18553,18 +18593,18 @@ void QgisApp::triterrainruggednessindexCacl()
   //   mActionTextAnnotation->setChecked(false);
   //   annotationMenu->addAction(mActionTextAnnotation);
   // }
-  // if (mActionFormAnnotation) {
-  //   mActionFormAnnotation->setText("添加表单注记");
-  //   mActionFormAnnotation->setToolTip("添加表单注记");
-  //   mActionFormAnnotation->setChecked(false);
-  //   annotationMenu->addAction(mActionFormAnnotation);
-  // }
-  // if (mActionHtmlAnnotation) {
-  //   mActionHtmlAnnotation->setText("添加HTML注记");
-  //   mActionHtmlAnnotation->setToolTip("添加HTML注记");
-  //   mActionHtmlAnnotation->setChecked(false);
-  //   annotationMenu->addAction(mActionHtmlAnnotation);
-  // }
+  if (mActionFormAnnotation) {
+    mActionFormAnnotation->setText("添加表单注记");
+    mActionFormAnnotation->setToolTip("添加表单注记");
+    mActionFormAnnotation->setChecked(false);
+    annotationMenu->addAction(mActionFormAnnotation);
+  }
+  if (mActionHtmlAnnotation) {
+    mActionHtmlAnnotation->setText("添加HTML注记");
+    mActionHtmlAnnotation->setToolTip("添加HTML注记");
+    mActionHtmlAnnotation->setChecked(false);
+    annotationMenu->addAction(mActionHtmlAnnotation);
+  }
   // if (mActionSvgAnnotation) {
   //   mActionSvgAnnotation->setText("添加SVG注记");
   //   mActionSvgAnnotation->setToolTip("添加SVG注记");
