@@ -425,6 +425,16 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     void algorithmFinished( bool successful, const QVariantMap &result );
 
+  public slots:
+    /**
+     * In the context of the model designer
+     * Called when underlying model have changed.
+     * Must be overridden by subclasses.
+     *
+     * \since QGIS 3.40
+     */
+    virtual void onDirtySet();
+
   protected slots:
 
     /**

@@ -530,6 +530,9 @@ void QgsModelDesignerDialog::updateVariablesGui()
 
 void QgsModelDesignerDialog::setDirty( bool dirty )
 {
+  if ( dirty )
+    emit dirtySet();
+
   mHasChanged = dirty;
   updateWindowTitle();
 }
@@ -1051,52 +1054,57 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     }
   }
 
-  std::unique_ptr<QgsProcessingAlgorithmDialogBase> dialog( createExecutionDialog() );
-  if ( !dialog )
-    return;
 
-  dialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
-  dialog->setParameters( mModel->designerParameterValues() );
+  if ( !mAlgorithmDialog )
+  {
+    mAlgorithmDialog = createExecutionDialog();
 
-  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [this, &childAlgorithmSubset]( QgsProcessingContext *context ) {
-    if ( !childAlgorithmSubset.empty() )
-    {
-      // start from previous state
-      auto modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
-      modelConfig->setChildAlgorithmSubset( childAlgorithmSubset );
-      modelConfig->setPreviouslyExecutedChildAlgorithms( mLastResult.executedChildIds() );
-      modelConfig->setInitialChildInputs( mLastResult.rawChildInputs() );
-      modelConfig->setInitialChildOutputs( mLastResult.rawChildOutputs() );
+    mAlgorithmDialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+    mAlgorithmDialog->setParameters( mModel->designerParameterValues() );
 
-      // add copies of layers from previous runs to context's layer store, so that they can be used
-      // when running the subset
-      const QMap<QString, QgsMapLayer *> previousOutputLayers = mLayerStore.temporaryLayerStore()->mapLayers();
-      auto previousResultStore = std::make_unique<QgsMapLayerStore>();
-      for ( auto it = previousOutputLayers.constBegin(); it != previousOutputLayers.constEnd(); ++it )
+    connect( this, &QgsModelDesignerDialog::dirtySet, mAlgorithmDialog, &QgsProcessingAlgorithmDialogBase::onDirtySet );
+
+    connect( mAlgorithmDialog, &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [=]( QgsProcessingContext *context ) {
+      qDebug() << "childAlgorithmSubset? ";
+      if ( !childAlgorithmSubset.empty() )
       {
-        std::unique_ptr<QgsMapLayer> clone( it.value()->clone() );
-        clone->setId( it.value()->id() );
-        previousResultStore->addMapLayer( clone.release() );
+        // start from previous state
+        auto modelConfig = std::make_unique<QgsProcessingModelInitialRunConfig>();
+        modelConfig->setChildAlgorithmSubset( childAlgorithmSubset );
+        modelConfig->setPreviouslyExecutedChildAlgorithms( mLastResult.executedChildIds() );
+        modelConfig->setInitialChildInputs( mLastResult.rawChildInputs() );
+        modelConfig->setInitialChildOutputs( mLastResult.rawChildOutputs() );
+
+        // add copies of layers from previous runs to context's layer store, so that they can be used
+        // when running the subset
+        const QMap<QString, QgsMapLayer *> previousOutputLayers = mLayerStore.temporaryLayerStore()->mapLayers();
+        auto previousResultStore = std::make_unique<QgsMapLayerStore>();
+        for ( auto it = previousOutputLayers.constBegin(); it != previousOutputLayers.constEnd(); ++it )
+        {
+          std::unique_ptr<QgsMapLayer> clone( it.value()->clone() );
+          clone->setId( it.value()->id() );
+          previousResultStore->addMapLayer( clone.release() );
+        }
+        previousResultStore->moveToThread( nullptr );
+        modelConfig->setPreviousLayerStore( std::move( previousResultStore ) );
+        context->setModelInitialRunConfig( std::move( modelConfig ) );
       }
-      previousResultStore->moveToThread( nullptr );
-      modelConfig->setPreviousLayerStore( std::move( previousResultStore ) );
-      context->setModelInitialRunConfig( std::move( modelConfig ) );
-    }
-  } );
+    } );
 
-  connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
-    QgsProcessingContext *context = dialog->processingContext();
 
-    setLastRunResult( context->modelResult() );
+    connect( mAlgorithmDialog, &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this]( bool, const QVariantMap & ) {
+      QgsProcessingContext *context = mAlgorithmDialog->processingContext();
 
-    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+      setLastRunResult( context->modelResult() );
 
-    // take child output layers
-    mLayerStore.temporaryLayerStore()->removeAllMapLayers();
-    mLayerStore.takeResultsFrom( *context );
-  } );
+      mModel->setDesignerParameterValues( mAlgorithmDialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
 
-  dialog->exec();
+      // take child output layers
+      mLayerStore.temporaryLayerStore()->removeAllMapLayers();
+      mLayerStore.takeResultsFrom( *context );
+    } );
+  }
+  mAlgorithmDialog->show();
 }
 
 void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )

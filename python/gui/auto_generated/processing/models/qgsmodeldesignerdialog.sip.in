@@ -73,6 +73,13 @@ Sets the related ``scene``.
       SaveAsFile,
       SaveInProject,
     };
+  signals:
+    void dirtySet();
+%Docstring
+Emitted when the model dirty is set to True.
+
+.. versionadded:: 4.0
+%End
 
   public slots:
 
