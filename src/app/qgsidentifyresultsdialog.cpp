@@ -842,25 +842,11 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
         // Check if "Show full text" is enabled
         const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
         
-        if ( showFullText )
-        {
-          // Create a multi-line label widget to show full text
-          QLabel *valueLabel = new QLabel( representedValue );
-          valueLabel->setWordWrap( true );
-          valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
-          valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
-          valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
-          
-          attrItem->setData( 1, Qt::DisplayRole, QString() );
-          QTreeWidget *tw = attrItem->treeWidget();
-          tw->setItemWidget( attrItem, 1, valueLabel );
-        }
-        else
-        {
-          attrItem->setData( 1, Qt::DisplayRole, representedValue );
-          QTreeWidget *tw = attrItem->treeWidget();
-          tw->setItemWidget( attrItem, 1, nullptr );
-        }
+        // Always create a label widget for consistent styling and text selection
+        QLabel *valueLabel = createStyledLabel( representedValue, showFullText );
+        attrItem->setData( 1, Qt::DisplayRole, QString() );
+        QTreeWidget *tw = attrItem->treeWidget();
+        tw->setItemWidget( attrItem, 1, valueLabel );
       }
     }
 
@@ -2971,6 +2957,16 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
   }
 }
 
+QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
+{
+  QLabel *valueLabel = new QLabel( text );
+  valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
+  valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+  valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
+  valueLabel->setWordWrap( wordWrap );
+  return valueLabel;
+}
+
 void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, bool showFullText )
 {
   if ( !item )
@@ -2981,34 +2977,15 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
   {
     const QString fullText = item->data( 1, REPRESENTED_VALUE_ROLE ).toString();
     
-    if ( showFullText )
+    // Always create a label widget for consistent styling and text selection
+    QLabel *valueLabel = createStyledLabel( fullText, showFullText );
+    item->setData( 1, Qt::DisplayRole, QString() );
+    
+    // Set the widget for this item
+    QTreeWidget *tw = item->treeWidget();
+    if ( tw )
     {
-     
-      QLabel *valueLabel = new QLabel( fullText );
-      valueLabel->setWordWrap( true );
-      valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
-      valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
-      valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
-      
-      
-      item->setData( 1, Qt::DisplayRole, QString() );
-      
-      // Set the widget for this item
-      QTreeWidget *tw = item->treeWidget();
-      if ( tw )
-      {
-        tw->setItemWidget( item, 1, valueLabel );
-      }
-    }
-    else
-    {
-      
-      QTreeWidget *tw = item->treeWidget();
-      if ( tw )
-      {
-        tw->setItemWidget( item, 1, nullptr );
-      }
-      item->setData( 1, Qt::DisplayRole, fullText );
+      tw->setItemWidget( item, 1, valueLabel );
     }
   }
 
