@@ -1967,8 +1967,7 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
   {
     // first take a look if there were overviews for the moved raster
     const QString sqlOverviews = QStringLiteral( "SELECT o_table_schema, o_table_name, o_raster_column, overview_factor FROM public.raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2;" )
-                                   .arg( QgsPostgresConn::quotedValue( sourceSchema ) )
-                                   .arg( QgsPostgresConn::quotedValue( tableName ) );
+                                   .arg( QgsPostgresConn::quotedValue( sourceSchema ), QgsPostgresConn::quotedValue( tableName ) );
 
     const QList<QVariantList> results = executeSqlPrivate( sqlOverviews );
 
