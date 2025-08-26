@@ -38,10 +38,11 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
 
   public:
     /**
-     * Constructor for QgsDashSpaceWidget
+     * Constructor for QgsLayoutChartSeriesDetailsWidget
+     * \param layer the vector layer associated to the series
      * \param index the series index
      * \param seriesDetails the series details
-     * \param the parent widget
+     * \param parent the parent widget
      */
     QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

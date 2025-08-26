@@ -6,7 +6,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayoutItemChart.SeriesDetails.__doc__ = """Chart series details covering all supported series types."""
     QgsLayoutItemChart.SeriesDetails.__group__ = ['layout']
 except (NameError, AttributeError):
     pass

@@ -89,13 +89,13 @@ void QgsLayoutChartWidget::setGuiElementValues()
   if ( mChartItem )
   {
     whileBlocking( mChartTypeComboBox )->setCurrentIndex( mChartTypeComboBox->findData( mChartItem->plot()->type() ) );
-    whileBlocking( mLayerComboBox )->setLayer( mChartItem->vectorLayer() );
+    whileBlocking( mLayerComboBox )->setLayer( mChartItem->sourceLayer() );
 
     mSeriesListWidget->clear();
     const QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
     for ( const QgsLayoutItemChart::SeriesDetails &series : seriesList )
     {
-      addSeriesListItem( series.name );
+      addSeriesListItem( series.name() );
     }
   }
   else
@@ -138,8 +138,8 @@ void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
     return;
   }
 
-  mChartItem->beginCommand( tr( "Change Chart Layer" ) );
-  mChartItem->setVectorLayer( vl );
+  mChartItem->beginCommand( tr( "Change Chart Source Layer" ) );
+  mChartItem->setSourceLayer( vl );
   mChartItem->update();
   mChartItem->endCommand();
 }
@@ -172,7 +172,7 @@ void QgsLayoutChartWidget::mSeriesListWidget_itemChanged( QListWidgetItem *item 
   }
 
   mChartItem->beginCommand( tr( "Rename Chart Series" ) );
-  seriesList[idx].name = item->text();
+  seriesList[idx].setName( item->text() );
   mChartItem->setSeriesList( seriesList );
   mChartItem->endCommand();
 }
@@ -238,7 +238,7 @@ void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
     return;
   }
 
-  QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->vectorLayer(), idx, seriesList[idx], this );
+  QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->sourceLayer(), idx, seriesList[idx], this );
   widget->setPanelTitle( tr( "Series Details" ) );
   connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
     if ( !mChartItem )
@@ -254,9 +254,9 @@ void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
     }
 
     mChartItem->beginCommand( tr( "Modify Chart Series" ) );
-    seriesList[idx].xExpression = widget->xExpression();
-    seriesList[idx].yExpression = widget->yExpression();
-    seriesList[idx].filterExpression = widget->filterExpression();
+    seriesList[idx].setXExpression( widget->xExpression() );
+    seriesList[idx].setYExpression( widget->yExpression() );
+    seriesList[idx].setFilterExpression( widget->filterExpression() );
     mChartItem->setSeriesList( seriesList );
     mChartItem->endCommand();
     mChartItem->update();

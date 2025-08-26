@@ -22,15 +22,82 @@ A layout item subclass that renders chart plots.
 %End
   public:
 
-    struct SeriesDetails
-    {
-      explicit SeriesDetails( const QString &name );
-      bool operator==( const SeriesDetails &other ) const;
+    class SeriesDetails
+{
+%Docstring(signature="appended")
+Chart series details covering all supported series types.
 
-      QString name;
-      QString xExpression;
-      QString yExpression;
-      QString filterExpression;
+.. note::
+
+   this class is experimental and threfore is not considered as stable API, it may
+   change in the future as more chart plot types are implemented.
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemchart.h"
+%End
+      public:
+
+        explicit SeriesDetails( const QString &name = QString() );
+%Docstring
+Constructor for SeriesDetails with an optional ``name`` parameter to
+provide a name string to the series.
+%End
+
+        bool operator==( const SeriesDetails &other ) const;
+
+        QString name() const;
+%Docstring
+Returns the series name.
+%End
+
+        void setName( const QString &name );
+%Docstring
+Sets the series name.
+%End
+
+        QString xExpression() const;
+%Docstring
+Returns the expression used to generate X-axis values. If the associated
+chart X axis type is set to :py:class:`Qgis`.PlotAxisType.Categorical,
+the generated values will be converted to strings. For
+:py:class:`Qgis`.PlotAxisType.Interval, the generated values will be
+converted to double.
+%End
+
+        void setXExpression( const QString &xExpression );
+%Docstring
+Sets the expression used to generate X-axis values. If the associated
+chart X axis type is set to :py:class:`Qgis`.PlotAxisType.Categorical,
+the generated values will be converted to strings. For
+:py:class:`Qgis`.PlotAxisType.Interval, the generated values will be
+converted to double.
+%End
+
+        QString yExpression() const;
+%Docstring
+Returns the expression used to generate Y-axis values. The generated
+values will be converted to double.
+%End
+
+        void setYExpression( const QString &yExpression );
+%Docstring
+Sets the expression used to generate Y-axis values. The generated values
+will be converted to double.
+%End
+
+        QString filterExpression() const;
+%Docstring
+Returns the filter expression used to generate a series against a subset
+of the source layer.
+%End
+
+        void setFilterExpression( const QString &filterExpression );
+%Docstring
+Sets the filter expression used to generate a series against a subset of
+the source layer.
+%End
+
     };
 
     QgsLayoutItemChart( QgsLayout *layout );
@@ -44,31 +111,35 @@ Constructor for QgsLayoutItemChart, with the specified parent
     virtual QIcon icon() const;
 
 
-    void setPlot( QgsPlot *plot );
+    void setPlot( QgsPlot *plot /Transfer/ );
 %Docstring
 Sets the ``plot`` used to render the chart.
+
+Ownership is transferred to the item.
 %End
 
-    QgsPlot *plot() const;
+    QgsPlot *plot();
 %Docstring
 Returns the plot used the render the chart.
 %End
 
-    void setVectorLayer( QgsVectorLayer *layer );
+    void setSourceLayer( QgsVectorLayer *layer );
 %Docstring
-Sets the vector ``layer`` from which the plot data wil be gathered from.
+Sets the source vector ``layer`` from which the plot data wil be
+gathered from.
 
 .. seealso:: :py:func:`vectorLayer`
 %End
 
-    QgsVectorLayer *vectorLayer() const;
+    QgsVectorLayer *sourceLayer() const;
 %Docstring
-Returns the vector layer from which the plot data will be gathered from.
+Returns the source vector layer from which the plot data will be
+gathered from.
 
 .. seealso:: :py:func:`setVectorLayer`
 %End
 
-    void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> seriesList );
+    void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList );
 %Docstring
 Sets the plot series details used to generate the plot data.
 

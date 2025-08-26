@@ -38,24 +38,85 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Chart series details covering all supported series types.
+     *
+     * \note this class is experimental and threfore is not considered as stable API, it may
+     * change in the future as more chart plot types are implemented.
      */
-    struct SeriesDetails
+    class SeriesDetails
     {
-      explicit SeriesDetails( const QString &name )
-        : name( name )
-      {};
-      bool operator==( const SeriesDetails &other ) const
-      {
-        return name == other.name
-               && xExpression == other.xExpression
-               && yExpression == other.yExpression
-               && filterExpression == other.filterExpression;
-      }
+      public:
 
-      QString name;
-      QString xExpression;
-      QString yExpression;
-      QString filterExpression;
+        /**
+         * Constructor for SeriesDetails with an optional \a name parameter to
+         * provide a name string to the series.
+         */
+        explicit SeriesDetails( const QString &name = QString() )
+          : mName( name )
+        {};
+
+        bool operator==( const SeriesDetails &other ) const
+        {
+          return mName == other.mName
+                 && mXExpression == other.mXExpression
+                 && mYExpression == other.mYExpression
+                 && mFilterExpression == other.mFilterExpression;
+        }
+
+        /**
+         * Returns the series name.
+         */
+        QString name() const { return mName; }
+
+        /**
+         * Sets the series name.
+         */
+        void setName( const QString &name ) { mName = name; }
+
+        /**
+         * Returns the expression used to generate X-axis values. If the associated
+         * chart X axis type is set to Qgis.PlotAxisType.Categorical, the generated values will
+         * be converted to strings. For Qgis.PlotAxisType.Interval, the generated values will
+         * be converted to double.
+         */
+        QString xExpression() const { return mXExpression; }
+
+        /**
+         * Sets the expression used to generate X-axis values. If the associated
+         * chart X axis type is set to Qgis.PlotAxisType.Categorical, the generated values will
+         * be converted to strings. For Qgis.PlotAxisType.Interval, the generated values will
+         * be converted to double.
+         */
+        void setXExpression( const QString &xExpression ) { mXExpression = xExpression; }
+
+        /**
+         * Returns the expression used to generate Y-axis values. The generated values will
+         * be converted to double.
+         */
+        QString yExpression() const { return mYExpression; }
+
+        /**
+         * Sets the expression used to generate Y-axis values. The generated values will
+         * be converted to double.
+         */
+        void setYExpression( const QString &yExpression ) { mYExpression = yExpression; }
+
+        /**
+         * Returns the filter expression used to generate a series against a subset of
+         * the source layer.
+         */
+        QString filterExpression() const { return mFilterExpression; }
+
+        /**
+         * Sets the filter expression used to generate a series against a subset of
+         * the source layer.
+         */
+        void setFilterExpression( const QString &filterExpression ) { mFilterExpression = filterExpression; }
+
+      private:
+        QString mName;
+        QString mXExpression;
+        QString mYExpression;
+        QString mFilterExpression;
     };
 
     /**
@@ -68,34 +129,36 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Sets the \a plot used to render the chart.
+     *
+     * Ownership is transferred to the item.
      */
-    void setPlot( QgsPlot *plot );
+    void setPlot( QgsPlot *plot SIP_TRANSFER );
 
     /**
      * Returns the plot used the render the chart.
      */
-    QgsPlot *plot() const { return mPlot.get(); }
+    QgsPlot *plot() { return mPlot.get(); }
 
     /**
-     * Sets the vector \a layer from which the plot data wil be gathered from.
+     * Sets the source vector \a layer from which the plot data wil be gathered from.
      *
      * \see vectorLayer()
      */
-    void setVectorLayer( QgsVectorLayer *layer );
+    void setSourceLayer( QgsVectorLayer *layer );
 
     /**
-     * Returns the vector layer from which the plot data will be gathered from.
+     * Returns the source vector layer from which the plot data will be gathered from.
      *
      * \see setVectorLayer()
      */
-    QgsVectorLayer *vectorLayer() const { return mVectorLayer.get(); }
+    QgsVectorLayer *sourceLayer() const { return mVectorLayer.get(); }
 
     /**
      * Sets the plot series details used to generate the plot data.
      *
      * \see seriesList()
      */
-    void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> seriesList );
+    void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList );
 
     /**
      * Returns the plot series details used to generate the plot data.
@@ -141,7 +204,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     bool mNeedsGathering = false;
     bool mIsGathering = false;
     QTimer mGathererTimer;
-    std::unique_ptr<QgsVectorLayerAbstractPlotDataGatherer> mGatherer;
+    QPointer<QgsVectorLayerAbstractPlotDataGatherer> mGatherer;
 };
 
 #endif // QGSLAYOUTITEMCHART_H

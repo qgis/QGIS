@@ -32,9 +32,9 @@ QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorL
     mYExpressionWidget->setLayer( mVectorLayer.data() );
   }
 
-  mXExpressionWidget->setExpression( seriesDetails.xExpression );
-  mYExpressionWidget->setExpression( seriesDetails.yExpression );
-  mFilterLineEdit->setText( seriesDetails.filterExpression );
+  mXExpressionWidget->setExpression( seriesDetails.xExpression() );
+  mYExpressionWidget->setExpression( seriesDetails.yExpression() );
+  mFilterLineEdit->setText( seriesDetails.filterExpression() );
 
   connect( mXExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) { emit widgetChanged(); } );
   connect( mYExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) { emit widgetChanged(); } );

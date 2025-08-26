@@ -40,17 +40,6 @@ QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
   mGathererTimer.setInterval( 10 );
   mGathererTimer.setSingleShot( true );
   connect( &mGathererTimer, &QTimer::timeout, this, &QgsLayoutItemChart::gatherData );
-
-  // connect to atlas feature changing
-  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [this]
-  {
-    update();
-  } );
-
-  connect( this, &QgsLayoutItemChart::sizePositionChanged, this, [this]
-  {
-    update();
-  } );
 }
 
 int QgsLayoutItemChart::type() const
@@ -72,6 +61,7 @@ void QgsLayoutItemChart::setPlot( QgsPlot *plot )
 {
   if ( !dynamic_cast<Qgs2DPlot *>( plot ) )
   {
+    delete plot;
     return;
   }
 
@@ -80,7 +70,7 @@ void QgsLayoutItemChart::setPlot( QgsPlot *plot )
   emit changed();
 }
 
-void QgsLayoutItemChart::setVectorLayer( QgsVectorLayer *layer )
+void QgsLayoutItemChart::setSourceLayer( QgsVectorLayer *layer )
 {
   if ( layer == mVectorLayer.get() )
   {
@@ -93,7 +83,7 @@ void QgsLayoutItemChart::setVectorLayer( QgsVectorLayer *layer )
   emit changed();
 }
 
-void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> seriesList )
+void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList )
 {
   if ( mSeriesList == seriesList )
   {
@@ -163,7 +153,7 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     {
       mNeedsGathering = false;
       prepareGatherer();
-      QgsApplication::instance()->taskManager()->addTask( mGatherer.get() );
+      QgsApplication::instance()->taskManager()->addTask( mGatherer.data() );
       mGatherer->waitForFinished( 60000 );
     }
   }
@@ -193,7 +183,7 @@ void QgsLayoutItemChart::refreshData()
 void QgsLayoutItemChart::gatherData()
 {
   prepareGatherer();
-  QgsApplication::instance()->taskManager()->addTask( mGatherer.get() );
+  QgsApplication::instance()->taskManager()->addTask( mGatherer.data() );
 
   mIsGathering = true;
   update();
@@ -203,9 +193,9 @@ void QgsLayoutItemChart::prepareGatherer()
 {
   if ( mGatherer )
   {
-    disconnect( mGatherer.get(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+    disconnect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
     mGatherer->cancel();
-    mGatherer.reset();
+    mGatherer.clear();
   }
 
   if ( !mVectorLayer || mSeriesList.isEmpty() )
@@ -218,18 +208,18 @@ void QgsLayoutItemChart::prepareGatherer()
   QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
   for ( const SeriesDetails &series : mSeriesList )
   {
-    xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression, series.yExpression, series.filterExpression );
+    xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression(), series.yExpression(), series.filterExpression() );
   }
 
   QgsFeatureIterator featureIterator = mVectorLayer->getFeatures();
-  mGatherer.reset( dynamic_cast<QgsVectorLayerAbstractPlotDataGatherer *>( new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList ) ) );
-  connect( mGatherer.get(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
+  mGatherer = new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList );
+  connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
 }
 
 void QgsLayoutItemChart::processData()
 {
   mPlotData = mGatherer->data();
-  mGatherer.reset();
+  mGatherer.clear();
 
   mIsGathering = false;
   update();
@@ -248,10 +238,10 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
   for ( const SeriesDetails &series : mSeriesList )
   {
     QDomElement seriesElement = document.createElement( QStringLiteral( "series" ) );
-    seriesElement.setAttribute( QStringLiteral( "name" ), series.name );
-    seriesElement.setAttribute( QStringLiteral( "xExpression" ), series.xExpression );
-    seriesElement.setAttribute( QStringLiteral( "yExpression" ), series.yExpression );
-    seriesElement.setAttribute( QStringLiteral( "filterExpression" ), series.filterExpression );
+    seriesElement.setAttribute( QStringLiteral( "name" ), series.name() );
+    seriesElement.setAttribute( QStringLiteral( "xExpression" ), series.xExpression() );
+    seriesElement.setAttribute( QStringLiteral( "yExpression" ), series.yExpression() );
+    seriesElement.setAttribute( QStringLiteral( "filterExpression" ), series.filterExpression() );
     seriesListElement.appendChild( seriesElement );
   }
   element.appendChild( seriesListElement );
@@ -285,9 +275,9 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
   {
     const QDomElement seriesElement = seriesNodeList.at( i ).toElement();
     SeriesDetails series( seriesElement.attribute( "name" ) );
-    series.xExpression = seriesElement.attribute( "xExpression" );
-    series.yExpression = seriesElement.attribute( "yExpression" );
-    series.filterExpression = seriesElement.attribute( "filterExpression" );
+    series.setXExpression( seriesElement.attribute( "xExpression" ) );
+    series.setYExpression( seriesElement.attribute( "yExpression" ) );
+    series.setFilterExpression( seriesElement.attribute( "filterExpression" ) );
     mSeriesList << series;
   }
 
