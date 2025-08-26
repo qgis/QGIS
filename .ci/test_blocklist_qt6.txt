@@ -34,7 +34,6 @@ PyQgsStyleStorageMssql
 PyQgsAnnotation
 PyQgsAuthenticationSystem
 PyQgsEditWidgets
-PyQgsElevationProfileCanvas
 PyQgsLayoutHtml
 PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
