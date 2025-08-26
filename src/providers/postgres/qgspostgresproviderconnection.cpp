@@ -1972,7 +1972,7 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
 
     const QList<QVariantList> results = executeSqlPrivate( sqlOverviews );
 
-    for ( QVariantList result : results )
+    for ( const QVariantList &result : std::as_const( results ) )
     {
       const QString overviewSchema = result.at( 0 ).toString();
       const QString overviewTableName = result.at( 1 ).toString();
