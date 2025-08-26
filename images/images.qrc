@@ -323,7 +323,7 @@
         <file>themes/default/mActionHelpAbout.svg</file>
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
-        <file>themes/default/ribbon/3Dtiles.png</file>
+        <file>themes/default/ribbon/3dtiles.png</file>
         <file>themes/default/ribbon/点选-选中.png</file>
         <file>themes/default/ribbon/顶点工具.png</file>
         <file>themes/default/ribbon/多边形选择要素.png</file>
@@ -408,7 +408,7 @@
         <file>themes/default/ribbon/meshing.png</file>
         <file>themes/default/ribbon/mesh.png</file>
         <file>themes/default/ribbon/mix.png</file>
-        <file>themes/default/ribbon/newLayout.png.png</file>
+        <file>themes/default/ribbon/newLayout.png</file>
         <file>themes/default/ribbon/new.png</file>
         <file>themes/default/ribbon/newReport.png</file>
         <file>themes/default/ribbon/open.png</file>

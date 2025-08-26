@@ -4196,25 +4196,15 @@
    mStyleSheetBuilder->updateStyleSheet();
    QgsApplication::setUITheme( theme );
  
-   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );
-   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
-   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
-   mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSaveAs.svg" ) ) );
-   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
+   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/new.png" ) ) );
+   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/open.png" ) ) );
+   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/save.png" ) ) );
+   mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/saveAs.png" ) ) );
    mActionSaveMapAsPdf->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAsPDF.svg" ) ) );
-   mActionExit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileExit.png" ) ) );
    mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
-   mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
- #ifdef HAVE_POSTGRESQL
-   mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ) );
- #endif
  #ifdef HAVE_SPATIALITE
    mActionNewSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewSpatiaLiteLayer.svg" ) ) );
    mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ) );
- #endif
-   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ) );
- #ifdef HAVE_ORACLE
-   mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ) );
  #endif
  #ifdef HAVE_HANA
    mActionAddHanaLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ) );
@@ -4223,7 +4213,6 @@
    mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ) );
    mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetLayerCRS.png" ) ) );
    mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetProjectCRSFromLayer.png" ) ) );
-   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewVectorLayer.svg" ) ) );
    mActionDataSourceManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDataSourceManager.svg" ) ) );
    mActionNewMemoryLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ) );
    mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAllToOverview.svg" ) ) );
@@ -4234,11 +4223,9 @@
    mActionShowSelectedLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowSelectedLayers.svg" ) ) );
    mActionRemoveAllFromOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveAllFromOverview.svg" ) ) );
    mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleFullScreen.png" ) ) );
-   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionProjectProperties.svg" ) ) );
    mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPluginManager.svg" ) ) );
    mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/mIconRunConsole.svg" ) ) );
    mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSuccess.svg" ) ) );
-   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
    mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionKeyboardShortcuts.svg" ) ) );
    mActionCustomization->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInterfaceCustomization.svg" ) ) );
    mActionHelpContents->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpContents.svg" ) ) );
@@ -4254,7 +4241,6 @@
    mActionQgisHomePage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionQgisHomePage.png" ) ) );
    mActionAbout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpAbout.svg" ) ) );
    mActionSponsors->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpSponsors.png" ) ) );
-   mActionDraw->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRefresh.svg" ) ) );
    mActionToggleEditing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
    mActionSaveLayerEdits->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAllEdits.svg" ) ) );
    mActionAllEdits->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAllEdits.svg" ) ) );
@@ -4297,47 +4283,19 @@
    mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
    mActionShowRasterCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowRasterCalculator.png" ) ) );
    mActionShowMeshCalculator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowMeshCalculator.png" ) ) );
-   mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
-   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanToSelected.svg" ) ) );
-   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
-   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
    mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
-   mActionZoomToLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
-   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ) );
-   mActionIdentify->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ) );
    mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
-   mActionSelectFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectRectangle.svg" ) ) );
-   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectPolygon.svg" ) ) );
-   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectFreehand.svg" ) ) );
-   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectRadius.svg" ) ) );
-   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectAll.svg" ) ) );
-   mActionDeselectActiveLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectActiveLayer.svg" ) ) );
-   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectAll.svg" ) ) );
-   mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInvertSelection.svg" ) ) );
-   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
-   mActionSelectByForm->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
    mActionOpenTable->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
    mActionOpenTableSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableSelected.svg" ) ) );
    mActionOpenTableVisible->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableVisible.svg" ) ) );
    mActionOpenTableEdited->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableEdited.svg" ) ) );
    mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
-   mActionMeasure->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
-   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureArea.svg" ) ) );
-   mActionMeasureAngle->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureAngle.svg" ) ) );
-   mActionMeasureBearing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureBearing.svg" ) ) );
    mActionMapTips->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapTips.svg" ) ) );
    mActionShowBookmarkManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
    mActionShowBookmarks->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
    mActionNewBookmark->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewBookmark.svg" ) ) );
    mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCustomProjection.svg" ) ) );
-   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ) );
-   mActionAddXyzLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) ) );
-   mActionAddVectorTileLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVectorTileLayer.svg" ) ) );
    mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ) );
- #ifdef HAVE_SPATIALITE
-   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ) );
- #endif
-   mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
    mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInOverview.svg" ) ) );
    mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormAnnotation.svg" ) ) );
    mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHtmlAnnotation.svg" ) ) );
@@ -4360,6 +4318,78 @@
    mActionTrimExtendFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTrimExtendFeature.svg" ) ) );
    mActionTemporalController->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) ) );
  
+   mActionNewPrintLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/newLayout.png" ) ) );
+   mActionNewReport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/newReport.png" ) ) );
+   mActionShowLayoutManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/layoutManage.png" ) ) );
+   mLayoutsMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/selectLayout.png" ) ) );
+
+   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/asw_outputPIC.png" ) ) );
+   mActionSaveMapAsPdf->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/asw_outputPDF.png" ) ) );
+   mActionDxfExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/asw_outputDXF.png" ) ) );
+
+   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/options.png" ) ) );
+
+   mActionStyleManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/styleManage.png" ) ) );
+
+   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/projectProperty.png" ) ) );
+
+   mActionExit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/esc.png" ) ) );
+
+   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/vector.png" ) ) );
+   mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/raster.png" ) ) );
+   mActionAddMeshLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/mesh.png" ) ) );
+   mActionAddPointCloudLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/pointcloud.png" ) ) );
+   mActionNewGeoPackageLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/gkpg.png" ) ) );
+   mActionAddGpsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/gps.png" ) ) );
+
+   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/spatial.png" ) ) );
+#ifdef HAVE_POSTGRESQL
+   mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/postgresql.png" ) ) );
+#endif
+   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/SQL server.png" ) ) );
+#ifdef HAVE_ORACLE
+   mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/oracle.png" ) ) );
+#endif
+   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/WMTS.png" ) ) );
+#ifdef HAVE_SPATIALITE   
+   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/WFS.png" ) ) );
+#endif  
+   mActionAddXyzLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/xyz.png" ) ) );
+   mActionAddVectorTileLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/tile.png" ) ) );
+   mActionNewVirtualLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/3dtiles.png" ) ) );
+   mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/arcgis.png" ) ) );
+
+   mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/polygonS.png" ) ) );
+   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/freeS.png" ) ) );
+   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/circleS.png" ) ) );
+   mActionSelectByForm->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/keyword.png" ) ) );
+   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/expression.png" ) ) );
+   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/allS.png" ) ) );
+   mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/deselect.png" ) ) );
+   mActionDeselectActiveLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/deselectCurrent.png" ) ) );
+   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/deselectAll.png" ) ) );
+
+   mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/漫游.png" ) ) );
+   mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/平移.png" ) ) );
+   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/放大.png" ) ) );
+   mActionZoomOut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/缩小.png" ) ) );
+   mActionZoomFullExtent->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/全图.png" ) ) );
+   mActionZoomToSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/缩放至选择.png" ) ) );
+   mActionZoomToLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/缩放至图层.png" ) ) );
+   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/分辨率.png" ) ) );
+   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/上一视图.png" ) ) );
+   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/下一视图.png" ) ) );
+   mActionDraw->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/刷新.png" ) ) );
+
+   mActionMeasure->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/距离测量.png" ) ) );
+   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/面积测量.png" ) ) );
+   mActionMeasureBearing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/方位角测量.png" ) ) );
+   mActionMeasureAngle->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/角度测量.png" ) ) );
+
+   mActionIdentify->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/点击查询.png" ) ) );
+
+   mActionSelectFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/点选-选中.png" ) ) );
+
    emit currentThemeChanged( themeName );
  }
  
@@ -17751,23 +17781,19 @@ void QgisApp::triterrainruggednessindexCacl()
 #pragma region 文件
   SARibbonPannel* filePanel = new SARibbonPannel("文件");
   if (mActionNewProject) {
-    mActionNewProject->setIcon(QgsApplication::getThemeIcon("ribbon/new.png"));
     mActionNewProject->setText("新建");
     filePanel->addAction(mActionNewProject);
   }
   if (mActionOpenProject) {
-    mActionOpenProject->setIcon(QgsApplication::getThemeIcon("ribbon/open.png"));
     mActionOpenProject->setText("打开");
     filePanel->addAction(mActionOpenProject);
   }
   /// todo:最近
   if (mActionSaveProject) {
-    mActionSaveProject->setIcon(QgsApplication::getThemeIcon("ribbon/save.png"));
     mActionSaveProject->setText("保存");
     filePanel->addAction(mActionSaveProject);
   }
   if (mActionSaveProjectAs) {
-    mActionSaveProjectAs->setIcon(QgsApplication::getThemeIcon("ribbon/saveAs.png"));
     mActionSaveProjectAs->setText("另存为");
     filePanel->addAction(mActionSaveProjectAs);
   }
@@ -17779,25 +17805,21 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* printPanel = new SARibbonPannel("打印");
   // 新建布局
   if (mActionNewPrintLayout) {
-    mActionNewPrintLayout->setIcon(QgsApplication::getThemeIcon("ribbon/newLayout.png"));
     mActionNewPrintLayout->setText("新建布局");
     printPanel->addAction(mActionNewPrintLayout);
   }
   // 新建报告
   if (mActionNewReport) {
-    mActionNewReport->setIcon(QgsApplication::getThemeIcon("ribbon/newReport.png"));
     mActionNewReport->setText("新建报告");
     printPanel->addAction(mActionNewReport);
   }
   // 布局管理
   if (mActionShowLayoutManager) {
-    mActionShowLayoutManager->setIcon(QgsApplication::getThemeIcon("ribbon/layoutManage.png"));
     mActionShowLayoutManager->setText("布局管理");
     printPanel->addAction(mActionShowLayoutManager);
   }
   // 选择布局
   if (mLayoutsMenu) {
-    mLayoutsMenu->setIcon(QgsApplication::getThemeIcon("ribbon/selectLayout.png"));
     // mLayoutsMenu->setText("选择布局");
     printPanel->addMenu(mLayoutsMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
   }
@@ -17808,19 +17830,16 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* outputPanel = new SARibbonPannel("输出");
   // 导出图片
   if (mActionSaveMapAsImage) {
-    mActionSaveMapAsImage->setIcon(QgsApplication::getThemeIcon("ribbon/asw_outputPIC.png"));
     mActionSaveMapAsImage->setText("导出图片");
     outputPanel->addAction(mActionSaveMapAsImage);
   }
   // 导出PDF
   if (mActionSaveMapAsPdf) {
-    mActionSaveMapAsPdf->setIcon(QgsApplication::getThemeIcon("ribbon/asw_outputPDF.png"));
     mActionSaveMapAsPdf->setText("导出PDF");
     outputPanel->addAction(mActionSaveMapAsPdf);
   }
   // 导出DXF
   if (mActionDxfExport) {
-    mActionDxfExport->setIcon(QgsApplication::getThemeIcon("ribbon/asw_outputDXF.png"));
     mActionDxfExport->setText("导出DXF");
     outputPanel->addAction(mActionDxfExport);
   }
@@ -17831,7 +17850,6 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* optionsPanel = new SARibbonPannel("选项");
   // 选项
   if (mActionOptions) {
-    mActionOptions->setIcon(QgsApplication::getThemeIcon("ribbon/options.png"));
     mActionOptions->setText("选项");
     optionsPanel->addAction(mActionOptions);
   }
@@ -17842,7 +17860,6 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* styleManagePanel = new SARibbonPannel("样式管理");
   // 样式管理
   if (mActionStyleManager) {
-    mActionStyleManager->setIcon(QgsApplication::getThemeIcon("ribbon/styleManage.png"));
     mActionStyleManager->setText("样式管理");
     styleManagePanel->addAction(mActionStyleManager);
   }
@@ -17853,7 +17870,6 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* projectPropertyPanel = new SARibbonPannel("工程属性");
   // 工程属性
   if (mActionProjectProperties) {
-    mActionProjectProperties->setIcon(QgsApplication::getThemeIcon("ribbon/projectProperty.png"));
     mActionProjectProperties->setText("工程属性");
     projectPropertyPanel->addAction(mActionProjectProperties);
   }
@@ -17865,7 +17881,6 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* exitPanel = new SARibbonPannel("退出");
   // 退出
   if (mActionExit) {
-    mActionExit->setIcon(QgsApplication::getThemeIcon("ribbon/esc.png"));
     mActionExit->setText("退出");
     exitPanel->addAction(mActionExit);
   }
@@ -17888,43 +17903,36 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* localDataPanel = new SARibbonPannel("本地数据");
   // 矢量数据
   if (mActionNewVectorLayer) {
-    mActionNewVectorLayer->setIcon(QgsApplication::getThemeIcon("ribbon/vector.png"));
     mActionNewVectorLayer->setText("矢量数据");
     localDataPanel->addAction(mActionNewVectorLayer);
   }
   // 栅格数据
   if (mActionAddRasterLayer) {
-    mActionAddRasterLayer->setIcon(QgsApplication::getThemeIcon("ribbon/raster.png"));
     mActionAddRasterLayer->setText("栅格数据");
     localDataPanel->addAction(mActionAddRasterLayer);
   }
   // 网格数据
   if (mActionAddMeshLayer) {
-    mActionAddMeshLayer->setIcon(QgsApplication::getThemeIcon("ribbon/mesh.png"));
     mActionAddMeshLayer->setText("网格数据");
     localDataPanel->addAction(mActionAddMeshLayer);
   }
   // 点云数据
   if (mActionAddPointCloudLayer) {
-    mActionAddPointCloudLayer->setIcon(QgsApplication::getThemeIcon("ribbon/pointcloud.png"));
     mActionAddPointCloudLayer->setText("点云数据");
     localDataPanel->addAction(mActionAddPointCloudLayer);
   }
   // 文本数据
   if (mActionAddXyzLayer) {
-    mActionAddXyzLayer->setIcon(QgsApplication::getThemeIcon("ribbon/txt.png"));
     mActionAddXyzLayer->setText("文本数据");
     localDataPanel->addAction(mActionAddXyzLayer);
   }
   // GeoPackage
   if (mActionNewGeoPackageLayer) {
-    mActionNewGeoPackageLayer->setIcon(QgsApplication::getThemeIcon("ribbon/gkpg.png"));
     mActionNewGeoPackageLayer->setText("GeoPackage");
     localDataPanel->addAction(mActionNewGeoPackageLayer);
   }
   // GPS数据
   if (mActionAddGpsLayer) {
-    mActionAddGpsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/gps.png"));
     mActionAddGpsLayer->setText("GPS数据");
     localDataPanel->addAction(mActionAddGpsLayer);
   }
@@ -17935,25 +17943,21 @@ void QgisApp::triterrainruggednessindexCacl()
   SARibbonPannel* databasePanel = new SARibbonPannel("数据库");
   // spatialite
   if (mActionAddSpatiaLiteLayer) {
-    mActionAddSpatiaLiteLayer->setIcon(QgsApplication::getThemeIcon("ribbon/spatial.png"));
     mActionAddSpatiaLiteLayer->setText("spatialite");
     databasePanel->addAction(mActionAddSpatiaLiteLayer);
   }
   // PostgreSQL
   if (mActionAddPgLayer) {
-    mActionAddPgLayer->setIcon(QgsApplication::getThemeIcon("ribbon/postgresql.png"));
     mActionAddPgLayer->setText("PostgreSQL");
     databasePanel->addAction(mActionAddPgLayer);
   }
   // MS SQLServer
   if (mActionAddMssqlLayer) {
-    mActionAddMssqlLayer->setIcon(QgsApplication::getThemeIcon("ribbon/SQL server.png"));
     mActionAddMssqlLayer->setText("MS SQLServer");
     databasePanel->addAction(mActionAddMssqlLayer);
   }
   // Oracle
   if (mActionAddOracleLayer) {
-    mActionAddOracleLayer->setIcon(QgsApplication::getThemeIcon("ribbon/oracle.png"));
     mActionAddOracleLayer->setText("Oracle");
     databasePanel->addAction(mActionAddOracleLayer);
   }
@@ -17965,32 +17969,26 @@ void QgisApp::triterrainruggednessindexCacl()
   mapCategory->addPannel(mapServicePanel);
 
   if (mActionAddWmsLayer) {
-    mActionAddWmsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/WMTS.png"));
     mActionAddWmsLayer->setText("WMS");
     mapServicePanel->addAction(mActionAddWmsLayer);
   }
   if (mActionAddWfsLayer) {
-    mActionAddWfsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/WFS.png"));
     mActionAddWfsLayer->setText("WFS");
     mapServicePanel->addAction(mActionAddWfsLayer);
   }
   if (mActionAddXyzLayer) {
-    mActionAddXyzLayer->setIcon(QgsApplication::getThemeIcon("ribbon/xyz.png"));
     mActionAddXyzLayer->setText("XYZ");
     mapServicePanel->addAction(mActionAddXyzLayer);
   }
   if (mActionAddVectorTileLayer) {
-    mActionAddVectorTileLayer->setIcon(QgsApplication::getThemeIcon("ribbon/tile.png"));
     mActionAddVectorTileLayer->setText("矢量瓦片");
     mapServicePanel->addAction(mActionAddVectorTileLayer);
   }
   if (mActionNewVirtualLayer) {
-    mActionNewVirtualLayer->setIcon(QgsApplication::getThemeIcon("ribbon/3dtiles.png"));
     mActionNewVirtualLayer->setText("3dtiles");
     mapServicePanel->addAction(mActionNewVirtualLayer);
   }
   if (mActionAddAfsLayer) {
-    mActionAddAfsLayer->setIcon(QgsApplication::getThemeIcon("ribbon/arcgis.png"));
     mActionAddAfsLayer->setText("arcgisfeatureserver");
     mapServicePanel->addAction(mActionAddAfsLayer);
   }
@@ -18000,55 +17998,45 @@ void QgisApp::triterrainruggednessindexCacl()
   mapCategory->addPannel(selectPanel);
 
   QMenu* selectMenu = new QMenu("选择", this);
-  selectMenu->setIcon(QgsApplication::getThemeIcon("ribbon/select.png"));
+  selectMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/select.png" ) ) );
   selectPanel->addMenu(selectMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
   if (mActionSelectFeatures) {
-    mActionSelectFeatures->setIcon(QgsApplication::getThemeIcon("ribbon/pointS.png"));
     mActionSelectFeatures->setText("点选");
     selectMenu->addAction(mActionSelectFeatures);
   }
   if (mActionSelectPolygon) {
-    mActionSelectPolygon->setIcon(QgsApplication::getThemeIcon("ribbon/polygonS.png"));
     mActionSelectPolygon->setText("多边形选择");
     selectMenu->addAction(mActionSelectPolygon);
   }
   if (mActionSelectFreehand) {
-    mActionSelectFreehand->setIcon(QgsApplication::getThemeIcon("ribbon/freeS.png"));
     mActionSelectFreehand->setText("自由选择");
     selectMenu->addAction(mActionSelectFreehand);
   }
   if (mActionSelectRadius) {  
-    mActionSelectRadius->setIcon(QgsApplication::getThemeIcon("ribbon/circleS.png"));
     mActionSelectRadius->setText("圆形选择");
     selectMenu->addAction(mActionSelectRadius);
   }
   if (mActionSelectByForm) {
-    mActionSelectByForm->setIcon(QgsApplication::getThemeIcon("ribbon/keyword.png"));
     mActionSelectByForm->setText("关键字选择");
     selectMenu->addAction(mActionSelectByForm);
   }
   if (mActionSelectByExpression) {
-    mActionSelectByExpression->setIcon(QgsApplication::getThemeIcon("ribbon/expression.png"));
     mActionSelectByExpression->setText("表达式选择");
     selectMenu->addAction(mActionSelectByExpression);
   }
-  if (mActionDeselectAll) { 
-    mActionDeselectAll->setIcon(QgsApplication::getThemeIcon("ribbon/allS.png"));
-    mActionDeselectAll->setText("全选要素");
-    selectMenu->addAction(mActionDeselectAll);
+  if (mActionSelectAll) { 
+    mActionSelectAll->setText("全选要素");
+    selectMenu->addAction(mActionSelectAll);
   }
   if (mActionInvertSelection) {
-    mActionInvertSelection->setIcon(QgsApplication::getThemeIcon("ribbon/deselect.png"));
     mActionInvertSelection->setText("反选要素");
     selectMenu->addAction(mActionInvertSelection);
   }
   if (mActionDeselectActiveLayer) {
-    mActionDeselectActiveLayer->setIcon(QgsApplication::getThemeIcon("ribbon/deselectCurrent.png"));
     mActionDeselectActiveLayer->setText("当前图层取消选择");
     selectMenu->addAction(mActionDeselectActiveLayer);
   }
   if (mActionDeselectAll) {
-    mActionDeselectAll->setIcon(QgsApplication::getThemeIcon("ribbon/deselectAll.png"));
     mActionDeselectAll->setText("所有图层取消选择");
     selectMenu->addAction(mActionDeselectAll);
   }
@@ -18073,97 +18061,81 @@ void QgisApp::triterrainruggednessindexCacl()
    naviMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/导航.png"));
    toolBoxPanel->addMenu(naviMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
    if (mActionPan) {
-    mActionPan->setIcon(QgsApplication::getThemeIcon("ribbon/icon/漫游.png"));
     mActionPan->setText("漫游");
     naviMenu->addAction(mActionPan);
   }
   if (mActionPanToSelected) {
-    mActionPanToSelected->setIcon(QgsApplication::getThemeIcon("ribbon/icon/平移.png"));
     mActionPanToSelected->setText("平移至选择");
     naviMenu->addAction(mActionPanToSelected);
   }
   if (mActionZoomIn) {
-    mActionZoomIn->setIcon(QgsApplication::getThemeIcon("ribbon/icon/放大.png"));
     mActionZoomIn->setText("放大");
     naviMenu->addAction(mActionZoomIn);
   }
   if (mActionZoomOut) {
-    mActionZoomOut->setIcon(QgsApplication::getThemeIcon("ribbon/icon/缩小.png"));
     mActionZoomOut->setText("缩小");
     naviMenu->addAction(mActionZoomOut);
   }
   if (mActionZoomFullExtent) {
-    mActionZoomFullExtent->setIcon(QgsApplication::getThemeIcon("ribbon/icon/全图.png"));
     mActionZoomFullExtent->setText("全图");
     naviMenu->addAction(mActionZoomFullExtent);
   }
   if (mActionZoomToSelected) {
-    mActionZoomToSelected->setIcon(QgsApplication::getThemeIcon("ribbon/icon/缩放至选择.png"));
     mActionZoomToSelected->setText("缩放至选择");
     naviMenu->addAction(mActionZoomToSelected);
   }
   if (mActionZoomToLayers) {
-    mActionZoomToLayers->setIcon(QgsApplication::getThemeIcon("ribbon/icon/缩放至图层.png"));
     mActionZoomToLayers->setText("缩放至图层");
     naviMenu->addAction(mActionZoomToLayers);
   }
   if (mActionZoomActualSize) {
-    mActionZoomActualSize->setIcon(QgsApplication::getThemeIcon("ribbon/icon/分辨率.png"));
     mActionZoomActualSize->setText("缩放至分辨率");
     naviMenu->addAction(mActionZoomActualSize);
   }
   if (mActionZoomLast) {
-    mActionZoomLast->setIcon(QgsApplication::getThemeIcon("ribbon/icon/上一视图.png"));
     mActionZoomLast->setText("上一视图");
     naviMenu->addAction(mActionZoomLast);
   }
   if (mActionZoomNext) {
-    mActionZoomNext->setIcon(QgsApplication::getThemeIcon("ribbon/icon/下一视图.png"));
     mActionZoomNext->setText("下一视图");
     naviMenu->addAction(mActionZoomNext);
   }
   if (mActionDraw) {
-    mActionDraw->setIcon(QgsApplication::getThemeIcon("ribbon/icon/刷新.png"));
     mActionDraw->setText("刷新");
     naviMenu->addAction(mActionDraw);
   }
 
   // 测量menu
   QMenu* measureMenu = new QMenu("测量", this);
-  measureMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/测量.png"));
+  measureMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/测量.png" ) ) );
   toolBoxPanel->addMenu(measureMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
   if (mActionMeasure) {
-    mActionMeasure->setIcon(QgsApplication::getThemeIcon("ribbon/icon/距离测量.png"));
     mActionMeasure->setText("距离测量");
     measureMenu->addAction(mActionMeasure);
   }
   if (mActionMeasureArea) {
-    mActionMeasureArea->setIcon(QgsApplication::getThemeIcon("ribbon/icon/面积测量.png"));
     mActionMeasureArea->setText("面积测量");
     measureMenu->addAction(mActionMeasureArea);
   }
   if (mActionMeasureBearing) {
-    mActionMeasureBearing->setIcon(QgsApplication::getThemeIcon("ribbon/icon/方位角测量.png"));
     mActionMeasureBearing->setText("方位角测量");
     measureMenu->addAction(mActionMeasureBearing);
   }
   if (mActionMeasureAngle) {
-    mActionMeasureAngle->setIcon(QgsApplication::getThemeIcon("ribbon/icon/角度测量.png"));
     mActionMeasureAngle->setText("角度测量");
     measureMenu->addAction(mActionMeasureAngle);
   }
 
   // 书签menu
   QMenu* bookmarkMenu = new QMenu("书签", this);
-  bookmarkMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/书签.png"));
+  bookmarkMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/书签.png" ) ) );
   toolBoxPanel->addMenu(bookmarkMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
 
   // 查询menu
   QMenu* queryMenu = new QMenu("查询", this);
-  queryMenu->setIcon(QgsApplication::getThemeIcon("ribbon/icon/查询.png"));
+  queryMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/查询.png" ) ) );
   toolBoxPanel->addMenu(queryMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
   if (mActionIdentify) {
-    mActionIdentify->setIcon(QgsApplication::getThemeIcon("ribbon/icon/点击查询.png"));
     mActionIdentify->setText("点击查询");
     queryMenu->addAction(mActionIdentify);
   }
@@ -18351,6 +18323,271 @@ void QgisApp::triterrainruggednessindexCacl()
    SARibbonCategory* editCategory = new SARibbonCategory("编辑");
    mRibbonBar->addCategoryPage(editCategory);
 
+   SARibbonPannel* editToolPanel = new SARibbonPannel("编辑工具");
+   editCategory->addPannel(editToolPanel);
+
+  // 编辑工具menu
+  QMenu* editToolMenu = new QMenu("编辑工具", this);
+  editToolMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/选择.png" ) ) );
+  editToolPanel->addMenu(editToolMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  if (mActionSelectFeatures) {
+    mActionSelectFeatures->setText("选择要素");
+    mActionSelectFeatures->setToolTip("选择要素");
+    mActionSelectFeatures->setChecked(false);
+    editToolMenu->addAction(mActionSelectFeatures);
+  }
+  if (mActionSelectPolygon) {
+    mActionSelectPolygon->setText("按多边形选择要素");
+    mActionSelectPolygon->setToolTip("按多边形选择要素");
+    mActionSelectPolygon->setChecked(false);
+    editToolMenu->addAction(mActionSelectPolygon);
+  }
+  if (mActionSelectFreehand) {
+    mActionSelectFreehand->setText("自由手绘选择要素");
+    mActionSelectFreehand->setToolTip("按多边形选择要素");
+    mActionSelectFreehand->setChecked(false);
+    editToolMenu->addAction(mActionSelectFreehand);
+  }
+  if (mActionSelectRadius) {
+    mActionSelectRadius->setText("圆形选择要素");
+    mActionSelectRadius->setToolTip("圆形选择要素");
+    mActionSelectRadius->setChecked(false);
+    editToolMenu->addAction(mActionSelectRadius);
+  }  
+
+  // 编辑管理menu
+  QMenu* editManageMenu = new QMenu("编辑管理", this);
+  editManageMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/btn_编辑管理者.png" ) ) );
+  editToolPanel->addMenu(editManageMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  if (mActionToggleEditing) {
+    mActionToggleEditing->setText("开始/停止编辑");
+    mActionToggleEditing->setToolTip("开始/停止编辑");
+    mActionToggleEditing->setChecked(false);
+    editManageMenu->addAction(mActionToggleEditing);
+  }
+  if (mActionUndo) {
+    mActionUndo->setText("撤销");
+    mActionUndo->setToolTip("撤销");
+    mActionUndo->setChecked(false);
+    editManageMenu->addAction(mActionUndo);
+  }
+  if (mActionRedo) {
+    mActionRedo->setText("重做");
+    mActionRedo->setToolTip("重做");
+    mActionRedo->setChecked(false);
+    editManageMenu->addAction(mActionRedo);
+  }
+
+   // 剪贴板menu
+   QMenu* clipboardMenu = new QMenu("剪贴板", this);
+   clipboardMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/剪贴板.png" ) ) );
+   editToolPanel->addMenu(clipboardMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+   if (mActionCutFeatures) {
+    mActionCutFeatures->setText("剪切");
+    mActionCutFeatures->setToolTip("剪切");
+    mActionCutFeatures->setChecked(false);
+    clipboardMenu->addAction(mActionCutFeatures);
+   }
+   if (mActionCopyFeatures) {
+    mActionCopyFeatures->setText("复制");
+    mActionCopyFeatures->setToolTip("复制");
+    mActionCopyFeatures->setChecked(false);
+    clipboardMenu->addAction(mActionCopyFeatures);
+  }
+  if (mActionPasteFeatures) {
+    mActionPasteFeatures->setText("粘贴");
+    mActionPasteFeatures->setToolTip("粘贴");
+    mActionPasteFeatures->setChecked(false);
+    clipboardMenu->addAction(mActionPasteFeatures);
+  }
+  if (mActionPasteAsNewVector) {
+    mActionPasteAsNewVector->setText("粘贴为新图层");
+    mActionPasteAsNewVector->setToolTip("粘贴为新图层");
+    mActionPasteAsNewVector->setChecked(false);
+    clipboardMenu->addAction(mActionPasteAsNewVector);
+  }
+  if (mActionPasteAsNewMemoryVector) {
+    mActionPasteAsNewMemoryVector->setText("粘贴为临时图层");
+    mActionPasteAsNewMemoryVector->setToolTip("粘贴为临时图层");
+    mActionPasteAsNewMemoryVector->setChecked(false);
+    clipboardMenu->addAction(mActionPasteAsNewMemoryVector);
+  }
+
+   // 属性编辑menu
+   QMenu* attributeEditMenu = new QMenu("属性编辑", this);
+   attributeEditMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/属性编辑.png" ) ) );
+   editToolPanel->addMenu(attributeEditMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+   if (mActionMultiEditAttributes) {
+    mActionMultiEditAttributes->setText("修改属性");
+    mActionMultiEditAttributes->setToolTip("修改属性");
+    mActionMultiEditAttributes->setChecked(false);
+    attributeEditMenu->addAction(mActionMultiEditAttributes);
+  }
+  if (mActionMergeFeatureAttributes) {
+    mActionMergeFeatureAttributes->setText("合并属性");
+    mActionMergeFeatureAttributes->setToolTip("合并属性");
+    mActionMergeFeatureAttributes->setChecked(false);
+    attributeEditMenu->addAction(mActionMergeFeatureAttributes);
+  }
+
+   // 几何编辑menu
+   QMenu* geometryEditMenu = new QMenu("几何编辑", this);
+   geometryEditMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/几何编辑.png" ) ) );
+   editToolPanel->addMenu(geometryEditMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+   if (mActionMoveFeature) {
+    mActionMoveFeature->setText("移动要素");
+    mActionMoveFeature->setToolTip("移动要素");
+    mActionMoveFeature->setChecked(false);
+    geometryEditMenu->addAction(mActionMoveFeature);
+  }
+  if (mActionMoveFeatureCopy) {
+    mActionMoveFeatureCopy->setText("复制并移动要素");
+    mActionMoveFeatureCopy->setToolTip("复制并移动要素");
+    mActionMoveFeatureCopy->setChecked(false);
+    geometryEditMenu->addAction(mActionMoveFeatureCopy);
+  }
+  if (mActionRotateFeature) {
+    mActionRotateFeature->setText("旋转要素");
+    mActionRotateFeature->setToolTip("旋转要素");
+    mActionRotateFeature->setChecked(false);
+    geometryEditMenu->addAction(mActionRotateFeature);
+  }
+  if (mActionScaleFeature) {
+    mActionScaleFeature->setText("缩放要素");
+    mActionScaleFeature->setToolTip("缩放要素");
+    mActionScaleFeature->setChecked(false);
+    geometryEditMenu->addAction(mActionScaleFeature);
+  }
+  if (mActionSimplifyFeature) {
+    mActionSimplifyFeature->setText("简化要素");
+    mActionSimplifyFeature->setToolTip("简化要素");
+    mActionSimplifyFeature->setChecked(false);
+    geometryEditMenu->addAction(mActionSimplifyFeature);
+  }
+  if (mActionAddRing) {
+    mActionAddRing->setText("添加环");
+    mActionAddRing->setToolTip("添加环");
+    mActionAddRing->setChecked(false);
+    geometryEditMenu->addAction(mActionAddRing);
+  }
+  if (mActionAddPart) {
+    mActionAddPart->setText("添加部件");
+    mActionAddPart->setToolTip("添加部件");
+    mActionAddPart->setChecked(false);
+    geometryEditMenu->addAction(mActionAddPart);
+  }
+  if (mActionFillRing) {
+    mActionFillRing->setText("填充环");
+    mActionFillRing->setToolTip("填充环");
+    mActionFillRing->setChecked(false);
+    geometryEditMenu->addAction(mActionFillRing);
+  }
+  if (mActionDeleteRing) {
+    mActionDeleteRing->setText("删除环");
+    mActionDeleteRing->setToolTip("删除环");
+    mActionDeleteRing->setChecked(false);
+    geometryEditMenu->addAction(mActionDeleteRing);
+  }
+  if (mActionDeletePart) {
+    mActionDeletePart->setText("删除部件");
+    mActionDeletePart->setToolTip("删除部件");
+    mActionDeletePart->setChecked(false);
+    geometryEditMenu->addAction(mActionDeletePart);
+  }
+  if (mActionReshapeFeatures) {
+    mActionReshapeFeatures->setText("重塑要素");
+    mActionReshapeFeatures->setToolTip("重塑要素");
+    mActionReshapeFeatures->setChecked(false);
+    geometryEditMenu->addAction(mActionReshapeFeatures);
+  }
+  if (mActionOffsetCurve) {
+    mActionOffsetCurve->setText("偏移曲线");
+    mActionOffsetCurve->setToolTip("偏移曲线");
+    mActionOffsetCurve->setChecked(false);
+    geometryEditMenu->addAction(mActionOffsetCurve);
+  }
+  if (mActionSplitFeatures) {
+    mActionSplitFeatures->setText("分割要素");
+    mActionSplitFeatures->setToolTip("分割要素");
+    mActionSplitFeatures->setChecked(false);
+    geometryEditMenu->addAction(mActionSplitFeatures);
+  }
+  if (mActionSplitParts) {
+    mActionSplitParts->setText("分割部件");
+    mActionSplitParts->setToolTip("分割部件");
+    mActionSplitParts->setChecked(false);
+    geometryEditMenu->addAction(mActionSplitParts);
+  }
+  if (mActionMergeFeatures) {
+    mActionMergeFeatures->setText("合并所选要素");
+    mActionMergeFeatures->setToolTip("合并所选要素");
+    mActionMergeFeatures->setChecked(false);
+    geometryEditMenu->addAction(mActionMergeFeatures);
+  }
+  if (mActionVertexTool) {
+    mActionVertexTool->setText("顶点工具（所有图层）");
+    mActionVertexTool->setToolTip("顶点工具（所有图层）");
+    mActionVertexTool->setChecked(false);
+    geometryEditMenu->addAction(mActionVertexTool);
+  }
+  if (mActionReverseLine) {
+    mActionReverseLine->setText("反转线");
+    mActionReverseLine->setToolTip("反转线");
+    mActionReverseLine->setChecked(false);
+    geometryEditMenu->addAction(mActionReverseLine);
+  }
+  if (mActionTrimExtendFeature) {
+    mActionTrimExtendFeature->setText("裁剪/扩展要素");
+    mActionTrimExtendFeature->setToolTip("裁剪/扩展要素");
+    mActionTrimExtendFeature->setChecked(false);
+    geometryEditMenu->addAction(mActionTrimExtendFeature);
+  }
+
+   // 几何编辑menu
+   QMenu* annotationMenu = new QMenu("添加注记", this);
+   annotationMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/添加注记层.png" ) ) );
+   editToolPanel->addMenu(annotationMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  //  if (mActionTextAnnotation) {
+  //   mActionTextAnnotation->setText("添加文本注记");
+  //   mActionTextAnnotation->setToolTip("添加文本注记")
+  //   mActionTextAnnotation->setChecked(false);
+  //   annotationMenu->addAction(mActionTextAnnotation);
+  // }
+  // if (mActionFormAnnotation) {
+  //   mActionFormAnnotation->setText("添加表单注记");
+  //   mActionFormAnnotation->setToolTip("添加表单注记");
+  //   mActionFormAnnotation->setChecked(false);
+  //   annotationMenu->addAction(mActionFormAnnotation);
+  // }
+  // if (mActionHtmlAnnotation) {
+  //   mActionHtmlAnnotation->setText("添加HTML注记");
+  //   mActionHtmlAnnotation->setToolTip("添加HTML注记");
+  //   mActionHtmlAnnotation->setChecked(false);
+  //   annotationMenu->addAction(mActionHtmlAnnotation);
+  // }
+  // if (mActionSvgAnnotation) {
+  //   mActionSvgAnnotation->setText("添加SVG注记");
+  //   mActionSvgAnnotation->setToolTip("添加SVG注记");
+  //   mActionSvgAnnotation->setChecked(false);
+  //   annotationMenu->addAction(mActionSvgAnnotation);
+  // }
+  // if (mActionSvgAnnotation) {
+  //   mActionSvgAnnotation->setText("添加SVG注记");
+  //   mActionSvgAnnotation->setToolTip("添加SVG注记");
+  //   mActionSvgAnnotation->setChecked(false);
+  //   annotationMenu->addAction(mActionSvgAnnotation);
+  // }
+
+   // 捕捉设置menu
+   QMenu* snappingMenu = new QMenu("捕捉设置", this);
+   snappingMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/捕捉设置.png" ) ) );
+   editToolPanel->addMenu(snappingMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+   if (mActionSnappingOptions) {
+    mActionSnappingOptions->setText("捕捉选项");
+    mActionSnappingOptions->setToolTip("捕捉选项");
+    mActionSnappingOptions->setChecked(false);
+    snappingMenu->addAction(mActionSnappingOptions);
+  }
  }
 
   void QgisApp::createHelpRibbonCategory()
@@ -18363,4 +18600,50 @@ void QgisApp::triterrainruggednessindexCacl()
    SARibbonCategory* helpCategory = new SARibbonCategory("帮助");
    mRibbonBar->addCategoryPage(helpCategory);
 
+   SARibbonPannel* helpPanel = new SARibbonPannel("帮助");
+   helpCategory->addPannel(helpPanel);
+
+   QMenu* helpMenu = new QMenu("帮助", this);
+  helpMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/ribbon/icon/帮助.png" ) ) );
+  helpPanel->addMenu(helpMenu, SARibbonPannelItem::Large, QToolButton::InstantPopup);
+  if (mActionHelpContents) {
+    mActionHelpContents->setText("帮助");
+    mActionHelpContents->setToolTip("帮助");
+    helpMenu->addAction(mActionHelpContents);
+  }
+  if (mActionHelpAPI) {
+    mActionHelpAPI->setText("C++ API 文档");
+    mActionHelpAPI->setToolTip("C++ API 文档");
+    helpMenu->addAction(mActionHelpAPI);
+  }
+
+  if (mActionHelpPyQgisAPI) {
+    mActionHelpPyQgisAPI->setText("PyQGIS API 文档");
+    mActionHelpPyQgisAPI->setToolTip("PyQGIS API 文档");
+    helpMenu->addAction(mActionHelpPyQgisAPI);
+  }
+
+  if (mActionNeedSupport) {
+    mActionNeedSupport->setText("QGIS维护人员");
+    mActionNeedSupport->setToolTip("QGIS维护人员");
+    helpMenu->addAction(mActionNeedSupport);
+  }
+
+  if (mActionQgisHomePage) {
+    mActionQgisHomePage->setText("QGIS主页");
+    mActionQgisHomePage->setToolTip("QGIS主页");
+    helpMenu->addAction(mActionQgisHomePage);
+  }
+
+  if (mActionCheckQgisVersion) {  
+    mActionCheckQgisVersion->setText("检查QGIS更新");
+    mActionCheckQgisVersion->setToolTip("检查QGIS更新");
+    helpMenu->addAction(mActionCheckQgisVersion);
+  }
+
+  if (mActionAbout) {
+    mActionAbout->setText("关于");
+    mActionAbout->setToolTip("关于");
+    helpMenu->addAction(mActionAbout);
+  }
  }
