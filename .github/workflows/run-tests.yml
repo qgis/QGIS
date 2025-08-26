@@ -68,7 +68,7 @@ jobs:
             unity-builds: ON
 
           - distro: fedora
-            distro-version: '39'
+            distro-version: '41'
             qt-version: 6
             run-tests: true
             with-qt6: ON
@@ -275,7 +275,7 @@ jobs:
 
           - qt-version: 6
             distro: fedora
-            distro-version: '39'
+            distro-version: '41'
             docker-target: binary-only
             test-blocklist-file: .ci/test_blocklist_qt6_fedora.txt
             test-batch: ALL_BUT_PROVIDERS
