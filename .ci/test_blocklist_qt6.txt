@@ -34,7 +34,6 @@ PyQgsAuthenticationSystem
 PyQgsEditWidgets
 PyQgsElevationProfileCanvas
 PyQgsLayoutHtml
-PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
 PyQgsSettings
 PyQgsSettingsEntry
