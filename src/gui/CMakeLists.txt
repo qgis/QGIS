@@ -389,6 +389,7 @@ set(QGIS_GUI_SRCS
   plot/qgsplottoolxaxiszoom.cpp
   plot/qgsplottoolzoom.cpp
   plot/qgsplottransienttools.cpp
+  plot/qgsplotwidget.cpp
 
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
@@ -1391,6 +1392,7 @@ set(QGIS_GUI_HDRS
   plot/qgsplottoolxaxiszoom.h
   plot/qgsplottoolzoom.h
   plot/qgsplottransienttools.h
+  plot/qgsplotwidget.h
 
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h

@@ -18,10 +18,12 @@
 #include "qgslayoutchartwidget.h"
 #include "moc_qgslayoutchartwidget.cpp"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgslayout.h"
 #include "qgslayoutchartseriesdetailswidget.h"
 #include "qgslayoutitemchart.h"
 #include "qgsplotregistry.h"
+#include "qgsplotwidget.h"
 
 
 QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
@@ -43,6 +45,7 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   mLayerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
 
   connect( mChartTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged );
+  connect( mChartPropertiesButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mChartPropertiesButton_clicked );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutChartWidget::changeLayer );
   connect( mSeriesListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_currentItemChanged );
   connect( mSeriesListWidget, &QListWidget::itemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_itemChanged );
@@ -123,6 +126,46 @@ void QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged( int )
   mChartItem->setPlot( plot );
   mChartItem->update();
   mChartItem->endCommand();
+}
+
+void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  QgsGui::initPlotWidgets();
+
+  const QString plotType = mChartTypeComboBox->currentData().toString();
+  QgsPlotAbstractMetadata *abstractMetadata = QgsApplication::instance()->plotRegistry()->plotMetadata( plotType );
+  QgsPlotMetadata *metadata = dynamic_cast<QgsPlotMetadata *>( abstractMetadata );
+  if ( !abstractMetadata )
+  {
+    return;
+  }
+
+  QgsPlotWidget *widget = metadata->createPlotWidget( this );
+  if ( !widget )
+  {
+    return;
+  }
+
+  widget->setPlot( mChartItem->plot() );
+
+  connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+    if ( !mChartItem )
+    {
+      return;
+    }
+
+    mChartItem->beginCommand( tr( "Modify Chart" ) );
+    mChartItem->setPlot( widget->plot() );
+    mChartItem->endCommand();
+    mChartItem->update();
+  } );
+
+  openPanel( widget );
 }
 
 void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )

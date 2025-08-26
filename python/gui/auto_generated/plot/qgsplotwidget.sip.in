@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotwidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsPlotWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+Base class for widgets which allow control over the properties of plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsPlotWidget.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot ) = 0;
+%Docstring
+Sets the ``plot`` to show in the widget. Ownership is not transferred.
+
+.. seealso:: :py:func:`plot`
+%End
+
+    virtual QgsPlot *plot() = 0;
+%Docstring
+Returns the plot defined by the current settings in the widget.
+
+.. seealso:: :py:func:`setPlot`
+%End
+};
+
+
+
+
+class QgsBarChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of bar chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsBarChartPlotWidget( QWidget *parent = 0 );
+
+    virtual void setPlot( QgsPlot *plot );
+    virtual QgsPlot *plot();
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+
+};
+
+
+
+
+class QgsLineChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of line chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsLineChartPlotWidget( QWidget *parent = 0 );
+
+    virtual void setPlot( QgsPlot *plot );
+    virtual QgsPlot *plot();
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotwidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -50,6 +50,8 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void changeLayer( QgsMapLayer *layer );
 
     void mChartTypeComboBox_currentIndexChanged( int index );
+    void mChartPropertiesButton_clicked();
+
     void mSeriesListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mSeriesListWidget_itemChanged( QListWidgetItem *item );
     void mAddSeriesPushButton_clicked();

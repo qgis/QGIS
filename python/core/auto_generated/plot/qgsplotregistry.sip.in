@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+class QgsPlotWidget /External/;
+
 class QgsPlotAbstractMetadata
 {
 %Docstring(signature="appended")
@@ -46,6 +48,14 @@ Returns a translated, user visible name for the plot class.
     virtual QgsPlot *createPlot() = 0 /TransferBack/;
 %Docstring
 Creates a plot of this class.
+%End
+
+    virtual QgsPlotWidget *createPlotWidget( QWidget *parent = 0 ) = 0;
+%Docstring
+Creates a widget for configuring plot of this type. Can return ``None``
+if there's no GUI registered.
+
+Ownership of the widget is transferred to the caller.
 %End
 
 };
