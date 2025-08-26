@@ -444,74 +444,76 @@ class ProcessingPlugin(QObject):
             .createAlgorithmById(alg_id, config)
         )
 
-        if alg is not None:
+        if not alg:
+            return
 
-            ok, message = alg.canExecute()
-            if not ok:
-                dlg = MessageDialog()
-                dlg.setTitle(self.tr("Error executing algorithm"))
-                dlg.setMessage(
-                    self.tr(
-                        "<h3>This algorithm cannot " "be run :-( </h3>\n{0}"
-                    ).format(message)
+        ok, message = alg.canExecute()
+        if not ok:
+            dlg = MessageDialog()
+            dlg.setTitle(self.tr("Error executing algorithm"))
+            dlg.setMessage(
+                self.tr("<h3>This algorithm cannot " "be run :-( </h3>\n{0}").format(
+                    message
                 )
-                dlg.exec()
-                return
+            )
+            dlg.exec()
+            return
 
-            if as_batch:
-                dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
-                dlg.show()
-                dlg.exec()
-            else:
-                in_place_input_parameter_name = "INPUT"
-                if hasattr(alg, "inputParameterName"):
-                    in_place_input_parameter_name = alg.inputParameterName()
+        if as_batch:
+            dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
+            dlg.show()
+            dlg.exec()
+            return
 
-                if in_place and not [
-                    d
-                    for d in alg.parameterDefinitions()
-                    if d.name() not in (in_place_input_parameter_name, "OUTPUT")
-                ]:
-                    parameters = {}
-                    feedback = MessageBarProgress(algname=alg.displayName())
-                    ok, results = execute_in_place(alg, parameters, feedback=feedback)
-                    if ok:
-                        iface.messageBar().pushSuccess(
-                            "",
-                            self.tr(
-                                "{algname} completed. %n feature(s) processed.",
-                                n=results["__count"],
-                            ).format(algname=alg.displayName()),
-                        )
-                    feedback.close()
-                    # MessageBarProgress handles errors
-                    return
+        in_place_input_parameter_name = "INPUT"
+        if hasattr(alg, "inputParameterName"):
+            in_place_input_parameter_name = alg.inputParameterName()
 
-                if alg.countVisibleParameters() > 0:
-                    dlg = alg.createCustomParametersWidget(parent)
+        if in_place and not [
+            d
+            for d in alg.parameterDefinitions()
+            if d.name() not in (in_place_input_parameter_name, "OUTPUT")
+        ]:
+            parameters = {}
+            feedback = MessageBarProgress(algname=alg.displayName())
+            ok, results = execute_in_place(alg, parameters, feedback=feedback)
+            if ok:
+                iface.messageBar().pushSuccess(
+                    "",
+                    self.tr(
+                        "{algname} completed. %n feature(s) processed.",
+                        n=results["__count"],
+                    ).format(algname=alg.displayName()),
+                )
+            feedback.close()
+            # MessageBarProgress handles errors
+            return
 
-                    if not dlg:
-                        dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
-                    canvas = iface.mapCanvas()
-                    prevMapTool = canvas.mapTool()
-                    dlg.show()
-                    dlg.exec()
-                    if canvas.mapTool() != prevMapTool:
-                        try:
-                            canvas.mapTool().reset()
-                        except Exception:
-                            pass
-                        try:
-                            canvas.setMapTool(prevMapTool)
-                        except RuntimeError:
-                            pass
-                else:
-                    feedback = MessageBarProgress(algname=alg.displayName())
-                    context = dataobjects.createContext(feedback)
-                    parameters = {}
-                    ret, results = execute(alg, parameters, context, feedback)
-                    handleAlgorithmResults(alg, context, feedback)
-                    feedback.close()
+        if alg.countVisibleParameters() > 0:
+            dlg = alg.createCustomParametersWidget(parent)
+
+            if not dlg:
+                dlg = AlgorithmDialog(alg, in_place, iface.mainWindow())
+            canvas = iface.mapCanvas()
+            prevMapTool = canvas.mapTool()
+            dlg.show()
+            dlg.exec()
+            if canvas.mapTool() != prevMapTool:
+                try:
+                    canvas.mapTool().reset()
+                except Exception:
+                    pass
+                try:
+                    canvas.setMapTool(prevMapTool)
+                except RuntimeError:
+                    pass
+        else:
+            feedback = MessageBarProgress(algname=alg.displayName())
+            context = dataobjects.createContext(feedback)
+            parameters = {}
+            ret, results = execute(alg, parameters, context, feedback)
+            handleAlgorithmResults(alg, context, feedback)
+            feedback.close()
 
     def sync_in_place_button_state(self, layer=None):
         """Synchronise the button state with layer state"""
