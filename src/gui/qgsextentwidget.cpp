@@ -94,12 +94,10 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mYMaxLineEdit->setValidator( new QgsDoubleValidator( this ) );
 
   mOriginalExtentButton->setVisible( false );
-  mButtonDrawOnCanvas->setVisible( false );
   mCurrentExtentButton->setVisible( false );
 
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromOriginal );
-  connect( mButtonDrawOnCanvas, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromDrawOnCanvas );
   
   // Initialize snap-to-grid button
   mSnapToGridButton->setVisible( false ); // Hidden by default, shown when snap-to-grid is available
@@ -602,7 +600,6 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
   if ( canvas )
   {
     mCanvas = canvas;
-    mButtonDrawOnCanvas->setVisible( drawOnCanvasOption );
     mCurrentExtentButton->setVisible( true );
 
     mUseCanvasExtentAction->setVisible( true );
@@ -615,7 +612,6 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
   }
   else
   {
-    mButtonDrawOnCanvas->setVisible( false );
     mCurrentExtentButton->setVisible( false );
     mUseCanvasExtentAction->setVisible( false );
     mUseCanvasExtentAction->setVisible( false );
