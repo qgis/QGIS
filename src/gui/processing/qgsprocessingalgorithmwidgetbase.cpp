@@ -553,10 +553,7 @@ void QgsProcessingAlgorithmWidgetBase::algExecuted( bool successful, const QVari
   if ( !successful )
   {
     // show dialog to display errors
-    show();
-    raise();
-    setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
-    activateWindow();
+    showDialog();
     showLog();
   }
   else
@@ -578,12 +575,17 @@ void QgsProcessingAlgorithmWidgetBase::taskTriggered( QgsTask *task )
 {
   if ( task == mAlgorithmTask )
   {
-    show();
-    raise();
-    setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
-    activateWindow();
+    showDialog();
     showLog();
   }
+}
+
+void QgsProcessingAlgorithmWidgetBase::showDialog()
+{
+  show();
+  raise();
+  setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
+  activateWindow();
 }
 
 void QgsProcessingAlgorithmWidgetBase::closeClicked()
@@ -907,6 +909,11 @@ bool QgsProcessingAlgorithmWidgetBase::isFinalized()
   return true;
 }
 
+bool QgsProcessingAlgorithmWidgetBase::isRunning()
+{
+  return true;
+}
+
 void QgsProcessingAlgorithmWidgetBase::applyContextOverrides( QgsProcessingContext *context )
 {
   if ( !context )
@@ -953,6 +960,12 @@ void QgsProcessingAlgorithmWidgetBase::reject()
     setAttribute( Qt::WA_DeleteOnClose );
   }
   QDialog::reject();
+}
+
+void QgsProcessingAlgorithmDialogBase::forceClose()
+{
+  mAlgorithmTask = nullptr;
+  close();
 }
 
 //

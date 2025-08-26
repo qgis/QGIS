@@ -145,6 +145,13 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
     QgsPanelWidget *mainWidget();
 
     /**
+     * Shows and raises the widget
+     *
+     * \since QGIS 4.2
+     */
+    void showWidget();
+
+    /**
      * Switches the widget to the log page.
      */
     void showLog();
@@ -199,6 +206,11 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      * \since QGIS 3.24
      */
     virtual void setParameters( const QVariantMap &values );
+
+    /**
+     * Returns the widget's cancel button.
+     */
+    QPushButton *cancelButton();
 
   public slots:
 
@@ -283,6 +295,33 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      */
     void showParameters();
 
+    /**
+     * Resets the widget's GUI, ready for another algorithm execution.
+     */
+    void resetGui();
+
+    /**
+     * Returns TRUE if the widget is currently running an algorithm.
+     *
+     * If the algorithm has not yet started or has finished executing then FALSE will be returned.
+     *
+     * \note Unlike the isFinalized() method, isRunning() only provides
+     * information about the state of widget and is not tied to the
+     * deletion mechanisms of the widget.
+     *
+     * \see isFinalized()
+     *
+     * \since QGIS 4.2
+     */
+    virtual bool isRunning();
+
+    /**
+     * Forces the widget to close by detaching any running task from the widget THEN closing the widget.
+     *
+     * \since QGIS 4.2
+     */
+    void forceClose();
+
     void reject() override;
 
   protected:
@@ -292,11 +331,6 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      * Returns the widget's run button.
      */
     QPushButton *runButton();
-
-    /**
-     * Returns the widget's cancel button.
-     */
-    QPushButton *cancelButton();
 
     /**
      * Returns the widget's change parameters button.
@@ -341,11 +375,6 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QDialog, public QgsPr
      * Displays an info \a message in the widget's log.
      */
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
-
-    /**
-     * Resets the widget's gui, ready for another algorithm execution.
-     */
-    void resetGui();
 
     /**
      * For subclasses to register their own GUI controls to be reset, ready
