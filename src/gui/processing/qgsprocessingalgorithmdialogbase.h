@@ -428,10 +428,10 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
   public slots:
     /**
      * In the context of the model designer
-     * Called when underlying model have changed.
+     * Called when underlying model have been set dirty.
      * Must be overridden by subclasses.
      *
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     virtual void onDirtySet();
 

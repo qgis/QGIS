@@ -389,9 +389,9 @@ Emitted whenever an algorithm has finished executing in the dialog.
     virtual void onDirtySet();
 %Docstring
 In the context of the model designer Called when underlying model have
-changed. Must be overridden by subclasses.
+been set dirty. Must be overridden by subclasses.
 
-.. versionadded:: 3.40
+.. versionadded:: 4.0
 %End
 
   protected slots:

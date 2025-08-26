@@ -510,7 +510,7 @@ class ModelerAlgorithmDialog(AlgorithmDialog):
         run_alg_anyway = QMessageBox.question(
             self,
             "Model may have change",
-            "Model may have change, do you want to execute algorithm as is anyway ?",
+            'Model may have change, do you want to execute algorithm "as is" anyway ?',
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             defaultButton=QMessageBox.StandardButton.Yes,
         )
