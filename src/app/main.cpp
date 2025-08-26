@@ -1184,6 +1184,9 @@ int main( int argc, char *argv[] )
     }
     QLocale::setDefault( currentLocale );
 
+    // 设置默认语言为简体中文
+    translationCode = "zh-Hans";
+
     QgsApplication::setTranslation( translationCode );
   }
 

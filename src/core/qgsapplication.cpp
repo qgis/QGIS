@@ -214,6 +214,9 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 {
   *sPlatformName() = platformName;
 
+  // 设置默认语言为简体中文
+  setTranslation("zh-Hans");
+
   connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
 
   // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
