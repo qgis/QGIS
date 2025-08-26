@@ -584,16 +584,37 @@ void QgsBrowserWidget::navigateToPath()
   if ( path.isEmpty() )
     return;
 
+  // Validate path format first
+  if ( path.endsWith( ":" ) && path.length() == 2 )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( path ) );
+    }
+    return;
+  }
+
   QString normalizedPath = QDir::cleanPath( path );
   const QString displayPath = QDir::toNativeSeparators( normalizedPath );
   
-  // Check if path exists
+  // Check if path exists with exact case sensitivity
   QFileInfo pathInfo( normalizedPath );
   if ( !pathInfo.exists() )
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Navigate to Path" ), tr( "Path does not exist: %1" ).arg( displayPath ) );
+      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( displayPath ) );
+    }
+    return;
+  }
+
+  // Verify case sensitivity by comparing canonical paths
+  QString canonicalPath = pathInfo.canonicalFilePath();
+  if ( !canonicalPath.isEmpty() && QDir::toNativeSeparators( canonicalPath ) != displayPath )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( displayPath ) );
     }
     return;
   }
@@ -617,19 +638,8 @@ void QgsBrowserWidget::navigateToPath()
   {
     mBrowserView->expandPath( targetPath, true );
     
-    // Clear the location bar and show success message
+    // Clear the location bar on successful navigation
     mLeLocationBar->clear();
-    if ( mMessageBar )
-    {
-      if ( pathInfo.isFile() )
-      {
-        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to parent directory of file: %1" ).arg( displayPath ) );
-      }
-      else
-      {
-        mMessageBar->pushSuccess( tr( "Navigate to Path" ), tr( "Navigated to: %1" ).arg( displayPath ) );
-      }
-    }
   }
   catch ( ... )
   {
