@@ -20,7 +20,7 @@
 #include "qgsexpression.h"
 
 
-QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( const QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType, const QStringList &predefinedCategories )
+QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType, const QStringList &predefinedCategories )
   : mIterator( iterator )
   , mExpressionContext( expressionContext )
   , mXAxisType( xAxisType )
@@ -33,48 +33,56 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
 {
   QStringList gatheredCategories;
   QList<QMap<QString, double>> gatheredSeriesCategoriesSum;
-  QList<QgsXyPlotSeries *> gatheredSeries;
+  gatheredSeriesCategoriesSum.reserve( mSeriesDetails.size() );
+  std::vector<std::unique_ptr<QgsXyPlotSeries>> gatheredSeries;
+  gatheredSeries.reserve( mSeriesDetails.size() );
   for ( int i = 0; i < mSeriesDetails.size(); i++ )
   {
-    gatheredSeries << new QgsXyPlotSeries();
+    std::unique_ptr<QgsXyPlotSeries> series = std::make_unique<QgsXyPlotSeries>();
+    gatheredSeries.emplace_back( std::move( series ) );
     gatheredSeriesCategoriesSum << QMap<QString, double>();
   }
 
-  QMap<QString, QgsExpression> expressions;
+  QMap<QString, QgsExpression> preparedExpressions;
   QgsFeature feature;
   while ( mIterator.nextFeature( feature ) )
   {
+    mExpressionContext.setFeature( feature );
+
     int seriesIndex = 0;
     for ( const XySeriesDetails &seriesDetails : mSeriesDetails )
     {
-      mExpressionContext.setFeature( feature );
-
       if ( !seriesDetails.filterExpression.isEmpty() )
       {
-        if ( !expressions.contains( seriesDetails.filterExpression ) )
+        auto filterExpressionIt = preparedExpressions.find( seriesDetails.filterExpression );
+        if ( filterExpressionIt == preparedExpressions.end() )
         {
-          expressions[seriesDetails.filterExpression] = QgsExpression( seriesDetails.filterExpression );
-          expressions[seriesDetails.filterExpression].prepare( &mExpressionContext );
+          filterExpressionIt = preparedExpressions.insert( seriesDetails.filterExpression, QgsExpression( seriesDetails.filterExpression ) );
+          filterExpressionIt->prepare( &mExpressionContext );
         }
-        if ( !expressions[seriesDetails.filterExpression].evaluate( &mExpressionContext ).toBool() )
+
+        if ( !filterExpressionIt->evaluate( &mExpressionContext ).toBool() )
         {
           continue;
         }
       }
 
-      if ( !expressions.contains( seriesDetails.xExpression ) )
+      auto xExpressionIt = preparedExpressions.find( seriesDetails.xExpression );
+      if ( xExpressionIt == preparedExpressions.end() )
       {
-        expressions[seriesDetails.xExpression] = QgsExpression( seriesDetails.xExpression );
-        expressions[seriesDetails.xExpression].prepare( &mExpressionContext );
+        xExpressionIt = preparedExpressions.insert( seriesDetails.xExpression, QgsExpression( seriesDetails.xExpression ) );
+        xExpressionIt->prepare( &mExpressionContext );
       }
-      if ( !expressions.contains( seriesDetails.yExpression ) )
+
+      auto yExpressionIt = preparedExpressions.find( seriesDetails.yExpression );
+      if ( yExpressionIt == preparedExpressions.end() )
       {
-        expressions[seriesDetails.yExpression] = QgsExpression( seriesDetails.yExpression );
-        expressions[seriesDetails.yExpression].prepare( &mExpressionContext );
+        yExpressionIt = preparedExpressions.insert( seriesDetails.yExpression, QgsExpression( seriesDetails.yExpression ) );
+        yExpressionIt->prepare( &mExpressionContext );
       }
 
       bool ok = false;
-      const double y = expressions[seriesDetails.yExpression].evaluate( &mExpressionContext ).toDouble( &ok );
+      const double y = yExpressionIt->evaluate( &mExpressionContext ).toDouble( &ok );
       if ( !ok )
       {
         continue;
@@ -83,7 +91,7 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
       {
         case Qgis::PlotAxisType::Interval:
         {
-          const double x = expressions[seriesDetails.xExpression].evaluate( &mExpressionContext ).toDouble( &ok );
+          const double x = xExpressionIt->evaluate( &mExpressionContext ).toDouble( &ok );
           if ( !ok )
           {
             continue;
@@ -95,7 +103,7 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
 
         case Qgis::PlotAxisType::Categorical:
         {
-          const QString category = expressions[seriesDetails.xExpression].evaluate( &mExpressionContext ).toString();
+          const QString category = xExpressionIt->evaluate( &mExpressionContext ).toString();
           if ( category.isEmpty() )
           {
             continue;
@@ -120,13 +128,15 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
             continue;
           }
 
-          if ( !gatheredSeriesCategoriesSum[seriesIndex].contains( category ) )
+          auto gatheredSeriesCategoriesSumIt = gatheredSeriesCategoriesSum[seriesIndex].find( category );
+          if ( gatheredSeriesCategoriesSumIt == gatheredSeriesCategoriesSum[seriesIndex].end() )
           {
-            gatheredSeriesCategoriesSum[seriesIndex][category] = y;
+            gatheredSeriesCategoriesSumIt = gatheredSeriesCategoriesSum[seriesIndex].insert( category, y );
+            *gatheredSeriesCategoriesSumIt = y;
           }
           else
           {
-            gatheredSeriesCategoriesSum[seriesIndex][category] += y;
+            *gatheredSeriesCategoriesSumIt += y;
           }
         }
       }
@@ -137,43 +147,49 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
     }
   }
 
-  if ( mXAxisType == Qgis::PlotAxisType::Categorical )
+  switch ( mXAxisType )
   {
-    int seriesIndex = 0;
-    for ( QMap<QString, double> &gatheredCategoriesSum : gatheredSeriesCategoriesSum )
+    case Qgis::PlotAxisType::Categorical:
     {
-      if ( !mPredefinedCategories.isEmpty() )
+      int seriesIndex = 0;
+      for ( QMap<QString, double> &gatheredCategoriesSum : gatheredSeriesCategoriesSum )
       {
-        for ( int i = 0; i < mPredefinedCategories.size(); i++ )
+        if ( !mPredefinedCategories.isEmpty() )
         {
-          if ( gatheredCategoriesSum.contains( mPredefinedCategories[i] ) )
+          for ( int i = 0; i < mPredefinedCategories.size(); i++ )
           {
-            gatheredSeries[seriesIndex]->append( i, gatheredCategoriesSum[mPredefinedCategories[i]] );
+            auto gatheredCategoriesSumIt = gatheredCategoriesSum.find( mPredefinedCategories[i] );
+            if ( gatheredCategoriesSumIt != gatheredCategoriesSum.end() )
+            {
+              gatheredSeries[seriesIndex]->append( i, *gatheredCategoriesSumIt );
+            }
           }
         }
-      }
-      else if ( !gatheredCategories.isEmpty() )
-      {
-        for ( int i = 0; i < gatheredCategories.size(); i++ )
+        else if ( !gatheredCategories.isEmpty() )
         {
-          if ( gatheredCategoriesSum.contains( gatheredCategories[i] ) )
+          for ( int i = 0; i < gatheredCategories.size(); i++ )
           {
-            gatheredSeries[seriesIndex]->append( i, gatheredCategoriesSum[gatheredCategories[i]] );
+            auto gatheredCategoriesSumIt = gatheredCategoriesSum.find( gatheredCategories[i] );
+            if ( gatheredCategoriesSumIt != gatheredCategoriesSum.end() )
+            {
+              gatheredSeries[seriesIndex]->append( i, *gatheredCategoriesSumIt );
+            }
           }
         }
+        seriesIndex++;
       }
-      seriesIndex++;
+
+      mData.setCategories( !mPredefinedCategories.isEmpty() ? mPredefinedCategories : gatheredCategories );
+      break;
     }
+
+    case Qgis::PlotAxisType::Interval:
+      break;
   }
 
-  for ( QgsXyPlotSeries *series : gatheredSeries )
+  for ( std::unique_ptr<QgsXyPlotSeries> &series : gatheredSeries )
   {
-    mData.addSeries( series ); // Ownership transferred
-  }
-
-  if ( mXAxisType == Qgis::PlotAxisType::Categorical )
-  {
-    mData.setCategories( !mPredefinedCategories.isEmpty() ? mPredefinedCategories : gatheredCategories );
+    mData.addSeries( series.release() );
   }
 
   return true;

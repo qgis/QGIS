@@ -171,7 +171,7 @@ class CORE_EXPORT QgsAbstractPlotSeries
     /**
      * Clones the series
      */
-    virtual QgsAbstractPlotSeries *clone() const = 0;
+    virtual QgsAbstractPlotSeries *clone() const = 0 SIP_FACTORY;
 
   private:
 

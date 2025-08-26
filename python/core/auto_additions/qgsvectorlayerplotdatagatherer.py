@@ -1,7 +1,6 @@
 # The following has been generated automatically from src/core/plot/qgsvectorlayerplotdatagatherer.h
 try:
-    QgsVectorLayerAbstractPlotDataGatherer.__abstract_methods__ = ['run', 'data']
-    QgsVectorLayerAbstractPlotDataGatherer.__overridden_methods__ = ['run']
+    QgsVectorLayerAbstractPlotDataGatherer.__abstract_methods__ = ['data']
     QgsVectorLayerAbstractPlotDataGatherer.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

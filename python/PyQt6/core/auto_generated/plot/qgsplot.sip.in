@@ -150,7 +150,7 @@ Returns the series' name.
 Sets the series' name.
 %End
 
-    virtual QgsAbstractPlotSeries *clone() const = 0;
+    virtual QgsAbstractPlotSeries *clone() const = 0 /Factory/;
 %Docstring
 Clones the series
 %End

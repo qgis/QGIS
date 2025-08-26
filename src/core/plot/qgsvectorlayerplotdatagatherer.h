@@ -62,8 +62,6 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
     QgsVectorLayerAbstractPlotDataGatherer() = default;
     virtual ~QgsVectorLayerAbstractPlotDataGatherer() = default;
 
-    bool run() override = 0;
-
     //! Returns the plot data
     virtual QgsPlotData data() const = 0;
 
@@ -107,19 +105,14 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
      * \param iterator a feature iterator
      * \param expressionContext an expression conext
      * \param seriesDetails a list of XY series details
-     * \param xAxisType the type of X axis - interval or categorical - which will decide whether X values are interval based of categories index
-     * \param predefinedCategories a list of predefined categories, only used then the X asis type is set to Qgis.PlotAxisType.Categorical
+     * \param xAxisType the type of X axis - interval or categorical - which will decide whether X values are interval based based or categories' index
+     * \param predefinedCategories a list of predefined categories, only used when the X axis type is set to Qgis.PlotAxisType.Categorical
      */
-    QgsVectorLayerXyPlotDataGatherer( const QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
-
-    /**
-     * The class destructor.
-     */
+    QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
     ~QgsVectorLayerXyPlotDataGatherer() override = default;
 
     bool run() override;
 
-    //! Returns the plot data
     QgsPlotData data() const override;
 
   protected:

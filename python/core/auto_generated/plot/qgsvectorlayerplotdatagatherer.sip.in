@@ -42,9 +42,6 @@ An abstract vector layer plot data gatherer base class.
     QgsVectorLayerAbstractPlotDataGatherer();
     virtual ~QgsVectorLayerAbstractPlotDataGatherer();
 
-    virtual bool run() = 0;
-
-
     virtual QgsPlotData data() const = 0;
 %Docstring
 Returns the plot data
@@ -75,7 +72,7 @@ An vector layer plot data gatherer class for XY series.
       QString filterExpression;
     };
 
-    QgsVectorLayerXyPlotDataGatherer( const QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+    QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
 %Docstring
 The class constructor.
 
@@ -83,13 +80,12 @@ The class constructor.
 :param expressionContext: an expression conext
 :param seriesDetails: a list of XY series details
 :param xAxisType: the type of X axis - interval or categorical - which
-                  will decide whether X values are interval based of
-                  categories index
+                  will decide whether X values are interval based based
+                  or categories' index
 :param predefinedCategories: a list of predefined categories, only used
-                             then the X asis type is set to
+                             when the X axis type is set to
                              :py:class:`Qgis`.PlotAxisType.Categorical
 %End
-
     ~QgsVectorLayerXyPlotDataGatherer();
 
     virtual bool run();
@@ -97,9 +93,6 @@ The class constructor.
 
     virtual QgsPlotData data() const;
 
-%Docstring
-Returns the plot data
-%End
 
   protected:
 
