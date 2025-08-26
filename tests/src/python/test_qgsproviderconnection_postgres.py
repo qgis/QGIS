@@ -1003,11 +1003,11 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         conn.moveTableToSchema(
             "qgis_test",
             "table_to_move",
-            "schema_test",
+            "qgis_schema_test",
         )
 
         # test moved table exist in the schema
-        table = conn.table("schema_test", "table_to_move")
+        table = conn.table("qgis_schema_test", "table_to_move")
         self.assertEqual(table.tableName(), "table_to_move")
 
     def test_move_raster_with_overviews_to_schema(self):
@@ -1078,8 +1078,8 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         self.assertEqual(
             [
-                ["schema_test", "o_2_raster_for_move"],
-                ["schema_test", "o_4_raster_for_move"],
+                ["qgis_schema_test", "o_2_raster_for_move"],
+                ["qgis_schema_test", "o_4_raster_for_move"],
             ],
             overviews,
         )
