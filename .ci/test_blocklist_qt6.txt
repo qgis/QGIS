@@ -34,6 +34,4 @@ PyQgsEditWidgets
 PyQgsLayoutHtml
 PyQgsPalLabelingPlacement
 PyQgsRasterLayerRenderer
-PyQgsSettings
-PyQgsSettingsEntry
 ProcessingQgisAlgorithmsTestPt4
