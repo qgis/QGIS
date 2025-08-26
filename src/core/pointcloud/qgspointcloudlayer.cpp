@@ -232,6 +232,17 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
   if ( categories.testFlag( CustomProperties ) )
     readCustomProperties( node, QStringLiteral( "variable" ) );
 
+  if ( categories.testFlag( Legend ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
+
+    const QDomElement legendElem = node.firstChildElement( QStringLiteral( "legend" ) );
+    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    {
+      l->readXml( legendElem, context );
+    }
+  }
+
   return true;
 }
 
@@ -320,6 +331,13 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   writeCommonStyle( elem, doc, context, categories );
 
   ( void )writeStyle( node, doc, errorMessage, context, categories );
+
+  if ( categories.testFlag( Legend ) && legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( doc, context );
+    if ( !legendElement.isNull() )
+      node.appendChild( legendElement );
+  }
 
   return true;
 }

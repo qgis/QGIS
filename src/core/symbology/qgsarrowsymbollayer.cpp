@@ -253,6 +253,8 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
   QPolygonF polygon; // implicitly shared
   // vector length
   qreal length = euclidean_distance( po, pd );
+  if ( qgsDoubleNear( length, 0 ) )
+    return polygon;
 
   // shift points if there is not enough room for the head(s)
   if ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) )
@@ -747,8 +749,6 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
 
 void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( points )
-
   if ( !context.renderContext().painter() )
   {
     return;
@@ -792,7 +792,8 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
         const QPointF pd( points.at( 1 ) );
 
         const QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
-        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
+        if ( !poly.isEmpty() )
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
       }
     }
     else
@@ -826,7 +827,8 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
           const QPointF pd( points.at( pIdx + 1 ) );
 
           const QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
-          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
+          if ( !poly.isEmpty() )
+            mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
         }
       }
     }
@@ -845,7 +847,8 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
         const QPointF pd( points.back() );
 
         const QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
-        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
+        if ( !poly.isEmpty() )
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
       }
     }
     else
@@ -866,7 +869,8 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
 
         const QPolygonF poly = straightArrow( po, pd, mScaledArrowStartWidth, mScaledArrowWidth, mScaledHeadLength, mScaledHeadThickness, mComputedHeadType, mComputedArrowType, mScaledOffset );
 
-        mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
+        if ( !poly.isEmpty() )
+          mSymbol->renderPolygon( poly, /* rings */ nullptr, context.feature(), context.renderContext(), -1, useSelectedColor );
       }
     }
   }

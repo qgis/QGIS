@@ -234,15 +234,22 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
       return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap );
     }
 
+    qintptr id() const override
+    {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneVertexBufferFunctor>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneVertexBufferFunctor>::id );
+#endif
+    }
+
     bool operator==( const Qt3DQAbstractFunctor &other ) const
     {
-      const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
+      const PlaneVertexBufferFunctor *otherFunctor = dynamic_cast<const PlaneVertexBufferFunctor *>( &other );
       if ( otherFunctor )
         return ( otherFunctor->mResolution == mResolution && otherFunctor->mSide == mSide && otherFunctor->mVertScale == mVertScale && otherFunctor->mSkirtHeight == mSkirtHeight && otherFunctor->mHeightMap == mHeightMap );
       return false;
     }
-
-    QT3D_FUNCTOR( PlaneVertexBufferFunctor )
 
   private:
     int mResolution;
@@ -252,6 +259,10 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
     QByteArray mHeightMap;
 };
 
+Q_NOWARN_DEPRECATED_POP
+
+// QAbstractFunctor marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+Q_NOWARN_DEPRECATED_PUSH
 
 //! Generates index buffer for DEM terrain tiles
 class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
@@ -267,15 +278,22 @@ class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
       return createPlaneIndexData( mResolution, mHeightMap );
     }
 
+    qintptr id() const override
+    {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneIndexBufferFunctor>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<PlaneIndexBufferFunctor>::id );
+#endif
+    }
+
     bool operator==( const Qt3DQAbstractFunctor &other ) const
     {
-      const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>( &other );
+      const PlaneIndexBufferFunctor *otherFunctor = dynamic_cast<const PlaneIndexBufferFunctor *>( &other );
       if ( otherFunctor )
         return ( otherFunctor->mResolution == mResolution );
       return false;
     }
-
-    QT3D_FUNCTOR( PlaneIndexBufferFunctor )
 
   private:
     int mResolution;

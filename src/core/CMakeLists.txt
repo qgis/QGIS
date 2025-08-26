@@ -90,7 +90,11 @@ set(QGIS_CORE_SRCS
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
+  plot/qgsbarchartplot.cpp
+  plot/qgslinechartplot.cpp
+  plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
+  plot/qgsvectorlayerplotdatagatherer.cpp
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
@@ -1740,7 +1744,11 @@ set(QGIS_CORE_HDRS
 
   pdf/qgspdfrenderer.h
 
+  plot/qgsbarchartplot.h
+  plot/qgslinechartplot.h
+  plot/qgsplotregistry.h
   plot/qgsplot.h
+  plot/qgsvectorlayerplotdatagatherer.cpp
 
   pointcloud/qgspointcloudattribute.h
   pointcloud/qgspointcloudattributebyramprenderer.h
@@ -2212,6 +2220,7 @@ if(MSVC)
       expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
       textrenderer/qgsfontmanager.cpp
+      qgsapplication.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 else()

@@ -26,6 +26,7 @@
 #include "qgspointcloudattributemodel.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgspointcloudquerybuilder.h"
+#include "qgsmaplayerlegend.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -138,6 +139,8 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
 void QgsPointCloudLayerProperties::apply()
 {
+  mLegendConfigEmbeddedWidget->applyToLayer();
+
   mMetadataWidget->acceptMetadata();
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
@@ -149,6 +152,12 @@ void QgsPointCloudLayerProperties::apply()
   mLayer->setSubsetString( txtSubsetSQL->text() );
 
   mBackupCrs = mLayer->crs();
+
+  // legend
+  if ( QgsMapLayerLegend *legend = mLayer->legend() )
+  {
+    legend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, !mIncludeByDefaultInLayoutLegendsCheck->isChecked() );
+  }
 
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
@@ -193,6 +202,10 @@ void QgsPointCloudLayerProperties::syncToLayer()
     w->syncToLayer( mLayer );
 
   mStatisticsCalculationWarningLabel->setHidden( mLayer->statisticsCalculationState() != QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated );
+
+  // legend
+  mLegendConfigEmbeddedWidget->setLayer( mLayer );
+  mIncludeByDefaultInLayoutLegendsCheck->setChecked( mLayer->legend() && !mLayer->legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
 }
 
 void QgsPointCloudLayerProperties::aboutToShowStyleMenu()

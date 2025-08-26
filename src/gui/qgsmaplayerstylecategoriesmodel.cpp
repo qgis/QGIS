@@ -28,7 +28,10 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
       break;
 
     case Qgis::LayerType::VectorTile:
-      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling << QgsMapLayer::StyleCategory::AllVisualStyleCategories << QgsMapLayer::StyleCategory::AllStyleCategories;
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology
+                    << QgsMapLayer::StyleCategory::Labeling
+                    << QgsMapLayer::StyleCategory::AllVisualStyleCategories
+                    << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;
 
     case Qgis::LayerType::Raster:
@@ -42,6 +45,7 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerTyp
                     << QgsMapLayer::StyleCategory::Elevation
                     << QgsMapLayer::StyleCategory::AttributeTable
                     << QgsMapLayer::StyleCategory::Notes
+                    << QgsMapLayer::StyleCategory::Legend
                     << QgsMapLayer::StyleCategory::AllVisualStyleCategories
                     << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;

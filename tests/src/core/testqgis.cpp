@@ -465,6 +465,18 @@ void TestQgis::testQgsVariantEqual()
 
   // NULL should not be equal to invalid
   QVERIFY( !qgsVariantEqual( QVariant(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+
+  // string
+  QVERIFY( qgsVariantEqual( QString( "" ), QString( "" ) ) );
+  QVERIFY( qgsVariantEqual( QString(), QString() ) );
+  QVERIFY( !qgsVariantEqual( QString( "" ), QString() ) );
+  QVERIFY( !qgsVariantEqual( QString(), QString( "" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "abc" ), QString() ) );
+  QVERIFY( !qgsVariantEqual( QString(), QString( "abc" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "abc" ), QString( "" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "" ), QString( "abc" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "def" ), QString( "abc" ) ) );
+  QVERIFY( qgsVariantEqual( QString( "abc" ), QString( "abc" ) ) );
 }
 
 void TestQgis::testQgsEnumMapList()

@@ -49,7 +49,9 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
   public:
     TestQgsProcessingAlgsPt2()
       : QgsTest( QStringLiteral( "Processing Algorithms Pt 2" ), QStringLiteral( "processing_algorithm" ) )
-    {}
+    {
+      QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Bold" ) } );
+    }
 
   private:
     /**
@@ -1887,6 +1889,9 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
   parameters.insert( QStringLiteral( "WIDTH" ), 500 );
   parameters.insert( QStringLiteral( "HEIGHT" ), 350 );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputImage );
+  parameters.insert( QStringLiteral( "TEXT_FONT_FAMILY" ), QgsFontUtils::standardTestFontFamily() );
+  parameters.insert( QStringLiteral( "TEXT_FONT_STYLE" ), QStringLiteral( "Bold" ) );
+  parameters.insert( QStringLiteral( "TEXT_FONT_SIZE" ), 12 );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();

@@ -45,6 +45,15 @@ class QgsLayerTreeFilterProxyModel;
  */
 class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayerTreeProxyModel *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsLayerTreeProxyModel;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:
@@ -87,9 +96,14 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
-  private:
-    bool nodeShown( QgsLayerTreeNode *node ) const;
+    /**
+     * Returns TRUE if the specified \a node should be shown.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool nodeShown( QgsLayerTreeNode *node ) const;
 
+  private:
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
     bool mShowPrivateLayers = false;
@@ -129,8 +143,21 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsLayerTreeView() override;
 
-    //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+    /**
+     * Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+     *
+     * \note This method automatically creates a QgsLayerTreeProxyModel to use as a proxy.
+     */
     void setModel( QAbstractItemModel *model ) override;
+
+    /**
+     * Sets the \a model and \a proxyModel for the view.
+     *
+     * Use this method when a custom proxy model is required.
+     *
+     * \since QGIS 4.0
+     */
+    void setModel( QgsLayerTreeModel *model, QgsLayerTreeProxyModel *proxyModel );
 
     //! Gets access to the model casted to QgsLayerTreeModel
     QgsLayerTreeModel *layerTreeModel() const;

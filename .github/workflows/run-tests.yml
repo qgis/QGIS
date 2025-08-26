@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
+          - distro-version: '24.10'
             qt-version: 5
             run-tests: true
             with-qt6: OFF
@@ -268,7 +268,7 @@ jobs:
 
         include:
           - qt-version: 5
-            distro-version: 24.04
+            distro-version: '24.10'
             docker-target: binary-only
 
           - qt-version: 6
@@ -276,7 +276,7 @@ jobs:
             docker-target: binary-only
 
           - qt-version: 5
-            distro-version: 24.04
+            distro-version: '24.10'
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
@@ -415,7 +415,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
+          - distro-version: '24.10'
             qt-version: 5
 
     steps:

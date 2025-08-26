@@ -16,6 +16,7 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 import filecmp
 import os
 from shutil import copyfile
+import tempfile
 
 import numpy
 import numpy as np
@@ -1523,6 +1524,37 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
         self.assertEqual(type(arrays[0]), np.ndarray)
         self.assertEqual(arrays.shape, (1, 4, 4))
         self.assertEqual(arrays[0].dtype, np.float64)
+
+    def test_legend_settings(self):
+        rl = QgsRasterLayer(
+            os.path.join(
+                unitTestDataPath("raster"), "rnd_percentile_raster5_float64.tif"
+            ),
+            "test",
+            "gdal",
+        )
+        self.assertTrue(rl.isValid())
+
+        self.assertFalse(rl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        rl.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        self.assertTrue(rl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+
+        p = QgsProject()
+        p.addMapLayer(rl)
+
+        # test saving and restoring
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + "/test.qgs"))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + "/test.qgs"))
+
+            rl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(rl2.name(), rl.name())
+
+            self.assertTrue(
+                rl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
+            )
 
 
 if __name__ == "__main__":

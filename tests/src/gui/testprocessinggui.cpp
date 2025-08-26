@@ -8791,6 +8791,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
 void TestProcessingGui::testFieldMapWidget()
 {
   QgsProcessingFieldMapPanelWidget widget;
+  widget.mSkipConfirmDialog = true;
 
   QVariantMap map;
   map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
@@ -8862,6 +8863,7 @@ void TestProcessingGui::testFieldMapWrapper()
 
     QgsProcessingContext context;
     QWidget *w = wrapper.createWrappedWidget( context );
+    qobject_cast<QgsProcessingFieldMapPanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QVariantMap map;
     map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
@@ -8920,6 +8922,7 @@ void TestProcessingGui::testFieldMapWrapper()
     param.setParentLayerParameterName( QStringLiteral( "other" ) );
     QgsProcessingFieldMapWidgetWrapper wrapper2( &param, type );
     w = wrapper2.createWrappedWidget( context );
+    qobject_cast<QgsProcessingFieldMapPanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QSignalSpy spy2( &wrapper2, &QgsProcessingFieldMapWidgetWrapper::widgetValueHasChanged );
     wrapper2.setWidgetValue( QVariantList() << map, context );
@@ -9062,6 +9065,7 @@ void TestProcessingGui::testAggregateWrapper()
 
     QgsProcessingContext context;
     QWidget *w = wrapper.createWrappedWidget( context );
+    qobject_cast<QgsProcessingAggregatePanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QVariantMap map;
     map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
@@ -9122,6 +9126,7 @@ void TestProcessingGui::testAggregateWrapper()
     param.setParentLayerParameterName( QStringLiteral( "other" ) );
     QgsProcessingAggregateWidgetWrapper wrapper2( &param, type );
     w = wrapper2.createWrappedWidget( context );
+    qobject_cast<QgsProcessingAggregatePanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QSignalSpy spy2( &wrapper2, &QgsProcessingAggregateWidgetWrapper::widgetValueHasChanged );
     wrapper2.setWidgetValue( QVariantList() << map, context );
