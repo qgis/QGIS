@@ -266,6 +266,6 @@ class merge(GdalAlgorithm):
         arguments.append(list_file)
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName() + (".bat" if isWindows() else ""),
             GdalUtils.escapeAndJoin(arguments),
         ]
