@@ -157,6 +157,70 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     QgsVectorLayer *sourceLayer() const { return mVectorLayer.get(); }
 
     /**
+     * Sets whether features should be \a sorted when iterating through the vector layer from
+     * which the plot data wil be gathered from.
+     *
+     * \see setSortAscending()
+     * \see setSortExpression()
+     * \see sortFeatures()
+     */
+    void setSortFeatures( bool sorted );
+
+    /**
+     * Returns TRUE if features should be sorted when iterating through the vector layer from
+     * which the plot data wil be gathered from.
+     *
+     * \see sortAscending()
+     * \see sortExpression()
+     * \see setSortFeatures()
+     */
+    bool sortFeatures() const { return mSortFeatures; }
+
+    /**
+     * Sets whether features should be sorted in an \a ascending order when iterating through the vector layer from
+     * which the plot data wil be gathered from.
+     *
+     * This property has no effect is sortFeatures() is FALSE.
+     *
+     * \see setSortFeatures()
+     * \see setSortExpression()
+     * \see sortAscending()
+     */
+    void setSortAscending( bool ascending );
+
+    /**
+     * Returns TRUE if features should be sorted in an ascending order when iterating through the vector layer from
+     * which the plot data wil be gathered from.
+     *
+     * This property has no effect is sortFeatures() is FALSE.
+     *
+     * \see sortFeatures()
+     * \see sortExpression()
+     * \see setSortAscending()
+     */
+    bool sortAscending() const { return mSortAscending; }
+
+    /**
+     * Sets the \a expression used to sort features when iterating through the vector layer from
+     * which the plot data wil be gathered from.
+     *
+     * \see setSortFeatures()
+     * \see setSortAscending()
+     * \see sortExpression()
+     */
+    void setSortExpression( const QString &expression );
+
+    /**
+     * Returns the expression used to sort features when iterating through the vector layer from
+     * which the plot data wil be gathered from.
+     *
+     * \see sortFeatures()
+     * \see sortAscending()
+     * \see setSortExpression()
+     */
+    QString sortExpression() const { return mSortExpression; }
+
+    /**
      * Sets the plot series details used to generate the plot data.
      *
      * \see seriesList()
@@ -179,6 +243,10 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
+  public slots:
+
+    void refresh() override;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -200,8 +268,11 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     std::unique_ptr<Qgs2DPlot> mPlot;
     QgsPlotData mPlotData;
 
-    //! Associated vector layer
     QgsVectorLayerRef mVectorLayer = nullptr;
+    bool mSortFeatures = false;
+    bool mSortAscending = true;
+    QString mSortExpression;
+
     QList<QgsLayoutItemChart::SeriesDetails> mSeriesList;
 
     bool mNeedsGathering = false;

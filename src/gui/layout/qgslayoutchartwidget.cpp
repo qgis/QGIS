@@ -46,7 +46,13 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
 
   connect( mChartTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged );
   connect( mChartPropertiesButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mChartPropertiesButton_clicked );
+
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutChartWidget::changeLayer );
+  connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, mSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
+  connect( mSortCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mSortCheckBox_stateChanged );
+  connect( mSortExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutChartWidget::changeSortExpression );
+  connect( mSortDirectionButton, &QToolButton::clicked, this, &QgsLayoutChartWidget::mSortDirectionButton_clicked );
+
   connect( mSeriesListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_currentItemChanged );
   connect( mSeriesListWidget, &QListWidget::itemChanged, this, &QgsLayoutChartWidget::mSeriesListWidget_itemChanged );
   connect( mAddSeriesPushButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mAddSeriesPushButton_clicked );
@@ -93,6 +99,8 @@ void QgsLayoutChartWidget::setGuiElementValues()
   {
     whileBlocking( mChartTypeComboBox )->setCurrentIndex( mChartTypeComboBox->findData( mChartItem->plot()->type() ) );
     whileBlocking( mLayerComboBox )->setLayer( mChartItem->sourceLayer() );
+    whileBlocking( mSortExpressionWidget )->setLayer( mChartItem->sourceLayer() );
+    whileBlocking( mSortExpressionWidget )->setField( mChartItem->sortExpression() );
 
     mSeriesListWidget->clear();
     const QList<QgsLayoutItemChart::SeriesDetails> seriesList = mChartItem->seriesList();
@@ -183,6 +191,58 @@ void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
 
   mChartItem->beginCommand( tr( "Change Chart Source Layer" ) );
   mChartItem->setSourceLayer( vl );
+  mChartItem->update();
+  mChartItem->endCommand();
+}
+
+void QgsLayoutChartWidget::changeSortExpression( const QString &expression, bool )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Change Chart Source Sort Expression" ) );
+  mChartItem->setSortExpression( expression );
+  mChartItem->update();
+  mChartItem->endCommand();
+}
+
+void QgsLayoutChartWidget::mSortCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+    return;
+
+  if ( state == Qt::Checked )
+  {
+    mSortDirectionButton->setEnabled( true );
+    mSortExpressionWidget->setEnabled( true );
+  }
+  else
+  {
+    mSortDirectionButton->setEnabled( false );
+    mSortExpressionWidget->setEnabled( false );
+  }
+
+  mChartItem->beginCommand( tr( "Toggle Atlas Sorting" ) );
+  mChartItem->setSortFeatures( state == Qt::Checked );
+  mChartItem->update();
+  mChartItem->endCommand();
+}
+
+void QgsLayoutChartWidget::mSortDirectionButton_clicked()
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  Qt::ArrowType at = mSortDirectionButton->arrowType();
+  at = ( at == Qt::UpArrow ) ? Qt::DownArrow : Qt::UpArrow;
+  mSortDirectionButton->setArrowType( at );
+
+  mChartItem->beginCommand( tr( "Change Chart Source Sort Direction" ) );
+  mChartItem->setSortAscending( at == Qt::UpArrow );
   mChartItem->update();
   mChartItem->endCommand();
 }

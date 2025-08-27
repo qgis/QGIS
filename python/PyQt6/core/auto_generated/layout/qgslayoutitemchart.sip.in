@@ -141,6 +141,86 @@ gathered from.
 .. seealso:: :py:func:`setSourceLayer`
 %End
 
+    void setSortFeatures( bool sorted );
+%Docstring
+Sets whether features should be ``sorted`` when iterating through the
+vector layer from which the plot data wil be gathered from.
+
+.. seealso:: :py:func:`setSortAscending`
+
+.. seealso:: :py:func:`setSortExpression`
+
+.. seealso:: :py:func:`sortFeatures`
+%End
+
+    bool sortFeatures() const;
+%Docstring
+Returns ``True`` if features should be sorted when iterating through the
+vector layer from which the plot data wil be gathered from.
+
+.. seealso:: :py:func:`sortAscending`
+
+.. seealso:: :py:func:`sortExpression`
+
+.. seealso:: :py:func:`setSortFeatures`
+%End
+
+    void setSortAscending( bool ascending );
+%Docstring
+Sets whether features should be sorted in an ``ascending`` order when
+iterating through the vector layer from which the plot data wil be
+gathered from.
+
+This property has no effect is
+:py:func:`~QgsLayoutItemChart.sortFeatures` is ``False``.
+
+.. seealso:: :py:func:`setSortFeatures`
+
+.. seealso:: :py:func:`setSortExpression`
+
+.. seealso:: :py:func:`sortAscending`
+%End
+
+    bool sortAscending() const;
+%Docstring
+Returns ``True`` if features should be sorted in an ascending order when
+iterating through the vector layer from which the plot data wil be
+gathered from.
+
+This property has no effect is
+:py:func:`~QgsLayoutItemChart.sortFeatures` is ``False``.
+
+.. seealso:: :py:func:`sortFeatures`
+
+.. seealso:: :py:func:`sortExpression`
+
+.. seealso:: :py:func:`setSortAscending`
+%End
+
+    void setSortExpression( const QString &expression );
+%Docstring
+Sets the ``expression`` used to sort features when iterating through the
+vector layer from which the plot data wil be gathered from.
+
+.. seealso:: :py:func:`setSortFeatures`
+
+.. seealso:: :py:func:`setSortAscending`
+
+.. seealso:: :py:func:`sortExpression`
+%End
+
+    QString sortExpression() const;
+%Docstring
+Returns the expression used to sort features when iterating through the
+vector layer from which the plot data wil be gathered from.
+
+.. seealso:: :py:func:`sortFeatures`
+
+.. seealso:: :py:func:`sortAscending`
+
+.. seealso:: :py:func:`setSortExpression`
+%End
+
     void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList );
 %Docstring
 Sets the plot series details used to generate the plot data.
@@ -163,6 +243,11 @@ The caller takes responsibility for deleting the returned object.
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+  public slots:
+
+    virtual void refresh();
 
 
   protected:

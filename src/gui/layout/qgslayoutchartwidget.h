@@ -48,9 +48,12 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
 
   private slots:
     void changeLayer( QgsMapLayer *layer );
+    void changeSortExpression( const QString &expression, bool valid );
 
     void mChartTypeComboBox_currentIndexChanged( int index );
     void mChartPropertiesButton_clicked();
+    void mSortCheckBox_stateChanged( int state );
+    void mSortDirectionButton_clicked();
 
     void mSeriesListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mSeriesListWidget_itemChanged( QListWidgetItem *item );

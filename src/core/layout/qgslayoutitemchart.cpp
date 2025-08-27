@@ -78,7 +78,47 @@ void QgsLayoutItemChart::setSourceLayer( QgsVectorLayer *layer )
   }
 
   mVectorLayer.setLayer( layer );
-  refreshData();
+  refresh();
+
+  emit changed();
+}
+
+
+void QgsLayoutItemChart::setSortFeatures( bool sorted )
+{
+  if ( mSortFeatures == sorted )
+  {
+    return;
+  }
+
+  mSortFeatures = sorted;
+  refresh();
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::setSortAscending( bool ascending )
+{
+  if ( mSortAscending == ascending )
+  {
+    return;
+  }
+
+  mSortAscending = ascending;
+  refresh();
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::setSortExpression( const QString &expression )
+{
+  if ( mSortExpression == expression )
+  {
+    return;
+  }
+
+  mSortExpression = expression;
+  refresh();
 
   emit changed();
 }
@@ -91,7 +131,7 @@ void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDe
   }
 
   mSeriesList = seriesList;
-  refreshData();
+  refresh();
 
   emit changed();
 }
@@ -175,6 +215,12 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
   mPlot->render( renderContext, plotRenderContext, mPlotData );
 }
 
+void QgsLayoutItemChart::refresh()
+{
+  QgsLayoutItem::refresh();
+  mNeedsGathering = true;
+}
+
 void QgsLayoutItemChart::refreshData()
 {
   mGathererTimer.start();
@@ -213,7 +259,13 @@ void QgsLayoutItemChart::prepareGatherer()
 
   if ( Qgs2DXyPlot *xyPlot = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() ) )
   {
-    QgsFeatureIterator featureIterator = mVectorLayer->getFeatures();
+    QgsFeatureRequest request;
+    if ( mSortFeatures && !mSortExpression.isEmpty() )
+    {
+      request.addOrderBy( mSortExpression, mSortAscending );
+    }
+
+    QgsFeatureIterator featureIterator = mVectorLayer->getFeatures( request );
     mGatherer = new QgsVectorLayerXyPlotDataGatherer( featureIterator, createExpressionContext(), xYSeriesList, xyPlot->xAxis().type() );
     connect( mGatherer.data(), &QgsTask::taskCompleted, this, &QgsLayoutItemChart::processData );
   }
@@ -263,6 +315,12 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
     element.setAttribute( QStringLiteral( "vectorLayerProvider" ), mVectorLayer.provider );
   }
 
+  element.setAttribute( QStringLiteral( "sortFeatures" ), mSortFeatures ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "sortAscending" ), mSortAscending ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "sortExpression" ), mSortExpression );
+
+  element.setAttribute( QStringLiteral( "sortExpression" ), mSortExpression );
+
   return true;
 }
 
@@ -296,6 +354,10 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
   QString layerProvider = element.attribute( QStringLiteral( "vectorLayerProvider" ) );
   mVectorLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mVectorLayer.resolveWeakly( mLayout->project() );
+
+  mSortFeatures = element.attribute( QStringLiteral( "sortFeatures" ), QStringLiteral( "0" ) ).toInt();
+  mSortAscending = element.attribute( QStringLiteral( "sortAscending" ), QStringLiteral( "1" ) ).toInt();
+  mSortExpression = element.attribute( QStringLiteral( "sortExpression" ) );
 
   mNeedsGathering = true;
 
