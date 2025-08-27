@@ -3072,7 +3072,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
       // Store referencing layers: relations where "this" is the parent layer (the referenced part, that holds the FK)
       QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
-      node.appendChild( referencedLayersElement );
+      node.appendChild( referencingLayersElement );
 
       const QList<QgsRelation> referencedRelations { p->relationManager()->referencedRelations( this ) };
       for ( const QgsRelation &rel : referencedRelations )
