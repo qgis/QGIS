@@ -543,8 +543,7 @@ bool QgsRasterLayerRenderer::render()
 
   // important -- disable SmoothPixmapTransform and Antialiasing for raster layer renders. We want individual pixels to be clearly defined!
   renderContext()->painter()->setRenderHint( QPainter::SmoothPixmapTransform, false );
-  renderContext()->painter()->setRenderHint( QPainter::Antialiasing, false );
-
+  bool antialiasEnabled = false;
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
@@ -557,9 +556,10 @@ bool QgsRasterLayerRenderer::render()
       // rendered using antialiasing along the clip path, or things are very ugly! And since we can't
       // selectively antialias JUST the clip path boundary, we fallback to antialiasing the
       // whole raster render
-      renderContext()->painter()->setRenderHint( QPainter::Antialiasing, true );
+      antialiasEnabled = true;
     }
   }
+  renderContext()->painter()->setRenderHint( QPainter::Antialiasing, antialiasEnabled );
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;
