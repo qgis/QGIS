@@ -400,6 +400,15 @@ QString Qgis::geosVersion()
   return GEOSversion();
 }
 
+bool Qgis::hasQtWebkit()
+{
+#ifdef WITH_QTWEBKIT
+  return true;
+#else
+  return false;
+#endif
+}
+
 int Qgis::geosVersionInt()
 {
   static const int version = QStringLiteral( "%1%2%3" )

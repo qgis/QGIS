@@ -3487,6 +3487,13 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 
+    static bool hasQtWebkit();
+%Docstring
+Returns ``True`` if the QGIS build contains QtWebkit.
+
+.. versionadded:: 4.0
+%End
+
     static QString geoNone();
 %Docstring
 Constant that holds the string representation for "No ellipse/No CRS".
