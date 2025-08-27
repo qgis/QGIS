@@ -6792,12 +6792,16 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
  *
  * Invalid < NULL < Values
  *
+ * Since QGIS 4.0 the \a strictTypeCheck argument can be used to specify that variants
+ * of different types should be compared using their userType ID only, and not attempt
+ * to check the actual variant value.
+ *
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  *
  * \since QGIS 3.44
  */
-CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
@@ -6805,7 +6809,7 @@ CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
  * QVariant data types (such as strings, numeric values, dates and times)
  *
  * Invalid < NULL < Values
- *
+
  * \see qgsVariantGreaterThan()
  * \see qgsVariantCompare()
  */
@@ -6835,27 +6839,34 @@ CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs
 
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
- * Useful for sorting lists of variants, correctly handling sorting of the various
- * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * \note This method performs strict type checking, and considers variants of different
+ * types using their userType ID only. It is accordingly appropriate for use with QMap
+ * with QVariant keys. If loose type checking is required then the qgsVariantGreaterThan()
+ * function should be used.
+ *
  * \see qgsVariantLessThan()
+ * \see qgsVariantGreaterThan()
  */
 inline bool operator> ( const QVariant &v1, const QVariant &v2 )
 {
-  return qgsVariantGreaterThan( v1, v2 );
+  return qgsVariantCompare( v1, v2, true ) > 0;
 }
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
- * Useful for sorting lists of variants, correctly handling sorting of the various
- * QVariant data types (such as strings, numeric values, dates and times)
  *
- * Invalid < NULL < Values
+ * \note This method performs strict type checking, and considers variants of different
+ * types using their userType ID only. It is accordingly appropriate for use with QMap
+ * with QVariant keys. If loose type checking is required then the qgsVariantLessThan()
+ * function should be used.
  *
+ * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
 inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
-  return qgsVariantLessThan( v1, v2 );
+  return qgsVariantCompare( v1, v2, true ) < 0;
 }
 #endif
 
