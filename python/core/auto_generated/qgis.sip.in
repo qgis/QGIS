@@ -3807,7 +3807,7 @@ for incorrect numbers of digits between thousand separators
 .. versionadded:: 3.4
 %End
 
-int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 %Docstring
 Compares two QVariant values.
 
@@ -3818,6 +3818,10 @@ various QVariant data types (such as strings, numeric values, dates and
 times)
 
 Invalid < NULL < Values
+
+Since QGIS 4.0 the ``strictTypeCheck`` argument can be used to specify
+that variants of different types should be compared using their userType
+ID only, and not attempt to check the actual variant value.
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 
