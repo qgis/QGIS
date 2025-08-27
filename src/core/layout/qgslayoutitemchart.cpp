@@ -229,11 +229,12 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
 
   mPlot->setSize( size );
 
-  QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-  renderContext.setExpressionContext( createExpressionContext() );
-
   QgsScopedQPainterState painterState( painter );
   painter->scale( 1 / scaleFactor, 1 / scaleFactor );
+
+  QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+  renderContext.setScaleFactor( scaleFactor );
+  renderContext.setExpressionContext( createExpressionContext() );
 
   QgsPlotRenderContext plotRenderContext;
   mPlot->render( renderContext, plotRenderContext, mPlotData );
