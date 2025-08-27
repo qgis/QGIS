@@ -43,7 +43,7 @@ from qgis.gui import QgsFormAnnotation
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
-from utilities import unitTestDataPath
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -63,8 +63,9 @@ class TestQgsAnnotation(QgisTestCase):
         a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
         a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         doc = QTextDocument()
+        font = getTestFont("Bold")
         doc.setHtml(
-            '<p style="font-family: arial; font-weight: bold; font-size: 40px;">test annotation</p>'
+            f'<p style="font-family: {font.family()}; font-weight: bold; font-size: 40px;">test annotation</p>'
         )
         a.setDocument(doc)
         im = self.renderAnnotation(a, QPointF(20, 30))
@@ -83,8 +84,9 @@ class TestQgsAnnotation(QgisTestCase):
         a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
         a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         doc = QTextDocument()
+        font = getTestFont("Bold")
         doc.setHtml(
-            '<p style="font-family: arial; font-weight: bold; font-size: 40px;">test annotation</p>'
+            f'<p style="font-family: {font.family()}; font-weight: bold; font-size: 40px;">test annotation</p>'
         )
         a.setDocument(doc)
         self.assertTrue(self.renderAnnotationInLayout("text_annotation_in_layout", a))
