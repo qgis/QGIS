@@ -1964,7 +1964,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
       QgsAbstractDatabaseProviderConnection::TableProperty tableProperty = conn->table( item->parent()->name(), item->name() );
 
-      bool indexExist = conn->spatialIndexExists( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
+      const bool indexExist = conn->spatialIndexExists( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
 
       // this action should sit in the Manage menu. If one does not exist, create it now
       bool foundExistingManageMenu = false;
