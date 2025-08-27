@@ -6141,6 +6141,13 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 
     /**
+     * Returns TRUE if the QGIS build contains QtWebkit.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasQtWebkit();
+
+    /**
      * Constant that holds the string representation for "No ellipse/No CRS".
      *
      * \since QGIS 3.44
