@@ -135,10 +135,32 @@ void QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged( int )
     return;
   }
 
-  QgsPlot *plot = QgsApplication::instance()->plotRegistry()->createPlot( plotType );
+  QgsPlot *newPlot = QgsApplication::instance()->plotRegistry()->createPlot( plotType );
+  Qgs2DXyPlot *newPlot2DXy = dynamic_cast<Qgs2DXyPlot *>( newPlot );
+  if ( newPlot2DXy )
+  {
+    Qgs2DXyPlot *oldPlot2DXy = dynamic_cast<Qgs2DXyPlot *>( mChartItem->plot() );
+    if ( oldPlot2DXy )
+    {
+      // Transfer a few basic details for a nicer UX
+      newPlot2DXy->setXMinimum( oldPlot2DXy->xMinimum() );
+      newPlot2DXy->setXMaximum( oldPlot2DXy->xMaximum() );
+      newPlot2DXy->setYMinimum( oldPlot2DXy->yMinimum() );
+      newPlot2DXy->setYMaximum( oldPlot2DXy->yMaximum() );
+
+      newPlot2DXy->xAxis().setType( oldPlot2DXy->xAxis().type() );
+      newPlot2DXy->xAxis().setGridIntervalMajor( oldPlot2DXy->xAxis().gridIntervalMajor() );
+      newPlot2DXy->xAxis().setGridIntervalMinor( oldPlot2DXy->xAxis().gridIntervalMinor() );
+      newPlot2DXy->xAxis().setLabelInterval( oldPlot2DXy->xAxis().labelInterval() );
+
+      newPlot2DXy->yAxis().setGridIntervalMajor( oldPlot2DXy->yAxis().gridIntervalMajor() );
+      newPlot2DXy->yAxis().setGridIntervalMinor( oldPlot2DXy->yAxis().gridIntervalMinor() );
+      newPlot2DXy->yAxis().setLabelInterval( oldPlot2DXy->yAxis().labelInterval() );
+    }
+  }
 
   mChartItem->beginCommand( tr( "Change Chart Type" ) );
-  mChartItem->setPlot( plot );
+  mChartItem->setPlot( newPlot );
   mChartItem->update();
   mChartItem->endCommand();
 }
