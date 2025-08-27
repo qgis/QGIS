@@ -59,13 +59,37 @@ QgsLayoutItemChart *QgsLayoutItemChart::create( QgsLayout *layout )
 
 void QgsLayoutItemChart::setPlot( QgsPlot *plot )
 {
-  if ( !dynamic_cast<Qgs2DPlot *>( plot ) )
+  Qgs2DPlot *plot2d = dynamic_cast<Qgs2DPlot *>( plot );
+  if ( !plot2d )
   {
     delete plot;
     return;
   }
 
-  mPlot.reset( dynamic_cast<Qgs2DPlot *>( plot ) );
+  // Logic to minimise plot data refresh to bare minimum
+  bool requireRefresh = !mPlot || !plot;
+  if ( mPlot && plot )
+  {
+    if ( mPlot->type() != plot->type() )
+    {
+      requireRefresh = true;
+    }
+    else
+    {
+      Qgs2DXyPlot *oldPlot2dXy = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() );
+      Qgs2DXyPlot *newPlot2dXy = dynamic_cast<Qgs2DXyPlot *>( plot2d );
+      if ( oldPlot2dXy && oldPlot2dXy->xAxis().type() != newPlot2dXy->xAxis().type() )
+      {
+        requireRefresh = true;
+      }
+    }
+  }
+
+  mPlot.reset( plot2d );
+  if ( requireRefresh )
+  {
+    refresh();
+  }
 
   emit changed();
 }
