@@ -126,7 +126,7 @@ void qgsFree( void *ptr )
   free( ptr );
 }
 
-int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs )
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck )
 {
   // invalid < NULL < any value
   if ( !lhs.isValid() )
@@ -144,6 +144,11 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs )
   else if ( !rhs.isValid() || rhs.isNull() )
   {
     return 1;
+  }
+
+  if ( strictTypeCheck && lhs.userType() != rhs.userType() )
+  {
+    return lhs.userType() < rhs.userType() ? -1 : 1;
   }
 
   // both valid
@@ -293,7 +298,6 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
   return qgsVariantCompare( lhs, rhs ) > 0;
 }
 
-
 QString qgsVsiPrefix( const QString &path )
 {
   return QgsGdalUtils::vsiPrefixForPath( path );
@@ -435,4 +439,3 @@ bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList
   return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
 }
 #endif
-
