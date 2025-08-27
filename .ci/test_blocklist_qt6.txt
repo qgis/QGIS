@@ -33,4 +33,3 @@ PyQgsAuthenticationSystem
 PyQgsLayoutHtml
 PyQgsSettings
 PyQgsSettingsEntry
-ProcessingQgisAlgorithmsTestPt4
