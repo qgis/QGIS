@@ -14,10 +14,14 @@
 
 
 
-
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+struct LayerCommitBlockage
+{
+    QString pluginId;
+    QStringList errors;
+};
 
 class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
@@ -361,10 +365,7 @@ Provider to display vector data in a GRASS GIS layer.
 %TypeHeaderCode
 #include "qgsvectorlayer.h"
 %End
-  public:
-
-
-
+public:
     struct LayerOptions
     {
 
@@ -535,7 +536,6 @@ string. Uses :py:class:`QgsExpression`
 %End
 
     virtual bool hasMapTips() const ${SIP_FINAL};
-
 
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
@@ -2699,7 +2699,59 @@ this layer.
 .. versionadded:: 3.4
 %End
 
+    bool allowCommit() const;
+%Docstring
+Checks all commit permissions set during the runtime of the program and
+returns bool. It can be used to check if committing is fully allowed.
 
+.. versionadded:: 3.4
+%End
+
+    LayerCommitBlockage allowCommit(const QString& appId) const;
+%Docstring
+Checks layer commit permissions set by a specific plugin by the id of
+``appId`` and returns ``LayerCommitBlockage`` object.
+
+.. versionadded:: 4.0
+%End
+
+    PyObject *getPluginsBlocking() const;
+%MethodCode
+    const std::list<LayerCommitBlockage>& blockages = sipCpp->getPluginsBlocking();
+    PyObject* pyList = PyList_New(blockages.size());
+
+    size_t i = 0;
+    for(const LayerCommitBlockage& blockage : blockages) {
+        PyObject* pyBlockage = sipConvertFromType(
+            new LayerCommitBlockage(blockage),
+            sipType_LayerCommitBlockage,
+            NULL
+        );
+        PyList_SET_ITEM(pyList, i++, pyBlockage);
+    }
+    sipRes = pyList;
+%End
+
+    void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
+%Docstring
+Controls, if the layer is allowed to commit changes. If this is set to
+``False`` it will not be possible to commit changes on this layer. This
+can be used to define checks on a layer that need to pass before the
+layer can be saved. ``pluginId`` specifies your unique plugin id. The third
+parameter ``reasons`` can be used to specify the reasons for the process
+of committing to be blocked.
+
+When calling :py:func:`commitChanges` this flag is initially set to
+``True`` and then checked just after the :py:func:`beforeCommitChanges`
+signal is emitted, so it's possible to adjust it from there.
+
+When calling :py:func:`commitChanges` this flag is checked just after
+the
+
+.. seealso:: :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust it from there.
+.. Breaking changes:: 4.0
+.. versionadded:: 3.4
+%End
 
     QgsStoredExpressionManager *storedExpressionManager();
 %Docstring

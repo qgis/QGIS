@@ -25,6 +25,11 @@
 #include <QStringList>
 #include <QFont>
 #include <QMutex>
+#include <qchar.h>
+#include <qlist.h>
+#include <qmap.h>
+#include <qmutex.h>
+#include <qthread.h>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
@@ -94,6 +99,15 @@ class QgsSettingsEntryBool;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+
+/** 
+ * Represents a blockage of the ability to commit the changes to the vector layer.
+ */
+struct CORE_EXPORT LayerCommitBlockage
+{
+  QString pluginId;
+  QStringList errors;
+};
 
 // TODO QGIS4: Remove virtual from non-inherited methods (like isModified)
 
@@ -409,6 +423,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( bool supportsEditing READ supportsEditing NOTIFY supportsEditingChanged )
     Q_PROPERTY( QgsFields fields READ fields NOTIFY updatedFields )
 
+  QMutex commitMutex;
+  /** 
+   * A list storing which plugins block the changes of the layer to be committed (and possibly why).
+   */
+  std::list<LayerCommitBlockage> commitBlockages;
   public:
 
     static const QgsSettingsEntryBool *settingsSimplifyLocal SIP_SKIP;
@@ -2450,42 +2469,47 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsGeometryOptions *geometryOptions() const;
 
     /**
-     * Controls, if the layer is allowed to commit changes. If this is set to FALSE
-     * it will not be possible to commit changes on this layer. This can be used to
-     * define checks on a layer that need to be pass before the layer can be saved.
-     * If you use this API, make sure that:
-     *
-     * - the user is visibly informed that his changes were not saved and what he needs
-     *   to do in order to be able to save the changes.
-     * - to set the property back to TRUE, once the user has fixed his data.
-     *
-     * When calling \see commitChanges() this flag is checked just after the
-     * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
-     *
-     * \note Not available in Python bindings
-     *
+     * Checks all commit permissions set during the runtime of the program and returns bool. It can be used to check
+     * if committing is fully allowed. 
      * \since QGIS 3.4
      */
-    bool allowCommit() const SIP_SKIP;
+    bool allowCommit() const;
 
     /**
-     * Controls, if the layer is allowed to commit changes. If this is set to FALSE
-     * it will not be possible to commit changes on this layer. This can be used to
-     * define checks on a layer that need to be pass before the layer can be saved.
-     * If you use this API, make sure that:
+     * Checks layer commit permissions set by a specific plugin by the id of ``pluginId`` and returns ``LayerCommitBlockage`` object.
      *
-     * - the user is visibly informed that his changes were not saved and what he needs
-     *   to do in order to be able to save the changes.
-     * - to set the property back to TRUE, once the user has fixed his data.
+     * \since QGIS 4.0
+     */
+    LayerCommitBlockage allowCommit(const QString& pluginId) const;
+
+    /**
+     * Returns a list of ``LayerCommitBlockage`` blockages which are currently imposed 
+     *
+     * \since QGIS 4.0
+     */
+    std::list<LayerCommitBlockage> getPluginsBlocking() const;
+
+
+
+    /**
+     * Controls, if the layer is allowed to commit changes. If this is set to ``False``
+     * it will not be possible to commit changes on this layer. This can be used to
+     * define checks on a layer that need to pass before the layer can be saved.
+     * ``pluginId`` specifies your unique plugin id. The third parameter ``reasons`` can be used
+     * to specify the list of reasons for the process of committing to be blocked.
+     *
+     * When calling :py:func:`commitChanges` this flag is initially set to ``True`` and then checked
+     * just after the :py:func:`beforeCommitChanges` signal is emitted, so it's possible to adjust
+     * it from there.
      *
      * When calling \see commitChanges() this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
-     * \note Not available in Python bindings
      *
      * \since QGIS 3.4
+     * Breaking changes \since QGIS 4.0
      */
-    void setAllowCommit( bool allowCommit ) SIP_SKIP;
+    void setAllowCommit(const QString& pluginId, bool allow, const QStringList& reasons = QStringList());
 
     /**
      * Returns the manager of the stored expressions for this layer.
@@ -3054,8 +3078,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
     std::unique_ptr<QgsGeometryOptions> mGeometryOptions;
-
-    bool mAllowCommit = true;
 
     //! Stored expression used for e.g. filter
     QgsStoredExpressionManager *mStoredExpressionManager = nullptr;

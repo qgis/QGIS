@@ -23,6 +23,7 @@
 
 #include "qgis.h" //for globals
 #include "qgssettings.h"
+#include "qgsvector.h"
 #include "qgsvectorlayer.h"
 #include "moc_qgsvectorlayer.cpp"
 #include "qgsactionmanager.h"
@@ -105,9 +106,23 @@
 #include <QUuid>
 #include <QRegularExpression>
 #include <QTimer>
+#include <qchar.h>
+#include <qlist.h>
+#include <qmessagebox.h>
+#include <qmutex.h>
+#include <qnamespace.h>
+#include <qstringliteral.h>
+#include <qvariant.h>
 
+#include <algorithm>
+#include <iterator>
 #include <limits>
+#include <memory>
 #include <optional>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <utility>
 
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
@@ -4022,8 +4037,39 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
 
   emit beforeCommitChanges( stopEditing );
 
-  if ( !mAllowCommit )
+  if ( !allowCommit() ) {
+    /* MessageBox can only be drawn in the GUI thread */
+    if (QThread::currentThread() != QApplication::instance()->thread())
+      return false;
+
+    QMessageBox commitWarningBox;
+    QString warningMessage = "Committing changes to the selected layer has been disabled by:\n<ul>";
+    std::list<LayerCommitBlockage> pluginsBlocking = getPluginsBlocking();
+
+    for(const LayerCommitBlockage& pluginBlocking: std::as_const(pluginsBlocking)) {
+      QString pluginMessage;
+      if (pluginBlocking.errors.empty())
+        pluginMessage = QString("<li><b>%1</b>: Reasons not specified</li>").arg(pluginBlocking.pluginId);
+      else
+        pluginMessage = QString("<li><b>%1</b>: %2%3</li>")
+      .arg(pluginBlocking.pluginId)
+      .arg(pluginBlocking.errors[0])
+      .arg(pluginBlocking.errors.size() > 1? "..." : "");
+
+      warningMessage.append(pluginMessage);
+    }
+    warningMessage.append("</ul>");
+
+    commitWarningBox.setWindowTitle(tr("Committing is not allowed"));
+    commitWarningBox.setText(warningMessage);
+    commitWarningBox.setIcon(QMessageBox::Warning);
+    commitWarningBox.setTextFormat(Qt::RichText);
+    commitWarningBox.setDefaultButton(QMessageBox::Ok);
+    commitWarningBox.exec();
+
     return false;
+  }
+    
 
   mCommitChangesActive = true;
 
@@ -6502,22 +6548,62 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
-bool QgsVectorLayer::allowCommit() const
+LayerCommitBlockage QgsVectorLayer::allowCommit(const QString& appId) const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  auto foundBlockage = std::find_if(commitBlockages.begin(), commitBlockages.end(), [&appId](const LayerCommitBlockage& blockage) {
+    return blockage.pluginId == appId;
+  });
+  if (foundBlockage == commitBlockages.end())
+    throw std::runtime_error(QString("The commit blockage with pluginId '%1' could not be found").arg(appId).toStdString());
 
-  return mAllowCommit;
+  return *foundBlockage;
 }
 
-void QgsVectorLayer::setAllowCommit( bool allowCommit )
+bool QgsVectorLayer::allowCommit() const
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  return commitBlockages.empty();
+}
 
-  if ( mAllowCommit == allowCommit )
+std::list<LayerCommitBlockage> QgsVectorLayer::getPluginsBlocking() const
+{
+  return commitBlockages;
+}
+
+
+void QgsVectorLayer::setAllowCommit(const QString& appId, bool allowCommit, const QStringList& reasons)
+{
+  QMutexLocker mutexLocker(&commitMutex);
+
+  auto foundBlockage = std::find_if(commitBlockages.begin(), commitBlockages.end(), [&appId](const LayerCommitBlockage& blockage) {
+    return blockage.pluginId == appId;
+  });
+
+  /* We only store information about blockages - not permissions */
+  if (allowCommit && foundBlockage == commitBlockages.end())
     return;
 
-  mAllowCommit = allowCommit;
-  emit allowCommitChanged();
+  if (foundBlockage == commitBlockages.end()) {
+    commitBlockages.push_back(LayerCommitBlockage{
+      .pluginId = appId,
+      .errors = reasons,
+    });
+
+    QString debugMessage = QStringLiteral("The ability to commit to the layer has been blocked by %1 due to errors:\n").arg(appId);
+    for (const QString& reason: reasons)
+      debugMessage.append(reason + '\n');
+    QgsDebugMsgLevel(debugMessage, 0);
+
+    emit allowCommitChanged();    
+    return;
+  }
+
+  if (allowCommit && foundBlockage != commitBlockages.end())
+  {
+    commitBlockages.erase(foundBlockage);
+    QgsDebugMsgLevel(QStringLiteral("The layer blockage imposed by %1 has been lifted").arg(appId), 0);
+    emit allowCommitChanged();
+    return;
+  }
 }
 
 QgsGeometryOptions *QgsVectorLayer::geometryOptions() const

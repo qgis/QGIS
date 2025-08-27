@@ -20,6 +20,7 @@ email                : matthias@opengis.ch
 #include <QMap>
 #include <QFuture>
 #include <QReadWriteLock>
+#include <qlist.h>
 
 #include "qgsfeature.h"
 #include "qgsgeometrycheckcontext.h"
@@ -104,9 +105,13 @@ class QgsGeometryValidationService : public QObject
 
     void clearTopologyChecks( QgsVectorLayer *layer );
 
+    inline QStringList getFeatureCheckErrors(QgsVectorLayer *layer) const;
+
     void invalidateTopologyChecks( QgsVectorLayer *layer );
 
     void processFeature( QgsVectorLayer *layer, QgsFeatureId fid );
+
+  
 
     QgsProject *mProject = nullptr;
 
