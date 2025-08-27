@@ -13,7 +13,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from qgis.PyQt.QtCore import QSettings, QVariant
+from qgis.PyQt.QtCore import QSettings, QVariant, QT_VERSION_STR
 from qgis.core import Qgis, QgsMapLayerProxyModel, QgsSettings, QgsTolerance, NULL
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -638,9 +638,14 @@ class TestQgsSettings(QgisTestCase):
         self.assertEqual(self.settings.flagValue("flag", pointAndLine), pointAndPolygon)
         self.settings.setValue("flag", "dummy_setting")
         self.assertEqual(self.settings.flagValue("flag", pointAndLine), pointAndLine)
-        self.assertEqual(
-            type(self.settings.flagValue("enum", pointAndLine)), Qgis.LayerFilters
-        )
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
+            self.assertEqual(
+                type(self.settings.flagValue("enum", pointAndLine)), Qgis.LayerFilter
+            )
+        else:
+            self.assertEqual(
+                type(self.settings.flagValue("enum", pointAndLine)), Qgis.LayerFilters
+            )
 
     def test_overwriteDefaultValues(self):
         """Test that unchanged values are not stored"""
