@@ -31,6 +31,18 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
 
   setPanelTitle( tr( "Bar Chart Plot Properties" ) );
 
+  mSymbolsList->setColumnCount( 2 );
+  mSymbolsList->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mSymbolsList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mSymbolsList->setSortingEnabled( false );
+  mSymbolsList->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
+  mSymbolsList->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+  mSymbolsList->horizontalHeader()->hide();
+  mSymbolsList->verticalHeader()->hide();
+
+  connect( mAddSymbolPushButton, &QPushButton::clicked, this, &QgsBarChartPlotWidget::mAddSymbolPushButton_clicked );
+  connect( mRemoveSymbolPushButton, &QPushButton::clicked, this, &QgsBarChartPlotWidget::mRemoveSymbolPushButton_clicked );
+
   mSpinMinXAxis->setClearValue( 0 );
   connect( mSpinMinXAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( mBlockChanges )
@@ -229,6 +241,42 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   } );
 }
 
+void QgsBarChartPlotWidget::mAddSymbolPushButton_clicked()
+{
+  const int row = mSymbolsList->rowCount();
+  mSymbolsList->insertRow( row );
+
+  QTableWidgetItem *item = new QTableWidgetItem();
+  item->setData( Qt::DisplayRole, tr( "Symbol" ) );
+  mSymbolsList->setItem( row, 0, item );
+
+  QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
+  symbolButton->setSymbolType( Qgis::SymbolType::Fill );
+  symbolButton->setShowNull( true );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::barChartFillSymbol() );
+  connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+  mSymbolsList->setCellWidget( row, 1, symbolButton );
+
+  emit widgetChanged();
+}
+
+void QgsBarChartPlotWidget::mRemoveSymbolPushButton_clicked()
+{
+  QTableWidgetItem *item = mSymbolsList->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  mSymbolsList->removeRow( mSymbolsList->row( item ) );
+
+  emit widgetChanged();
+}
+
 void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
 {
   QgsBarChartPlot *chartPlot = dynamic_cast<QgsBarChartPlot *>( plot );
@@ -238,6 +286,29 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   }
 
   mBlockChanges++;
+
+  mSymbolsList->clear();
+  const int symbolCount = chartPlot->fillSymbolCount();
+  for ( int i = 0; i < symbolCount; i++ )
+  {
+    const int row = mSymbolsList->rowCount();
+    mSymbolsList->insertRow( row );
+
+    QTableWidgetItem *item = new QTableWidgetItem();
+    item->setData( Qt::DisplayRole, tr( "Symbol" ) );
+    mSymbolsList->setItem( row, 0, item );
+
+    QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
+    symbolButton->setSymbolType( Qgis::SymbolType::Fill );
+    symbolButton->setShowNull( true );
+    symbolButton->setSymbol( chartPlot->fillSymbolAt( i )->clone() );
+    connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
+      if ( mBlockChanges )
+        return;
+      emit widgetChanged();
+    } );
+    mSymbolsList->setCellWidget( row, 1, symbolButton );
+  }
 
   mSpinMinXAxis->setValue( chartPlot->xMinimum() );
   mSpinMaxXAxis->setValue( chartPlot->xMaximum() );
@@ -292,6 +363,16 @@ QgsPlot *QgsBarChartPlotWidget::plot()
     return nullptr;
   }
 
+  const int rowCount = mSymbolsList->rowCount();
+  for ( int i = 0; i < rowCount; i++ )
+  {
+    QgsSymbolButton *symbolButton = dynamic_cast<QgsSymbolButton *>( mSymbolsList->cellWidget( i, 1 ) );
+    if ( symbolButton )
+    {
+      chartPlot->setFillSymbolAt( i, symbolButton->clonedSymbol<QgsFillSymbol>() );
+    }
+  }
+
   chartPlot->setXMinimum( mSpinMinXAxis->value() );
   chartPlot->setXMaximum( mSpinMaxXAxis->value() );
   chartPlot->setYMinimum( mSpinMinYAxis->value() );
@@ -339,6 +420,19 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
   setupUi( this );
 
   setPanelTitle( tr( "Line Chart Plot Properties" ) );
+
+  mSymbolsList->setColumnCount( 3 );
+  mSymbolsList->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mSymbolsList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mSymbolsList->setSortingEnabled( false );
+  mSymbolsList->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
+  mSymbolsList->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+  mSymbolsList->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
+  mSymbolsList->horizontalHeader()->hide();
+  mSymbolsList->verticalHeader()->hide();
+
+  connect( mAddSymbolPushButton, &QPushButton::clicked, this, &QgsLineChartPlotWidget::mAddSymbolPushButton_clicked );
+  connect( mRemoveSymbolPushButton, &QPushButton::clicked, this, &QgsLineChartPlotWidget::mRemoveSymbolPushButton_clicked );
 
   mSpinMinXAxis->setClearValue( 0 );
   connect( mSpinMinXAxis, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
@@ -537,6 +631,55 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
     emit widgetChanged();
   } );
 }
+void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
+{
+  const int row = mSymbolsList->rowCount();
+  mSymbolsList->insertRow( row );
+
+  QTableWidgetItem *item = new QTableWidgetItem();
+  item->setData( Qt::DisplayRole, tr( "Symbol" ) );
+  mSymbolsList->setItem( row, 0, item );
+
+  // Line
+  QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
+  symbolButton->setSymbolType( Qgis::SymbolType::Line );
+  symbolButton->setShowNull( true );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartLineSymbol() );
+  connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+  mSymbolsList->setCellWidget( row, 1, symbolButton );
+
+  // Marker
+  symbolButton = new QgsSymbolButton( this );
+  symbolButton->setForceShortSize( true );
+  symbolButton->setSymbolType( Qgis::SymbolType::Marker );
+  symbolButton->setShowNull( true );
+  symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol() );
+  connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
+    if ( mBlockChanges )
+      return;
+    emit widgetChanged();
+  } );
+  mSymbolsList->setCellWidget( row, 2, symbolButton );
+
+  emit widgetChanged();
+}
+
+void QgsLineChartPlotWidget::mRemoveSymbolPushButton_clicked()
+{
+  QTableWidgetItem *item = mSymbolsList->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  mSymbolsList->removeRow( mSymbolsList->row( item ) );
+
+  emit widgetChanged();
+}
 
 void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 {
@@ -547,6 +690,43 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   }
 
   mBlockChanges++;
+
+  mSymbolsList->clear();
+  const int symbolCount = std::max( chartPlot->markerSymbolCount(), chartPlot->lineSymbolCount() );
+  for ( int i = 0; i < symbolCount; i++ )
+  {
+    const int row = mSymbolsList->rowCount();
+    mSymbolsList->insertRow( row );
+
+    QTableWidgetItem *item = new QTableWidgetItem();
+    item->setData( Qt::DisplayRole, tr( "Symbol" ) );
+    mSymbolsList->setItem( row, 0, item );
+
+    // Line
+    QgsSymbolButton *symbolButton = new QgsSymbolButton( this );
+    symbolButton->setSymbolType( Qgis::SymbolType::Line );
+    symbolButton->setShowNull( true );
+    symbolButton->setSymbol( i < chartPlot->lineSymbolCount() ? chartPlot->lineSymbolAt( i )->clone() : nullptr );
+    connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
+      if ( mBlockChanges )
+        return;
+      emit widgetChanged();
+    } );
+    mSymbolsList->setCellWidget( row, 1, symbolButton );
+
+    // Marker
+    symbolButton = new QgsSymbolButton( this );
+    symbolButton->setForceShortSize( true );
+    symbolButton->setSymbolType( Qgis::SymbolType::Marker );
+    symbolButton->setShowNull( true );
+    symbolButton->setSymbol( i < chartPlot->markerSymbolCount() ? chartPlot->markerSymbolAt( i )->clone() : nullptr );
+    connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
+      if ( mBlockChanges )
+        return;
+      emit widgetChanged();
+    } );
+    mSymbolsList->setCellWidget( row, 2, symbolButton );
+  }
 
   mSpinMinXAxis->setValue( chartPlot->xMinimum() );
   mSpinMaxXAxis->setValue( chartPlot->xMaximum() );
@@ -597,6 +777,22 @@ QgsPlot *QgsLineChartPlotWidget::plot()
   if ( !chartPlot )
   {
     return nullptr;
+  }
+
+  const int rowCount = mSymbolsList->rowCount();
+  for ( int i = 0; i < rowCount; i++ )
+  {
+    QgsSymbolButton *symbolButton = dynamic_cast<QgsSymbolButton *>( mSymbolsList->cellWidget( i, 1 ) );
+    if ( symbolButton )
+    {
+      chartPlot->setLineSymbolAt( i, symbolButton->clonedSymbol<QgsLineSymbol>() );
+    }
+
+    symbolButton = dynamic_cast<QgsSymbolButton *>( mSymbolsList->cellWidget( i, 2 ) );
+    if ( symbolButton )
+    {
+      chartPlot->setMarkerSymbolAt( i, symbolButton->clonedSymbol<QgsMarkerSymbol>() );
+    }
   }
 
   chartPlot->setXMinimum( mSpinMinXAxis->value() );

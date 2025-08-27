@@ -84,6 +84,10 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
     //! Creates a new bar chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsBarChartPlotWidget( parent ); }
 
+  private slots:
+    void mAddSymbolPushButton_clicked();
+    void mRemoveSymbolPushButton_clicked();
+
   private:
     int mBlockChanges = 0;
 
@@ -120,6 +124,10 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
 
     //! Creates a new line chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsLineChartPlotWidget( parent ); }
+
+  private slots:
+    void mAddSymbolPushButton_clicked();
+    void mRemoveSymbolPushButton_clicked();
 
   private:
     int mBlockChanges = 0;

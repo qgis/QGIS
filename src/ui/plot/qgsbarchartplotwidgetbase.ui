@@ -171,6 +171,75 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupSymbolsList">
+         <property name="title">
+          <string>Symbols list</string>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>320</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="verticalBoxLayout">
+          <item>
+           <layout class="QHBoxLayout" name="symbolsControlsLayout">
+            <item>
+             <widget class="QPushButton" name="mAddSymbolPushButton">
+              <property name="toolTip">
+               <string>Add a series</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mRemoveSymbolPushButton">
+              <property name="toolTip">
+               <string>Remove selected series</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="mSymbolsList">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>320</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupXAxis">
          <property name="title">
           <string>X Axis</string>
