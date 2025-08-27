@@ -31,6 +31,8 @@ Chart series details covering all supported series types.
 
    this class is experimental and threfore is not considered as stable API, it may
    change in the future as more chart plot types are implemented.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
@@ -128,7 +130,7 @@ Returns the plot used the render the chart.
 Sets the source vector ``layer`` from which the plot data wil be
 gathered from.
 
-.. seealso:: :py:func:`vectorLayer`
+.. seealso:: :py:func:`sourceLayer`
 %End
 
     QgsVectorLayer *sourceLayer() const;
@@ -136,7 +138,7 @@ gathered from.
 Returns the source vector layer from which the plot data will be
 gathered from.
 
-.. seealso:: :py:func:`setVectorLayer`
+.. seealso:: :py:func:`setSourceLayer`
 %End
 
     void setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList );

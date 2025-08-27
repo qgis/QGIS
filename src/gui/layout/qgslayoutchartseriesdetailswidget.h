@@ -44,7 +44,7 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
      * \param seriesDetails the series details
      * \param parent the parent widget
      */
-    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent = nullptr );
 
     //! Returns the series index
     int index() const;

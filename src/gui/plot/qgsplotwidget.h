@@ -72,11 +72,16 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsBarChartPlotWidget.
+     * \param parent parent widget
+     */
     QgsBarChartPlotWidget( QWidget *parent = nullptr );
 
     virtual void setPlot( QgsPlot *plot ) override;
     virtual QgsPlot *plot() override;
 
+    //! Creates a new bar chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsBarChartPlotWidget( parent ); }
 
   private:
@@ -104,11 +109,16 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
     Q_OBJECT
 
   public:
+    /**
+     * Constructor for QgsLineChartPlotWidget.
+     * \param parent parent widget
+     */
     QgsLineChartPlotWidget( QWidget *parent = nullptr );
 
     virtual void setPlot( QgsPlot *plot ) override;
     virtual QgsPlot *plot() override;
 
+    //! Creates a new line chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsLineChartPlotWidget( parent ); }
 
   private:

@@ -41,6 +41,9 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
      *
      * \note this class is experimental and threfore is not considered as stable API, it may
      * change in the future as more chart plot types are implemented.
+     *
+     * \ingroup core
+     * \since QGIS 4.0
      */
     class SeriesDetails
     {
@@ -142,14 +145,14 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     /**
      * Sets the source vector \a layer from which the plot data wil be gathered from.
      *
-     * \see vectorLayer()
+     * \see sourceLayer()
      */
     void setSourceLayer( QgsVectorLayer *layer );
 
     /**
      * Returns the source vector layer from which the plot data will be gathered from.
      *
-     * \see setVectorLayer()
+     * \see setSourceLayer()
      */
     QgsVectorLayer *sourceLayer() const { return mVectorLayer.get(); }
 

@@ -58,11 +58,19 @@ Widget class to control the properties of bar chart plots.
 %End
   public:
     QgsBarChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsBarChartPlotWidget.
+
+:param parent: parent widget
+%End
 
     virtual void setPlot( QgsPlot *plot );
     virtual QgsPlot *plot();
 
     static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new bar chart plot configuration widget.
+%End
 
 };
 
@@ -82,11 +90,19 @@ Widget class to control the properties of line chart plots.
 %End
   public:
     QgsLineChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsLineChartPlotWidget.
+
+:param parent: parent widget
+%End
 
     virtual void setPlot( QgsPlot *plot );
     virtual QgsPlot *plot();
 
     static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new line chart plot configuration widget.
+%End
 
 };
 
