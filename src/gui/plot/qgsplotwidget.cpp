@@ -254,7 +254,9 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
     mYAxisMinorLinesSymbolButton->setSymbol( chartPlot->yAxis().gridMinorSymbol()->clone() );
 
   mXAxisLabelFontButton->setTextFormat( chartPlot->xAxis().textFormat() );
+  mXAxisNumericFormat.reset( chartPlot->xAxis().numericFormat()->clone() );
   mYAxisLabelFontButton->setTextFormat( chartPlot->yAxis().textFormat() );
+  mYAxisNumericFormat.reset( chartPlot->yAxis().numericFormat()->clone() );
 
   mXAxisTypeCombo->setCurrentIndex( mXAxisTypeCombo->findData( QVariant::fromValue( chartPlot->xAxis().type() ) ) );
   mXAxisLabelsCombo->setCurrentIndex( mXAxisLabelsCombo->findData( QVariant::fromValue( chartPlot->xAxis().labelSuffixPlacement() ) ) );
@@ -301,7 +303,9 @@ QgsPlot *QgsBarChartPlotWidget::plot()
   chartPlot->yAxis().setGridMajorSymbol( mYAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
 
   chartPlot->xAxis().setTextFormat( mXAxisLabelFontButton->textFormat() );
+  chartPlot->xAxis().setNumericFormat( mXAxisNumericFormat.get()->clone() );
   chartPlot->yAxis().setTextFormat( mYAxisLabelFontButton->textFormat() );
+  chartPlot->yAxis().setNumericFormat( mYAxisNumericFormat.get()->clone() );
 
   chartPlot->xAxis().setType( mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() );
   chartPlot->xAxis().setLabelSuffixPlacement( mXAxisLabelsCombo->currentData().value<Qgis::PlotAxisSuffixPlacement>() );

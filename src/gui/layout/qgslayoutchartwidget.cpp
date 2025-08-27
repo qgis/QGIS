@@ -99,6 +99,13 @@ void QgsLayoutChartWidget::setGuiElementValues()
   {
     whileBlocking( mChartTypeComboBox )->setCurrentIndex( mChartTypeComboBox->findData( mChartItem->plot()->type() ) );
     whileBlocking( mLayerComboBox )->setLayer( mChartItem->sourceLayer() );
+
+    whileBlocking( mSortCheckBox )->setCheckState( mChartItem->sortFeatures() ? Qt::Checked : Qt::Unchecked );
+
+    whileBlocking( mSortDirectionButton )->setEnabled( mChartItem->sortFeatures() );
+    whileBlocking( mSortDirectionButton )->setArrowType( mChartItem->sortAscending() ? Qt::UpArrow : Qt::DownArrow );
+
+    whileBlocking( mSortExpressionWidget )->setEnabled( mChartItem->sortFeatures() );
     whileBlocking( mSortExpressionWidget )->setLayer( mChartItem->sourceLayer() );
     whileBlocking( mSortExpressionWidget )->setField( mChartItem->sortExpression() );
 
