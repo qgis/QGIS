@@ -174,6 +174,8 @@ class TestQgsGeometry : public QgsTest
 
     void wktParser();
 
+    void chamferFillet();
+
   private:
     //! Must be called before each render test
     void initPainterTest();
@@ -3184,5 +3186,44 @@ void TestQgsGeometry::wktParser()
   QVERIFY( mline.fromWkt( "MultiLineString EMPTY" ) );
   QCOMPARE( mline.asWkt(), QStringLiteral( "MultiLineString EMPTY" ) );
 }
+
+void TestQgsGeometry::chamferFillet()
+{
+  QgsGeometry g, g2;
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
+  QCOMPARE( g.lastError(), "" );
+  g.chamfer( 1, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "Chamfer needs curve geometry." );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "Vertex index out of range." );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 5, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "Vertex index out of range." );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "LineString (0 1, 0.65 1.65, 1.45 1.78, 3 1)" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15))" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15), (6 16, 8 16, 8 18, 6 16 ))" );
+}
+
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"

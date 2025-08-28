@@ -12,6 +12,8 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 from qgis.core import (
     Qgis,
+    QgsInvalidArgumentException,
+    QgsGeometryUtils,
     QgsCircularString,
     QgsCompoundCurve,
     QgsGeometry,
@@ -226,11 +228,12 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(1.0, 1.0)
 
-        result = QgsGeometry().chamfer(
+        g = QgsGeometry()
+        result = g.chamfer(
             segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
         )
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(g.lastError(), "Segments do not intersect.")
 
     def test_chamfer_segments_negative_distances(self):
         """Test that negative distances return empty geometry"""
@@ -243,11 +246,12 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().chamfer(
+        g = QgsGeometry()
+        result = g.chamfer(
             segment1_start, segment1_end, segment2_start, segment2_end, -0.1, 0.1
         )
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(g.lastError(), "Negative distances.")
 
     # CHAMFER TESTS - VERTEX-BASED OVERLOAD
 
@@ -283,8 +287,8 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 0, 1 1)")
 
         result = linestring.chamfer(0, 0.1, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(linestring.lastError(), "Vertex index out of range.")
 
     def test_chamfer_vertex_invalid_index_last(self):
         """Test chamfer with invalid vertex index (last vertex)"""
@@ -293,6 +297,7 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.chamfer(2, 0.1, 0.1)
 
         self.assertTrue(result.isEmpty())
+        self.assertEqual(linestring.lastError(), "Vertex index out of range.")
 
     def test_chamfer_vertex_acute_angle(self):
         """Test chamfer at vertex with acute angle"""
@@ -308,6 +313,15 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 2 0, 4 0, 4 2, 4 4)")
 
         result = linestring.chamfer(2, 0.3)
+
+        expected_wkt = "LineString (0 0, 2 0, 3.7 0, 4 0.3, 4 2, 4 4)"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+    def test_geometryutils_chamfer_vertex_complex_linestring(self):
+        """Test chamfer on complex linestring with multiple vertices from QgsGeometryUtils."""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 2 0, 4 0, 4 2, 4 4)")
+
+        result = QgsGeometryUtils.chamferVertex(linestring.get(), 2, 0.3, 0.3)
 
         expected_wkt = "LineString (0 0, 2 0, 3.7 0, 4 0.3, 4 2, 4 4)"
         self.assertEqual(result.asWkt(2), expected_wkt)
@@ -571,11 +585,12 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 0.1)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().fillet(
+        g = QgsGeometry()
+        result = g.fillet(
             segment1_start, segment1_end, segment2_start, segment2_end, 1.0
         )
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(g.lastError(), "Intersection 1 on segment but too far.")
 
     def test_fillet_segments_zero_radius_failure(self):
         """Test that zero radius returns empty geometry"""
@@ -588,11 +603,12 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().fillet(
+        g = QgsGeometry()
+        result = g.fillet(
             segment1_start, segment1_end, segment2_start, segment2_end, 0.0
         )
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(g.lastError(), "Radius <= 0.")
 
     def test_fillet_segments_acute_angle(self):
         """Test fillet creation with acute angle"""
@@ -662,24 +678,26 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 0, 1 1)")
 
         result = linestring.fillet(0, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(linestring.lastError(), "Vertex index out of range.")
 
     def test_fillet_vertex_invalid_index_last(self):
         """Test fillet with invalid vertex index (last vertex)"""
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 0, 1 1)")
 
         result = linestring.fillet(2, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(linestring.lastError(), "Vertex index out of range.")
 
     def test_fillet_vertex_large_radius_failure(self):
         """Test fillet with radius too large for available geometry"""
         linestring = QgsGeometry.fromWkt("LineString (0 0, 0.1 0, 0.1 0.1)")
 
         result = linestring.fillet(1, 1.0)
+        self.assertFalse(result.isEmpty())
 
-        self.assertTrue(result.isEmpty())
+        expected_wkt = "LineString (0 0, 0.02 0, 0.04 0.01, 0.06 0.02, 0.07 0.03, 0.08 0.04, 0.09 0.06, 0.1 0.08, 0.1 0.1)"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
     # EDGE CASES AND ERROR HANDLING
 
@@ -712,7 +730,6 @@ class TestQgsGeometry(QgisTestCase):
         point = QgsGeometry.fromWkt("Point (0 0)")
 
         result = point.fillet(0, 0.1)
-
         self.assertTrue(result.isEmpty())
 
     def test_two_point_linestring_chamfer(self):
@@ -720,32 +737,66 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
 
         result = linestring.chamfer(1, 0.1, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(linestring.lastError(), "Vertex index out of range.")
 
     def test_two_point_linestring_fillet(self):
         """Test fillet behavior with minimum linestring"""
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
 
         result = linestring.fillet(1, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(linestring.lastError(), "Vertex index out of range.")
+
+    def test_geometryutils_two_point_linestring_fillet(self):
+        """Test fillet behavior with minimum linestring from QgsGeometryUtils. Should throw exception"""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
+
+        try:
+            result = QgsGeometryUtils.filletVertex(linestring.get(), 1, 0.1, 8)
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Vertex index out of range.")
+
+    def test_geometryutils_two_point_linestring_chamfer(self):
+        """Test chamfer behavior with minimum linestring from QgsGeometryUtils. Should throw exception"""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
+
+        try:
+            result = QgsGeometryUtils.chamferVertex(linestring.get(), 1, 0.1, 0.1)
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Vertex index out of range.")
+
+    def test_geometryutils_bad_distance_linestring_chamfer(self):
+        """Test chamfer behavior with minimum linestring from QgsGeometryUtils. Should throw exception"""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1, 1 2, 2 3)")
+
+        try:
+            result = QgsGeometryUtils.chamferVertex(linestring.get(), 1, -0.1, -0.1)
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Negative distances.")
 
     def test_polygon_geometry_handling_chamfer(self):
-        """Test chamfer behavior with polygon geometries (should fail gracefully)"""
+        """Test chamfer behavior with polygon geometries"""
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
 
         result = polygon.chamfer(1, 0.1)
+        self.assertFalse(result.isEmpty())
 
-        self.assertTrue(result.isEmpty())
+        expected_wkt = "Polygon ((0 0, 0.9 0, 1 0.1, 1 1, 0 1, 0 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
     def test_polygon_geometry_handling_fillet(self):
         """Test fillet behavior with polygon geometries (should fail gracefully)"""
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
 
         result = polygon.fillet(1, 0.1)
+        self.assertFalse(result.isEmpty())
 
-        self.assertTrue(result.isEmpty())
+        expected_wkt = "Polygon ((0 0, 0.92 0, 0.93 0.01, 0.95 0.01, 0.96 0.02, 0.98 0.04, 0.99 0.05, 0.99 0.07, 1 0.08, 1 1, 0 1, 0 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
     # PRECISION AND PERFORMANCE TESTS
 

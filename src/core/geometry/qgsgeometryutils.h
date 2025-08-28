@@ -1308,13 +1308,14 @@ class CORE_EXPORT QgsGeometryUtils
      * \param chamferEnd calculated end point of the chamfer
      * \param epsilon tolerance for geometric calculations
      * \returns true if chamfer was successfully created
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
     static bool createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
                                const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                double distance1, double distance2,
                                QgsPoint &chamferStart SIP_OUT, QgsPoint &chamferEnd SIP_OUT,
-                               double epsilon = 1e-8 ) SIP_HOLDGIL;
+                               double epsilon = 1e-8 ) SIP_THROW( QgsInvalidArgumentException ) SIP_HOLDGIL;
 
     /**
      * Creates a fillet (rounded corner) between two line segments using QgsPoint.
@@ -1330,6 +1331,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param filletPoint2 second tangent point of the fillet arc
      * \param epsilon tolerance for geometric calculations
      * \returns true if fillet was successfully created
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
     static bool createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
@@ -1338,7 +1340,7 @@ class CORE_EXPORT QgsGeometryUtils
                               QgsPoint &filletPoint1 SIP_OUT,
                               QgsPoint &filletMidPoint SIP_OUT,
                               QgsPoint &filletPoint2 SIP_OUT,
-                              double epsilon = 1e-8 ) SIP_HOLDGIL;
+                              double epsilon = 1e-8 ) SIP_THROW( QgsInvalidArgumentException ) SIP_HOLDGIL;
 
     /**
      * Creates a complete chamfer geometry connecting two segments.
@@ -1349,12 +1351,14 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment (if negative, uses distance1)
      * \returns QgsLineString geometry connecting the segments through the chamfer
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
-    static std::unique_ptr< QgsLineString >createChamferGeometry(
+    static std::unique_ptr< QgsLineString > createChamferGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double distance1, double distance2 );
+      double distance1, double distance2
+    ) SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Creates a complete fillet geometry connecting two segments.
@@ -1365,12 +1369,14 @@ class CORE_EXPORT QgsGeometryUtils
      * \param radius fillet radius
      * \param segments number of segments for arc discretization (≤0 for circular arc)
      * \returns geometry connecting the segments through the fillet
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
-    static std::unique_ptr< QgsAbstractGeometry >createFilletGeometry(
+    static std::unique_ptr< QgsAbstractGeometry > createFilletGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double radius, int segments );
+      double radius, int segments
+    ) SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Applies chamfer to a vertex in a curve geometry.
@@ -1379,11 +1385,13 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment
      * \returns new geometry with chamfer applied, or None on failure
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
-    static std::unique_ptr< QgsAbstractGeometry >chamferVertex(
+    static std::unique_ptr< QgsAbstractGeometry > chamferVertex(
       const QgsCurve *curve, int vertexIndex,
-      double distance1, double distance2 );
+      double distance1, double distance2
+    ) SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Applies fillet to a vertex in a curve geometry.
@@ -1392,15 +1400,18 @@ class CORE_EXPORT QgsGeometryUtils
      * \param radius fillet radius
      * \param segments number of segments for arc discretization (≤0 for circular arc)
      * \returns new geometry with fillet applied, or None on failure
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
-    static std::unique_ptr< QgsAbstractGeometry >filletVertex(
+    static std::unique_ptr< QgsAbstractGeometry > filletVertex(
       const QgsCurve *curve, int vertexIndex,
-      double radius, int segments );
+      double radius, int segments
+    ) SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Convenient method of createFillet using array output.
      * \note Not available in Python bindings.
+     * \throws QgsInvalidArgumentException
      * \since QGIS 4.0
      */
     static bool createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
