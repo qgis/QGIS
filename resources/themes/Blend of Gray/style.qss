@@ -224,7 +224,7 @@ QMenu::indicator
     width: 0em;
 }
 
-QWidget:disabled, QWidget:editable:disabled
+QWidget:disabled, QWidget:editable:disabled, QWidget:read-only:disabled
 {
     color: @itemalternativebackground;
     background-color: @background;
