@@ -5130,8 +5130,7 @@ QString QgsPostgresProvider::htmlMetadata() const
 {
   const QString sqlTableOid = QStringLiteral( "SELECT oid FROM pg_class "
                                               "WHERE relname = %1 AND relnamespace = %2::regnamespace;" )
-                                .arg( QgsPostgresConn::quotedValue( mTableName ) )
-                                .arg( QgsPostgresConn::quotedValue( mSchemaName ) );
+                                .arg( QgsPostgresConn::quotedValue( mTableName ), QgsPostgresConn::quotedValue( mSchemaName ) );
 
   QgsPostgresResult resTableOid( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlTableOid ) );
 
@@ -5142,7 +5141,7 @@ QString QgsPostgresProvider::htmlMetadata() const
 
   qlonglong tableOid = resTableOid.PQgetvalue( 0, 0 ).toLongLong();
 
-  const QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName ).arg( mTableName );
+  const QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
 
   const QString sqlPrivileges = QStringLiteral( "SELECT "
                                                 "has_table_privilege(%1, 'SELECT'), "
@@ -5188,8 +5187,7 @@ QString QgsPostgresProvider::htmlMetadata() const
   }
 
   const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE '%gist%'" )
-                                    .arg( QgsPostgresConn::quotedValue( mSchemaName ) )
-                                    .arg( QgsPostgresConn::quotedValue( mTableName ) );
+                                    .arg( QgsPostgresConn::quotedValue( mSchemaName ), QgsPostgresConn::quotedValue( mTableName ) );
 
   QgsPostgresResult resSpatialIndexes( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlSpatialIndex ) );
   QString spatialIndexText = tr( "No spatial index." );
