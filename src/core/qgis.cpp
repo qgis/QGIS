@@ -169,6 +169,14 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictType
           return lhsInt < rhsInt ? -1 : ( lhsInt == rhsInt ? 0 : 1 );
         }
 
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+        {
+          const long long lhsInt = lhs.toLongLong();
+          const long long rhsInt = rhs.toLongLong();
+          return lhsInt < rhsInt ? -1 : ( lhsInt == rhsInt ? 0 : 1 );
+        }
+
         case QMetaType::Type::Double:
         case QMetaType::Type::Float:
         {
@@ -223,6 +231,47 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictType
           return lhsUInt < rhsUInt ? -1 : ( lhsUInt == rhsUInt ? 0 : 1 );
         }
 
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+        {
+          const qulonglong lhsInt = lhs.toULongLong();
+          const qulonglong rhsInt = rhs.toULongLong();
+          return lhsInt < rhsInt ? -1 : ( lhsInt == rhsInt ? 0 : 1 );
+        }
+
+        case QMetaType::Type::Double:
+        case QMetaType::Type::Float:
+        {
+          const double lhsDouble = static_cast< double >( lhs.toUInt() );
+          const double rhsDouble = rhs.toDouble();
+
+          // consider NaN < any non-NaN
+          const bool lhsIsNan = std::isnan( lhsDouble );
+          const bool rhsIsNan = std::isnan( rhsDouble );
+          if ( lhsIsNan )
+          {
+            return rhsIsNan ? 0 : -1;
+          }
+          else if ( rhsIsNan )
+          {
+            return 1;
+          }
+
+          return lhsDouble < rhsDouble ? -1 : ( lhsDouble == rhsDouble ? 0 : 1 );
+        }
+
+        case QMetaType::Type::QString:
+        {
+          bool ok = false;
+          const double rhsDouble = rhs.toDouble( &ok );
+          if ( ok )
+          {
+            const double lhsDouble = static_cast< double >( lhs.toUInt() );
+            return lhsDouble < rhsDouble ? -1 : ( lhsDouble == rhsDouble ? 0 : 1 );
+          }
+          break;
+        }
+
         default:
           break;
       }
@@ -234,12 +283,48 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictType
     {
       switch ( rhs.userType() )
       {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::Char:
+        case QMetaType::Type::Short:
         case QMetaType::Type::LongLong:
         case QMetaType::Type::Long:
         {
           const qlonglong lhsLongLong = lhs.toLongLong();
           const qlonglong rhsLongLong = rhs.toLongLong();
           return lhsLongLong < rhsLongLong ? -1 : ( lhsLongLong == rhsLongLong ? 0 : 1 );
+        }
+
+        case QMetaType::Type::Double:
+        case QMetaType::Type::Float:
+        {
+          const double lhsDouble = static_cast< double >( lhs.toLongLong() );
+          const double rhsDouble = rhs.toDouble();
+
+          // consider NaN < any non-NaN
+          const bool lhsIsNan = std::isnan( lhsDouble );
+          const bool rhsIsNan = std::isnan( rhsDouble );
+          if ( lhsIsNan )
+          {
+            return rhsIsNan ? 0 : -1;
+          }
+          else if ( rhsIsNan )
+          {
+            return 1;
+          }
+
+          return lhsDouble < rhsDouble ? -1 : ( lhsDouble == rhsDouble ? 0 : 1 );
+        }
+
+        case QMetaType::Type::QString:
+        {
+          bool ok = false;
+          const double rhsDouble = rhs.toDouble( &ok );
+          if ( ok )
+          {
+            const double lhsDouble = static_cast< double >( lhs.toLongLong() );
+            return lhsDouble < rhsDouble ? -1 : ( lhsDouble == rhsDouble ? 0 : 1 );
+          }
+          break;
         }
 
         default:
@@ -253,6 +338,9 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictType
     {
       switch ( rhs.userType() )
       {
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::UChar:
+        case QMetaType::Type::UShort:
         case QMetaType::Type::ULongLong:
         case QMetaType::Type::ULong:
         {
