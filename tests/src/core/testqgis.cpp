@@ -406,17 +406,48 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "int vs float greater than truncation" ) << QVariant( -2 ) << QVariant( -2.1f ) << false << true << 1;
   QTest::newRow( "int vs float same" ) << QVariant( 1 ) << QVariant( 1.0f ) << false << false << 0;
 
+  QTest::newRow( "long long vs double less than" ) << QVariant( 1LL ) << QVariant( 2.0 ) << true << false << -1;
+  QTest::newRow( "long long vs double less than truncation" ) << QVariant( 1LL ) << QVariant( 1.1 ) << true << false << -1;
+  QTest::newRow( "long long vs double greater than" ) << QVariant( 2LL ) << QVariant( 1.0 ) << false << true << 1;
+  QTest::newRow( "long long vs double greater than truncation" ) << QVariant( -2LL ) << QVariant( -2.1 ) << false << true << 1;
+  QTest::newRow( "long long vs double same" ) << QVariant( 1LL ) << QVariant( 1.0 ) << false << false << 0;
+
+  QTest::newRow( "long long vs float less than" ) << QVariant( 1LL ) << QVariant( 2.0f ) << true << false << -1;
+  QTest::newRow( "long long vs float less than truncation" ) << QVariant( 1LL ) << QVariant( 1.1f ) << true << false << -1;
+  QTest::newRow( "long long vs float greater than" ) << QVariant( 2LL ) << QVariant( 1.0f ) << false << true << 1;
+  QTest::newRow( "long long vs float greater than truncation" ) << QVariant( -2LL ) << QVariant( -2.1f ) << false << true << 1;
+  QTest::newRow( "long long vs float same" ) << QVariant( 1LL ) << QVariant( 1.0f ) << false << false << 0;
+
+  QTest::newRow( "long long vs int less than" ) << QVariant( 1LL ) << QVariant( 2 ) << true << false << -1;
+  QTest::newRow( "long long vs int greater than" ) << QVariant( 2LL ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "long long vs int same" ) << QVariant( 1LL ) << QVariant( 1 ) << false << false << 0;
+  QTest::newRow( "int vs long long less than" ) << QVariant( 1 ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "int vs long long greater than" ) << QVariant( 2 ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "int vs long long same" ) << QVariant( 1 ) << QVariant( 1LL ) << false << false << 0;
+
   QTest::newRow( "double vs int less than" ) << QVariant( 1.0 ) << QVariant( 2 ) << true << false << -1;
   QTest::newRow( "double vs int less than truncation" ) << QVariant( -2.1 ) << QVariant( -2 ) << true << false << -1;
   QTest::newRow( "double vs int greater than" ) << QVariant( 2.0 ) << QVariant( 1 ) << false << true << 1;
   QTest::newRow( "double vs int greater than truncation" ) << QVariant( 1.1 ) << QVariant( 1 ) << false << true << 1;
   QTest::newRow( "double vs int same" ) << QVariant( 1.0 ) << QVariant( 1 ) << false << false << 0;
 
+  QTest::newRow( "double vs long long less than" ) << QVariant( 1.0 ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "double vs long long less than truncation" ) << QVariant( -2.1 ) << QVariant( -2LL ) << true << false << -1;
+  QTest::newRow( "double vs long long greater than" ) << QVariant( 2.0 ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "double vs long long greater than truncation" ) << QVariant( 1.1 ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "double vs long long same" ) << QVariant( 1.0 ) << QVariant( 1LL ) << false << false << 0;
+
   QTest::newRow( "float vs int less than" ) << QVariant( 1.0f ) << QVariant( 2 ) << true << false << -1;
   QTest::newRow( "float vs int less than truncation" ) << QVariant( -2.1f ) << QVariant( -2 ) << true << false << -1;
   QTest::newRow( "float vs int greater than" ) << QVariant( 2.0f ) << QVariant( 1 ) << false << true << 1;
   QTest::newRow( "float vs int greater than truncation" ) << QVariant( 1.1f ) << QVariant( 1 ) << false << true << 1;
   QTest::newRow( "float vs int same" ) << QVariant( 1.0f ) << QVariant( 1 ) << false << false << 0;
+
+  QTest::newRow( "float vs long long less than" ) << QVariant( 1.0f ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "float vs long long less than truncation" ) << QVariant( -2.1f ) << QVariant( -2LL ) << true << false << -1;
+  QTest::newRow( "float vs long long greater than" ) << QVariant( 2.0f ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "float vs long long greater than truncation" ) << QVariant( 1.1f ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "float vs long long same" ) << QVariant( 1.0f ) << QVariant( 1LL ) << false << false << 0;
 
   QTest::newRow( "int vs string less than" ) << QVariant( 1 ) << QVariant( "2" ) << true << false << -1;
   QTest::newRow( "int vs string greater than" ) << QVariant( 2 ) << QVariant( "1" ) << false << true << 1;
@@ -426,11 +457,24 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "int 0 vs string non numeric" ) << QVariant( 0 ) << QVariant( "aaaa" ) << true << false << -1;
   QTest::newRow( "non numeric string vs int 0" ) << QVariant( "abc" ) << QVariant( 0 ) << false << true << 1;
 
+  QTest::newRow( "long long vs string less than" ) << QVariant( 1LL ) << QVariant( "2" ) << true << false << -1;
+  QTest::newRow( "long long vs string greater than" ) << QVariant( 2LL ) << QVariant( "1" ) << false << true << 1;
+  QTest::newRow( "long long vs string same" ) << QVariant( 2LL ) << QVariant( "2" ) << false << false << 0;
+  QTest::newRow( "long long vs string non numeric" ) << QVariant( 2LL ) << QVariant( "aaaa" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs long long" ) << QVariant( "abc" ) << QVariant( 2LL ) << false << true << 1;
+  QTest::newRow( "long long 0 vs string non numeric" ) << QVariant( 0LL ) << QVariant( "aaaa" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs long long 0" ) << QVariant( "abc" ) << QVariant( 0LL ) << false << true << 1;
+
   QTest::newRow( "int vs double string less than" ) << QVariant( 1 ) << QVariant( "2.0" ) << true << false << -1;
   QTest::newRow( "int vs double string less than truncation" ) << QVariant( 1 ) << QVariant( "1.1" ) << true << false << -1;
   QTest::newRow( "int vs double string greater than" ) << QVariant( 2 ) << QVariant( "1.0" ) << false << true << 1;
   QTest::newRow( "int vs double string greater than truncation" ) << QVariant( -2 ) << QVariant( "-2.1" ) << false << true << 1;
   QTest::newRow( "int vs double string same" ) << QVariant( 2 ) << QVariant( "2.0" ) << false << false << 0;
+  QTest::newRow( "long long vs double string less than" ) << QVariant( 1LL ) << QVariant( "2.0" ) << true << false << -1;
+  QTest::newRow( "long long vs double string less than truncation" ) << QVariant( 1LL ) << QVariant( "1.1" ) << true << false << -1;
+  QTest::newRow( "long long vs double string greater than" ) << QVariant( 2LL ) << QVariant( "1.0" ) << false << true << 1;
+  QTest::newRow( "long long vs double string greater than truncation" ) << QVariant( -2LL ) << QVariant( "-2.1" ) << false << true << 1;
+  QTest::newRow( "long long vs double string same" ) << QVariant( 2LL ) << QVariant( "2.0" ) << false << false << 0;
   QTest::newRow( "double vs non numeric string" ) << QVariant( 2.1 ) << QVariant( "abc" ) << true << false << -1;
   QTest::newRow( "double 0 vs non numeric string" ) << QVariant( 0 ) << QVariant( "abc" ) << true << false << -1;
   QTest::newRow( "non numeric string vs double" ) << QVariant( "abc" ) << QVariant( 2.0 ) << false << true << 1;
@@ -444,6 +488,13 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "string vs int greater than truncation" ) << QVariant( "2.1" ) << QVariant( 2 ) << false << true << 1;
   QTest::newRow( "string vs int same" ) << QVariant( "2" ) << QVariant( 2 ) << false << false << 0;
   QTest::newRow( "string double vs int same" ) << QVariant( "2.0" ) << QVariant( 2 ) << false << false << 0;
+
+  QTest::newRow( "string vs long long less than" ) << QVariant( "1" ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "string vs long long less than truncation" ) << QVariant( "-2.1" ) << QVariant( -2LL ) << true << false << -1;
+  QTest::newRow( "string vs long long greater than" ) << QVariant( "2" ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "string vs long long greater than truncation" ) << QVariant( "2.1" ) << QVariant( 2LL ) << false << true << 1;
+  QTest::newRow( "string vs long long same" ) << QVariant( "2" ) << QVariant( 2LL ) << false << false << 0;
+  QTest::newRow( "string double vs long long same" ) << QVariant( "2.0" ) << QVariant( 2LL ) << false << false << 0;
 
   QTest::newRow( "string vs double same" ) << QVariant( "2" ) << QVariant( 2.0 ) << false << false << 0;
   QTest::newRow( "string vs double less than" ) << QVariant( "1" ) << QVariant( 2.0 ) << true << false << -1;
