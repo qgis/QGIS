@@ -5143,12 +5143,12 @@ QString QgsPostgresProvider::htmlMetadata() const
 
   const QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
 
-  const QString sqlPrivileges = QStringLiteral( "SELECT "
-                                                "has_table_privilege(%1, 'SELECT'), "
-                                                "has_table_privilege(%1, 'INSERT'), "
-                                                "has_table_privilege(%1, 'UPDATE'), "
-                                                "has_table_privilege(%1, 'DELETE')" )
-                                  .arg( QgsPostgresConn::quotedValue( tableOid ) );
+  QString sqlPrivileges = QStringLiteral( "SELECT "
+                                          "has_table_privilege(%1, 'SELECT'), "
+                                          "has_table_privilege(%1, 'INSERT'), "
+                                          "has_table_privilege(%1, 'UPDATE'), "
+                                          "has_table_privilege(%1, 'DELETE')" )
+                            .arg( QgsPostgresConn::quotedValue( tableOid ) );
 
   QgsPostgresResult resPrivileges( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlPrivileges ) );
 
