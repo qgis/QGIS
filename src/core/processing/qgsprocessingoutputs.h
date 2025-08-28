@@ -18,6 +18,7 @@
 #ifndef QGSPROCESSINGOUTPUTS_H
 #define QGSPROCESSINGOUTPUTS_H
 
+#include <QColor>
 #include "qgis_core.h"
 #include "qgis.h"
 
@@ -84,6 +85,13 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     QgsProcessingOutputDefinition( const QString &name, const QString &description = QString() );
 
     virtual ~QgsProcessingOutputDefinition() = default;
+
+    /**
+    * Returns the color to use for the output in model designer windows.
+    *
+    * \since QGIS 3.44
+    */
+    virtual QColor modelColor() const;
 
     /**
      * Unique output type name.
@@ -195,6 +203,8 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
      */
     QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
 
+    QColor modelColor() const override;
+
     /**
      * Returns the type name for the output class.
      */
@@ -217,6 +227,8 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      * Constructor for QgsProcessingOutputVectorLayer.
      */
     QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry );
+
+    QColor modelColor() const override;
 
     /**
      * Returns the type name for the output class.
@@ -259,6 +271,8 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputRaster" ); }
+
+    QColor modelColor() const override;
     QString type() const override { return typeName(); }
 };
 
@@ -310,8 +324,9 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
      */
     static QString typeName() { return QStringLiteral( "outputMultilayer" ); }
     QString type() const override;
-    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
+    QColor modelColor() const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 /**
@@ -333,6 +348,8 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputHtml" ); }
     QString type() const override { return typeName(); }
+
+    QColor modelColor() const override;
     QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
@@ -356,6 +373,7 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputVariant" ); }
+
     QString type() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
@@ -374,6 +392,8 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
      * Constructor for QgsProcessingOutputNumber.
      */
     QgsProcessingOutputNumber( const QString &name, const QString &description = QString() );
+
+    QColor modelColor() const override;
 
     /**
      * Returns the type name for the output class.
@@ -402,6 +422,8 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputString" ); }
+
+    QColor modelColor() const override;
     QString type() const override { return typeName(); }
 };
 
@@ -419,6 +441,8 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
      * Constructor for QgsProcessingOutputNumber.
      */
     QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
+
+    QColor modelColor() const override ;
 
     /**
      * Returns the type name for the output class.
@@ -448,8 +472,9 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
      */
     static QString typeName() { return QStringLiteral( "outputFolder" ); }
     QString type() const override { return typeName(); }
-    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
+    QColor modelColor() const override;
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 /**
@@ -471,8 +496,9 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
     QString type() const override { return typeName(); }
-    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
+    QColor modelColor() const override;
+    QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
 /**
@@ -517,6 +543,8 @@ class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutpu
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputVectorTile" ); }
+
+    QColor modelColor() const override;
     QString type() const override { return typeName(); }
 };
 
