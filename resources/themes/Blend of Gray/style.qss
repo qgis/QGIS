@@ -59,7 +59,7 @@ QMenuBar::item:pressed
 }
 
 /* ==================================================================================== */
-/* SPIN BOX                                                                            */
+/* SPIN BOX                                                                             */
 /* ==================================================================================== */
 
 QAbstractSpinBox {
@@ -144,7 +144,7 @@ QAbstractSpinBox::drop-down:disabled {
 }
 
 /* ==================================================================================== */
-/* CALENDAR
+/* CALENDAR                                                                             */
 /* ==================================================================================== */
 
 /* header row */
@@ -813,7 +813,7 @@ QCheckBox:disabled {
 }
 
 /* ==================================================================================== */
-/* SLIDER                                                                                */
+/* SLIDER                                                                               */
 /* ==================================================================================== */
 
 QSlider::groove:horizontal {
@@ -837,7 +837,7 @@ QSlider::groove:horizontal[invertedAppearance="true"]:disabled {
     background-color: @itemalternativebackground;
 }
 
-QSlider::groove:vertical  {
+QSlider::groove:vertical {
     border: 1px solid @itemdarkbackground;
     border-radius: 0.15em;
     width: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
