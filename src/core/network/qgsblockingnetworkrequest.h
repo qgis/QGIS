@@ -204,6 +204,16 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     QString errorMessage() const { return mErrorMessage; }
 
     /**
+     * Returns whether error messages are logged in the console.
+     */
+    bool logError();
+
+    /**
+     * Sets whether error messages are logged in the console to logError.
+     */
+    void setLogError(bool logError);
+
+    /**
      * Returns the content of the network reply, after a get(), post(), head() or put() request has been made.
      */
     QgsNetworkReplyContent reply() const { return mReplyContent; }
@@ -274,6 +284,9 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     //! Error code
     ErrorCode mErrorCode = NoError;
+
+    //! Whether error messages are logged
+    bool mlogError = true;
 
     QgsNetworkReplyContent mReplyContent;
 
