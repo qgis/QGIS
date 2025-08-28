@@ -4538,18 +4538,40 @@ QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double dist
     return QgsGeometry();
   }
 
-  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
+  const QgsCurve *curve;
+  if ( type() == Qgis::GeometryType::Polygon )
+  {
+    if ( const QgsCurvePolygon *cpoly = qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry->simplifiedTypeRef() ) )
+      curve = qgsgeometry_cast<const QgsCurve *>( cpoly->exteriorRing() );
+    else
+      curve = nullptr;
+  }
+  else if ( type() == Qgis::GeometryType::Line )
+    curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
+  else
+    curve = nullptr;
+
   if ( !curve )
   {
+    QgsDebugMsgLevel( QStringLiteral( "input geom is not a curve" ), 1 );
     return QgsGeometry();
   }
 
   std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::chamferVertex( curve, vertexIndex, distance1, distance2 ) );
   if ( !result )
   {
+    QgsDebugMsgLevel( QStringLiteral( "output geom is null" ), 1 );
     return QgsGeometry();
   }
 
+  if ( type() == Qgis::GeometryType::Polygon )
+  {
+    QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( result.release() );
+    QgsPolygon *poly = new QgsPolygon( linestring );
+    QgsDebugMsgLevel( QStringLiteral( "returning polygon" ), 1 );
+    return QgsGeometry( dynamic_cast<QgsAbstractGeometry *>( poly ) );
+  }
+  QgsDebugMsgLevel( QStringLiteral( "returning linestring" ), 1 );
   return QgsGeometry( std::move( result ) );
 }
 
@@ -4560,18 +4582,40 @@ QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) 
     return QgsGeometry();
   }
 
-  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
+  const QgsCurve *curve;
+  if ( type() == Qgis::GeometryType::Polygon )
+  {
+    if ( const QgsCurvePolygon *cpoly = qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry->simplifiedTypeRef() ) )
+      curve = qgsgeometry_cast<const QgsCurve *>( cpoly->exteriorRing() );
+    else
+      curve = nullptr;
+  }
+  else if ( type() == Qgis::GeometryType::Line )
+    curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
+  else
+    curve = nullptr;
+
   if ( !curve )
   {
+    QgsDebugMsgLevel( QStringLiteral( "input geom is not a curve" ), 1 );
     return QgsGeometry();
   }
 
   std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::filletVertex( curve, vertexIndex, radius, segments ) );
   if ( !result )
   {
+    QgsDebugMsgLevel( QStringLiteral( "output geom is null" ), 1 );
     return QgsGeometry();
   }
 
+  if ( type() == Qgis::GeometryType::Polygon )
+  {
+    QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( result.release() );
+    QgsPolygon *poly = new QgsPolygon( linestring );
+    QgsDebugMsgLevel( QStringLiteral( "returning polygon" ), 1 );
+    return QgsGeometry( dynamic_cast<QgsAbstractGeometry *>( poly ) );
+  }
+  QgsDebugMsgLevel( QStringLiteral( "returning linestring" ), 1 );
   return QgsGeometry( std::move( result ) );
 }
 
