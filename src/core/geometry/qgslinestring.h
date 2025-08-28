@@ -930,8 +930,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Extends the line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
+     * \param startDistance distance to extend start of line
+     * \param endDistance distance to extend end of line
+     * \param strict if TRUE, throws QgsException when encountering stacked vertices;
+     *               if FALSE, silently skips stacked vertices (default: FALSE for user-friendliness)
+     * \throws QgsException if strict=TRUE and stacked vertices are encountered
+     * \since QGIS 3.40
      */
-    void extend( double startDistance, double endDistance );
+    void extend( double startDistance, double endDistance, bool strict = false );
 
 #ifndef SIP_RUN
 
