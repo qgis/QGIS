@@ -5141,14 +5141,14 @@ QString QgsPostgresProvider::htmlMetadata() const
 
   qlonglong tableOid = resTableOid.PQgetvalue( 0, 0 ).toLongLong();
 
-  const QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
+  QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
 
-  QString sqlPrivileges = QStringLiteral( "SELECT "
-                                          "has_table_privilege(%1, 'SELECT'), "
-                                          "has_table_privilege(%1, 'INSERT'), "
-                                          "has_table_privilege(%1, 'UPDATE'), "
-                                          "has_table_privilege(%1, 'DELETE')" )
-                            .arg( QgsPostgresConn::quotedValue( tableOid ) );
+  const QString sqlPrivileges = QStringLiteral( "SELECT "
+                                                "has_table_privilege(%1, 'SELECT'), "
+                                                "has_table_privilege(%1, 'INSERT'), "
+                                                "has_table_privilege(%1, 'UPDATE'), "
+                                                "has_table_privilege(%1, 'DELETE')" )
+                                  .arg( QgsPostgresConn::quotedValue( tableOid ) );
 
   QgsPostgresResult resPrivileges( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlPrivileges ) );
 
