@@ -28,4 +28,3 @@ PyQgsStyleStorageMssql
 
 # To be fixed
 PyQgsLayoutHtml
-ProcessingQgisAlgorithmsTestPt4
