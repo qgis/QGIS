@@ -48,104 +48,30 @@ QgsMapToolChamferFillet::~QgsMapToolChamferFillet()
   cancel();
 }
 
-void QgsMapToolChamferFillet::keyPressEvent( QKeyEvent *e )
+
+void QgsMapToolChamferFillet::applyOperationFromWidget( Qt::KeyboardModifiers modifiers )
 {
-  if ( e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
+  if ( mSourceLayer && !mOriginalGeometry.isNull() )
   {
-    cancel();
-  }
-  else
-  {
-    QgsMapToolEdit::keyPressEvent( e );
+    double value1 = mUserInputWidget->value1();
+    double value2 = mUserInputWidget->value2();
+    if ( !qgsDoubleNear( value1, 0 ) && !qgsDoubleNear( value2, 0 ) )
+    {
+      mGeometryModified = true;
+      applyOperation( value1, value2, modifiers );
+    }
   }
 }
 
-
-void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::KeyboardModifiers modifiers )
 {
-  mCtrlHeldOnFirstClick = false;
-
-  if ( e->button() == Qt::RightButton )
-  {
-    cancel();
-    return;
-  }
-
-  if ( mOriginalGeometry.isNull() )
-  {
-    // first click, get feature to modify
-    deleteRubberBandAndGeometry();
-    mGeometryModified = false;
-
-    QgsPointLocator::Match match;
-
-    if ( e->modifiers() & Qt::ControlModifier )
-    {
-      match = mCanvas->snappingUtils()->snapToMap( e->pos(), nullptr );
-    }
-    else
-    {
-      match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
-    }
-
-    if ( auto *lLayer = match.layer() )
-    {
-      mSourceLayer = lLayer;
-      QgsFeature fet;
-      if ( lLayer->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
-      {
-        mSourceFeature = fet;
-        mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
-        prepareGeometry( match, fet );
-        mRubberBand = createRubberBand();
-        if ( mRubberBand )
-        {
-          mRubberBand->setToGeometry( mManipulatedGeometry, lLayer );
-        }
-        mModifiedFeature = fet.id();
-        createUserInputWidget();
-
-        const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
-        const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
-        if ( hasZ || hasM )
-        {
-          emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
-        }
-      }
-    }
-
-    if ( mOriginalGeometry.isNull() )
-    {
-      emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
-      cancel();
-    }
-  }
-  else
-  {
-    // second click - apply changes
-    const double distance = calculateDistance( e->snapPoint() );
-    applyOperation( distance, e->modifiers() );
-  }
-}
-
-void QgsMapToolChamferFillet::applyOperationFromWidget( double distance, Qt::KeyboardModifiers modifiers )
-{
-  if ( mSourceLayer && !mOriginalGeometry.isNull() && !qgsDoubleNear( distance, 0 ) )
-  {
-    mGeometryModified = true;
-    applyOperation( distance, modifiers );
-  }
-}
-
-void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModifiers modifiers )
-{
-  if ( !mSourceLayer || distance == 0.0 )
+  if ( !mSourceLayer || value1 == 0.0 || value2 == 0.0 )
   {
     cancel();
     return;
   }
 
-  updateGeometryAndRubberBand( distance );
+  updateGeometryAndRubberBand( value1, value2 );
 
   // no modification
   if ( !mGeometryModified )
@@ -156,11 +82,14 @@ void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModif
 
   if ( mModifiedPart >= 0 )
   {
+    QgsDebugMsgLevel( QStringLiteral( "mModifiedPart %1" ).arg( mModifiedPart ), 1 );
+
     QgsGeometry geometry;
     int partIndex = 0;
     const Qgis::WkbType geomType = mOriginalGeometry.wkbType();
     if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Line )
     {
+      QgsDebugMsgLevel( QStringLiteral( "mModifiedPart %1 is Line" ).arg( mModifiedPart ), 1 );
       QgsMultiPolylineXY newMultiLine;
       const QgsMultiPolylineXY multiLine = mOriginalGeometry.asMultiPolyline();
       QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
@@ -180,6 +109,7 @@ void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModif
     }
     else
     {
+      QgsDebugMsgLevel( QStringLiteral( "mModifiedPart %1 is Polygon" ).arg( mModifiedPart ), 1 );
       QgsMultiPolygonXY newMultiPoly;
       const QgsMultiPolygonXY multiPoly = mOriginalGeometry.asMultiPolygon();
       QgsMultiPolygonXY::const_iterator multiPolyIt = multiPoly.constBegin();
@@ -226,6 +156,8 @@ void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModif
           }
           else
           {
+            if ( mModifiedGeometry.asPolygon().empty() )
+              qWarning() << "empty modified geometry" << mModifiedGeometry.asWkt( 2 );
             // original part had no ring
             if ( mModifiedRing == -1 )
             {
@@ -265,9 +197,11 @@ void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModif
   }
   else if ( mModifiedRing >= 0 )
   {
+    QgsDebugMsgLevel( QStringLiteral( "mModifiedRing %1" ).arg( mModifiedRing ), 1 );
     // original geometry had some rings
     if ( mModifiedGeometry.isMultipart() )
     {
+      QgsDebugMsgLevel( QStringLiteral( "mModifiedGeometry.isMultipart" ), 1 );
       // not a ring
       if ( mModifiedRing == 0 )
       {
@@ -307,6 +241,7 @@ void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModif
     }
     else
     {
+      QgsDebugMsgLevel( QStringLiteral( "mModifiedGeometry NOT isMultipart" ), 1 );
       // simple case where modified geom is a polygon (not multi)
       QgsPolygonXY newPoly;
       const QgsPolygonXY poly = mOriginalGeometry.asPolygon();
@@ -331,7 +266,20 @@ void QgsMapToolChamferFillet::applyOperation( double distance, Qt::KeyboardModif
 
   if ( !mModifiedGeometry.isGeosValid() )
   {
-    emit messageEmitted( tr( "Generated geometry is not valid." ), Qgis::MessageLevel::Critical );
+    QgsDebugMsgLevel( QStringLiteral( "mModifiedGeometry: %1" ).arg( mModifiedGeometry.asWkt( 2 ) ), 1 );
+
+    QString lastError;
+    int i = 0;
+    for ( QgsAbstractGeometry::const_part_iterator ite = mModifiedGeometry.const_parts_begin(); ite != mModifiedGeometry.const_parts_end(); ite++ )
+    {
+      if ( !( *ite )->isValid( lastError ) )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Part %1 is not valid: %2" ).arg( i ).arg( ( *ite )->asWkt( 2 ) ), 1 );
+      }
+      i++;
+    }
+
+    emit messageEmitted( tr( "Generated geometry is not valid: %1" ).arg( mModifiedGeometry.lastError() ), Qgis::MessageLevel::Critical );
     // no cancel, continue editing.
     return;
   }
@@ -426,35 +374,141 @@ void QgsMapToolChamferFillet::cancel()
   mSourceLayer = nullptr;
 }
 
-double QgsMapToolChamferFillet::calculateDistance( const QgsPointXY &mapPoint )
+void QgsMapToolChamferFillet::calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 )
 {
-  double distance = 0.0;
+  value1 = 0.0;
+  value2 = 0.0;
   if ( mSourceLayer )
   {
     //get distance from current position rectangular to feature
     const QgsPointXY layerCoords = toLayerCoordinates( mSourceLayer, mapPoint );
 
-    QgsPointXY minDistPoint;
-    int beforeVertex;
-    int leftOf = 0;
+    QgsVector vect = layerCoords - mVertexPoint;
+    QgsVector perpVect = vect.perpVector();
 
-    distance = std::sqrt( mManipulatedGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-    if ( QgsWkbTypes::geometryType( mManipulatedGeometry.wkbType() ) == Qgis::GeometryType::Line )
+    int beforeVIdx, afterVIdx;
+    mManipulatedGeometry.adjacentVertices( mVertexIndex, beforeVIdx, afterVIdx );
+    QgsPoint beforeVert = mManipulatedGeometry.vertexAt( beforeVIdx );
+    QgsPoint afterVert = mManipulatedGeometry.vertexAt( afterVIdx );
+
+    QgsPoint beforeInter;
+    QgsGeometryUtils::lineIntersection( QgsPoint( layerCoords.x(), layerCoords.y() ), perpVect, beforeVert, beforeVert - mVertexPoint, beforeInter );
+
+    QgsPoint afterInter;
+    QgsGeometryUtils::lineIntersection( QgsPoint( layerCoords.x(), layerCoords.y() ), perpVect, afterVert, afterVert - mVertexPoint, afterInter );
+
+    value1 = beforeInter.distance( mVertexPoint );
+    value2 = afterInter.distance( mVertexPoint );
+  }
+  QgsDebugMsgLevel( QStringLiteral( "dist between %1 and %2: %3 / %4" ).arg( mapPoint.asWkt() ).arg( mVertexPoint.asWkt( 2 ) ).arg( value1 ).arg( value2 ), 1 );
+}
+
+void QgsMapToolChamferFillet::keyPressEvent( QKeyEvent *e )
+{
+  if ( e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
+  {
+    cancel();
+  }
+  else
+  {
+    QgsMapToolEdit::keyPressEvent( e );
+  }
+}
+
+void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  QgsDebugMsgLevel( "Enter", 1 );
+  mCtrlHeldOnFirstClick = false;
+
+  if ( e->button() == Qt::RightButton )
+  {
+    cancel();
+    return;
+  }
+
+  if ( mOriginalGeometry.isNull() )
+  {
+    QgsDebugMsgLevel( "First click", 1 );
+    // first click, get feature to modify
+    deleteRubberBandAndGeometry();
+    mGeometryModified = false;
+
+    QgsPointLocator::Match match;
+
+    if ( e->modifiers() & Qt::ControlModifier )
     {
-      distance = leftOf < 0 ? distance : -distance;
+      match = mCanvas->snappingUtils()->snapToMap( e->pos(), nullptr );
     }
     else
     {
-      distance = mManipulatedGeometry.contains( &layerCoords ) ? -distance : distance;
+      QgsDebugMsgLevel( "using snap on area", 1 );
+      match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
+    }
+
+    if ( auto *lLayer = match.layer() )
+    {
+      mSourceLayer = lLayer;
+      QgsFeature fet;
+      if ( lLayer->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
+      {
+        mSourceFeature = fet;
+        mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
+        prepareGeometry( match, fet );
+        mRubberBand = createRubberBand();
+        if ( mRubberBand )
+        {
+          mRubberBand->setToGeometry( mManipulatedGeometry, lLayer );
+        }
+        mModifiedFeature = fet.id();
+        createUserInputWidget();
+
+        const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+        const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
+        if ( hasZ || hasM )
+        {
+          emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
+        }
+        QgsDebugMsgLevel( "First vertex found", 1 );
+      }
+    }
+
+    if ( mOriginalGeometry.isNull() )
+    {
+      emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
+      cancel();
     }
   }
-  return distance;
+  else
+  {
+    QgsDebugMsgLevel( "Second click will apply changes", 1 );
+
+    // second click - apply changes
+    double value1, value2;
+    calculateDistances( e->mapPoint(), value1, value2 );
+    const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
+    if ( op == "chamfer" )
+    {
+      if ( e->modifiers() & Qt::ShiftModifier )
+      {
+        value1 = ( value1 + value2 ) / 2.0;
+        value2 = value1;
+      }
+    }
+    else
+    {
+      value1 = ( value1 + value2 ) / 2.0;
+    }
+
+    applyOperation( value1, value2, e->modifiers() );
+  }
+  QgsDebugMsgLevel( "Exit", 1 );
 }
 
 void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mOriginalGeometry.isNull() || !mRubberBand )
   {
+    QgsDebugMsgLevel( "move without nothing selected", 1 );
     QgsPointLocator::Match match;
     if ( e->modifiers() & Qt::ControlModifier )
     {
@@ -462,30 +516,54 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
+      match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
     }
     mSnapIndicator->setMatch( match );
     return;
   }
 
+  QgsDebugMsgLevel( "move with something selected", 1 );
   mGeometryModified = true;
 
-  const QgsPointXY mapPoint = e->snapPoint();
+  const QgsPointXY mapPoint = e->mapPoint();
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  const double distance = calculateDistance( mapPoint );
+  double value1, value2;
+  calculateDistances( mapPoint, value1, value2 );
+
+  const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
+  if ( op == "chamfer" )
+  {
+    if ( e->modifiers() & Qt::ShiftModifier )
+    {
+      value1 = ( value1 + value2 ) / 2.0;
+      value2 = value1;
+    }
+  }
+  else
+  {
+    value1 = ( value1 + value2 ) / 2.0;
+  }
 
   if ( mUserInputWidget )
   {
-    disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceChanged, this, &QgsMapToolChamferFillet::updateGeometryAndRubberBand );
-    mUserInputWidget->setDistance( distance );
-    connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceChanged, this, &QgsMapToolChamferFillet::updateGeometryAndRubberBand );
+    mUserInputWidget->blockSignals( true );
+    if ( op == "chamfer" )
+    {
+      mUserInputWidget->setValue1( value1 );
+      mUserInputWidget->setValue2( value2 );
+    }
+    else
+    {
+      mUserInputWidget->setValue1( value1 );
+    }
+    mUserInputWidget->blockSignals( false );
     mUserInputWidget->setFocus( Qt::TabFocusReason );
     mUserInputWidget->editor()->selectAll();
   }
 
   //create chamfer geometry using geos
-  updateGeometryAndRubberBand( distance );
+  updateGeometryAndRubberBand( value1, value2 );
 }
 
 void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
@@ -510,6 +588,18 @@ void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
   mOriginalGeometry = geom;
 
   const Qgis::WkbType geomType = geom.wkbType();
+  if ( QgsWkbTypes::geometryType( geomType ) != Qgis::GeometryType::Line && QgsWkbTypes::geometryType( geomType ) != Qgis::GeometryType::Polygon )
+    return;
+
+  if ( !match.hasEdge() && !match.hasVertex() )
+    return;
+
+  mVertexIndex = match.vertexIndex();
+  mVertexPoint = geom.vertexAt( mVertexIndex );
+  QgsVertexId vertexId;
+  geom.vertexIdFromVertexNr( mVertexIndex, vertexId );
+  mVertexIndex = vertexId.vertex;
+
   if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Line )
   {
     if ( !geom.isMultipart() )
@@ -518,9 +608,6 @@ void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
     }
     else
     {
-      const int vertex = match.vertexIndex();
-      QgsVertexId vertexId;
-      geom.vertexIdFromVertexNr( vertex, vertexId );
       mModifiedPart = vertexId.part;
 
       const QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
@@ -529,65 +616,36 @@ void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
   }
   else if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Polygon )
   {
-    if ( !match.hasEdge() && !match.hasVertex() && match.hasArea() )
+    QgsDebugMsgLevel( QString::number( vertexId.ring ), 2 );
+
+    if ( !geom.isMultipart() )
     {
-      if ( !geom.isMultipart() )
+      const QgsPolygonXY poly = geom.asPolygon();
+      // if has rings
+      if ( poly.count() > 0 )
       {
-        mManipulatedGeometry = geom;
+        mModifiedRing = vertexId.ring;
+        mManipulatedGeometry = QgsGeometry::fromPolygonXY( QgsPolygonXY() << poly.at( mModifiedRing ) );
       }
       else
       {
-        // get the correct part
-        QgsMultiPolygonXY mpolygon = geom.asMultiPolygon();
-        for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
-        {
-          const QgsPolygonXY &polygon = mpolygon[part];
-          const QgsGeometry partGeo = QgsGeometry::fromPolygonXY( polygon );
-          const QgsPointXY layerCoords = match.point();
-          if ( partGeo.contains( &layerCoords ) )
-          {
-            mModifiedPart = part;
-            mManipulatedGeometry = partGeo;
-          }
-        }
+        mManipulatedGeometry = QgsGeometry::fromPolygonXY( poly );
       }
     }
-    else if ( match.hasEdge() || match.hasVertex() )
+    else
     {
-      const int vertex = match.vertexIndex();
-      QgsVertexId vertexId;
-      geom.vertexIdFromVertexNr( vertex, vertexId );
-      QgsDebugMsgLevel( QString::number( vertexId.ring ), 2 );
-
-      if ( !geom.isMultipart() )
+      mModifiedPart = vertexId.part;
+      // get part, get ring
+      const QgsMultiPolygonXY multiPoly = geom.asMultiPolygon();
+      // if has rings
+      if ( multiPoly.at( mModifiedPart ).count() > 0 )
       {
-        const QgsPolygonXY poly = geom.asPolygon();
-        // if has rings
-        if ( poly.count() > 0 )
-        {
-          mModifiedRing = vertexId.ring;
-          mManipulatedGeometry = QgsGeometry::fromPolygonXY( QgsPolygonXY() << poly.at( mModifiedRing ) );
-        }
-        else
-        {
-          mManipulatedGeometry = QgsGeometry::fromPolygonXY( poly );
-        }
+        mModifiedRing = vertexId.ring;
+        mManipulatedGeometry = QgsGeometry::fromPolygonXY( QgsPolygonXY() << multiPoly.at( mModifiedPart ).at( mModifiedRing ) );
       }
       else
       {
-        mModifiedPart = vertexId.part;
-        // get part, get ring
-        const QgsMultiPolygonXY multiPoly = geom.asMultiPolygon();
-        // if has rings
-        if ( multiPoly.at( mModifiedPart ).count() > 0 )
-        {
-          mModifiedRing = vertexId.ring;
-          mManipulatedGeometry = QgsGeometry::fromPolygonXY( QgsPolygonXY() << multiPoly.at( mModifiedPart ).at( mModifiedRing ) );
-        }
-        else
-        {
-          mManipulatedGeometry = QgsGeometry::fromPolygonXY( multiPoly.at( mModifiedPart ) );
-        }
+        mManipulatedGeometry = QgsGeometry::fromPolygonXY( multiPoly.at( mModifiedPart ) );
       }
     }
   }
@@ -601,18 +659,16 @@ void QgsMapToolChamferFillet::createUserInputWidget()
   QgisApp::instance()->addUserInputWidget( mUserInputWidget );
   mUserInputWidget->setFocus( Qt::TabFocusReason );
 
-  connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceChanged, this, &QgsMapToolChamferFillet::updateGeometryAndRubberBand );
   connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingFinished, this, &QgsMapToolChamferFillet::applyOperationFromWidget );
   connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingCanceled, this, &QgsMapToolChamferFillet::cancel );
-
-  connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceConfigChanged, this, [this] { updateGeometryAndRubberBand( mUserInputWidget->distance() ); } );
+  connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceConfigChanged, this, //
+           [this] { updateGeometryAndRubberBand( mUserInputWidget->value1(), mUserInputWidget->value2() ); } );
 }
 
 void QgsMapToolChamferFillet::deleteUserInputWidget()
 {
   if ( mUserInputWidget )
   {
-    disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceChanged, this, &QgsMapToolChamferFillet::updateGeometryAndRubberBand );
     disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingFinished, this, &QgsMapToolChamferFillet::applyOperationFromWidget );
     disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingCanceled, this, &QgsMapToolChamferFillet::cancel );
     mUserInputWidget->releaseKeyboard();
@@ -629,7 +685,7 @@ void QgsMapToolChamferFillet::deleteRubberBandAndGeometry()
   mRubberBand = nullptr;
 }
 
-void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double distance )
+void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double value2 )
 {
   if ( !mRubberBand || mOriginalGeometry.isNull() )
   {
@@ -642,19 +698,18 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double distance )
   }
 
   QgsGeometry newGeom;
-  const Qgis::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->value();
-  const int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value();
-  const double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->value();
-  const Qgis::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle->value();
+  const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
+  const int segments = QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value();
 
-
-  if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == Qgis::GeometryType::Line )
+  if ( op == "chamfer" )
   {
-    //newGeom = mManipulatedGeometry.chamferfillet( distance, quadSegments, joinStyle, miterLimit );
+    QgsDebugMsgLevel( QStringLiteral( "will chamfer %1 / %2" ).arg( value1 ).arg( value2 ), 1 );
+    newGeom = mManipulatedGeometry.chamfer( mVertexIndex, value1, value2 );
   }
   else
   {
-    newGeom = mManipulatedGeometry.buffer( distance, quadSegments, capStyle, joinStyle, miterLimit );
+    QgsDebugMsgLevel( QStringLiteral( "will fillet %1 / %2" ).arg( value1 ).arg( segments ), 1 );
+    newGeom = mManipulatedGeometry.fillet( mVertexIndex, value1, segments );
   }
 
   if ( newGeom.isNull() )
@@ -682,53 +737,100 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mDistanceSpinBox->setDecimals( 6 );
-  mDistanceSpinBox->setClearValue( 0.0 );
-
   // fill comboboxes
   mOperationComboBox->addItem( tr( "Chamfer" ), "chamfer" );
   mOperationComboBox->addItem( tr( "Fillet" ), "fillet" );
 
-  const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
+  QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
+  if ( op != "chamfer" && op != "fillet" )
+  {
+    op = "chamfer";
+    QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( op );
+    qWarning() << "No op defined!! Default: chamfer";
+  }
+
   mOperationComboBox->setCurrentIndex( mOperationComboBox->findData( op ) );
 
-  mFilletSegmentSpinBox->setEnabled( op == "fillet" );
-  const int segments = QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value();
-  mFilletSegmentSpinBox->setValue( segments );
+  auto updateLabels = [this]( const QString &op ) {
+    if ( op == "chamfer" )
+    {
+      mVal1Label->setText( tr( "Distance 1" ) );
+      mVal2Label->setText( tr( "Distance 2" ) );
+      mValue1SpinBox->setDecimals( 6 );
+      mValue1SpinBox->setClearValue( 0.001 );
+      mValue2SpinBox->setDecimals( 6 );
+      mValue2SpinBox->setClearValue( 0.001 );
+    }
+    else
+    {
+      mVal1Label->setText( tr( "Radius" ) );
+      mVal2Label->setText( tr( "Fillet segments" ) );
+      mValue1SpinBox->setDecimals( 6 );
+      mValue1SpinBox->setClearValue( 0.001 );
+      mValue2SpinBox->setDecimals( 0 );
+      mValue2SpinBox->setClearValue( 6.0 );
+      const int segments = QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value();
+      mValue2SpinBox->setValue( segments );
+    }
+  };
+
+  updateLabels( op );
 
   // connect signals
-  mDistanceSpinBox->installEventFilter( this );
-  connect( mDistanceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsChamferFilletUserWidget::distanceChanged );
-
   connect( mOperationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, //
-           [this] {
-             QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( mOperationComboBox->currentText() );
+           [this, updateLabels] {
+             QString op = operation();
+             QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( op );
+             updateLabels( op );
+
              emit distanceConfigChanged();
            } );
 
-  connect( mFilletSegmentSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, //
-           [this]( const int segments ) {
-             QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( segments );
+  connect( mValue1SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
+           [this]( const double ) { emit distanceConfigChanged(); } );
+
+  connect( mValue2SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
+           [this]( const double value ) {
+             if ( operation() == "fillet" )
+               QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( static_cast<int>( value ) );
              emit distanceConfigChanged();
            } );
+
+  mValue1SpinBox->installEventFilter( this );
+  mValue2SpinBox->installEventFilter( this );
 
   // config focus
-  setFocusProxy( mDistanceSpinBox );
+  setFocusProxy( mValue1SpinBox );
 }
 
-void QgsChamferFilletUserWidget::setDistance( double distance )
+void QgsChamferFilletUserWidget::setValue1( double value )
 {
-  mDistanceSpinBox->setValue( distance );
+  mValue1SpinBox->setValue( value );
 }
 
-double QgsChamferFilletUserWidget::distance()
+void QgsChamferFilletUserWidget::setValue2( double value )
 {
-  return mDistanceSpinBox->value();
+  mValue2SpinBox->setValue( value );
+}
+
+double QgsChamferFilletUserWidget::value1() const
+{
+  return mValue1SpinBox->value();
+}
+
+double QgsChamferFilletUserWidget::value2() const
+{
+  return mValue2SpinBox->value();
+}
+
+QString QgsChamferFilletUserWidget::operation() const
+{
+  return mOperationComboBox->currentData().toString();
 }
 
 bool QgsChamferFilletUserWidget::eventFilter( QObject *obj, QEvent *ev )
 {
-  if ( obj == mDistanceSpinBox && ev->type() == QEvent::KeyPress )
+  if ( ( obj == mValue1SpinBox || obj == mValue2SpinBox ) && ev->type() == QEvent::KeyPress )
   {
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );
     if ( event->key() == Qt::Key_Escape )
@@ -738,7 +840,7 @@ bool QgsChamferFilletUserWidget::eventFilter( QObject *obj, QEvent *ev )
     }
     if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
     {
-      emit distanceEditingFinished( distance(), event->modifiers() );
+      emit distanceEditingFinished( event->modifiers() );
       return true;
     }
   }

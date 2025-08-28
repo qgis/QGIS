@@ -20,21 +20,37 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="2">
-    <widget class="QComboBox" name="mOperationComboBox"/>
-   </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="mVal1Label">
      <property name="text">
       <string>Distance</string>
      </property>
      <property name="buddy">
-      <cstring>mDistanceSpinBox</cstring>
+      <cstring>mValue1SpinBox</cstring>
      </property>
     </widget>
    </item>
+   <item row="2" column="2">
+    <widget class="QgsDoubleSpinBox" name="mValue1SpinBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999.989999999990687</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QComboBox" name="mOperationComboBox"/>
+   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="mOperationLabel">
      <property name="text">
       <string>Operation</string>
      </property>
@@ -46,26 +62,26 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
-    <widget class="QgsDoubleSpinBox" name="mDistanceSpinBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="4" column="2">
+    <widget class="QgsDoubleSpinBox" name="mValue2SpinBox">
+     <property name="enabled">
+      <bool>true</bool>
      </property>
      <property name="minimum">
-      <double>-9999999.000000000000000</double>
+      <double>0.000000000000000</double>
      </property>
      <property name="maximum">
       <double>999999.989999999990687</double>
      </property>
+     <property name="value">
+      <double>0.000000000000000</double>
+     </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_3">
+   <item row="4" column="0">
+    <widget class="QLabel" name="mVal2Label">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="text">
       <string>Fillet segments</string>
@@ -74,17 +90,7 @@
       <bool>true</bool>
      </property>
      <property name="buddy">
-      <cstring>mFilletSegmentSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QgsSpinBox" name="mFilletSegmentSpinBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="minimum">
-      <number>1</number>
+      <cstring>mValue2SpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -95,11 +101,6 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

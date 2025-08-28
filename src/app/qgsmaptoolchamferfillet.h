@@ -37,13 +37,15 @@ class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsCha
   public:
     explicit QgsChamferFilletUserWidget( QWidget *parent = nullptr );
 
-    void setDistance( double distance );
-    double distance();
-    QDoubleSpinBox *editor() const { return mDistanceSpinBox; }
+    void setValue1( double value1 );
+    double value1() const;
+    void setValue2( double value2 );
+    double value2() const;
+    QDoubleSpinBox *editor() const { return mValue1SpinBox; }
+    QString operation() const;
 
   signals:
-    void distanceChanged( double distance );
-    void distanceEditingFinished( double distance, const Qt::KeyboardModifiers &modifiers );
+    void distanceEditingFinished( const Qt::KeyboardModifiers &modifiers );
     void distanceEditingCanceled();
     void distanceConfigChanged();
 
@@ -64,12 +66,12 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
 
   private slots:
     //! Places curve chamfer from the mouse position or from the value entered in the spin box
-    void updateGeometryAndRubberBand( double distance );
+    void updateGeometryAndRubberBand( double value1, double value2 );
 
-    void applyOperationFromWidget( double distance, Qt::KeyboardModifiers modifiers );
+    void applyOperationFromWidget( Qt::KeyboardModifiers modifiers );
 
     //! Apply the chamfer either from the spin box or from the mouse event
-    void applyOperation( double distance, Qt::KeyboardModifiers modifiers );
+    void applyOperation( double value1, double value2, Qt::KeyboardModifiers modifiers );
 
     void cancel();
 
@@ -92,6 +94,8 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     QgsFeatureId mModifiedFeature = -1;
     int mModifiedPart = -1;
     int mModifiedRing = -1;
+    int mVertexIndex = -1;
+    QgsPoint mVertexPoint;
 
     //! Internal flag to distinguish move from click
     bool mGeometryModified = false;
@@ -104,7 +108,7 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
 
     QgsFeature mSourceFeature;
 
-    double calculateDistance( const QgsPointXY &mapPoint );
+    void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
 
     void createUserInputWidget();
     void deleteUserInputWidget();
