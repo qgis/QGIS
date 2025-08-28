@@ -482,20 +482,6 @@ QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
   return mExtentGroupBox->outputExtent();
 }
 
-void QgsRasterLayerSaveAsDialog::snapToGridButtonClicked()
-{
-  if ( !mDataProvider )
-    return;
-    
-  // Get current extent from the extent group box
-  QgsRectangle currentExtent = mExtentGroupBox->outputExtent();
-  
-  // Apply snap-to-grid mathematical logic to the current extent
-  QgsRectangle snappedExtent = snapExtentToGrid( currentExtent );
-  
-  // Set the snapped extent back to the extent group box
-  mExtentGroupBox->setOutputExtentFromUser( snappedExtent, mExtentGroupBox->outputCrs() );
-}
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
 {
