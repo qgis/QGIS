@@ -5141,8 +5141,6 @@ QString QgsPostgresProvider::htmlMetadata() const
 
   qlonglong tableOid = resTableOid.PQgetvalue( 0, 0 ).toLongLong();
 
-  QString fullName = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
-
   const QString sqlPrivileges = QStringLiteral( "SELECT "
                                                 "has_table_privilege(%1, 'SELECT'), "
                                                 "has_table_privilege(%1, 'INSERT'), "
