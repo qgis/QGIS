@@ -23,7 +23,6 @@ test_core_openclutils
 test_core_layerdefinition
 
 # To be fixed
-PyQgsAuthenticationSystem
 PyQgsLayoutHtml
 PyQgsSettings
 PyQgsSettingsEntry
