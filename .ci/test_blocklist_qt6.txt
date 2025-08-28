@@ -28,7 +28,6 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-PyQgsAuthenticationSystem
 PyQgsLayoutHtml
 PyQgsSettings
 PyQgsSettingsEntry
