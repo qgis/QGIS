@@ -28,6 +28,5 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-PyQgsAuthenticationSystem
 PyQgsLayoutHtml
 ProcessingQgisAlgorithmsTestPt4
