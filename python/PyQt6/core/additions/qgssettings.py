@@ -101,38 +101,18 @@ def _qgssettings_flag_value(
     :param flagDefaultValue: the default value as a flag value
     :param section: optional section
     :return: the setting value
-
-     .. note::  The flag needs to be declared with Q_FLAG (not Q_FLAGS).
-
     """
 
-    # There is an issue in SIP, flags.__class__ does not return the proper class
-    # (e.g. Filters instead of Qgis.LayerFilters)
-    # dirty hack to get the parent class
-    __import__(flagDefaultValue.__module__)
-    baseClass = None
-    exec(
-        "baseClass={module}.{flag_class}".format(
-            module=flagDefaultValue.__module__.replace("_", ""),
-            flag_class=flagDefaultValue.__class__.__name__,
-        )
+    default_value_str = "|".join(
+        [e.name for e in flagDefaultValue.__class__ if flagDefaultValue & e]
     )
+    str_val = self.value(key, default_value_str, str, section)
 
-    meta_enum = metaEnumFromValue(flagDefaultValue, baseClass)
-    if meta_enum is None or not meta_enum.isValid():
-        # this should not happen
-        raise ValueError(
-            f"could not get the meta enum for given enum default value (type: {type(flagDefaultValue)})"
-        )
-
-    str_val = self.value(key, meta_enum.valueToKeys(flagDefaultValue), str, section)
-    # need a new meta enum as QgsSettings.value is making a copy and leads to seg fault (probably a PyQt issue)
-    meta_enum_2 = metaEnumFromValue(flagDefaultValue)
-    (flag_val, ok) = meta_enum_2.keysToValue(str_val)
-
-    if not ok:
-        flag_val = flagDefaultValue
-    else:
-        flag_val = flagDefaultValue.__class__(flag_val)
+    flag_val = flagDefaultValue.__class__(0)
+    for part in str_val.split("|"):
+        try:
+            flag_val |= getattr(flagDefaultValue.__class__, part)
+        except AttributeError:
+            return flagDefaultValue
 
     return flag_val

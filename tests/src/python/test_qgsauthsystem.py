@@ -577,7 +577,7 @@ class TestQgsAuthManager(QgisTestCase):
         msg = "Auth db does not exist"
         self.assertTrue(os.path.exists(self.authm.authenticationDatabasePath()), msg)
 
-        QTest.qSleep(1000)  # necessary for new backup to have different name
+        QTest.qWait(1000)  # necessary for new backup to have different name
 
         msg = "Could not erase auth db"
         backup = None

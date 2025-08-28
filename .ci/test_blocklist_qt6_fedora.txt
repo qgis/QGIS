@@ -1,6 +1,5 @@
 # Qt6 blocklist
 test_core_compositionconverter
-test_core_layoutpicture
 test_app_advanceddigitizing
 test_app_vertextool
 
@@ -28,8 +27,4 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-PyQgsAuthenticationSystem
 PyQgsLayoutHtml
-PyQgsSettings
-PyQgsSettingsEntry
-ProcessingQgisAlgorithmsTestPt4
