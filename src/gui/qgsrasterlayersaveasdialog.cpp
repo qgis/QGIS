@@ -33,7 +33,8 @@
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
 #include "qgsdatums.h"
-
+#include <QPushButton>
+#include <cmath>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
@@ -177,7 +178,11 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
+
+  // Enable snap-to-grid functionality using the built-in extent widget button
+  connect( mExtentGroupBox, &QgsExtentGroupBox::snapToGridChanged, this, &QgsRasterLayerSaveAsDialog::snapToGridChanged );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
+
 
   recalcResolutionSize();
 
@@ -476,6 +481,7 @@ QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
   return mExtentGroupBox->outputExtent();
 }
+
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
 {
@@ -991,5 +997,65 @@ void QgsRasterLayerSaveAsDialog::accept()
 
 void QgsRasterLayerSaveAsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+}
+
+void QgsRasterLayerSaveAsDialog::snapToGridChanged( bool enabled )
+{
+  if ( !mDataProvider )
+    return;
+
+  if ( enabled )
+  {
+    // Get raster properties for snapping
+    double xRes = mDataProvider->xSize() > 0 ? mDataProvider->extent().width() / mDataProvider->xSize() : 1.0;
+    double yRes = mDataProvider->ySize() > 0 ? mDataProvider->extent().height() / mDataProvider->ySize() : 1.0;
+    
+    // Get the origin (bottom-left corner) of the raster
+    QgsRectangle providerExtent = mDataProvider->extent();
+    double originX = providerExtent.xMinimum();
+    double originY = providerExtent.yMinimum();
+    
+    // Enable snap-to-grid with raster parameters
+    mExtentGroupBox->setSnapToGrid( true, xRes, yRes, originX, originY );
+  }
+  else
+  {
+    // Disable snap-to-grid
+    mExtentGroupBox->setSnapToGrid( false, 0, 0, 0, 0 );
+  }
+}
+
+QgsRectangle QgsRasterLayerSaveAsDialog::snapExtentToGrid( const QgsRectangle &rect ) const
+{
+if ( !mDataProvider || rect.isNull() )
+return rect;
+
+if ( !( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
+return rect;
+
+const QgsRectangle rasterExtent = mDataProvider->extent();
+const int xSize = mDataProvider->xSize();
+const int ySize = mDataProvider->ySize();
+if ( xSize <= 0 || ySize <= 0 )
+return rect;
+
+// Calculate raster resolution
+const double xres = rasterExtent.width() / static_cast< double >( xSize );
+const double yres = rasterExtent.height() / static_cast< double >( ySize );
+
+  
+if ( xres == 0 || yres == 0 )
+return rect;
+
+  
+const double xmin_raster = rasterExtent.xMinimum();
+const double ymin_raster = rasterExtent.yMinimum();
+
+const double xmin_extent = xmin_raster + std::floor( ( rect.xMinimum() - xmin_raster ) / xres ) * xres;
+const double ymin_extent = ymin_raster + std::floor( ( rect.yMinimum() - ymin_raster ) / yres ) * yres;
+const double xmax_extent = xmin_raster + std::ceil(  ( rect.xMaximum() - xmin_raster ) / xres ) * xres;
+const double ymax_extent = ymin_raster + std::ceil(  ( rect.yMaximum() - ymin_raster ) / yres ) * yres;
+
+return QgsRectangle( xmin_extent, ymin_extent, xmax_extent, ymax_extent );
 }

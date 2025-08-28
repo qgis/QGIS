@@ -25,7 +25,7 @@
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
-
+class QCheckBox;
 /**
  * \ingroup gui
  * \class QgsRasterLayerSaveAsDialog
@@ -124,6 +124,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     void accept() override;
 
   private slots:
+    void snapToGridChanged( bool enabled );
     void mRawModeRadioButton_toggled( bool );
     void mFormatComboBox_currentIndexChanged( const QString &text );
     void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
@@ -173,6 +174,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     ResolutionState mResolutionState;
     QVector<bool> mNoDataToEdited;
 
+
     void setValidators();
     void toggleResolutionSize();
     void setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem &srcCrs );
@@ -192,7 +194,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
-
+    
+    /**
+     * Aligns the given rectangle to the source raster grid.
+     * This ensures that coordinates are exact multiples of the source pixel size.
+     * \since QGIS 3.40
+     */
+    QgsRectangle snapExtentToGrid(const QgsRectangle &rect) const;
     friend class TestQgsRasterLayerSaveAsDialog;
 };
 
