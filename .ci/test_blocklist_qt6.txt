@@ -23,10 +23,6 @@ test_core_openclutils
 # Relies on a broken/unreliable 3rd party service
 test_core_layerdefinition
 
-# MSSQL requires the MSSQL docker
-PyQgsProviderConnectionMssql
-PyQgsStyleStorageMssql
-
 # To be fixed
 PyQgsAuthenticationSystem
 PyQgsLayoutHtml
