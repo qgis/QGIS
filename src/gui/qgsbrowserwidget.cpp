@@ -24,6 +24,10 @@
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 #include <QActionGroup>
+#include <QClipboard>
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
@@ -43,6 +47,7 @@
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
 #include "qgsbrowserdockwidget_p.h"
+#include "qgsmessagebar.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -101,6 +106,11 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( mActionCollapse, &QAction::triggered, mBrowserView, &QgsDockBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsBrowserWidget::showFilterWidget );
   connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::propertiesWidgetToggled );
+  
+  // Location bar connections
+  connect( mBtnNavigateToPath, &QToolButton::clicked, this, &QgsBrowserWidget::navigateToPath );
+  connect( mBtnCopyPath, &QToolButton::clicked, this, &QgsBrowserWidget::copySelectedPath );
+  connect( mLeLocationBar, &QLineEdit::returnPressed, this, &QgsBrowserWidget::navigateToPath );
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserWidget::setFilter );
@@ -136,8 +146,11 @@ void QgsBrowserWidget::showEvent( QShowEvent *e )
     mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
-    // selectionModel is created when model is set on tree
-    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
+    if ( mBrowserView->selectionModel() )
+    {
+      connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
+      connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::updateLocationBar );
+    }
 
     // Forward the model changed signals to the widget
     connect( mModel, &QgsBrowserModel::connectionsChanged, this, &QgsBrowserWidget::connectionsChanged );
@@ -541,11 +554,18 @@ void QgsBrowserWidget::propertiesWidgetToggled( bool enabled )
 
 void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
 {
+  
+  if ( !mProxyModel || !mBrowserView )
+    return;
+
   if ( index.isValid() )
   {
     QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
-    mBrowserView->expand( proxyIndex );
-    mBrowserView->setCurrentIndex( proxyIndex );
+    if ( proxyIndex.isValid() )
+    {
+      mBrowserView->expand( proxyIndex );
+      mBrowserView->setCurrentIndex( proxyIndex );
+    }
   }
 }
 
@@ -553,4 +573,562 @@ void QgsBrowserWidget::splitterMoved()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "%1/splitterState" ).arg( settingsSection() ), mSplitter->saveState() );
+}
+
+void QgsBrowserWidget::navigateToPath()
+{
+  if ( !mLeLocationBar || !mModel || !mBrowserView )
+    return;
+
+  const QString path = mLeLocationBar->text().trimmed();
+  if ( path.isEmpty() )
+    return;
+
+  // Validate path format first
+  if ( path.endsWith( ":" ) && path.length() == 2 )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( path ) );
+    }
+    return;
+  }
+
+  QString normalizedPath = QDir::cleanPath( path );
+  const QString displayPath = QDir::toNativeSeparators( normalizedPath );
+  
+  // Check if path exists with exact case sensitivity
+  QFileInfo pathInfo( normalizedPath );
+  if ( !pathInfo.exists() )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( displayPath ) );
+    }
+    return;
+  }
+
+  // Verify case sensitivity by comparing canonical paths
+  QString canonicalPath = pathInfo.canonicalFilePath();
+  if ( !canonicalPath.isEmpty() && QDir::toNativeSeparators( canonicalPath ) != displayPath )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( displayPath ) );
+    }
+    return;
+  }
+
+  // Make sure we have an absolute path
+  if ( pathInfo.isRelative() )
+  {
+    normalizedPath = pathInfo.absoluteFilePath();
+    normalizedPath = QDir::cleanPath( normalizedPath );
+  }
+
+  // Use the existing expandPath functionality to properly expand the browser tree
+  QString targetPath = normalizedPath;
+  if ( pathInfo.isFile() )
+  {
+    // For files, expand to the parent directory
+    targetPath = pathInfo.absolutePath();
+  }
+
+  try
+  {
+    mBrowserView->expandPath( targetPath, true );
+    
+    // Clear the location bar on successful navigation
+    mLeLocationBar->clear();
+  }
+  catch ( ... )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushCritical( tr( "Navigate to Path" ), tr( "Failed to navigate to path: %1. The folder may contain problematic files." ).arg( displayPath ) );
+    }
+  }
+}
+
+void QgsBrowserWidget::copySelectedPath()
+{
+  if ( !mBrowserView || !mBrowserView->selectionModel() || !mModel || !mLeLocationBar )
+    return;
+
+  const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
+  if ( selection.isEmpty() )
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushInfo( tr( "Copy Path" ), tr( "No item selected" ) );
+    }
+    return;
+  }
+
+  const QModelIndex index = selection.first();
+  if ( !index.isValid() )
+    return;
+
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+  if ( !item )
+    return;
+
+  QString path;
+  
+  if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
+  {
+    path = dirItem->dirPath();
+  }
+  else if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  {
+    const QString uri = layerItem->uri();
+    QFileInfo fileInfo( uri );
+    if ( fileInfo.exists() )
+    {
+      path = fileInfo.absoluteFilePath();
+    }
+    else
+    {
+      path = uri; 
+    }
+  }
+  else
+  {
+
+    path = item->path();
+  }
+
+  if ( !path.isEmpty() )
+  {
+    // Convert to native separators for clipboard (backslashes on Windows)
+    QString nativePath = QDir::toNativeSeparators( path );
+    QApplication::clipboard()->setText( nativePath );
+    
+    mLeLocationBar->setText( nativePath );
+    
+    if ( mMessageBar )
+    {
+      mMessageBar->pushSuccess( tr( "Copy Path" ), tr( "Path copied to clipboard: %1" ).arg( nativePath ) );
+    }
+  }
+  else
+  {
+    if ( mMessageBar )
+    {
+      mMessageBar->pushWarning( tr( "Copy Path" ), tr( "Could not determine path for selected item" ) );
+    }
+  }
+}
+
+bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
+{
+  if ( !mModel || !mBrowserView )
+    return false;
+
+  QString normalizedPath = QDir::cleanPath( targetPath );
+  QFileInfo pathInfo( normalizedPath );
+  
+  // Make sure we have an absolute path
+  if ( pathInfo.isRelative() )
+  {
+    normalizedPath = QDir::current().absoluteFilePath( normalizedPath );
+    normalizedPath = QDir::cleanPath( normalizedPath );
+  }
+
+  QStringList targetVariants = generatePathVariants( normalizedPath );
+  for ( const QString &variant : targetVariants )
+  {
+    QModelIndex index = mModel->findPath( variant );
+    if ( index.isValid() )
+      return true;
+  }
+
+  QStringList pathHierarchy;
+  QString currentPath = normalizedPath;
+  
+  // Build the hierarchy from target to root
+  while ( !currentPath.isEmpty() )
+  {
+    pathHierarchy.prepend( currentPath );
+    
+    QDir dir( currentPath );
+    
+    // Check if we've reached a root
+#ifdef Q_OS_WIN
+    // Windows drive root check (e.g., "C:", "C:\")
+    if ( currentPath.length() <= 3 && currentPath.contains( ':' ) )
+    {
+      // Normalize drive letter format
+      QString driveLetter = currentPath.left( 2 ).toUpper();
+      if ( currentPath.length() == 2 )
+        pathHierarchy[0] = driveLetter + '/';
+      else
+        pathHierarchy[0] = driveLetter + '/';
+      break;
+    }
+#else
+    if ( currentPath == "/" )
+      break;
+#endif
+    
+    if ( !dir.cdUp() || dir.absolutePath() == currentPath )
+      break;
+      
+    currentPath = dir.absolutePath();
+  }
+
+  
+#ifdef Q_OS_WIN
+  if ( pathHierarchy.size() > 0 )
+  {
+    QString driveRoot = pathHierarchy[0];
+    if ( driveRoot.contains( ':' ) )
+    {
+      mModel->refreshDrives();
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+      
+      QModelIndex driveIndex;
+      const auto driveItems = mModel->driveItems();
+      for ( auto it = driveItems.constBegin(); it != driveItems.constEnd(); ++it )
+      {
+        QgsDirectoryItem *driveItem = it.value();
+        if ( driveItem )
+        {
+          QString drivePath = driveItem->path();
+          QString driveDir = driveItem->dirPath();
+          
+          
+          if ( drivePath.startsWith( driveRoot.left( 2 ), Qt::CaseInsensitive ) ||
+               driveDir.startsWith( driveRoot.left( 2 ), Qt::CaseInsensitive ) )
+          {
+            driveIndex = mModel->findItem( driveItem );
+            break;
+          }
+        }
+      }
+      
+      if ( !driveIndex.isValid() )
+      {
+        // Try to find the drive using findPath
+        QStringList driveVariants = generatePathVariants( driveRoot );
+        for ( const QString &variant : driveVariants )
+        {
+          driveIndex = mModel->findPath( variant );
+          if ( driveIndex.isValid() )
+            break;
+        }
+      }
+      
+      if ( driveIndex.isValid() )
+      {
+        QgsDataItem *driveItem = mModel->dataItem( driveIndex );
+        if ( driveItem )
+        {
+          if ( driveItem->state() == Qgis::BrowserItemState::NotPopulated )
+          {
+            try
+            {
+              driveItem->populate();
+              QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+            }
+            catch ( ... )
+            {
+              return false;
+            }
+          }
+          
+          QModelIndex proxyIndex = mProxyModel->mapFromSource( driveIndex );
+          if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
+          {
+            mBrowserView->expand( proxyIndex );
+            QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+          }
+          
+          QModelIndex currentParent = driveIndex;
+          for ( int i = 1; i < pathHierarchy.size(); ++i )
+          {
+            const QString &targetComponent = pathHierarchy[i];
+            
+            // Ensure parent is populated and refreshed
+            QgsDataItem *parentItem = mModel->dataItem( currentParent );
+            if ( parentItem )
+            {
+              if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
+              {
+                parentItem->populate();
+                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+              }
+              
+              QModelIndex parentProxy = mProxyModel->mapFromSource( currentParent );
+              if ( parentProxy.isValid() )
+              {
+                mBrowserView->expand( parentProxy );
+                QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
+              }
+            }
+            
+            // Try to find the child
+            QStringList variants = generatePathVariants( targetComponent );
+            bool found = false;
+            
+            for ( const QString &variant : variants )
+            {
+              QModelIndex childIndex = mModel->findPath( variant );
+              if ( childIndex.isValid() )
+              {
+                currentParent = childIndex;
+                found = true;
+                break;
+              }
+            }
+            
+            if ( !found && parentItem )
+            {
+              try
+              {
+                // Only refresh if it's safe to do so
+                if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+                {
+                  parentItem->refresh();
+                  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+                  
+                  for ( const QString &variant : variants )
+                  {
+                    QModelIndex childIndex = mModel->findPath( variant );
+                    if ( childIndex.isValid() )
+                    {
+                      currentParent = childIndex;
+                      found = true;
+                      break;
+                    }
+                  }
+                }
+              }
+              catch ( ... )
+              {
+                break;
+              }
+            }
+            
+            if ( !found && i == pathHierarchy.size() - 1 )
+            {
+              return true;
+            }
+            else if ( !found )
+            {
+              return false;
+            }
+          }
+          
+          return true;
+        }
+      }
+    }
+  }
+#endif
+
+  QModelIndex deepestParent;
+  int startIndex = 0;
+  
+  for ( int i = 0; i < pathHierarchy.size(); ++i )
+  {
+    const QString &pathComponent = pathHierarchy[i];
+    QStringList variants = generatePathVariants( pathComponent );
+    
+    bool found = false;
+    for ( const QString &variant : variants )
+    {
+      QModelIndex index = mModel->findPath( variant );
+      if ( index.isValid() )
+      {
+        deepestParent = index;
+        startIndex = i + 1;
+        found = true;
+        break;
+      }
+    }
+    
+    if ( !found )
+      break;
+  }
+
+  // Expand from the deepest parent to the target
+  for ( int i = startIndex; i < pathHierarchy.size(); ++i )
+  {
+    if ( deepestParent.isValid() )
+    {
+      QgsDataItem *parentItem = mModel->dataItem( deepestParent );
+      if ( parentItem )
+      {
+        // Populate if needed
+        if ( parentItem->state() == Qgis::BrowserItemState::NotPopulated )
+        {
+          try
+          {
+            parentItem->populate();
+            QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+          }
+          catch ( ... )
+          {
+            continue;
+          }
+        }
+        // Expand in view
+        QModelIndex proxyIndex = mProxyModel->mapFromSource( deepestParent );
+        if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
+        {
+          mBrowserView->expand( proxyIndex );
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 150 );
+        }
+      }
+    }
+    
+    // Try to find the next level
+    const QString &targetComponent = pathHierarchy[i];
+    QStringList variants = generatePathVariants( targetComponent );
+    
+    bool found = false;
+    for ( const QString &variant : variants )
+    {
+      QModelIndex index = mModel->findPath( variant );
+      if ( index.isValid() )
+      {
+        deepestParent = index;
+        found = true;
+        break;
+      }
+    }
+    
+    if ( !found && deepestParent.isValid() )
+    {
+      QgsDataItem *parentItem = mModel->dataItem( deepestParent );
+      if ( parentItem )
+      {
+        try
+        {
+          if ( parentItem->state() == Qgis::BrowserItemState::Populated )
+          {
+            parentItem->refresh();
+            QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
+            
+            for ( const QString &variant : variants )
+            {
+              QModelIndex index = mModel->findPath( variant );
+              if ( index.isValid() )
+              {
+                deepestParent = index;
+                found = true;
+                break;
+              }
+            }
+          }
+        }
+        catch ( ... )
+        {
+          break;
+        }
+      }
+    }
+    
+    if ( !found && i == pathHierarchy.size() - 1 )
+    {
+      //if  Last component? might be a file
+      return deepestParent.isValid();
+    }
+  }
+  
+  return deepestParent.isValid();
+}
+
+QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
+{
+  QStringList pathVariants;
+  pathVariants << path;
+
+#ifdef Q_OS_WIN
+  if ( path.contains( '/' ) )
+    pathVariants << QString( path ).replace( '/', '\\' );
+  if ( path.contains( '\\' ) )
+    pathVariants << QString( path ).replace( '\\', '/' );
+#else
+  
+  if ( path.contains( '\\' ) )
+    pathVariants << QString( path ).replace( '\\', '/' );
+#endif
+  
+  QString nativePath = QDir::toNativeSeparators( path );
+  if ( !pathVariants.contains( nativePath ) )
+    pathVariants << nativePath;
+  
+  QFileInfo fileInfo( path );
+  if ( fileInfo.exists() )
+  {
+    QString canonicalPath = fileInfo.canonicalFilePath();
+    if ( !canonicalPath.isEmpty() && !pathVariants.contains( canonicalPath ) )
+      pathVariants << canonicalPath;
+  }
+  
+  return pathVariants;
+}
+
+void QgsBrowserWidget::updateLocationBar()
+{
+  if ( !mBrowserView || !mBrowserView->selectionModel() || !mLeLocationBar || !mModel )
+    return;
+
+  const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
+  if ( selection.isEmpty() )
+  {
+    mLeLocationBar->clear();
+    return;
+  }
+
+  const QModelIndex index = selection.first();
+  if ( !index.isValid() )
+  {
+    mLeLocationBar->clear();
+    return;
+  }
+
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+  if ( !item )
+  {
+    mLeLocationBar->clear();
+    return;
+  }
+
+  QString path;
+  
+  if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
+  {
+    path = dirItem->dirPath();
+  }
+  else if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  {
+    const QString uri = layerItem->uri();
+    QFileInfo fileInfo( uri );
+    if ( fileInfo.exists() )
+    {
+      path = fileInfo.absoluteFilePath();
+    }
+    else
+    {
+      path = uri;
+    }
+  }
+  else
+  {
+    path = item->path();
+  }
+
+  if ( !path.isEmpty() )
+  {
+    // Convert to native separators for display (backslashes on Windows)
+    QString nativePath = QDir::toNativeSeparators( path );
+    mLeLocationBar->setText( nativePath );
+  }
+  else
+  {
+    mLeLocationBar->clear();
+  }
 }
