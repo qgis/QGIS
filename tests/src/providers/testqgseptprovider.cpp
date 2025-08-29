@@ -117,6 +117,9 @@ void TestQgsEptProvider::encodeUri()
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/ept.json" ) );
   QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/ept.json" ) );
+
+  parts.insert( QStringLiteral( "authcfg" ), QStringLiteral( "abc1234" ) );
+  QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/ept.json authcfg='abc1234'" ) );
 }
 
 void TestQgsEptProvider::decodeUri()
@@ -124,8 +127,14 @@ void TestQgsEptProvider::decodeUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
   QVERIFY( metadata );
 
-  const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/ept.json" ) );
+  QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/ept.json" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/ept.json" ) );
+  QCOMPARE( parts.value( QStringLiteral( "file-name" ) ).toString(), QStringLiteral( "ept.json" ) );
+  QVERIFY( parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() );
+
+  parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/ept.json authcfg='abc1234'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/ept.json" ) );
+  QCOMPARE( parts.value( QStringLiteral( "authcfg" ) ).toString(), QStringLiteral( "abc1234" ) );
 }
 
 void TestQgsEptProvider::absoluteRelativeUri()
@@ -168,6 +177,7 @@ void TestQgsEptProvider::layerTypesForUri()
   QVERIFY( eptMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
   QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json authcfg='abc1234'" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
   QCOMPARE( eptMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.las" ) ), QList<Qgis::LayerType>() );
 }
 

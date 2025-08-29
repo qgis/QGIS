@@ -23,4 +23,5 @@ add_subdirectory(awss3)
 
 if (WITH_OAUTH2_PLUGIN)
   add_subdirectory(oauth2)
+  add_subdirectory(planetary_computer)
 endif()
