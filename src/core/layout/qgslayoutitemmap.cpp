@@ -1606,7 +1606,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   QgsExpressionContext expressionContext = createExpressionContext();
   if ( layersToRender( &expressionContext, false ).size() != layersToRender( &expressionContext, true ).size() )
   {
-    mRenderingErrors.append( QgsMapRendererJob::Error( QStringLiteral( "" ), QStringLiteral( "Invalid layer(s)" ) ) );
+    mRenderingErrors.append( QgsMapRendererJob::Error( QString(), QStringLiteral( "Invalid layer(s)" ) ) );
   }
 }
 
