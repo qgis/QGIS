@@ -776,6 +776,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     /**
      * Returns a list of the layers which will be rendered within this map item, considering
      * any locked layers, linked map theme, and data defined settings.
+     * \param context the expression context
      * \param includeInvalidLayers include invalid layers in the maplayer list
      */
     QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr, bool includeInvalidLayers = false ) const;
