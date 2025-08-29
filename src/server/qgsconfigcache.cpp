@@ -195,7 +195,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
   }
 
   //Try to reload data sources of invalid layers
-  if( entry->second->validCount() != entry->second->count() )
+  if( ( settings && settings->retryBadLayers() ) && ( entry->second->validCount() != entry->second->count() ) )
   {
     for ( const auto &l : entry->second->mapLayers() )
     {

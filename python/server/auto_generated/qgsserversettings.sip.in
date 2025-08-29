@@ -39,6 +39,7 @@ configuration.
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
       QGIS_SERVER_IGNORE_BAD_LAYERS,
+      QGIS_SERVER_RETRY_BAD_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
       QGIS_SERVER_SHOW_GROUP_SEPARATOR,
@@ -282,6 +283,14 @@ The default value is ``True``, this value can be changed by setting the
 environment variable QGIS_SERVER_IGNORE_BAD_LAYERS.
 
 .. versionadded:: 3.10.5
+%End
+
+    bool retryBadLayers() const;
+%Docstring
+Returns ``True`` if bad layers should be re-checked after the project
+has been cached. The default value is ``False``
+
+.. versionadded:: 4.0
 %End
 
     bool trustLayerMetadata() const;
