@@ -38,6 +38,7 @@ class QgsGeocoderInterface;
  *
  *      def geocodeString(self, string, context, feedback):
  *         # calculate and return results...
+ *         pass
  *
  *   my_geocoder = MyGeocoder()
  *
