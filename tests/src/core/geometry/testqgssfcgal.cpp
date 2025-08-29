@@ -89,6 +89,7 @@ class TestQgsSfcgal : public QgsTest
     void buffer2DCheck();
     void extrude();
     void simplify();
+    void approximateMedialAxis();
 
   private:
     //! Must be called before each render test
@@ -1068,6 +1069,19 @@ void TestQgsSfcgal::simplify()
   QVERIFY2( sfcgalLinestring2D.lastError().isEmpty() && simplifiedGeom->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
   QCOMPARE( simplifiedGeom->asWkt( 0 ), "LINESTRING (1 4,2 19,-4 20)" );
 #endif
+}
+
+void TestQgsSfcgal::approximateMedialAxis()
+{
+  QString wkt( "POLYGON ((0 5,1.5 4.8,3 4.2,4 3,4.6 1.5,4.8 0.5,4.5 -0.3,4 -1.2,3.2 -2.4,2.5 -3.5,1.3 -4.3,0 -4.8,-1.8 -4.6,-3.4 -3.9,-4.2 -2.8,-4.7 -1.5,-4.8 -0.2,-4.5 0.9,-3.7 2,-2.8 3.1,-1.4 4.2,0 5))" );
+
+  QgsSfcgalGeometry sfcgalPolygon( wkt );
+  QVERIFY2( sfcgalPolygon.lastError().isEmpty() && sfcgalPolygon.sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( sfcgalPolygon.wkbType(), Qgis::WkbType::Polygon );
+
+  std::unique_ptr<QgsSfcgalGeometry> simplifiedGeom( sfcgalPolygon.approximateMedialAxis() );
+  QVERIFY2( sfcgalPolygon.lastError().isEmpty() && simplifiedGeom->sfcgalGeometry() != nullptr, sfcgal::errorHandler()->getFullText().toStdString().c_str() );
+  QCOMPARE( simplifiedGeom->asWkt( 2 ), "MULTILINESTRING ((2.34 0.70,2.05 0.74),(2.05 0.74,0.67 0.83),(-1.57 -0.51,-1.01 -0.67),(0.66 1.61,0.70 1.08),(-1.21 -1.17,-0.77 -0.76),(-1.01 -0.67,-0.73 -0.70),(0.70 1.08,0.71 1.04),(0.71 1.04,0.71 1.04),(0.71 1.04,0.65 0.83),(0.67 0.83,0.65 0.83),(0.65 0.83,0.05 0.19),(-0.52 -0.79,-0.56 -0.63),(-0.77 -0.76,-0.73 -0.70),(-0.73 -0.70,-0.56 -0.63),(0.05 0.19,-0.21 -0.18),(-0.21 -0.18,-0.45 -0.51),(-0.56 -0.63,-0.50 -0.57),(-0.45 -0.51,-0.50 -0.57))" );
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )

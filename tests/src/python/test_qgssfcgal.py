@@ -272,6 +272,19 @@ class TestQgsSFCGAL(QgisTestCase):
         self.assertFalse(convex_hull.lastError())
         self.assertEqual(wkt_out, expected_wkt)
 
+    def test_approximate_media_axis(self):
+        poly_wkt = "TRIANGLE ((1 1,2 1,2 2,1 1))"
+        polygon = QgsSfcgalGeometry.fromWkt(poly_wkt)
+        self.assertFalse(polygon.lastError())
+
+        medial_axis = polygon.approximateMedialAxis()
+        self.assertFalse(medial_axis.lastError())
+
+        expected_wkt = "MULTILINESTRING ((1.0 1.0,1.7 1.3),(2.0 2.0,1.7 1.3))"
+        wkt_out = medial_axis.asWkt(1)
+        self.assertFalse(medial_axis.lastError())
+        self.assertEqual(wkt_out, expected_wkt)
+
 
 if __name__ == "__main__":
     unittest.main()

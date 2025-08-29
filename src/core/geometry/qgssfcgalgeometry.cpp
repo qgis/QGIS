@@ -550,4 +550,16 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::extrude( const QgsVector3D
   resultGeom->mLastError = mLastError;
   return resultGeom;
 }
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis() const
+{
+  sfcgal::errorHandler()->clearText( &mLastError );
+  sfcgal::shared_geom result = QgsSfcgalEngine::approximateMedialAxis( mSfcgalGeom.get(), &mLastError );
+  CHECK_SUCCESS( &mLastError, nullptr );
+
+  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &mLastError );
+  resultGeom->mLastError = mLastError;
+  return resultGeom;
+}
+
 #endif
