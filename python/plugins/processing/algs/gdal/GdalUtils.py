@@ -19,13 +19,13 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from typing import Dict, List, Optional
+from typing import Optional
 import os
-import subprocess
 import platform
 import re
-import warnings
 from dataclasses import dataclass
+import xml.etree.ElementTree as ET
+import math
 
 import psycopg2
 
@@ -46,6 +46,10 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsMapLayer,
     QgsProcessingContext,
+    QgsRectangle,
+    QgsUnitTypes,
+    QgsPointXY,
+    QgsDistanceArea,
 )
 
 from qgis.PyQt.QtCore import QCoreApplication, QProcess
@@ -609,3 +613,129 @@ class GdalUtils:
         if context == "":
             context = cls.__name__
         return QCoreApplication.translate(context, string)
+
+    @staticmethod
+    def gdal_wms_xml_description_file(
+        uri: str,
+        version: str,
+        extent: QgsRectangle,
+        width: int,
+        height: int,
+        out_path: str,
+    ) -> tuple[bool, str]:
+        """
+        Creates an XML description file to access a WMS via GDAL.
+
+        Returns True if the file was created, or False if it was not.
+        An additional returned value provides callers with more details on an eventual write error.
+        """
+        # Prepare data
+        source = QgsProviderRegistry.instance().decodeUri("wms", uri)
+        base_url = source.get("url", "")
+        crs = source.get("crs", "EPSG:4326")
+        crs_obj = QgsCoordinateReferenceSystem(crs)
+        crs_string = GdalUtils.gdal_crs_string(crs_obj)
+        image_format = source.get("format", "")
+        service = {"SERVICE": "WMS"}
+        sublayers = source["layers"] if "layers" in source and source["layers"] else []
+        if isinstance(sublayers, str):
+            sublayers = [sublayers]  # If only one layer, it is given as string
+        styles = source["styles"] if "styles" in source and source["styles"] else []
+        if isinstance(styles, str):
+            styles = [styles]  # If only one style, it is given as string
+
+        # Set up XML doc
+        root = ET.Element("GDAL_WMS")
+
+        service = ET.SubElement(root, "Service", name="WMS")
+        ET.SubElement(service, "Version").text = version
+        ET.SubElement(service, "ServerUrl").text = base_url
+        ET.SubElement(service, "Layers").text = ",".join(sublayers)
+        if styles:
+            ET.SubElement(service, "Styles").text = ",".join(styles)
+        ET.SubElement(service, "ImageFormat").text = image_format
+
+        if version == "1.3.0" or version == "1.3":
+            ET.SubElement(service, "CRS").text = crs_string
+            if crs_obj.hasAxisInverted():
+                ET.SubElement(service, "BBoxOrder").text = "yxYX"
+        else:
+            ET.SubElement(service, "SRS").text = crs_string
+
+        data = ET.SubElement(root, "DataWindow")
+        ET.SubElement(data, "UpperLeftX").text = str(extent.xMinimum())
+        ET.SubElement(data, "UpperLeftY").text = str(extent.yMaximum())
+        ET.SubElement(data, "LowerRightX").text = str(extent.xMaximum())
+        ET.SubElement(data, "LowerRightY").text = str(extent.yMinimum())
+        ET.SubElement(data, "SizeX").text = str(width)
+        ET.SubElement(data, "SizeY").text = str(height)
+
+        tree = ET.ElementTree(root)
+        ET.indent(tree)
+        try:
+            tree.write(out_path)
+        except (FileNotFoundError, PermissionError) as e:
+            return False, str(e)
+
+        return True, ""
+
+    @staticmethod
+    def _wms_dimensions_for_scale(
+        bbox: QgsRectangle,
+        crs: QgsCoordinateReferenceSystem,
+        scale: int,
+        dpi: float = 96.0,
+        distanceArea=Optional[QgsDistanceArea],
+    ) -> tuple[int, int]:
+        """
+        Returns a tuple with WIDTH and HEIGHT in pixels that would match
+        a bounding box (in a given crs) for a particular map scale and DPI.
+
+        An optional QgsDistanceArea object can be used to get ellipsoidal
+        distances on GCSs, based on which dimensions will be calculated.
+        """
+        if bbox.isNull() or bbox.isEmpty():
+            return -1, -1
+
+        meters_per_inch = QgsUnitTypes.fromUnitToUnitFactor(
+            Qgis.DistanceUnit.Inches, QgsUnitTypes.DistanceUnit.DistanceMeters
+        )
+
+        if crs.isGeographic() and distanceArea:
+            # Use ellipsoidal distances to get the projected extent
+            x, X, y, Y = (
+                bbox.xMinimum(),
+                bbox.xMaximum(),
+                bbox.yMinimum(),
+                bbox.yMaximum(),
+            )
+            bbox_width = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(X, Y))
+            bbox_height = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(x, y))
+            bbox_ratio = bbox.height() / bbox.width()
+        else:
+            bbox_width = bbox.xMaximum() - bbox.xMinimum()
+            bbox_height = bbox.yMaximum() - bbox.yMinimum()
+            bbox_ratio = bbox_height / bbox_width
+
+        width = bbox_width * dpi / (scale * meters_per_inch)
+
+        return math.ceil(width), math.ceil(width * bbox_ratio)
+
+    @staticmethod
+    def _get_wms_version(layer):
+        """
+        This should be replaced as soon as we have a better way
+        to get the WMS version from a layer or its provider.
+        """
+        version = None
+        provider = layer.dataProvider()
+        string = (
+            "<td>"
+            + QCoreApplication.translate("QgsWmsProvider", "WMS Version")
+            + "</td><td>(\\d\\.\\d(\\.\\d)?)</td>"
+        )
+        result = re.search(string, provider.htmlMetadata())
+        if result:
+            version = result.group(1)
+
+        return version

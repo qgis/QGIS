@@ -121,6 +121,80 @@ document.
 
 
 
+class QgsProcessingRasterLayerDefinition
+{
+%Docstring(signature="appended")
+Encapsulates settings relating to a raster layer input to a processing
+algorithm.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingRasterLayerDefinition( const QString &source = QString(), const long referenceScale = 0, const int dpi = 96 );
+%Docstring
+Constructor for QgsProcessingRasterLayerDefinition, accepting a static
+string ``source``.
+
+The optional ``referenceScale`` can be set to a value > 0 to indicate
+the reference scale at which a raster layer should be requested or
+rendered. For instance, a WMS image.
+
+The optional ``dpi`` argument can be used to specify the resolution a
+raster provider (e.g., a WMS server) is using to generate the raster.
+%End
+
+    QgsProcessingRasterLayerDefinition( const QgsProperty &source, const long referenceScale = 0, const int dpi = 96 );
+%Docstring
+Constructor for QgsProcessingRasterLayerDefinition, accepting a
+QgsProperty source.
+
+The optional ``referenceScale`` can be set to a value > 0 to indicate
+the reference scale at which a raster layer should be requested or
+rendered. For instance, a WMS image.
+
+The optional ``dpi`` argument can be used to specify the resolution a
+raster provider (e.g., a WMS server) is using to generate the raster.
+%End
+
+    QgsProperty source;
+
+    long referenceScale;
+
+    int dpi;
+
+    QVariant toVariant() const;
+%Docstring
+Saves this raster layer definition to a QVariantMap, wrapped in a
+QVariant. You can use :py:class:`QgsXmlUtils`.writeVariant to save it to
+an XML document.
+
+.. seealso:: :py:func:`loadVariant`
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this raster layer definition from a QVariantMap, wrapped in a
+QVariant. You can use :py:class:`QgsXmlUtils`.readVariant to load it
+from an XML document.
+
+.. seealso:: :py:func:`toVariant`
+%End
+
+    bool operator==( const QgsProcessingRasterLayerDefinition &other ) const;
+
+    bool operator!=( const QgsProcessingRasterLayerDefinition &other ) const;
+
+    operator QVariant() const;
+
+};
+
+
+
 class QgsProcessingOutputLayerDefinition
 {
 %Docstring(signature="appended")

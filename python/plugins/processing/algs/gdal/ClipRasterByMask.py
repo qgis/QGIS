@@ -20,10 +20,12 @@ __date__ = "September 2013"
 __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
+import tempfile
 
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (
+    QgsDistanceArea,
     QgsRasterFileWriter,
     QgsProcessing,
     QgsProcessingException,
@@ -37,9 +39,10 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingRasterLayerDefinition,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -261,7 +264,6 @@ class ClipRasterByMask(GdalAlgorithm):
             raise QgsProcessingException(
                 self.invalidRasterError(parameters, self.INPUT)
             )
-        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         mask_details = self.getOgrCompatibleSource(
             self.MASK, parameters, context, feedback, executing
@@ -281,6 +283,72 @@ class ClipRasterByMask(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
+        # If it's a WMS layer and scale/DPI were given, craft a XML description file
+        if inLayer.providerType() == "wms" and isinstance(
+            parameters[self.INPUT], QgsProcessingRasterLayerDefinition
+        ):
+            # If the scale is greater than 0, we'll have a QgsProcessingRasterLayerDefinition
+            param_def = parameters[self.INPUT]
+            scale = param_def.referenceScale
+            dpi = param_def.dpi
+
+            # For the input WMS's BBOX, if -te is given, then use -te, projected to input's
+            # crs. Otherwise, use mask layer's extent, projected to input's crs.
+            _bbox = None
+            if not bbox.isNull() and not bbox.isEmpty():
+                if bboxCrs != inLayer.crs():
+                    _bbox = self.parameterAsExtent(
+                        parameters, self.EXTENT, context, inLayer.crs()
+                    )
+                else:
+                    _bbox = bbox
+            else:
+                _bbox = self.parameterAsExtent(
+                    parameters, self.MASK, context, inLayer.crs()
+                )
+
+            if _bbox.isNull() or _bbox.isEmpty():
+                raise QgsProcessingException(
+                    "Invalid extent in mask layer ({}) and in target extent ({}).".format(
+                        parameters[self.INPUT],
+                        (
+                            parameters[self.EXTENT]
+                            if self.EXTENT in parameters
+                            else "EXTENT"
+                        ),
+                    )
+                )
+
+            distanceArea = None
+            if inLayer.crs().isGeographic():
+                distanceArea = QgsDistanceArea()
+                distanceArea.setSourceCrs(inLayer.crs(), context.transformContext())
+                distanceArea.setEllipsoid(inLayer.crs().ellipsoidAcronym())
+
+            width, height = GdalUtils._wms_dimensions_for_scale(
+                _bbox, inLayer.crs(), scale, dpi, distanceArea
+            )
+            wms_description_file_path = tempfile.mktemp("_wms_description_file.xml")
+            res_xml_wms, xml_wms_error = GdalUtils.gdal_wms_xml_description_file(
+                inLayer.publicSource(),
+                GdalUtils._get_wms_version(inLayer),
+                _bbox,
+                width,
+                height,
+                wms_description_file_path,
+            )
+            if not res_xml_wms:
+                raise QgsProcessingException(
+                    "Cannot create XML description file for WMS layer. Details: {}".format(
+                        xml_wms_error
+                    )
+                )
+            input_details = GdalConnectionDetails(
+                connection_string=wms_description_file_path
+            )
+        else:
+            input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+
         arguments = ["-overwrite"]
 
         if sourceCrs.isValid():
@@ -291,7 +359,7 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append("-t_srs")
             arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
-        if not bbox.isNull():
+        if not bbox.isNull() and not bbox.isEmpty():
             arguments.append("-te")
             arguments.append(str(bbox.xMinimum()))
             arguments.append(str(bbox.yMinimum()))
