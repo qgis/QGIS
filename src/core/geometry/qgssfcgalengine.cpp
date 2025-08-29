@@ -984,4 +984,15 @@ sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, dou
 #endif
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = sfcgal_geometry_approximate_medial_axis( geom );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_geom( result );
+}
+
 #endif // #ifdef WITH_SFCGAL

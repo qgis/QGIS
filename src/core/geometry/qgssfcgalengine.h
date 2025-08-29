@@ -594,6 +594,17 @@ class CORE_EXPORT QgsSfcgalEngine
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
     static sfcgal::shared_geom simplify( const sfcgal::geometry *geom, double tolerance, bool preserveTopology, QString *errorMsg = nullptr );
+
+    /**
+     * Calculate a 2D approximate medial axis of \a geom based on its straight skeleton.
+     * The approximate medial axis is a simplified representation of a shape’s central skeleton
+     * It \a geom is 3D, the approximate medial axis will be calculated from its 2D projection
+     * The output is a 2D multilinestring
+     *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 };
 
 /// @cond PRIVATE
