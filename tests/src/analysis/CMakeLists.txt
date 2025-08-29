@@ -43,6 +43,10 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   set(TESTS ${TESTS} testqgsprocessingpdalalgs.cpp)
 endif()
 
+if (WITH_SFCGAL)
+  set(TESTS ${TESTS} testqgsprocessingsfcgalalgs.cpp)
+endif()
+
 foreach(TESTSRC ${TESTS})
     add_qgis_test(${TESTSRC} MODULE analysis LINKEDLIBRARIES qgis_analysis)
 endforeach(TESTSRC)

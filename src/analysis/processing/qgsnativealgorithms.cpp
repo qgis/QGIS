@@ -28,6 +28,9 @@
 #include "qgsalgorithmangletonearest.h"
 #include "qgsalgorithmannotations.h"
 #include "qgsalgorithmapplylayerstyle.h"
+#ifdef WITH_SFCGAL
+#include "qgsalgorithmapproximatemedialaxis.h"
+#endif
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmaspect.h"
 #include "qgsalgorithmassignprojection.h"
@@ -351,6 +354,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAngleToNearestAlgorithm() );
   addAlgorithm( new QgsApplyLayerMetadataAlgorithm() );
   addAlgorithm( new QgsApplyLayerStyleAlgorithm() );
+#ifdef WITH_SFCGAL
+  addAlgorithm( new QgsApproximateMedialAxisAlgorithm() );
+#endif
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAspectAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
