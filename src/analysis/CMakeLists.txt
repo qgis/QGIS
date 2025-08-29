@@ -44,6 +44,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmangletonearest.cpp
   processing/qgsalgorithmannotations.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
+  processing/qgsalgorithmapproximatemedialaxis.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
@@ -630,6 +631,10 @@ endif()
 
 if (WITH_DRACO)
   target_link_libraries(qgis_analysis ${DRACO_LIBRARY})
+endif()
+
+if (WITH_SFCGAL)
+  target_link_libraries(qgis_analysis SFCGAL::SFCGAL)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
