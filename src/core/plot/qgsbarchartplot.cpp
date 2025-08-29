@@ -24,7 +24,7 @@
 
 QgsBarChartPlot::QgsBarChartPlot()
 {
-  setFillSymbol( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
+  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
 }
 
 void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -69,7 +69,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    QgsFillSymbol *symbol = fillSymbol( seriesIndex % mFillSymbols.size() );
+    QgsFillSymbol *symbol = fillSymbolAt( seriesIndex % mFillSymbols.size() );
     if ( !symbol )
     {
       continue;
@@ -118,7 +118,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   context.painter()->restore();
 }
 
-QgsFillSymbol *QgsBarChartPlot::fillSymbol( int index ) const
+QgsFillSymbol *QgsBarChartPlot::fillSymbolAt( int index ) const
 {
   if ( index < 0 || index >= static_cast<int>( mFillSymbols.size() ) )
   {
@@ -128,7 +128,7 @@ QgsFillSymbol *QgsBarChartPlot::fillSymbol( int index ) const
   return mFillSymbols[index].get();
 }
 
-void QgsBarChartPlot::setFillSymbol( int index, QgsFillSymbol *symbol )
+void QgsBarChartPlot::setFillSymbolAt( int index, QgsFillSymbol *symbol )
 {
   if ( index < 0 )
   {
@@ -177,11 +177,11 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
       if ( fillSymbolElement.hasChildNodes() )
       {
         const QDomElement symbolElement = fillSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
-        setFillSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
+        setFillSymbolAt( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
       }
       else
       {
-        setFillSymbol( index, nullptr );
+        setFillSymbolAt( index, nullptr );
       }
     }
   }

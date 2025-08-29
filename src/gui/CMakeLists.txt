@@ -301,6 +301,8 @@ set(QGIS_GUI_SRCS
   layout/qgslayoutitemguiregistry.cpp
   layout/qgslayoutitemslistview.cpp
   layout/qgslayoutitemwidget.cpp
+  layout/qgslayoutchartwidget.cpp
+  layout/qgslayoutchartseriesdetailswidget.cpp
   layout/qgslayoutlabelwidget.cpp
   layout/qgslayoutlegendlayersdialog.cpp
   layout/qgslayoutlegendwidget.cpp
@@ -387,6 +389,7 @@ set(QGIS_GUI_SRCS
   plot/qgsplottoolxaxiszoom.cpp
   plot/qgsplottoolzoom.cpp
   plot/qgsplottransienttools.cpp
+  plot/qgsplotwidget.cpp
 
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
@@ -1301,6 +1304,8 @@ set(QGIS_GUI_HDRS
   layout/qgslayoutitemguiregistry.h
   layout/qgslayoutitemslistview.h
   layout/qgslayoutitemwidget.h
+  layout/qgslayoutchartwidget.h
+  layout/qgslayoutchartseriesdetailswidget.h
   layout/qgslayoutlabelwidget.h
   layout/qgslayoutlegendlayersdialog.h
   layout/qgslayoutlegendwidget.h
@@ -1387,6 +1392,7 @@ set(QGIS_GUI_HDRS
   plot/qgsplottoolxaxiszoom.h
   plot/qgsplottoolzoom.h
   plot/qgsplottransienttools.h
+  plot/qgsplotwidget.h
 
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h

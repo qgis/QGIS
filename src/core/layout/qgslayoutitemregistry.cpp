@@ -33,6 +33,7 @@
 #include "qgslayoutframe.h"
 #include "qgslayoutitemmarker.h"
 #include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemchart.h"
 
 #include <QPainter>
 
@@ -81,6 +82,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QObject::tr( "Polyline" ), QObject::tr( "Polylines" ), QgsLayoutItemPolyline::create ) );
 
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QObject::tr( "Elevation Profiles" ), QgsLayoutItemElevationProfile::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutChart, QObject::tr( "Chart" ), QObject::tr( "Charts" ), QgsLayoutItemChart::create ) );
 
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QObject::tr( "HTML" ), QgsLayoutItemHtml::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsLayoutItemAttributeTable::create ) );

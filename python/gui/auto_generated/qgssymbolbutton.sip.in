@@ -181,6 +181,13 @@ Returns ``True`` if the current symbol is null.
 .. versionadded:: 3.26
 %End
 
+    bool forceShortSize() const;
+%Docstring
+Returns ``True`` if the symbol height is always short.
+
+.. versionadded:: 4.0
+%End
+
   public slots:
 
     void setSymbol( QgsSymbol *symbol /Transfer/ );
@@ -269,6 +276,13 @@ Sets symbol to the button's default symbol, if set.
 .. seealso:: :py:func:`setToNull`
 
 .. versionadded:: 3.30
+%End
+
+    void setForceShortSize( bool shortSize );
+%Docstring
+Insures that the symbol height is always short.
+
+.. versionadded:: 4.0
 %End
 
   signals:

@@ -24,8 +24,8 @@
 
 QgsLineChartPlot::QgsLineChartPlot()
 {
-  setMarkerSymbol( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol() );
-  setLineSymbol( 0, QgsPlotDefaultSettings::lineChartLineSymbol() );
+  setMarkerSymbolAt( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol() );
+  setLineSymbolAt( 0, QgsPlotDefaultSettings::lineChartLineSymbol() );
 }
 
 void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -67,8 +67,8 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    QgsLineSymbol *lSymbol = !mLineSymbols.empty() ? lineSymbol( seriesIndex % mLineSymbols.size() ) : nullptr;
-    QgsMarkerSymbol *mSymbol = !mMarkerSymbols.empty() ? markerSymbol( seriesIndex % mMarkerSymbols.size() ) : nullptr;
+    QgsLineSymbol *lSymbol = !mLineSymbols.empty() ? lineSymbolAt( seriesIndex % mLineSymbols.size() ) : nullptr;
+    QgsMarkerSymbol *mSymbol = !mMarkerSymbols.empty() ? markerSymbolAt( seriesIndex % mMarkerSymbols.size() ) : nullptr;
     if ( !lSymbol && !mSymbol )
     {
       continue;
@@ -189,7 +189,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   context.painter()->restore();
 }
 
-QgsMarkerSymbol *QgsLineChartPlot::markerSymbol( int index ) const
+QgsMarkerSymbol *QgsLineChartPlot::markerSymbolAt( int index ) const
 {
   if ( index < 0 || index >= static_cast<int>( mMarkerSymbols.size() ) )
   {
@@ -199,7 +199,7 @@ QgsMarkerSymbol *QgsLineChartPlot::markerSymbol( int index ) const
   return mMarkerSymbols[index].get();
 }
 
-void QgsLineChartPlot::setMarkerSymbol( int index, QgsMarkerSymbol *symbol )
+void QgsLineChartPlot::setMarkerSymbolAt( int index, QgsMarkerSymbol *symbol )
 {
   if ( index < 0 )
   {
@@ -214,7 +214,7 @@ void QgsLineChartPlot::setMarkerSymbol( int index, QgsMarkerSymbol *symbol )
   mMarkerSymbols[index].reset( symbol );
 }
 
-QgsLineSymbol *QgsLineChartPlot::lineSymbol( int index ) const
+QgsLineSymbol *QgsLineChartPlot::lineSymbolAt( int index ) const
 {
   if ( index < 0 || index >= static_cast<int>( mLineSymbols.size() ) )
   {
@@ -224,7 +224,7 @@ QgsLineSymbol *QgsLineChartPlot::lineSymbol( int index ) const
   return mLineSymbols[index].get();
 }
 
-void QgsLineChartPlot::setLineSymbol( int index, QgsLineSymbol *symbol )
+void QgsLineChartPlot::setLineSymbolAt( int index, QgsLineSymbol *symbol )
 {
   if ( index < 0 )
   {
@@ -286,11 +286,11 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
       if ( markerSymbolElement.hasChildNodes() )
       {
         const QDomElement symbolElement = markerSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
-        setMarkerSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ).release() );
+        setMarkerSymbolAt( index, QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ).release() );
       }
       else
       {
-        setMarkerSymbol( index, nullptr );
+        setMarkerSymbolAt( index, nullptr );
       }
     }
   }
@@ -305,11 +305,11 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
       if ( lineSymbolElement.hasChildNodes() )
       {
         const QDomElement symbolElement = lineSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
-        setLineSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElement, context ).release() );
+        setLineSymbolAt( index, QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElement, context ).release() );
       }
       else
       {
-        setLineSymbol( index, nullptr );
+        setLineSymbolAt( index, nullptr );
       }
     }
   }

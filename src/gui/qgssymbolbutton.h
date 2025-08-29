@@ -197,6 +197,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     bool isNull() const;
 
+    /**
+     * Returns TRUE if the symbol height is always short.
+     * 
+     * \since QGIS 4.0
+     */
+    bool forceShortSize() const;
+
   public slots:
 
     /**
@@ -267,6 +274,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \since QGIS 3.30
      */
     void setToDefaultSymbol();
+
+    /**
+     * Insures that the symbol height is always short.
+     * 
+     * \since QGIS 4.0
+     */
+    void setForceShortSize( bool shortSize );
 
   signals:
 
@@ -341,6 +355,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     bool mPickingColor = false;
 
     bool mShowNull = false;
+
+    bool mForceShortSize = false;
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
 
