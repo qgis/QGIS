@@ -28,6 +28,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscurve.h"
 #include "qgsabstractgeometry.h"
 #include "qgsvertexid.h"
+#include "qgslogger.h"
 
 #include <memory>
 #include <QStringList>
@@ -1640,10 +1641,16 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
   const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
   const QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
 
+  double rad = std::min( radius, pPrev.distance( p ) * 0.95 );
+  rad = std::min( rad, pNext.distance( p ) * 0.95 );
+
   // Create fillet
   QgsPoint filletPoints[3];
-  if ( !createFilletArray( pPrev, p, p, pNext, radius, filletPoints ) )
+  if ( !createFilletArray( pPrev, p, p, pNext, rad, filletPoints ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "unable to createFilletArray" ), 1 );
     return nullptr;
+  }
 
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
