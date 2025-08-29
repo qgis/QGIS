@@ -650,6 +650,20 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const;
 
+    /**
+     * Calculate a 2D approximate medial axis of \a geom based on its straight skeleton.
+     * The approximate medial axis is a simplified representation of a shape’s central skeleton
+     * It the geometry is 3D, the approximate medial axis will be calculated from its 2D projection
+     * If the operation fails, a null pointer is returned.
+     *
+     * \return new geometry as 2D multilinestring
+     *
+     * If an error was encountered during the operation, more information can be retrieved
+     * by calling lastError() on the geometry.
+     *
+     */
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const;
+
   protected:
 
     /**
