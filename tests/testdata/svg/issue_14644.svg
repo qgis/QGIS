@@ -60,7 +60,7 @@
      transform="translate(-122.7856,54.496612)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:46.9240303px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#999999;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:42px;line-height:125%;font-family:QGIS Vera Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#999999;fill-opacity:1;stroke:none"
        x="257.45532"
        y="33.536175"
        id="text3831-0"
@@ -83,7 +83,7 @@
        id="text3077-7"
        y="32.731239"
        x="256.65042"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:46.9240303px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#006500;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:42px;line-height:125%;font-family:QGIS Vera Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#006500;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          y="32.731239"
          x="256.65042"
@@ -118,7 +118,7 @@
        id="text3910-8"
        y="-2.5704708"
        x="129.89906"
-       style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:61.58447266px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial Bold Oblique';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#999999;fill-opacity:1;stroke:none"
+       style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:52px;line-height:125%;font-family:QGIS Vera Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#999999;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          y="-2.5704708"
          x="129.89906"
@@ -126,7 +126,7 @@
          sodipodi:role="line">Walking</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:61.58447266px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial Bold Oblique';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000098;fill-opacity:1;stroke:none"
+       style="font-style:oblique;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:52px;line-height:125%;font-family:QGIS Vera Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000098;fill-opacity:1;stroke:none"
        x="129.09416"
        y="-3.8301911"
        id="text2985-1"
@@ -141,7 +141,7 @@
        id="text3835"
        y="15.369775"
        x="174.28571"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:24.6932888px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#999999;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22px;line-height:125%;font-family:QGIS Vera Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#999999;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          y="15.369775"
          x="174.28571"
@@ -149,7 +149,7 @@
          sodipodi:role="line">the</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:24.6932888px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22px;line-height:125%;font-family:QGIS Vera Sans;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#4d4d4d;fill-opacity:1;stroke:none"
        x="173.83084"
        y="14.914875"
        id="text3879-6"
