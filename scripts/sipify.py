@@ -555,6 +555,103 @@ CLASS_HEADERFILES = {
     "QgsSettingsEntryBaseTemplate": "qgssettingsentry.h",
 }
 
+QLIST_ENUM_CONVERSION_CODE = """
+%MappedType QList<{class_name}::{enum_name}> /TypeHintIn = "Iterable[{class_name}.{enum_name}]",TypeHintOut = "List[{class_name}.{enum_name}]", TypeHintValue = "[]"/
+{{
+%TypeHeaderCode
+#include <QList>{extra_includes}
+%End
+
+%ConvertFromTypeCode
+  PyObject *l = PyList_New( sipCpp->size() );
+
+  if ( !l )
+    return 0;
+
+  for ( int i = 0; i < sipCpp->size(); ++i )
+  {{
+    PyObject *eobj = sipConvertFromEnum( static_cast<int>( sipCpp->at( i ) ), sipType_{class_name}_{enum_name} );
+
+    if ( !eobj )
+    {{
+      Py_DECREF( l );
+
+      return 0;
+    }}
+
+    PyList_SetItem( l, i, eobj );
+  }}
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  PyObject *iter = PyObject_GetIter( sipPy );
+
+  if ( !sipIsErr )
+  {{
+    PyErr_Clear();
+    Py_XDECREF( iter );
+
+    return ( iter && !PyBytes_Check( sipPy ) && !PyUnicode_Check( sipPy ) );
+  }}
+
+  if ( !iter )
+  {{
+    *sipIsErr = 1;
+
+    return 0;
+  }}
+
+  QList<{class_name}::{enum_name}> *ql = new QList<{class_name}::{enum_name}>;
+
+  for ( Py_ssize_t i = 0;; ++i )
+  {{
+    PyErr_Clear();
+    PyObject *itm = PyIter_Next( iter );
+
+    if ( !itm )
+    {{
+      if ( PyErr_Occurred() )
+      {{
+        delete ql;
+        Py_DECREF( iter );
+        *sipIsErr = 1;
+
+        return 0;
+      }}
+
+      break;
+    }}
+
+    int v = sipConvertToEnum( itm, sipType_{class_name}_{enum_name} );
+
+    if ( PyErr_Occurred() )
+    {{
+      PyErr_Format( PyExc_TypeError, "index %zd has type '%s' but '{class_name}.{enum_name}' is expected", i, sipPyTypeName( Py_TYPE( itm ) ) );
+
+      Py_DECREF( itm );
+      delete ql;
+      Py_DECREF( iter );
+      *sipIsErr = 1;
+
+      return 0;
+    }}
+
+    ql->append( static_cast<{class_name}::{enum_name}>( v ) );
+
+    Py_DECREF( itm );
+  }}
+
+  Py_DECREF( iter );
+
+  *sipCppPtr = ql;
+
+  return sipGetState( sipTransferObj );
+%End
+}};
+"""
+
 
 def replace_macros(line):
     line = re.sub(r"\bTRUE\b", "``True``", line)
@@ -1648,6 +1745,23 @@ def try_process_sip_directive():
     if match:
         dbg_info("found SIP_WHEN_FEATURE")
         CONTEXT.if_feature_condition = match.group(1)
+
+    match = re.search(
+        r"^\s*SIP_INSERT_QLIST_ENUM_CONVERSION_CODE\(\s*(.*?)::(.*?)\s*,\s*\"(.*?)\"\s*\)\s*;?\s*$",
+        CONTEXT.current_line,
+    )
+
+    if match:
+        class_name = match.group(1)
+        enum_name = match.group(2)
+        extra_includes = match.group(3)
+        if extra_includes:
+            extra_includes = f"\n#include {extra_includes}"
+        sip_convert_code = QLIST_ENUM_CONVERSION_CODE.format(
+            class_name=class_name, enum_name=enum_name, extra_includes=extra_includes
+        )
+        write_output("SCC", sip_convert_code)
+        CONTEXT.current_line = ""
 
     match = re.search(r'SIP_TYPEHEADER_INCLUDE\(\s*"(.*?)"\s*\)', CONTEXT.current_line)
     if match:
