@@ -10,6 +10,7 @@
 
 
 
+
 %MappedType QList<QgsSearchWidgetWrapper::FilterFlag> /TypeHintIn = "Iterable[QgsSearchWidgetWrapper.FilterFlag]",TypeHintOut = "List[QgsSearchWidgetWrapper.FilterFlag]", TypeHintValue = "[]"/
 {
 %TypeHeaderCode
@@ -104,6 +105,8 @@
   return sipGetState( sipTransferObj );
 %End
 };
+
+
 class QgsSearchWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")

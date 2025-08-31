@@ -300,4 +300,11 @@
  */
 #define SIP_TYPEHEADER_INCLUDE(file)
 
+/*
+ * Inserts sip conversion code for QList<class_name::enum_name>, where class_name::enum_name is a c++ enum.
+ *
+ * extra_includes is an optional argument containing extra headers to include in the conversion code. Set to "" if not required.
+ */
+#define SIP_INSERT_QLIST_ENUM_CONVERSION_CODE(class_name, extra_includes)
+
 #endif // QGIS_SIP_H
