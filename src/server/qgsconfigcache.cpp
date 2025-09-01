@@ -189,13 +189,13 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
   }
 
   auto entry = mProjectCache[path];
-  if( !entry )
+  if ( !entry )
   {
     return nullptr;
   }
 
   //Try to reload data sources of invalid layers
-  if( ( settings && settings->retryBadLayers() ) && ( entry->second->validCount() != entry->second->count() ) )
+  if ( ( settings && settings->retryBadLayers() ) && ( entry->second->validCount() != entry->second->count() ) )
   {
     for ( const auto &l : entry->second->mapLayers() )
     {
@@ -209,7 +209,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
         }
         QgsDataProvider::ProviderOptions options;
         l->setDataSource( l->source(), l->name(), l->providerType(), options );
-        if( vlayer && !subsetString.isEmpty() )
+        if ( vlayer && !subsetString.isEmpty() )
         {
           vlayer->setSubsetString( subsetString );
         }
