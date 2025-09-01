@@ -228,12 +228,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(1.0, 1.0)
 
-        g = QgsGeometry()
-        result = g.chamfer(
-            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
-        )
-        self.assertTrue(result.isEmpty())
-        self.assertEqual(g.lastError(), "Segments do not intersect.")
+        try:
+            QgsGeometry.chamfer(
+                segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Segments do not intersect.")
 
     def test_chamfer_segments_negative_distances(self):
         """Test that negative distances return empty geometry"""
@@ -246,12 +247,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        g = QgsGeometry()
-        result = g.chamfer(
-            segment1_start, segment1_end, segment2_start, segment2_end, -0.1, 0.1
-        )
-        self.assertTrue(result.isEmpty())
-        self.assertEqual(g.lastError(), "Negative distances.")
+        try:
+            QgsGeometry.chamfer(
+                segment1_start, segment1_end, segment2_start, segment2_end, -0.1, 0.1
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Negative distances.")
 
     # CHAMFER TESTS - VERTEX-BASED OVERLOAD
 
@@ -585,12 +587,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 0.1)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        g = QgsGeometry()
-        result = g.fillet(
-            segment1_start, segment1_end, segment2_start, segment2_end, 1.0
-        )
-        self.assertTrue(result.isEmpty())
-        self.assertEqual(g.lastError(), "Intersection 1 on segment but too far.")
+        try:
+            QgsGeometry.fillet(
+                segment1_start, segment1_end, segment2_start, segment2_end, 1.0
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Intersection 1 on segment but too far.")
 
     def test_fillet_segments_zero_radius_failure(self):
         """Test that zero radius returns empty geometry"""
@@ -603,12 +606,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        g = QgsGeometry()
-        result = g.fillet(
-            segment1_start, segment1_end, segment2_start, segment2_end, 0.0
-        )
-        self.assertTrue(result.isEmpty())
-        self.assertEqual(g.lastError(), "Radius <= 0.")
+        try:
+            QgsGeometry.fillet(
+                segment1_start, segment1_end, segment2_start, segment2_end, 0.0
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Radius <= 0.")
 
     def test_fillet_segments_acute_angle(self):
         """Test fillet creation with acute angle"""

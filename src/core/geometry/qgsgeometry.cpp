@@ -4639,52 +4639,28 @@ QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) 
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                                  const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                                  double distance1, double distance2 ) const
+QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 )
 {
-  std::unique_ptr<QgsLineString> result;
-  try
-  {
-    result = QgsGeometryUtils::createChamferGeometry(
-               segment1Start, segment1End, segment2Start, segment2End, distance1, distance2
-             );
-  }
-  catch ( QgsInvalidArgumentException &e )
-  {
-    mLastError = e.what();
-    return QgsGeometry();
-  }
+  std::unique_ptr<QgsLineString> result( QgsGeometryUtils::createChamferGeometry(
+      segment1Start, segment1End, segment2Start, segment2End, distance1, distance2
+                                         ) );
 
   if ( !result )
   {
-    mLastError = QStringLiteral( "Chamfer generates a null geometry." );
     return QgsGeometry();
   }
 
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                                 const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                                 double radius, int segments ) const
+QgsGeometry QgsGeometry::fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments )
 {
-  std::unique_ptr<QgsAbstractGeometry> result;
-  try
-  {
-    result = QgsGeometryUtils::createFilletGeometry(
-               segment1Start, segment1End, segment2Start, segment2End, radius, segments
-             );
-  }
-  catch ( QgsInvalidArgumentException &e )
-  {
-    mLastError = e.what();
-    return QgsGeometry();
-  }
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::createFilletGeometry(
+        segment1Start, segment1End, segment2Start, segment2End, radius, segments
+      ) );
 
   if ( !result )
   {
-    mLastError = QStringLiteral( "Fillet generates a null geometry." );
     return QgsGeometry();
   }
 
