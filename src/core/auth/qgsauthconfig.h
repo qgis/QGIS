@@ -18,6 +18,7 @@
 #define QGSAUTHCONFIG_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QHash>
 #include <QString>
@@ -329,8 +330,9 @@ class CORE_EXPORT QgsPkiConfigBundle
     QList<QSslCertificate> mCaChain;
 };
 
-
+#ifdef SIP_RUN // should not be required, but mingw workflow needs it..
 SIP_INSERT_QLIST_ENUM_CONVERSION_CODE( QSslError::SslError, "<QSslError>" );
+#endif
 
 /**
  * \ingroup core

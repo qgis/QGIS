@@ -1747,14 +1747,14 @@ def try_process_sip_directive():
         CONTEXT.if_feature_condition = match.group(1)
 
     match = re.search(
-        r"^\s*SIP_INSERT_QLIST_ENUM_CONVERSION_CODE\(\s*(.*?)::(.*?)\s*,\s*\"(.*?)\"\s*\)\s*;?\s*$",
+        r"^\s*SIP_INSERT_QLIST_ENUM_CONVERSION_CODE\(\s*(.*?)::(.*?)\s*(?:,\s*\"(.*?)\"\s*)?\)\s*;?\s*$",
         CONTEXT.current_line,
     )
 
     if match:
         class_name = match.group(1)
         enum_name = match.group(2)
-        extra_includes = match.group(3)
+        extra_includes = match.group(3) or ""
         if extra_includes:
             extra_includes = f"\n#include {extra_includes}"
         sip_convert_code = QLIST_ENUM_CONVERSION_CODE.format(

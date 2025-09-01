@@ -28,7 +28,9 @@ class QgsField;
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
 
-SIP_INSERT_QLIST_ENUM_CONVERSION_CODE( QgsSearchWidgetWrapper::FilterFlag, "" );
+#ifdef SIP_RUN // should not be required, but mingw workflow needs it..
+SIP_INSERT_QLIST_ENUM_CONVERSION_CODE( QgsSearchWidgetWrapper::FilterFlag );
+#endif
 
 /**
  * \ingroup gui

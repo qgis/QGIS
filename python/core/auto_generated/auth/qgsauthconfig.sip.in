@@ -390,7 +390,6 @@ setCaChain set the CA chain
 };
 
 
-
 %MappedType QList<QSslError::SslError> /TypeHintIn = "Iterable[QSslError.SslError]",TypeHintOut = "List[QSslError.SslError]", TypeHintValue = "[]"/
 {
 %TypeHeaderCode
