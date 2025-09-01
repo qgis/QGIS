@@ -930,7 +930,7 @@ QgsAttributeTableModel.showValidityState: src/gui/attributetable/qgsattributetab
 QgsAttributeTableModel.sortCacheExpression: src/gui/attributetable/qgsattributetablemodel.h#L222
 QgsAttributeTableModel.swapRows: src/gui/attributetable/qgsattributetablemodel.h#L172
 QgsAttributeTableModel: src/gui/attributetable/qgsattributetablemodel.h#L49
-QgsAttributeTableView._q_selectRow: src/gui/attributetable/qgsattributetableview.h#L188
+QgsAttributeTableView._q_selectRow: src/gui/attributetable/qgsattributetableview.h#L195
 QgsAttributeTableView.closeCurrentEditor: src/gui/attributetable/qgsattributetableview.h#L110
 QgsAttributeTableView.closeEvent: src/gui/attributetable/qgsattributetableview.h#L158
 QgsAttributeTableView.columnResized: src/gui/attributetable/qgsattributetableview.h#L176
@@ -941,11 +941,12 @@ QgsAttributeTableView.keyPressEvent: src/gui/attributetable/qgsattributetablevie
 QgsAttributeTableView.mouseMoveEvent: src/gui/attributetable/qgsattributetableview.h#L135
 QgsAttributeTableView.mousePressEvent: src/gui/attributetable/qgsattributetableview.h#L119
 QgsAttributeTableView.mouseReleaseEvent: src/gui/attributetable/qgsattributetableview.h#L127
-QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L184
-QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L185
+QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L191
+QgsAttributeTableView.repaintRequested: src/gui/attributetable/qgsattributetableview.h#L192
+QgsAttributeTableView.rowHeaderDoubleClicked: src/gui/attributetable/qgsattributetableview.h#L188
 QgsAttributeTableView.scrollToFeature: src/gui/attributetable/qgsattributetableview.h#L103
-QgsAttributeTableView.selectAll: src/gui/attributetable/qgsattributetableview.h#L186
-QgsAttributeTableView.selectRow: src/gui/attributetable/qgsattributetableview.h#L187
+QgsAttributeTableView.selectAll: src/gui/attributetable/qgsattributetableview.h#L193
+QgsAttributeTableView.selectRow: src/gui/attributetable/qgsattributetableview.h#L194
 QgsAttributeTableView.setAttributeTableConfig: src/gui/attributetable/qgsattributetableview.h#L87
 QgsAttributeTableView.setFeatureSelectionManager: src/gui/attributetable/qgsattributetableview.h#L69
 QgsAttributeTableView.setModel: src/gui/attributetable/qgsattributetableview.h#L60
