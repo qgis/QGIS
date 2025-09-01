@@ -25,13 +25,16 @@ if [ ! -d "$BUILD_DIR" ]; then
     done
 fi
 
+echo "BUILD_DIR"
+echo "$BUILD_DIR"
+
 # 自动检测架构目录
 ARCH_DIR=""
 if [ -d "$BUILD_DIR" ]; then
     # 查找fedora-*-x86_64目录
     for arch_candidate in "$BUILD_DIR"/fedora-*-x86_64; do
         if [ -d "$arch_candidate" ]; then
-            ARCH_DIR="$arch_candidate"
+            ARCH_DIR="$(realpath "$arch_candidate")"  # 转换为绝对路径
             ARCH=$(basename "$arch_candidate")
             echo "检测到架构: $ARCH"
             break
@@ -39,9 +42,8 @@ if [ -d "$BUILD_DIR" ]; then
     done
 fi
 
-# 创建输出目录
-mkdir -p "$OUTPUT_DIR"
-cd "$OUTPUT_DIR"
+echo "ARCH_DIR"
+echo "$ARCH_DIR"
 
 echo "1. 查找QGIS RPM包..."
 # 查找QGIS RPM包的多种可能位置
@@ -50,6 +52,9 @@ QGIS_RPMS=""
 # 优先使用检测到的架构目录
 if [ -n "$ARCH_DIR" ]; then
     found_rpms=$(find "$ARCH_DIR" -name "qgis-*.rpm" -type f 2>/dev/null | head -5)
+    echo "found_rpms"
+    echo "$found_rpms"
+
     if [ -n "$found_rpms" ]; then
         QGIS_RPMS="$found_rpms"
         echo "在 $ARCH_DIR 找到QGIS RPM包"
@@ -85,6 +90,10 @@ fi
 
 echo "找到的RPM包:"
 echo "$QGIS_RPMS"
+
+# 创建输出目录
+mkdir -p "$OUTPUT_DIR"
+cd "$OUTPUT_DIR"
 
 # 复制QGIS RPM包
 echo "2. 复制QGIS RPM包..."
