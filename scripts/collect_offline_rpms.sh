@@ -11,7 +11,6 @@ set -e
 # 配置变量
 BUILD_DIR="result"  # 默认构建输出目录
 OUTPUT_DIR="qgis-offline-$(date +%Y%m%d)"
-ARCH="fedora-39-x86_64"  # 根据实际情况调整
 
 echo "=== 创建QGIS离线RPM包 ==="
 
@@ -26,6 +25,20 @@ if [ ! -d "$BUILD_DIR" ]; then
     done
 fi
 
+# 自动检测架构目录
+ARCH_DIR=""
+if [ -d "$BUILD_DIR" ]; then
+    # 查找fedora-*-x86_64目录
+    for arch_candidate in "$BUILD_DIR"/fedora-*-x86_64; do
+        if [ -d "$arch_candidate" ]; then
+            ARCH_DIR="$arch_candidate"
+            ARCH=$(basename "$arch_candidate")
+            echo "检测到架构: $ARCH"
+            break
+        fi
+    done
+fi
+
 # 创建输出目录
 mkdir -p "$OUTPUT_DIR"
 cd "$OUTPUT_DIR"
@@ -33,23 +46,36 @@ cd "$OUTPUT_DIR"
 echo "1. 查找QGIS RPM包..."
 # 查找QGIS RPM包的多种可能位置
 QGIS_RPMS=""
-for search_path in \
-    "$BUILD_DIR/$ARCH" \
-    "$BUILD_DIR/RPMS/x86_64" \
-    "../rpm/result/$ARCH" \
-    "rpm/result/$ARCH" \
-    "$HOME/rpmbuild/RPMS/x86_64" \
-    "."; do
-    
-    if [ -d "$search_path" ]; then
-        found_rpms=$(find "$search_path" -name "qgis-*.rpm" -type f 2>/dev/null | head -5)
-        if [ -n "$found_rpms" ]; then
-            QGIS_RPMS="$found_rpms"
-            echo "在 $search_path 找到QGIS RPM包"
-            break
-        fi
+
+# 优先使用检测到的架构目录
+if [ -n "$ARCH_DIR" ]; then
+    found_rpms=$(find "$ARCH_DIR" -name "qgis-*.rpm" -type f 2>/dev/null | head -5)
+    if [ -n "$found_rpms" ]; then
+        QGIS_RPMS="$found_rpms"
+        echo "在 $ARCH_DIR 找到QGIS RPM包"
     fi
-done
+fi
+
+# 如果未找到，尝试其他位置
+if [ -z "$QGIS_RPMS" ]; then
+    for search_path in \
+        "$BUILD_DIR"/*-x86_64 \
+        "$BUILD_DIR/RPMS/x86_64" \
+        "../rpm/result"/*-x86_64 \
+        "rpm/result"/*-x86_64 \
+        "$HOME/rpmbuild/RPMS/x86_64" \
+        "."; do
+        
+        if [ -d "$search_path" ]; then
+            found_rpms=$(find "$search_path" -name "qgis-*.rpm" -type f 2>/dev/null | head -5)
+            if [ -n "$found_rpms" ]; then
+                QGIS_RPMS="$found_rpms"
+                echo "在 $search_path 找到QGIS RPM包"
+                break
+            fi
+        fi
+    done
+fi
 
 if [ -z "$QGIS_RPMS" ]; then
     echo "错误: 未找到QGIS RPM包"
