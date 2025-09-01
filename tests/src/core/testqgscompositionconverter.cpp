@@ -466,6 +466,11 @@ void TestQgsCompositionConverter::importComposerTemplateAttributeTable()
 
 void TestQgsCompositionConverter::importComposerTemplateHtml()
 {
+  if ( !Qgis::hasQtWebkit() )
+  {
+    QSKIP( "This test requires a build with QtWebkit", SkipSingle );
+  }
+
   QDomElement composerElem( loadComposer( QStringLiteral( "2x_template_html.qpt" ) ) );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
