@@ -37,6 +37,7 @@
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemattributetable.h"
 #include "qgslayoutrendercontext.h"
+#include "qgsfontutils.h"
 
 // Debug output for dom nodes
 QDebug operator<<( QDebug dbg, const QDomNode &node )
@@ -159,6 +160,7 @@ void TestQgsCompositionConverter::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::settingsSearchPathsForSVG->setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
+  QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Bold" ), QStringLiteral( "Oblique" ), QStringLiteral( "Roman" ) } );
 }
 
 void TestQgsCompositionConverter::init()
