@@ -9,7 +9,7 @@
 set -e
 
 # 配置变量
-BUILD_DIR="$HOME/qgis-build"
+BUILD_DIR="result"  # 默认构建输出目录
 OUTPUT_DIR="qgis-offline-$(date +%Y%m%d)"
 ARCH="fedora-39-x86_64"  # 根据实际情况调整
 
@@ -18,7 +18,7 @@ echo "=== 创建QGIS离线RPM包 ==="
 # 检查构建输出目录
 if [ ! -d "$BUILD_DIR" ]; then
     # 尝试查找其他可能的构建位置
-    for possible_dir in "$HOME/rpmbuild" "rpm/RPMS" "$PWD/RPMS"; do
+    for possible_dir in "../rpm/result" "$HOME/rpmbuild" "rpm/result" "$PWD/result"; do
         if [ -d "$possible_dir" ]; then
             BUILD_DIR="$possible_dir"
             break
@@ -36,8 +36,9 @@ QGIS_RPMS=""
 for search_path in \
     "$BUILD_DIR/$ARCH" \
     "$BUILD_DIR/RPMS/x86_64" \
+    "../rpm/result/$ARCH" \
+    "rpm/result/$ARCH" \
     "$HOME/rpmbuild/RPMS/x86_64" \
-    "../rpm/RPMS/x86_64" \
     "."; do
     
     if [ -d "$search_path" ]; then
