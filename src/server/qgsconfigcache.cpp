@@ -20,6 +20,7 @@
 #include "qgsserverexception.h"
 #include "qgsstorebadlayerinfo.h"
 #include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QFile>
 
@@ -188,7 +189,35 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
   }
 
   auto entry = mProjectCache[path];
-  return entry ? entry->second.get() : nullptr;
+  if( !entry )
+  {
+    return nullptr;
+  }
+
+  //Try to reload data sources of invalid layers
+  if( ( settings && settings->retryBadLayers() ) && ( entry->second->validCount() != entry->second->count() ) )
+  {
+    for ( const auto &l : entry->second->mapLayers() )
+    {
+      if ( !l->isValid() )
+      {
+        QString subsetString;
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( l );
+        if ( vlayer )
+        {
+          subsetString = vlayer->subsetString();
+        }
+        QgsDataProvider::ProviderOptions options;
+        l->setDataSource( l->source(), l->name(), l->providerType(), options );
+        if( vlayer && !subsetString.isEmpty() )
+        {
+          vlayer->setSubsetString( subsetString );
+        }
+      }
+    }
+  }
+
+  return entry->second.get();
 }
 
 QList<QgsProject *> QgsConfigCache::projects() const
