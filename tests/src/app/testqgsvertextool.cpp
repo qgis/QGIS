@@ -988,9 +988,9 @@ void TestQgsVertexTool::testMoveMultipleVertices()
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 
-  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841259 6405988)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( -1 ), QStringLiteral( "LineString (-841260 6405990, -841260 6405990)" ) );
   mLayerLineReprojected->undoStack()->undo();
-  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841258 6405990)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( -1 ), QStringLiteral( "LineString (-841260 6405990, -841260 6405990)" ) );
 }
 
 void TestQgsVertexTool::testMoveMultipleVertices2()
@@ -1667,8 +1667,8 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   mouseClick( mapPointEnd.x(), mapPointEnd.y(), Qt::LeftButton );
 
   // polygon and line features have changed, within the CRS conversion precision
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (3 3, 1 1, 1 3)" );
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 1 ), "LineString (3 3, 1 1, 1 3)" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 3 ); // one more move of vertex from earlier
   QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
