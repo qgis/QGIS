@@ -26,4 +26,3 @@ test_core_layerdefinition
 PyQgsLayoutHtml
 PyQgsSettings
 PyQgsSettingsEntry
-ProcessingQgisAlgorithmsTestPt4
