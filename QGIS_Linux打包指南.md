@@ -233,6 +233,99 @@ cmake -DWITH_3D=OFF -DWITH_GRASS=OFF ..
 
 ---
 
+## 离线安装解决方案
+
+### RPM包离线安装
+
+#### 方法1：下载所有依赖包
+
+```bash
+# 在有网络的构建机器上执行
+# 1. 创建离线安装包目录
+mkdir -p qgis-offline-rpm
+
+# 2. 复制构建好的QGIS RPM包
+cp ~/rpmbuild/RPMS/x86_64/qgis-*.rpm qgis-offline-rpm/
+
+# 3. 下载所有依赖包
+cd qgis-offline-rpm/
+sudo dnf download --resolve --alldeps --skip-broken qgis-*.rpm
+
+# 或使用repoquery获取依赖列表
+sudo dnf repoquery --requires --resolve qgis | xargs sudo dnf download --destdir .
+
+# 4. 创建本地仓库
+sudo dnf install createrepo_c
+createrepo_c .
+
+# 5. 打包传输
+cd ..
+tar -czf qgis-offline-complete.tar.gz qgis-offline-rpm/
+```
+
+#### 方法2：使用mock创建自包含构建
+
+```bash
+# 修改rpm/buildrpms.sh，添加依赖收集
+cd rpm/
+
+# 创建自定义配置
+cat > local.cfg << 'EOF'
+OUTDIR="$HOME/rpmbuild-offline"
+ARCHS=("fedora-35-x86_64")
+NOSIGN=true
+COLLECT_DEPS=true
+EOF
+
+# 执行构建并收集依赖
+./buildrpms.sh
+```
+
+#### 离线环境安装
+
+```bash
+# 1. 在离线机器上解压
+tar -xzf qgis-offline-complete.tar.gz
+
+# 2. 配置本地仓库
+cat > /etc/yum.repos.d/qgis-local.repo << 'EOF'
+[qgis-local]
+name=QGIS Local Repository
+baseurl=file:///path/to/qgis-offline-rpm
+enabled=1
+gpgcheck=0
+EOF
+
+# 3. 安装
+sudo dnf install qgis --repo qgis-local
+
+# 或直接rpm安装（可能缺少依赖）
+sudo rpm -ivh qgis-offline-rpm/*.rpm
+```
+
+### DEB包离线安装
+
+```bash
+# 在线环境准备
+mkdir -p qgis-offline-deb
+cd qgis-offline-deb
+
+# 下载依赖包
+apt-get download $(apt-cache depends qgis | grep "Depends:" | cut -d: -f2)
+
+# 下载QGIS包
+cp ../*.deb .
+
+# 创建Packages文件
+dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+
+# 离线安装
+sudo dpkg -i *.deb
+sudo apt-get install -f  # 修复可能的依赖问题
+```
+
+---
+
 ## 常见问题与解决方案
 
 ### 构建错误
