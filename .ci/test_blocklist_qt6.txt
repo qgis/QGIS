@@ -1,6 +1,3 @@
-# Qt6 blocklist
-test_core_compositionconverter
-
 # Crashes -- also disabled on qt5 builds!
 test_gui_queryresultwidget
 
