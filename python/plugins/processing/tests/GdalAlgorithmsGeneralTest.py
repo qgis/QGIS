@@ -41,6 +41,8 @@ from qgis.core import (
     QgsRectangle,
     QgsProcessingException,
     QgsProcessingFeatureSourceDefinition,
+    QgsDistanceArea,
+    QgsCoordinateTransformContext,
 )
 
 from qgis.testing import QgisTestCase, start_app
@@ -607,6 +609,63 @@ class TestGdalAlgorithms(QgisTestCase):
             self.assertEqual(width_element.text(), str(width))
             height_element = data.firstChildElement("SizeY")
             self.assertEqual(height_element.text(), str(height))
+
+    def testWmsDimensionsForScale(self):
+        # Projected Coordinate System
+        bbox = QgsRectangle(472036.22487, 5552340.41684, 472376.9869, 5552638.65929)
+        crs = QgsCoordinateReferenceSystem("EPSG:25832")
+        scale = 5000
+        dpi = 96.0
+        distanceArea = None
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 258)
+        self.assertEqual(height, 226)
+
+        # Geographic Coordinate System
+        bbox = QgsRectangle(8.608813286, 50.122661591, 8.613558769, 50.125328064)
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        scale = 3500
+        dpi = 96.0
+        distanceArea = QgsDistanceArea()
+        distanceArea.setSourceCrs(crs, QgsCoordinateTransformContext())
+        distanceArea.setEllipsoid(crs.ellipsoidAcronym())
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 367)
+        self.assertEqual(height, 206)  # Height value preserving BBOX's aspect ratio
+
+        # Projected Coordinate System 2
+        bbox = QgsRectangle(3560914.20026, 5710368.96526, 3566446.25913, 5713634.88757)
+        crs = QgsCoordinateReferenceSystem("EPSG:31467")
+        scale = 25000
+        dpi = 96.0
+        distanceArea = None
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 837)
+        self.assertEqual(height, 494)
+
+        # Geographic Coordinate System 2
+        bbox = QgsRectangle(8.608813286, 50.122661591, 8.613558769, 50.125328064)
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        scale = 2000
+        dpi = 70.0
+        distanceArea = QgsDistanceArea()
+        distanceArea.setSourceCrs(crs, QgsCoordinateTransformContext())
+        distanceArea.setEllipsoid(crs.ellipsoidAcronym())
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 468)
+        self.assertEqual(height, 263)  # Height value preserving BBOX's aspect ratio
 
 
 if __name__ == "__main__":
