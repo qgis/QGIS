@@ -24,7 +24,6 @@ import os
 import platform
 import re
 from dataclasses import dataclass
-import xml.etree.ElementTree as ET
 import math
 
 import psycopg2
@@ -47,12 +46,18 @@ from qgis.core import (
     QgsMapLayer,
     QgsProcessingContext,
     QgsRectangle,
-    QgsUnitTypes,
     QgsPointXY,
     QgsDistanceArea,
+    QgsRasterLayer,
 )
 
-from qgis.PyQt.QtCore import QCoreApplication, QProcess
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QFile,
+    QProcess,
+    QTextStream,
+)
+from qgis.PyQt.QtXml import QDomDocument
 
 
 @dataclass
@@ -616,7 +621,7 @@ class GdalUtils:
 
     @staticmethod
     def gdal_wms_xml_description_file(
-        uri: str,
+        layer: QgsRasterLayer,
         version: str,
         extent: QgsRectangle,
         width: int,
@@ -626,14 +631,20 @@ class GdalUtils:
         """
         Creates an XML description file to access a WMS via GDAL.
 
-        Returns True if the file was created, or False if it was not.
-        An additional returned value provides callers with more details on an eventual write error.
+        :param layer: WMS layer.
+        :param version: WMS version.
+        :param extent: Extent to be requested.
+        :param width: Width of the image to be requested.
+        :param height: Height of the image to be requested.
+        :param out_path: Path where the XML file was created.
+        :return: True if the file was created, or False if it was not.
+                 An additional returned value provides callers with more details on an eventual write error.
         """
         # Prepare data
+        uri = layer.publicSource()
         source = QgsProviderRegistry.instance().decodeUri("wms", uri)
         base_url = source.get("url", "")
-        crs = source.get("crs", "EPSG:4326")
-        crs_obj = QgsCoordinateReferenceSystem(crs)
+        crs_obj = layer.crs()
         crs_string = GdalUtils.gdal_crs_string(crs_obj)
         image_format = source.get("format", "")
         service = {"SERVICE": "WMS"}
@@ -645,39 +656,57 @@ class GdalUtils:
             styles = [styles]  # If only one style, it is given as string
 
         # Set up XML doc
-        root = ET.Element("GDAL_WMS")
+        def add_text_element(doc, base_element, element_name, element_text):
+            element = doc.createElement(element_name)
+            text_node = doc.createTextNode(element_text)
+            element.appendChild(text_node)
+            return base_element.appendChild(element)
 
-        service = ET.SubElement(root, "Service", name="WMS")
-        ET.SubElement(service, "Version").text = version
-        ET.SubElement(service, "ServerUrl").text = base_url
-        ET.SubElement(service, "Layers").text = ",".join(sublayers)
+        doc = QDomDocument()
+        root = doc.createElement("GDAL_WMS")
+        doc.appendChild(root)
+        service = doc.createElement("Service")
+        service.setAttribute("name", "WMS")
+
+        add_text_element(doc, service, "Version", version)
+        add_text_element(doc, service, "ServerUrl", base_url)
+        add_text_element(doc, service, "Layers", ",".join(sublayers))
+
         if styles:
-            ET.SubElement(service, "Styles").text = ",".join(styles)
-        ET.SubElement(service, "ImageFormat").text = image_format
+            add_text_element(doc, service, "Styles", ",".join(styles))
+
+        add_text_element(doc, service, "ImageFormat", image_format)
 
         if version == "1.3.0" or version == "1.3":
-            ET.SubElement(service, "CRS").text = crs_string
+            add_text_element(doc, service, "CRS", crs_string)
             if crs_obj.hasAxisInverted():
-                ET.SubElement(service, "BBoxOrder").text = "yxYX"
+                add_text_element(doc, service, "BBoxOrder", "yxYX")
         else:
-            ET.SubElement(service, "SRS").text = crs_string
+            add_text_element(doc, service, "SRS", crs_string)
 
-        data = ET.SubElement(root, "DataWindow")
-        ET.SubElement(data, "UpperLeftX").text = str(extent.xMinimum())
-        ET.SubElement(data, "UpperLeftY").text = str(extent.yMaximum())
-        ET.SubElement(data, "LowerRightX").text = str(extent.xMaximum())
-        ET.SubElement(data, "LowerRightY").text = str(extent.yMinimum())
-        ET.SubElement(data, "SizeX").text = str(width)
-        ET.SubElement(data, "SizeY").text = str(height)
+        root.appendChild(service)
 
-        tree = ET.ElementTree(root)
-        ET.indent(tree)
-        try:
-            tree.write(out_path)
-        except (FileNotFoundError, PermissionError) as e:
-            return False, str(e)
+        data = doc.createElement("DataWindow")
+        add_text_element(doc, data, "UpperLeftX", str(extent.xMinimum()))
+        add_text_element(doc, data, "UpperLeftY", str(extent.yMaximum()))
+        add_text_element(doc, data, "LowerRightX", str(extent.xMaximum()))
+        add_text_element(doc, data, "LowerRightY", str(extent.yMinimum()))
+        add_text_element(doc, data, "SizeX", str(width))
+        add_text_element(doc, data, "SizeY", str(height))
 
-        return True, ""
+        root.appendChild(data)
+
+        xml_file = QFile(out_path)
+        res = False
+        error_msg = ""
+        if xml_file.open(QFile.WriteOnly):
+            file_stream = QTextStream(xml_file)
+            doc.save(file_stream, 2)
+            res = True
+        else:
+            error_msg = xml_file.errorString()
+
+        return res, error_msg
 
     @staticmethod
     def _wms_dimensions_for_scale(
@@ -697,9 +726,7 @@ class GdalUtils:
         if bbox.isNull() or bbox.isEmpty():
             return -1, -1
 
-        meters_per_inch = QgsUnitTypes.fromUnitToUnitFactor(
-            Qgis.DistanceUnit.Inches, QgsUnitTypes.DistanceUnit.DistanceMeters
-        )
+        meters_per_inch = 0.0254
 
         if crs.isGeographic() and distanceArea:
             # Use ellipsoidal distances to get the projected extent

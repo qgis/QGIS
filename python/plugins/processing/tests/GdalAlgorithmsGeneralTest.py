@@ -24,6 +24,9 @@ import os
 import shutil
 import tempfile
 
+from qgis.PyQt.QtCore import QFile
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (
     QgsProcessingContext,
     QgsProcessingFeedback,
@@ -34,8 +37,8 @@ from qgis.core import (
     QgsPointXY,
     QgsProject,
     QgsVectorLayer,
+    QgsRasterLayer,
     QgsRectangle,
-    QgsProjUtils,
     QgsProcessingException,
     QgsProcessingFeatureSourceDefinition,
 )
@@ -408,9 +411,7 @@ class TestGdalAlgorithms(QgisTestCase):
             '1 -srcnodata --srcnodata "-9999 9999"',
         )
 
-    def test_gdal_wms_xml_description_file(self):
-        checked_count = 0
-
+    def testGdalWmsXmlDescriptionFile(self):
         # Version 1.1.1
         with tempfile.TemporaryDirectory() as outdir:
             uri = "contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=OSM-WMS&styles&tilePixelRatio=0&url=http://ows.terrestris.de/osm/service"
@@ -421,16 +422,60 @@ class TestGdalAlgorithms(QgisTestCase):
 
             out_path = os.path.join(outdir, "osm_xml_01.xml")
             res, _ = GdalUtils.gdal_wms_xml_description_file(
-                uri, version, extent, width, height, out_path
+                QgsRasterLayer(uri, "Test WMS", "wms"), version, extent, width, height, out_path
             )
             self.assertTrue(res)
 
-            # Compare obtained and expected files
-            expected_file = os.path.join(testDataPath, "wms_description_file_01.xml")
-            self.assertFilesEqual(out_path, expected_file)
-            checked_count += 1
+            # Compare obtained file with and expected data
+            out_file = QFile(out_path)
+            self.assertTrue(out_file.open(QFile.ReadOnly))
 
-        # Version 1.3.0
+            doc = QDomDocument()
+            self.assertTrue(doc.setContent(out_file))
+            out_file.close()
+
+            root = doc.firstChildElement()
+            self.assertEqual(root.tagName(), "GDAL_WMS")
+            self.assertEqual(len(root.childNodes()), 2)
+
+            service = root.firstChildElement()
+            self.assertEqual(service.tagName(), "Service")
+            self.assertEqual(service.attribute("name"), "WMS")
+
+            version_element = service.firstChildElement("Version")
+            self.assertEqual(version_element.text(), version)
+
+            url_element = service.firstChildElement("ServerUrl")
+            self.assertEqual(url_element.text(), "http://ows.terrestris.de/osm/service")
+
+            layers_element = service.firstChildElement("Layers")
+            self.assertEqual(layers_element.text(), "OSM-WMS")
+
+            crs_element = service.firstChildElement("SRS")
+            self.assertEqual(crs_element.text(), "EPSG:3857")
+
+            self.assertEqual(
+                service.elementsByTagName("BBoxOrder").length(), 0
+            )  # No inverted axis
+
+            data = root.lastChildElement()
+            self.assertEqual(data.tagName(), "DataWindow")
+
+            x_min_element = data.firstChildElement("UpperLeftX")
+            self.assertEqual(x_min_element.text(), str(extent.xMinimum()))
+            y_max_element = data.firstChildElement("UpperLeftY")
+            self.assertEqual(y_max_element.text(), str(extent.yMaximum()))
+            x_max_element = data.firstChildElement("LowerRightX")
+            self.assertEqual(x_max_element.text(), str(extent.xMaximum()))
+            y_min_element = data.firstChildElement("LowerRightY")
+            self.assertEqual(y_min_element.text(), str(extent.yMinimum()))
+
+            width_element = data.firstChildElement("SizeX")
+            self.assertEqual(width_element.text(), str(width))
+            height_element = data.firstChildElement("SizeY")
+            self.assertEqual(height_element.text(), str(height))
+
+        # Version 1.3.0, PCS, no axis inverted
         with tempfile.TemporaryDirectory() as outdir:
             uri = "contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
             version = "1.3.0"
@@ -442,16 +487,126 @@ class TestGdalAlgorithms(QgisTestCase):
 
             out_path = os.path.join(outdir, "osm_xml_02.xml")
             res, _ = GdalUtils.gdal_wms_xml_description_file(
-                uri, version, extent, width, height, out_path
+                QgsRasterLayer(uri, "Test WMS", "wms"), version, extent, width, height, out_path
             )
             self.assertTrue(res)
 
-            # Compare obtained and expected files
-            expected_file = os.path.join(testDataPath, "wms_description_file_02.xml")
-            self.assertFilesEqual(out_path, expected_file)
-            checked_count += 1
+            # Compare obtained file with and expected data
+            out_file = QFile(out_path)
+            self.assertTrue(out_file.open(QFile.ReadOnly))
 
-        self.assertEqual(checked_count, 2)
+            doc = QDomDocument()
+            self.assertTrue(doc.setContent(out_file))
+            out_file.close()
+
+            root = doc.firstChildElement()
+            self.assertEqual(root.tagName(), "GDAL_WMS")
+            self.assertEqual(len(root.childNodes()), 2)
+
+            service = root.firstChildElement()
+            self.assertEqual(service.tagName(), "Service")
+            self.assertEqual(service.attribute("name"), "WMS")
+
+            version_element = service.firstChildElement("Version")
+            self.assertEqual(version_element.text(), version)
+
+            url_element = service.firstChildElement("ServerUrl")
+            self.assertEqual(
+                url_element.text(),
+                "https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service",
+            )
+
+            layers_element = service.firstChildElement("Layers")
+            self.assertEqual(layers_element.text(), "bplan_stadtkarte")
+
+            crs_element = service.firstChildElement("CRS")
+            self.assertEqual(crs_element.text(), "EPSG:25832")
+
+            self.assertEqual(
+                service.elementsByTagName("BBoxOrder").length(), 0
+            )  # No inverted axis
+
+            data = root.lastChildElement()
+            self.assertEqual(data.tagName(), "DataWindow")
+
+            x_min_element = data.firstChildElement("UpperLeftX")
+            self.assertEqual(x_min_element.text(), str(extent.xMinimum()))
+            y_max_element = data.firstChildElement("UpperLeftY")
+            self.assertEqual(y_max_element.text(), str(extent.yMaximum()))
+            x_max_element = data.firstChildElement("LowerRightX")
+            self.assertEqual(x_max_element.text(), str(extent.xMaximum()))
+            y_min_element = data.firstChildElement("LowerRightY")
+            self.assertEqual(y_min_element.text(), str(extent.yMinimum()))
+
+            width_element = data.firstChildElement("SizeX")
+            self.assertEqual(width_element.text(), str(width))
+            height_element = data.firstChildElement("SizeY")
+            self.assertEqual(height_element.text(), str(height))
+
+        # Version 1.3.0, GCS, axis inverted
+        with tempfile.TemporaryDirectory() as outdir:
+            uri = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=de_basemapde_web_raster_farbe&styles&tilePixelRatio=0&url=https://stadtplan.goettingen.de/Goettingen/proxy.action?url%3Dhttps://stadtplan.goettingen.de/geoserver/goettingen/wms"
+            version = "1.3.0"
+            extent = QgsRectangle(9.877185822, 51.524547577, 9.956344604, 51.553283691)
+            width = 831
+            height = 302
+
+            out_path = os.path.join(outdir, "osm_xml_03.xml")
+            res, _ = GdalUtils.gdal_wms_xml_description_file(
+                QgsRasterLayer(uri, "Test WMS", "wms"), version, extent, width, height, out_path
+            )
+            self.assertTrue(res)
+
+            # Compare obtained file with and expected data
+            out_file = QFile(out_path)
+            self.assertTrue(out_file.open(QFile.ReadOnly))
+
+            doc = QDomDocument()
+            self.assertTrue(doc.setContent(out_file))
+            out_file.close()
+
+            root = doc.firstChildElement()
+            self.assertEqual(root.tagName(), "GDAL_WMS")
+            self.assertEqual(len(root.childNodes()), 2)
+
+            service = root.firstChildElement()
+            self.assertEqual(service.tagName(), "Service")
+            self.assertEqual(service.attribute("name"), "WMS")
+
+            version_element = service.firstChildElement("Version")
+            self.assertEqual(version_element.text(), version)
+
+            url_element = service.firstChildElement("ServerUrl")
+            self.assertEqual(
+                url_element.text(),
+                "https://stadtplan.goettingen.de/Goettingen/proxy.action?url=https://stadtplan.goettingen.de/geoserver/goettingen/wms",
+            )
+
+            layers_element = service.firstChildElement("Layers")
+            self.assertEqual(layers_element.text(), "de_basemapde_web_raster_farbe")
+
+            crs_element = service.firstChildElement("CRS")
+            self.assertEqual(crs_element.text(), "EPSG:4326")
+
+            axis_element = service.firstChildElement("BBoxOrder")
+            self.assertEqual(axis_element.text(), "yxYX")
+
+            data = root.lastChildElement()
+            self.assertEqual(data.tagName(), "DataWindow")
+
+            x_min_element = data.firstChildElement("UpperLeftX")
+            self.assertEqual(x_min_element.text(), str(extent.xMinimum()))
+            y_max_element = data.firstChildElement("UpperLeftY")
+            self.assertEqual(y_max_element.text(), str(extent.yMaximum()))
+            x_max_element = data.firstChildElement("LowerRightX")
+            self.assertEqual(x_max_element.text(), str(extent.xMaximum()))
+            y_min_element = data.firstChildElement("LowerRightY")
+            self.assertEqual(y_min_element.text(), str(extent.yMinimum()))
+
+            width_element = data.firstChildElement("SizeX")
+            self.assertEqual(width_element.text(), str(width))
+            height_element = data.firstChildElement("SizeY")
+            self.assertEqual(height_element.text(), str(height))
 
 
 if __name__ == "__main__":
