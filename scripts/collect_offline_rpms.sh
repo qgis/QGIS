@@ -51,7 +51,7 @@ QGIS_RPMS=""
 
 # 优先使用检测到的架构目录
 if [ -n "$ARCH_DIR" ]; then
-    found_rpms=$(find "$ARCH_DIR" -name "qgis-*.rpm" -type f 2>/dev/null | head -5)
+    found_rpms=$(find "$ARCH_DIR" -name "qgis-*.rpm" -type f 2>/dev/null)
     echo "found_rpms"
     echo "$found_rpms"
 
@@ -72,7 +72,7 @@ if [ -z "$QGIS_RPMS" ]; then
         "."; do
         
         if [ -d "$search_path" ]; then
-            found_rpms=$(find "$search_path" -name "qgis-*.rpm" -type f 2>/dev/null | head -5)
+            found_rpms=$(find "$search_path" -name "qgis-*.rpm" -type f 2>/dev/null)
             if [ -n "$found_rpms" ]; then
                 QGIS_RPMS="$found_rpms"
                 echo "在 $search_path 找到QGIS RPM包"
