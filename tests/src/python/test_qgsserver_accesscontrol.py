@@ -18,7 +18,7 @@ from math import sqrt
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from qgis.PyQt.QtCore import QSize
-from qgis.core import QgsRenderChecker
+from qgis.PyQt.QtGui import QImage
 from qgis.server import (
     QgsAccessControlFilter,
     QgsBufferServerRequest,
@@ -236,13 +236,23 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         with open(temp_image, "wb") as f:
             f.write(image)
 
-        control = QgsRenderChecker()
-        control.setControlPathPrefix("qgis_server_accesscontrol")
-        control.setControlName(control_image)
-        control.setRenderedImage(temp_image)
-        if max_size_diff.isValid():
-            control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.compareImages(control_image), control.report()
+        rendered_image = QImage(temp_image)
+        if rendered_image.format() not in (
+            QImage.Format.Format_RGB32,
+            QImage.Format.Format_ARGB32,
+            QImage.Format.Format_ARGB32_Premultiplied,
+        ):
+            rendered_image = rendered_image.convertToFormat(QImage.Format.Format_ARGB32)
+
+        return self.image_check(
+            control_image,
+            control_image,
+            rendered_image,
+            control_image,
+            allowed_mismatch=max_diff,
+            control_path_prefix="qgis_server_accesscontrol",
+            size_tolerance=max_size_diff,
+        )
 
     def _img_diff_error(
         self, response, headers, image, max_diff=10, max_size_diff=QSize()
