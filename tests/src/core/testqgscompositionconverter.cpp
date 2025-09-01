@@ -489,7 +489,7 @@ void TestQgsCompositionConverter::importComposerTemplateHtml()
   const QgsLayoutItemHtml *html = items.at( 0 );
   QVERIFY( html );
   QCOMPARE( html->contentMode(), QgsLayoutItemHtml::ContentMode::ManualHtml );
-  QCOMPARE( html->html(), QStringLiteral( "<div style=\"height:5000px; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
+  QCOMPARE( html->html(), QStringLiteral( "<div style=\"height:5000px; font-family: QGIS Vera Sans; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
 
   QGSVERIFYLAYOUTCHECK( "importComposerTemplateHtml_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 }
