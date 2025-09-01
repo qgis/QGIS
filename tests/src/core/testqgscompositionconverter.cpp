@@ -704,7 +704,7 @@ void TestQgsCompositionConverter::importComposerAtlas()
 
 QSize TestQgsCompositionConverter::renderedPageSize( QgsLayout *layout, const int pageNumber )
 {
-  return QSize( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
+  return QSize( static_cast< int >( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77 ), static_cast< int >( layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 ) );
 }
 
 QDomElement TestQgsCompositionConverter::loadComposer( const QString &name )
