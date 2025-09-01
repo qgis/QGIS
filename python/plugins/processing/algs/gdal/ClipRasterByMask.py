@@ -330,7 +330,7 @@ class ClipRasterByMask(GdalAlgorithm):
             )
             wms_description_file_path = tempfile.mktemp("_wms_description_file.xml")
             res_xml_wms, xml_wms_error = GdalUtils.gdal_wms_xml_description_file(
-                inLayer.publicSource(),
+                inLayer,
                 GdalUtils._get_wms_version(inLayer),
                 _bbox,
                 width,
