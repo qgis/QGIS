@@ -1,4 +1,4 @@
-# Crashes -- also disabled on qt5 builds!
+# Crashes -- also disabled on ubuntu builds!
 test_gui_queryresultwidget
 
 # code layout tests are run on separate build
