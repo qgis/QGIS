@@ -489,7 +489,7 @@ if(WITH_CORE)
     set (HAVE_POSTGRESQL TRUE)
   endif()
 
-  set (WITH_QTWEBKIT TRUE CACHE BOOL "Enable QtWebkit support")
+  set (WITH_QTWEBKIT FALSE CACHE BOOL "Enable QtWebkit support")
   if (WITH_QTWEBKIT)
     add_definitions(-DWITH_QTWEBKIT)
     message(STATUS "Qt WebKit support enabled")
