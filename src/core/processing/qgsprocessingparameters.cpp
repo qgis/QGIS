@@ -75,7 +75,7 @@ QVariant QgsProcessingRasterLayerDefinition::toVariant() const
 {
   QVariantMap map;
   map.insert( QStringLiteral( "source" ), source.toVariant() );
-  map.insert( QStringLiteral( "reference_scale" ), QVariant::fromValue( referenceScale ) );
+  map.insert( QStringLiteral( "reference_scale" ), referenceScale );
   map.insert( QStringLiteral( "dpi" ), dpi );
   return map;
 }
@@ -83,7 +83,7 @@ QVariant QgsProcessingRasterLayerDefinition::toVariant() const
 bool QgsProcessingRasterLayerDefinition::loadVariant( const QVariantMap &map )
 {
   source.loadVariant( map.value( QStringLiteral( "source" ) ) );
-  referenceScale = map.value( QStringLiteral( "reference_scale" ), 0 ).toLongLong();
+  referenceScale = map.value( QStringLiteral( "reference_scale" ), 0 ).toDouble();
   dpi = map.value( QStringLiteral( "dpi" ), 0 ).toInt();
   return true;
 }

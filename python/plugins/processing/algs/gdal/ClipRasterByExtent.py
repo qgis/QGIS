@@ -20,7 +20,6 @@ __date__ = "September 2013"
 __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
-import tempfile
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -37,6 +36,7 @@ from qgis.core import (
     QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
     QgsProcessingRasterLayerDefinition,
+    QgsProcessingUtils,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
@@ -212,7 +212,9 @@ class ClipRasterByExtent(GdalAlgorithm):
             width, height = GdalUtils._wms_dimensions_for_scale(
                 bbox, inLayer.crs(), scale, dpi, distanceArea
             )
-            wms_description_file_path = tempfile.mktemp("_wms_description_file.xml")
+            wms_description_file_path = QgsProcessingUtils.generateTempFilename(
+                "wms_description_file.xml", context
+            )
             res_xml_wms, xml_wms_error = GdalUtils.gdal_wms_xml_description_file(
                 inLayer,
                 GdalUtils._get_wms_version(inLayer),

@@ -212,7 +212,7 @@ class CORE_EXPORT QgsProcessingRasterLayerDefinition
      * The optional \a dpi argument can be used to specify the resolution a raster provider
      * (e.g., a WMS server) is using to generate the raster.
      */
-    QgsProcessingRasterLayerDefinition( const QString &source = QString(), const long referenceScale = 0, const int dpi = 96 )
+    QgsProcessingRasterLayerDefinition( const QString &source = QString(), const double referenceScale = 0, const int dpi = 96 )
       : source( QgsProperty::fromValue( source ) )
       , referenceScale( referenceScale )
       , dpi( dpi )
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsProcessingRasterLayerDefinition
      * The optional \a dpi argument can be used to specify the resolution a raster provider
      * (e.g., a WMS server) is using to generate the raster.
      */
-    QgsProcessingRasterLayerDefinition( const QgsProperty &source, const long referenceScale = 0, const int dpi = 96 )
+    QgsProcessingRasterLayerDefinition( const QgsProperty &source, const double referenceScale = 0, const int dpi = 96 )
       : source( source )
       , referenceScale( referenceScale )
       , dpi( dpi )
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsProcessingRasterLayerDefinition
     /**
      * If set to a value > 0, sets a scale at which a raster (e.g., a WMS) should be requested or rendered.
      */
-    long referenceScale = 0;
+    double referenceScale = 0;
 
     /**
      * Indicates the resolution of the raster source (e.g., a WMS server). By default 96 DPI.

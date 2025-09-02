@@ -24,7 +24,7 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QFile
+from qgis.PyQt.QtCore import QFile, QIODevice
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
@@ -430,7 +430,7 @@ class TestGdalAlgorithms(QgisTestCase):
 
             # Compare obtained file with and expected data
             out_file = QFile(out_path)
-            self.assertTrue(out_file.open(QFile.ReadOnly))
+            self.assertTrue(out_file.open(QIODevice.OpenModeFlag.ReadOnly))
 
             doc = QDomDocument()
             self.assertTrue(doc.setContent(out_file))
@@ -495,7 +495,7 @@ class TestGdalAlgorithms(QgisTestCase):
 
             # Compare obtained file with and expected data
             out_file = QFile(out_path)
-            self.assertTrue(out_file.open(QFile.ReadOnly))
+            self.assertTrue(out_file.open(QIODevice.OpenModeFlag.ReadOnly))
 
             doc = QDomDocument()
             self.assertTrue(doc.setContent(out_file))
@@ -561,7 +561,7 @@ class TestGdalAlgorithms(QgisTestCase):
 
             # Compare obtained file with and expected data
             out_file = QFile(out_path)
-            self.assertTrue(out_file.open(QFile.ReadOnly))
+            self.assertTrue(out_file.open(QIODevice.OpenModeFlag.ReadOnly))
 
             doc = QDomDocument()
             self.assertTrue(doc.setContent(out_file))

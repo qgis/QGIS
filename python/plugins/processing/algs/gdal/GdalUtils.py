@@ -54,6 +54,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QFile,
+    QIODevice,
     QProcess,
     QTextStream,
 )
@@ -699,7 +700,7 @@ class GdalUtils:
         xml_file = QFile(out_path)
         res = False
         error_msg = ""
-        if xml_file.open(QFile.WriteOnly):
+        if xml_file.open(QIODevice.OpenModeFlag.WriteOnly):
             file_stream = QTextStream(xml_file)
             doc.save(file_stream, 2)
             res = True

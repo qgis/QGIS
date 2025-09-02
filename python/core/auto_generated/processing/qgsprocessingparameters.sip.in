@@ -135,7 +135,7 @@ algorithm.
 %End
   public:
 
-    QgsProcessingRasterLayerDefinition( const QString &source = QString(), const long referenceScale = 0, const int dpi = 96 );
+    QgsProcessingRasterLayerDefinition( const QString &source = QString(), const double referenceScale = 0, const int dpi = 96 );
 %Docstring
 Constructor for QgsProcessingRasterLayerDefinition, accepting a static
 string ``source``.
@@ -148,7 +148,7 @@ The optional ``dpi`` argument can be used to specify the resolution a
 raster provider (e.g., a WMS server) is using to generate the raster.
 %End
 
-    QgsProcessingRasterLayerDefinition( const QgsProperty &source, const long referenceScale = 0, const int dpi = 96 );
+    QgsProcessingRasterLayerDefinition( const QgsProperty &source, const double referenceScale = 0, const int dpi = 96 );
 %Docstring
 Constructor for QgsProcessingRasterLayerDefinition, accepting a
 QgsProperty source.
@@ -163,7 +163,7 @@ raster provider (e.g., a WMS server) is using to generate the raster.
 
     QgsProperty source;
 
-    long referenceScale;
+    double referenceScale;
 
     int dpi;
 
