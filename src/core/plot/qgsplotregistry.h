@@ -80,7 +80,7 @@ class CORE_EXPORT QgsPlotAbstractMetadata
      *
      * Ownership of the widget is transferred to the caller.
      */
-    virtual QgsPlotWidget *createPlotWidget( QWidget *parent = nullptr ) = 0;
+    virtual QgsPlotWidget *createPlotWidget( QWidget *parent = nullptr ) = 0 SIP_TRANSFERBACK;
 
   private:
 

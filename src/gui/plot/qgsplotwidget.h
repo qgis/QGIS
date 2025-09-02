@@ -42,16 +42,16 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget
     {}
 
     /**
-     * Sets the \a plot to show in the widget. Ownership is not transferred.
-     * \see plot()
+     * Sets the widget to match the settings of the \a plot. Ownership is not transferred.
+     * \see createPlot()
      */
     virtual void setPlot( QgsPlot *plot ) = 0;
 
     /**
-     * Returns the plot defined by the current settings in the widget.
+     * Creates a plot defined by the current settings in the widget.
      * \see setPlot()
      */
-    virtual QgsPlot *plot() = 0;
+    virtual QgsPlot *createPlot() = 0 SIP_FACTORY;
 };
 
 
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
     QgsBarChartPlotWidget( QWidget *parent = nullptr );
 
     virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *plot() override;
+    virtual QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new bar chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsBarChartPlotWidget( parent ); }
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
     QgsLineChartPlotWidget( QWidget *parent = nullptr );
 
     virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *plot() override;
+    virtual QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new line chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsLineChartPlotWidget( parent ); }

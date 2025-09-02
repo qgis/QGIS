@@ -197,7 +197,7 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
     }
 
     mChartItem->beginCommand( tr( "Modify Chart" ) );
-    mChartItem->setPlot( widget->plot() );
+    mChartItem->setPlot( widget->createPlot() );
     mChartItem->endCommand();
     mChartItem->update();
   } );

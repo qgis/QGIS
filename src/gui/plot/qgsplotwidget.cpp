@@ -354,7 +354,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
 }
 
 
-QgsPlot *QgsBarChartPlotWidget::plot()
+QgsPlot *QgsBarChartPlotWidget::createPlot()
 {
   QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "bar" ) );
   QgsBarChartPlot *chartPlot = dynamic_cast<QgsBarChartPlot *>( plot );
@@ -654,7 +654,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
 
   // Marker
   symbolButton = new QgsSymbolButton( this );
-  symbolButton->setForceShortSize( true );
+  symbolButton->setFixedSizeContraints( false );
   symbolButton->setSymbolType( Qgis::SymbolType::Marker );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol() );
@@ -716,7 +716,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 
     // Marker
     symbolButton = new QgsSymbolButton( this );
-    symbolButton->setForceShortSize( true );
+    symbolButton->setFixedSizeContraints( false );
     symbolButton->setSymbolType( Qgis::SymbolType::Marker );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( i < chartPlot->markerSymbolCount() ? chartPlot->markerSymbolAt( i )->clone() : nullptr );
@@ -770,7 +770,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 }
 
 
-QgsPlot *QgsLineChartPlotWidget::plot()
+QgsPlot *QgsLineChartPlotWidget::createPlot()
 {
   QgsPlot *plot = QgsApplication::plotRegistry()->createPlot( QStringLiteral( "line" ) );
   QgsLineChartPlot *chartPlot = dynamic_cast<QgsLineChartPlot *>( plot );

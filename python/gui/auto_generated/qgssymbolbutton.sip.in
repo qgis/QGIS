@@ -181,9 +181,9 @@ Returns ``True`` if the current symbol is null.
 .. versionadded:: 3.26
 %End
 
-    bool forceShortSize() const;
+    bool fixedSizeConstraints() const;
 %Docstring
-Returns ``True`` if the symbol height is always short.
+Returns ``True`` if the widget adopts fixed size constraints.
 
 .. versionadded:: 4.0
 %End
@@ -278,9 +278,9 @@ Sets symbol to the button's default symbol, if set.
 .. versionadded:: 3.30
 %End
 
-    void setForceShortSize( bool shortSize );
+    void setFixedSizeContraints( bool fixedSizeConstraints );
 %Docstring
-Insures that the symbol height is always short.
+Sets whether the widget adopts fixed size constraints.
 
 .. versionadded:: 4.0
 %End

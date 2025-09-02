@@ -198,11 +198,11 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     bool isNull() const;
 
     /**
-     * Returns TRUE if the symbol height is always short.
+     * Returns TRUE if the widget adopts fixed size constraints.
      * 
      * \since QGIS 4.0
      */
-    bool forceShortSize() const;
+    bool fixedSizeConstraints() const;
 
   public slots:
 
@@ -276,11 +276,11 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void setToDefaultSymbol();
 
     /**
-     * Insures that the symbol height is always short.
+     * Sets whether the widget adopts fixed size constraints.
      * 
      * \since QGIS 4.0
      */
-    void setForceShortSize( bool shortSize );
+    void setFixedSizeContraints( bool fixedSizeConstraints );
 
   signals:
 
@@ -356,7 +356,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     bool mShowNull = false;
 
-    bool mForceShortSize = false;
+    bool mFixedSizeContraints = true;
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
 

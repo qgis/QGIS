@@ -39,7 +39,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     /**
      * Chart series details covering all supported series types.
      *
-     * \note this class is experimental and threfore is not considered as stable API, it may
+     * \note this class is experimental and therefore is not considered as stable API, it may
      * change in the future as more chart plot types are implemented.
      *
      * \ingroup core
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     void setPlot( QgsPlot *plot SIP_TRANSFER );
 
     /**
-     * Returns the plot used the render the chart.
+     * Returns the plot used to render the chart.
      */
     QgsPlot *plot() { return mPlot.get(); }
 

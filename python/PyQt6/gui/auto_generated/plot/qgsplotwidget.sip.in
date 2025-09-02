@@ -29,14 +29,15 @@ Constructor for QgsPlotWidget.
 
     virtual void setPlot( QgsPlot *plot ) = 0;
 %Docstring
-Sets the ``plot`` to show in the widget. Ownership is not transferred.
+Sets the widget to match the settings of the ``plot``. Ownership is not
+transferred.
 
-.. seealso:: :py:func:`plot`
+.. seealso:: :py:func:`createPlot`
 %End
 
-    virtual QgsPlot *plot() = 0;
+    virtual QgsPlot *createPlot() = 0 /Factory/;
 %Docstring
-Returns the plot defined by the current settings in the widget.
+Creates a plot defined by the current settings in the widget.
 
 .. seealso:: :py:func:`setPlot`
 %End
@@ -65,7 +66,7 @@ Constructor for QgsBarChartPlotWidget.
 %End
 
     virtual void setPlot( QgsPlot *plot );
-    virtual QgsPlot *plot();
+    virtual QgsPlot *createPlot() /Factory/;
 
     static QgsPlotWidget *create( QWidget *parent ) /Factory/;
 %Docstring
@@ -97,7 +98,7 @@ Constructor for QgsLineChartPlotWidget.
 %End
 
     virtual void setPlot( QgsPlot *plot );
-    virtual QgsPlot *plot();
+    virtual QgsPlot *createPlot() /Factory/;
 
     static QgsPlotWidget *create( QWidget *parent ) /Factory/;
 %Docstring

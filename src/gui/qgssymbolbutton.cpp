@@ -65,12 +65,7 @@ void QgsSymbolButton::updateSizeHint()
   switch ( mType )
   {
     case Qgis::SymbolType::Marker:
-      if ( mForceShortSize )
-      {
-        setMaximumWidth( 999999 );
-        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
-      }
-      else
+      if ( mFixedSizeContraints )
       {
         if ( mSymbol )
         {
@@ -84,6 +79,11 @@ void QgsSymbolButton::updateSizeHint()
           setMaximumWidth( 999999 );
           mSizeHint.setWidth( QToolButton::sizeHint().width() );
         }
+      }
+      else
+      {
+        setMaximumWidth( 999999 );
+        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
       }
       break;
 
@@ -831,16 +831,16 @@ bool QgsSymbolButton::showNull() const
   return mShowNull;
 }
 
-void QgsSymbolButton::setForceShortSize( bool shortSize )
+void QgsSymbolButton::setFixedSizeContraints( bool fixedSizeConstraints )
 {
-  mForceShortSize = shortSize;
+  mFixedSizeContraints = fixedSizeConstraints;
 
   updateSizeHint();
 }
 
-bool QgsSymbolButton::forceShortSize() const
+bool QgsSymbolButton::fixedSizeConstraints() const
 {
-  return mForceShortSize;
+  return mFixedSizeContraints;
 }
 
 bool QgsSymbolButton::isNull() const

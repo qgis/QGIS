@@ -78,7 +78,12 @@ void QgsLayoutItemChart::setPlot( QgsPlot *plot )
     {
       Qgs2DXyPlot *oldPlot2dXy = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() );
       Qgs2DXyPlot *newPlot2dXy = dynamic_cast<Qgs2DXyPlot *>( plot2d );
-      if ( oldPlot2dXy && oldPlot2dXy->xAxis().type() != newPlot2dXy->xAxis().type() )
+      if ( oldPlot2dXy && oldPlot2dXy->xAxis().type() == newPlot2dXy->xAxis().type() )
+      {
+        // this is a case in which we don't need to refresh the plot data.
+        requireRefresh = false;
+      }
+      else
       {
         requireRefresh = true;
       }
@@ -217,8 +222,11 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
     {
       mNeedsGathering = false;
       prepareGatherer();
-      QgsApplication::instance()->taskManager()->addTask( mGatherer.data() );
-      mGatherer->waitForFinished( 60000 );
+      if ( mGatherer )
+      {
+        QgsApplication::instance()->taskManager()->addTask( mGatherer.data() );
+        mGatherer->waitForFinished( 60000 );
+      }
     }
   }
 
@@ -229,21 +237,35 @@ void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsIte
 
   mPlot->setSize( size );
 
-  QgsScopedQPainterState painterState( painter );
-  painter->scale( 1 / scaleFactor, 1 / scaleFactor );
+  {
+    QgsScopedQPainterState painterState( painter );
+    painter->scale( 1 / scaleFactor, 1 / scaleFactor );
 
-  QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-  renderContext.setScaleFactor( scaleFactor );
-  renderContext.setExpressionContext( createExpressionContext() );
+    QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    renderContext.setScaleFactor( scaleFactor );
+    renderContext.setExpressionContext( createExpressionContext() );
 
-  QgsPlotRenderContext plotRenderContext;
-  mPlot->render( renderContext, plotRenderContext, mPlotData );
+    QgsPlotRenderContext plotRenderContext;
+    mPlot->render( renderContext, plotRenderContext, mPlotData );
+  }
+
+  if ( mSeriesList.isEmpty() )
+  {
+    QFont messageFont;
+    messageFont.setPointSize( 8 );
+    painter->setFont( messageFont );
+    painter->setPen( QColor( 125, 125, 125, 125 ) );
+    painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Missing chart data" ) );
+  }
 }
 
 void QgsLayoutItemChart::refresh()
 {
   QgsLayoutItem::refresh();
-  mNeedsGathering = true;
+  if ( mVectorLayer && !mSeriesList.isEmpty() )
+  {
+    mNeedsGathering = true;
+  }
 }
 
 void QgsLayoutItemChart::refreshData()
@@ -254,7 +276,10 @@ void QgsLayoutItemChart::refreshData()
 void QgsLayoutItemChart::gatherData()
 {
   prepareGatherer();
-  QgsApplication::instance()->taskManager()->addTask( mGatherer.data() );
+  if ( mGatherer )
+  {
+    QgsApplication::instance()->taskManager()->addTask( mGatherer.data() );
+  }
 
   mIsGathering = true;
   update();
@@ -285,6 +310,17 @@ void QgsLayoutItemChart::prepareGatherer()
   if ( Qgs2DXyPlot *xyPlot = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() ) )
   {
     QgsFeatureRequest request;
+    for ( QgsLayoutItemChart::SeriesDetails &series : mSeriesList )
+    {
+      if ( series.filterExpression().isEmpty() )
+      {
+        request = QgsFeatureRequest();
+        break;
+      }
+
+      request.combineFilterExpression( series.filterExpression() );
+    }
+
     if ( mSortFeatures && !mSortExpression.isEmpty() )
     {
       request.addOrderBy( mSortExpression, mSortAscending );
