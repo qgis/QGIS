@@ -52,9 +52,7 @@ if [[ "${WITH_CLAZY}" = "ON" ]]; then
   export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"
 fi
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CLANG_WARNINGS="-Wrange-loop-construct"
-fi
+CLANG_WARNINGS="-Wrange-loop-construct"
 
 CMAKE_EXTRA_ARGS=()
 
@@ -70,11 +68,9 @@ if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   )
 fi
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-    "-DUSE_ALTERNATE_LINKER=mold"
-  )
-fi
+CMAKE_EXTRA_ARGS+=(
+  "-DUSE_ALTERNATE_LINKER=mold"
+)
 
 cmake \
  -GNinja \
@@ -82,7 +78,6 @@ cmake \
  -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} \
  -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} \
  -DUSE_CCACHE=ON \
- -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
  -DWITH_DESKTOP=ON \
  -DWITH_ANALYSIS=ON \
  -DWITH_GUI=ON \

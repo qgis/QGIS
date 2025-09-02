@@ -46,8 +46,6 @@ jobs:
             distro-version: '24.10'
             qt-version: 6
             run-tests: true
-            with-qt6: ON
-            with-qt5: OFF
             with-3d: ON
             with-quick: ON
             with-clazy: ON
@@ -71,8 +69,6 @@ jobs:
             distro-version: '41'
             qt-version: 6
             run-tests: true
-            with-qt6: ON
-            with-qt5: OFF
             with-3d: ON
             with-quick: ON
             with-clazy: OFF
@@ -171,8 +167,6 @@ jobs:
                      --env-file .docker/docker-variables.env \
                      --env CCACHE_DIR=/root/.ccache \
                      --env PUSH_TO_CDASH=true \
-                     --env WITH_QT5=${{ matrix.with-qt5 }} \
-                     --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
