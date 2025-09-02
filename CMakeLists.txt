@@ -17,6 +17,8 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
+set (BUILD_WITH_QT6 TRUE CACHE BOOL "Enable Qt6 support")
+
 option (WITH_PYTHON "Determines whether Python support should be built (disabling it will in particular disable processing)" ON)
 set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings should be built")
 
@@ -534,7 +536,6 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (experimental) Qt6 support")
   if (BUILD_WITH_QT6)
     set(QT_VERSION_MAJOR 6)
     set(QT_MIN_VERSION 6.4.0)
@@ -543,6 +544,7 @@ if(WITH_CORE)
     set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
   else()
+    message(WARNING "Qt5 is no longer officially supported -- this build may be broken or buggy!")
     set(QT_VERSION_MAJOR 5)
     set(QT_MIN_VERSION 5.15.2)
     set(QT_VERSION_BASE "Qt5")
