@@ -495,15 +495,8 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
+  # for decompression of point clouds
   set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy (recommended)")
-  if (WITH_EPT OR WITH_COPC)
-    if (NOT WITH_INTERNAL_LAZPERF)
-      find_package(LazPerf) # for decompression of point clouds
-    endif()
-    if (NOT LazPerf_FOUND)
-      message(STATUS "Using embedded laz-perf")
-    endif()
-  endif()
 
   if (WITH_EPT)  # EPT provider
     find_package(ZSTD REQUIRED) # for decompression of point clouds
@@ -1235,6 +1228,18 @@ endif()
 #the test data. See CMakeLists in test dirs for more info
 #TEST_DATA_DIR is also used by QgsRenderChecker currently in core
 set (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
+
+if (WITH_EPT OR WITH_COPC)
+  if (WITH_INTERNAL_LAZPERF)
+    add_subdirectory(external/lazperf)
+    set(LazPerf_FOUND FALSE)
+  else()
+    find_package(LazPerf)
+  endif()
+  if (NOT LazPerf_FOUND)
+    message(STATUS "Using embedded laz-perf")
+  endif()
+endif()
 
 add_subdirectory(doc)
 

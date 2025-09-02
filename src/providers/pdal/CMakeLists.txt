@@ -275,9 +275,9 @@ if (LazPerf_FOUND)
   target_include_directories(provider_pdal_a PRIVATE ${LazPerf_INCLUDE_DIR})
   target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
 else()
-  target_include_directories(provider_pdal PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
-  target_include_directories(provider_pdal_a PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
-  target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
+  target_link_libraries(provider_pdal QGis::lazperf)
+  target_link_libraries(provider_pdal_a QGis::lazperf)
+  target_link_libraries(untwine QGis::lazperf)
 endif()
 
 install(TARGETS provider_pdal

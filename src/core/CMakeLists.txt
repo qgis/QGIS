@@ -2298,28 +2298,6 @@ if (WITH_EPT OR WITH_COPC)
     include_directories(SYSTEM
       ${LazPerf_INCLUDE_DIR}
     )
-  else()
-    include_directories(SYSTEM
-      ${CMAKE_SOURCE_DIR}/external/lazperf/
-    )
-
-    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
-      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
-    )
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2607,6 +2585,8 @@ endif()
 if (WITH_EPT OR WITH_COPC)
   if (LazPerf_FOUND)
     target_link_libraries(qgis_core ${LazPerf_LIBRARY})
+  else()
+    target_link_libraries(qgis_core QGis::lazperf)
   endif()
 endif()
 
