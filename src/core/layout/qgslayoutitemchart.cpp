@@ -78,7 +78,7 @@ void QgsLayoutItemChart::setPlot( QgsPlot *plot )
     {
       Qgs2DXyPlot *oldPlot2dXy = dynamic_cast<Qgs2DXyPlot *>( mPlot.get() );
       Qgs2DXyPlot *newPlot2dXy = dynamic_cast<Qgs2DXyPlot *>( plot2d );
-      if ( oldPlot2dXy && oldPlot2dXy->xAxis().type() == newPlot2dXy->xAxis().type() )
+      if ( oldPlot2dXy && newPlot2dXy && oldPlot2dXy->xAxis().type() == newPlot2dXy->xAxis().type() )
       {
         // this is a case in which we don't need to refresh the plot data.
         requireRefresh = false;

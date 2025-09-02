@@ -87,6 +87,39 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         plot = QgsBarChartPlot()
 
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
         plot.xAxis().setType(Qgis.PlotAxisType.Categorical)
 
         format = QgsTextFormat()
@@ -107,6 +140,17 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         format.setColor(QColor(0, 0, 0))
         plot.yAxis().setTextFormat(format)
         plot.yAxis().setLabelInterval(10)
+
+        # set bar series symbol
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#00BB00",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbolAt(0, series_symbol)
 
         chart_item.setPlot(plot)
 
@@ -153,6 +197,39 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         plot = QgsLineChartPlot()
 
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
         plot.xAxis().setType(Qgis.PlotAxisType.Interval)
         plot.setXMinimum(-6)
         plot.setXMaximum(6)
@@ -178,6 +255,26 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         format.setColor(QColor(0, 0, 0))
         plot.yAxis().setTextFormat(format)
         plot.yAxis().setLabelInterval(1)
+
+        # set line series symbols
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#BB0000",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbolAt(0, series_symbol)
+        series_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#330000",
+                "outline_style": "solid",
+                "outline_width": 1,
+                "width": 3,
+            }
+        )
+        plot.setMarkerSymbolAt(0, series_symbol)
 
         chart_item.setPlot(plot)
 
