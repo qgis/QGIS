@@ -89,7 +89,6 @@ jobs:
                 -B build \
                 -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
-                -D BUILD_WITH_QT6=ON \
                 -D WITH_QTWEBKIT=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \

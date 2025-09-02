@@ -350,7 +350,6 @@ ninja qgis_desktop
 
 QGIS build is tunable according to your needs. Many flags are available to activate or deactivate some functionalities, here is a subset:
 
-* `BUILD_WITH_QT6`: Enable (experimental) Qt6 support
 * `WITH_3D`: Determines whether QGIS 3D library should be built
 * `WITH_ANALYSIS`: Determines whether QGIS analysis library should be built
 * `WITH_AUTH`: Determines whether QGIS authentication methods should be built
@@ -562,7 +561,7 @@ are required for the various QGIS source formatting and preparation scripts.
 dnf install ag ccache expect ninja-build astyle python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
 ```
 
-### 3.11.4. QT6 experimental builds with Fedora Rawhide
+### 3.11.4. QT6 builds with Fedora Rawhide
 
 This requires latest QGIS master (>= January 25th 2024).
 
@@ -583,7 +582,7 @@ Installation of all needed build dependencies:
 To build,
 
 ```bash
-cmake .. -DBUILD_WITH_QT6=ON -DWITH_QTWEBKIT=OFF -DWITH_QTWEBENGINE=ON
+cmake .. -DWITH_QTWEBKIT=OFF -DWITH_QTWEBENGINE=ON
 ```
 
 ## 3.12. Building on Linux with vcpkg
@@ -607,7 +606,6 @@ cmake -S . \
       -GNinja \
       -DCMAKE_BUILD_TYPE=Debug \
       -DWITH_VCPKG=ON \
-      -DBUILD_WITH_QT6=ON \
       -DWITH_QTWEBKIT=OFF \
       -DWITH_BINDINGS=ON \
       -DVCPKG_TARGET_TRIPLET=x64-linux-dynamic-release \
@@ -820,7 +818,6 @@ Open a _Developer PowerShell for VS 2022_
 cmake -S . `
       -B build `
       -DSDK_PATH="path/to/vcpkg-export-[date]" `
-      -DBUILD_WITH_QT6=ON `
       -DWITH_QTWEBKIT=OFF `
       -DVCPKG_TARGET_TRIPLET=x64-windows-release `
       -DFLEX_EXECUTABLE="path/to/flex-executable" `
@@ -852,7 +849,6 @@ This will require some time, cpu and disk space.
 cmake -S . `
       -B build `
       -D WITH_VCPKG=ON `
-      -D BUILD_WITH_QT6=ON `
       -D WITH_QTWEBKIT=OFF `
       -D VCPKG_TARGET_TRIPLET=x64-windows-release `
       -D VCPKG_HOST_TRIPLET=x64-windows-release
@@ -1084,7 +1080,6 @@ cmake -S . \
       -G Ninja \
       -B build \
       -D WITH_VCPKG=ON \
-      -D BUILD_WITH_QT6=ON \
       -D WITH_QTWEBKIT=OFF \
       -D WITH_BINDINGS=ON \
       -D VCPKG_TARGET_TRIPLET="$TRIPLET" \

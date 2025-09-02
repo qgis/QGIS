@@ -104,8 +104,8 @@ else
     ${VOLUMES} \
     --env-file .docker/docker-variables.env \
     --env PUSH_TO_CDASH=false \
-    --env WITH_QT5=true \
-    --env BUILD_WITH_QT6=false \
+    --env WITH_QT5=false \
+    --env BUILD_WITH_QT6=true \
     --env WITH_QUICK=false \
     --env WITH_3D=false \
     --env PATCH_QT_3D=false \
