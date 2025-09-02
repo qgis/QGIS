@@ -163,7 +163,7 @@ jobs:
         uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
