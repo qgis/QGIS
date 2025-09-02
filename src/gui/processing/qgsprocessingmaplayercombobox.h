@@ -147,7 +147,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     QString mFilterExpression;
     bool mIsOverridingDefaultGeometryCheck = false;
     Qgis::InvalidGeometryCheck mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
-    long mRasterReferenceScale = 0;
+    double mRasterReferenceScale = 0;
     int mRasterDpi = 0;
     QPointer<QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;

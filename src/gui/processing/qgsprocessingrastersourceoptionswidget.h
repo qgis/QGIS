@@ -47,7 +47,7 @@ class GUI_EXPORT QgsProcessingRasterSourceOptionsWidget : public QgsPanelWidget,
      *
      * \see referenceScale()
      */
-    void setReferenceScale( long scale );
+    void setReferenceScale( double scale );
 
     /**
      * Sets the resolution of the raster source (e.g., a WMS server).
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsProcessingRasterSourceOptionsWidget : public QgsPanelWidget,
      *
      * \see setReferenceScale()
      */
-    long referenceScale() const;
+    double referenceScale() const;
 
     /**
      * Resolution of the raster source (e.g., a WMS server).

@@ -7,7 +7,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingRasterLayerDefinition.__attribute_docs__ = {'source': "Source definition. Usually a static property set to a source layer's ID or file name.", 'referenceScale': 'If set to a value > 0, sets a scale at which a raster (e.g., a WMS) should be requested or rendered.', 'dpi': 'Indicates the resolution of the raster source (e.g., a WMS server). By default 96 DPI.'}
-    QgsProcessingRasterLayerDefinition.__annotations__ = {'source': 'QgsProperty', 'referenceScale': int, 'dpi': int}
+    QgsProcessingRasterLayerDefinition.__annotations__ = {'source': 'QgsProperty', 'referenceScale': float, 'dpi': int}
     QgsProcessingRasterLayerDefinition.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

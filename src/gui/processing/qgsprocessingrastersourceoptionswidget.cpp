@@ -32,9 +32,9 @@ QgsProcessingRasterSourceOptionsWidget::QgsProcessingRasterSourceOptionsWidget( 
   connect( mDpiSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
 }
 
-void QgsProcessingRasterSourceOptionsWidget::setReferenceScale( long scale )
+void QgsProcessingRasterSourceOptionsWidget::setReferenceScale( double scale )
 {
-  mReferenceScale->setScale( static_cast<double>( scale ) );
+  mReferenceScale->setScale( scale );
 }
 
 void QgsProcessingRasterSourceOptionsWidget::setDpi( int dpi )
@@ -42,9 +42,9 @@ void QgsProcessingRasterSourceOptionsWidget::setDpi( int dpi )
   mDpiSpinBox->setValue( dpi );
 }
 
-long QgsProcessingRasterSourceOptionsWidget::referenceScale() const
+double QgsProcessingRasterSourceOptionsWidget::referenceScale() const
 {
-  return static_cast< long >( mReferenceScale->scale() );
+  return mReferenceScale->scale();
 }
 
 int QgsProcessingRasterSourceOptionsWidget::dpi() const
