@@ -548,12 +548,17 @@ void TestQgsVertexTool::testMoveVertex()
   // move vertex of linestring
 
   mouseClick( 2, 1, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::MovingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLine->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 0 );
   mouseClick( 2, 2, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), "LineString (2 2, 1 1, 1 3)" );
 
   QCOMPARE( mLayerLine->undoStack()->count(), 2 );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 1 1, 1 3)" ) );
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
