@@ -1521,6 +1521,20 @@ Qgis::VectorEditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int
   return result;
 }
 
+Qgis::VectorEditResult QgsVectorLayer::deleteVertices( QgsFeatureId featureId, const QList<int> &vertices )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !isValid() || !mEditBuffer || !mDataProvider )
+    return Qgis::VectorEditResult::InvalidLayer;
+
+  QgsVectorLayerEditUtils utils( this );
+  Qgis::VectorEditResult result = utils.deleteVertices( featureId, vertices );
+
+  if ( result == Qgis::VectorEditResult::Success )
+    updateExtents();
+  return result;
+}
 
 bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::DeleteContext *context )
 {
