@@ -552,27 +552,6 @@ bool QgsMeshLayer::isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex
   return mDatasetGroupStore->isFaceActive( index, faceIndex );
 }
 
-QgsMeshDatasetValue QgsMeshLayer::datasetValueUncached( const QgsRenderContext &renderContext, const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QgsMeshDatasetValue value;
-  const QgsTriangularMesh *mesh = triangularMesh();
-
-  if ( !mesh )
-  {
-    updateTriangularMesh( renderContext.coordinateTransform() );
-    mesh = triangularMesh();
-  }
-
-  if ( mesh && index.isValid() )
-  {
-    value = datasetValue( index, point, searchRadius );
-  }
-
-  return value;
-}
-
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

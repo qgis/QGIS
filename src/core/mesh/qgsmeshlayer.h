@@ -527,22 +527,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 
     /**
-      * Interpolates the value on the given point from given dataset, even if the layer has not been rendered previously.
-      *
-      * \note This will create the mesh if necessary before calling datasetValue().
-      * \see datasetValue
-      *
-      * \param renderContext the QgsRenderContext used by QgsRenderer
-      * \param index dataset index specifying group and dataset to extract value from
-      * \param point point to query in map coordinates
-      * \param searchRadius the radius of the search area in map unit
-      * \returns interpolated value at the point returned by datasetValue()
-      *
-      * \since QGIS 3.42
-      */
-    QgsMeshDatasetValue datasetValueUncached( const QgsRenderContext &renderContext, const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 );
-
-    /**
       * Returns the 3d values of stacked 3d mesh defined by the given point
       *
       * \note It uses previously cached and indexed triangular mesh
