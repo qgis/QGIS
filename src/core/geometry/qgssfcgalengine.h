@@ -220,7 +220,7 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by SFGCAL
      */
-    static QgsConstWkbPtr toWkb( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+    static QByteArray toWkb( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
     /**
      * Computes WKT string from \a geom.
