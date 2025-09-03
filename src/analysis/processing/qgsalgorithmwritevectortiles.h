@@ -32,6 +32,7 @@ class QgsWriteVectorTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -47,6 +48,7 @@ class QgsWriteVectorTilesXyzAlgorithm : public QgsWriteVectorTilesBaseAlgorithm
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
@@ -61,6 +63,7 @@ class QgsWriteVectorTilesMbtilesAlgorithm : public QgsWriteVectorTilesBaseAlgori
   public:
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;

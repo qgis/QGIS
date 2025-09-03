@@ -741,7 +741,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   mUnmergeCategoriesAction = new QAction( tr( "Unmerge Categories" ), this );
   connect( mUnmergeCategoriesAction, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories );
 
-  connect( mContextMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mContextMenu, &QMenu::aboutToShow, this, [this] {
     const std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
     mPasteSymbolAction->setEnabled( static_cast<bool>( tempSymbol ) );
   } );
@@ -831,7 +831,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   {
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), mStyle, mLayer, panel );
     widget->setContext( mContext );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -886,7 +886,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), mStyle, mLayer, panel );
     widget->setContext( mContext );
     widget->setPanelTitle( category.label() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -1405,7 +1405,7 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [this, panel] {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();
     } );

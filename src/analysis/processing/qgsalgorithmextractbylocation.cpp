@@ -390,6 +390,11 @@ QString QgsSelectByLocationAlgorithm::shortHelpString() const
                       "features is based on the spatial relationship between each feature and the features in an additional layer." );
 }
 
+QString QgsSelectByLocationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a selection in a vector layer based on the spatial relationship with features in an additional layer." );
+}
+
 QgsSelectByLocationAlgorithm *QgsSelectByLocationAlgorithm::createInstance() const
 {
   return new QgsSelectByLocationAlgorithm();
@@ -488,6 +493,11 @@ QString QgsExtractByLocationAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an "
                       "input layer. The criteria for adding features to the resulting layer is defined "
                       "based on the spatial relationship between each feature and the features in an additional layer." );
+}
+
+QString QgsExtractByLocationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that only contains features matching a spatial relationship with the features in an additional layer." );
 }
 
 QgsExtractByLocationAlgorithm *QgsExtractByLocationAlgorithm::createInstance() const

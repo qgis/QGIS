@@ -36,7 +36,7 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   setupUi( this );
   connect( lePkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged );
   connect( btnPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked );
-  connect( cbAddCas, &QCheckBox::stateChanged, this, [=]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [this]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
   twCas->hide();
   cbAddCas->hide();

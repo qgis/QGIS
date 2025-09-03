@@ -63,6 +63,7 @@ class QgsRasterFrequencyByEqualOperatorAlgorithm : public QgsRasterFrequencyByCo
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterFrequencyByEqualOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -77,6 +78,7 @@ class QgsRasterFrequencyByGreaterThanOperatorAlgorithm : public QgsRasterFrequen
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterFrequencyByGreaterThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -91,6 +93,7 @@ class QgsRasterFrequencyByLessThanOperatorAlgorithm : public QgsRasterFrequencyB
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterFrequencyByLessThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

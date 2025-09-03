@@ -30,8 +30,11 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_python.h
  )
 
-if (APPLE)
-  set_target_properties(qgispython PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+if (QGISPOSTFIX)
+  set_target_properties(qgispython PROPERTIES
+    RUNTIME_OUTPUT_NAME qgispython${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgispython${QGISPOSTFIX}
+  )
 endif()
 
 install(TARGETS qgispython

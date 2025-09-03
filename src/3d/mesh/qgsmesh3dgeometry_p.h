@@ -28,8 +28,7 @@
 #endif
 #include <QVector3D>
 
-#include <qgsvector3d.h>
-
+#include "qgsvector3d.h"
 #include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsrectangle.h"

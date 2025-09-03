@@ -899,7 +899,7 @@ QVariant QgsJsonUtils::jsonToVariant( const json &value )
 
 QVariant QgsJsonUtils::parseJson( const QString &jsonString )
 {
-  return parseJson( jsonString.toStdString() );
+  return jsonString.isEmpty() ? QVariant() : parseJson( jsonString.toStdString() );
 }
 
 json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches, bool useFieldFormatters )

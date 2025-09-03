@@ -69,6 +69,12 @@ QString QgsKeepNBiggestPartsAlgorithm::shortHelpString() const
                       "geometries have been removed, leaving only the n largest (in terms of area) parts." );
 }
 
+QString QgsKeepNBiggestPartsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a polygon layer in which multipart geometries have been removed, "
+                      "leaving only the n largest (in terms of area) parts." );
+}
+
 QgsKeepNBiggestPartsAlgorithm *QgsKeepNBiggestPartsAlgorithm::createInstance() const
 {
   return new QgsKeepNBiggestPartsAlgorithm();

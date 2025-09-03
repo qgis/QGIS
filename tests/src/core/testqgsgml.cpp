@@ -53,6 +53,7 @@ class TestQgsGML : public QObject
     void testStreamingParser();
     void testStreamingParserInvalidGML();
     void testPointGML2();
+    void testPointZGML2();
     void testLineStringGML2();
     void testPolygonGML2();
     void testMultiPointGML2();
@@ -66,9 +67,11 @@ class TestQgsGML : public QObject
     void testPointGML3_EPSG_4326_honour_EPSG_invert();
     void testLineStringGML3();
     void testLineStringGML3_LineStringSegment();
+    void testLineStringGML3_pos();
     void testPolygonGML3();
     void testPolygonGML3_srsDimension_on_Polygon();
     void testPolygonGML3_srsDimension_on_posList();
+    void testPolygonGML3_pos();
     void testMultiLineStringGML3();
     void testMultiPolygonGML3();
     void testPointGML3_2();
@@ -88,6 +91,8 @@ class TestQgsGML : public QObject
     void testUnknownEncoding();
     void testUnhandledEncoding();
     void testXPath();
+    void testZ();
+    void testZ_data();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -220,6 +225,34 @@ void TestQgsGML::testPointGML2()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::Point );
   QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
+  delete features[0].first;
+}
+
+void TestQgsGML::testPointZGML2()
+{
+  const QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                               "xmlns:myns='http://myns' "
+                                               "xmlns:gml='http://www.opengis.net/gml'>"
+                                               "<gml:featureMember>"
+                                               "<myns:mytypename fid='mytypename.1'>"
+                                               "<myns:mygeom>"
+                                               "<gml:Point srsName='EPSG:4326'>"
+                                               "<gml:coordinates>1,2,3</gml:coordinates>"
+                                               "</gml:Point>"
+                                               "</myns:mygeom>"
+                                               "</myns:mytypename>"
+                                               "</gml:featureMember>"
+                                               "</myns:FeatureCollection>" ),
+                                   true ),
+            true );
+  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::PointZ );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::PointZ );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 1, 2, 3 ) );
   delete features[0].first;
 }
 
@@ -655,6 +688,35 @@ void TestQgsGML::testLineStringGML3_LineStringSegment()
   delete features[0].first;
 }
 
+void TestQgsGML::testLineStringGML3_pos()
+{
+  const QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                               "xmlns:myns='http://myns' "
+                                               "xmlns:gml='http://www.opengis.net/gml'>"
+                                               "<gml:featureMember>"
+                                               "<myns:mytypename fid='mytypename.1'>"
+                                               "<myns:mygeom>"
+                                               "<gml:Curve srsName='EPSG:27700'><gml:segments><gml:LineStringSegment><gml:pos>10 20</gml:pos><gml:pos>30 40</gml:pos></gml:LineStringSegment></gml:segments></gml:Curve>"
+                                               "</myns:mygeom>"
+                                               "</myns:mytypename>"
+                                               "</gml:featureMember>"
+                                               "</myns:FeatureCollection>" ),
+                                   true ),
+            true );
+  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::LineString );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::LineString );
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
+  QCOMPARE( line.size(), 2 );
+  QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
+  delete features[0].first;
+}
+
 void TestQgsGML::testPolygonGML3()
 {
   const QgsFields fields;
@@ -718,11 +780,11 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
                                                "</myns:FeatureCollection>" ),
                                    true ),
             true );
-  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Polygon );
+  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::PolygonZ );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
-  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::Polygon );
+  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::PolygonZ );
   QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
@@ -752,11 +814,49 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_posList()
                                                "</myns:FeatureCollection>" ),
                                    true ),
             true );
-  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::Polygon );
+  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::PolygonZ );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
-  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::Polygon );
+  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::PolygonZ );
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
+  QCOMPARE( poly.size(), 1 );
+  QCOMPARE( poly[0].size(), 5 );
+  delete features[0].first;
+}
+
+void TestQgsGML::testPolygonGML3_pos()
+{
+  const QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                               "xmlns:myns='http://myns' "
+                                               "xmlns:gml='http://www.opengis.net/gml'>"
+                                               "<gml:featureMember>"
+                                               "<myns:mytypename fid='mytypename.1'>"
+                                               "<myns:mygeom>"
+                                               "<gml:Polygon srsName='EPSG:27700'>"
+                                               "<gml:exterior>"
+                                               "<gml:LinearRing>"
+                                               "<gml:pos srsDimension='3'>0 0 -100 </gml:pos>"
+                                               "<gml:pos srsDimension='3'>0 10 -100</gml:pos>"
+                                               "<gml:pos srsDimension='3'>10 10 -100</gml:pos>"
+                                               "<gml:pos srsDimension='3'>10 0 -100</gml:pos>"
+                                               "<gml:pos srsDimension='3'>0 0 -100</gml:pos>"
+                                               "</gml:LinearRing>"
+                                               "</gml:exterior>"
+                                               "</gml:Polygon>"
+                                               "</myns:mygeom>"
+                                               "</myns:mytypename>"
+                                               "</gml:featureMember>"
+                                               "</myns:FeatureCollection>" ),
+                                   true ),
+            true );
+  QCOMPARE( gmlParser.wkbType(), Qgis::WkbType::PolygonZ );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), Qgis::WkbType::PolygonZ );
   QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
@@ -1533,6 +1633,91 @@ void TestQgsGML::testXPath()
   QCOMPARE( f.attribute( QStringLiteral( "complex" ) ).toString(), QStringLiteral( "{\"@foo\":\"bar\",\"myns:l1\":{\"c\":{\"k1\":1234567890123,\"k2\":12,\"k3\":\"01\",\"k4\":1.25,\"k5\":\"12345678901234567890123456789\"},\"myns:a\":\"x\",\"myns:b\":{\"@k\":\"v\",\"_text\":\"y\"},\"myns:d\":[{\"_text\":\"a\",\"i\":\"b\"},{\"_text\":\"b\",\"i\":\"a\"},{\"_text\":[\"a\",\"c\"],\"i\":\"b\"},\"x\"]}}" ) );
   QCOMPARE( f.attribute( QStringLiteral( "complex2" ) ).toString(), QStringLiteral( "{}" ) );
   QCOMPARE( f.attribute( QStringLiteral( "complex_repeated" ) ).toString(), QStringLiteral( "[\"foo\",\"bar\"]" ) );
+}
+
+void TestQgsGML::testZ_data()
+{
+  QTest::addColumn<QString>( "xml" );
+  QTest::addColumn<int>( "expectedWkbType" );
+  QTest::addColumn<QString>( "expectedWkt" );
+
+  QTest::newRow( "point with z gml 2" ) << QStringLiteral( R"gml(<gml:Point srsName="EPSG:4326"><gml:coordinates>0,1,2</gml:coordinates></gml:Point>)gml" )
+                                        << static_cast<int>( Qgis::WkbType::PointZ )
+                                        << QStringLiteral( "POINT Z (0 1 2)" );
+
+  QTest::newRow( "point with z gml 3" ) << QStringLiteral( R"gml(<gml:Point srsName="EPSG:4326"><gml:pos srsDimension="3">0 1 2</gml:pos></gml:Point>)gml" )
+                                        << static_cast<int>( Qgis::WkbType::PointZ )
+                                        << QStringLiteral( "POINT Z (0 1 2)" );
+
+  // Note: this is not supported "point with z gml 3 no srsDimension" <gml:Point srsName="EPSG:4326"><gml:pos>0 1 2</gml:pos></gml:Point>
+
+  QTest::newRow( "linestring with z gml 2" ) << QStringLiteral( R"gml(<gml:LineString srsName="EPSG:4326"><gml:coordinates>0,1,2 3,4,5</gml:coordinates></gml:LineString>)gml" )
+                                             << static_cast<int>( Qgis::WkbType::LineStringZ )
+                                             << QStringLiteral( "LINESTRING Z (0 1 2, 3 4 5)" );
+
+  QTest::newRow( "linestring with z gml 3" ) << QStringLiteral( R"gml(<gml:Curve srsName="EPSG:4326"><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">0 1 2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve>)gml" )
+                                             << static_cast<int>( Qgis::WkbType::LineStringZ )
+                                             << QStringLiteral( "LINESTRING Z (0 1 2, 3 4 5)" );
+
+  QTest::newRow( "polygon with z gml 2" ) << QStringLiteral( R"gml(<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,1,2 3,4,5 6,7,8 0,1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>)gml" )
+                                          << static_cast<int>( Qgis::WkbType::PolygonZ )
+                                          << QStringLiteral( "POLYGON Z ((0 1 2, 3 4 5, 6 7 8, 0 1 2))" );
+
+  QTest::newRow( "polygon with z gml 3" ) << QStringLiteral( R"gml(<gml:Polygon srsName="EPSG:4326"><gml:exterior><gml:LinearRing><gml:posList srsDimension="3">0 1 2 3 4 5 6 7 8 0 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>)gml" )
+                                          << static_cast<int>( Qgis::WkbType::PolygonZ )
+                                          << QStringLiteral( "POLYGON Z ((0 1 2, 3 4 5, 6 7 8, 0 1 2))" );
+
+  // Multi-geometries
+  QTest::newRow( "multipoint with z gml 2" ) << QStringLiteral( R"gml(<gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:coordinates>0,1,2</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:coordinates>3,4,5</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>)gml" )
+                                             << static_cast<int>( Qgis::WkbType::MultiPointZ )
+                                             << QStringLiteral( "MULTIPOINT Z ((0 1 2),(3 4 5))" );
+
+  QTest::newRow( "multipoint with z gml 3" ) << QStringLiteral( R"gml(<gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point><gml:pos srsDimension="3">0 1 2</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos srsDimension="3">3 4 5</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>)gml" )
+                                             << static_cast<int>( Qgis::WkbType::MultiPointZ )
+                                             << QStringLiteral( "MULTIPOINT Z ((0 1 2),(3 4 5))" );
+
+  QTest::newRow( "multilinestring with z gml 2" ) << QStringLiteral( R"gml(<gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>0,1,2 3,4,5</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:coordinates>6,7,8 9,10,11</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>)gml" )
+                                                  << static_cast<int>( Qgis::WkbType::MultiLineStringZ )
+                                                  << QStringLiteral( "MULTILINESTRING Z ((0 1 2, 3 4 5),(6 7 8, 9 10 11))" );
+
+  QTest::newRow( "multilinestring with z gml 3" ) << QStringLiteral( R"gml(<gml:MultiCurve srsName="EPSG:4326"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">0 1 2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension="3">6 7 8 9 10 11</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>)gml" )
+                                                  << static_cast<int>( Qgis::WkbType::MultiLineStringZ )
+                                                  << QStringLiteral( "MULTILINESTRING Z ((0 1 2, 3 4 5),(6 7 8, 9 10 11))" );
+
+  QTest::newRow( "multipolygon with z gml 2" ) << QStringLiteral( R"gml(<gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,1,2 3,4,5 6,7,8 0,1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>9,10,11 12,13,14 15,16,17 9,10,11</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>)gml" )
+                                               << static_cast<int>( Qgis::WkbType::MultiPolygonZ )
+                                               << QStringLiteral( "MULTIPOLYGON Z (((0 1 2, 3 4 5, 6 7 8, 0 1 2)),((9 10 11, 12 13 14, 15 16 17, 9 10 11)))" );
+
+  QTest::newRow( "multipolygon with z gml 3" ) << QStringLiteral( R"gml(<gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,1,2 3,4,5 6,7,8 0,1,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>9,10,11 12,13,14 15,16,17 9,10,11</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon>)gml" )
+                                               << static_cast<int>( Qgis::WkbType::MultiPolygonZ )
+                                               << QStringLiteral( "MULTIPOLYGON Z (((0 1 2, 3 4 5, 6 7 8, 0 1 2)),((9 10 11, 12 13 14, 15 16 17, 9 10 11)))" );
+}
+
+void TestQgsGML::testZ()
+{
+  QFETCH( QString, xml );
+  QFETCH( int, expectedWkbType );
+  QFETCH( QString, expectedWkt );
+
+  const QString wrappedXml = QStringLiteral( R"gml(
+<myns:FeatureCollection xmlns:myns="http://myns" xmlns:gml="http://www.opengis.net/gml">
+  <gml:featureMember>
+    <myns:mytypename fid="mytypename.1">
+      <myns:mygeom>%1</myns:mygeom>
+    </myns:mytypename>
+  </gml:featureMember>
+</myns:FeatureCollection>)gml" )
+                               .arg( xml );
+
+  const QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QString::fromUtf8( QByteArray( "mytypename" ) ), QString::fromUtf8( QByteArray( "mygeom" ) ), fields );
+  QCOMPARE( gmlParser.processData( wrappedXml.toUtf8(), true ), true );
+  QCOMPARE( gmlParser.wkbType(), static_cast<Qgis::WkbType>( expectedWkbType ) );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), static_cast<Qgis::WkbType>( expectedWkbType ) );
+  QCOMPARE( features[0].first->geometry().asWkt().toUpper(), expectedWkt );
 }
 
 QGSTEST_MAIN( TestQgsGML )

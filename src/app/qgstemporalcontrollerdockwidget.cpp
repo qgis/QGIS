@@ -74,7 +74,7 @@ bool QgsTemporalControllerDockWidget::eventFilter( QObject *object, QEvent *even
 void QgsTemporalControllerDockWidget::exportAnimation()
 {
   QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas(), QgisApp::instance()->activeDecorations() );
-  connect( dlg, &QgsAnimationExportDialog::startExport, this, [=] {
+  connect( dlg, &QgsAnimationExportDialog::startExport, this, [this, dlg] {
     QgsMapSettings s = QgisApp::instance()->mapCanvas()->mapSettings();
     dlg->applyMapSettings( s );
 

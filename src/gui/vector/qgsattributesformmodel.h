@@ -27,6 +27,7 @@
 
 #include <QAbstractItemModel>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 
 /**
  * \brief Describes editor data contained in a QgsAttributesFormModel.
@@ -626,6 +627,17 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     QVector<int> rootToLeafPath( QgsAttributesFormItem *item ) const;
 
+
+    /**
+     * Emits dataChanged signal for all parent items in a model.
+     *
+     * In practice, this lets views know that the whole model has changed.
+     *
+     * \param parent  Model index representing the parent item.
+     * \param roles   List of roles that have changed in the model.
+     */
+    void emitDataChangedRecursively( const QModelIndex &parent = QModelIndex(), const QVector<int> &roles = QVector<int>() );
+
     std::unique_ptr< QgsAttributesFormItem > mRootItem;
     QgsVectorLayer *mLayer;
     QgsProject *mProject;
@@ -805,6 +817,47 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      */
     QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
 };
+
+
+/**
+ * \brief Proxy model to filter items in the tree views of the drag and drop designer.
+ *
+ * \warning Not part of stable API and may change in future QGIS releases.
+ * \ingroup gui
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsAttributesFormProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsAttributesFormProxyModel, with the given \a parent.
+     */
+    QgsAttributesFormProxyModel( QObject *parent = nullptr );
+
+    /**
+     * Sets the source \a model for the proxy model.
+     */
+    void setAttributesFormSourceModel( QgsAttributesFormModel *model );
+
+    /**
+     * Returns the text used to filter source model items.
+     */
+    const QString filterText() const;
+
+  public slots:
+    //! Sets the filter text
+    void setFilterText( const QString &filterText = QString() );
+
+  protected:
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+  private:
+    QgsAttributesFormModel *mModel = nullptr;
+    QString mFilterText;
+};
+
 
 Q_DECLARE_METATYPE( QgsAttributesFormData::RelationEditorConfiguration )
 Q_DECLARE_METATYPE( QgsAttributesFormData::FieldConfig )

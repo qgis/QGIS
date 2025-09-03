@@ -136,10 +136,10 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   rebuild();
 
   if ( mRecentLog )
-    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [=] { repopulateRecentAlgorithms(); } );
+    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [this] { repopulateRecentAlgorithms(); } );
 
   if ( mFavoriteManager )
-    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [=] { repopulateFavoriteAlgorithms(); } );
+    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [this] { repopulateFavoriteAlgorithms(); } );
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::rebuild );
@@ -824,8 +824,8 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   setFilterCaseSensitivity( Qt::CaseInsensitive );
   sort( 0 );
 
-  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [=] { invalidateFilter(); } );
-  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [=] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [this] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [this] { invalidateFilter(); } );
 }
 
 QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()

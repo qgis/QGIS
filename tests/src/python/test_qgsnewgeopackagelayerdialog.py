@@ -68,7 +68,7 @@ class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
         dialog = QgsNewGeoPackageLayerDialog()
         dialog.setProperty("hideDialogs", True)
 
-        mDatabase = dialog.findChild(QgsFileWidget, "mDatabase")
+        mFileName = dialog.findChild(QgsFileWidget, "mFileName")
         buttonBox = dialog.findChild(QDialogButtonBox, "buttonBox")
         ok_button = buttonBox.button(QDialogButtonBox.StandardButton.Ok)
         mTableNameEdit = dialog.findChild(QLineEdit, "mTableNameEdit")
@@ -91,7 +91,7 @@ class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
         self.assertFalse(ok_button.isEnabled())
 
         dbname = os.path.join(self.basetestpath, "test.gpkg")
-        mDatabase.setFilePath(dbname)
+        mFileName.setFilePath(dbname)
         self.assertEqual(mTableNameEdit.text(), "test")
         self.assertEqual(mLayerIdentifierEdit.text(), "test")
         self.assertTrue(ok_button.isEnabled())
@@ -253,7 +253,7 @@ class TestPyQgsNewGeoPackageLayerDialog(QgisTestCase):
         self.assertEqual(description, "my_description")
 
         # Try invalid path
-        mDatabase.setFilePath("/this/is/invalid/test.gpkg")
+        mFileName.setFilePath("/this/is/invalid/test.gpkg")
         self.accepted = False
         QTest.mouseClick(ok_button, Qt.MouseButton.LeftButton)
         self.assertFalse(self.accepted)

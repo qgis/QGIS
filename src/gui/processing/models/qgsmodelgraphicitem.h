@@ -169,6 +169,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
     /**
      * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets 
      * or QgsModelDesignerSocketGraphicItem::mOutSockets array
@@ -177,26 +178,28 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 
     /**
      * Returns on which edge this socket is:
-     *  * Qt::Edge::TopEdge for input socket
-     *  * Qt::Edge::BottomEdge for output socket
+     *
+     * - Qt::Edge::TopEdge for input socket
+     * - Qt::Edge::BottomEdge for output socket
      */
     Qt::Edge edge() const { return mEdge; };
 
     /**
-     * Returns whether the socket is an input socket or not
+     * Returns whether the socket is an input socket or not.
      * 
      * Convenient function around mEdge member
      */
     bool isInput() const { return mEdge == Qt::TopEdge; };
 
-    /** Return the component associated to the socket */
+    /**
+     * Return the component associated to the socket.
+     */
     QgsProcessingModelComponent *component() { return mComponent; };
 
-    /** Return the parent graphic item associated to the socket */
+    /**
+     * Return the parent graphic item associated to the socket.
+     */
     QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
-
-  signals:
-
 
   private:
     QgsModelComponentGraphicItem *mComponentItem = nullptr;

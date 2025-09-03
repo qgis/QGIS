@@ -32,6 +32,8 @@ Creates a new QgsColorEffect effect from a properties string map.
 
     QgsColorEffect();
 
+    virtual Qgis::PaintEffectFlags flags() const;
+
     virtual QString type() const;
     virtual QVariantMap properties() const;
 

@@ -79,7 +79,7 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   leNameList->hideColumn( QgisCrsIdColumn );
 
   connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionOptionsWidget::updateListFromCurrentItem );
-  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [=] {
+  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [this] {
     if ( !mBlockUpdates )
       updateListFromCurrentItem();
   } );

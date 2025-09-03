@@ -198,7 +198,7 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   connect( mActionPasswordHelperEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperEnableTriggered );
   connect( mActionPasswordHelperLoggingEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperLoggingEnableTriggered );
 
-  connect( mActionClearAccessCacheNow, &QAction::triggered, this, [=] {
+  connect( mActionClearAccessCacheNow, &QAction::triggered, this, [this] {
     QgsNetworkAccessManager::instance()->clearAccessCache();
     messageBar()->clearWidgets();
     messageBar()->pushSuccess( tr( "Auth cache cleared" ), tr( "Network authentication cache has been cleared" ) );

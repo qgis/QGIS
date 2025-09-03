@@ -25,8 +25,8 @@
  * \class QgsAlignmentComboBox
  * \brief A combo box which allows choice of alignment settings (e.g. left, right, ...).
  *
- * Currently only horizontal alignments are supported. Available alignment choices
- * can be manually specified by calling setAvailableAlignments(), which is useful
+ * Available alignment choices can be manually specified by calling
+ * setAvailableAlignments(), which is useful
  * when only a subset of Qt's alignment options should be exposed.
  *
  * \since QGIS 3.10

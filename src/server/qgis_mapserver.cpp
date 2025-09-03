@@ -151,7 +151,7 @@ class TcpServerWorker : public QObject
         mIsListening = true;
 
         // Incoming connection handler
-        QTcpServer::connect( &mTcpServer, &QTcpServer::newConnection, this, [=] {
+        QTcpServer::connect( &mTcpServer, &QTcpServer::newConnection, this, [this, ipAddress, port] {
           QTcpSocket *clientConnection = mTcpServer.nextPendingConnection();
 
           mConnectionCounter++;
@@ -164,7 +164,7 @@ class TcpServerWorker : public QObject
           QObject *context { new QObject };
 
           // Deletes the connection later
-          auto connectionDeleter = [=]() {
+          auto connectionDeleter = [this, clientConnection, incomingData]() {
             clientConnection->deleteLater();
             mConnectionCounter--;
             delete incomingData;
@@ -174,14 +174,14 @@ class TcpServerWorker : public QObject
           QObject::connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
 
 #if 0 // Debugging output
-          clientConnection->connect( clientConnection, &QAbstractSocket::errorOccurred, clientConnection, [ = ]( QAbstractSocket::SocketError socketError )
+          clientConnection->connect( clientConnection, &QAbstractSocket::errorOccurred, clientConnection, []( QAbstractSocket::SocketError socketError )
           {
             qDebug() << "Socket error #" << socketError;
           }, Qt::QueuedConnection );
 #endif
 
           // Incoming connection parser
-          QObject::connect( clientConnection, &QIODevice::readyRead, context, [=] {
+          QObject::connect( clientConnection, &QIODevice::readyRead, context, [clientConnection, incomingData, context, ipAddress, port] {
             // Read all incoming data
             while ( clientConnection->bytesAvailable() > 0 )
             {
@@ -456,7 +456,7 @@ class QueueMonitorThread : public QThread
       while ( mIsRunning )
       {
         std::unique_lock<std::mutex> requestLocker( REQUEST_QUEUE_MUTEX );
-        REQUEST_WAIT_CONDITION.wait( requestLocker, [=] { return !mIsRunning || !REQUEST_QUEUE.isEmpty(); } );
+        REQUEST_WAIT_CONDITION.wait( requestLocker, [this] { return !mIsRunning || !REQUEST_QUEUE.isEmpty(); } );
         if ( mIsRunning )
         {
           // Lock if server is running

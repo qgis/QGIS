@@ -82,6 +82,11 @@ QString QgsTransformAlgorithm::shortHelpString() const
                       "Attributes are not modified by this algorithm." );
 }
 
+QString QgsTransformAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer with geometries transformed to a new CRS." );
+}
+
 QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
 {
   return new QgsTransformAlgorithm();

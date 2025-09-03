@@ -79,6 +79,11 @@ class VectorLayerHistogram(QgisAlgorithm):
     def displayName(self):
         return self.tr("Vector layer histogram")
 
+    def shortDescription(self):
+        return self.tr(
+            "Generates a histogram with the values of the attribute of a vector layer."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

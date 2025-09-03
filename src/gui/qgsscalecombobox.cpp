@@ -20,6 +20,7 @@
 #include "qgsscalecombobox.h"
 #include "moc_qgsscalecombobox.cpp"
 #include "qgssettingsentryimpl.h"
+#include "qgsmathutils.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
@@ -140,7 +141,7 @@ void QgsScaleComboBox::showPopup()
 
 QString QgsScaleComboBox::scaleString() const
 {
-  return toString( mScale );
+  return toString( mScale, mMode );
 }
 
 bool QgsScaleComboBox::setScaleString( const QString &string )
@@ -171,7 +172,7 @@ bool QgsScaleComboBox::setScaleString( const QString &string )
   else
   {
     mScale = newScale;
-    setEditText( toString( mScale ) );
+    setEditText( toString( mScale, mMode ) );
     clearFocus();
     if ( mScale != oldScale )
     {
@@ -193,7 +194,7 @@ bool QgsScaleComboBox::isNull() const
 
 void QgsScaleComboBox::setScale( double scale )
 {
-  setScaleString( toString( scale ) );
+  setScaleString( toString( scale, mMode ) );
 }
 
 void QgsScaleComboBox::fixupScale()
@@ -213,11 +214,21 @@ void QgsScaleComboBox::fixupScale()
   // Valid string representation
   if ( ok )
   {
-    // if a user types scale = 2345, we transform to 1:2345
-    if ( userSetScale && newScale < 1.0 && !qgsDoubleNear( newScale, 0.0 ) )
+    switch ( mMode )
     {
-      newScale = 1 / newScale;
+      case RatioMode::ForceUnitNumerator:
+      {
+        // if a user types scale = 2345, we transform to 1:2345
+        if ( userSetScale && newScale < 1.0 && !qgsDoubleNear( newScale, 0.0 ) )
+        {
+          newScale = 1 / newScale;
+        }
+        break;
+      }
+      case RatioMode::Flexible:
+        break;
     }
+
     setScale( newScale );
   }
   else
@@ -226,7 +237,22 @@ void QgsScaleComboBox::fixupScale()
   }
 }
 
-QString QgsScaleComboBox::toString( double scale )
+QgsScaleComboBox::RatioMode QgsScaleComboBox::ratioMode() const
+{
+  return mMode;
+}
+
+void QgsScaleComboBox::setRatioMode( QgsScaleComboBox::RatioMode mode )
+{
+  if ( mode == mMode )
+    return;
+
+  mMode = mode;
+  setScale( mScale );
+  emit ratioModeChanged( mMode );
+}
+
+QString QgsScaleComboBox::toString( double scale, RatioMode mode )
 {
   if ( std::isnan( scale ) )
   {
@@ -236,14 +262,31 @@ QString QgsScaleComboBox::toString( double scale )
   {
     return QStringLiteral( "0" );
   }
-  else if ( scale <= 1 )
+
+  switch ( mode )
   {
-    return QStringLiteral( "%1:1" ).arg( QLocale().toString( static_cast<int>( std::round( 1.0 / scale ) ) ) );
+    case RatioMode::ForceUnitNumerator:
+      if ( scale <= 1 )
+      {
+        return QStringLiteral( "%1:1" ).arg( QLocale().toString( static_cast<int>( std::round( 1.0 / scale ) ) ) );
+      }
+      else
+      {
+        return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast<float>( std::round( scale ) ), 'f', 0 ) );
+      }
+
+    case RatioMode::Flexible:
+    {
+      qlonglong numerator = 0;
+      qlonglong denominator = 0;
+      QgsMathUtils::doubleToRational( 1.0 / scale, numerator, denominator, 0.01 );
+      return QStringLiteral( "%1:%2" ).arg(
+        QLocale().toString( numerator ),
+        QLocale().toString( denominator )
+      );
+    }
   }
-  else
-  {
-    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast<float>( std::round( scale ) ), 'f', 0 ) );
-  }
+  return QString();
 }
 
 double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )

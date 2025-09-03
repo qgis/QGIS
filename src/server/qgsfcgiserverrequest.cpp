@@ -98,9 +98,9 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
     }
   }
 
-  if ( method == PostMethod || method == PutMethod )
+  if ( method == PostMethod || method == PutMethod || method == PatchMethod )
   {
-    // Get post/put data
+    // Get post/put/patch data
     readData();
   }
 
@@ -218,7 +218,7 @@ void QgsFcgiServerRequest::readData()
   }
   else
   {
-    QgsMessageLog::logMessage( "fcgi: No POST data" );
+    QgsMessageLog::logMessage( "fcgi: No POST/PUT/PATCH data" );
   }
 }
 

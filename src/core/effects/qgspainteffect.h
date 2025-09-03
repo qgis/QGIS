@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>
@@ -123,6 +124,13 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns clone of paint effect
      */
     virtual QgsPaintEffect *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns flags which specify how the paint effect behaves.
+     *
+     * \since QGIS 3.44
+     */
+    virtual Qgis::PaintEffectFlags flags() const;
 
     /**
      * Returns the properties describing the paint effect encoded in a
@@ -334,6 +342,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      */
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
+    Qgis::PaintEffectFlags flags() const override;
     QString type() const override { return QStringLiteral( "drawSource" ); }
     QgsDrawSourceEffect *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;

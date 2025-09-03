@@ -61,7 +61,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   mTableWidget->setFocus();
   mTableWidget->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() ) );
 
-  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [=] {
+  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [this] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
@@ -86,17 +86,17 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [=] {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [this] {
     mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
   } );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [=] {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [this] {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
   } );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::rowHeightChanged, mTableWidget, &QgsTableEditorWidget::setSelectionRowHeight );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::columnWidthChanged, mTableWidget, &QgsTableEditorWidget::setSelectionColumnWidth );
 
-  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [=] {
+  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [this] {
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
@@ -115,7 +115,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
   mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [=]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
+  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [this]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
 
   connect( mActionImportFromClipboard, &QAction::triggered, this, &QgsTableEditorDialog::setTableContentsFromClipboard );
   connect( mActionClose, &QAction::triggered, this, &QMainWindow::close );
@@ -131,7 +131,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandColumnSelection );
   connect( mActionSelectAll, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectAll );
   connect( mActionClear, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::clearSelectedCells );
-  connect( mActionIncludeHeader, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mActionIncludeHeader, &QAction::toggled, this, [this]( bool checked ) {
     mTableWidget->setIncludeTableHeader( checked );
     emit includeHeaderChanged( checked );
   } );

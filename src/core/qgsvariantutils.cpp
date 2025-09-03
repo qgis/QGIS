@@ -15,6 +15,7 @@
 
 #include "qgsvariantutils.h"
 #include "qgslogger.h"
+#include "qgsunsetattributevalue.h"
 
 #include <QDate>
 #include <QTime>
@@ -615,6 +616,11 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
   }
   // NOLINTEND(bugprone-branch-clone)
   return QVariant::Type::UserType;
+}
+
+bool QgsVariantUtils::isUnsetAttributeValue( const QVariant &variant )
+{
+  return variant.userType() == qMetaTypeId< QgsUnsetAttributeValue >();
 }
 
 QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )

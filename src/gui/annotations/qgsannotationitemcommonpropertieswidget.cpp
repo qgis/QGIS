@@ -25,21 +25,21 @@ QgsAnnotationItemCommonPropertiesWidget::QgsAnnotationItemCommonPropertiesWidget
 {
   setupUi( this );
 
-  connect( mSpinZIndex, qOverload<int>( &QSpinBox::valueChanged ), this, [=] {
+  connect( mSpinZIndex, qOverload<int>( &QSpinBox::valueChanged ), this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
   mSpinZIndex->setClearValue( 0 );
 
-  connect( mReferenceScaleGroup, &QGroupBox::toggled, this, [=] {
+  connect( mReferenceScaleGroup, &QGroupBox::toggled, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mReferenceScaleWidget, &QgsScaleWidget::scaleChanged, this, [=] {
+  connect( mReferenceScaleWidget, &QgsScaleWidget::scaleChanged, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mCalloutCheckBox, &QCheckBox::toggled, this, [=] {
+  connect( mCalloutCheckBox, &QCheckBox::toggled, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );

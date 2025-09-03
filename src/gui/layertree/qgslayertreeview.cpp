@@ -91,16 +91,24 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   if ( !treeModel )
     return;
 
+  auto proxyModel = new QgsLayerTreeProxyModel( treeModel, this );
+  proxyModel->setShowPrivateLayers( mShowPrivateLayers );
+  proxyModel->setHideValidLayers( mHideValidLayers );
+
+  setModel( treeModel, proxyModel );
+}
+
+void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxyModel *proxyModel )
+{
   if ( mMessageBar )
-    connect( treeModel, &QgsLayerTreeModel::messageEmitted, this, [=]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
+    connect( treeModel, &QgsLayerTreeModel::messageEmitted, this, [this]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
       Q_UNUSED( duration )
       mMessageBar->pushMessage( message, level );
     } );
 
   treeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
 
-  mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
-
+  mProxyModel = proxyModel;
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
@@ -108,8 +116,6 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   new ModelTest( mProxyModel, this );
 #endif
 
-  mProxyModel->setShowPrivateLayers( mShowPrivateLayers );
-  mProxyModel->setHideValidLayers( mHideValidLayers );
   QTreeView::setModel( mProxyModel );
 
   connect( treeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
@@ -542,7 +548,7 @@ void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewInd
   if ( !mIndicators[node].contains( indicator ) )
   {
     mIndicators[node].append( indicator );
-    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [=] {
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [this] {
       update();
       viewport()->repaint();
     } );
@@ -644,7 +650,7 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
     return;
 
   if ( mMessageBar )
-    connect( layerModel, &QgsLayerTreeModel::messageEmitted, this, [=]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
+    connect( layerModel, &QgsLayerTreeModel::messageEmitted, this, [this]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
       Q_UNUSED( duration )
       mMessageBar->pushMessage( message, level );
     } );

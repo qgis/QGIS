@@ -70,6 +70,11 @@ QString QgsTessellateAlgorithm::shortHelpString() const
          + QObject::tr( "The output layer consists of multipolygon geometries for each input feature, with each multipolygon consisting of multiple triangle component polygons." );
 }
 
+QString QgsTessellateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Tessellates a polygon geometry layer, dividing the geometries into triangular components." );
+}
+
 QList<int> QgsTessellateAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );

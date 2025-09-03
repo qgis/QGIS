@@ -164,7 +164,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
             mContextOptionsWidget->setLogLevel( mLogLevel );
             panel->openPanel( mContextOptionsWidget );
 
-            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [=] {
+            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [this] {
               mOverrideDefaultContextSettings = true;
               mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
               mDistanceUnits = mContextOptionsWidget->distanceUnit();
@@ -289,7 +289,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   if ( mAdvancedMenu )
   {
-    connect( mAdvancedMenu, &QMenu::aboutToShow, this, [=] {
+    connect( mAdvancedMenu, &QMenu::aboutToShow, this, [this] {
       mCopyAsQgisProcessCommand->setEnabled( algorithm() && !( algorithm()->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool ) );
       mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
     } );

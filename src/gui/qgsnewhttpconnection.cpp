@@ -149,21 +149,21 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mWmsOptionsGroupBox->setTitle( tr( "WCS Options" ) );
 
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
-      mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+      mWmsOptionsGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
 
       sbFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( sbFeatureCount );
+      mWmsOptionsGroupBox->layout()->removeWidget( sbFeatureCount );
       lblFeatureCount->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblFeatureCount );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblFeatureCount );
 
       cmbDpiMode->setVisible( false );
-      mGroupBox->layout()->removeWidget( cmbDpiMode );
+      mWmsOptionsGroupBox->layout()->removeWidget( cmbDpiMode );
       lblDpiMode->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblDpiMode );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblDpiMode );
       cmbTilePixelRatio->setVisible( false );
-      mGroupBox->layout()->removeWidget( cmbTilePixelRatio );
+      mWmsOptionsGroupBox->layout()->removeWidget( cmbTilePixelRatio );
       lblTilePixelRatio->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblTilePixelRatio );
+      mWmsOptionsGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
 
@@ -178,10 +178,6 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mAuthGroupBox->hide();
     mGroupBox->layout()->removeWidget( mAuthGroupBox );
   }
-  // Adjust height
-  const int w = width();
-  adjustSize();
-  resize( w, height() );
 
   connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
   connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
@@ -197,6 +193,7 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
 {
   // For now 2019-06-06, leave paging checkable for some WFS version 1.1 servers with support
   const bool pagingOptionsEnabled = ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 );
+  lblFeaturePaging->setEnabled( pagingOptionsEnabled );
   cmbFeaturePaging->setEnabled( pagingOptionsEnabled );
   lblPageSize->setEnabled( pagingOptionsEnabled );
   txtPageSize->setEnabled( pagingOptionsEnabled );
@@ -320,6 +317,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxWfsIgnoreAxisOrientation->setChecked( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ) );
   cbxWfsInvertAxisOrientation->setChecked( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ) );
   cbxWfsUseGml2EncodingForTransactions->setChecked( QgsOwsConnection::settingsPreferCoordinatesForWfsT11->value( detailsParameters ) );
+  cbxWfsForceInitialGetFeature->setChecked( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ) );
 
   cbxWmsIgnoreAxisOrientation->setChecked( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ) );
   cbxWmsInvertAxisOrientation->setChecked( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ) );
@@ -366,6 +364,11 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   mComboHttpMethod->setCurrentIndex( mComboHttpMethod->findData( QVariant::fromValue( QgsOwsConnection::settingsPreferredHttpMethod->value( detailsParameters ) ) ) );
   txtPageSize->setText( QgsOwsConnection::settingsPagesize->value( detailsParameters ) );
+}
+
+void QgsNewHttpConnection::showEvent( QShowEvent *event )
+{
+  QDialog::showEvent( event );
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
@@ -421,6 +424,7 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( cbxWfsIgnoreAxisOrientation->isChecked(), detailsParameters );
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( cbxWfsInvertAxisOrientation->isChecked(), detailsParameters );
     QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( cbxWfsUseGml2EncodingForTransactions->isChecked(), detailsParameters );
+    QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( cbxWfsForceInitialGetFeature->isChecked(), detailsParameters );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
   {

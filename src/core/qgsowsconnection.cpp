@@ -71,6 +71,7 @@ const QgsSettingsEntryString *QgsOwsConnection::settingsPagesize = new QgsSettin
 const QgsSettingsEntryString *QgsOwsConnection::settingsPagingEnabled = new QgsSettingsEntryString( QStringLiteral( "paging-enabled" ), sTreeOwsConnections, QString( "default" ) ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsWfsFeatureMode = new QgsSettingsEntryString( QStringLiteral( "feature-mode" ), sTreeOwsConnections, QString( "default" ) ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
+const QgsSettingsEntryBool *QgsOwsConnection::settingsWfsForceInitialGetFeature = new QgsSettingsEntryBool( QStringLiteral( "force-initial-get-feature" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignore-axis-orientation" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invert-axis-orientation" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeOwsConnections ) ;

@@ -71,6 +71,12 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       return *this;
     }
 
+    bool isFilterThreadSafe() const override { return false; }
+
+    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
+    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
+    QgsAccessControl *clone() const override SIP_FACTORY;
+
     /**
      * Resolve features' filter of layers
      * The method fetch filter's expressions returned from access control plugins and
@@ -86,19 +92,6 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      *  Clear expression's cache computed from `resolveFilterFeatures`
      */
     void unresolveFilterFeatures();
-
-    /**
-     * Filter the features of the layer
-     * \param layer the layer to control
-     * \param filterFeatures the request to fill
-     */
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
-
-    /**
-     * Returns a clone of the object
-     * \returns A clone
-     */
-    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
      * Returns an additional subset string (typically SQL) filter
@@ -134,14 +127,6 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      * \returns TRUE if we can do a delete
      */
     bool layerDeletePermission( const QgsVectorLayer *layer ) const;
-
-    /**
-     * Returns the authorized layer attributes
-     * \param layer the layer to control
-     * \param attributes the list of attribute
-     * \returns the list of visible attributes
-     */
-    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
 
     /**
      * Are we authorized to modify the following geometry

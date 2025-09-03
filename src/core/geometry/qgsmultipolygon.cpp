@@ -91,7 +91,7 @@ QgsMultiPolygon *QgsMultiPolygon::clone() const
 
 bool QgsMultiPolygon::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPolygon, QStringLiteral( "Polygon" ) );
+  return fromCollectionWkt( wkt, { Qgis::WkbType::Polygon }, QStringLiteral( "Polygon" ) );
 }
 
 QDomElement QgsMultiPolygon::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const

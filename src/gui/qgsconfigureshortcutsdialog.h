@@ -63,6 +63,13 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void showHelp();
 
   private:
+    enum class ActionOnExisting
+    {
+      Ask,
+      ReassignAll,
+      SkipAll,
+    };
+
     //! Populates the dialog with all actions from the manager
     void populateActions();
 

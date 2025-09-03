@@ -11,8 +11,6 @@
 
 
 
-
-
 class QgsServerQueryStringParameter
 {
 %Docstring(signature="appended")

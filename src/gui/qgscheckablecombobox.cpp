@@ -103,9 +103,9 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   view()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( view(), &QAbstractItemView::customContextMenuRequested, this, &QgsCheckableComboBox::showContextMenu );
 
-  connect( model(), &QStandardItemModel::rowsInserted, this, [=]( const QModelIndex &, int, int ) { updateDisplayText(); } );
-  connect( model(), &QStandardItemModel::rowsRemoved, this, [=]( const QModelIndex &, int, int ) { updateDisplayText(); } );
-  connect( model(), &QStandardItemModel::dataChanged, this, [=]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) { updateDisplayText(); } );
+  connect( model(), &QStandardItemModel::rowsInserted, this, [this]( const QModelIndex &, int, int ) { updateDisplayText(); } );
+  connect( model(), &QStandardItemModel::rowsRemoved, this, [this]( const QModelIndex &, int, int ) { updateDisplayText(); } );
+  connect( model(), &QStandardItemModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) { updateDisplayText(); } );
 }
 
 QString QgsCheckableComboBox::separator() const

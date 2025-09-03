@@ -61,6 +61,7 @@ class QgsRasterStackLowestPositionAlgorithm : public QgsRasterStackPositionAlgor
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterStackLowestPositionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -75,6 +76,7 @@ class QgsRasterStackHighestPositionAlgorithm : public QgsRasterStackPositionAlgo
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterStackHighestPositionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

@@ -55,3 +55,8 @@ unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
       break;
   }
 }
+
+bool QgsJsonEditWidgetFactory::isReadOnly() const
+{
+  return true;
+}

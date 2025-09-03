@@ -179,7 +179,7 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
 
 QgsRasterLogicalOrAlgorithm::QgsRasterLogicalOrAlgorithm()
 {
-  mExtractValFunc = [=]( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputs, bool &res, bool &resIsNoData, int row, int column, bool treatNoDataAsFalse ) {
+  mExtractValFunc = []( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputs, bool &res, bool &resIsNoData, int row, int column, bool treatNoDataAsFalse ) {
     res = false;
     resIsNoData = false;
     bool isNoData = false;
@@ -228,7 +228,7 @@ QString QgsRasterLogicalOrAlgorithm::displayName() const
 
 QString QgsRasterLogicalOrAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the boolean OR for a set of input raster layers" );
+  return QObject::tr( "Calculates the boolean OR for a set of input raster layers." );
 }
 
 QString QgsRasterLogicalOrAlgorithm::shortHelpString() const
@@ -252,7 +252,7 @@ QgsRasterLogicalOrAlgorithm *QgsRasterLogicalOrAlgorithm::createInstance() const
 
 QgsRasterLogicalAndAlgorithm::QgsRasterLogicalAndAlgorithm()
 {
-  mExtractValFunc = [=]( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputs, bool &res, bool &resIsNoData, int row, int column, bool treatNoDataAsFalse ) {
+  mExtractValFunc = []( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputs, bool &res, bool &resIsNoData, int row, int column, bool treatNoDataAsFalse ) {
     res = true;
     resIsNoData = false;
     bool isNoData = false;
@@ -304,7 +304,7 @@ QString QgsRasterLogicalAndAlgorithm::displayName() const
 
 QString QgsRasterLogicalAndAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Calculates the boolean AND for a set of input raster layers" );
+  return QObject::tr( "Calculates the boolean AND for a set of input raster layers." );
 }
 
 QString QgsRasterLogicalAndAlgorithm::shortHelpString() const

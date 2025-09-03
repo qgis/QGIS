@@ -75,6 +75,11 @@ QString QgsWedgeBuffersAlgorithm::shortHelpString() const
                       "be automatically segmentized to Polygons depending on the output format." );
 }
 
+QString QgsWedgeBuffersAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates wedge shaped buffers from input points." );
+}
+
 QList<int> QgsWedgeBuffersAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );

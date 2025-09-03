@@ -118,6 +118,9 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     def displayName(self):
         return self.tr("Vector layer scatterplot 3D")
 
+    def shortDescription(self):
+        return self.tr("Creates a 3D scatter plot for a vector layer.")
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

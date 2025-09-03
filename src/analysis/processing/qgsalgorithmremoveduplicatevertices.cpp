@@ -63,6 +63,12 @@ QString QgsAlgorithmRemoveDuplicateVertices::shortHelpString() const
                       "a multipoint geometry with overlapping points will not be changed by this method." );
 }
 
+QString QgsAlgorithmRemoveDuplicateVertices::shortDescription() const
+{
+  return QObject::tr( "Removes duplicate vertices from features, wherever removing the vertices does "
+                      "not result in a degenerate geometry." );
+}
+
 QgsAlgorithmRemoveDuplicateVertices *QgsAlgorithmRemoveDuplicateVertices::createInstance() const
 {
   return new QgsAlgorithmRemoveDuplicateVertices();

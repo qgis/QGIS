@@ -422,11 +422,11 @@ namespace QgsWms
 
     //wms:GetMap
     elem = doc.createElement( QStringLiteral( "GetMap" ) /*wms:GetMap*/ );
-    appendFormat( elem, QStringLiteral( "image/jpeg" ) );
-    appendFormat( elem, QStringLiteral( "image/png" ) );
+    appendFormat( elem, QStringLiteral( "image/png" ) ); //QGIS Desktop uses first advertised format as default, png supports transparency
     appendFormat( elem, QStringLiteral( "image/png; mode=16bit" ) );
     appendFormat( elem, QStringLiteral( "image/png; mode=8bit" ) );
     appendFormat( elem, QStringLiteral( "image/png; mode=1bit" ) );
+    appendFormat( elem, QStringLiteral( "image/jpeg" ) );
     appendFormat( elem, QStringLiteral( "application/dxf" ) );
     appendFormat( elem, QStringLiteral( "application/pdf" ) );
     elem.appendChild( dcpTypeElem.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
@@ -1171,7 +1171,7 @@ namespace QgsWms
 
           writeServerProperties( doc, layerElem, project, treeGroupChild->serverProperties(), name, version );
 
-          // There is no style assicated with layer tree group so just use a defaut one
+          // There is no style assicated with layer tree group so just use a default one
           const QString styleName = QStringLiteral( "default" );
           QDomElement styleElem = createStyleElement( doc, styleName );
           writeLegendUrl( doc, styleElem, treeGroupChild->serverProperties()->legendUrl(), treeGroupChild->serverProperties()->legendUrlFormat(), name, styleName, project, request, serverIface->serverSettings() );

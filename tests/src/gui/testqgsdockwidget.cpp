@@ -62,12 +62,24 @@ void TestQgsDockWidget::testSignals()
   QApplication::setActiveWindow( w ); //required for focus events
   QgsDockWidget *d = new QgsDockWidget( w );
 
+  // Since Qt 6.8, the `showEvent` is now correctly propagated to the dock
+  // when `w->show()` is called. Therefore, it needs to be called before
+  // the QSignalSpy are created
+#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 ) )
+  w->show();
+
+  QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
+  const QSignalSpy spyClosed( d, SIGNAL( closed() ) );
+  QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
+  const QSignalSpy spyOpened( d, SIGNAL( opened() ) );
+#else
   QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
   const QSignalSpy spyClosed( d, SIGNAL( closed() ) );
   QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
   const QSignalSpy spyOpened( d, SIGNAL( opened() ) );
 
   w->show();
+#endif
 
   d->show();
   QCOMPARE( spyClosedStateChanged.count(), 1 );

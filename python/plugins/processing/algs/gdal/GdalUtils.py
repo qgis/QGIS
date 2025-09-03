@@ -62,6 +62,7 @@ class GdalConnectionDetails:
     open_options: Optional[list[str]] = None
     layer_name: Optional[str] = None
     credential_options: Optional[dict] = None
+    geometry_column_name: Optional[str] = None
 
     def open_options_as_arguments(self) -> list[str]:
         """
@@ -113,14 +114,13 @@ class GdalUtils:
         except OSError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
             pass
         if isDarwin and os.path.isfile(
-            os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")
+            os.path.join(QgsApplication.prefixPath(), "Contents", "MacOS", "gdalinfo")
         ):
             # Looks like there's a bundled gdal. Let's use it.
             os.environ["PATH"] = "{}{}{}".format(
-                os.path.join(QgsApplication.prefixPath(), "bin"), os.pathsep, envval
-            )
-            os.environ["DYLD_LIBRARY_PATH"] = os.path.join(
-                QgsApplication.prefixPath(), "lib"
+                os.path.join(QgsApplication.prefixPath(), "Contents", "MacOS"),
+                os.pathsep,
+                envval,
             )
         else:
             # Other platforms should use default gdal finder codepath
@@ -517,13 +517,9 @@ class GdalUtils:
         return GdalConnectionDetails(connection_string=ogrstr, format=f'"{format}"')
 
     @staticmethod
-    def ogrOutputLayerName(uri):
-        uri = uri.strip('"')
-        return os.path.basename(os.path.splitext(uri)[0])
-
-    @staticmethod
     def ogrLayerName(uri):
-        uri = uri.strip('"')
+        if uri.startswith('"') and uri.endswith('"'):
+            uri = uri.strip('"')
         if " table=" in uri:
             # table="schema"."table"
             re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')

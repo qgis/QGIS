@@ -635,7 +635,8 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QString &filename, bool copy )
 
 QgsAuxiliaryStorage::~QgsAuxiliaryStorage()
 {
-  QFile::remove( mTmpFileName );
+  if ( QFile::exists( mTmpFileName ) )
+    QFile::remove( mTmpFileName );
 }
 
 bool QgsAuxiliaryStorage::isValid() const

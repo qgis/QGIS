@@ -38,6 +38,11 @@ QString QgsWriteVectorTilesBaseAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports one or more vector layers to vector tiles - a data format optimized for fast map rendering and small data size." );
 }
 
+QString QgsWriteVectorTilesBaseAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports one or more vector layers to vector tiles." );
+}
+
 void QgsWriteVectorTilesBaseAlgorithm::addBaseParameters()
 {
   addParameter( new QgsProcessingParameterVectorTileWriterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
@@ -100,6 +105,11 @@ QString QgsWriteVectorTilesXyzAlgorithm::displayName() const
   return QObject::tr( "Write Vector Tiles (XYZ)" );
 }
 
+QStringList QgsWriteVectorTilesXyzAlgorithm::tags() const
+{
+  return QObject::tr( "xyz,vector,tiles" ).split( ',' );
+}
+
 QgsProcessingAlgorithm *QgsWriteVectorTilesXyzAlgorithm::createInstance() const
 {
   return new QgsWriteVectorTilesXyzAlgorithm();
@@ -139,6 +149,11 @@ QString QgsWriteVectorTilesMbtilesAlgorithm::name() const
 QString QgsWriteVectorTilesMbtilesAlgorithm::displayName() const
 {
   return QObject::tr( "Write Vector Tiles (MBTiles)" );
+}
+
+QStringList QgsWriteVectorTilesMbtilesAlgorithm::tags() const
+{
+  return QObject::tr( "mbtiles,vector" ).split( ',' );
 }
 
 QgsProcessingAlgorithm *QgsWriteVectorTilesMbtilesAlgorithm::createInstance() const

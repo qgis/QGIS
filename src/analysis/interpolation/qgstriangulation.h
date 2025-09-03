@@ -42,7 +42,7 @@ class ANALYSIS_EXPORT QgsTriangulation
 {
   public:
     //! Enumeration describing the behavior, if two forced lines cross.
-    enum class ForcedCrossBehavior : int
+    enum class ForcedCrossBehavior SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTriangulation, ForcedCrossBehavior ) : int
     {
       SnappingTypeVertex, //!< The second inserted forced line is snapped to the closest vertice of the first inserted forced line.
       DeleteFirst,        //!< The status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)

@@ -139,6 +139,25 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
       QVERIFY( addAlgorithm( new DummyAlgorithm2( QStringLiteral( "alg1" ) ) ) );
       QVERIFY( addAlgorithm( new DummyRaiseExceptionAlgorithm( QStringLiteral( "raise" ) ) ) );
       QVERIFY( addAlgorithm( new DummySecurityRiskAlgorithm( QStringLiteral( "risky" ) ) ) );
+
+      QgsProcessingModelAlgorithm model;
+      model.setName( "dummymodel" );
+
+      const QgsProcessingModelParameter sourceParam( "test" );
+      model.addModelParameter( new QgsProcessingParameterString( "test" ), sourceParam );
+
+      QgsProcessingModelChildAlgorithm childAlgorithm;
+      childAlgorithm.setChildId( QStringLiteral( "calculate" ) );
+      childAlgorithm.setAlgorithmId( "native:calculateexpression" );
+      childAlgorithm.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromExpression( "'value_from_child'" ) } );
+      QgsProcessingModelOutput childOutput( "OUTPUT" );
+      childOutput.setChildId( QStringLiteral( "calculate" ) );
+      childOutput.setChildOutputName( "OUTPUT" );
+      childOutput.setDescription( QStringLiteral( "my output" ) );
+      childAlgorithm.setModelOutputs( { { QStringLiteral( "OUTPUT" ), childOutput } } );
+      model.addChildAlgorithm( childAlgorithm );
+
+      QVERIFY( addAlgorithm( model.create() ) );
     }
 };
 
@@ -170,6 +189,7 @@ class TestQgsProcessingModelAlgorithm : public QgsTest
     void modelOutputs();
     void modelWithChildException();
     void modelExecuteWithPreviousState();
+    void modelExecuteWithPreviousStateNoLeak();
     void modelDependencies();
     void modelSource();
     void modelNameMatchesFileName();
@@ -177,6 +197,7 @@ class TestQgsProcessingModelAlgorithm : public QgsTest
     void internalVersion();
     void modelChildOrderWithVariables();
     void flags();
+    void modelWithDuplicateNames();
 
   private:
 };
@@ -1545,6 +1566,32 @@ void TestQgsProcessingModelAlgorithm::modelExecution()
   QCOMPARE( actualParts, expectedParts );
 }
 
+void TestQgsProcessingModelAlgorithm::modelWithDuplicateNames()
+{
+  // test that same name are correctly made unique when exporting in python
+  QgsProcessingModelAlgorithm model;
+
+  // load model with duplicate names
+  QVERIFY( model.fromFile( TEST_DATA_DIR + QStringLiteral( "/duplicate_names.model3" ) ) );
+
+  const QStringList actualParts = model.asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, 2 );
+
+  const QRegularExpression re( "outputs\\['([^']*)'\\] = processing.run\\('native:buffer'" );
+  QVERIFY( re.isValid() );
+  QStringList names;
+  for ( QString part : actualParts )
+  {
+    const QRegularExpressionMatch match = re.match( part );
+    if ( match.hasMatch() )
+    {
+      names << match.captured( 1 );
+    }
+  }
+
+  names.sort();
+  QCOMPARE( names, QStringList() << "Tampon" << "Tampon_2" );
+}
+
 
 void TestQgsProcessingModelAlgorithm::modelBranchPruning()
 {
@@ -2514,6 +2561,52 @@ void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousState()
   // layer should have been transferred to context's temporary layer store as part of model execution
   QCOMPARE( context.temporaryLayerStore()->count(), 1 );
   QCOMPARE( context.temporaryLayerStore()->mapLayersByName( QStringLiteral( "v1" ) ).at( 0 ), layer );
+}
+
+void TestQgsProcessingModelAlgorithm::modelExecuteWithPreviousStateNoLeak()
+{
+  QgsProcessingModelAlgorithm m;
+
+  QgsProcessingModelChildAlgorithm childAlgorithm;
+  childAlgorithm.setChildId( QStringLiteral( "calculate" ) );
+  childAlgorithm.setAlgorithmId( "native:calculateexpression" );
+  childAlgorithm.addParameterSources( "INPUT", { QgsProcessingModelChildParameterSource::fromExpression( " 'from outer'" ) } );
+  QgsProcessingModelOutput childOutput1( "OUTPUT" );
+  childOutput1.setChildId( QStringLiteral( "calculate" ) );
+  childOutput1.setChildOutputName( "OUTPUT" );
+  childOutput1.setDescription( QStringLiteral( "my output" ) );
+  childAlgorithm.setModelOutputs( { { QStringLiteral( "OUTPUT" ), childOutput1 } } );
+  m.addChildAlgorithm( childAlgorithm );
+
+  QgsProcessingModelChildAlgorithm nestedModel;
+  nestedModel.setChildId( QStringLiteral( "childmodel" ) );
+  nestedModel.setAlgorithmId( "dummy4:dummymodel" );
+  // want outer scope to run first
+  nestedModel.setDependencies( { QgsProcessingModelChildDependency( QStringLiteral( "calculate" ) ) } );
+  QgsProcessingModelOutput childOutput( "nestedout" );
+  childOutput.setChildId( QStringLiteral( "childmodel" ) );
+  childOutput.setChildOutputName( "OUTPUT" );
+  childOutput.setDescription( QStringLiteral( "my output2" ) );
+  nestedModel.setModelOutputs( { { QStringLiteral( "nestedout" ), childOutput } } );
+  m.addChildAlgorithm( nestedModel );
+
+  // run and check context details
+  QgsProcessingContext context;
+  context.setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+
+  // start with no initial state
+  bool ok = false;
+  m.run( params, context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( context.modelResult().childResults().value( "calculate" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+  QCOMPARE( context.modelResult().childResults().value( "childmodel" ).executionStatus(), Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+  QSet<QString> expected { QStringLiteral( "calculate" ), QStringLiteral( "childmodel" ) };
+  QCOMPARE( context.modelResult().executedChildIds(), expected );
+  QgsProcessingModelResult firstResult = context.modelResult();
+  QCOMPARE( context.modelResult().childResults().value( "childmodel" ).outputs().value( QStringLiteral( "CHILD_RESULTS" ) ).toMap().value( QStringLiteral( "calculate" ) ).toMap().value( QStringLiteral( "OUTPUT" ) ).toString(), QStringLiteral( "value_from_child" ) );
+  QCOMPARE( context.modelResult().childResults().value( QStringLiteral( "calculate" ) ).outputs().value( QStringLiteral( "OUTPUT" ) ).toString(), QStringLiteral( "from outer" ) );
 }
 
 void TestQgsProcessingModelAlgorithm::modelDependencies()

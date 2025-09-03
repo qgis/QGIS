@@ -150,7 +150,7 @@ void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [this, panel] {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();
     } );

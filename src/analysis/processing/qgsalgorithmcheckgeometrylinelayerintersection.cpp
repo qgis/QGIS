@@ -37,7 +37,7 @@ QString QgsGeometryCheckLineLayerIntersectionAlgorithm::displayName() const
 
 QString QgsGeometryCheckLineLayerIntersectionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect lines intersecting features from another layer" );
+  return QObject::tr( "Detects lines intersecting features from another layer." );
 }
 
 QStringList QgsGeometryCheckLineLayerIntersectionAlgorithm::tags() const

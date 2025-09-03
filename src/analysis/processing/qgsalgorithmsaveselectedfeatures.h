@@ -39,6 +39,7 @@ class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSaveSelectedFeatures *createInstance() const override SIP_FACTORY;
 
   protected:

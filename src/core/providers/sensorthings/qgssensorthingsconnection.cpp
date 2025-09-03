@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include "qgssensorthingsconnection.h"
 
 #include "qgsowsconnection.h"

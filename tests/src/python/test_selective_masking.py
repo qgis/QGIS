@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsVirtualLayerDefinition
+"""QGIS Unit tests for selective masking
 
 From build dir, run: ctest -R PyQgsSelectiveMasking -V
 
@@ -54,6 +54,7 @@ from qgis.core import (
     QgsWkbTypes,
     QgsFontUtils,
     QgsSettings,
+    QgsLayoutRenderContext,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -253,7 +254,6 @@ class TestSelectiveMasking(QgisTestCase):
             )
 
             settings = QgsLayoutExporter.PdfExportSettings()
-
             if dpiTarget is not None:
                 settings.dpi = dpiTarget
 
@@ -1056,10 +1056,50 @@ class TestSelectiveMasking(QgisTestCase):
 
         # test that force vector output has no impact on the result
         self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        self.map_settings.setFlag(Qgis.MapSettingsFlag.UseAdvancedEffects, True)
         # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
         # is used
         self.check_renderings(
             self.map_settings, "label_mask_with_effect", test_parallel_rendering=False
+        )
+
+    def test_label_with_blend_mode(self):
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(4.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers(
+            [
+                # the black part of roads
+                self.get_symbollayer_ref(self.lines_layer, "", [0]),
+                # the black jets
+                self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+                self.get_symbollayer_ref(self.points_layer, "Jet", [0]),
+            ]
+        )
+
+        fmt.setColor(QColor(100, 200, 50))
+        fmt.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
+
+        map_settings = QgsMapSettings(self.map_settings)
+        map_settings.setFlag(Qgis.MapSettingsFlag.UseAdvancedEffects, True)
+        self.check_renderings(map_settings, "label_mask_with_blend_mode")
+
+        # test that force vector output has no impact on the result
+        self.map_settings.setFlag(Qgis.MapSettingsFlag.ForceVectorOutput, True)
+        # skip parallel rendering for this check, as force vector output is ignored when parallel rendering
+        # is used
+        self.check_renderings(
+            map_settings, "label_mask_with_blend_mode", test_parallel_rendering=False
         )
 
     def test_different_dpi_target(self):
@@ -1162,6 +1202,38 @@ class TestSelectiveMasking(QgisTestCase):
 
         # 4 rasters : Image and its mask for masked point and lines layer
         self.check_layout_export("layout_export_w_effects", 4)
+
+    def test_layout_export_w_label_blend_mode(self):
+        """
+        Test exporting layout with map labels using non-default blend modes
+        """
+        # modify labeling settings
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        # enable a mask
+
+        fmt.font().setPointSize(4)
+
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(1.0)
+        # and mask other symbol layers underneath
+        fmt.mask().setMaskedSymbolLayers(
+            [
+                # the black part of roads
+                self.get_symbollayer_ref(self.lines_layer, "", [0]),
+                # the black jets
+                self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+                self.get_symbollayer_ref(self.points_layer, "Jet", [0]),
+            ]
+        )
+
+        fmt.setColor(QColor(100, 200, 50))
+        fmt.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
+
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        self.check_layout_export("layout_export_w_blend_mode", 2)
 
     def test_layout_export_marker_masking(self):
         """Test mask effects in a layout export with a marker symbol masking"""

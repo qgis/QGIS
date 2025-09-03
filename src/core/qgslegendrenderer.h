@@ -62,6 +62,17 @@ class CORE_EXPORT QgsLegendRenderer
 #endif
 
     /**
+     * Sets the filter proxy \a model to use for filtering the legend model content
+     * during rendering.
+     *
+     * Ownership of \a proxy is transferred to the renderer.
+     *
+     * \see proxyModel()
+     * \since QGIS 4.0
+     */
+    void setProxyModel( QgsLayerTreeFilterProxyModel *model SIP_TRANSFER );
+
+    /**
      * Returns the filter proxy model used for filtering the legend model content during
      * rendering.
      *

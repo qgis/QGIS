@@ -92,9 +92,11 @@ void TestQgsVectorTileUtils::test_urlsFromStyle()
   QCOMPARE( sourceUrl, "https://vectortilesX.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf" );
 
   sources = QgsVectorTileUtils::parseStyleSourceUrl( "file://" + dataDir + "/vector_tile/styles/style2.json" );
-  QCOMPARE( sources.count(), 1 );
+  QCOMPARE( sources.count(), 2 );
   QVERIFY( sources.contains( "plan_ign" ) );
   QCOMPARE( sources.value( "plan_ign" ), "https://data.geopf.fr/tms/1.0.0/PLAN.IGN/{z}/{x}/{y}.pbf" );
+  QVERIFY( sources.contains( "plan_ign_relative" ) );
+  QCOMPARE( sources.value( "plan_ign_relative" ), "file:///tms/1.0.0/PLAN.IGN/{z}/{x}/{y}.pbf" );
 }
 
 QGSTEST_MAIN( TestQgsVectorTileUtils )

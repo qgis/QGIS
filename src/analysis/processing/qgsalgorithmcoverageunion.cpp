@@ -56,7 +56,7 @@ void QgsCoverageUnionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsCoverageUnionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Dissolves a coverage of polygon features" );
+  return QObject::tr( "Dissolves a coverage of polygon features." );
 }
 
 QString QgsCoverageUnionAlgorithm::shortHelpString() const

@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturefilterprovidergroup.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
+{
+%Docstring(signature="appended")
+A filter filter provider grouping several filter providers.
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturefilterprovidergroup.h"
+%End
+  public:
+    QgsFeatureFilterProviderGroup();
+%Docstring
+Constructor
+%End
+
+ virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const /Deprecated="Since 4.0. Use the layer ID variant."/;
+
+%Docstring
+Filter the features of the layer.
+
+:param layer: the layer to control
+:param filterFeatures: the request to fill
+
+.. deprecated:: 4.0
+
+   Use the layer ID variant.
+%End
+
+    virtual void filterFeatures( const QString &layerId, QgsFeatureRequest &filterFeatures ) const;
+
+%Docstring
+Filter the features of the layer.
+
+:param layerId: the layer ID to control
+:param filterFeatures: the request to fill
+
+.. versionadded:: 4.0
+%End
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
+
+    virtual QgsFeatureFilterProvider *clone() const /Factory/;
+
+%Docstring
+Returns a clone of the object
+
+:return: A clone
+%End
+
+    QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
+%Docstring
+Add another filter provider to the group
+
+:param provider: The provider to add
+
+:return: itself
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturefilterprovidergroup.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

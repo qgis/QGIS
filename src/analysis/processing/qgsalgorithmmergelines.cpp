@@ -66,6 +66,11 @@ QString QgsMergeLinesAlgorithm::shortHelpString() const
                       "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
 }
 
+QString QgsMergeLinesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Joins all connected parts of MultiLineString geometries into single LineString geometries." );
+}
+
 QList<int> QgsMergeLinesAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );

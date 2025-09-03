@@ -163,7 +163,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   if ( mOptTreeView )
   {
     // sync selection in tree view with current stacked widget index
-    connect( mOptTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, mOptStackedWidget, [=]( const QItemSelection &, const QItemSelection & ) {
+    connect( mOptTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, mOptStackedWidget, [this]( const QItemSelection &, const QItemSelection & ) {
       const QModelIndexList selected = mOptTreeView->selectionModel()->selectedIndexes();
       if ( selected.isEmpty() )
         return;

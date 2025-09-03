@@ -40,6 +40,7 @@ class ANALYSIS_EXPORT QgsImportPhotosAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsImportPhotosAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

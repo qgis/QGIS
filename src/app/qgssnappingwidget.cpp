@@ -86,7 +86,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-  connect( mProject, &QObject::destroyed, this, [=] { mLayerTreeView->setModel( nullptr ); } );
+  connect( mProject, &QObject::destroyed, this, [this] { mLayerTreeView->setModel( nullptr ); } );
   // model->setFlags( 0 );
   mLayerTreeView->setModel( model );
   mLayerTreeView->resizeColumnToContents( 0 );
@@ -212,7 +212,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
   connect( mUnitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSnappingWidget::changeUnit );
 
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] {
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this, model] {
     // Update map units from canvas
     const QString mapCanvasDistanceUnits { QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ) };
     mUnitsComboBox->setItemText( 1, mapCanvasDistanceUnits );

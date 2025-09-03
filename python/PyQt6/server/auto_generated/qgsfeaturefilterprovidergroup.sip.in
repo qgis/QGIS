@@ -14,6 +14,10 @@ class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
 {
 %Docstring(signature="appended")
 A filter filter provider grouping several filter providers.
+
+.. deprecated:: 3.4
+
+   Use :py:class:`QgsGroupedFeatureFilterProvider`
 %End
 
 %TypeHeaderCode
@@ -25,25 +29,14 @@ A filter filter provider grouping several filter providers.
 Constructor
 %End
 
+    virtual bool isFilterThreadSafe() const;
+
     virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
-
-%Docstring
-Filter the features of the layer.
-
-:param layer: the layer to control
-:param filterFeatures: the request to fill
-%End
 
     virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 
+    virtual QgsFeatureFilterProviderGroup *clone() const /Factory/;
 
-    virtual QgsFeatureFilterProvider *clone() const /Factory/;
-
-%Docstring
-Returns a clone of the object
-
-:return: A clone
-%End
 
     QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
 %Docstring

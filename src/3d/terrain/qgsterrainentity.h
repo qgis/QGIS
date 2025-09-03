@@ -97,6 +97,8 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
   public:
     TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *mNode );
 
+    void start() override;
+
     void cancel() override;
 
   private slots:
@@ -104,7 +106,7 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    int mJobId;
+    int mJobId = -1;
 };
 
 /// @endcond

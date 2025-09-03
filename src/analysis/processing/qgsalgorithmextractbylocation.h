@@ -78,6 +78,7 @@ class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSelectByLocationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -98,6 +99,7 @@ class QgsExtractByLocationAlgorithm : public QgsLocationBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExtractByLocationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

@@ -24,7 +24,7 @@ QgsAlignmentComboBox::QgsAlignmentComboBox( QWidget *parent )
 {
   populate();
   setCurrentIndex( 0 );
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( !mBlockChanged )
       emit changed();
   } );

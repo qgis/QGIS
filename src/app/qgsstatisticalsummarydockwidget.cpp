@@ -87,7 +87,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mPreviousFieldType = DataType::Numeric;
   refreshStatisticsMenu();
 
-  connect( this, &QgsDockWidget::visibilityChanged, this, [=]( bool visible ) {
+  connect( this, &QgsDockWidget::visibilityChanged, this, [this]( bool visible ) {
     if ( mPendingCalculate && visible )
       refreshStatistics();
   } );

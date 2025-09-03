@@ -4165,7 +4165,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
     connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
-    connect( fetcher, &QgsImageFetcher::error, this, [=]( const QString & ) {
+    connect( fetcher, &QgsImageFetcher::error, this, [this]( const QString & ) {
       mLegendGraphicFetchErrored = true;
     } );
     return fetcher;

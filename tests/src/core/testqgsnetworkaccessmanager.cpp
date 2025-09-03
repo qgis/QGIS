@@ -35,7 +35,7 @@ class BackgroundRequest : public QThread
       : mRequest( request )
     {
       moveToThread( this );
-      connect( this, &QThread::started, this, [=] {
+      connect( this, &QThread::started, this, [this, op, data] {
         QVERIFY( QThread::currentThread() != QCoreApplication::instance()->thread() );
         switch ( op )
         {
@@ -70,7 +70,7 @@ class BackgroundBlockingRequest : public QThread
       , mExpectedData( expectedData )
     {
       moveToThread( this );
-      connect( this, &QThread::started, this, [=] {
+      connect( this, &QThread::started, this, [this, op, expectedRes, data] {
         QVERIFY( QThread::currentThread() != QCoreApplication::instance()->thread() );
         switch ( op )
         {
@@ -1152,7 +1152,7 @@ void TestQgsNetworkAccessManager::testCookieManagement()
   const QUrl url( "http://example.com" );
   // Set cookie in a thread and verify that it also set in main thread
   QEventLoop evLoop;
-  FunctionThread thread1( [=] {
+  FunctionThread thread1( [url] {
     QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl(
       QList<QNetworkCookie>() << QNetworkCookie( "foo=bar" ), url
     );
@@ -1175,7 +1175,7 @@ void TestQgsNetworkAccessManager::testCookieManagement()
     QList<QNetworkCookie>() << QNetworkCookie( "baz=yadda" ), url
   );
 
-  FunctionThread thread2( [=] {
+  FunctionThread thread2( [url] {
     QList<QNetworkCookie> cookies = QgsNetworkAccessManager::instance()->cookieJar()->cookiesForUrl( url );
     return cookies.size() == 1 && cookies[0].toRawForm() == "baz=yadda=; domain=example.com; path=/";
   } );

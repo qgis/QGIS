@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     };
 
     //! Result of operation
-    enum class Result : int
+    enum class Result SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsKernelDensityEstimation, Result ) : int
     {
       Success,           //!< Operation completed successfully
       DriverError,       //!< Could not open the driver for the specified format

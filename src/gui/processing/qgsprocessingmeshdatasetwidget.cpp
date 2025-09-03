@@ -151,7 +151,7 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
       return ( pos >= 0 && pos < options.size() ) ? options.at( pos ) : QString();
     } );
 
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [=]() {
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
       setValue( widget->selectedOptions() );
     } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
@@ -225,7 +225,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::postInitialize( const QList<Qg
         if ( wrapper->parameterDefinition()->name() == static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() )->meshLayerParameterName() )
         {
           setMeshLayerWrapperValue( wrapper );
-          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [=] {
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] {
             setMeshLayerWrapperValue( wrapper );
           } );
           break;
@@ -269,7 +269,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 {
   mWidget = new QgsProcessingMeshDatasetGroupsWidget( nullptr, static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() ) );
-  connect( mWidget, &QgsProcessingMeshDatasetGroupsWidget::changed, this, [=] {
+  connect( mWidget, &QgsProcessingMeshDatasetGroupsWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
 
@@ -345,7 +345,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
       }
       setMeshLayerWrapperValue( layerParameterWrapper );
       setDatasetGroupIndexesWrapperValue( datasetGroupsParameterWrapper );
-      connect( datasetGroupsParameterWrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [=] {
+      connect( datasetGroupsParameterWrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, layerParameterWrapper, datasetGroupsParameterWrapper] {
         setMeshLayerWrapperValue( layerParameterWrapper );
         setDatasetGroupIndexesWrapperValue( datasetGroupsParameterWrapper );
       } );
@@ -418,7 +418,7 @@ QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
   {
     connect( canvas, &QgsMapCanvas::temporalRangeChanged, mWidget, &QgsProcessingMeshDatasetTimeWidget::updateValue );
   }
-  connect( mWidget, &QgsProcessingMeshDatasetTimeWidget::changed, this, [=] {
+  connect( mWidget, &QgsProcessingMeshDatasetTimeWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
 

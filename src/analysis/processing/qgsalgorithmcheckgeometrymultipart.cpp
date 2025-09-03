@@ -37,7 +37,7 @@ QString QgsGeometryCheckMultipartAlgorithm::displayName() const
 
 QString QgsGeometryCheckMultipartAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect multipart features containing only one part" );
+  return QObject::tr( "Detects multipart features containing only one part." );
 }
 
 QStringList QgsGeometryCheckMultipartAlgorithm::tags() const

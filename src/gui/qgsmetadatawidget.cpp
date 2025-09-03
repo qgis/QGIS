@@ -165,13 +165,13 @@ void QgsMetadataWidget::setMode( QgsMetadataWidget::Mode mode )
       btnAutoSource->setEnabled( true );
 
       // these two widgets should be kept in sync
-      connect( mCreationDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [=]( const QDateTime &value ) {
+      connect( mCreationDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, [this]( const QDateTime &value ) {
         if ( value.isValid() )
           mCreationDateTimeEdit2->setDateTime( value );
         else if ( mCreationDateTimeEdit2->dateTime().isValid() )
           mCreationDateTimeEdit2->clear();
       } );
-      connect( mCreationDateTimeEdit2, &QDateTimeEdit::dateTimeChanged, this, [=]( const QDateTime &value ) {
+      connect( mCreationDateTimeEdit2, &QDateTimeEdit::dateTimeChanged, this, [this]( const QDateTime &value ) {
         if ( value.isValid() )
           mCreationDateTimeEdit->setDateTime( value );
         else if ( mCreationDateTimeEdit->dateTime().isValid() )

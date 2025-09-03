@@ -57,7 +57,7 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
      * \param layer associated point cloud layer
      * \param nodesAndPoints affected nodes, each with a list of points to be modified
      * \param attribute the attribute whose value will be modified
-     * \param value the new value for the modified attribure
+     * \param value the new value for the modified attribute
      */
     QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value );
 

@@ -128,6 +128,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   snapConfig.setMode( Qgis::SnappingMode::AllLayers );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   snapConfig.setTolerance( 1.0 );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   QgsMapSettings mapSettings;
   mapSettings.setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -144,7 +145,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   snappingUtils->locatorForLayer( mLayer4326ZM )->init();
 
   mCanvas->setSnappingUtils( snappingUtils );
-
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   // create base map tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, mAdvancedDigitizingDockWidget, QgsMapToolCapture::CaptureLine );
   mCanvas->setMapTool( mCaptureTool );
@@ -181,6 +182,7 @@ void TestQgsAdvancedDigitizing::cleanup()
   snapConfig.setMode( Qgis::SnappingMode::AllLayers );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   snappingUtils->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // reset all layers
   mLayer3950->rollBack();
@@ -587,6 +589,7 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // move to trigger a re-indexing and wait for it to complete
@@ -643,6 +646,7 @@ void TestQgsAdvancedDigitizing::perpendicularConstraint()
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // test snapping on segment
@@ -682,7 +686,9 @@ void TestQgsAdvancedDigitizing::xyExtensionConstraint()
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // test snapping on segment
   utils.mouseMove( 4.9, 5.1 );
@@ -735,6 +741,7 @@ void TestQgsAdvancedDigitizing::lineExtensionConstraint()
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // test snapping on segment
@@ -784,6 +791,7 @@ void TestQgsAdvancedDigitizing::lineExtensionConstraintGeographicCrs()
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // Wait for indexing to complete
   if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayer4326 ) )
@@ -889,6 +897,7 @@ void TestQgsAdvancedDigitizing::lockedSnapVertices()
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // no locked snap vertex while xy vertex constraint or line extension
   QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 0 );
@@ -989,6 +998,7 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer3950 );
@@ -1031,6 +1041,7 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanppingWithDiffCanvasCRS()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer4326 );
@@ -1056,6 +1067,13 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
 {
   // activate advanced digitizing
   getMapToolDigitizingUtils( mLayer4326 );
+
+  // enable snapping
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
 
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
@@ -1179,6 +1197,7 @@ void TestQgsAdvancedDigitizing::constructionGuides()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   mAdvancedDigitizingDockWidget->mSnapToConstructionGuides->setChecked( true );

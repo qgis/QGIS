@@ -77,6 +77,10 @@ void QgsServerSettings::initSettings()
   const Setting sIgnoreBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Ignore bad layers" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
   mSettings[sIgnoreBadLayers.envVar] = sIgnoreBadLayers;
 
+  // retry bad layers
+  const Setting sRetryBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_RETRY_BAD_LAYERS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Retry bad layers" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
+  mSettings[sRetryBadLayers.envVar] = sRetryBadLayers;
+
   // trust layer metadata
   const Setting sTrustLayerMetadata = { QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Trust layer metadata" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
   mSettings[sTrustLayerMetadata.envVar] = sTrustLayerMetadata;
@@ -412,6 +416,11 @@ bool QgsServerSettings::ignoreBadLayers() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS ).toBool();
 }
 
+bool QgsServerSettings::retryBadLayers() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_RETRY_BAD_LAYERS ).toBool();
+}
+
 bool QgsServerSettings::trustLayerMetadata() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
@@ -470,7 +479,14 @@ QString QgsServerSettings::projectCacheStrategy() const
   QString result = value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY ).toString();
   if ( result.compare( QLatin1String( "filesystem" ) ) && result.compare( QLatin1String( "periodic" ) ) && result.compare( QLatin1String( "off" ) ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy, expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Warning );
+    if ( !result.isEmpty() )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy '%1', expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ).arg( result ), "Server", Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "No cache strategy was specified. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Info );
+    }
     result = QStringLiteral( "filesystem" );
   }
   return result;

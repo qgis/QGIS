@@ -55,6 +55,11 @@ QString QgsAlignSingleRasterAlgorithm::groupId() const
 
 QString QgsAlignSingleRasterAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm aligns raster by resampling it to the same cell size and reprojecting to the same CRS as a reference raster." );
+}
+
+QString QgsAlignSingleRasterAlgorithm::shortDescription() const
+{
   return QObject::tr( "Aligns raster by resampling it to the same cell size and reprojecting to the same CRS as a reference raster." );
 }
 

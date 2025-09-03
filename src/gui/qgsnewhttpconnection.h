@@ -200,6 +200,11 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      */
     void updateServiceSpecificSettings();
 
+    /**
+     * Adjust height of dialog to fit the content.
+     */
+    void showEvent( QShowEvent *event ) override;
+
   private:
     ConnectionTypes mTypes = ConnectionWms;
 

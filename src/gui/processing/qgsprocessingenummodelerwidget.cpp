@@ -31,8 +31,8 @@ QgsProcessingEnumModelerWidget::QgsProcessingEnumModelerWidget( QWidget *parent 
   connect( mModel, &QStandardItemModel::itemChanged, this, &QgsProcessingEnumModelerWidget::onItemChanged );
 
   connect( mButtonAdd, &QToolButton::clicked, this, &QgsProcessingEnumModelerWidget::addItem );
-  connect( mButtonRemove, &QToolButton::clicked, this, [=] { removeItems( false ); } );
-  connect( mButtonClear, &QToolButton::clicked, this, [=] { removeItems( true ); } );
+  connect( mButtonRemove, &QToolButton::clicked, this, [this] { removeItems( false ); } );
+  connect( mButtonClear, &QToolButton::clicked, this, [this] { removeItems( true ); } );
 }
 
 void QgsProcessingEnumModelerWidget::addItem()

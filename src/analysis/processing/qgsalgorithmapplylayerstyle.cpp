@@ -46,7 +46,12 @@ QString QgsApplyLayerStyleAlgorithm::groupId() const
 
 QString QgsApplyLayerStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Applies the style to a layer. The style must be defined as QML file." );
+  return QObject::tr( "This algorithm applies the style to a layer. The style must be defined as QML file." );
+}
+
+QString QgsApplyLayerStyleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Applies the style from a QML file to a layer." );
 }
 
 QgsApplyLayerStyleAlgorithm *QgsApplyLayerStyleAlgorithm::createInstance() const

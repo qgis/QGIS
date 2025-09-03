@@ -67,6 +67,16 @@ void QgsProcessingToolboxTreeView::setFilterString( const QString &filter )
   }
 }
 
+void QgsProcessingToolboxTreeView::reset()
+{
+  QTreeView::reset();
+
+  if ( !mModel->filterString().isEmpty() )
+  {
+    expandAll();
+  }
+}
+
 const QgsProcessingAlgorithm *QgsProcessingToolboxTreeView::algorithmForIndex( const QModelIndex &index )
 {
   const QModelIndex sourceIndex = mModel->mapToSource( index );

@@ -437,7 +437,7 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 
   QCOMPARE( htmlItem->frameCount(), 1 );
 
-  auto dumpStack = [=] {
+  auto dumpStack = [] {
 #if 0 // for debugging
     // dump stack
     for ( int i = 0; i < mLayout->undoStack()->stack()->count(); ++i )
@@ -538,6 +538,23 @@ void TestQgsLayoutMultiFrame::registry()
   QCOMPARE( props.size(), 1 );
   registry.resolvePaths( QgsLayoutItemRegistry::PluginItem + 1, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
+
+  // Test remove multi frame type
+  QgsLayoutMultiFrameMetadata *metadata_42 = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 42, QStringLiteral( "TestMultiFrame42" ), create, resolve );
+  QVERIFY( registry.addLayoutMultiFrameType( metadata_42 ) );
+  QCOMPARE( registry.itemTypes().count(), 2 );
+  QCOMPARE( spyTypeAdded.value( 1 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 42 );
+
+  const QSignalSpy spyTypeRemoved( &registry, &QgsLayoutItemRegistry::multiFrameTypeRemoved );
+  QVERIFY( registry.removeLayoutMultiFrameType( QgsLayoutItemRegistry::PluginItem + 1 ) ); // Remove by id
+  QCOMPARE( spyTypeRemoved.count(), 1 );
+  QCOMPARE( spyTypeRemoved.value( 0 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 1 );
+  QCOMPARE( registry.itemTypes().count(), 1 );
+
+  QVERIFY( registry.removeLayoutMultiFrameType( metadata_42 ) ); // Remove by metadata
+  QCOMPARE( spyTypeRemoved.count(), 2 );
+  QCOMPARE( spyTypeRemoved.value( 1 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 42 );
+  QCOMPARE( registry.itemTypes().count(), 0 );
 }
 
 void TestQgsLayoutMultiFrame::deleteFrame()

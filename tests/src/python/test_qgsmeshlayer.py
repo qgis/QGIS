@@ -6,8 +6,10 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsMeshLayer, QgsMeshDatasetIndex
+from qgis.core import Qgis, QgsProject, QgsMeshLayer, QgsMeshDatasetIndex
 import unittest
+import tempfile
+
 from qgis.testing import start_app, QgisTestCase
 
 start_app()
@@ -62,6 +64,35 @@ class TestQgsMeshLayer(QgisTestCase):
         self.assertFalse(
             layer.datasetGroupMetadata(QgsMeshDatasetIndex(4)).parentQuantityName()
         )
+
+    def test_legend_settings(self):
+        ml = QgsMeshLayer(
+            self.get_test_data_path("mesh/netcdf_parent_quantity.nc").as_posix(),
+            "test",
+            "mdal",
+        )
+        self.assertTrue(ml.isValid())
+
+        self.assertFalse(ml.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        ml.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        self.assertTrue(ml.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+
+        p = QgsProject()
+        p.addMapLayer(ml)
+
+        # test saving and restoring
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + "/test.qgs"))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + "/test.qgs"))
+
+            ml2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(ml2.name(), ml.name())
+
+            self.assertTrue(
+                ml2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
+            )
 
 
 if __name__ == "__main__":

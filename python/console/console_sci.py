@@ -547,5 +547,5 @@ class ShellScintilla(QgsCodeEditorPython):
             context_help_action.triggered.connect(
                 partial(self.showApiDocumentation, word, force_search=True)
             )
-            context_help_action.setShortcut("F1")
+            context_help_action.setShortcut(QKeySequence.StandardKey.HelpContents)
             menu.addAction(context_help_action)

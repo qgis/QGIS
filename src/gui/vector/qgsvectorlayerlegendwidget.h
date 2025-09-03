@@ -30,6 +30,7 @@ class QPushButton;
 class QTreeView;
 class QTreeWidget;
 class QTreeWidgetItem;
+class QCheckBox;
 
 class QgsFontButton;
 class QgsCollapsibleGroupBox;
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     void applyLabelLegend();
 
   private:
+    QCheckBox *mIncludeByDefaultInLayoutLegendsCheck = nullptr;
     QTreeView *mLegendTreeView = nullptr;
     QgsFontButton *mTextOnSymbolFormatButton = nullptr;
     QPushButton *mTextOnSymbolFromExpressionButton = nullptr;

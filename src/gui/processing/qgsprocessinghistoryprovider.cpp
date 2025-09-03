@@ -132,7 +132,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
           QObject::tr( "Copy as Python Command" ), menu
         );
         pythonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
-        QObject::connect( pythonAction, &QAction::triggered, menu, [=] {
+        QObject::connect( pythonAction, &QAction::triggered, menu, [this] {
           copyText( mPythonCommand );
         } );
         menu->addAction( pythonAction );
@@ -143,7 +143,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
           QObject::tr( "Copy as qgis_process Command" ), menu
         );
         processAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
-        QObject::connect( processAction, &QAction::triggered, menu, [=] {
+        QObject::connect( processAction, &QAction::triggered, menu, [this] {
           copyText( mProcessCommand );
         } );
         menu->addAction( processAction );
@@ -154,7 +154,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
           QObject::tr( "Copy as JSON" ), menu
         );
         inputsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
-        QObject::connect( inputsAction, &QAction::triggered, menu, [=] {
+        QObject::connect( inputsAction, &QAction::triggered, menu, [this] {
           copyText( QString::fromStdString( QgsJsonUtils::jsonFromVariant( mInputs ).dump( 2 ) ) );
         } );
         menu->addAction( inputsAction );
@@ -170,7 +170,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *createTestAction = new QAction(
           QObject::tr( "Create Test…" ), menu
         );
-        QObject::connect( createTestAction, &QAction::triggered, menu, [=] {
+        QObject::connect( createTestAction, &QAction::triggered, menu, [this] {
           mProvider->emitCreateTest( mPythonCommand );
         } );
         menu->addAction( createTestAction );

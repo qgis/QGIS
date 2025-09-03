@@ -43,12 +43,16 @@ class TestQgsMapToolRectangle : public QObject
 
     void testRectangleFromCenter();
     void testRectangleFromCenterWithDeletedVertex();
+    void testRectangleFromCenterNotEnoughPoints();
     void testRectangleFromExtent();
     void testRectangleFromExtentWithDeletedVertex();
+    void testRectangleFromExtentNotEnoughPoints();
     void testRectangleFrom3PointsDistance();
     void testRectangleFrom3PointsDistanceWithDeletedVertex();
+    void testRectangleFrom3PointsDistanceNotEnoughPoints();
     void testRectangleFrom3PointsProjected();
     void testRectangleFrom3PointsProjectedWithDeletedVertex();
+    void testRectangleFrom3PointsProjectedNotEnoughPoints();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -157,6 +161,27 @@ void TestQgsMapToolRectangle::testRectangleFromCenterWithDeletedVertex()
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
+void TestQgsMapToolRectangle::testRectangleFromCenterNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeRectangleCenterMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
+}
+
 void TestQgsMapToolRectangle::testRectangleFromExtent()
 {
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 222 );
@@ -208,6 +233,27 @@ void TestQgsMapToolRectangle::testRectangleFromExtentWithDeletedVertex()
 
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+}
+
+void TestQgsMapToolRectangle::testRectangleFromExtentNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeRectangleExtentMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
 }
 
 
@@ -268,6 +314,35 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsDistanceWithDeletedVertex(
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 
+void TestQgsMapToolRectangle::testRectangleFrom3PointsDistanceNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeRectangle3PointsMetadata md( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Distance );
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
+}
+
 void TestQgsMapToolRectangle::testRectangleFrom3PointsProjected()
 {
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 111 );
@@ -323,6 +398,35 @@ void TestQgsMapToolRectangle::testRectangleFrom3PointsProjectedWithDeletedVertex
 
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+}
+
+void TestQgsMapToolRectangle::testRectangleFrom3PointsProjectedNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeRectangle3PointsMetadata md( QgsMapToolShapeRectangle3PointsMetadata::CreateMode::Projected );
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
 }
 QGSTEST_MAIN( TestQgsMapToolRectangle )
 #include "testqgsmaptoolrectangle.moc"

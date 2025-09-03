@@ -1,0 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccollection.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsStacCollection : QgsStacCatalog
+{
+%Docstring(signature="appended")
+Class for storing a STAC Collection's data.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstaccollection.h"
+%End
+  public:
+
+    QgsStacCollection( const QString &id,
+                       const QString &version,
+                       const QString &description,
+                       const QVector< QgsStacLink > &links,
+                       const QString &license,
+                       const QgsStacExtent &extent );
+%Docstring
+Constructs a valid QgsStacCollection
+
+:param id: Identifier for the Collection that is unique across the
+           provider.
+:param version: The STAC version the Collection implements.
+:param description: Detailed multi-line description to fully explain the
+                    Collection. CommonMark 0.29 syntax MAY be used for
+                    rich text representation.
+:param links: A list of references to other documents.
+:param license: Collection's license(s), either a SPDX License
+                identifier, various if multiple licenses apply or
+                proprietary for all other cases.
+:param extent: Spatial and temporal extents of the collection.
+%End
+
+    virtual Qgis::StacObjectType type() const;
+
+    virtual QString toHtml() const;
+
+
+    QStringList keywords() const;
+%Docstring
+Returns the list of keywords describing the Collection
+%End
+
+    void setKeywords( const QStringList &keywords );
+%Docstring
+Sets the list of ``keywords`` describing the Collection
+%End
+
+    QString license() const;
+%Docstring
+Returns the Collection's license(s), either a SPDX License identifier,
+various if multiple licenses apply or proprietary for all other cases.
+%End
+
+    void setLicense( const QString &license );
+%Docstring
+Sets the Collection's license(s), either a SPDX License identifier,
+various if multiple licenses apply or proprietary for all other cases.
+%End
+
+    QVector<QgsStacProvider> providers() const;
+%Docstring
+Returns a list of providers, which may include all organizations
+capturing or processing the data or the hosting provider. Providers
+should be listed in chronological order with the most recent provider
+being the last element of the list.
+%End
+
+    void setProviders( const QVector<QgsStacProvider> &providers );
+%Docstring
+Sets a list of ``providers``, which may include all organizations
+capturing or processing the data or the hosting provider. Providers
+should be listed in chronological order with the most recent provider
+being the last element of the list.
+%End
+
+    QgsStacExtent extent() const;
+%Docstring
+Returns the collection's spatial and temporal extent
+%End
+
+    void setExtent( const QgsStacExtent &extent );
+%Docstring
+Sets the collection's spatial and temporal extent
+%End
+
+    QVariantMap summaries() const;
+%Docstring
+Returns a map of property summaries from the collection
+%End
+
+    void setSummaries( const QVariantMap &summaries );
+%Docstring
+Sets the map of property summaries to the collection
+%End
+
+    QMap<QString, QgsStacAsset> assets() const;
+%Docstring
+Returns a dictionary of asset objects in the catalog, each with a unique
+id key.
+%End
+
+    void setAssets( const QMap<QString, QgsStacAsset> &assets );
+%Docstring
+Sets the asset objects in the catalog, each with a unique id key.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccollection.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

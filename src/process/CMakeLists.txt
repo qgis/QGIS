@@ -15,7 +15,13 @@ endif()
 ########################################################
 # Build
 
-add_executable (qgis_process MACOSX_BUNDLE ${QGIS_PROCESS_SRCS})
+win32_icon(QGIS_PROCESS_SRCS)
+win32_version_info("QGIS Process Command Tool" "qgis_process" QGIS_PROCESS_SRCS)
+
+add_executable (qgis_process ${QGIS_PROCESS_SRCS})
+if (QGISPOSTFIX)
+  set_target_properties(qgis_process PROPERTIES RUNTIME_OUTPUT_NAME qgis_process${QGISPOSTFIX})
+endif()
 
 # require c++17
 target_compile_features(qgis_process PRIVATE cxx_std_17)
@@ -28,6 +34,12 @@ target_include_directories(qgis_process PUBLIC
 if (UNIX AND NOT ANDROID)
   include_directories(SYSTEM
     ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
+  )
+endif()
+
+if (WITH_PDAL)
+  target_include_directories(qgis_process PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
   )
 endif()
 
@@ -53,10 +65,6 @@ endif()
 if (WITH_BINDINGS)
   target_link_libraries(qgis_process qgispython)
   add_definitions(-DWITH_BINDINGS)
-endif()
-
-if(HAVE_OPENCL)
-  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 # install

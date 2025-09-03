@@ -9,7 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 import unittest
 
 from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
@@ -24,6 +24,8 @@ from qgis.core import (
     QgsBasicNumericFormat,
     QgsCurrencyNumericFormat,
     QgsPercentageNumericFormat,
+    QgsPalLayerSettings,
+    QgsProperty,
 )
 from qgis.testing import start_app, QgisTestCase
 
@@ -72,6 +74,47 @@ class TestQgsRasterLabeling(QgisTestCase):
 
         self.assertIsInstance(raster_layer2.labeling(), QgsRasterLayerSimpleLabeling)
         self.assertTrue(raster_layer2.labelsEnabled())
+
+    def testHasNonDefaultCompositionModeSimple(self):
+        labeling = QgsRasterLayerSimpleLabeling()
+        self.assertFalse(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
+        labeling.setTextFormat(t)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.FontBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling.setTextFormat(t)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.ShadowBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling.setTextFormat(t)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.BufferBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling.setTextFormat(t)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.ShapeBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling.setTextFormat(t)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
 
     def test_simple_labeling(self):
         labeling = QgsRasterLayerSimpleLabeling()

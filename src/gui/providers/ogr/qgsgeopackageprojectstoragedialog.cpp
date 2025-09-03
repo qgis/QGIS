@@ -47,7 +47,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   mFileWidget->lineEdit()->hide();
   mFileWidget->setFilter( QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) ) );
 
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     const QString fileName { QFileInfo( path ).fileName() };
     if ( mCboConnection->findData( path ) == -1 )
     {
@@ -79,7 +79,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   }
 
   connect( mCboProject, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
-  connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [=]( const QString & ) {
+  connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString & ) {
     mCboProject->setItemData( mCboProject->currentIndex(), false );
   } );
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );

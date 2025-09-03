@@ -24,9 +24,9 @@ QgsStacCatalog::QgsStacCatalog( const QString &id,
 {
 }
 
-QgsStacObject::Type QgsStacCatalog::type() const
+Qgis::StacObjectType QgsStacCatalog::type() const
 {
-  return QgsStacObject::Type::Catalog;
+  return Qgis::StacObjectType::Catalog;
 }
 
 QString QgsStacCatalog::toHtml() const

@@ -391,8 +391,8 @@ QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent, const Qgs
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( {}, mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
-  connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [=] { updateColumns(); } );
-  connect( mModel, &QgsAggregateMappingModel::modelReset, this, [=] { updateColumns(); } );
+  connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [this] { updateColumns(); } );
+  connect( mModel, &QgsAggregateMappingModel::modelReset, this, [this] { updateColumns(); } );
   connect( mModel, &QgsAggregateMappingModel::dataChanged, this, &QgsAggregateMappingWidget::changed );
   connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, &QgsAggregateMappingWidget::changed );
   connect( mModel, &QgsAggregateMappingModel::rowsRemoved, this, &QgsAggregateMappingWidget::changed );
@@ -556,7 +556,7 @@ QWidget *QgsAggregateMappingDelegate::createEditor( QWidget *parent, const QStyl
     ++i;
   }
 
-  connect( editor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int currentIndex ) {
+  connect( editor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this, editor]( int currentIndex ) {
     Q_UNUSED( currentIndex )
     const_cast<QgsAggregateMappingDelegate *>( this )->emit commitData( editor );
   } );
@@ -588,7 +588,7 @@ const QStringList QgsAggregateMappingDelegate::aggregates()
 {
   static QStringList sAggregates;
   static std::once_flag initialized;
-  std::call_once( initialized, [=]() {
+  std::call_once( initialized, []() {
     sAggregates << QStringLiteral( "first_value" )
                 << QStringLiteral( "last_value" );
 

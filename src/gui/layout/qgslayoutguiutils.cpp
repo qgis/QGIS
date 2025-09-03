@@ -112,8 +112,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // map item
 
-  auto mapItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutMapWidget( qobject_cast<QgsLayoutItemMap *>( item ), mapCanvas ); }, createRubberBand );
-  mapItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
+  auto mapItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), [mapCanvas]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutMapWidget( qobject_cast<QgsLayoutItemMap *>( item ), mapCanvas ); }, createRubberBand );
+  mapItemMetadata->setItemAddedToLayoutFunction( [mapCanvas]( QgsLayoutItem *item, const QVariantMap & ) {
     QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
     Q_ASSERT( map );
 
@@ -158,13 +158,13 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // picture item
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutPictureWidget( qobject_cast<QgsLayoutItemPicture *>( item ) ); }, createRubberBand ) );
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutPictureWidget( qobject_cast<QgsLayoutItemPicture *>( item ) ); }, createRubberBand ) );
 
 
   // label item
 
-  auto labelItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutLabel, QObject::tr( "Label" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutLabelWidget( qobject_cast<QgsLayoutItemLabel *>( item ) ); }, createRubberBand );
-  labelItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap &properties ) {
+  auto labelItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutLabel, QObject::tr( "Label" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutLabelWidget( qobject_cast<QgsLayoutItemLabel *>( item ) ); }, createRubberBand );
+  labelItemMetadata->setItemAddedToLayoutFunction( []( QgsLayoutItem *item, const QVariantMap &properties ) {
     QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item );
     Q_ASSERT( label );
 
@@ -182,7 +182,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     label->attemptSetSceneRect( QRectF( label->pos().x(), label->pos().y(), labelWidth, labelHeight ) );
   } );
 
-  labelItemMetadata->setItemDoubleClickedFunction( [=]( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) {
+  labelItemMetadata->setItemDoubleClickedFunction( []( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) {
     QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item );
 
     // size to text doesn't have any real meaning for HTML content, skip it
@@ -196,6 +196,10 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
       case Qgis::MouseHandlesAction::MoveItem:
       case Qgis::MouseHandlesAction::NoAction:
       case Qgis::MouseHandlesAction::SelectItem:
+      case Qgis::MouseHandlesAction::RotateTopLeft:
+      case Qgis::MouseHandlesAction::RotateTopRight:
+      case Qgis::MouseHandlesAction::RotateBottomLeft:
+      case Qgis::MouseHandlesAction::RotateBottomRight:
         return;
 
       case Qgis::MouseHandlesAction::ResizeUp:
@@ -241,8 +245,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // legend item
 
-  auto legendItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutLegend, QObject::tr( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutLegendWidget( qobject_cast<QgsLayoutItemLegend *>( item ), mapCanvas ); }, createRubberBand );
-  legendItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
+  auto legendItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutLegend, QObject::tr( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ), [mapCanvas]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutLegendWidget( qobject_cast<QgsLayoutItemLegend *>( item ), mapCanvas ); }, createRubberBand );
+  legendItemMetadata->setItemAddedToLayoutFunction( []( QgsLayoutItem *item, const QVariantMap & ) {
     QgsLayoutItemLegend *legend = qobject_cast<QgsLayoutItemLegend *>( item );
     Q_ASSERT( legend );
 
@@ -291,8 +295,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // scalebar item
 
-  auto scalebarItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutScaleBarWidget( qobject_cast<QgsLayoutItemScaleBar *>( item ) ); }, createRubberBand );
-  scalebarItemMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
+  auto scalebarItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutScaleBarWidget( qobject_cast<QgsLayoutItemScaleBar *>( item ) ); }, createRubberBand );
+  scalebarItemMetadata->setItemAddedToLayoutFunction( []( QgsLayoutItem *item, const QVariantMap & ) {
     QgsLayoutItemScaleBar *scalebar = qobject_cast<QgsLayoutItemScaleBar *>( item );
     Q_ASSERT( scalebar );
 
@@ -313,7 +317,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   // north arrow
   auto northArrowMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
     QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "North Arrow" ), QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.svg" ) ),
-    [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
+    []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
       return new QgsLayoutPictureWidget( qobject_cast<QgsLayoutItemPicture *>( item ) );
     },
     createRubberBand
@@ -341,7 +345,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     picture->setId( northArrowCount > 0 ? QObject::tr( "North Arrow %1" ).arg( northArrowCount + 1 ) : QObject::tr( "North Arrow" ) );
     return picture.release();
   } );
-  northArrowMetadata->setItemAddedToLayoutFunction( [=]( QgsLayoutItem *item, const QVariantMap & ) {
+  northArrowMetadata->setItemAddedToLayoutFunction( []( QgsLayoutItem *item, const QVariantMap & ) {
     QgsLayoutItemPicture *picture = qobject_cast<QgsLayoutItemPicture *>( item );
     Q_ASSERT( picture );
 
@@ -377,12 +381,12 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   } ) );
 
   // marker
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMarker, QObject::tr( "Marker" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMarker.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutMarkerWidget( qobject_cast<QgsLayoutItemMarker *>( item ) ); }, nullptr ) );
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMarker, QObject::tr( "Marker" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMarker.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutMarkerWidget( qobject_cast<QgsLayoutItemMarker *>( item ) ); }, nullptr ) );
 
   // arrow
   auto arrowMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
     QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Arrow" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddArrow.svg" ) ),
-    [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
+    []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
       return new QgsLayoutPolylineWidget( qobject_cast<QgsLayoutItemPolyline *>( item ) );
     },
     createRubberBand, QString(), true
@@ -409,7 +413,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   auto polygonMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
     QgsLayoutItemRegistry::LayoutPolygon, QObject::tr( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
-    [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
+    []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
       return new QgsLayoutPolygonWidget( qobject_cast<QgsLayoutItemPolygon *>( item ) );
     },
     createRubberBand, QStringLiteral( "nodes" ), true
@@ -431,7 +435,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   auto polylineMetadata = std::make_unique<QgsLayoutItemGuiMetadata>(
     QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ),
-    [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
+    []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
       return new QgsLayoutPolylineWidget( qobject_cast<QgsLayoutItemPolyline *>( item ) );
     },
     createRubberBand, QStringLiteral( "nodes" ), true
@@ -452,8 +456,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // html item
 
-  auto htmlItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutHtml, QObject::tr( "HTML" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHtml.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutHtmlWidget( qobject_cast<QgsLayoutFrame *>( item ) ); }, createRubberBand );
-  htmlItemMetadata->setItemCreationFunction( [=]( QgsLayout *layout ) -> QgsLayoutItem * {
+  auto htmlItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutHtml, QObject::tr( "HTML" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHtml.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutHtmlWidget( qobject_cast<QgsLayoutFrame *>( item ) ); }, createRubberBand );
+  htmlItemMetadata->setItemCreationFunction( []( QgsLayout *layout ) -> QgsLayoutItem * {
     auto htmlMultiFrame = std::make_unique<QgsLayoutItemHtml>( layout );
     QgsLayoutItemHtml *html = htmlMultiFrame.get();
     layout->addMultiFrame( htmlMultiFrame.release() );
@@ -467,8 +471,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // attribute table item
 
-  auto attributeTableItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutAttributeTableWidget( qobject_cast<QgsLayoutFrame *>( item ) ); }, createRubberBand );
-  attributeTableItemMetadata->setItemCreationFunction( [=]( QgsLayout *layout ) -> QgsLayoutItem * {
+  auto attributeTableItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutAttributeTableWidget( qobject_cast<QgsLayoutFrame *>( item ) ); }, createRubberBand );
+  attributeTableItemMetadata->setItemCreationFunction( []( QgsLayout *layout ) -> QgsLayoutItem * {
     auto tableMultiFrame = std::make_unique<QgsLayoutItemAttributeTable>( layout );
     QgsLayoutItemAttributeTable *table = tableMultiFrame.get();
 
@@ -509,8 +513,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // manual table item
 
-  auto manualTableItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddManualTable.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutManualTableWidget( qobject_cast<QgsLayoutFrame *>( item ) ); }, createRubberBand );
-  manualTableItemMetadata->setItemCreationFunction( [=]( QgsLayout *layout ) -> QgsLayoutItem * {
+  auto manualTableItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddManualTable.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutManualTableWidget( qobject_cast<QgsLayoutFrame *>( item ) ); }, createRubberBand );
+  manualTableItemMetadata->setItemCreationFunction( []( QgsLayout *layout ) -> QgsLayoutItem * {
     auto tableMultiFrame = std::make_unique<QgsLayoutItemManualTable>( layout );
     QgsLayoutItemManualTable *table = tableMultiFrame.get();
 
@@ -543,7 +547,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     // cppcheck-suppress returnDanglingLifetime
     return f;
   } );
-  manualTableItemMetadata->setItemDoubleClickedFunction( [=]( QgsLayoutItem *item, Qgis::MouseHandlesAction ) {
+  manualTableItemMetadata->setItemDoubleClickedFunction( []( QgsLayoutItem *item, Qgis::MouseHandlesAction ) {
     QgsLayoutManualTableWidget::openTableDesigner( qobject_cast<QgsLayoutFrame *>( item ) );
   } );
   registry->addLayoutItemGuiMetadata( manualTableItemMetadata.release() );
@@ -551,8 +555,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // elevation profile item
 
-  auto elevationProfileItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionElevationProfile.svg" ) ), [=]( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutElevationProfileWidget( qobject_cast<QgsLayoutItemElevationProfile *>( item ) ); }, createRubberBand );
-  elevationProfileItemMetadata->setItemCreationFunction( [=]( QgsLayout *layout ) -> QgsLayoutItem * {
+  auto elevationProfileItemMetadata = std::make_unique<QgsLayoutItemGuiMetadata>( QgsLayoutItemRegistry::LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionElevationProfile.svg" ) ), []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * { return new QgsLayoutElevationProfileWidget( qobject_cast<QgsLayoutItemElevationProfile *>( item ) ); }, createRubberBand );
+  elevationProfileItemMetadata->setItemCreationFunction( []( QgsLayout *layout ) -> QgsLayoutItem * {
     auto profileItem = std::make_unique<QgsLayoutItemElevationProfile>( layout );
 
     //set default fonts from settings

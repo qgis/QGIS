@@ -15,7 +15,6 @@
 
 #include "qgsgltfutils.h"
 
-#include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgsmatrix4x4.h"
 #include "qgsconfig.h"
@@ -394,6 +393,401 @@ std::size_t QgsGltfUtils::sourceSceneForModel( const tinygltf::Model &model, boo
 
   // just return first scene
   return 0;
+}
+
+
+#ifdef HAVE_DRACO
+
+void dumpDracoModelInfo( draco::Mesh *dracoMesh )
+{
+  std::cout << "Decoded Draco Mesh:" << dracoMesh->num_points() << " points / " << dracoMesh->num_faces() << " faces" << std::endl;
+  draco::GeometryMetadata *geometryMetadata = dracoMesh->metadata();
+
+  std::cout << "Global Geometry Metadata:" << std::endl;
+  for ( const auto &entry : geometryMetadata->entries() )
+  {
+    std::cout << "  Key: " << entry.first << ", Value: " << entry.second.data().size() << std::endl;
+  }
+
+  std::cout << "\nAttribute Metadata:" << std::endl;
+  for ( int32_t i = 0; i < dracoMesh->num_attributes(); ++i )
+  {
+    const draco::PointAttribute *attribute = dracoMesh->attribute( i );
+    if ( !attribute )
+      continue;
+
+    std::cout << "  Attribute ID: " << attribute->unique_id() << " / " << draco::PointAttribute::TypeToString( attribute->attribute_type() ) << std::endl;
+    if ( const draco::AttributeMetadata *attributeMetadata = geometryMetadata->attribute_metadata( attribute->unique_id() ) )
+    {
+      for ( const auto &entry : attributeMetadata->entries() )
+      {
+        std::cout << "    Key: " << entry.first << ", Length: " << entry.second.data().size() << std::endl;
+      }
+    }
+  }
+}
+
+
+bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext &context, tinygltf::Model &model, QString *errors )
+{
+  //
+  // load the model in decoder and do basic sanity checks
+  //
+
+  draco::Decoder decoder;
+  draco::DecoderBuffer decoderBuffer;
+  decoderBuffer.Init( data.constData(), data.size() );
+
+  draco::StatusOr<draco::EncodedGeometryType> geometryTypeStatus = decoder.GetEncodedGeometryType( &decoderBuffer );
+  if ( !geometryTypeStatus.ok() )
+  {
+    if ( errors )
+      *errors = "Failed to get geometry type: " + QString( geometryTypeStatus.status().error_msg() );
+    return false;
+  }
+  if ( geometryTypeStatus.value() != draco::EncodedGeometryType::TRIANGULAR_MESH )
+  {
+    if ( errors )
+      *errors = "Not a triangular mesh";
+    return false;
+  }
+
+  draco::StatusOr<std::unique_ptr<draco::Mesh>> meshStatus = decoder.DecodeMeshFromBuffer( &decoderBuffer );
+  if ( !meshStatus.ok() )
+  {
+    if ( errors )
+      *errors = "Failed to decode mesh: " + QString( meshStatus.status().error_msg() );
+    return false;
+  }
+
+  std::unique_ptr<draco::Mesh> dracoMesh = std::move( meshStatus ).value();
+
+  draco::GeometryMetadata *geometryMetadata = dracoMesh->metadata();
+  if ( !geometryMetadata )
+  {
+    if ( errors )
+      *errors = "Geometry metadata missing";
+    return false;
+  }
+
+  int posAccessorIndex = -1;
+  int normalAccessorIndex = -1;
+  int uvAccessorIndex = -1;
+  int indicesAccessorIndex = -1;
+
+  //
+  // parse XYZ position coordinates
+  //
+
+  const draco::PointAttribute *posAttribute = dracoMesh->GetNamedAttribute( draco::GeometryAttribute::POSITION );
+  if ( posAttribute )
+  {
+    double scaleX = 1, scaleY = 1;
+    const draco::AttributeMetadata *posMetadata = geometryMetadata->attribute_metadata( posAttribute->unique_id() );
+    if ( posMetadata )
+    {
+      posMetadata->GetEntryDouble( "i3s-scale_x", &scaleX );
+      posMetadata->GetEntryDouble( "i3s-scale_y", &scaleY );
+    }
+
+    QgsVector3D nodeCenterLonLat = context.datasetToSceneTransform.transform( context.nodeCenterEcef, Qgis::TransformDirection::Reverse );
+
+    std::vector<unsigned char> posData( dracoMesh->num_points() * 3 * sizeof( float ) );
+    float *posPtr = reinterpret_cast<float *>( posData.data() );
+
+    float values[4];
+    for ( draco::PointIndex i( 0 ); i < dracoMesh->num_points(); ++i )
+    {
+      posAttribute->ConvertValue<float>( posAttribute->mapped_index( i ), posAttribute->num_components(), values );
+
+      // when using EPSG:4326, the X,Y coordinates are in degrees(!) relative to the node's center (in lat/lon degrees),
+      // but they are scaled (because they are several orders of magnitude smaller than Z coordinates).
+      // That scaling is applied so that Draco's compression works well.
+      // when using local CRS, scaling is not applied (not needed)
+      if ( context.isGlobalMode )
+      {
+        double lonDeg = double( values[0] ) * scaleX + nodeCenterLonLat.x();
+        double latDeg = double( values[1] ) * scaleY + nodeCenterLonLat.y();
+        double alt = double( values[2] ) + nodeCenterLonLat.z();
+        QgsVector3D ecef = context.datasetToSceneTransform.transform( QgsVector3D( lonDeg, latDeg, alt ) );
+        QgsVector3D localPos = ecef - context.nodeCenterEcef;
+
+        values[0] = static_cast<float>( localPos.x() );
+        values[1] = static_cast<float>( localPos.y() );
+        values[2] = static_cast<float>( localPos.z() );
+      }
+
+      posPtr[i.value() * 3 + 0] = values[0];
+      posPtr[i.value() * 3 + 1] = values[1];
+      posPtr[i.value() * 3 + 2] = values[2];
+    }
+
+    tinygltf::Buffer posBuffer;
+    posBuffer.data = posData;
+    model.buffers.push_back( posBuffer );
+
+    tinygltf::BufferView posBufferView;
+    posBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
+    posBufferView.byteOffset = 0;
+    posBufferView.byteLength = posData.size();
+    posBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
+    model.bufferViews.push_back( posBufferView );
+
+    tinygltf::Accessor posAccessor;
+    posAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
+    posAccessor.byteOffset = 0;
+    posAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+    posAccessor.count = dracoMesh->num_points();
+    posAccessor.type = TINYGLTF_TYPE_VEC3;
+    model.accessors.push_back( posAccessor );
+
+    posAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
+  }
+
+  //
+  // parse normal vectors
+  //
+
+  const draco::PointAttribute *normalAttribute = dracoMesh->GetNamedAttribute( draco::GeometryAttribute::NORMAL );
+  if ( normalAttribute )
+  {
+    std::vector<unsigned char> normalData( dracoMesh->num_points() * 3 * sizeof( float ) );
+    float *normalPtr = reinterpret_cast<float *>( normalData.data() );
+
+    float values[3];
+    for ( draco::PointIndex i( 0 ); i < dracoMesh->num_points(); ++i )
+    {
+      normalAttribute->ConvertValue<float>( normalAttribute->mapped_index( i ), normalAttribute->num_components(), values );
+
+      normalPtr[i.value() * 3 + 0] = values[0];
+      normalPtr[i.value() * 3 + 1] = values[1];
+      normalPtr[i.value() * 3 + 2] = values[2];
+    }
+
+    tinygltf::Buffer normalBuffer;
+    normalBuffer.data = normalData;
+    model.buffers.push_back( normalBuffer );
+
+    tinygltf::BufferView normalBufferView;
+    normalBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
+    normalBufferView.byteOffset = 0;
+    normalBufferView.byteLength = normalData.size();
+    normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
+    model.bufferViews.push_back( normalBufferView );
+
+    tinygltf::Accessor normalAccessor;
+    normalAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
+    normalAccessor.byteOffset = 0;
+    normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+    normalAccessor.count = dracoMesh->num_points();
+    normalAccessor.type = TINYGLTF_TYPE_VEC3;
+    model.accessors.push_back( normalAccessor );
+
+    normalAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
+  }
+
+  //
+  // parse UV texture coordinates
+  //
+
+  const draco::PointAttribute *uvAttribute = dracoMesh->GetNamedAttribute( draco::GeometryAttribute::TEX_COORD );
+  if ( uvAttribute )
+  {
+    std::vector<unsigned char> uvData( dracoMesh->num_points() * 2 * sizeof( float ) );
+    float *uvPtr = reinterpret_cast<float *>( uvData.data() );
+
+    // try to find UV region attribute - if it exists, we will need to adjust
+    // texture UV values based on its regions
+    const draco::PointAttribute *uvRegionAttribute = nullptr;
+    for ( int32_t i = 0; i < dracoMesh->num_attributes(); ++i )
+    {
+      const draco::PointAttribute *attribute = dracoMesh->attribute( i );
+      if ( !attribute )
+        continue;
+
+      draco::AttributeMetadata *attributeMetadata = geometryMetadata->attribute_metadata( attribute->unique_id() );
+      if ( !attributeMetadata )
+        continue;
+
+      std::string i3sAttributeType;
+      if ( attributeMetadata->GetEntryString( "i3s-attribute-type", &i3sAttributeType ) && i3sAttributeType == "uv-region" )
+      {
+        uvRegionAttribute = attribute;
+      }
+    }
+
+    float values[2];
+    for ( draco::PointIndex i( 0 ); i < dracoMesh->num_points(); ++i )
+    {
+      uvAttribute->ConvertValue<float>( uvAttribute->mapped_index( i ), uvAttribute->num_components(), values );
+
+      if ( uvRegionAttribute )
+      {
+        // UV regions are 4 x uint16 per each vertex [uMin, vMin, uMax, vMax], and they define
+        // a sub-region within a texture to which UV coordinates of each vertex belong.
+        // I have no idea why there's such extra complication for clients... the final
+        // UV coordinates could have been easily calculated by the dataset producer.
+        uint16_t uvRegion[4];
+        uvRegionAttribute->ConvertValue<uint16_t>( uvRegionAttribute->mapped_index( i ), uvRegionAttribute->num_components(), uvRegion );
+        float uMin = static_cast<float>( uvRegion[0] ) / 65535.f;
+        float vMin = static_cast<float>( uvRegion[1] ) / 65535.f;
+        float uMax = static_cast<float>( uvRegion[2] ) / 65535.f;
+        float vMax = static_cast<float>( uvRegion[3] ) / 65535.f;
+        values[0] = uMin + values[0] * ( uMax - uMin );
+        values[1] = vMin + values[1] * ( vMax - vMin );
+      }
+
+      uvPtr[i.value() * 2 + 0] = values[0];
+      uvPtr[i.value() * 2 + 1] = values[1];
+    }
+
+    tinygltf::Buffer uvBuffer;
+    uvBuffer.data = uvData;
+    model.buffers.push_back( uvBuffer );
+
+    tinygltf::BufferView uvBufferView;
+    uvBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
+    uvBufferView.byteOffset = 0;
+    uvBufferView.byteLength = uvData.size();
+    uvBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
+    model.bufferViews.push_back( uvBufferView );
+
+    tinygltf::Accessor uvAccessor;
+    uvAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
+    uvAccessor.byteOffset = 0;
+    uvAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+    uvAccessor.count = dracoMesh->num_points();
+    uvAccessor.type = TINYGLTF_TYPE_VEC2;
+    model.accessors.push_back( uvAccessor );
+
+    uvAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
+  }
+
+  //
+  // parse indices of triangles
+  //
+
+  // TODO: to save some memory, we could use only 1 or 2 bytes per vertex if the mesh is small enough
+  std::vector<unsigned char> indexData;
+  indexData.resize( dracoMesh->num_faces() * 3 * sizeof( quint32 ) );
+  Q_ASSERT( sizeof( dracoMesh->face( draco::FaceIndex( 0 ) )[0] ) == sizeof( quint32 ) );
+  memcpy( indexData.data(), &dracoMesh->face( draco::FaceIndex( 0 ) )[0], indexData.size() );
+
+  tinygltf::Buffer gltfIndexBuffer;
+  gltfIndexBuffer.data = indexData;
+  model.buffers.push_back( gltfIndexBuffer );
+
+  tinygltf::BufferView indexBufferView;
+  indexBufferView.buffer = static_cast<int>( model.buffers.size() ) - 1;
+  indexBufferView.byteLength = dracoMesh->num_faces() * 3 * sizeof( quint32 );
+  indexBufferView.byteOffset = 0;
+  indexBufferView.byteStride = 0;
+  indexBufferView.target = TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER;
+  model.bufferViews.emplace_back( std::move( indexBufferView ) );
+
+  tinygltf::Accessor indicesAccessor;
+  indicesAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
+  indicesAccessor.byteOffset = 0;
+  indicesAccessor.count = dracoMesh->num_faces() * 3;
+  indicesAccessor.type = TINYGLTF_TYPE_SCALAR;
+  indicesAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
+  model.accessors.push_back( indicesAccessor );
+
+  indicesAccessorIndex = static_cast<int>( model.accessors.size() ) - 1;
+
+  //
+  // construct the GLTF model
+  //
+
+  tinygltf::Material material;
+  int materialIndex = loadMaterialFromMetadata( context.materialInfo, model );
+
+  tinygltf::Primitive primitive;
+  primitive.mode = TINYGLTF_MODE_TRIANGLES;
+  primitive.material = materialIndex;
+  primitive.indices = indicesAccessorIndex;
+  if ( posAccessorIndex != -1 )
+    primitive.attributes["POSITION"] = posAccessorIndex;
+  if ( normalAccessorIndex != -1 )
+    primitive.attributes["NORMAL"] = normalAccessorIndex;
+  if ( uvAccessorIndex != -1 )
+    primitive.attributes["TEXCOORD_0"] = uvAccessorIndex;
+
+  tinygltf::Mesh tiny_mesh;
+  tiny_mesh.primitives.push_back( primitive );
+  model.meshes.push_back( tiny_mesh );
+
+  tinygltf::Node node;
+  node.mesh = 0;
+  model.nodes.push_back( node );
+
+  tinygltf::Scene scene;
+  scene.nodes.push_back( 0 );
+  model.scenes.push_back( scene );
+
+  model.defaultScene = 0;
+  model.asset.version = "2.0";
+
+  return true;
+}
+#else
+
+bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext &context, tinygltf::Model &model, QString *errors )
+{
+  Q_UNUSED( data );
+  Q_UNUSED( context );
+  Q_UNUSED( model );
+  if ( errors )
+    *errors = "Cannot load geometry - QGIS was built without Draco library.";
+  return false;
+}
+
+#endif
+
+int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tinygltf::Model &model )
+{
+  tinygltf::Material material;
+  material.name = "DefaultMaterial";
+
+  QVariantList colorList = materialInfo["pbrBaseColorFactor"].toList();
+  material.pbrMetallicRoughness.baseColorFactor = { colorList[0].toDouble(), colorList[1].toDouble(), colorList[2].toDouble(), colorList[3].toDouble() };
+
+  if ( materialInfo.contains( "pbrBaseColorTexture" ) )
+  {
+    QString baseColorTextureUri = materialInfo["pbrBaseColorTexture"].toString();
+
+    tinygltf::Image img;
+    img.uri = baseColorTextureUri.toStdString();   // file:/// or http:// ... will be fetched by QGIS
+    model.images.push_back( img );
+
+    tinygltf::Texture tex;
+    tex.source = static_cast<int>( model.images.size() ) - 1;
+    model.textures.push_back( tex );
+
+    material.pbrMetallicRoughness.baseColorTexture.index = static_cast<int>( model.textures.size() ) - 1;
+  }
+
+  if ( materialInfo.contains( "doubleSided" ) )
+  {
+    material.doubleSided = materialInfo["doubleSided"].toInt();
+  }
+
+  // add the new material to the model
+  model.materials.push_back( material );
+
+  return static_cast<int>( model.materials.size() ) - 1;
+}
+
+bool QgsGltfUtils::writeGltfModel( const tinygltf::Model &model, const QString &outputFilename )
+{
+  tinygltf::TinyGLTF gltf;
+  bool res = gltf.WriteGltfSceneToFile( &model,
+                                        outputFilename.toStdString(),
+                                        false,    // embedImages
+                                        true,     // embedBuffers
+                                        false,    // prettyPrint
+                                        true );   // writeBinary
+  return res;
 }
 
 ///@endcond

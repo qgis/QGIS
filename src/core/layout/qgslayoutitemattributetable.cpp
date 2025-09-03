@@ -425,7 +425,18 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+    // NOLINTBEGIN(bugprone-branch-clone)
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( layer->id(), req );
+    }
+    else
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+    }
+    Q_NOWARN_DEPRECATED_POP
+    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 

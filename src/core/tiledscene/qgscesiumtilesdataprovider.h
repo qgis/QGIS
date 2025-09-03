@@ -72,6 +72,8 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
 
     std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
 
+    Qgis::DataProviderFlags mProviderFlags = Qgis::DataProviderFlag::FastExtent2D;
+
 };
 
 

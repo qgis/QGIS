@@ -103,6 +103,9 @@ class RandomSelection(QgisAlgorithm):
     def displayName(self):
         return self.tr("Random selection")
 
+    def shortDescription(self):
+        return self.tr("Randomly selects features from a vector layer.")
+
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)

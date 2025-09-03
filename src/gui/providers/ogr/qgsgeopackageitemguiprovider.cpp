@@ -539,13 +539,13 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             mainTask->addSubTask( exportTask );
             hasSubTasks = true;
             // when export is successful:
-            connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [=]() {
+            connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [context, item]() {
               notify( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), context, Qgis::MessageLevel::Success );
               item->refresh();
             } );
 
             // when an error occurs:
-            connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+            connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, []( Qgis::VectorExportResult error, const QString &errorMessage ) {
               if ( error != Qgis::VectorExportResult::UserCanceled )
               {
                 QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
@@ -561,13 +561,13 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             mainTask->addSubTask( exportTask );
             hasSubTasks = true;
             // when export is successful:
-            connect( exportTask, &QgsGeoPackageRasterWriterTask::writeComplete, item, [=]() {
+            connect( exportTask, &QgsGeoPackageRasterWriterTask::writeComplete, item, [context, item]() {
               notify( tr( "Import to GeoPackage database" ), tr( "Import was successful." ), context, Qgis::MessageLevel::Success );
               item->refresh();
             } );
 
             // when an error occurs:
-            connect( exportTask, &QgsGeoPackageRasterWriterTask::errorOccurred, item, [=]( QgsGeoPackageRasterWriter::WriterError error, const QString &errorMessage ) {
+            connect( exportTask, &QgsGeoPackageRasterWriterTask::errorOccurred, item, [item, dropUri]( QgsGeoPackageRasterWriter::WriterError error, const QString &errorMessage ) {
               if ( error != QgsGeoPackageRasterWriter::WriterError::ErrUserCanceled )
               {
                 QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();

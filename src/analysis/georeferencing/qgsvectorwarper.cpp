@@ -135,7 +135,7 @@ bool QgsVectorWarperTask::run()
 
   QgsVectorWarper warper( mMethod, mPoints, mDestinationCrs );
 
-  connect( mFeedback.get(), &QgsFeedback::processedCountChanged, this, [=]( long long count ) {
+  connect( mFeedback.get(), &QgsFeedback::processedCountChanged, this, [this]( long long count ) {
     const double newProgress = 100.0 * count / mFeatureCount;
     // avoid flooding with too many events
     if ( static_cast<int>( newProgress * 10 ) != static_cast<int>( mLastProgress * 10 ) )

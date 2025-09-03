@@ -16,6 +16,7 @@
 #include "qgswcsdataitemguiprovider.h"
 #include "moc_qgswcsdataitemguiprovider.cpp"
 
+#include "qgsapplication.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswcsdataitems.h"
 #include "qgsnewhttpconnection.h"
@@ -76,7 +77,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewHttpConnection nc( QgsApplication::instance()->activeWindow(), QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {

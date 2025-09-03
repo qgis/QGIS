@@ -16,6 +16,7 @@
 #include "qgstest.h"
 
 #include "qgs3d.h"
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
@@ -28,6 +29,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+
+#include <memory>
 
 
 class TestQgs3DCameraController : public QgsTest
@@ -54,6 +57,7 @@ class TestQgs3DCameraController : public QgsTest
     void testRotationCenterRotationCameraRotationCenter();
     void testResetViewRaster();
     void testResetViewPointCloud();
+    void testChangeNavigationMode();
 
   private:
     void waitForNearPlane( QgsOffscreen3DEngine &engine, Qgs3DMapScene *scene, float atLeast ); //#spellok
@@ -1213,6 +1217,9 @@ void TestQgs3DCameraController::testResetViewRaster()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
+  // This ensures that the OpenGL context is properly created
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
   // compare raster layer + vector layer
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 2172, 1 );
@@ -1243,6 +1250,9 @@ void TestQgs3DCameraController::testResetViewPointCloud()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
+  // This ensures that the OpenGL context is properly created
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
   // compare virtual point cloud layer
   scene->viewZoomFull();
   QGSCOMPARENEAR( scene->cameraController()->distance(), 86, 1 );
@@ -1262,6 +1272,29 @@ void TestQgs3DCameraController::testResetViewPointCloud()
 
   delete vpcLayer;
   delete pcLayer;
+}
+
+void TestQgs3DCameraController::testChangeNavigationMode()
+{
+  auto canvas3D = std::unique_ptr<Qgs3DMapCanvas>( new Qgs3DMapCanvas() );
+  canvas3D->show();
+  QVERIFY( QTest::qWaitForWindowExposed( canvas3D.get() ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  canvas3D->setMapSettings( mapSettings );
+
+  QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
+  QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
+
+  QKeyEvent changeNavigationModeEvent( QEvent::ShortcutOverride, Qt::Key_QuoteLeft, Qt::ControlModifier );
+  QApplication::sendEvent( canvas3D.get(), &changeNavigationModeEvent );
+
+  QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::Walk );
+  QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::Walk );
+
+  QApplication::sendEvent( canvas3D.get(), &changeNavigationModeEvent );
+  QCOMPARE( canvas3D->cameraController()->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
+  QCOMPARE( mapSettings->cameraNavigationMode(), Qgis::NavigationMode::TerrainBased );
 }
 
 QGSTEST_MAIN( TestQgs3DCameraController )

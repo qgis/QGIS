@@ -15,7 +15,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsGlowEffect.__abstract_methods__ = ['shadeExterior']
-    QgsGlowEffect.__overridden_methods__ = ['properties', 'readProperties', 'boundingRect', 'draw']
+    QgsGlowEffect.__overridden_methods__ = ['flags', 'properties', 'readProperties', 'boundingRect', 'draw']
     QgsGlowEffect.__group__ = ['effects']
 except (NameError, AttributeError):
     pass

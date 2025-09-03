@@ -108,7 +108,7 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   connect( clearButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::clearHistory );
   connect( saveButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::saveLog );
   connect( mButtonBox->button( QDialogButtonBox::Help ), &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
-  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [=]() { close(); } );
+  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
 
   vl->addWidget( mButtonBox );
 

@@ -49,6 +49,11 @@ QString QgsExecutePostgisQueryAlgorithm::groupId() const
 
 QString QgsExecutePostgisQueryAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm executes a SQL command on a PostgreSQL database." );
+}
+
+QString QgsExecutePostgisQueryAlgorithm::shortDescription() const
+{
   return QObject::tr( "Executes a SQL command on a PostgreSQL database." );
 }
 

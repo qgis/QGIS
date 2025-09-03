@@ -57,7 +57,7 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   connect( this, &QAbstractItemView::clicked, this, &QgsGCPListWidget::itemClicked );
   connect( this, &QWidget::customContextMenuRequested, this, &QgsGCPListWidget::showContextMenu );
 
-  connect( mGCPListModel, &QgsGCPListModel::pointEnabled, this, [=]( QgsGeorefDataPoint *point, int row ) {
+  connect( mGCPListModel, &QgsGCPListModel::pointEnabled, this, [this]( QgsGeorefDataPoint *point, int row ) {
     emit pointEnabled( point, row );
     adjustTableContent();
     return;
@@ -181,7 +181,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   setCurrentIndex( index );
 
   QAction *jumpToPointAction = new QAction( tr( "Recenter" ), this );
-  connect( jumpToPointAction, &QAction::triggered, this, [=] {
+  connect( jumpToPointAction, &QAction::triggered, this, [this] {
     const QModelIndex sourceIndex = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
     mPrevRow = sourceIndex.row();
     mPrevColumn = sourceIndex.column();

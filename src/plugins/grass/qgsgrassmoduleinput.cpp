@@ -907,7 +907,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModule
   mComboBox = new QgsGrassModuleInputComboBox( mType, this );
   mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mComboBox, qOverload<int>( &QComboBox::activated ), this, [=]( int index ) { onActivated( mComboBox->itemText( index ) ); } );
+  connect( mComboBox, qOverload<int>( &QComboBox::activated ), this, [this]( int index ) { onActivated( mComboBox->itemText( index ) ); } );
   connect( mComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassModuleInput::onActivated );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsGrassModuleInput::onChanged );
   mapLayout->addWidget( mComboBox );

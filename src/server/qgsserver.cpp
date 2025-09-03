@@ -223,12 +223,12 @@ bool QgsServer::init()
   }
 
   // Logging handlers for CRS grid issues
-  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid ) {
+  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( []( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid ) {
     QgsServerLogger::instance()->logMessage( QStringLiteral( "Cannot use project transform between %1 and %2 - missing grid %3" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), grid.shortName ), QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
   } );
 
 
-  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &details ) {
+  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( []( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &details ) {
     QString gridMessage;
     for ( const QgsDatumTransform::GridDetails &grid : details.grids )
     {
@@ -241,7 +241,7 @@ bool QgsServer::init()
   } );
 
 
-  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation ) {
+  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( []( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation ) {
     QString gridMessage;
     for ( const QgsDatumTransform::GridDetails &grid : preferredOperation.grids )
     {
@@ -276,7 +276,7 @@ bool QgsServer::init()
     QgsServerLogger::instance()->logMessage( longMessage, QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
   } );
 
-  QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error ) {
+  QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( []( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error ) {
     const QString longMessage = QStringLiteral( "No transform is available between %1 and %2: %3" )
                                   .arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), error );
     QgsServerLogger::instance()->logMessage( longMessage, QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );

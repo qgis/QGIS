@@ -43,6 +43,8 @@ class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsCalculateVectorOverlapsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

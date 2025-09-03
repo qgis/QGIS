@@ -17,6 +17,8 @@
 #ifndef QGSSQLSTATEMENT_H
 #define QGSSQLSTATEMENT_H
 
+#include <memory>
+
 #include <QCoreApplication>
 #include "qgis_sip.h"
 #include <QMetaType>

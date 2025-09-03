@@ -5,7 +5,7 @@ try:
     QgsRasterLayer.isValidRasterFileName = staticmethod(QgsRasterLayer.isValidRasterFileName)
     QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
     QgsRasterLayer.__virtual_methods__ = ['setOpacity', 'opacity', 'subsetString', 'setSubsetString']
-    QgsRasterLayer.__overridden_methods__ = ['clone', 'createProfileGenerator', 'dataProvider', 'reload', 'createMapRenderer', 'isSpatial', 'htmlMetadata', 'properties', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'timestamp', 'accept', 'temporalProperties', 'elevationProperties', 'setTransformContext', 'readSymbology', 'readStyle', 'readXml', 'writeSymbology', 'writeStyle', 'writeXml', 'encodedSource', 'decodedSource']
+    QgsRasterLayer.__overridden_methods__ = ['clone', 'profileSource', 'createProfileGenerator', 'dataProvider', 'reload', 'createMapRenderer', 'isSpatial', 'htmlMetadata', 'properties', 'subLayers', 'setLayerOrder', 'setSubLayerVisibility', 'timestamp', 'accept', 'temporalProperties', 'elevationProperties', 'setTransformContext', 'readSymbology', 'readStyle', 'readXml', 'writeSymbology', 'writeStyle', 'writeXml', 'encodedSource', 'decodedSource']
     QgsRasterLayer.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

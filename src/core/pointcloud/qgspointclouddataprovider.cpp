@@ -104,7 +104,7 @@ QMap<int, QString> QgsPointCloudDataProvider::lasClassificationCodes()
   };
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
+  std::call_once( initialized, []( )
   {
     for ( int i = 19; i <= 63; ++i )
       sCodes.insert( i, QStringLiteral( "Reserved" ) );
@@ -141,7 +141,7 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedLasClassificationCodes()
   };
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
+  std::call_once( initialized, []( )
   {
     for ( int i = 19; i <= 63; ++i )
       sCodes.insert( i, QObject::tr( "Reserved" ) );

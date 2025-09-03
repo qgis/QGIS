@@ -81,7 +81,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   mTreeModel = new QStandardItemModel( 0, 1 );
   mTreeModelProxy = new QgsGrassToolsTreeFilterProxyModel( this );
   mTreeModelProxy->setSourceModel( mTreeModel );
-  mTreeModelProxy->setFilterRole( Qt::UserRole + Search );
+  mTreeModelProxy->setFilterRole( static_cast< int >( DataRole::Search ) );
 
   mTreeView->setModel( mTreeModelProxy );
 
@@ -310,8 +310,8 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           QString label = e.attribute( QStringLiteral( "label" ) ) + e.attribute( QStringLiteral( "name" ) ); // one should be non empty
           label += "\n  ERROR:\t" + errors.join( QLatin1String( "\n\t" ) );
           QStandardItem *item = new QStandardItem( label );
-          item->setData( label, Qt::UserRole + Label );
-          item->setData( label, Qt::UserRole + Search );
+          item->setData( label, static_cast< int >( DataRole::Label ) );
+          item->setData( label, static_cast< int >( DataRole::Search ) );
           item->setData( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ), Qt::DecorationRole );
           appendItem( treeModel, parent, item );
         }
@@ -324,8 +324,8 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
         QString label = QApplication::translate( "grasslabel", e.attribute( QStringLiteral( "label" ) ).toUtf8() );
         QgsDebugMsgLevel( QString( "label = %1" ).arg( label ), 3 );
         QStandardItem *item = new QStandardItem( label );
-        item->setData( label, Qt::UserRole + Label );  // original label, for debug
-        item->setData( label, Qt::UserRole + Search ); // for filtering later
+        item->setData( label, static_cast< int >( DataRole::Label ) );  // original label, for debug
+        item->setData( label, static_cast< int >( DataRole::Search ) ); // for filtering later
 
         addModules( item, e, treeModel, modulesListModel, direct );
         appendItem( treeModel, parent, item );
@@ -345,9 +345,9 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           QString label = name + " - " + description.label;
           QPixmap pixmap = QgsGrassModule::pixmap( path, 32 );
           QStandardItem *item = new QStandardItem( name + "\n" + description.label );
-          item->setData( name, Qt::UserRole + Name );    // for calling runModule later
-          item->setData( label, Qt::UserRole + Label );  // original label, for debug
-          item->setData( label, Qt::UserRole + Search ); // for filtering later
+          item->setData( name, static_cast< int >( DataRole::Name ) );    // for calling runModule later
+          item->setData( label, static_cast< int >( DataRole::Label ) );  // original label, for debug
+          item->setData( label, static_cast< int >( DataRole::Search ) ); // for filtering later
           item->setData( pixmap, Qt::DecorationRole );
           item->setCheckable( false );
           item->setEditable( false );
@@ -356,7 +356,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           bool exists = false;
           for ( int i = 0; i < modulesListModel->rowCount(); i++ )
           {
-            if ( modulesListModel->item( i )->data( Qt::UserRole + Name ).toString() == name )
+            if ( modulesListModel->item( i )->data( static_cast< int >( DataRole::Name ) ).toString() == name )
             {
               exists = true;
               break;
@@ -517,7 +517,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
     QStandardItem *mypItem = model->itemFromIndex( modelIndex );
     if ( mypItem )
     {
-      QString myModuleName = mypItem->data( Qt::UserRole + Name ).toString();
+      QString myModuleName = mypItem->data( static_cast< int >( DataRole::Name ) ).toString();
       runModule( myModuleName, false );
     }
   }
@@ -543,8 +543,8 @@ int QgsGrassTools::debug( QStandardItem *item )
   {
     return 0;
   }
-  QString name = item->data( Qt::UserRole + Name ).toString();
-  QString label = item->data( Qt::UserRole + Label ).toString();
+  QString name = item->data( static_cast< int >( DataRole::Name ) ).toString();
+  QString label = item->data( static_cast< int >( DataRole::Label ) ).toString();
   if ( name.isEmpty() ) // section
   {
     int errors = 0;

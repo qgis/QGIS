@@ -132,7 +132,14 @@ QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &s
         {
           // take a random one from the list
           // we might want to save the alternatives for a fallback later
-          sources.insert( sourceName, tiles[rand() % tiles.count()].toString() );
+          QString tilesString = tiles[rand() % tiles.count()].toString();
+          QUrl tilesUrl( tilesString );
+          if ( tilesUrl.isRelative() )
+          {
+            QUrl temporaryStyleUrl( styleUrl );
+            tilesString = QStringLiteral( "%1://%2%3" ).arg( temporaryStyleUrl.scheme(), temporaryStyleUrl.host(), tilesString );
+          }
+          sources.insert( sourceName, tilesString );
         }
       }
       return sources;
@@ -313,66 +320,101 @@ void QgsVectorTileUtils::sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &til
 
 void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMapBoxGlStyleConversionContext &context, const QString &styleUrl )
 {
-  if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) && ( context.spriteDefinitions().empty() || context.spriteImage().isNull() ) )
+  if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) && ( context.spriteCategories().isEmpty() ) )
   {
-    // retrieve sprite definition
-    QString spriteUriBase;
-    if ( styleDefinition.value( QStringLiteral( "sprite" ) ).toString().startsWith( QLatin1String( "http" ) ) )
+    auto prepareSpriteUrl = []( const QString & sprite, const QString & styleUrl )
     {
-      spriteUriBase = styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      if ( sprite.startsWith( QLatin1String( "http" ) ) )
+      {
+        return sprite;
+      }
+      else if ( sprite.startsWith( QLatin1String( "/" ) ) )
+      {
+        const QUrl url( styleUrl );
+        return QStringLiteral( "%1://%2%3" ).arg( url.scheme(), url.host(), sprite );
+      }
+
+      return QStringLiteral( "%1/%2" ).arg( styleUrl, sprite );
+    };
+
+    // retrieve sprite definition
+    QMap<QString, QString> sprites;
+    const QVariant spriteVariant = styleDefinition.value( QStringLiteral( "sprite" ) );
+    if ( spriteVariant.userType() == QMetaType::Type::QVariantList )
+    {
+      const QVariantList spriteList = spriteVariant.toList();
+      for ( const QVariant &spriteItem : spriteList )
+      {
+        QVariantMap spriteMap = spriteItem.toMap();
+        if ( spriteMap.contains( QStringLiteral( "id" ) ) && spriteMap.contains( "url" ) )
+        {
+          sprites[spriteMap.value( QStringLiteral( "id" ) ).toString()] = prepareSpriteUrl( spriteMap.value( QStringLiteral( "url" ) ).toString(), styleUrl );
+        }
+      }
     }
     else
     {
-      spriteUriBase = styleUrl + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      sprites[""] = prepareSpriteUrl( spriteVariant.toString(), styleUrl );
     }
 
-    for ( int resolution = 2; resolution > 0; resolution-- )
+    if ( sprites.isEmpty() )
     {
-      QUrl spriteUrl = QUrl( spriteUriBase );
-      spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
-      QNetworkRequest request = QNetworkRequest( spriteUrl );
-      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-      QgsBlockingNetworkRequest networkRequest;
-      switch ( networkRequest.get( request ) )
-      {
-        case QgsBlockingNetworkRequest::NoError:
-        {
-          const QgsNetworkReplyContent content = networkRequest.reply();
-          const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+      return;
+    }
 
-          // retrieve sprite images
-          QUrl spriteUrl = QUrl( spriteUriBase );
-          spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
-          QNetworkRequest request = QNetworkRequest( spriteUrl );
-          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-          QgsBlockingNetworkRequest networkRequest;
-          switch ( networkRequest.get( request ) )
+    QMap<QString, QString>::const_iterator spritesIterator = sprites.constBegin();
+    while ( spritesIterator != sprites.end() )
+    {
+      for ( int resolution = 2; resolution > 0; resolution-- )
+      {
+        QUrl spriteUrl = QUrl( spritesIterator.value() );
+        spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
+        QNetworkRequest request = QNetworkRequest( spriteUrl );
+        QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
+        QgsBlockingNetworkRequest networkRequest;
+        switch ( networkRequest.get( request ) )
+        {
+          case QgsBlockingNetworkRequest::NoError:
           {
-            case QgsBlockingNetworkRequest::NoError:
+            const QgsNetworkReplyContent content = networkRequest.reply();
+            const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+
+            // retrieve sprite images
+            QUrl spriteUrl = QUrl( spritesIterator.value() );
+            spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
+            QNetworkRequest request = QNetworkRequest( spriteUrl );
+            QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
+            QgsBlockingNetworkRequest networkRequest;
+            switch ( networkRequest.get( request ) )
             {
-              const QgsNetworkReplyContent imageContent = networkRequest.reply();
-              const QImage spriteImage( QImage::fromData( imageContent.content() ) );
-              context.setSprites( spriteImage, spriteDefinition );
-              break;
+              case QgsBlockingNetworkRequest::NoError:
+              {
+                const QgsNetworkReplyContent imageContent = networkRequest.reply();
+                const QImage spriteImage( QImage::fromData( imageContent.content() ) );
+                context.setSprites( spriteImage, spriteDefinition, spritesIterator.key() );
+                break;
+              }
+
+              case QgsBlockingNetworkRequest::NetworkError:
+              case QgsBlockingNetworkRequest::TimeoutError:
+              case QgsBlockingNetworkRequest::ServerExceptionError:
+                break;
             }
 
-            case QgsBlockingNetworkRequest::NetworkError:
-            case QgsBlockingNetworkRequest::TimeoutError:
-            case QgsBlockingNetworkRequest::ServerExceptionError:
-              break;
+            break;
           }
 
-          break;
+          case QgsBlockingNetworkRequest::NetworkError:
+          case QgsBlockingNetworkRequest::TimeoutError:
+          case QgsBlockingNetworkRequest::ServerExceptionError:
+            break;
         }
 
-        case QgsBlockingNetworkRequest::NetworkError:
-        case QgsBlockingNetworkRequest::TimeoutError:
-        case QgsBlockingNetworkRequest::ServerExceptionError:
+        if ( !context.spriteDefinitions().isEmpty() )
           break;
       }
 
-      if ( !context.spriteDefinitions().isEmpty() )
-        break;
+      ++spritesIterator;
     }
   }
 }

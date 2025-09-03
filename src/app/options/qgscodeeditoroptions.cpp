@@ -114,7 +114,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( QStringLiteral( "custom" ) ) );
   }
 
-  connect( mColorSchemeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mColorSchemeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     const QString theme = mColorSchemeComboBox->currentData().toString();
     if ( theme != QLatin1String( "custom" ) )
     {
@@ -132,7 +132,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
 
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
   {
-    connect( it.value(), &QgsColorButton::colorChanged, this, [=] {
+    connect( it.value(), &QgsColorButton::colorChanged, this, [this] {
       if ( mBlockCustomColorChange )
         return;
 
@@ -147,13 +147,13 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mSizeSpin->setValue( font.pointSize() );
   mOverrideFontGroupBox->setChecked( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() );
 
-  connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mFontComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     updatePreview();
   } );
-  connect( mSizeSpin, qOverload<int>( &QSpinBox::valueChanged ), this, [=] {
+  connect( mSizeSpin, qOverload<int>( &QSpinBox::valueChanged ), this, [this] {
     updatePreview();
   } );
-  connect( mOverrideFontGroupBox, &QGroupBox::toggled, this, [=] {
+  connect( mOverrideFontGroupBox, &QGroupBox::toggled, this, [this] {
     updatePreview();
   } );
 
@@ -179,7 +179,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mListLanguage->addItem( tr( "Bash" ) );
   mListLanguage->addItem( tr( "Batch" ) );
 
-  connect( mListLanguage, &QListWidget::currentRowChanged, this, [=] {
+  connect( mListLanguage, &QListWidget::currentRowChanged, this, [this] {
     mPreviewStackedWidget->setCurrentIndex( mListLanguage->currentRow() );
   } );
 

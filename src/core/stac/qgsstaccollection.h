@@ -16,8 +16,7 @@
 #ifndef QGSSTACCOLLECTION_H
 #define QGSSTACCOLLECTION_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsstaccatalog.h"
 #include "qgsstacextent.h"
@@ -26,11 +25,9 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Collection's data
+ * \brief Class for storing a STAC Collection's data.
  *
- * \note Not available in python bindings
- *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
 {
@@ -54,7 +51,7 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
                        const QString &license,
                        const QgsStacExtent &extent );
 
-    QgsStacObject::Type type() const override;
+    Qgis::StacObjectType type() const override;
     QString toHtml() const override;
 
     //! Returns the list of keywords describing the Collection

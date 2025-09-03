@@ -229,7 +229,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
   }
 
   if ( mLineEdit )
-    connect( mLineEdit, &QLineEdit::textChanged, this, [=]( const QString &value ) {
+    connect( mLineEdit, &QLineEdit::textChanged, this, [this]( const QString &value ) {
       Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( value );
       Q_NOWARN_DEPRECATED_POP

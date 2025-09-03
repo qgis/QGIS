@@ -326,8 +326,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
 
-    //! Open the message log dock widget
-    void openMessageLog();
+    /**
+     * Opens the message log dock widget, and optionally activates a specific tab by name.
+     *
+     * \param tabName Name of the tab to be activated.
+     */
+    void openMessageLog( const QString &tabName = QString() );
 
     //! Adds a widget to the user input tool bar
     void addUserInputWidget( QWidget *widget );
@@ -1346,6 +1350,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.24
      */
     void show3DMapViewsManager();
+
+    /**
+     * Shows the elevation profile manager dialog.
+     */
+    void showElevationProfileManager();
 
     //! shows the snapping Options
     void snappingOptions();

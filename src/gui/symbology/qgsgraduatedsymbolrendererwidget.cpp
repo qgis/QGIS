@@ -498,7 +498,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mModel = new QgsGraduatedSymbolRendererModel( this, screen() );
 
-  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric | QgsFieldProxyModel::Date );
+  mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setLayer( mLayer );
 
   btnChangeGraduatedSymbol->setLayer( mLayer );
@@ -1216,7 +1216,7 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), mStyle, mLayer, panel );
     widget->setContext( mContext );
     widget->setPanelTitle( range.label() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -1485,7 +1485,7 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [this, panel] {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();
     } );

@@ -111,7 +111,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
       // Right about now is a good time to re-evaluate your selected career ;)
       // I've done that and I decided to become a musician. I'll probably be a better musician than a software developer.
-      QMetaObject::Connection connection = connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName, this ]
+      QMetaObject::Connection connection = connect( QThread::currentThread(), &QThread::finished, this, [connectionName, this ]
       {
         QMutexLocker locker( &mMutex );
         QSqlDatabase::removeDatabase( connectionName );

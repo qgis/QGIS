@@ -28,7 +28,7 @@ QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation>
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   mButtonBox->addButton( QDialogButtonBox::Help );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-1-n-relation" ) );
   } );
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDialog::onSelectionChanged );

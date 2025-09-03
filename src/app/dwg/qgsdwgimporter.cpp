@@ -227,7 +227,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
 
   // setup custom debug printer for libdxfrw
   static std::once_flag initialized;
-  std::call_once( initialized, [=]() {
+  std::call_once( initialized, []() {
     DRW::setCustomDebugPrinter( new QgsDrwDebugPrinter( 4 ) );
   } );
 

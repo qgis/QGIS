@@ -57,6 +57,11 @@ QList<int> QgsFieldCalculatorAlgorithm::inputLayerTypes() const
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsFieldCalculatorAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 Qgis::ProcessingFeatureSourceFlags QgsFieldCalculatorAlgorithm::sourceFlags() const
 {
   return Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks;
@@ -120,6 +125,12 @@ QString QgsFieldCalculatorAlgorithm::shortHelpString() const
                       "but either overwriting an existing attribute or adding an additional attribute. The values of this field "
                       "are computed from each feature using an expression, based on the properties and attributes of the feature. "
                       "Note that if \"Field name\" is an existing field in the layer then all the rest of the field settings are ignored." );
+}
+
+QString QgsFieldCalculatorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes a new vector layer with the same features of the input layer, "
+                      "but either overwriting an existing attribute or adding an additional attribute." );
 }
 
 QgsFieldCalculatorAlgorithm *QgsFieldCalculatorAlgorithm::createInstance() const

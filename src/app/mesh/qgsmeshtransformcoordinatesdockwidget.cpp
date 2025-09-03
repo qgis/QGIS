@@ -57,11 +57,11 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
   connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
   connect( mButtonImport, &QToolButton::toggled, this, &QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked );
 
-  connect( mCheckBoxZ, &QCheckBox::toggled, this, [=]( const bool checked ) {
+  connect( mCheckBoxZ, &QCheckBox::toggled, this, [this]( const bool checked ) {
     if ( checked )
       mCheckBoxZFromProjectTerrain->setChecked( false );
   } );
-  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [=]( const bool checked ) {
+  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [this]( const bool checked ) {
     if ( checked )
       mCheckBoxZ->setChecked( false );
   } );

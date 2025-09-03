@@ -54,7 +54,7 @@ QString QgsSetProjectVariableAlgorithm::groupId() const
 
 QString QgsSetProjectVariableAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Sets an expression variable for the current project" );
+  return QObject::tr( "Sets an expression variable for the current project." );
 }
 
 QString QgsSetProjectVariableAlgorithm::shortHelpString() const

@@ -195,7 +195,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags f
 
   setCurrentStyle( QgsStyle::defaultStyle() );
 
-  connect( mComboBoxStyleDatabase, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]() {
+  connect( mComboBoxStyleDatabase, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]() {
     if ( mBlockStyleDatabaseChanges )
       return;
 
@@ -203,8 +203,8 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags f
     setCurrentStyle( mProjectStyleModel->styleFromIndex( index ) );
   } );
 
-  connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, [=] { addStyleDatabase( false ); } );
-  connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, [=] { addStyleDatabase( true ); } );
+  connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, [this] { addStyleDatabase( false ); } );
+  connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, [this] { addStyleDatabase( true ); } );
 }
 
 void QgsStyleManagerDialog::init()
@@ -218,7 +218,7 @@ void QgsStyleManagerDialog::init()
   QPushButton *downloadButton = buttonBox->addButton( tr( "Browse Online Styles" ), QDialogButtonBox::ResetRole );
   downloadButton->setToolTip( tr( "Download new styles from the online QGIS style repository" ) );
   downloadButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFindReplace.svg" ) ) );
-  connect( downloadButton, &QPushButton::clicked, this, [=] {
+  connect( downloadButton, &QPushButton::clicked, this, [] {
     QDesktopServices::openUrl( QUrl( QStringLiteral( "https://hub.qgis.org/styles/" ) ) );
   } );
 
@@ -241,11 +241,11 @@ void QgsStyleManagerDialog::init()
 
   connect( this, &QDialog::finished, this, &QgsStyleManagerDialog::onFinished );
   connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
-  connect( btnEditItem, &QPushButton::clicked, this, [=]( bool ) { editItem(); } );
-  connect( actnEditItem, &QAction::triggered, this, [=]( bool ) { editItem(); } );
+  connect( btnEditItem, &QPushButton::clicked, this, [this]( bool ) { editItem(); } );
+  connect( actnEditItem, &QAction::triggered, this, [this]( bool ) { editItem(); } );
 
 
-  connect( btnAddItem, &QPushButton::clicked, this, [=]( bool ) {
+  connect( btnAddItem, &QPushButton::clicked, this, [this]( bool ) {
     // only show add item if the btn doesn't have a menu -- otherwise it should show the menu instead!
     if ( !btnAddItem->menu() )
     {
@@ -253,8 +253,8 @@ void QgsStyleManagerDialog::init()
     }
   } );
 
-  connect( btnRemoveItem, &QPushButton::clicked, this, [=]( bool ) { removeItem(); } );
-  connect( actnRemoveItem, &QAction::triggered, this, [=]( bool ) { removeItem(); } );
+  connect( btnRemoveItem, &QPushButton::clicked, this, [this]( bool ) { removeItem(); } );
+  connect( actnRemoveItem, &QAction::triggered, this, [this]( bool ) { removeItem(); } );
 
   mShareMenu = new QMenu( tr( "Share Menu" ), this );
   mExportAction = new QAction( tr( "Export Item(s)…" ), this );
@@ -329,13 +329,13 @@ void QgsStyleManagerDialog::init()
   mMenuBtnAddItemSymbol3D = new QMenu( this );
 
   QAction *item = new QAction( QgsIconUtils::iconPoint(), tr( "Marker…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addSymbol( static_cast<int>( Qgis::SymbolType::Marker ) ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol( static_cast<int>( Qgis::SymbolType::Marker ) ); } );
   mMenuBtnAddItemAll->addAction( item );
   item = new QAction( QgsIconUtils::iconLine(), tr( "Line…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addSymbol( static_cast<int>( Qgis::SymbolType::Line ) ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol( static_cast<int>( Qgis::SymbolType::Line ) ); } );
   mMenuBtnAddItemAll->addAction( item );
   item = new QAction( QgsIconUtils::iconPolygon(), tr( "Fill…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addSymbol( static_cast<int>( Qgis::SymbolType::Fill ) ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol( static_cast<int>( Qgis::SymbolType::Fill ) ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemAll->addSeparator();
 
@@ -343,53 +343,53 @@ void QgsStyleManagerDialog::init()
   for ( const QPair<QString, QString> &rampType : rampTypes )
   {
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/color.svg" ) ), tr( "%1…" ).arg( rampType.second ), this );
-    connect( item, &QAction::triggered, this, [=]( bool ) { addColorRamp( rampType.first ); } );
+    connect( item, &QAction::triggered, this, [this, rampType]( bool ) { addColorRamp( rampType.first ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemColorRamp->addAction( item );
   }
   mMenuBtnAddItemAll->addSeparator();
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldText.svg" ) ), tr( "Text Format…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addTextFormat(); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addTextFormat(); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemAll->addSeparator();
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Point Label Settings…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addLabelSettings( Qgis::GeometryType::Point ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addLabelSettings( Qgis::GeometryType::Point ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemLabelSettings->addAction( item );
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Line Label Settings…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addLabelSettings( Qgis::GeometryType::Line ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addLabelSettings( Qgis::GeometryType::Line ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemLabelSettings->addAction( item );
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Polygon Label Settings…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addLabelSettings( Qgis::GeometryType::Polygon ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addLabelSettings( Qgis::GeometryType::Polygon ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemLabelSettings->addAction( item );
 
   mMenuBtnAddItemAll->addSeparator();
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Marker Legend Patch Shape…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addLegendPatchShape( Qgis::SymbolType::Marker ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addLegendPatchShape( Qgis::SymbolType::Marker ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemLegendPatchShape->addAction( item );
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Line Legend Patch Shape…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addLegendPatchShape( Qgis::SymbolType::Line ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addLegendPatchShape( Qgis::SymbolType::Line ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemLegendPatchShape->addAction( item );
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Fill Legend Patch Shape…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addLegendPatchShape( Qgis::SymbolType::Fill ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addLegendPatchShape( Qgis::SymbolType::Fill ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemLegendPatchShape->addAction( item );
 
   mMenuBtnAddItemAll->addSeparator();
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Point Symbol…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addSymbol3D( QStringLiteral( "point" ) ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol3D( QStringLiteral( "point" ) ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemSymbol3D->addAction( item );
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Line Symbol…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addSymbol3D( QStringLiteral( "line" ) ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol3D( QStringLiteral( "line" ) ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemSymbol3D->addAction( item );
   item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Polygon Symbol…" ), this );
-  connect( item, &QAction::triggered, this, [=]( bool ) { addSymbol3D( QStringLiteral( "polygon" ) ); } );
+  connect( item, &QAction::triggered, this, [this]( bool ) { addSymbol3D( QStringLiteral( "polygon" ) ); } );
   mMenuBtnAddItemAll->addAction( item );
   mMenuBtnAddItemSymbol3D->addAction( item );
 
@@ -406,13 +406,13 @@ void QgsStyleManagerDialog::init()
   // Context menu for the group tree
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
-  connect( actnAddTag, &QAction::triggered, this, [=]( bool ) { addTag(); } );
-  connect( actnAddSmartgroup, &QAction::triggered, this, [=]( bool ) { addSmartgroup(); } );
+  connect( actnAddTag, &QAction::triggered, this, [this]( bool ) { addTag(); } );
+  connect( actnAddSmartgroup, &QAction::triggered, this, [this]( bool ) { addSmartgroup(); } );
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
 
   tabItemType_currentChanged( 0 );
 
-  connect( mButtonIconView, &QToolButton::toggled, this, [=]( bool active ) {
+  connect( mButtonIconView, &QToolButton::toggled, this, [this]( bool active ) {
     if ( active )
     {
       mSymbolViewStackedWidget->setCurrentIndex( 0 );
@@ -420,7 +420,7 @@ void QgsStyleManagerDialog::init()
       QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 0, QgsSettings::Gui );
     }
   } );
-  connect( mButtonListView, &QToolButton::toggled, this, [=]( bool active ) {
+  connect( mButtonListView, &QToolButton::toggled, this, [this]( bool active ) {
     if ( active )
     {
       QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/lastIconView" ), 1, QgsSettings::Gui );
@@ -2752,7 +2752,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
         a->setCheckable( true );
         a->setChecked( currentTags.contains( tag ) );
       }
-      connect( a, &QAction::triggered, this, [=]( bool ) { tagSelectedSymbols(); } );
+      connect( a, &QAction::triggered, this, [this]( bool ) { tagSelectedSymbols(); } );
       mGroupListMenu->addAction( a );
     }
 
@@ -2761,7 +2761,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
       mGroupListMenu->addSeparator();
     }
     a = new QAction( tr( "Create New Tag…" ), mGroupListMenu );
-    connect( a, &QAction::triggered, this, [=]( bool ) { tagSelectedSymbols( true ); } );
+    connect( a, &QAction::triggered, this, [this]( bool ) { tagSelectedSymbols( true ); } );
     mGroupListMenu->addAction( a );
   }
 

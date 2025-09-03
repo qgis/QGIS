@@ -151,7 +151,7 @@ void QgsProcessingDxfLayersPanelWidget::configureLayer()
     widget->setPanelTitle( tr( "Configure Layer" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [=]() {
+    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [this, item, widget]() {
       setItemValue( item, widget->value() );
     } );
     panel->openPanel( widget );
@@ -253,7 +253,7 @@ void QgsProcessingDxfLayersWidget::showDialog()
   {
     QgsProcessingDxfLayersPanelWidget *widget = new QgsProcessingDxfLayersPanelWidget( mValue, mProject );
     widget->setPanelTitle( tr( "Input layers" ) );
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [=]() {
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
       setValue( widget->selectedOptions() );
     } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
@@ -306,7 +306,7 @@ QWidget *QgsProcessingDxfLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingDxfLayersWidget( nullptr );
   mPanel->setProject( widgetContext().project() );
-  connect( mPanel, &QgsProcessingDxfLayersWidget::changed, this, [=] {
+  connect( mPanel, &QgsProcessingDxfLayersWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
   return mPanel;

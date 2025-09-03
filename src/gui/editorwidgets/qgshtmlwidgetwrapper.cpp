@@ -41,7 +41,7 @@ QWidget *QgsHtmlWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
   {
     mFormFeature = form->feature();
-    connect( form, &QgsAttributeForm::widgetValueChanged, this, [=]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [this]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
       if ( attributeChanged )
       {
         if ( mRequiresFormScope )
@@ -151,7 +151,7 @@ void QgsHtmlWidgetWrapper::setHtmlContext()
   HtmlExpression *htmlExpression = new HtmlExpression();
   htmlExpression->setExpressionContext( expressionContext );
   auto frame = mWidget->page()->mainFrame();
-  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [=] {
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [frame, htmlExpression] {
     frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), htmlExpression );
   } );
 

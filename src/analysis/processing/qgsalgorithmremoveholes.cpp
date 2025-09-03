@@ -68,6 +68,11 @@ QString QgsRemoveHolesAlgorithm::shortHelpString() const
                       "area threshold. Leaving this parameter as 0.0 results in all holes being removed." );
 }
 
+QString QgsRemoveHolesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer in which polygons with holes are replaced by polygons with only their external ring." );
+}
+
 QgsRemoveHolesAlgorithm *QgsRemoveHolesAlgorithm::createInstance() const
 {
   return new QgsRemoveHolesAlgorithm();

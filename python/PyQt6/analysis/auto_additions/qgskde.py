@@ -68,11 +68,21 @@ QgsKernelDensityEstimation.OutputValues.__doc__ = """Output values type
 """
 # --
 # monkey patching scoped based enum
-QgsKernelDensityEstimation.Result.Success.__doc__ = "Operation completed successfully"
-QgsKernelDensityEstimation.Result.DriverError.__doc__ = "Could not open the driver for the specified format"
-QgsKernelDensityEstimation.Result.InvalidParameters.__doc__ = "Input parameters were not valid"
-QgsKernelDensityEstimation.Result.FileCreationError.__doc__ = "Error creating output file"
-QgsKernelDensityEstimation.Result.RasterIoError.__doc__ = "Error writing to raster"
+QgsKernelDensityEstimation.Success = QgsKernelDensityEstimation.Result.Success
+QgsKernelDensityEstimation.Success.is_monkey_patched = True
+QgsKernelDensityEstimation.Success.__doc__ = "Operation completed successfully"
+QgsKernelDensityEstimation.DriverError = QgsKernelDensityEstimation.Result.DriverError
+QgsKernelDensityEstimation.DriverError.is_monkey_patched = True
+QgsKernelDensityEstimation.DriverError.__doc__ = "Could not open the driver for the specified format"
+QgsKernelDensityEstimation.InvalidParameters = QgsKernelDensityEstimation.Result.InvalidParameters
+QgsKernelDensityEstimation.InvalidParameters.is_monkey_patched = True
+QgsKernelDensityEstimation.InvalidParameters.__doc__ = "Input parameters were not valid"
+QgsKernelDensityEstimation.FileCreationError = QgsKernelDensityEstimation.Result.FileCreationError
+QgsKernelDensityEstimation.FileCreationError.is_monkey_patched = True
+QgsKernelDensityEstimation.FileCreationError.__doc__ = "Error creating output file"
+QgsKernelDensityEstimation.RasterIoError = QgsKernelDensityEstimation.Result.RasterIoError
+QgsKernelDensityEstimation.RasterIoError.is_monkey_patched = True
+QgsKernelDensityEstimation.RasterIoError.__doc__ = "Error writing to raster"
 QgsKernelDensityEstimation.Result.__doc__ = """Result of operation
 
 * ``Success``: Operation completed successfully

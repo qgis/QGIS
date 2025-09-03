@@ -81,7 +81,7 @@ QgsMapTip::QgsMapTip()
   mMapTipVisible = false;
 
   mDelayedClearTimer.setSingleShot( true );
-  connect( &mDelayedClearTimer, &QTimer::timeout, this, [=]() { this->clear(); } );
+  connect( &mDelayedClearTimer, &QTimer::timeout, this, [this]() { this->clear(); } );
 }
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer, QgsPointXY &mapPosition, const QPoint &pixelPosition, QgsMapCanvas *pMapCanvas )
@@ -123,7 +123,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer, QgsPointXY &mapPosition, const 
     mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
     mWebView->setContextMenuPolicy( Qt::NoContextMenu );                     //No context menu is allowed if you don't need it
     connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
-    connect( mWebView, &QWebView::loadFinished, this, [=]( bool ) { resizeAndMoveToolTip(); } );
+    connect( mWebView, &QWebView::loadFinished, this, [this]( bool ) { resizeAndMoveToolTip(); } );
 #endif
 
     mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );

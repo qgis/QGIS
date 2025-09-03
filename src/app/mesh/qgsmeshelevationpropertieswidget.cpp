@@ -87,7 +87,7 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
-  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     switch ( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) )
     {
       case Qgis::ProfileSurfaceSymbology::Line:

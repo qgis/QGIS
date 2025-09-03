@@ -361,7 +361,7 @@
         </ComposerItem>
       </ComposerShape>
       <ComposerScaleBar lineCapStyle="square" style="Double Box" numMapUnitsPerScaleBarUnit="2000" segmentSizeMode="0" alignment="1" numSegments="6" segmentMillimeters="5.64513" lineJoinStyle="round" minBarWidth="50" numUnitsPerSegment="250000" units="1" labelBarSpace="5" outlineWidth="0.4" numSegmentsLeft="3" maxBarWidth="150" height="3" boxContentSpace="4" mapId="0" unitLabel="hh">
-        <scaleBarFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+        <scaleBarFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
         <fillColor alpha="255" red="227" blue="28" green="26"/>
         <fillColor2 alpha="255" red="253" blue="111" green="191"/>
         <strokeColor alpha="255" red="255" blue="0" green="127"/>
@@ -375,19 +375,19 @@
       <ComposerLegend symbolWidth="12" title="My Legend" rasterBorderWidth="0" titleAlignment="4" map="0" wmsLegendWidth="50" rasterBorderColor="0,0,0,255" wrapChar=" " fontColor="#f065ec" legendFilterByAtlas="0" columnCount="2" wmsLegendHeight="25" columnSpace="1" symbolHeight="9" equalColumnWidth="1" resizeToContents="1" splitLayer="1" boxSpace="5" rasterBorder="1">
         <styles>
           <style marginBottom="6" name="title">
-            <styleFont description="MS Shell Dlg 2,36,-1,5,50,0,0,0,0,0" style=""/>
+            <styleFont description="QGIS Vera Sans,36,-1,5,50,0,0,0,0,0" style="Bold"/>
           </style>
           <style marginTop="5" name="group">
-            <styleFont description="MS Shell Dlg 2,14,-1,5,50,0,0,0,0,0" style=""/>
+            <styleFont description="QGIS Vera Sans,14,-1,5,50,0,0,0,0,0" style="Bold"/>
           </style>
           <style marginTop="4" name="subgroup">
-            <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+            <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
           </style>
           <style marginTop="3" name="symbol">
-            <styleFont description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+            <styleFont description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
           </style>
           <style marginTop="3" marginLeft="4" name="symbolLabel">
-            <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+            <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
           </style>
         </styles>
         <layer-tree-group expanded="1" checked="Qt::Checked" name="">
@@ -406,7 +406,7 @@
         </ComposerItem>
       </ComposerLegend>
       <ComposerLabel valign="32" marginX="5" marginY="-3" labelText="QGIS &lt;b>is good&lt;/b>" htmlState="2" halign="2">
-        <LabelFont description="MS Shell Dlg 2,10,-1,5,50,0,0,0,0,0" style=""/>
+        <LabelFont description="Qgis Vera Sans,10,-1,5,50,0,0,0,0,0" style="Bold"/>
         <FontColor red="13" blue="255" green="146"/>
         <ComposerItem pagey="59.9898" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="223.827" y="59.9898" visibility="1" zValue="5" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="55.4527" outlineWidth="0.3" excludeFromExports="0" uuid="{ea2ebb22-69b6-415c-b5e2-fb75296d86cf}" height="15.6276" itemRotation="0" frame="false" pagex="223.827">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
@@ -415,7 +415,7 @@
         </ComposerItem>
       </ComposerLabel>
       <ComposerLabel valign="32" marginX="1" marginY="1" labelText="my label [% now() %]" htmlState="0" halign="1">
-        <LabelFont description="MS Shell Dlg 2,10,-1,5,50,0,0,0,0,0" style=""/>
+        <LabelFont description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0" style="Bold"/>
         <FontColor red="0" blue="0" green="0"/>
         <ComposerItem pagey="46.8828" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="214.753" y="46.8828" visibility="1" zValue="4" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="59.9898" outlineWidth="0.3" excludeFromExports="0" uuid="{2ad09482-99c4-4fc2-a7df-d48103d320fc}" height="16.6358" itemRotation="0" frame="false" pagex="214.753">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
@@ -506,7 +506,7 @@
               </layer>
             </symbol>
           </markerStyle>
-          <annotationFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+          <annotationFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
         </ComposerMapGrid>
         <AtlasMap scalingMode="2" atlasDriven="0" margin="0.10000000000000001"/>
         <ComposerItem pagey="6" page="1" id="my map" lastValidViewScaleFactor="12.3442" positionMode="0" positionLock="false" x="24.1399" y="6" visibility="1" zValue="1" background="true" transparency="22" frameJoinStyle="round" blendMode="0" width="102" outlineWidth="0.6" excludeFromExports="0" uuid="{5c70116e-a26b-4e05-ac30-466c4f893dbb}" height="198" itemRotation="0" frame="true" pagex="24.1399">
@@ -534,8 +534,8 @@
         <customproperties/>
       </ComposerHtml>
       <ComposerAttributeTableV2 vectorLayerName="points" source="0" showGrid="1" maxFeatures="30" resizeMode="0" filterFeatures="false" featureFilter="" emptyTableMode="1" wrapString="" wrapBehaviour="0" headerMode="1" backgroundColor="240,33,33,255" showEmptyRows="0" emptyTableMessage="" showOnlyVisibleFeatures="1" vectorLayer="points20171212162310546" vectorLayerSource="/home/ale/dev/QGIS/tests/testdata/points.shp" composerMap="0" headerHAlignment="2" contentFontColor="115,115,115,255" headerFontColor="194,143,12,255" cellMargin="1.2" filterToAtlasIntersection="0" relationId="" gridStrokeWidth="0.7" gridColor="245,57,220,255" showUniqueRowsOnly="1" vectorLayerProvider="ogr">
-        <headerFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
-        <contentFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+        <headerFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
+        <contentFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
         <displayColumns>
           <column width="0" vAlignment="128" attribute="Class" sortByRank="0" hAlignment="1" heading="Class" sortOrder="0">
             <backgroundColor alpha="0" red="0" blue="0" green="0"/>
@@ -613,7 +613,7 @@
         </layer>
       </symbol>
       <ComposerLabel valign="32" marginX="1" marginY="1" labelText="Atlas feature id [% @atlas_featureid %]" htmlState="0" halign="1">
-        <LabelFont description="Ubuntu,20,-1,5,63,1,0,0,0,0" style="Medium Italic"/>
+        <LabelFont description="QGIS Vera Sans,20,-1,5,63,1,0,0,0,0" style="Bold"/>
         <FontColor red="0" blue="0" green="0"/>
         <ComposerItem pagey="7.03957" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="20.1588" y="7.03957" visibility="1" zValue="2" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="171.19" outlineWidth="0.3" excludeFromExports="0" uuid="{d06c40d5-844d-4042-a77c-7796a0ad452a}" height="17.9189" itemRotation="0" frame="false" pagex="20.1588">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
@@ -671,7 +671,7 @@
               </layer>
             </symbol>
           </markerStyle>
-          <annotationFontProperties description="Ubuntu,10,-1,5,50,0,0,0,0,0" style=""/>
+          <annotationFontProperties description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0" style="Bold"/>
         </ComposerMapGrid>
         <AtlasMap scalingMode="2" atlasDriven="1" margin="0.10000000000000001"/>
         <ComposerItem pagey="29.7597" page="1" id="" lastValidViewScaleFactor="6.25038" positionMode="0" positionLock="false" x="18.7198" y="29.7597" visibility="1" zValue="1" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="167" outlineWidth="0.3" excludeFromExports="0" uuid="{8a0c5aee-5f83-4751-8278-590c6d477f6d}" height="155" itemRotation="0" frame="false" pagex="18.7198">

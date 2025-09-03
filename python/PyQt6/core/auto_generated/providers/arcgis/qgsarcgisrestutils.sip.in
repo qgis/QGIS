@@ -184,6 +184,7 @@ Returns a null rectangle if the value cannot be converted.
     {
       IncludeGeometry,
       IncludeNonObjectIdAttributes,
+      SkipUnsetAttributes,
     };
 
     typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;

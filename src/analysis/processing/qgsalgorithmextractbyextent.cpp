@@ -59,6 +59,11 @@ QString QgsExtractByExtentAlgorithm::shortHelpString() const
                       "geometries will automatically be converted to multi geometries to ensure uniform output geometry types." );
 }
 
+QString QgsExtractByExtentAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that only contains features which intersect a specified extent." );
+}
+
 QgsExtractByExtentAlgorithm *QgsExtractByExtentAlgorithm::createInstance() const
 {
   return new QgsExtractByExtentAlgorithm();

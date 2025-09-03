@@ -46,7 +46,12 @@ QString QgsCopyLayerMetadataAlgorithm::groupId() const
 
 QString QgsCopyLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Copies metadata from an source layer to a target layer.\n\nAny existing metadata in the target layer will be replaced." );
+  return QObject::tr( "This algorithm copies metadata from a source layer to a target layer.\n\nAny existing metadata in the target layer will be replaced." );
+}
+
+QString QgsCopyLayerMetadataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Copies the metadata from one layer to another." );
 }
 
 QgsCopyLayerMetadataAlgorithm *QgsCopyLayerMetadataAlgorithm::createInstance() const
@@ -128,7 +133,12 @@ QString QgsApplyLayerMetadataAlgorithm::groupId() const
 
 QString QgsApplyLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Applies the metadata to a layer. The metadata must be defined as QMD file.\n\nAny existing metadata in the layer will be replaced." );
+  return QObject::tr( "This algorithm applies the metadata to a layer. The metadata must be defined as QMD file.\n\nAny existing metadata in the layer will be replaced." );
+}
+
+QString QgsApplyLayerMetadataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Applies the metadata from a QMD file to a layer." );
 }
 
 QgsApplyLayerMetadataAlgorithm *QgsApplyLayerMetadataAlgorithm::createInstance() const
@@ -214,6 +224,11 @@ QString QgsExportLayerMetadataAlgorithm::groupId() const
 
 QString QgsExportLayerMetadataAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm exports layer's metadata to a QMD file." );
+}
+
+QString QgsExportLayerMetadataAlgorithm::shortDescription() const
+{
   return QObject::tr( "Exports layer's metadata to a QMD file." );
 }
 
@@ -276,6 +291,11 @@ QString QgsAddHistoryMetadataAlgorithm::groupId() const
 }
 
 QString QgsAddHistoryMetadataAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm adds a new history entry to the layer's metadata." );
+}
+
+QString QgsAddHistoryMetadataAlgorithm::shortDescription() const
 {
   return QObject::tr( "Adds a new history entry to the layer's metadata." );
 }
@@ -348,7 +368,12 @@ QString QgsUpdateLayerMetadataAlgorithm::groupId() const
 
 QString QgsUpdateLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Copies all non-empty metadata fields from an source layer to a target layer.\n\nLeaves empty input fields unchanged in the target." );
+  return QObject::tr( "This algorithm copies all non-empty metadata fields from a source layer to a target layer.\n\nLeaves empty input fields unchanged in the target." );
+}
+
+QString QgsUpdateLayerMetadataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Copies all non-empty metadata fields from one layer to another." );
 }
 
 QgsUpdateLayerMetadataAlgorithm *QgsUpdateLayerMetadataAlgorithm::createInstance() const
@@ -421,6 +446,11 @@ QString QgsSetMetadataFieldsAlgorithm::groupId() const
 }
 
 QString QgsSetMetadataFieldsAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm sets various metadata fields for a layer." );
+}
+
+QString QgsSetMetadataFieldsAlgorithm::shortDescription() const
 {
   return QObject::tr( "Sets various metadata fields for a layer." );
 }

@@ -52,6 +52,11 @@ QString QgsPdalExportRasterTinAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports point cloud data to a 2D raster grid using a triangulation of points and then interpolating cell values from triangles." );
 }
 
+QString QgsPdalExportRasterTinAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a point cloud to a 2D raster grid using a triangulation of points." );
+}
+
 QgsPdalExportRasterTinAlgorithm *QgsPdalExportRasterTinAlgorithm::createInstance() const
 {
   return new QgsPdalExportRasterTinAlgorithm();

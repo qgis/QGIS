@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add PostGIS Layers</string>
+   <string>Add PostgreSQL Layers</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -27,20 +27,20 @@
    <item row="2" column="0">
     <widget class="QTreeView" name="mTablesTreeView">
      <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+      <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+      <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
      </property>
     </widget>
    </item>
    <item row="8" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::StandardButton::Help</set>
      </property>
     </widget>
    </item>
@@ -98,7 +98,7 @@
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -142,7 +142,7 @@
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -173,7 +173,7 @@
          <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
        </property>
        <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
+        <enum>QToolButton::ToolButtonPopupMode::MenuButtonPopup</enum>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -194,7 +194,7 @@
          <height>0</height>
         </size>
        </property>
-       <property name="showSearchIcon">
+       <property name="showSearchIcon" stdset="0">
         <bool>true</bool>
        </property>
       </widget>

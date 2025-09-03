@@ -15,6 +15,8 @@
 
 #include "qgsarcgisrestdataitemguiprovider.h"
 #include "moc_qgsarcgisrestdataitemguiprovider.cpp"
+
+#include "qgsapplication.h"
 #include "qgsarcgisrestdataitems.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
@@ -77,7 +79,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     if ( arcgisConnectionItems.size() == 1 )
     {
       QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-      connect( viewInfo, &QAction::triggered, this, [=] {
+      connect( viewInfo, &QAction::triggered, this, [connectionItem] {
         QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
       } );
       menu->addAction( viewInfo );
@@ -86,7 +88,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   else if ( QgsArcGisRestFolderItem *folderItem = qobject_cast<QgsArcGisRestFolderItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
+    connect( viewInfo, &QAction::triggered, this, [folderItem] {
       QDesktopServices::openUrl( QUrl( folderItem->path() ) );
     } );
     menu->addAction( viewInfo );
@@ -94,7 +96,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   else if ( QgsArcGisFeatureServiceItem *serviceItem = qobject_cast<QgsArcGisFeatureServiceItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] {
       QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
     } );
     menu->addAction( viewInfo );
@@ -102,7 +104,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   else if ( QgsArcGisMapServiceItem *serviceItem = qobject_cast<QgsArcGisMapServiceItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] {
       QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
     } );
     menu->addAction( viewInfo );
@@ -110,7 +112,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   else if ( QgsArcGisRestParentLayerItem *layerItem = qobject_cast<QgsArcGisRestParentLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
+    connect( viewInfo, &QAction::triggered, this, [layerItem] {
       QDesktopServices::openUrl( QUrl( layerItem->path() ) );
     } );
     menu->addAction( viewInfo );
@@ -118,7 +120,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   else if ( QgsArcGisFeatureServiceLayerItem *layerItem = qobject_cast<QgsArcGisFeatureServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
+    connect( viewInfo, &QAction::triggered, this, [layerItem] {
       QDesktopServices::openUrl( QUrl( layerItem->path() ) );
     } );
     menu->addAction( viewInfo );
@@ -137,7 +139,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   else if ( QgsArcGisMapServiceLayerItem *layerItem = qobject_cast<QgsArcGisMapServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
-    connect( viewInfo, &QAction::triggered, this, [=] {
+    connect( viewInfo, &QAction::triggered, this, [layerItem] {
       QDesktopServices::openUrl( QUrl( layerItem->path() ) );
     } );
     menu->addAction( viewInfo );
@@ -147,7 +149,7 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
 void QgsArcGisRestDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewArcGisRestConnectionDialog nc( nullptr, QString() );
+  QgsNewArcGisRestConnectionDialog nc( QgsApplication::instance()->activeWindow(), QString() );
   nc.setWindowTitle( tr( "Create a New ArcGIS REST Server Connection" ) );
 
   if ( nc.exec() )

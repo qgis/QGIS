@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include <iostream>
 #include "qgscrashhandler.h"
 #include "qgsapplication.h"

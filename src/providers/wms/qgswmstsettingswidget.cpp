@@ -36,7 +36,7 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
 
   setupUi( this );
 
-  connect( mSetEndAsStartStaticButton, &QPushButton::clicked, this, [=] {
+  connect( mSetEndAsStartStaticButton, &QPushButton::clicked, this, [this] {
     mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() );
   } );
   connect( mStaticTemporalRangeRadio, &QRadioButton::toggled, mStaticWmstRangeFrame, &QWidget::setEnabled );
@@ -67,7 +67,7 @@ QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *
     mProjectTemporalRangeLabel->setEnabled( false );
   }
 
-  connect( this, &QgsMapLayerConfigWidget::dynamicTemporalControlToggled, this, [=]( bool checked ) {
+  connect( this, &QgsMapLayerConfigWidget::dynamicTemporalControlToggled, this, [this]( bool checked ) {
     if ( checked )
     {
       mStaticWmstStackedWidget->setCurrentIndex( 0 );

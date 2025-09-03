@@ -249,13 +249,13 @@ void QgsFilteredTableWidget::onTableWidgetCustomContextMenuRequested( const QPoi
 
   tableWidgetMenu->exec( QCursor::pos() );
 
-  // destory actions
+  // destroy actions
   disconnect( actionTableWidgetSelectAll, &QAction::triggered, nullptr, nullptr );
   disconnect( actionTableWidgetDeselectAll, &QAction::triggered, nullptr, nullptr );
   actionTableWidgetSelectAll->deleteLater();
   actionTableWidgetDeselectAll->deleteLater();
 
-  // destory menu
+  // destroy menu
   tableWidgetMenu->deleteLater();
 }
 
@@ -415,7 +415,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   {
     if ( QgsFilterLineEdit *filterLineEdit = qobject_cast<QgsFilterLineEdit *>( editor ) )
     {
-      connect( filterLineEdit, &QgsFilterLineEdit::valueChanged, this, [=]( const QString & ) {
+      connect( filterLineEdit, &QgsFilterLineEdit::valueChanged, this, [this]( const QString & ) {
         if ( mSubWidgetSignalBlocking == 0 )
           emitValueChanged();
       } );
@@ -474,7 +474,16 @@ void QgsValueRelationWidgetWrapper::updateValue( const QVariant &value, bool for
       // if value doesn't exist, we show it in '(...)' (just like value map widget)
       if ( QgsVariantUtils::isNull( value ) || !forceComboInsertion )
       {
-        mComboBox->setCurrentIndex( -1 );
+        // we might have an explicit item for null (e.g. "no selection"), if so, set to that
+        for ( int i = 0; i < mComboBox->count(); i++ )
+        {
+          if ( QgsVariantUtils::isNull( mComboBox->itemData( i ) ) )
+          {
+            idx = i;
+            break;
+          }
+        }
+        mComboBox->setCurrentIndex( idx );
       }
       else
       {

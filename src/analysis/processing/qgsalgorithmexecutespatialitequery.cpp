@@ -50,7 +50,12 @@ QString QgsExecuteSpatialiteQueryAlgorithm::groupId() const
 
 QString QgsExecuteSpatialiteQueryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Executes a SQL command on a SpatiaLite database. The database is determined by an input layer or file." );
+  return QObject::tr( "This algorithm executes a SQL command on a SpatiaLite database. The database is determined by an input layer or file." );
+}
+
+QString QgsExecuteSpatialiteQueryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Executes a SQL command on a SpatiaLite database determined by an input layer or file." );
 }
 
 QgsExecuteSpatialiteQueryAlgorithm *QgsExecuteSpatialiteQueryAlgorithm::createInstance() const

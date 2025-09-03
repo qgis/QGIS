@@ -48,6 +48,7 @@ class QgsMapToPixel;
 class QPainter;
 class QgsPolygon;
 class QgsLineString;
+class QgsCompoundCurve;
 class QgsCurve;
 class QgsFeedback;
 
@@ -67,7 +68,24 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
  * This type has full support for Z/M dimensions.
  *
  */
+#ifndef SIP_RUN
 typedef QgsPointSequence QgsPolyline;
+#else
+typedef QVector<QgsPoint> QgsPolyline;
+#endif
+
+/**
+ * Multi polyline represented as a vector of polylines.
+ *
+ * This type has full support for Z/M dimensions.
+ *
+ * \since QGIS 3.44
+ */
+#ifndef SIP_RUN
+typedef QVector<QgsPolyline> QgsMultiPolyline;
+#else
+typedef QVector<QVector< QgsPoint >> QgsMultiPolyline;
+#endif
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 #ifndef SIP_RUN
@@ -1213,6 +1231,8 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * For singlepart point geometries, the result is equivalent to the bounding box of the geometry.
+     *
      * \see boundingBox()
      */
     QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
@@ -1224,6 +1244,7 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * For singlepart point geometries, the result is equivalent to the bounding box of the geometry.
      */
     QgsGeometry orientedMinimumBoundingBox() const SIP_SKIP;
 
@@ -2040,8 +2061,11 @@ class CORE_EXPORT QgsGeometry
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * MultiLineString geometry.
+     *
+     * Since QGIS 3.44 the optional \a parameters argument can be used to specify parameters which
+     * control the mergeLines results.
      */
-    QgsGeometry mergeLines() const;
+    QgsGeometry mergeLines( const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -3173,6 +3197,78 @@ class CORE_EXPORT QgsGeometry
       return QVariant::fromValue( *this );
     }
 
+    /**
+     * Creates a fillet (rounded corner) at the specified vertex.
+     *
+     * This method replaces a sharp corner at the given vertex with a smooth circular arc.
+     * The behavior depends on the geometry type:
+     *
+     * - For LineString: the arc is segmented into linear segments
+     * - For CompoundCurve: the arc is preserved as a CircularString
+     *
+     * \param vertexIndex index of the vertex to fillet (must be > 0 and < numPoints - 1)
+     * \param radius radius of the fillet arc
+     * \param segments number of segments to use for LineString approximation (ignored for CompoundCurve)
+     * \returns new geometry with fillet applied, or invalid geometry on failure
+     *
+     * \since QGIS 4.0
+     */
+    QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
+
+    /**
+     * Creates a fillet (rounded corner) between two line segments.
+     *
+     * This method creates a smooth circular arc connecting two line segments.
+     *
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
+     * \param radius radius of the fillet arc
+     * \param segments number of segments to use for LineString approximation (returns a CircularString when segments = 0)
+     * \returns new geometry with fillet applied, or invalid geometry on failure
+     *
+     * \since QGIS 4.0
+     */
+    QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                        const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                        double radius, int segments = 8 ) const;
+
+    /**
+     * Creates a chamfer (angled corner) at the specified vertex.
+     *
+     * This method replaces a sharp corner at the given vertex with a straight line
+     * connecting points at specified distances along the adjacent segments.
+     *
+     * \param vertexIndex index of the vertex to chamfer (must be > 0 and < numPoints - 1)
+     * \param distance1 distance along the first segment from the vertex (must be > 0)
+     * \param distance2 distance along the second segment from the vertex (if < 0, uses distance1)
+     * \returns new geometry with chamfer applied, or invalid geometry on failure
+     *
+     * \since QGIS 4.0
+     */
+    QgsGeometry chamfer( int vertexIndex, double distance1, double distance2 = -1.0 ) const;
+
+    /**
+     * Creates a chamfer (angled corner) between two line segments.
+     *
+     * This method creates a straight line connecting two line segments at specified distances.
+     *
+     * \param segment1Start start point of first segment
+     * \param segment1End end point of first segment
+     * \param segment2Start start point of second segment
+     * \param segment2End end point of second segment
+     * \param distance1 distance along the first segment from intersection
+     * \param distance2 distance along the second segment from intersection (if < 0, uses distance1)
+     * \returns new geometry with chamfer applied, or invalid geometry on failure
+     *
+     * \since QGIS 4.0
+     */
+    QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                         const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                         double distance1, double distance2 = -1.0 ) const;
+
+
   private:
 
     QgsGeometryPrivate *d; //implicitly shared data pointer
@@ -3228,7 +3324,6 @@ class CORE_EXPORT QgsGeometry
     */
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
-
 
     friend class QgsInternalGeometryEngine;
 

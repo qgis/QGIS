@@ -30,7 +30,7 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
-  connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [=]( const QString & ) {
+  connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [this]( const QString & ) {
     updateButtons();
   } );
 

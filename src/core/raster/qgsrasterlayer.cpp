@@ -2268,6 +2268,17 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     readRasterAttributeTableExternalPaths( layer_node, context );
   }
 
+  if ( categories.testFlag( Legend ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
+
+    const QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
+    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    {
+      l->readXml( legendElem, context );
+    }
+  }
+
   emit rendererChanged();
   emitStyleChanged();
 
@@ -2526,6 +2537,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
     const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElement.appendChild( blendModeText );
     layer_node.appendChild( blendModeElement );
+  }
+
+  if ( categories.testFlag( Legend ) && legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( document, context );
+    if ( !legendElement.isNull() )
+      layer_node.appendChild( legendElement );
   }
 
   return true;

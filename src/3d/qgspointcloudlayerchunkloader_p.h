@@ -102,6 +102,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset );
     ~QgsPointCloudLayerChunkLoader() override;
 
+    void start() override;
     virtual void cancel() override;
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 

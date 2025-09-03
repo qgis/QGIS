@@ -110,7 +110,7 @@ void QgsCurveEditorWidget::setHistogramSource( const QgsVectorLayer *layer, cons
   if ( !mGatherer )
   {
     mGatherer.reset( new QgsHistogramValuesGatherer() );
-    connect( mGatherer.get(), &QgsHistogramValuesGatherer::calculatedHistogram, this, [=] {
+    connect( mGatherer.get(), &QgsHistogramValuesGatherer::calculatedHistogram, this, [this] {
       mHistogram.reset( new QgsHistogram( mGatherer->histogram() ) );
       updateHistogram();
     } );

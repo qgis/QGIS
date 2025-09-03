@@ -92,7 +92,7 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
   auto pushError = [shortTitle, longTitle, context]( const QString &error ) {
     QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
     QPushButton *detailsButton = new QPushButton( QObject::tr( "Details…" ) );
-    QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [=] {
+    QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [longTitle, error] {
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( longTitle );
       output->setMessage( error, QgsMessageOutput::MessageText );
@@ -172,7 +172,7 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
   auto pushError = [shortTitle, longTitle, context]( const QString &error ) {
     QgsMessageBarItem *item = new QgsMessageBarItem( shortTitle, QObject::tr( "Import failed." ), Qgis::MessageLevel::Warning, 0, nullptr );
     QPushButton *detailsButton = new QPushButton( QObject::tr( "Details…" ) );
-    QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [=] {
+    QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [longTitle, error] {
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( longTitle );
       output->setMessage( error, QgsMessageOutput::MessageText );

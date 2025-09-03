@@ -472,6 +472,11 @@ bool QgsRasterLayerSimpleLabeling::requiresAdvancedEffects() const
   return mTextFormat.containsAdvancedEffects();
 }
 
+bool QgsRasterLayerSimpleLabeling::hasNonDefaultCompositionMode() const
+{
+  return mTextFormat.hasNonDefaultCompositionMode();
+}
+
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();

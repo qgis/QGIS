@@ -486,7 +486,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1713,7 +1713,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   }
 
   double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
-  if ( intervalUnit() == Qgis::RenderUnit::MetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( intervalUnit() == Qgis::RenderUnit::MetersInMapUnits && ( rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview || rc.flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- an interval in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1764,7 +1764,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     }
   }
 
-  if ( offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits && rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits && ( rc.flags() & Qgis::RenderContextFlag::RenderSymbolPreview || rc.flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -3994,7 +3994,7 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     if ( !qgsDoubleNear( offset, 0 ) )
     {
       double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
       {
         // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
         // and clamp it to a reasonable range. It's the best we can do in this situation!

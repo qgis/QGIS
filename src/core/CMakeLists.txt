@@ -59,6 +59,9 @@ set(QGIS_CORE_SRCS
   elevation/qgsabstractprofilegenerator.cpp
   elevation/qgsabstractprofilesurfacegenerator.cpp
   elevation/qgsabstractprofilesource.cpp
+  elevation/qgselevationprofile.cpp
+  elevation/qgselevationprofilemanager.cpp
+  elevation/qgselevationprofilemanagermodel.cpp
   elevation/qgsprofileexporter.cpp
   elevation/qgsprofilerenderer.cpp
   elevation/qgsprofilerequest.cpp
@@ -87,7 +90,11 @@ set(QGIS_CORE_SRCS
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
+  plot/qgsbarchartplot.cpp
+  plot/qgslinechartplot.cpp
+  plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
+  plot/qgsvectorlayerplotdatagatherer.cpp
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
@@ -365,7 +372,7 @@ set(QGIS_CORE_SRCS
   stac/qgsstacasset.cpp
   stac/qgsstaccatalog.cpp
   stac/qgsstaccollection.cpp
-  stac/qgsstaccollections.cpp
+  stac/qgsstaccollectionlist.cpp
   stac/qgsstacconnection.cpp
   stac/qgsstaccontroller.cpp
   stac/qgsstacdataitems.cpp
@@ -475,6 +482,7 @@ set(QGIS_CORE_SRCS
   qgsfeature.cpp
   qgsfeaturepickermodel.cpp
   qgsfeaturepickermodelbase.cpp
+  qgsfeatureexpressionfilterprovider.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturesink.cpp
@@ -496,6 +504,7 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgroupedfeaturefilterprovider.cpp
   qgsgrouplayer.cpp
   qgsgrouplayerrenderer.cpp
   qgshistogram.cpp
@@ -541,6 +550,7 @@ set(QGIS_CORE_SRCS
   qgsmargins.cpp
   qgsmaskidprovider.cpp
   qgsmaskrendersettings.cpp
+  qgsmathutils.cpp
   qgsmatrix4x4.cpp
   qgsmbtiles.cpp
   qgsmessagelog.cpp
@@ -698,6 +708,7 @@ set(QGIS_CORE_SRCS
   layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmanager.cpp
+  layout/qgslayoutmanagermodel.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
@@ -765,6 +776,8 @@ set(QGIS_CORE_SRCS
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
+  project/qgsprojectstoredobjectmanager.cpp
+  project/qgsprojectstoredobjectmanagermodel.cpp
   project/qgsprojectstylesettings.cpp
   project/qgsprojecttimesettings.cpp
   project/qgsprojectutils.cpp
@@ -1043,15 +1056,16 @@ if (WITH_INTERNAL_POLY2TRI)
   include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
 endif ()
 
-file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
-  string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS Core Library" "qgis_core" QGIS_CORE_SRCS)
 endif()
+
+file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
 string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   DEPENDS ${JSON_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
@@ -1162,6 +1176,7 @@ set(QGIS_CORE_HDRS
   qgsexpressioncontextscopegenerator.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeatureexpressionfilterprovider.h
   qgsfeaturepickermodel.h
   qgsfeaturepickermodelbase.h
   qgsfeatureexpressionvaluesgatherer.h
@@ -1191,6 +1206,7 @@ set(QGIS_CORE_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgroupedfeaturefilterprovider.h
   qgsgrouplayer.h
   qgsgrouplayerrenderer.h
   qgshistogram.h
@@ -1240,6 +1256,7 @@ set(QGIS_CORE_HDRS
   qgsmargins.h
   qgsmaskidprovider.h
   qgsmaskrendersettings.h
+  qgsmathutils.h
   qgsmatrix4x4.h
   qgsmbtiles.h
   qgsmessagelog.h
@@ -1453,6 +1470,9 @@ set(QGIS_CORE_HDRS
   elevation/qgsabstractprofilegenerator.h
   elevation/qgsabstractprofilesurfacegenerator.h
   elevation/qgsabstractprofilesource.h
+  elevation/qgselevationprofile.h
+  elevation/qgselevationprofilemanager.h
+  elevation/qgselevationprofilemanagermodel.h
   elevation/qgsprofileexporter.h
   elevation/qgsprofilepoint.h
   elevation/qgsprofilerenderer.h
@@ -1628,6 +1648,7 @@ set(QGIS_CORE_HDRS
   layout/qgslayoutitemtexttable.h
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmanager.h
+  layout/qgslayoutmanagermodel.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgslayoutmodel.h
@@ -1722,7 +1743,11 @@ set(QGIS_CORE_HDRS
 
   pdf/qgspdfrenderer.h
 
+  plot/qgsbarchartplot.h
+  plot/qgslinechartplot.h
+  plot/qgsplotregistry.h
   plot/qgsplot.h
+  plot/qgsvectorlayerplotdatagatherer.cpp
 
   pointcloud/qgspointcloudattribute.h
   pointcloud/qgspointcloudattributebyramprenderer.h
@@ -1845,6 +1870,8 @@ set(QGIS_CORE_HDRS
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
+  project/qgsprojectstoredobjectmanager.h
+  project/qgsprojectstoredobjectmanagermodel.h
   project/qgsprojectstylesettings.h
   project/qgsprojecttimesettings.h
   project/qgsprojecttranslator.h
@@ -1970,7 +1997,7 @@ set(QGIS_CORE_HDRS
   stac/qgsstacasset.h
   stac/qgsstaccatalog.h
   stac/qgsstaccollection.h
-  stac/qgsstaccollections.h
+  stac/qgsstaccollectionlist.h
   stac/qgsstacconnection.h
   stac/qgsstaccontroller.h
   stac/qgsstacdataitems.h
@@ -2191,6 +2218,7 @@ if(MSVC)
       expression/qgsexpressionfunction.cpp
       proj/qgscoordinatereferencesystem.cpp
       textrenderer/qgsfontmanager.cpp
+      qgsapplication.cpp
       PROPERTIES COMPILE_FLAGS "/bigobj"
   )
 else()
@@ -2210,8 +2238,6 @@ if (NOT MSVC)
 endif()
 
 # install headers
-# install qgsconfig.h and plugin.h here so they can get into
-# the OS X framework target
 
 if (HAVE_OPENCL)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2220,7 +2246,6 @@ if (HAVE_OPENCL)
     set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
         qgsopenclutils.h
     )
-    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if (WITH_EPT)
@@ -2269,32 +2294,32 @@ endif()
 
 if (WITH_EPT OR WITH_COPC)
   if (LazPerf_FOUND)
-  # Use system laz-perf
-  include_directories(SYSTEM
-    ${LazPerf_INCLUDE_DIR}
-  )
+    # Use system laz-perf
+    include_directories(SYSTEM
+      ${LazPerf_INCLUDE_DIR}
+    )
   else()
-  # Use embedded laz-perf from external/laz-perf
-  include_directories(SYSTEM
-  )
+    include_directories(SYSTEM
+      ${CMAKE_SOURCE_DIR}/external/lazperf/
+    )
 
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
-  )
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
+      ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
+    )
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2336,6 +2361,12 @@ set(IMAGE_RCCS ../../images/images.qrc)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_core PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_core${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_core${QGISPOSTFIX}
+  )
+endif()
 
 if(USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_core PRIVATE $<$<COMPILE_LANGUAGE:CXX>:qgis.h>)
@@ -2444,7 +2475,6 @@ target_include_directories(qgis_core PUBLIC
   vector
   vectortile
   web
-  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -2487,36 +2517,12 @@ endif()
 
 if(HAVE_OPENCL)
   target_link_libraries(qgis_core ${OpenCL_LIBRARY})
+  target_include_directories(qgis_core PUBLIC ${OpenCL_INCLUDE_DIRS})
 endif()
 
-
-if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-
-  if(WITH_INTERNAL_NLOHMANN_JSON)
-    install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
-  endif()
-else()
-
-  set_target_properties(qgis_core PROPERTIES
-    CLEAN_DIRECT_OUTPUT 1
-    FRAMEWORK 1
-    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_core
-    BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_CORE_HDRS}"
-    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
-  )
-  # generated export header does not get copied with PUBLIC_HEADER files
-  add_custom_command(TARGET qgis_core
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy qgis_core.h
-            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS qgis_core.h
-  )
+if(WITH_INTERNAL_NLOHMANN_JSON)
+  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/nlohmann/json_fwd.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann)
+  install(FILES ${CMAKE_SOURCE_DIR}/external/nlohmann/nlohmann/detail/abi_macros.hpp DESTINATION ${QGIS_INCLUDE_DIR}/nlohmann/detail)
 endif()
 
 #generate unversioned libs for android
@@ -2665,7 +2671,7 @@ if (WITH_QTSERIALPORT)
   )
 endif()
 
-target_compile_definitions(qgis_core PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_core PRIVATE "QT_NO_FOREACH")
 target_compile_definitions(qgis_core PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 # clang-tidy
@@ -2677,17 +2683,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_CORE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-# Mac dev frameworks
-
-if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  install(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
-endif()
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

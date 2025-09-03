@@ -155,7 +155,7 @@ class TestQgsDiagram : public QgsTest
 
       const QgsRectangle extent( -126, 23, -70, 47 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "piediagram", "piediagram", *mMapSettings, 200, 15 );
     }
@@ -196,7 +196,7 @@ class TestQgsDiagram : public QgsTest
 
       const QgsRectangle extent( -126, 23, -70, 47 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "piediagram_opacity", "piediagram_opacity", *mMapSettings, 200, 15 );
     }
@@ -237,7 +237,7 @@ class TestQgsDiagram : public QgsTest
 
       const QgsRectangle extent( -126, 23, -70, 47 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "piediagram_aggregate", "piediagram_aggregate", *mMapSettings, 200, 15 );
     }
@@ -278,7 +278,7 @@ class TestQgsDiagram : public QgsTest
 
       const QgsRectangle extent( -126, 23, -70, 47 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "piediagram_geometry_based_expression", "piediagram_geometry_based_expression", *mMapSettings, 200, 15 );
     }
@@ -320,7 +320,7 @@ class TestQgsDiagram : public QgsTest
 
       const QgsRectangle extent( -126, 23, -70, 47 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "diagram_effects", "diagram_effects", *mMapSettings, 200, 15 );
     }

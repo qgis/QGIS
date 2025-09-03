@@ -80,6 +80,11 @@ class PolarPlot(QgisAlgorithm):
     def displayName(self):
         return self.tr("Polar plot")
 
+    def shortDescription(self):
+        return self.tr(
+            "Generates a polar plot based on the value of an input vector layer."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

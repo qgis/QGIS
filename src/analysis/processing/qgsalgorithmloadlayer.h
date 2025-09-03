@@ -41,6 +41,7 @@ class QgsLoadLayerAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsLoadLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

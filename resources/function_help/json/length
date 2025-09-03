@@ -22,6 +22,9 @@
       "description": "line geometry object"
     }],
     "examples": [{
+      "expression": "length(@geometry)",
+      "returns": "length of the current feature's geometry"
+    },{
       "expression": "length(geom_from_wkt('LINESTRING(0 0, 4 0)'))",
       "returns": "4.0"
     }]

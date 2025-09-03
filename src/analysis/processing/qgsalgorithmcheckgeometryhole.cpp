@@ -37,7 +37,7 @@ QString QgsGeometryCheckHoleAlgorithm::displayName() const
 
 QString QgsGeometryCheckHoleAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect holes inside polygons" );
+  return QObject::tr( "Detects holes inside polygons." );
 }
 
 QStringList QgsGeometryCheckHoleAlgorithm::tags() const

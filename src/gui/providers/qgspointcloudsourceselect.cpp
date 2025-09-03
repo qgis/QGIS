@@ -42,12 +42,12 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mPath = path;
     emit enableButtons( !mPath.isEmpty() );
   } );
 
-  connect( protocolURI, &QLineEdit::textChanged, this, [=]( const QString &path ) {
+  connect( protocolURI, &QLineEdit::textChanged, this, [this]( const QString &path ) {
     mPath = path;
     emit enableButtons( !mPath.isEmpty() );
   } );
@@ -117,10 +117,29 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         baseName = QFileInfo( mPath ).baseName();
       }
+
+      QVariantMap parts;
+      if ( mAuthSettingsProtocol->configurationTabIsSelected() )
+      {
+        const QString authcfg = mAuthSettingsProtocol->configId();
+        if ( !authcfg.isEmpty() )
+          parts.insert( QStringLiteral( "authcfg" ), authcfg );
+      }
+      else
+      {
+        const QString username = mAuthSettingsProtocol->username();
+        const QString password = mAuthSettingsProtocol->password();
+        if ( !username.isEmpty() && !password.isEmpty() )
+          mPath.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+      }
+
+      parts.insert( QStringLiteral( "path" ), mPath );
+      const QString dsUri = preferredProviders.at( 0 ).metadata()->encodeUri( parts );
+
       Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addPointCloudLayer( dsUri, baseName, preferredProviders.at( 0 ).metadata()->key() );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::PointCloud, mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addLayer( Qgis::LayerType::PointCloud, dsUri, baseName, preferredProviders.at( 0 ).metadata()->key() );
     }
   }
 }

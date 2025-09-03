@@ -41,7 +41,7 @@ QgsLayoutConfigObject::QgsLayoutConfigObject( QWidget *parent, QgsLayoutObject *
 {
   if ( mLayoutObject->layout() )
   {
-    connect( &mLayoutObject->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [=] { updateDataDefinedButtons(); } );
+    connect( &mLayoutObject->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [this] { updateDataDefinedButtons(); } );
   }
   if ( layoutAtlas() )
   {
@@ -375,7 +375,7 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayoutItemPropertiesWidget::opacityChanged );
 
   updateVariables();
-  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, [=] {
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, [this] {
     if ( !mBlockVariableUpdates )
       QgsLayoutItemPropertiesWidget::variablesChanged();
   } );
@@ -622,7 +622,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
     return;
   }
 
-  auto block = [=]( bool blocked ) {
+  auto block = [this]( bool blocked ) {
     mXPosSpin->blockSignals( blocked );
     mYPosSpin->blockSignals( blocked );
     mPosUnitsComboBox->blockSignals( blocked );
@@ -796,7 +796,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
         existingGroups.append( groupName );
     }
 
-    std::sort( existingGroups.begin(), existingGroups.end(), [=]( const QString &a, const QString &b ) -> bool {
+    std::sort( existingGroups.begin(), existingGroups.end(), []( const QString &a, const QString &b ) -> bool {
       return a.localeAwareCompare( b ) < 0;
     } );
 

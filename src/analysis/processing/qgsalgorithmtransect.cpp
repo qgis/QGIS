@@ -67,7 +67,21 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsTransectAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestring.\n" ) + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." ) + QStringLiteral( "\n\n" ) + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" ) + QObject::tr( "- TR_FID: ID of the original feature\n" ) + QObject::tr( "- TR_ID: ID of the transect. Each transect have an unique ID\n" ) + QObject::tr( "- TR_SEGMENT: ID of the segment of the linestring\n" ) + QObject::tr( "- TR_ANGLE: Angle in degrees from the original line at the vertex\n" ) + QObject::tr( "- TR_LENGTH: Total length of the transect returned\n" ) + QObject::tr( "- TR_ORIENT: Side of the transect (only on the left or right of the line, or both side)\n" );
+  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestrings.\n" )
+         + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" )
+         + QObject::tr( "- TR_FID: ID of the original feature\n" )
+         + QObject::tr( "- TR_ID: ID of the transect. Each transect have an unique ID\n" )
+         + QObject::tr( "- TR_SEGMENT: ID of the segment of the linestring\n" )
+         + QObject::tr( "- TR_ANGLE: Angle in degrees from the original line at the vertex\n" )
+         + QObject::tr( "- TR_LENGTH: Total length of the transect returned\n" )
+         + QObject::tr( "- TR_ORIENT: Side of the transect (only on the left or right of the line, or both side)\n" );
+}
+
+QString QgsTransectAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates transects on vertices for (multi)linestrings." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsTransectAlgorithm::documentationFlags() const
@@ -104,14 +118,14 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, dynamic_cast<QgsProcessingFeatureSource *>( source.get() ) );
 
-  QgsFields fields = source->fields();
-
-  fields.append( QgsField( QStringLiteral( "TR_FID" ), QMetaType::Type::Int, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "TR_ID" ), QMetaType::Type::Int, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "TR_SEGMENT" ), QMetaType::Type::Int, QString(), 20 ) );
-  fields.append( QgsField( QStringLiteral( "TR_ANGLE" ), QMetaType::Type::Double, QString(), 5, 2 ) );
-  fields.append( QgsField( QStringLiteral( "TR_LENGTH" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "TR_ORIENT" ), QMetaType::Type::Int, QString(), 1 ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "TR_FID" ), QMetaType::Type::Int, QString(), 20 ) );
+  newFields.append( QgsField( QStringLiteral( "TR_ID" ), QMetaType::Type::Int, QString(), 20 ) );
+  newFields.append( QgsField( QStringLiteral( "TR_SEGMENT" ), QMetaType::Type::Int, QString(), 20 ) );
+  newFields.append( QgsField( QStringLiteral( "TR_ANGLE" ), QMetaType::Type::Double, QString(), 5, 2 ) );
+  newFields.append( QgsField( QStringLiteral( "TR_LENGTH" ), QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( QStringLiteral( "TR_ORIENT" ), QMetaType::Type::Int, QString(), 1 ) );
+  QgsFields fields = QgsProcessingUtils::combineFields( source->fields(), newFields );
 
   Qgis::WkbType outputWkb = Qgis::WkbType::LineString;
   if ( QgsWkbTypes::hasZ( source->wkbType() ) )

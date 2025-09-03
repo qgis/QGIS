@@ -16,6 +16,7 @@
 #include "qgswfsdataitemguiprovider.h"
 #include "moc_qgswfsdataitemguiprovider.cpp"
 
+#include "qgsapplication.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswfsnewconnection.h"
 #include "qgswfsconnection.h"
@@ -76,7 +77,7 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsWFSNewConnection nc( nullptr );
+  QgsWFSNewConnection nc( QgsApplication::instance()->activeWindow() );
   nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   if ( nc.exec() )
@@ -110,6 +111,7 @@ void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( QgsOwsConnection::settingsPreferCoordinatesForWfsT11->value( detailsParameters ), newDetailsParameters );
 

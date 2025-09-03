@@ -37,7 +37,7 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   setupUi( this );
   connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
   connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
-  connect( cbAddCas, &QCheckBox::stateChanged, this, [=]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [this]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
   twCas->hide();
   cbAddCas->hide();

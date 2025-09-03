@@ -31,7 +31,7 @@ QString QgsFixGeometryDeleteFeaturesAlgorithm::displayName() const
 
 QString QgsFixGeometryDeleteFeaturesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Delete features detected with an algorithm from the \"Check geometry\" section" );
+  return QObject::tr( "Deletes features detected with an algorithm from the \"Check geometry\" section." );
 }
 
 QStringList QgsFixGeometryDeleteFeaturesAlgorithm::tags() const

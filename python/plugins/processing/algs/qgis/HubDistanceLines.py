@@ -21,7 +21,10 @@ __copyright__ = "(C) 2010, Michael Minn"
 
 from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
+    Qgis,
     QgsField,
+    QgsFields,
+    QgsProcessingUtils,
     QgsGeometry,
     QgsDistanceArea,
     QgsFeature,
@@ -36,6 +39,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsProcessingException,
     QgsSpatialIndex,
+    QgsProcessingAlgorithm,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -65,8 +69,14 @@ class HubDistanceLines(QgisAlgorithm):
     def groupId(self):
         return "vectoranalysis"
 
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.units = [
@@ -134,9 +144,10 @@ class HubDistanceLines(QgisAlgorithm):
 
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
 
-        fields = point_source.fields()
-        fields.append(QgsField("HubName", QMetaType.Type.QString))
-        fields.append(QgsField("HubDist", QMetaType.Type.Double))
+        newFields = QgsFields()
+        newFields.append(QgsField("HubName", QMetaType.Type.QString))
+        newFields.append(QgsField("HubDist", QMetaType.Type.Double))
+        fields = QgsProcessingUtils.combineFields(point_source.fields(), newFields)
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,

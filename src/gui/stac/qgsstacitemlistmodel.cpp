@@ -137,7 +137,7 @@ void QgsStacItemListModel::setCollections( const QVector<QgsStacCollection *> &c
   }
 }
 
-void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
+void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items, const QString &authcfg )
 {
   int nextItemIndex = mItems.count();
   beginInsertRows( QModelIndex(), mItems.size(), mItems.size() + items.size() - 1 );
@@ -153,11 +153,15 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
       {
         const QString href = it->href();
         QgsNetworkContentFetcher *f = new QgsNetworkContentFetcher();
-        f->fetchContent( href );
+        f->fetchContent( href, authcfg );
         connect( f, &QgsNetworkContentFetcher::finished, this, [this, f, href, nextItemIndex] {
           if ( f->reply()->error() == QNetworkReply::NoError )
           {
-            const QImage img = QImage::fromData( f->reply()->readAll() );
+            const QByteArray data = f->reply()->readAll();
+            const QImage img = QImage::fromData( data );
+            if ( img.isNull() )
+              return;
+
             QImage previewImage( img.size(), QImage::Format_ARGB32 );
             previewImage.fill( Qt::transparent );
             QPainter previewPainter( &previewImage );

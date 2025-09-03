@@ -32,6 +32,8 @@
 #include "qgspainting.h"
 #include "qgssldexportcontext.h"
 
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QFileInfo>
@@ -174,7 +176,7 @@ void QgsSimpleMarkerSymbolLayerBase::startRender( QgsSymbolRenderContext &contex
   if ( !hasDataDefinedSize )
   {
     double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -260,7 +262,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   if ( hasDataDefinedSize || createdNewPath )
   {
     double s = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+    if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -1153,7 +1155,7 @@ bool QgsSimpleMarkerSymbolLayer::prepareCache( QgsSymbolRenderContext &context )
 {
   double scaledSize = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
   const double deviceRatio = context.renderContext().devicePixelRatio();
-  if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview )
+  if ( mSizeUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
   {
     // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
     // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -3106,6 +3108,39 @@ QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
   return m.release();
 }
 
+QgsSymbolLayer *QgsRasterMarkerSymbolLayer::createFromSld( QDomElement &element )
+{
+  const QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
+  if ( graphicElem.isNull() )
+    return nullptr;
+
+  const QDomElement externalGraphicElem = graphicElem.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
+  if ( externalGraphicElem.isNull() )
+    return nullptr;
+
+  const QDomElement onlineResourceElem = externalGraphicElem.firstChildElement( QStringLiteral( "OnlineResource" ) );
+  const QDomElement inlineContentElem = externalGraphicElem.firstChildElement( QStringLiteral( "InlineContent" ) );
+
+  QString url;
+  if ( !onlineResourceElem.isNull() )
+  {
+    url = onlineResourceElem.attribute( QStringLiteral( "href" ) );
+    // no further processing to do, both base64 data urls and direct file/http urls are compatible with raster markers already
+  }
+  else if ( !inlineContentElem.isNull() && inlineContentElem.attribute( QStringLiteral( "encoding" ) ) == QLatin1String( "base64" ) )
+  {
+    url = QStringLiteral( "base64:" ) + inlineContentElem.text();
+  }
+  else
+  {
+    return nullptr;
+  }
+
+  QgsRasterMarkerSymbolLayer *m = new QgsRasterMarkerSymbolLayer( url );
+  // TODO: parse other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
+  return m;
+}
+
 void QgsRasterMarkerSymbolLayer::setCommonProperties( const QVariantMap &properties )
 {
   if ( properties.contains( QStringLiteral( "alpha" ) ) )
@@ -3503,6 +3538,87 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
                         height ) );
 
   return symbolBounds;
+}
+
+void QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
+{
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  writeSldMarker( doc, element, context );
+}
+
+bool QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  Q_UNUSED( context )
+
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
+  element.appendChild( graphicElem );
+
+  // <ExternalGraphic>
+  QDomElement extGraphElem = doc.createElement( QStringLiteral( "se:ExternalGraphic" ) );
+  graphicElem.appendChild( extGraphElem );
+
+  QMimeDatabase mimeDB;
+  QMimeType mimeType;
+
+  QString base64data;
+  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
+  {
+    base64data = mPath.mid( 7 );
+  }
+  else
+  {
+    QString mime;
+    QString data;
+    if ( QgsAbstractContentCacheBase::parseBase64DataUrl( mPath, &mime, &data ) )
+    {
+      base64data = data;
+    }
+  }
+
+  if ( !base64data.isEmpty() )
+  {
+    // <InlineContent>
+    QDomElement inlineContEleme = doc.createElement( QStringLiteral( "se:InlineContent" ) );
+
+    inlineContEleme.setAttribute( QStringLiteral( "encoding" ), QStringLiteral( "base64" ) );
+    inlineContEleme.appendChild( doc.createTextNode( base64data ) );
+    extGraphElem.appendChild( inlineContEleme );
+
+    // determine mime type
+    const QByteArray ba = QByteArray::fromBase64( base64data.toUtf8() );
+    mimeType = mimeDB.mimeTypeForData( ba );
+  }
+  else
+  {
+    // <ExternalGraphic>
+    QDomElement onlineResElem = doc.createElement( QStringLiteral( "se:OnlineResource" ) );
+    QString url = mPath;
+
+    onlineResElem.setAttribute( QStringLiteral( "xlink:href" ), url );
+    onlineResElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+    extGraphElem.appendChild( onlineResElem );
+
+    // determine mime type
+    if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) )
+    {
+      // Qt can't guess mime type for remote URLs, and it seems geoserver can handle wrong image mime types
+      // but not generic ones, so let's hardcode to png.
+      mimeType = mimeDB.mimeTypeForName( "image/png" );
+    }
+    else
+    {
+      mimeType = mimeDB.mimeTypeForUrl( url );
+    }
+  }
+
+  QDomElement formatElem = doc.createElement( QStringLiteral( "se:Format" ) );
+  formatElem.appendChild( doc.createTextNode( mimeType.name() ) );
+  extGraphElem.appendChild( formatElem );
+
+  // TODO: write other attributes from the SLD spec (Opacity, Size, Rotation, AnchorPoint, Displacement)
+  return true;
 }
 
 //////////

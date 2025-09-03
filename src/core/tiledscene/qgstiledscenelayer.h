@@ -114,6 +114,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
     QgsMapLayerElevationProperties *elevationProperties() override;
+    Qgis::MapLayerProperties properties() const override;
 
     /**
      * Returns the 2D renderer for the tiled scene.

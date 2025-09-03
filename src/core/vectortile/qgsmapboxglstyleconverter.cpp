@@ -3376,10 +3376,21 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
       parts << part;
     }
-    if ( op == QLatin1String( "in" ) )
-      return QStringLiteral( "%1 IN (%2)" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+
+    if ( parts.size() == 1 )
+    {
+      if ( op == QLatin1String( "in" ) )
+        return QStringLiteral( "%1 IS %2" ).arg( key, parts.at( 0 ) );
+      else
+        return QStringLiteral( "(%1 IS NULL OR %1 IS NOT %2)" ).arg( key, parts.at( 0 ) );
+    }
     else
-      return QStringLiteral( "(%1 IS NULL OR %1 NOT IN (%2))" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+    {
+      if ( op == QLatin1String( "in" ) )
+        return QStringLiteral( "%1 IN (%2)" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+      else
+        return QStringLiteral( "(%1 IS NULL OR %1 NOT IN (%2))" ).arg( key, parts.join( QLatin1String( ", " ) ) );
+    }
   }
   else if ( op == QLatin1String( "get" ) )
   {
@@ -3524,23 +3535,46 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
 
 QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize )
 {
-  if ( context.spriteImage().isNull() )
+  QImage spriteImage;
+  QString category;
+  QString actualName = name;
+  const int categorySeparator = name.indexOf( ':' );
+  if ( categorySeparator > 0 )
+  {
+    category = name.left( categorySeparator );
+    if ( context.spriteCategories().contains( category ) )
+    {
+      actualName = name.mid( categorySeparator + 1 );
+      spriteImage = context.spriteImage( category );
+    }
+    else
+    {
+      category.clear();
+    }
+  }
+
+  if ( category.isEmpty() )
+  {
+    spriteImage = context.spriteImage();
+  }
+
+  if ( spriteImage.isNull() )
   {
     context.pushWarning( QObject::tr( "%1: Could not retrieve sprite '%2'" ).arg( context.layerId(), name ) );
     return QImage();
   }
 
-  const QVariantMap spriteDefinition = context.spriteDefinitions().value( name ).toMap();
+  const QVariantMap spriteDefinition = context.spriteDefinitions( category ).value( actualName ).toMap();
   if ( spriteDefinition.size() == 0 )
   {
     context.pushWarning( QObject::tr( "%1: Could not retrieve sprite '%2'" ).arg( context.layerId(), name ) );
     return QImage();
   }
 
-  const QImage sprite = context.spriteImage().copy( spriteDefinition.value( QStringLiteral( "x" ) ).toInt(),
-                        spriteDefinition.value( QStringLiteral( "y" ) ).toInt(),
-                        spriteDefinition.value( QStringLiteral( "width" ) ).toInt(),
-                        spriteDefinition.value( QStringLiteral( "height" ) ).toInt() );
+  const QImage sprite = spriteImage.copy( spriteDefinition.value( QStringLiteral( "x" ) ).toInt(),
+                                          spriteDefinition.value( QStringLiteral( "y" ) ).toInt(),
+                                          spriteDefinition.value( QStringLiteral( "width" ) ).toInt(),
+                                          spriteDefinition.value( QStringLiteral( "height" ) ).toInt() );
   if ( sprite.isNull() )
   {
     context.pushWarning( QObject::tr( "%1: Could not retrieve sprite '%2'" ).arg( context.layerId(), name ) );
@@ -4091,25 +4125,30 @@ void QgsMapBoxGlStyleConversionContext::setPixelSizeConversionFactor( double siz
   mSizeConversionFactor = sizeConversionFactor;
 }
 
-QImage QgsMapBoxGlStyleConversionContext::spriteImage() const
+QStringList QgsMapBoxGlStyleConversionContext::spriteCategories() const
 {
-  return mSpriteImage;
+  return mSpriteImage.keys();
 }
 
-QVariantMap QgsMapBoxGlStyleConversionContext::spriteDefinitions() const
+QImage QgsMapBoxGlStyleConversionContext::spriteImage( const QString &category ) const
 {
-  return mSpriteDefinitions;
+  return mSpriteImage.contains( category ) ? mSpriteImage[category] : QImage();
 }
 
-void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QVariantMap &definitions )
+QVariantMap QgsMapBoxGlStyleConversionContext::spriteDefinitions( const QString &category ) const
 {
-  mSpriteImage = image;
-  mSpriteDefinitions = definitions;
+  return mSpriteDefinitions.contains( category ) ? mSpriteDefinitions[category] : QVariantMap();
 }
 
-void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QString &definitions )
+void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QVariantMap &definitions, const QString &category )
 {
-  setSprites( image, QgsJsonUtils::parseJson( definitions ).toMap() );
+  mSpriteImage[category] = image;
+  mSpriteDefinitions[category] = definitions;
+}
+
+void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QString &definitions, const QString &category )
+{
+  setSprites( image, QgsJsonUtils::parseJson( definitions ).toMap(), category );
 }
 
 QString QgsMapBoxGlStyleConversionContext::layerId() const

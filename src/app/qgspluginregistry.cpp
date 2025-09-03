@@ -528,14 +528,14 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
         );
         watchdogMsg->layout()->addWidget( btnIgnore );
 
-        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, myFullPath, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, true );
           loadCppPlugin( myFullPath );
           settings.remove( QStringLiteral( "/Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
-        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, false );
           settings.remove( "/Plugins/watchDogTimestamp/" + baseName );
@@ -628,7 +628,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
         );
         watchdogMsg->layout()->addWidget( btnIgnore );
 
-        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [this, packageName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, true );
           if ( checkPythonPlugin( packageName ) )
@@ -640,7 +640,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
-        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [=]() {
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, packageName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, false );
           settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
@@ -727,19 +727,25 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) const
 {
 #ifdef WITH_BINDINGS
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+  bool supportsQgis4 = true;
   const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "supportsQt6" ) ).trimmed();
   if ( supportsQt6.compare( QLatin1String( "YES" ), Qt::CaseInsensitive ) != 0 && supportsQt6.compare( QLatin1String( "TRUE" ), Qt::CaseInsensitive ) != 0 )
   {
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     if ( !getenv( "QGIS_DISABLE_SUPPORTS_QT6_CHECK" ) )
     {
       return false;
     }
-  }
 #endif
+    supportsQgis4 = false;
+  }
   const QString minVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMinimumVersion" ) );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
-  const QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
+  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
+  if ( maxVersion == QLatin1String( "__error__" ) && minVersion.startsWith( QLatin1String( "3." ) ) && supportsQgis4 )
+  {
+    maxVersion = QLatin1String( "4.99.0" );
+  }
   return minVersion != QLatin1String( "__error__" ) && checkQgisVersion( minVersion, maxVersion );
 #else
   Q_UNUSED( packageName )

@@ -45,11 +45,11 @@ QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget
   mButtonBox->addButton( mButtonRemoveAll, QDialogButtonBox::ActionRole );
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QPushButton::clicked, this, &QgsPanelWidget::acceptPanel );
-  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [=] {
+  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [this] {
     mWasCanceled = true;
     acceptPanel();
   } );
-  connect( this, &QgsPanelWidget::panelAccepted, this, [=]() {
+  connect( this, &QgsPanelWidget::panelAccepted, this, [this]() {
     // save any current cell edits
     mTblView->setCurrentIndex( QModelIndex() );
 
@@ -205,7 +205,7 @@ void QgsProcessingMatrixParameterPanel::showDialog()
 
     panel->openPanel( mPanelWidget );
 
-    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [this] {
       setValue( mPanelWidget->table() );
     } );
   }

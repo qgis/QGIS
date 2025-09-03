@@ -39,7 +39,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), static_cast<int>( Qgis::VectorTemporalMode::RedrawLayerOnly ) );
 
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
-  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     switch ( static_cast<Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) )
     {
       case Qgis::VectorTemporalMode::FixedTemporalRange:
@@ -101,7 +101,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
 
   mFixedDurationUnitsComboBox->setEnabled( !mAccumulateCheckBox->isChecked() );
   mFixedDurationSpinBox->setEnabled( !mAccumulateCheckBox->isChecked() );
-  connect( mAccumulateCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mAccumulateCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFixedDurationUnitsComboBox->setEnabled( !checked );
     mFixedDurationSpinBox->setEnabled( !checked );
   } );

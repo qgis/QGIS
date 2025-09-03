@@ -135,7 +135,7 @@ void TestQgsAuthConfig::testPkiBundle()
   const QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( sPkiData + "/fra_cert.pem", sPkiData + "/fra_key_w-pass.pem", QStringLiteral( "password" ), cacerts ) );
   QVERIFY( !bundle2.isNull() );
   QVERIFY( bundle2.isValid() );
-  QCOMPARE( bundle2.certId(), QString( "c3633c428d441853973e5081ba9be39f667f5af6" ) );
+  QCOMPARE( bundle2.certId(), QString( "2dbb930cf358e56b3492fde459e3b68c2bf1739d" ) );
 
   const QSslCertificate clientcert( bundle2.clientCert() );
   QVERIFY( !clientcert.isNull() );

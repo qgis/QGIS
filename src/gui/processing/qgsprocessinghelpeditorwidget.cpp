@@ -55,7 +55,7 @@ QgsProcessingHelpEditorWidget::QgsProcessingHelpEditorWidget( QWidget *parent )
   setupUi( this );
 
   connect( mElementTree, &QTreeWidget::currentItemChanged, this, &QgsProcessingHelpEditorWidget::changeItem );
-  connect( mTextEdit, &QTextEdit::textChanged, this, [=] {
+  connect( mTextEdit, &QTextEdit::textChanged, this, [this] {
     if ( !mCurrentName.isEmpty() )
     {
       if ( mEditStackedWidget->currentWidget() == mPagePlainText )
@@ -66,7 +66,7 @@ QgsProcessingHelpEditorWidget::QgsProcessingHelpEditorWidget( QWidget *parent )
     }
   } );
 
-  connect( mRichTextEdit, &QgsRichTextEditor::textChanged, this, [=] {
+  connect( mRichTextEdit, &QgsRichTextEditor::textChanged, this, [this] {
     if ( !mCurrentName.isEmpty() )
     {
       if ( mEditStackedWidget->currentWidget() == mPageRichEdit )

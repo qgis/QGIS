@@ -1485,7 +1485,7 @@ QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEdi
 
         for ( const QString &colName : referencedColumns )
         {
-          if ( name == colName )
+          if ( name.compare( colName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
           {
             wDeps.append( eww );
             break;
@@ -2174,7 +2174,7 @@ void QgsAttributeForm::init()
     openAttributeTableButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     openAttributeTableButton->setText( tr( "Show in &Table" ) );
     openAttributeTableButton->setToolTip( tr( "Open the attribute table editor with the filtered features" ) );
-    connect( openAttributeTableButton, &QToolButton::clicked, this, [=] {
+    connect( openAttributeTableButton, &QToolButton::clicked, this, [this] {
       emit openFilteredFeaturesAttributeTable( createFilterExpression() );
     } );
     boxLayout->addWidget( openAttributeTableButton );

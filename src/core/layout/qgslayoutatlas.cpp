@@ -75,6 +75,9 @@ bool QgsLayoutAtlas::writeXml( QDomElement &parentElement, QDomDocument &documen
     atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), QString() );
   }
 
+  if ( mLimitCoverageLayerRenderToCurrentFeature )
+    atlasElem.setAttribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), QStringLiteral( "1" ) );
+
   atlasElem.setAttribute( QStringLiteral( "hideCoverage" ), mHideCoverage ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   atlasElem.setAttribute( QStringLiteral( "filenamePattern" ), mFilenameExpressionString );
   atlasElem.setAttribute( QStringLiteral( "pageNameExpression" ), mPageNameExpression );
@@ -120,8 +123,10 @@ bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &
   mFilterFeatures = atlasElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "0" ) ).toInt();
   mFilterExpression = atlasElem.attribute( QStringLiteral( "featureFilter" ) );
 
+  mLimitCoverageLayerRenderToCurrentFeature = atlasElem.attribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), QStringLiteral( "0" ) ).toInt();
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature, mLimitCoverageLayerRenderToCurrentFeature );
   mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "0" ) ).toInt();
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, mHideCoverage );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, mHideCoverage );
 
   emit toggled( mEnabled );
   emit changed();
@@ -299,7 +304,18 @@ int QgsLayoutAtlas::updateFeatures()
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
+    // NOLINTBEGIN(bugprone-branch-clone)
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get()->id(), req );
+    }
+    else
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
+    }
+    Q_NOWARN_DEPRECATED_POP
+    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 
@@ -485,11 +501,22 @@ void QgsLayoutAtlas::refreshCurrentFeature()
 
 void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
-  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, hide );
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::HideCoverageLayer, hide );
   if ( hide == mHideCoverage )
     return;
 
   mHideCoverage = hide;
+  mLayout->refresh();
+  emit changed();
+}
+
+void QgsLayoutAtlas::setLimitCoverageLayerRenderToCurrentFeature( bool limit )
+{
+  mLayout->renderContext().setFlag( Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature, limit );
+  if ( limit == mLimitCoverageLayerRenderToCurrentFeature )
+    return;
+
+  mLimitCoverageLayerRenderToCurrentFeature = limit;
   mLayout->refresh();
   emit changed();
 }

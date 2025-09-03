@@ -1279,9 +1279,12 @@ Add toolbar with specified name
 Add a toolbar
 %End
 
-    virtual void openMessageLog() = 0;
+    virtual void openMessageLog( const QString &tabName = QString() ) = 0;
 %Docstring
-Opens the message log dock widget.
+Opens the message log dock widget, and optionally activates a specific
+tab by name.
+
+:param tabName: Name of the tab to be activated (since QGIS 3.44)
 %End
 
     virtual void addUserInputWidget( QWidget *widget ) = 0;

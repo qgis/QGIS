@@ -62,6 +62,12 @@ QString QgsOrthogonalizeAlgorithm::shortHelpString() const
                       "extra processing time." );
 }
 
+QString QgsOrthogonalizeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Takes a line or polygon layer and attempts to orthogonalize "
+                      "all the geometries in the layer." );
+}
+
 QString QgsOrthogonalizeAlgorithm::outputName() const
 {
   return QObject::tr( "Orthogonalized" );

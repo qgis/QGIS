@@ -35,7 +35,7 @@ QString QgsSnapGeometriesAlgorithm::displayName() const
 
 QString QgsSnapGeometriesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Snaps the geometries in a layer. Snapping can be done either to the geometries "
+  return QObject::tr( "This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries "
                       "from another layer, or to geometries within the same layer." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "A tolerance is specified in layer units to control how close vertices need "
@@ -46,6 +46,11 @@ QString QgsSnapGeometriesAlgorithm::shortHelpString() const
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Vertices will be inserted or removed as required to make the geometries match "
                         "the reference geometries." );
+}
+
+QString QgsSnapGeometriesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Snaps the geometries to the geometries within the same layer or from another layer." );
 }
 
 QStringList QgsSnapGeometriesAlgorithm::tags() const

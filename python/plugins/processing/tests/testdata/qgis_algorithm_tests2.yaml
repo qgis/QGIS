@@ -1496,8 +1496,8 @@ tests:
         name: expected/gridify_lines.gml
         type: vector
 
-  - algorithm: qgis:distancetonearesthubpoints
-    name: Hub distance points
+  - algorithm: native:distancetonearesthub
+    name: Hub distance
     params:
       INPUT:
         name: points.gml
@@ -1508,24 +1508,11 @@ tests:
       FIELD: name
       UNIT: 0
     results:
-      OUTPUT:
-        name: expected/hub_distance_points.gml
-        type: vector
-
-  - algorithm: qgis:distancetonearesthublinetohub
-    name: Hub distance lines
-    params:
-      INPUT:
-        name: points.gml
-        type: vector
-      HUBS:
-        name: custom/hub_points.gml
-        type: vector
-      FIELD: name
-      UNIT: 0
-    results:
-      OUTPUT:
+      OUTPUT_LINES:
         name: expected/hub_distance_lines.gml
+        type: vector
+      OUTPUT_POINTS:
+        name: expected/hub_distance_points.gml
         type: vector
 
   - algorithm: native:hublines
@@ -2444,6 +2431,43 @@ tests:
             end: skip
         pk:
           - d
+  - algorithm: native:serviceareafromlayer
+    name: Service area from layer dynamic cost
+    ellipsoid: WGS84
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml|layername=route_points
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST2:
+        expression: d*100
+        type: property
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_dynamic.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+          - d
+          - type
 
   - algorithm: native:createattributeindex
     name: Create attribute index

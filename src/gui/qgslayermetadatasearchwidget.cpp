@@ -64,7 +64,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mGeometryTypeComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
   mGeometryTypeComboBox->adjustSize();
 
-  auto updateLoadBtn = [=] {
+  auto updateLoadBtn = [this] {
     if ( mIsLoading )
     {
       mAbortPushButton->setText( tr( "Abort" ) );
@@ -78,7 +78,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   };
 
   connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, mProgressBar, &QProgressBar::setValue );
-  connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, this, [=]( int progress ) {
+  connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, this, [this, updateLoadBtn]( int progress ) {
     if ( progress == 100 )
     {
       mIsLoading = false;
@@ -88,7 +88,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     }
   } );
 
-  connect( mAbortPushButton, &QPushButton::clicked, mSourceModel, [=]( bool ) {
+  connect( mAbortPushButton, &QPushButton::clicked, mSourceModel, [this, updateLoadBtn]( bool ) {
     if ( !mIsLoading )
     {
       mProgressBar->show();
@@ -105,15 +105,15 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     updateLoadBtn();
   } );
 
-  connect( mMetadataTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]( const QItemSelection &, const QItemSelection & ) {
+  connect( mMetadataTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [this]( const QItemSelection &, const QItemSelection & ) {
     emit enableButtons( mMetadataTableView->selectionModel()->hasSelection() );
   } );
 
   connect( mSearchFilterLineEdit, &QLineEdit::textEdited, mProxyModel, &QgsLayerMetadataResultsProxyModel::setFilterString );
-  connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [=] { mProxyModel->setFilterString( QString() ); } );
+  connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [this] { mProxyModel->setFilterString( QString() ); } );
   connect( mExtentFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayerMetadataSearchWidget::updateExtentFilter );
 
-  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
+  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
     if ( index == 0 ) // reset all filters
     {
       mProxyModel->setFilterGeometryTypeEnabled( false );
@@ -138,11 +138,11 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     }
   } );
 
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, [=]( const QList<QgsMapLayer *> & ) {
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, [this]( const QList<QgsMapLayer *> & ) {
     updateExtentFilter( mExtentFilterComboBox->currentIndex() );
   } );
 
-  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [=]( const QStringList & ) {
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [this]( const QStringList & ) {
     updateExtentFilter( mExtentFilterComboBox->currentIndex() );
   } );
 
@@ -153,7 +153,7 @@ void QgsLayerMetadataSearchWidget::setMapCanvas( QgsMapCanvas *newMapCanvas )
 {
   if ( newMapCanvas && mapCanvas() != newMapCanvas )
   {
-    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [=] {
+    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [this] {
       updateExtentFilter( mExtentFilterComboBox->currentIndex() );
     } );
   }

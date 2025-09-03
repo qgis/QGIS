@@ -55,6 +55,11 @@ QString QgsConvertToCurvesAlgorithm::shortHelpString() const
                       "Already curved geometries will be retained without change." );
 }
 
+QString QgsConvertToCurvesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Converts a geometry into its curved geometry equivalent." );
+}
+
 QgsConvertToCurvesAlgorithm *QgsConvertToCurvesAlgorithm::createInstance() const
 {
   return new QgsConvertToCurvesAlgorithm();

@@ -54,7 +54,7 @@ class TestQgsVectorLayerUtilsPostgres(QgisTestCase):
         f = QgsVectorLayerUtils.createFeature(pg_layer)
         self.assertEqual(f.attributes(), [default_clause, NULL])
         self.assertTrue(pg_layer.addFeatures([f]))
-        self.assertTrue(
+        self.assertFalse(
             QgsVectorLayerUtils.valueExists(pg_layer, 0, QgsUnsetAttributeValue())
         )
         f = QgsVectorLayerUtils.createFeature(pg_layer)

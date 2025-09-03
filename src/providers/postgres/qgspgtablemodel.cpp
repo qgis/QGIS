@@ -96,12 +96,12 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QString tip;
-    bool withTipButSelectable = false;
+    bool layerNeedsFeatureId = false;
     if ( !layerProperty.isRaster )
     {
       if ( wkbType == Qgis::WkbType::Unknown )
       {
-        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Spatial Type" ) );
       }
       else if ( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() )
       {
@@ -110,7 +110,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       else if ( !layerProperty.pkCols.isEmpty() )
       {
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
-        withTipButSelectable = true;
+        layerNeedsFeatureId = true;
       }
     }
 
@@ -160,7 +160,9 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
     }
     else
+    {
       pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
+    }
 
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
 
@@ -176,7 +178,16 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     pkItem->setData( defPk, Qt::UserRole + 2 );
     if ( !defPk.isEmpty() )
+    {
       pkItem->setText( defPk.join( ',' ) );
+
+      // Reset the tip since we're pre-selecting fields in the Feature id combo box.
+      // Note we don't reset the tip if Geom type or SRID need some action from users.
+      if ( layerNeedsFeatureId )
+      {
+        tip = QString();
+      }
+    }
 
     QStandardItem *selItem = new QStandardItem( QString() );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
@@ -237,28 +248,10 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     childItemList << checkPkUnicityItem;
     childItemList << sqlItem;
 
-    const auto constChildItemList = childItemList;
-    for ( QStandardItem *item : constChildItemList )
+    for ( int column = 0; column < childItemList.count(); column++ )
     {
-      if ( tip.isEmpty() || withTipButSelectable )
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
-      else
-        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
-      if ( item->toolTip().isEmpty() && tip.isEmpty() && item != checkPkUnicityItem && item != selItem )
-      {
-        item->setToolTip( QString() );
-      }
-      else
-      {
-        if ( item == schemaNameItem )
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
-
-        if ( item == schemaNameItem || item == tableItem || item == geomItem )
-        {
-          item->setToolTip( tip );
-        }
-      }
+      QStandardItem *item = childItemList.at( column );
+      setItemStatus( item, tip, column );
     }
 
     if ( !schemaItem )
@@ -282,6 +275,38 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     schemaItem->appendRow( childItemList );
 
     ++mTableCount;
+  }
+}
+
+void QgsPgTableModel::setItemStatus( QStandardItem *item, const QString &tip, int column )
+{
+  if ( tip.isEmpty() )
+  {
+    item->setFlags( item->flags() | Qt::ItemIsSelectable );
+
+    if ( column == DbtmSchema || column == DbtmTable || column == DbtmGeomCol )
+    {
+      item->setToolTip( QString() );
+
+      if ( column == DbtmSchema )
+      {
+        item->setData( QVariant(), Qt::DecorationRole );
+      }
+    }
+  }
+  else
+  {
+    item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
+    if ( column == DbtmSchema || column == DbtmTable || column == DbtmGeomCol )
+    {
+      item->setToolTip( tip );
+
+      if ( column == DbtmSchema )
+      {
+        item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
+      }
+    }
   }
 }
 
@@ -362,6 +387,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
 
+  // After changes in type, srid, or feature id columns, update other sibling columns
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
     const Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
@@ -369,7 +395,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
     {
-      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Spatial Type" ) );
     }
     else if ( wkbType != Qgis::WkbType::NoGeometry )
     {
@@ -386,35 +412,15 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
       const QSet<QString> s0( qgis::listToSet( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList() ) );
       const QSet<QString> s1( qgis::listToSet( pkCols ) );
       if ( !s0.intersects( s1 ) )
+      {
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
+      }
     }
 
-    for ( int i = 0; i < columnCount(); i++ )
+    for ( int column = 0; column < columnCount(); column++ )
     {
-      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
-      if ( tip.isEmpty() )
-      {
-        if ( i == DbtmSchema )
-        {
-          item->setData( QVariant(), Qt::DecorationRole );
-        }
-
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QString() );
-      }
-      else
-      {
-        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
-        if ( i == DbtmSchema )
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
-
-        if ( i == DbtmSchema || i == DbtmTable || i == DbtmGeomCol )
-        {
-          item->setFlags( item->flags() );
-          item->setToolTip( tip );
-        }
-      }
+      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), column ) );
+      setItemStatus( item, tip, column );
     }
   }
 

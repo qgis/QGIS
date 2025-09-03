@@ -302,7 +302,35 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b )
+    {
+      bool ok = false;
+      double aNumericOrderValue = a.orderValue.toDouble( &ok );
+      if ( ok )
+      {
+        double bNumericOrderValue = b.orderValue.toDouble( &ok );
+        if ( ok )
+        {
+          if ( mSortOrder == Qt::DescendingOrder )
+          {
+            return aNumericOrderValue > bNumericOrderValue;
+          }
+          else
+          {
+            return aNumericOrderValue < bNumericOrderValue;
+          }
+        }
+      }
+      if ( mSortOrder == Qt::DescendingOrder )
+      {
+        return a.orderValue.localeAwareCompare( b.orderValue ) > 0;
+      }
+      else
+      {
+        return a.orderValue.localeAwareCompare( b.orderValue ) < 0;
+      }
+
+    } );
 
     if ( mAllowNull && mSourceLayer )
     {
@@ -690,3 +718,36 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraId
   emit extraIdentifierValueChanged();
 }
 
+
+QString QgsFeaturePickerModelBase::orderExpression() const
+{
+  return mOrderExpression.expression();
+}
+
+
+void QgsFeaturePickerModelBase::setOrderExpression( const QString &orderExpression )
+{
+  if ( mOrderExpression.expression() == orderExpression )
+    return;
+
+  mOrderExpression = QgsExpression( orderExpression );
+  reload();
+  emit orderExpressionChanged();
+}
+
+
+Qt::SortOrder QgsFeaturePickerModelBase::sortOrder() const
+{
+  return mSortOrder;
+}
+
+
+void QgsFeaturePickerModelBase::setSortOrder( const Qt::SortOrder sortOrder )
+{
+  if ( mSortOrder == sortOrder )
+    return;
+
+  mSortOrder = sortOrder;
+  reload();
+  emit sortOrderChanged();
+}

@@ -12,14 +12,9 @@ sys.path.append(
 cpp = open(sys.argv[1], "w", encoding="utf-8")
 cpp.write(
     '#include "qgsexpression.h"\n'
-    '#include "qgsexpression_p.h"\n'
-    "#include <mutex>\n"
     "\n"
-    "void QgsExpression::initFunctionHelp()\n"
+    "void QgsExpression::buildFunctionHelp()\n"
     "{\n"
-    "  static std::once_flag initialized;\n"
-    "  std::call_once( initialized, []\n"
-    "  {"
 )
 
 
@@ -39,6 +34,15 @@ def quote(v):
 
     else:
         raise BaseException("unexpected type " + repr(v))
+
+
+def safe_tr(string: str) -> str:
+    """
+    Returns 'tr( "string" )' if string is non-empty, else 'QString()'
+    """
+    if not string:
+        return "QString()"
+    return f'tr( "{string}" )'
 
 
 for f in sorted(glob.glob("resources/function_help/json/*")):
@@ -88,24 +92,24 @@ for f in sorted(glob.glob("resources/function_help/json/*")):
                 )
 
     cpp.write(
-        '\n\n    QgsExpression::functionHelpTexts().insert( QStringLiteral( {0} ),\n      Help( QStringLiteral( {0} ), tr( "{1}" ), tr( "{2}" ),\n        QList<HelpVariant>()'.format(
-            name, json_params["type"], json_params["description"]
+        "\n\n  QgsExpression::functionHelpTexts().insert( QStringLiteral( {0} ),\n    Help( QStringLiteral( {0} ), {1}, {2},\n      QList<HelpVariant>()".format(
+            name, safe_tr(json_params["type"]), safe_tr(json_params["description"])
         )
     )
 
     for v in json_params["variants"]:
         cpp.write(
-            '\n          << HelpVariant( tr( "{}" ), tr( "{}" ),\n            QList<HelpArg>()'.format(
-                v["variant"], v["variant_description"]
+            "\n        << HelpVariant( {}, {},\n          QList<HelpArg>()".format(
+                safe_tr(v["variant"]), safe_tr(v["variant_description"])
             )
         )
 
         if "arguments" in v:
             for a in v["arguments"]:
                 cpp.write(
-                    '\n                << HelpArg( QStringLiteral( "{}" ), tr( "{}" ), {}, {}, {}, {} )'.format(
+                    '\n              << HelpArg( QStringLiteral( "{}" ), {}, {}, {}, {}, {} )'.format(
                         a["arg"],
-                        a.get("description", ""),
+                        safe_tr(a.get("description", "")),
                         "true" if a.get("descOnly", False) else "false",
                         "true" if a.get("syntaxOnly", False) else "false",
                         "true" if a.get("optional", False) else "false",
@@ -118,48 +122,53 @@ for f in sorted(glob.glob("resources/function_help/json/*")):
                 )
 
         cpp.write(
-            ",\n            /* variableLenArguments */ {}".format(
+            ",\n          /* variableLenArguments */ {}".format(
                 "true" if v.get("variableLenArguments", False) else "false"
             )
         )
-        cpp.write(",\n            QList<HelpExample>()")
+        cpp.write(",\n          QList<HelpExample>()")
 
         if "examples" in v:
             for e in v["examples"]:
                 cpp.write(
-                    '\n              << HelpExample( tr( "{}" ), tr( "{}" ), tr( "{}" ) )'.format(
-                        e["expression"], e["returns"], e.get("note", "")
+                    "\n            << HelpExample( {}, {}, {} )".format(
+                        safe_tr(e["expression"]),
+                        safe_tr(e["returns"]),
+                        safe_tr(e.get("note", "")),
                     )
                 )
 
         if "notes" in v:
-            cpp.write(',\n            tr( "{}" )'.format(v["notes"]))
+            cpp.write(",\n          {}".format(safe_tr(v["notes"])))
         else:
-            cpp.write(",\n            QString()")
+            cpp.write(",\n          QString()")
 
-        cpp.write(",\n            QStringList()")
+        cpp.write(",\n          QStringList()")
         if "tags" in v:
-            cpp.write('\n              << tr( "{}" )'.format(",".join(v["tags"])))
+            cpp.write("\n            << {}".format(safe_tr(",".join(v["tags"]))))
 
-        cpp.write("\n         )")
+        cpp.write("\n       )")
 
-    cpp.write("\n        )")
-    cpp.write("\n      );")
+    cpp.write("\n      )")
+    cpp.write("\n    );")
 
 for f in sorted(glob.glob("resources/function_help/text/*")):
     n = os.path.basename(f)
 
     with open(f) as content:
         cpp.write(
-            '\n\n    QgsExpression::functionHelpTexts().insert( "{0}",\n    Help( tr( "{0}" ), tr( "group" ), tr( "{1}" ), QList<HelpVariant>() ) );\n'.format(
+            '\n\n  QgsExpression::functionHelpTexts().insert( "{0}",\n  Help( tr( "{0}" ), tr( "group" ), {1}, QList<HelpVariant>() ) );\n'.format(
                 n,
-                content.read()
-                .replace("\\", "&#92;")
-                .replace("\\", "\\\\")
-                .replace('"', '\\"')
-                .replace("\n", "\\n"),
+                safe_tr(
+                    content.read()
+                    .replace("\\", "&#92;")
+                    .replace("\\", "\\\\")
+                    .replace('"', '\\"')
+                    .replace("\n", "\\n"),
+                ),
             )
         )
 
-cpp.write("\n  } );\n}\n")
+cpp.write("\n" "}\n" "\n")
+
 cpp.close()

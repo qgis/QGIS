@@ -922,7 +922,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       },
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
-        "operationId": "getFeaturePUT",
+        "operationId": "getFeaturePATCH",
         "responses": {
           "200": {
             "description": "The feature was successfully updated"
@@ -1265,7 +1265,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       },
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
-        "operationId": "getFeaturePUT",
+        "operationId": "getFeaturePATCH",
         "responses": {
           "200": {
             "description": "The feature was successfully updated"
@@ -1608,7 +1608,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       },
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
-        "operationId": "getFeaturePUT",
+        "operationId": "getFeaturePATCH",
         "responses": {
           "200": {
             "description": "The feature was successfully updated"
@@ -1951,7 +1951,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       },
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
-        "operationId": "getFeaturePUT",
+        "operationId": "getFeaturePATCH",
         "responses": {
           "200": {
             "description": "The feature was successfully updated"

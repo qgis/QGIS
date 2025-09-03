@@ -246,6 +246,40 @@ instance.
 .. seealso:: :py:func:`addLayoutMultiFrameType`
 %End
 
+    bool removeLayoutItemType( int typeId );
+%Docstring
+Unregisters a layout item type.
+
+.. versionadded:: 4.0
+%End
+
+    bool removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata );
+%Docstring
+Unregisters a layout item type.
+
+The ``metadata`` object will be deleted and should not be used after
+this call.
+
+.. versionadded:: 4.0
+%End
+
+    bool removeLayoutMultiFrameType( int typeId );
+%Docstring
+Unregisters a layout multiframe type.
+
+.. versionadded:: 4.0
+%End
+
+    bool removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata );
+%Docstring
+Unregisters a layout multiframe type.
+
+The ``metadata`` object will be deleted and should not be used after
+this call.
+
+.. versionadded:: 4.0
+%End
+
     bool addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new layout multiframe type. Takes ownership of the metadata
@@ -290,10 +324,26 @@ Emitted whenever a new item type is added to the registry, with the
 specified ``type`` and visible ``name``.
 %End
 
+    void typeRemoved( int type );
+%Docstring
+Emitted whenever an item type is removed from the registry with the
+specified ``type``.
+
+.. versionadded:: 4.0
+%End
+
     void multiFrameTypeAdded( int type, const QString &name );
 %Docstring
 Emitted whenever a new multiframe type is added to the registry, with
 the specified ``type`` and visible ``name``.
+%End
+
+    void multiFrameTypeRemoved( int type );
+%Docstring
+Emitted whenever an multiframe type is removed from the registry with
+the specified ``type``.
+
+.. versionadded:: 4.0
 %End
 
   private:

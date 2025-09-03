@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include "qgsxyzconnection.h"
 
 #include "qgsowsconnection.h"

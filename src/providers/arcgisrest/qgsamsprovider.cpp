@@ -849,7 +849,7 @@ QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, co
 QgsImageFetcher *QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings * /*mapSettings*/ )
 {
   QgsAmsLegendFetcher *fetcher = new QgsAmsLegendFetcher( this, mLegendFetcher->getImage() );
-  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [=]( const QImage &fetched ) {
+  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [this]( const QImage &fetched ) {
     mLegendFetcher->setImage( fetched );
   } );
   return fetcher;

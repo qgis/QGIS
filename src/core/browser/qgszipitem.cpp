@@ -64,7 +64,7 @@ void QgsZipItem::init()
   setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, []
   {
     sProviderNames << QStringLiteral( "files" );
   } );

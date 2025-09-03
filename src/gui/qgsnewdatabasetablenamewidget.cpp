@@ -98,18 +98,18 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   mBrowserTreeView->setBrowserModel( mBrowserModel );
 
   // Connections
-  connect( mNewTableName, &QLineEdit::textChanged, this, [=] {
+  connect( mNewTableName, &QLineEdit::textChanged, this, [this] {
     mTableName = mNewTableName->text();
     emit tableNameChanged( mTableName );
     updateUri();
     validate();
   } );
 
-  connect( mActionRefresh, &QAction::triggered, this, [=] {
+  connect( mActionRefresh, &QAction::triggered, this, [this] {
     refreshModel( QModelIndex() );
   } );
 
-  connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, [=]( const QModelIndex &index ) {
+  connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, [this]( const QModelIndex &index ) {
     if ( index.isValid() )
     {
       if ( const QgsDataItem *dataItem = mBrowserProxyModel.dataItem( index ) )

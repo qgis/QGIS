@@ -457,7 +457,21 @@ bool QgsAttributesFormModel::showAliases() const
 void QgsAttributesFormModel::setShowAliases( bool show )
 {
   mShowAliases = show;
-  emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+
+  emitDataChangedRecursively( QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+}
+
+void QgsAttributesFormModel::emitDataChangedRecursively( const QModelIndex &parent, const QVector<int> &roles )
+{
+  emit dataChanged( index( 0, 0, parent ), index( rowCount( parent ) - 1, 0, parent ), roles );
+  for ( int i = 0; i < rowCount( parent ); i++ )
+  {
+    const QModelIndex childIndex = index( i, 0, parent );
+    if ( hasChildren( childIndex ) )
+    {
+      emitDataChangedRecursively( childIndex, roles );
+    }
+  }
 }
 
 
@@ -607,9 +621,12 @@ void QgsAttributesAvailableWidgetsModel::populateLayerActions( const QList< QgsA
     }
   }
 
-  beginInsertRows( actionsIndex, 0, count );
-  populateActionItems( actions );
-  endInsertRows();
+  if ( count > 0 )
+  {
+    beginInsertRows( actionsIndex, 0, count - 1 );
+    populateActionItems( actions );
+    endInsertRows();
+  }
 }
 
 void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAction> actions )
@@ -1665,4 +1682,57 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
 
   itemForIndex( parent )->insertChild( row, std::move( item ) );
   endInsertRows();
+}
+
+
+QgsAttributesFormProxyModel::QgsAttributesFormProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+}
+
+void QgsAttributesFormProxyModel::setAttributesFormSourceModel( QgsAttributesFormModel *model )
+{
+  mModel = model;
+  QSortFilterProxyModel::setSourceModel( mModel );
+}
+
+const QString QgsAttributesFormProxyModel::filterText() const
+{
+  return mFilterText;
+}
+
+void QgsAttributesFormProxyModel::setFilterText( const QString &filterText )
+{
+  // Since we want to allow refreshing the filter when, e.g.,
+  // users switch to aliases, then we allow this method to be
+  // executed even if previous and new filters are equal
+
+  mFilterText = filterText.trimmed();
+  invalidate();
+}
+
+bool QgsAttributesFormProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( mFilterText.isEmpty() )
+    return true;
+
+  QModelIndex sourceIndex = sourceModel()->index( sourceRow, 0, sourceParent );
+  if ( !sourceIndex.isValid() )
+    return false;
+
+  // If name or alias match, accept it before any other checks
+  if ( sourceIndex.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || sourceIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+    return true;
+
+  // Child is accepted if any of its parents is accepted
+  QModelIndex parent = sourceIndex.parent();
+  while ( parent.isValid() )
+  {
+    if ( parent.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || parent.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+      return true;
+
+    parent = parent.parent();
+  }
+
+  return false;
 }

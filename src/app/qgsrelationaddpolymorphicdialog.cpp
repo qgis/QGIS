@@ -40,7 +40,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddPolymorphicDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRelationAddPolymorphicDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-polymorphic-relations" ) );
   } );
 
@@ -69,7 +69,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   connect( mFieldsMappingAddButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDialog::addFieldsRow );
   connect( mFieldsMappingRemoveButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDialog::removeFieldsRow );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
-  connect( mRelationStrengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int index ) { Q_UNUSED( index ); updateDialogButtons(); } );
+  connect( mRelationStrengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) { Q_UNUSED( index ); updateDialogButtons(); } );
   connect( mReferencedLayerExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
   connect( mReferencedLayersComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsRelationAddPolymorphicDialog::referencedLayersChanged );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateChildRelationsComboBox );
@@ -114,7 +114,7 @@ void QgsRelationAddPolymorphicDialog::addFieldsRow()
 
   referencingField->setLayer( mReferencingLayerComboBox->currentLayer() );
 
-  connect( referencingField, &QgsFieldComboBox::fieldChanged, this, [=]( const QString & ) { updateDialogButtons(); } );
+  connect( referencingField, &QgsFieldComboBox::fieldChanged, this, [this]( const QString & ) { updateDialogButtons(); } );
 
   mFieldsMappingTable->insertRow( index );
   mFieldsMappingTable->setCellWidget( index, 0, referencedPolymorphicField );

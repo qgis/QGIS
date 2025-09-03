@@ -75,7 +75,7 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
       mAutoScroll = false;
   } );
 
-  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [=] {
+  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [this] {
     if ( mLogger->rowCount() > ( QgsAppQueryLogger::MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
     {
       // never trim expanded nodes
@@ -183,11 +183,11 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
 
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsDatabaseQueryLoggerTreeView::setFilterString );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsAppQueryLogger::clear );
-  connect( mActionRecord, &QAction::toggled, this, [=]( bool enabled ) {
+  connect( mActionRecord, &QAction::toggled, this, []( bool enabled ) {
     QgsSettings().setValue( QStringLiteral( "logDatabaseQueries" ), enabled, QgsSettings::App );
     QgsApplication::databaseQueryLog()->setEnabled( enabled );
   } );
-  connect( mActionSaveLog, &QAction::triggered, this, [=]() {
+  connect( mActionSaveLog, &QAction::triggered, this, [this]() {
     if ( QMessageBox::warning( this, tr( "Save Database Query Log" ), tr( "Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
       return;
 

@@ -37,6 +37,7 @@ class QgsSnapToGridAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsSnapToGridAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;

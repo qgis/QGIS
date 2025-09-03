@@ -63,7 +63,7 @@ void TestQgsZipUtils::unzipWithSubdirs()
 {
   QStringList testFileNames;
   testFileNames << "/folder/folder2/landsat_b2.tif" << "/folder/points.geojson" << "/points.qml";
-  genericTest( QString( "testzip" ), 11, true, testFileNames );
+  genericTest( QString( "testzip" ), 9, true, testFileNames );
 }
 
 /**
@@ -154,7 +154,13 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
   QDirIterator it( dir, QDirIterator::Subdirectories );
   QStringList filesFromResultDir;
   while ( it.hasNext() )
-    filesFromResultDir << it.next();
+  {
+    it.next();
+    if ( !it.fileInfo().isDir() )
+    {
+      filesFromResultDir << it.filePath();
+    }
+  }
 
   // Test if ziplib matches number of files in the root folder
   QCOMPARE( files.count(), filesFromResultDir.count() );

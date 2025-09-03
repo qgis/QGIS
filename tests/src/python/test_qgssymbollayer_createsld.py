@@ -18,13 +18,15 @@
 __author__ = "Andrea Aime"
 __date__ = "July 2016"
 __copyright__ = "(C) 2012, Andrea Aime"
-
+import pathlib
 import os
 
 from qgis.PyQt.QtCore import (
     QDir,
     QFile,
     QIODevice,
+    QFile,
+    QTextStream,
     QPointF,
     QSizeF,
     Qt,
@@ -47,6 +49,7 @@ from qgis.core import (
     QgsRuleBasedLabeling,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
+    QgsRasterMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayerBase,
     QgsSldExportContext,
@@ -266,6 +269,72 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # Check also the stroke width
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
+
+    def testRasterMarker_remote(self):
+        symbol = QgsRasterMarkerSymbolLayer(
+            path="file://localhost/image.png",
+        )
+        _, root = self.symbolToSld(symbol)
+        href_attr = (
+            root.elementsByTagName("se:OnlineResource")
+            .item(0)
+            .attributes()
+            .namedItem("xlink:href")
+        )
+        self.assertEqual("file://localhost/image.png", href_attr.nodeValue())
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
+        self.assertEqual(
+            mime_elem.text(),
+            # note: mime type is hardcoded to image/png for remote files
+            "image/png",
+        )
+
+    def testRasterMarker_local(self):
+        symbol = QgsRasterMarkerSymbolLayer(
+            path=f"{unitTestDataPath()}/symbol_layer/QgsRasterMarkerSymbolLayer-local.gif",
+        )
+        _, root = self.symbolToSld(symbol)
+
+        href_attr = (
+            root.elementsByTagName("se:OnlineResource")
+            .item(0)
+            .attributes()
+            .namedItem("xlink:href")
+        )
+        self.assertEqual(
+            f"{unitTestDataPath()}/symbol_layer/QgsRasterMarkerSymbolLayer-local.gif",
+            href_attr.nodeValue(),
+        )
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
+        self.assertEqual(mime_elem.text(), "image/gif")
+
+    def testRasterMarker_embedded(self):
+        # a red 4x4 pixel GIF
+        symbol = QgsRasterMarkerSymbolLayer(
+            path="base64:R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw=="
+        )
+        _, root = self.symbolToSld(symbol)
+        b64_textnode = root.elementsByTagName("se:InlineContent").item(0).toElement()
+        self.assertEqual(
+            b64_textnode.text(),
+            "R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
+        )
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
+        self.assertEqual(mime_elem.text(), "image/gif")
+
+    def testRasterMarker_embeddedBase64DataUrl(self):
+        # a red 4x4 pixel GIF
+        symbol = QgsRasterMarkerSymbolLayer(
+            path="data:image/gif;base64,R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw=="
+        )
+        _, root = self.symbolToSld(symbol)
+        b64_textnode = root.elementsByTagName("se:InlineContent").item(0).toElement()
+        self.assertEqual(
+            b64_textnode.text(),
+            "R0lGODlhBAAEAPABAP8AAP//ACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCAABACwAAAAABAAEAAACBISPCQUAOw==",
+        )
+        mime_elem = root.elementsByTagName("se:Format").item(0).toElement()
+        self.assertEqual(mime_elem.text(), "image/gif")
 
     def testSimpleLineHairline(self):
         symbol = QgsSimpleLineSymbolLayer(QColor("black"), 0)
@@ -1709,7 +1778,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom = QDomDocument()
         root = dom.createElement("FakeRoot")
         dom.appendChild(root)
-        symbolLayer.toSld(dom, root, {})
+        symbolLayer.toSld(dom, root, QgsSldExportContext())
         return dom, root
 
     def layerToSld(self, mapLayer):

@@ -70,7 +70,7 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
     contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
   }
 
-  connect( contextMenu, &QMenu::aboutToShow, this, [=] {
+  connect( contextMenu, &QMenu::aboutToShow, this, [this] {
     const std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
     mPasteSymbolAction->setEnabled( static_cast<bool>( tempSymbol ) );
   } );
@@ -109,7 +109,7 @@ void QgsRendererWidget::changeSymbolColor()
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Change Symbol Color" ) );
     colorWidget->setAllowOpacity( true );
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &color ) {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this, symbolList]( const QColor &color ) {
       for ( QgsSymbol *symbol : symbolList )
       {
         if ( symbol )
@@ -327,7 +327,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   {
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r->legendSymbolItems(), r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=]() {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
       setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
     } );
     panel->openPanel( widget );

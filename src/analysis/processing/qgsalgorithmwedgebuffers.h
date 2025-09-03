@@ -38,6 +38,7 @@ class QgsWedgeBuffersAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     QgsWedgeBuffersAlgorithm *createInstance() const override SIP_FACTORY;

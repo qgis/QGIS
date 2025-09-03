@@ -155,7 +155,14 @@ QgsOgrProviderConnection::QgsOgrProviderConnection( const QString &uri, const QV
   const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri );
   if ( !parts.value( QStringLiteral( "path" ) ).toString().isEmpty() && parts.value( QStringLiteral( "path" ) ).toString() != uri )
   {
-    setUri( parts.value( QStringLiteral( "path" ) ).toString() );
+    QVariantMap cleanedParts;
+    cleanedParts.insert( QStringLiteral( "path" ), parts.value( QStringLiteral( "path" ) ).toString() );
+
+    if ( !parts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+      cleanedParts.insert( QStringLiteral( "vsiPrefix" ), parts.value( QStringLiteral( "vsiPrefix" ) ).toString() );
+
+    const QString cleanedUri = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->encodeUri( cleanedParts );
+    setUri( cleanedUri );
   }
   setDefaultCapabilities();
 }

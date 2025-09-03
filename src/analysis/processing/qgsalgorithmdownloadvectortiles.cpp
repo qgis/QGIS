@@ -72,6 +72,11 @@ QString QgsDownloadVectorTilesAlgorithm::groupId() const
 
 QString QgsDownloadVectorTilesAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm downloads vector tiles of the input vector tile layer and saves them in the local vector tile file." );
+}
+
+QString QgsDownloadVectorTilesAlgorithm::shortDescription() const
+{
   return QObject::tr( "Downloads vector tiles of the input vector tile layer and saves them in the local vector tile file." );
 }
 

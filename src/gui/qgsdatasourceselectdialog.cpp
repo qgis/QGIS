@@ -103,7 +103,7 @@ QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   action->setCheckable( true );
   menu->addAction( action );
 
-  connect( mActionRefresh, &QAction::triggered, this, [=] { refreshModel( QModelIndex() ); } );
+  connect( mActionRefresh, &QAction::triggered, this, [this] { refreshModel( QModelIndex() ); } );
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectWidget::onLayerSelected );
   connect( mBrowserTreeView, &QgsBrowserTreeView::doubleClicked, this, &QgsDataSourceSelectWidget::itemDoubleClicked );
   connect( mActionCollapse, &QAction::triggered, mBrowserTreeView, &QgsBrowserTreeView::collapseAll );
@@ -227,7 +227,7 @@ void QgsDataSourceSelectWidget::setDescription( const QString &description )
       mDescriptionLabel->setWordWrap( true );
       mDescriptionLabel->setMargin( 4 );
       mDescriptionLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
-      connect( mDescriptionLabel, &QLabel::linkActivated, this, [=]( const QString &link ) {
+      connect( mDescriptionLabel, &QLabel::linkActivated, this, []( const QString &link ) {
         const QUrl url( link );
         const QFileInfo file( url.toLocalFile() );
         if ( file.exists() && !file.isDir() )

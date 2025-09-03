@@ -67,7 +67,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     spnHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );

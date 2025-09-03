@@ -152,7 +152,7 @@ void QgsProcessingAlignRasterLayersPanelWidget::configureRaster()
     widget->setPanelTitle( tr( "Configure Raster" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [=]() {
+    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [this, item, widget]() {
       setItemValue( item, widget->value() );
     } );
     panel->openPanel( widget );
@@ -238,7 +238,7 @@ void QgsProcessingAlignRasterLayersWidget::showDialog()
   {
     QgsProcessingAlignRasterLayersPanelWidget *widget = new QgsProcessingAlignRasterLayersPanelWidget( mValue, mProject );
     widget->setPanelTitle( tr( "Input layers" ) );
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [=]() {
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
       setValue( widget->selectedOptions() );
     } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
@@ -291,7 +291,11 @@ QWidget *QgsProcessingAlignRasterLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingAlignRasterLayersWidget( nullptr );
   mPanel->setProject( widgetContext().project() );
-  connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [=] {
+  if ( parameterDefinition() )
+  {
+    mPanel->setToolTip( parameterDefinition()->toolTip() );
+  }
+  connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
   return mPanel;

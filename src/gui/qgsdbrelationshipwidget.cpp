@@ -85,14 +85,14 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   mLeftTableCombo->setModel( mProxyModel );
   mRightTableCombo->setModel( mProxyModel );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [=] {
+  connect( mNameEdit, &QLineEdit::textChanged, this, [this] {
     emit validityChanged( isValid() );
   } );
-  connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
-  connect( mRightTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mRightTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mRightFieldsCombo->setFields( mConnection->fields( QString(), mRightTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
@@ -106,7 +106,7 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
           mRelatedTableTypeCombo
         } )
   {
-    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
       emit validityChanged( isValid() );
     } );
   }

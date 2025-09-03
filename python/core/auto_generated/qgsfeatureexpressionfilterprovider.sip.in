@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeatureexpressionfilterprovider.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsFeatureExpressionFilterProvider : QgsFeatureFilterProvider
+{
+%Docstring(signature="appended")
+A feature filter provider allowing to set filter expressions on a
+per-layer basis.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsfeatureexpressionfilterprovider.h"
+%End
+  public:
+    QgsFeatureExpressionFilterProvider();
+%Docstring
+Constructor
+%End
+
+ virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const /Deprecated/;
+
+    virtual void filterFeatures( const QString &layerId, QgsFeatureRequest &filterFeatures ) const;
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
+    virtual QgsFeatureExpressionFilterProvider *clone() const /Factory/;
+
+
+    void setFilter( const QString &layerId, const QgsExpression &expression );
+%Docstring
+Set a filter for the given layer.
+
+:param layerId: the layer to filter
+:param expression: the filter expression
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeatureexpressionfilterprovider.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

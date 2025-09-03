@@ -283,12 +283,12 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     Environment env { QString( pathInfo.dir().path() + QDir::separator() ).toStdString() };
 
     // For template debugging:
-    env.add_callback( "json_dump", 0, [=]( Arguments & ) {
+    env.add_callback( "json_dump", 0, [data]( Arguments & ) {
       return data.dump();
     } );
 
     // Path manipulation: appends a directory path to the current url
-    env.add_callback( "path_append", 1, [=]( Arguments &args ) {
+    env.add_callback( "path_append", 1, [context]( Arguments &args ) {
       auto url { context.request()->url() };
       QFileInfo fi { url.path() };
       auto suffix { fi.suffix() };
@@ -313,7 +313,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     } );
 
     // Path manipulation: removes the specified number of directory components from the current url path
-    env.add_callback( "path_chomp", 1, [=]( Arguments &args ) {
+    env.add_callback( "path_chomp", 1, []( Arguments &args ) {
       QUrl url { QString::fromStdString( args.at( 0 )->get<std::string>() ) };
       QFileInfo fi { url.path() };
       auto suffix { fi.suffix() };
@@ -333,7 +333,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
 
     // Returns filtered links from a link list
     // links_filter( <links>, <key>, <value> )
-    env.add_callback( "links_filter", 3, [=]( Arguments &args ) {
+    env.add_callback( "links_filter", 3, []( Arguments &args ) {
       json links = args.at( 0 )->get<json>();
       if ( !links.is_array() )
       {
@@ -353,13 +353,13 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     } );
 
     // Returns a short name from content types
-    env.add_callback( "content_type_name", 1, [=]( Arguments &args ) {
+    env.add_callback( "content_type_name", 1, []( Arguments &args ) {
       const QgsServerOgcApi::ContentType ct { QgsServerOgcApi::contentTypeFromExtension( args.at( 0 )->get<std::string>() ) };
       return QgsServerOgcApi::contentTypeToStdString( ct );
     } );
 
     // Replace newlines with <br>
-    env.add_callback( "nl2br", 1, [=]( Arguments &args ) {
+    env.add_callback( "nl2br", 1, []( Arguments &args ) {
       QString text { QString::fromStdString( args.at( 0 )->get<std::string>() ) };
       return text.replace( '\n', QLatin1String( "<br>" ) ).toStdString();
     } );
@@ -367,7 +367,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
 
     // Returns a list of parameter component data from components -> parameters by ref name
     // parameter( <ref object> )
-    env.add_callback( "component_parameter", 1, [=]( Arguments &args ) {
+    env.add_callback( "component_parameter", 1, [data]( Arguments &args ) {
       json ret = json::array();
       json ref = args.at( 0 )->get<json>();
       if ( !ref.is_object() )
@@ -389,7 +389,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
 
 
     // Static: returns the full URL to the specified static <path>
-    env.add_callback( "static", 1, [=]( Arguments &args ) {
+    env.add_callback( "static", 1, [context]( Arguments &args ) {
       auto asset( args.at( 0 )->get<std::string>() );
       QString matchedPath { context.matchedPath() };
       // If its the root path '/' strip it!
@@ -404,6 +404,37 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     // Returns true if a string begins with the provided string prefix, false otherwise
     env.add_callback( "starts_with", 2, []( Arguments &args ) {
       return string_view::starts_with( args.at( 0 )->get<std::string_view>(), args.at( 1 )->get<std::string_view>() );
+    } );
+
+    // Returns "null" string if object is null else string object representation
+    env.add_callback( "if_nullptr_null_str", 1, []( Arguments &args ) {
+      json jsonValue = args.at( 0 )->get<json>();
+      std::string out;
+      switch ( jsonValue.type() )
+      {
+        // avoid escaping string value
+        case json::value_t::string:
+          out = jsonValue.get<std::string>();
+          break;
+
+        case json::value_t::array:
+        case json::value_t::object:
+          if ( jsonValue.is_null() )
+          {
+            out = "null";
+          }
+          else
+          {
+            out = jsonValue.dump();
+          }
+
+          break;
+
+          // use dump() for all other value types
+        default:
+          out = jsonValue.dump();
+      }
+      return out;
     } );
 
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );

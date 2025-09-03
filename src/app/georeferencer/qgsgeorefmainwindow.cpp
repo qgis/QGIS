@@ -874,10 +874,10 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &sourceCoordi
   {
     mNewlyAddedPoint = new QgsGeorefDataPoint( mCanvas, QgisApp::instance()->mapCanvas(), sourceCoordinates, QgsPointXY(), QgsCoordinateReferenceSystem(), true );
     mMapCoordsDialog = new QgsMapCoordsDialog( QgisApp::instance()->mapCanvas(), mNewlyAddedPoint, lastProjection, this );
-    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [=]( const QgsPointXY &sourceLayerCoordinate, const QgsPointXY &destinationCoordinate, const QgsCoordinateReferenceSystem &destinationCrs ) {
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [this]( const QgsPointXY &sourceLayerCoordinate, const QgsPointXY &destinationCoordinate, const QgsCoordinateReferenceSystem &destinationCrs ) {
       addPoint( sourceLayerCoordinate, destinationCoordinate, destinationCrs );
     } );
-    connect( mMapCoordsDialog, &QObject::destroyed, this, [=] {
+    connect( mMapCoordsDialog, &QObject::destroyed, this, [this] {
       delete mNewlyAddedPoint;
       mNewlyAddedPoint = nullptr;
     } );
@@ -1102,9 +1102,9 @@ void QgsGeoreferencerMainWindow::createActions()
   connect( mActionReset, &QAction::triggered, this, &QgsGeoreferencerMainWindow::reset );
 
   mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
-  connect( mActionOpenRaster, &QAction::triggered, this, [=] { openLayer( Qgis::LayerType::Raster ); } );
+  connect( mActionOpenRaster, &QAction::triggered, this, [this] { openLayer( Qgis::LayerType::Raster ); } );
 
-  connect( mActionOpenVector, &QAction::triggered, this, [=] { openLayer( Qgis::LayerType::Vector ); } );
+  connect( mActionOpenVector, &QAction::triggered, this, [this] { openLayer( Qgis::LayerType::Vector ); } );
 
   mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionStart.svg" ) ) );
   connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::georeference );
@@ -1211,7 +1211,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
-  connect( mActionAdvancedDigitizingDock, &QAction::triggered, mAdvancedDigitizingDockWidget, [=]( bool checked ) { mAdvancedDigitizingDockWidget->setVisible( checked ); } );
+  connect( mActionAdvancedDigitizingDock, &QAction::triggered, mAdvancedDigitizingDockWidget, [this]( bool checked ) { mAdvancedDigitizingDockWidget->setVisible( checked ); } );
 
   QgsSnappingConfig snappingConfig;
   snappingConfig.setMode( Qgis::SnappingMode::AllLayers );
@@ -1247,7 +1247,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mSnappingTypeButton->setMenu( typeMenu );
   mSnappingTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
-  connect( mSnappingTypeButton, &QToolButton::triggered, this, [=]( QAction *action ) {
+  connect( mSnappingTypeButton, &QToolButton::triggered, this, [this]( QAction *action ) {
     QgsSnappingConfig snappingConfig = mSnappingUtils->config();
     unsigned int type = static_cast<int>( snappingConfig.typeFlag() );
     const Qgis::SnappingTypes actionFlag = static_cast<Qgis::SnappingTypes>( action->data().toInt() );
@@ -1256,7 +1256,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
     mSnappingUtils->setConfig( snappingConfig );
   } );
 
-  connect( mSnappingTypeButton, &QToolButton::clicked, this, [=]( bool checked ) {
+  connect( mSnappingTypeButton, &QToolButton::clicked, this, [this]( bool checked ) {
     QgsSnappingConfig snappingConfig = mSnappingUtils->config();
     snappingConfig.setEnabled( checked );
     mSnappingUtils->setConfig( snappingConfig );
@@ -1285,7 +1285,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   mToolDeletePoint->setAction( mActionDeletePoint );
   connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::hoverPoint, this, &QgsGeoreferencerMainWindow::hoverPoint );
   connect( mToolDeletePoint, &QgsGeorefToolDeletePoint::deletePoint, this, &QgsGeoreferencerMainWindow::deletePoint );
-  connect( mToolDeletePoint, &QgsMapTool::deactivated, this, [=] {
+  connect( mToolDeletePoint, &QgsMapTool::deactivated, this, [this] {
     if ( mHoveredPoint )
     {
       mHoveredPoint->setHovered( false );
@@ -1299,7 +1299,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointMoving, this, &QgsGeoreferencerMainWindow::movePoint );
   connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointEndMove, this, &QgsGeoreferencerMainWindow::releasePoint );
   connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointCancelMove, this, &QgsGeoreferencerMainWindow::cancelPoint );
-  connect( mToolMovePoint, &QgsMapTool::deactivated, this, [=] {
+  connect( mToolMovePoint, &QgsMapTool::deactivated, this, [this] {
     mMovingPoint = nullptr;
     if ( mHoveredPoint )
     {
@@ -1315,7 +1315,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointMoving, this, &QgsGeoreferencerMainWindow::movePoint );
   connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointEndMove, this, &QgsGeoreferencerMainWindow::releasePoint );
   connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointCancelMove, this, &QgsGeoreferencerMainWindow::cancelPoint );
-  connect( mToolMovePointQgis, &QgsMapTool::deactivated, this, [=] {
+  connect( mToolMovePointQgis, &QgsMapTool::deactivated, this, [this] {
     mMovingPointQgis = nullptr;
     if ( mHoveredPoint )
     {

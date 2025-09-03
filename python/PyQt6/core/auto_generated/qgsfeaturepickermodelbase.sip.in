@@ -102,6 +102,37 @@ An additional filter expression to apply, next to the filterValue. Can
 be used for spatial filtering etc.
 %End
 
+    QString orderExpression() const;
+%Docstring
+The order expression will be used for sort values in the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    void setOrderExpression( const QString &orderExpression );
+%Docstring
+The order expression will be used for sort values in the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    Qt::SortOrder sortOrder() const;
+%Docstring
+The order direction will be used for sort values in the combobox.
+Ascending or descending.
+
+.. versionadded:: 4.0
+%End
+
+    void setSortOrder( const Qt::SortOrder sortOrder );
+%Docstring
+The order direction will be used for sort values in the combobox.
+Ascending or descending.
+
+.. versionadded:: 4.0
+%End
+
+
     QgsFeature formFeature() const;
 %Docstring
 Returns an attribute form feature to be used with the filter expression.
@@ -224,6 +255,21 @@ matches the filter value, it will be accessible by this model.
 %Docstring
 An additional filter expression to apply, next to the filterValue. Can
 be used for spatial filtering etc.
+%End
+
+    void orderExpressionChanged();
+%Docstring
+An expression for generating values for sorting. Can be used for combo
+boxes etc.
+
+.. versionadded:: 4.0
+%End
+
+    void sortOrderChanged();
+%Docstring
+The direction used for sorting. Can be used for combo boxes etc.
+
+.. versionadded:: 4.0
 %End
 
     void formFeatureChanged();

@@ -98,6 +98,22 @@ class TestProcessingAlgsGdalGdalUtils(QgisTestCase):
         self.assertTrue("mode=1" in s)
         self.assertFalse("where=" in s)
 
+    def test_ogrLayerName(self):
+
+        self.assertEqual(GdalUtils.ogrLayerName(' table="some_table"'), "some_table")
+        self.assertEqual(
+            GdalUtils.ogrLayerName(' table="some_schema"."some_table"'),
+            "some_schema.some_table",
+        )
+        self.assertEqual(
+            GdalUtils.ogrLayerName(' table="some_schema"."some_table"(geom)'),
+            "some_schema.some_table",
+        )
+        self.assertEqual(
+            GdalUtils.ogrLayerName('"base_path|layername=some_table|other=field"'),
+            "some_table",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

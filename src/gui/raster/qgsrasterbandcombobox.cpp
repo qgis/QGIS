@@ -22,7 +22,7 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )
   , mNotSetString( tr( "Not set" ) )
 {
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer && mLayer->isValid() )
     {
       const int newBand = currentIndex() >= 0 ? currentData().toInt() : -1;
@@ -34,7 +34,7 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
     }
   } );
 
-  connect( this, &QComboBox::currentTextChanged, this, [=]( const QString &value ) {
+  connect( this, &QComboBox::currentTextChanged, this, [this]( const QString &value ) {
     if ( !mLayer || !mLayer->isValid() )
     {
       bool ok = false;

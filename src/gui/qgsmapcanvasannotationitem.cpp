@@ -43,7 +43,7 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotatio
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] { updatePosition(); } );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] { updatePosition(); } );
 
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 

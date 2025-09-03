@@ -35,6 +35,7 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmeshlabelingwidget.h"
+#include "qgsmaplayerlegend.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -230,6 +231,10 @@ void QgsMeshLayerProperties::syncToLayer()
 
   mStaticDatasetWidget->syncToLayer();
   mStaticDatasetGroupBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
+
+  // legend
+  mLegendConfigEmbeddedWidget->setLayer( mMeshLayer );
+  mIncludeByDefaultInLayoutLegendsCheck->setChecked( mMeshLayer->legend() && !mMeshLayer->legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
 }
 
 void QgsMeshLayerProperties::saveDefaultStyle()
@@ -251,6 +256,8 @@ void QgsMeshLayerProperties::apply()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
+  mLegendConfigEmbeddedWidget->applyToLayer();
+
   QgsDebugMsgLevel( QStringLiteral( "processing general tab" ), 4 );
   /*
    * General Tab
@@ -267,6 +274,7 @@ void QgsMeshLayerProperties::apply()
 
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
+
 
   QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
   /*
@@ -324,6 +332,12 @@ void QgsMeshLayerProperties::apply()
 
   if ( needEmitRendererChanged )
     emit mMeshLayer->rendererChanged();
+
+  // legend
+  if ( QgsMapLayerLegend *legend = mMeshLayer->legend() )
+  {
+    legend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, !mIncludeByDefaultInLayoutLegendsCheck->isChecked() );
+  }
 
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();

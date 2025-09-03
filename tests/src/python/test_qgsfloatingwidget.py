@@ -10,6 +10,7 @@ __author__ = "Nyall Dawson"
 __date__ = "26/04/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QGridLayout, QWidget
 from qgis.gui import QgsFloatingWidget
 import unittest
@@ -38,7 +39,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         gl.setRowStretch(2, 1)
 
         # 103 = WA_DontShowOnScreen (not available in PyQt)
-        main_frame.setAttribute(103)
+        main_frame.setAttribute(Qt.WidgetAttribute(103))
         main_frame.show()
 
         fw = QgsFloatingWidget(main_frame)
@@ -174,7 +175,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         gl.setRowStretch(2, 1)
 
         # 103 = WA_DontShowOnScreen (not available in PyQt)
-        main_frame.setAttribute(103)
+        main_frame.setAttribute(Qt.WidgetAttribute(103))
         main_frame.show()
 
         fw = QgsFloatingWidget(main_frame)
@@ -218,7 +219,7 @@ class TestQgsFloatingWidget(QgisTestCase):
         gl.setRowStretch(2, 1)
 
         # 103 = WA_DontShowOnScreen (not available in PyQt)
-        main_frame.setAttribute(103)
+        main_frame.setAttribute(Qt.WidgetAttribute(103))
         main_frame.show()
 
         fw = QgsFloatingWidget(main_frame)
@@ -256,7 +257,8 @@ class TestQgsFloatingWidget(QgisTestCase):
         gl.setRowStretch(1, 0)
         gl.setRowStretch(2, 1)
 
-        main_frame.setAttribute(103)
+        # 103 = WA_DontShowOnScreen (not available in PyQt)
+        main_frame.setAttribute(Qt.WidgetAttribute(103))
         main_frame.show()
 
         fw = QgsFloatingWidget(main_frame)

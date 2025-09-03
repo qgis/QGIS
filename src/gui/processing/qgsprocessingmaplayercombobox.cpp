@@ -206,7 +206,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   connect( mCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsProcessingMapLayerComboBox::onLayerChanged );
   if ( mUseSelectionCheckBox )
-    connect( mUseSelectionCheckBox, &QCheckBox::toggled, this, [=] {
+    connect( mUseSelectionCheckBox, &QCheckBox::toggled, this, [this] {
       if ( !mBlockChangedSignal )
         emit valueChanged();
     } );
@@ -639,7 +639,7 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
       bool changed = false;
       changed = changed | ( widget->featureLimit() != mFeatureLimit );
       changed = changed | ( widget->filterExpression() != mFilterExpression );
@@ -694,10 +694,10 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [=]( const QgsMimeDataUtils::Uri & ) {
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [widget]( const QgsMimeDataUtils::Uri & ) {
       widget->acceptPanel();
     } );
-    connect( widget, &QgsPanelWidget::panelAccepted, this, [=]() {
+    connect( widget, &QgsPanelWidget::panelAccepted, this, [this, widget]() {
       QgsProcessingContext context;
       if ( widget->uri().uri.isEmpty() )
         setValue( QVariant(), context );

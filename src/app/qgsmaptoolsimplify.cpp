@@ -57,16 +57,16 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
   // communication with map tool
   connect( mToleranceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
-  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int ) { emit toleranceUnitsChanged( mToleranceUnitsComboBox->currentData().value<Qgis::MapToolUnit>() ); } );
-  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( const int method ) { emit methodChanged( ( QgsMapToolSimplify::Method ) method ); } );
-  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int ) { emit toleranceUnitsChanged( mToleranceUnitsComboBox->currentData().value<Qgis::MapToolUnit>() ); } );
+  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( const int method ) { emit methodChanged( ( QgsMapToolSimplify::Method ) method ); } );
+  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mMethodComboBox->currentData().toInt() != QgsMapToolSimplify::Smooth )
       mOptionsStackedWidget->setCurrentIndex( 0 );
     else
       mOptionsStackedWidget->setCurrentIndex( 1 );
   } );
 
-  connect( mOffsetSpin, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, [=]( const int offset ) { emit smoothOffsetChanged( offset / 100.0 ); } );
+  connect( mOffsetSpin, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, [this]( const int offset ) { emit smoothOffsetChanged( offset / 100.0 ); } );
   connect( mIterationsSpin, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::smoothIterationsChanged );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSimplifyUserInputWidget::accepted );

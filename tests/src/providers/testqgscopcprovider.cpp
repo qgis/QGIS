@@ -124,6 +124,9 @@ void TestQgsCopcProvider::encodeUri()
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
   QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+
+  parts.insert( QStringLiteral( "authcfg" ), QStringLiteral( "abc1234" ) );
+  QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/dataset.copc.laz authcfg='abc1234'" ) );
 }
 
 void TestQgsCopcProvider::decodeUri()
@@ -131,8 +134,14 @@ void TestQgsCopcProvider::decodeUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "copc" ) );
   QVERIFY( metadata );
 
-  const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  QCOMPARE( parts.value( QStringLiteral( "file-name" ) ).toString(), QStringLiteral( "dataset.copc.laz" ) );
+  QVERIFY( parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() );
+
+  parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/dataset.copc.laz authcfg='abc1234'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/dataset.copc.laz" ) );
+  QCOMPARE( parts.value( QStringLiteral( "authcfg" ) ).toString(), QStringLiteral( "abc1234" ) );
 }
 
 void TestQgsCopcProvider::absoluteRelativeUri()
@@ -175,6 +184,7 @@ void TestQgsCopcProvider::layerTypesForUri()
   QVERIFY( copcMetadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
   QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz authcfg='abc1234'" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
   QCOMPARE( copcMetadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList<Qgis::LayerType>() );
 }
 
@@ -914,18 +924,21 @@ void TestQgsCopcProvider::testStatsCalculator()
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Amplitude" ) );
     QCOMPARE( ( float ) s.minimum, 1.1599999666214 );
     QCOMPARE( ( float ) s.maximum, 19.6000003814697 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 1.1360613108, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Blue" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
+    QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Synthetic" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0061436155811, 0.0000001 );
     QMap<int, int> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
@@ -934,6 +947,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "KeyPoint" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0053205453, 0.0000001 );
     QMap<int, int> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
@@ -942,6 +956,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Withheld" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0043442328, 0.0000001 );
     QMap<int, int> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
@@ -950,6 +965,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Overlap" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 1 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.0030718162, 0.0000001 );
     QMap<int, int> classCount = s.classCount;
     QCOMPARE( classCount.size(), 2 );
   }
@@ -958,6 +974,7 @@ void TestQgsCopcProvider::testStatsCalculator()
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Classification" ) );
     QCOMPARE( ( float ) s.minimum, 2 );
     QCOMPARE( ( float ) s.maximum, 18 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.5567283630, 0.0000001 );
     QMap<int, int> classCount = s.classCount;
     QCOMPARE( classCount.size(), 7 );
     QCOMPARE( classCount[2], 103782 );
@@ -973,78 +990,91 @@ void TestQgsCopcProvider::testStatsCalculator()
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Deviation" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 120 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 3.8086988926, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "EdgeOfFlightLine" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
+    QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "GpsTime" ) );
     QCOMPARE( ( float ) s.minimum, ( float ) 302522581.972046196460723876953 );
     QCOMPARE( ( float ) s.maximum, ( float ) 302522583.437068104743957519531 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.4110022783, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Green" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
+    QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Intensity" ) );
     QCOMPARE( ( float ) s.minimum, 116 );
     QCOMPARE( ( float ) s.maximum, 1960 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 113.6061325073, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "NumberOfReturns" ) );
     QCOMPARE( ( float ) s.minimum, 1 );
     QCOMPARE( ( float ) s.maximum, 5 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.2079153657, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "PointSourceId" ) );
     QCOMPARE( ( float ) s.minimum, 15017 );
     QCOMPARE( ( float ) s.maximum, 15017 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Red" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
+    QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Reflectance" ) );
     QCOMPARE( ( float ) s.minimum, -21.1100006103515625 );
     QCOMPARE( ( float ) s.maximum, -2.6099998950958251953125 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 1.1387866735, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ReturnNumber" ) );
     QCOMPARE( ( float ) s.minimum, 1 );
     QCOMPARE( ( float ) s.maximum, 5 );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 0.1361096203, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanAngleRank" ) );
     QCOMPARE( ( float ) s.minimum, -10.998000145f );
     QCOMPARE( ( float ) s.maximum, -4.001999855f );
+    QGSCOMPARENEAR( static_cast<float>( s.stDev ), 1.9546363354, 0.0000001 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanDirectionFlag" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
+    QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "UserData" ) );
     QCOMPARE( ( float ) s.minimum, 0 );
     QCOMPARE( ( float ) s.maximum, 0 );
+    QCOMPARE( static_cast<float>( s.stDev ), 0 );
   }
 }
 

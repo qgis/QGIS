@@ -49,9 +49,14 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::groupId() const
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from the input point layer using "
+  return QObject::tr( "This algorithm creates rectangle, oval or diamond-shaped polygons from the input point layer using "
                       "specified width, height and (optional) rotation values. Multipart inputs should be promoted "
                       "to singleparts first." );
+}
+
+QString QgsRectanglesOvalsDiamondsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from an input point layer." );
 }
 
 QIcon QgsRectanglesOvalsDiamondsAlgorithm::icon() const

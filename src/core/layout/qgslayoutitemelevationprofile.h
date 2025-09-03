@@ -22,7 +22,7 @@
 #include "qgsmaplayerref.h"
 
 class QgsLayoutItemElevationProfilePlot;
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsProfileRequest;
 class QgsProfilePlotRenderer;
 class QgsLineSymbol;
@@ -63,13 +63,13 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      * Returns a reference to the elevation plot object, which can be used to
      * set plot appearance and properties.
      */
-    Qgs2DPlot *plot();
+    Qgs2DXyPlot *plot();
 
     /**
      * Returns a reference to the elevation plot object, which can be used to
      * set plot appearance and properties.
      */
-    const Qgs2DPlot *plot() const SIP_SKIP;
+    const Qgs2DXyPlot *plot() const SIP_SKIP;
 
     /**
      * Returns the list of map layers participating in the elevation profile.

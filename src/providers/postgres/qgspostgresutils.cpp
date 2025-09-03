@@ -229,7 +229,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
-  auto lookupKeyWhereClause = [=] {
+  auto lookupKeyWhereClause = [featureIds, fields, sharedData, pkAttrs] {
     if ( featureIds.isEmpty() )
       return QString();
 

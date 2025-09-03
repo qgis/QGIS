@@ -65,6 +65,11 @@ void QgsRasterLayerPropertiesAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "BAND_COUNT" ), QObject::tr( "Number of bands in raster" ) ) );
 }
 
+QString QgsRasterLayerPropertiesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Returns basic properties of a given raster layer, including the extent, size in pixels and dimensions of pixels (in map units)." );
+}
+
 QString QgsRasterLayerPropertiesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm returns basic properties of the given raster layer, including the extent, size in pixels and dimensions of pixels (in map units).\n\n"

@@ -186,7 +186,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedhistograms", "stackedhistograms", *mMapSettings, 200, 15 );
     }
@@ -276,7 +276,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "disabledsubdiagram", "disabledsubdiagram", *mMapSettings, 200, 15 );
     }
@@ -368,7 +368,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "scaledependentvisibilitysubdiagram", "scaledependentvisibilitysubdiagram", *mMapSettings, 200, 15 );
     }
@@ -457,7 +457,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "verticallystackedhistograms", "verticallystackedhistograms", *mMapSettings, 200, 15 );
     }
@@ -546,7 +546,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "verticallystackedhistogramswithspacing", "verticallystackedhistogramswithspacing", *mMapSettings, 200, 15 );
     }
@@ -639,7 +639,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedhistogramswithspacing", "stackedhistogramswithspacing", *mMapSettings, 200, 15 );
     }
@@ -732,7 +732,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedhistogramswithspacing2", "stackedhistogramswithspacing2", *mMapSettings, 200, 15 );
     }
@@ -778,7 +778,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedmenhistogram", "stackedmenhistogram", *mMapSettings, 200, 15 );
     }
@@ -824,7 +824,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedwomenhistogram", "stackedwomenhistogram", *mMapSettings, 200, 15 );
     }
@@ -901,7 +901,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedpies", "stackedpies", *mMapSettings, 200, 15 );
     }
@@ -980,7 +980,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedpiesverticalwithspacing", "stackedpiesverticalwithspacing", *mMapSettings, 200, 15 );
     }
@@ -1059,7 +1059,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedpieshorizontalwithspacing", "stackedpieshorizontalwithspacing", *mMapSettings, 200, 15 );
     }
@@ -1099,7 +1099,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedmenpie", "stackedmenpie", *mMapSettings, 200, 15 );
     }
@@ -1139,7 +1139,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedwomenpie", "stackedwomenpie", *mMapSettings, 200, 15 );
     }
@@ -1223,7 +1223,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedpiehistogram", "stackedpiehistogram", *mMapSettings, 200, 15 );
     }
@@ -1292,7 +1292,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedbarfixedsize", "stackedbarfixedsize", *mMapSettings, 200, 15 );
     }
@@ -1371,7 +1371,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedbarinterpolatedsize", "stackedbarinterpolatedsize", *mMapSettings, 200, 15 );
     }
@@ -1440,7 +1440,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedbarrightorientedfixedsize", "stackedbarrightorientedfixedsize", *mMapSettings, 200, 15 );
     }
@@ -1509,7 +1509,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedbarverticalfixedsize", "stackedbarverticalfixedsize", *mMapSettings, 200, 15 );
     }
@@ -1588,7 +1588,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackedbarinterpolatedsizeverticalleftoriented", "stackedbarinterpolatedsizeverticalleftoriented", *mMapSettings, 200, 15 );
     }
@@ -1725,7 +1725,7 @@ class TestQgsStackedDiagram : public QgsTest
 
       const QgsRectangle extent( 9.7, 53.5, 9.95, 53.6 );
       mMapSettings->setExtent( extent );
-      mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+      mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackeddiagramsnested", "stackeddiagramsnested", *mMapSettings, 200, 15 );
     }

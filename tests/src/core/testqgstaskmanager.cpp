@@ -878,7 +878,7 @@ void TestQgsTaskManager::waitForFinished()
   QTimer *timer = new QTimer( nullptr );
   connect( timer, &QTimer::timeout, finishedTask, &ProgressReportingTask::finish, Qt::DirectConnection );
   timer->moveToThread( timerThread );
-  connect( timerThread, &QThread::started, timer, [=] {
+  connect( timerThread, &QThread::started, timer, [timer] {
     timer->start( 2000 );
   } );
   connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
@@ -904,7 +904,7 @@ void TestQgsTaskManager::waitForFinished()
   timer = new QTimer( nullptr );
   connect( timer, &QTimer::timeout, failedTask, &ProgressReportingTask::terminate, Qt::DirectConnection );
   timer->moveToThread( timerThread );
-  connect( timerThread, &QThread::started, timer, [=] {
+  connect( timerThread, &QThread::started, timer, [timer] {
     timer->start( 500 );
   } );
   connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
@@ -926,7 +926,7 @@ void TestQgsTaskManager::waitForFinished()
   timer = new QTimer( nullptr );
   connect( timer, &QTimer::timeout, timeoutTooShortTask, &ProgressReportingTask::finish, Qt::DirectConnection );
   timer->moveToThread( timerThread );
-  connect( timerThread, &QThread::started, timer, [=] {
+  connect( timerThread, &QThread::started, timer, [timer] {
     timer->start( 1000 );
   } );
   connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );

@@ -225,6 +225,30 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     void keyPressEvent( QKeyEvent *event ) override;
 
+    /**
+     * The order expression of the model. It is used to evaluate sort values of the combobox.
+     * \since QGIS 4.0
+     */
+    QString orderExpression() const;
+
+    /**
+     * The order expression of the model. It is used to evaluate sort values of the combobox.
+     * \since QGIS 4.0
+     */
+    void setOrderExpression( const QString &orderExpression );
+
+    /**
+     * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
+     * \since QGIS 4.0
+     */
+    Qt::SortOrder sortOrder() const;
+
+    /**
+     * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
+     * \since QGIS 4.0
+     */
+    void setSortOrder( const Qt::SortOrder sortOrder );
+
   signals:
 
     /**

@@ -42,6 +42,7 @@ class GUI_EXPORT QgsUuidWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+    bool isReadOnly() const override;
 };
 
 #endif // QGSUUIDWIDGETFACTORY_H

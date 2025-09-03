@@ -30,11 +30,13 @@ QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
 void QgsAbstract3DEngine::requestCaptureImage()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
+  mFrameGraph->setRenderCaptureEnabled( true );
   captureReply = mFrameGraph->renderCapture()->requestCapture();
 
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [=] {
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [this, captureReply] {
     emit imageCaptured( captureReply->image() );
     captureReply->deleteLater();
+    mFrameGraph->setRenderCaptureEnabled( false );
   } );
 }
 
@@ -43,20 +45,10 @@ void QgsAbstract3DEngine::requestDepthBufferCapture()
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->depthRenderCapture()->requestCapture();
 
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [=] {
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [this, captureReply] {
     emit depthBufferCaptured( captureReply->image() );
     captureReply->deleteLater();
   } );
-}
-
-void QgsAbstract3DEngine::setRenderCaptureEnabled( bool enabled )
-{
-  mFrameGraph->setRenderCaptureEnabled( enabled );
-}
-
-bool QgsAbstract3DEngine::renderCaptureEnabled() const
-{
-  return mFrameGraph->renderCaptureEnabled();
 }
 
 void QgsAbstract3DEngine::dumpFrameGraphToConsole() const

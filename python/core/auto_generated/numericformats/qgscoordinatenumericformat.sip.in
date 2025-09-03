@@ -10,7 +10,7 @@
 class QgsGeographicCoordinateNumericFormat : QgsBasicNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formater which returns a text representation of a geographic
+A numeric formatter which returns a text representation of a geographic
 coordinate (latitude or longitude).
 
 .. versionadded:: 3.26

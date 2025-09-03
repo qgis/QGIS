@@ -37,7 +37,7 @@ QString QgsGeometryCheckSegmentLengthAlgorithm::displayName() const
 
 QString QgsGeometryCheckSegmentLengthAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect segments, in lines or polygons, shorter than a given length" );
+  return QObject::tr( "Detects segments, in lines or polygons, shorter than a given length." );
 }
 
 QStringList QgsGeometryCheckSegmentLengthAlgorithm::tags() const

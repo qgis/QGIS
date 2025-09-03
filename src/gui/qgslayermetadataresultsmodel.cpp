@@ -173,7 +173,7 @@ void QgsLayerMetadataResultsModel::reloadAsync()
     auto thread = std::make_unique<QThread>();
     fetcher->moveToThread( thread.get() );
     // Forward signals to the model
-    connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [=]( const QgsLayerMetadataSearchResults &results ) {
+    connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [this]( const QgsLayerMetadataSearchResults &results ) {
       resultsReady( results );
     } );
     connect( thread.get(), &QThread::started, fetcher.get(), &QgsMetadataResultsFetcher::fetchMetadata );

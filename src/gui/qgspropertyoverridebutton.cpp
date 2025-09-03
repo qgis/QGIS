@@ -719,7 +719,7 @@ void QgsPropertyOverrideButton::showAssistant()
     if ( mVectorLayer )
       connect( mVectorLayer, &QObject::destroyed, widget, &QgsPanelWidget::acceptPanel );
 
-    connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [=] { updateGui(); } );
+    connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [this] { updateGui(); } );
 
     panel->openPanel( widget );
     return;
@@ -965,7 +965,7 @@ void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
 
   if ( QgsColorButton *cb = qobject_cast<QgsColorButton *>( widget ) )
   {
-    connect( cb, &QgsColorButton::unlinked, this, [=] {
+    connect( cb, &QgsColorButton::unlinked, this, [this] {
       setActive( false );
       updateGui();
     } );

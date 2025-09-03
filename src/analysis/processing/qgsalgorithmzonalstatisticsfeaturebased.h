@@ -38,6 +38,7 @@ class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBased
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsZonalStatisticsFeatureBasedAlgorithm *createInstance() const override SIP_FACTORY;

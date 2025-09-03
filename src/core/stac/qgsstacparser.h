@@ -16,8 +16,7 @@
 #ifndef QGSSTACPARSER_H
 #define QGSSTACPARSER_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include <nlohmann/json.hpp>
 #include <QUrl>
 
@@ -26,20 +25,20 @@
 
 class QgsStacCatalog;
 class QgsStacCollection;
-class QgsStacCollections;
+class QgsStacCollectionList;
 class QgsStacItem;
 class QgsStacItemCollection;
 
 
 /**
- * \brief SpatioTemporal Asset Catalog JSON parser
+ * \brief SpatioTemporal Asset Catalog JSON parser.
  *
  * This class parses json data and creates the appropriate
- * STAC Catalog, Collection, Item or ItemCollection
+ * STAC Catalog, Collection, Item or ItemCollection.
  *
- * \note not available in Python bindings
+ * \since QGIS 3.44
 */
-class QgsStacParser
+class CORE_EXPORT QgsStacParser
 {
   public:
     //! Default constructor
@@ -61,41 +60,46 @@ class QgsStacParser
      */
     std::unique_ptr< QgsStacCatalog > catalog();
 
+
     /**
      * Returns the parsed STAC Collection
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned collection
      */
-    std::unique_ptr< QgsStacCollection > collection();
+    std::unique_ptr< QgsStacCollection > collection() SIP_SKIP;
 
     /**
      * Returns the parsed STAC Item
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned item
      */
-    std::unique_ptr< QgsStacItem > item();
+    std::unique_ptr< QgsStacItem > item() SIP_SKIP;
 
     /**
      * Returns the parsed STAC API Item Collection
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned item collection
      */
-    std::unique_ptr< QgsStacItemCollection > itemCollection();
+    std::unique_ptr< QgsStacItemCollection > itemCollection() SIP_SKIP;
 
     /**
      * Returns the parsed STAC API Collections
      * If parsing failed, NULLPTR is returned
      * The caller takes ownership of the returned collections
      */
-    QgsStacCollections *collections();
+    QgsStacCollectionList *collections();
 
     //! Returns the type of the parsed object
-    QgsStacObject::Type type() const;
+    Qgis::StacObjectType type() const;
 
     //! Returns the last parsing error
     QString error() const;
 
   private:
+#ifdef SIP_RUN
+    QgsStacParser( const QgsStacParser &rh ) SIP_FORCE;
+#endif
+
     std::unique_ptr< QgsStacItem > parseItem( const nlohmann::json &data );
     std::unique_ptr< QgsStacCatalog > parseCatalog( const nlohmann::json &data );
     std::unique_ptr< QgsStacCollection > parseCollection( const nlohmann::json &data );
@@ -107,7 +111,7 @@ class QgsStacParser
     static QString getString( const nlohmann::json &data );
 
     nlohmann::json mData;
-    QgsStacObject::Type mType = QgsStacObject::Type::Unknown;
+    Qgis::StacObjectType mType = Qgis::StacObjectType::Unknown;
     std::unique_ptr<QgsStacObject> mObject;
     QString mError;
     QUrl mBaseUrl;

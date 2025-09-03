@@ -117,6 +117,9 @@ class BoxPlot(QgisAlgorithm):
     def displayName(self):
         return self.tr("Box plot")
 
+    def shortDescription(self):
+        return self.tr("Creates a box plot from a category and a layer field.")
+
     def processAlgorithm(self, parameters, context, feedback):
         try:
             # importing plotly throws Python warnings from within the library - filter these out

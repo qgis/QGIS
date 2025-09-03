@@ -64,7 +64,7 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
     QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
     QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
-    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [=] {
+    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [] {
       QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
     } );
     messageWidget->layout()->addWidget( learnMoreButton );

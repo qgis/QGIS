@@ -81,7 +81,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   connect( mProfileComboBox, &QComboBox::currentTextChanged, this, &QgsRasterFormatSaveOptionsWidget::updateOptions );
   connect( mOptionsTable, &QTableWidget::cellChanged, this, &QgsRasterFormatSaveOptionsWidget::optionsTableChanged );
   connect( mOptionsHelpButton, &QAbstractButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::helpOptions );
-  connect( mOptionsValidateButton, &QAbstractButton::clicked, this, [=] { validateOptions(); } );
+  connect( mOptionsValidateButton, &QAbstractButton::clicked, this, [this] { validateOptions(); } );
 
   // Install an eventFilter to customize the default QLineEdit contextMenu with an added swapOptionsUI action
   mOptionsLineEdit->installEventFilter( this );

@@ -47,6 +47,7 @@
 #include "qgsprojectbadlayerhandler.h"
 #include "qgsmeshlayer.h"
 #include "qgslayoutmanager.h"
+#include "qgselevationprofilemanager.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
@@ -362,6 +363,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   , mRelationManager( std::make_unique<QgsRelationManager>( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
+  , mElevationProfileManager( new QgsElevationProfileManager( this ) )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mSensorManager( new QgsSensorManager( this ) )
@@ -1215,6 +1217,7 @@ void QgsProject::clear()
   mRelationManager->clear();
   mAnnotationManager->clear();
   mLayoutManager->clear();
+  mElevationProfileManager->clear();
   m3DViewsManager->clear();
   mBookmarkManager->clear();
   mSensorManager->clear();
@@ -2027,12 +2030,12 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
   QgsScopedRuntimeProfile profile( tr( "Setting up translations" ), QStringLiteral( "projectload" ) );
 
-  const QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), QgsApplication::settingsLocaleUserLocale->value() );
+  const QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( mFile ).baseName(), QgsApplication::settingsLocaleUserLocale->value() );
 
-  if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
+  if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( mFile ).absolutePath(), localeFileName ) ).exists() )
   {
     mTranslator.reset( new QTranslator() );
-    ( void )mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() );
+    ( void )mTranslator->load( localeFileName, QFileInfo( mFile ).absolutePath() );
   }
 
   profile.switchTask( tr( "Reading project file" ) );
@@ -2534,6 +2537,12 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     mLayoutManager->readXml( doc->documentElement(), *doc );
   }
 
+  {
+    profile.switchTask( tr( "Loading elevation profiles" ) );
+    mElevationProfileManager->readXml( doc->documentElement(), *doc, context );
+    mElevationProfileManager->resolveReferences( this );
+  }
+
   if ( !( flags & Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     profile.switchTask( tr( "Loading 3D Views" ) );
@@ -2656,7 +2665,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   if ( mTranslator )
   {
     //project possibly translated -> rename it with locale postfix
-    const QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) );
+    const QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( mFile ).absolutePath(), localeFileName ) );
     setFileName( newFileName );
 
     if ( write() )
@@ -3260,6 +3269,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
+    mMetadata.setAuthor( QgsApplication::userFullName() );
+    if ( !mMetadata.creationDateTime().isValid() )
+    {
+      mMetadata.setCreationDateTime( QDateTime( QDateTime::currentDateTime() ) );
+    }
     mSaveDateTime = QDateTime::currentDateTime();
     qgisNode.setAttribute( QStringLiteral( "saveDateTime" ), mSaveDateTime.toString( Qt::ISODate ) );
   }
@@ -3267,6 +3281,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     mSaveUser.clear();
     mSaveUserFull.clear();
+    mMetadata.setAuthor( QString() );
+    mMetadata.setCreationDateTime( QDateTime() );
     mSaveDateTime = QDateTime();
   }
   doc->appendChild( qgisNode );
@@ -3453,6 +3469,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     const QDomElement layoutElem = mLayoutManager->writeXml( *doc );
     qgisNode.appendChild( layoutElem );
+  }
+
+  {
+    const QDomElement elevationProfileElem = mElevationProfileManager->writeXml( *doc, context );
+    qgisNode.appendChild( elevationProfileElem );
   }
 
   {
@@ -4285,6 +4306,20 @@ QgsLayoutManager *QgsProject::layoutManager()
   return mLayoutManager.get();
 }
 
+const QgsElevationProfileManager *QgsProject::elevationProfileManager() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProfileManager.get();
+}
+
+QgsElevationProfileManager *QgsProject::elevationProfileManager()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mElevationProfileManager.get();
+}
+
 const QgsMapViewsManager *QgsProject::viewsManager() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -4584,6 +4619,9 @@ QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
   // because QgsVirtualLayerProvider is not anywhere NEAR thread safe:
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
+
+  if ( mMainAnnotationLayer && layerId == mMainAnnotationLayer->id() )
+    return mMainAnnotationLayer;
 
   return mLayerStore->mapLayer( layerId );
 }

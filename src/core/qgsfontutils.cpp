@@ -158,11 +158,18 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
   }
 
   QFontDatabase fontDB;
+  QString actualFontStyle = fontstyle;
 
   if ( !fallback )
   {
     // does the font even have the requested style?
-    const bool hasstyle = fontFamilyHasStyle( f.family(), fontstyle );
+    bool hasstyle = fontFamilyHasStyle( f.family(), actualFontStyle );
+    if ( !hasstyle )
+    {
+      actualFontStyle = untranslateNamedStyle( fontstyle );
+      hasstyle = fontFamilyHasStyle( f.family(), actualFontStyle );
+    }
+
     if ( !hasstyle )
     {
       return false;
@@ -170,7 +177,7 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
   }
 
   // is the font's style already the same as requested?
-  if ( fontstyle == fontDB.styleString( f ) )
+  if ( actualFontStyle == fontDB.styleString( f ) )
   {
     return false;
   }
@@ -182,8 +189,8 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
   bool foundmatch = false;
 
   // if fontDB.font() fails, it returns the default app font; but, that may be the target style
-  styledfont = fontDB.font( f.family(), fontstyle, defaultSize );
-  if ( appfont != styledfont || fontstyle != fontDB.styleString( f ) )
+  styledfont = fontDB.font( f.family(), actualFontStyle, defaultSize );
+  if ( appfont != styledfont || actualFontStyle != fontDB.styleString( f ) )
   {
     foundmatch = true;
   }

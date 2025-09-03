@@ -44,6 +44,11 @@ Qgis::ProcessingAlgorithmFlags QgsNetworkAnalysisAlgorithmBase::flags() const
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsNetworkAnalysisAlgorithmBase::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector layer representing network" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
@@ -130,7 +135,7 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
   mBuilder = std::make_unique<QgsGraphBuilder>( mNetwork->sourceCrs(), true, tolerance, context.ellipsoid() );
 }
 
-void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVector<QgsPointXY> &points, QHash<int, QgsAttributes> &attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVector<QgsPointXY> *points, QHash<int, QgsAttributes> *attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback, QHash<int, QgsFeature> *featureHash )
 {
   feedback->pushInfo( QObject::tr( "Loading points…" ) );
 
@@ -156,8 +161,12 @@ void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVec
     QgsAbstractGeometry::vertex_iterator it = geom.vertices_begin();
     while ( it != geom.vertices_end() )
     {
-      points.push_back( QgsPointXY( *it ) );
-      attributes.insert( pointId, feat.attributes() );
+      if ( points )
+        points->push_back( QgsPointXY( *it ) );
+      if ( attributes )
+        attributes->insert( pointId, feat.attributes() );
+      if ( featureHash )
+        featureHash->insert( pointId, feat );
       it++;
       pointId++;
     }

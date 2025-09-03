@@ -69,7 +69,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSortingEnabled( false );
   mTreeView->setModel( mProxyModel );
 
-  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [=] {
+  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [this] {
     mProxyModel->sort( QgsPalettedRendererModel::Column::ValueColumn );
   } );
 
@@ -91,7 +91,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTreeView->setDefaultDropAction( Qt::MoveAction );
 
-  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [=]( QPoint ) { mContextMenu->exec( QCursor::pos() ); } );
+  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [this]( QPoint ) { mContextMenu->exec( QCursor::pos() ); } );
 
   btnColorRamp->setShowRandomColorRamp( true );
 
@@ -253,7 +253,7 @@ void QgsPalettedRendererWidget::changeColor()
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );
     colorWidget->setAllowOpacity( true );
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &color ) { setSelectionColor( sel, color ); } );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this, sel]( const QColor &color ) { setSelectionColor( sel, color ); } );
     panel->openPanel( colorWidget );
   }
   else
@@ -438,7 +438,7 @@ void QgsPalettedRendererWidget::classify()
 
     mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
 
-    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [=]( int progress ) {
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [this]( int progress ) {
       mCalculatingProgressBar->setValue( progress );
     } );
 

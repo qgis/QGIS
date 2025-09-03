@@ -131,7 +131,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
   {
     // check cell value
     QTableWidgetItem *item = tableWidget->item( row, 0 );
-    if ( item )
+    if ( item && item->data( Qt::ItemDataRole::UserRole ) != QgsValueMapFieldFormatter::NULL_VALUE )
     {
       const QString validValue = checkValueLength( item->text() );
       if ( validValue.length() != item->text().length() )
@@ -246,7 +246,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
 QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 {
-  if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE || value == QgsApplication::nullRepresentation() )
   {
     return value;
   }
@@ -309,7 +309,6 @@ bool QgsValueMapConfigDlg::eventFilter( QObject *watched, QEvent *event )
 
 void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
-  const QgsSettings settings;
   QTableWidgetItem *valueCell = nullptr;
   QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
@@ -318,6 +317,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString 
     QFont cellFont;
     cellFont.setItalic( true );
     valueCell = new QTableWidgetItem( QgsApplication::nullRepresentation() );
+    valueCell->setData( Qt::ItemDataRole::UserRole, QgsValueMapFieldFormatter::NULL_VALUE );
     valueCell->setFont( cellFont );
     valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     descriptionCell->setFont( cellFont );

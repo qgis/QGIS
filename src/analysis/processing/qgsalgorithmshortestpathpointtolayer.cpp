@@ -40,7 +40,14 @@ QStringList QgsShortestPathPointToLayerAlgorithm::tags() const
 
 QString QgsShortestPathPointToLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between given start point and multiple end points defined by point vector layer." );
+  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route between a given start point "
+                      "and multiple end points defined by a point vector layer." );
+}
+
+QString QgsShortestPathPointToLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes optimal (shortest or fastest) route between a given start point "
+                      "and multiple end points defined by a point vector layer." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsShortestPathPointToLayerAlgorithm::documentationFlags() const
@@ -82,10 +89,11 @@ QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVaria
   if ( !endPoints )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "END_POINTS" ) ) );
 
-  QgsFields fields = endPoints->fields();
-  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
+  QgsFields newFields;
+  newFields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
+  QgsFields fields = QgsProcessingUtils::combineFields( endPoints->fields(), newFields );
 
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -100,7 +108,7 @@ QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVaria
   QVector<QgsPointXY> points;
   points.push_front( startPoint );
   QHash<int, QgsAttributes> sourceAttributes;
-  loadPoints( endPoints.get(), points, sourceAttributes, context, feedback );
+  loadPoints( endPoints.get(), &points, &sourceAttributes, context, feedback, nullptr );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
   QVector<QgsPointXY> snappedPoints;

@@ -101,7 +101,8 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-  context.setForceVectorOutput( true );
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
+    context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 

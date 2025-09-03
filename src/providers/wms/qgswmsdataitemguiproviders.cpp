@@ -18,6 +18,7 @@
 
 #include "qgswmsdataitems.h"
 
+#include "qgsapplication.h"
 #include "qgsnewhttpconnection.h"
 #include "qgswmsconnection.h"
 #include "qgsxyzconnectiondialog.h"
@@ -118,6 +119,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsReportedLayerExtents->setValue( QgsOwsConnection::settingsReportedLayerExtents->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsIgnoreGetMapURI->setValue( QgsOwsConnection::settingsIgnoreGetMapURI->value( detailsParameters ), newDetailsParameters );
@@ -139,7 +141,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewHttpConnection nc( QgsApplication::instance()->activeWindow(), QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
@@ -249,7 +251,7 @@ void QgsXyzDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsXyzDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsXyzConnectionDialog dlg;
+  QgsXyzConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 

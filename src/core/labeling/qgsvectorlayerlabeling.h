@@ -98,6 +98,19 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual bool requiresAdvancedEffects() const = 0;
 
     /**
+     * Returns TRUE the labeling requires a non-default composition mode.
+     *
+     * This method is pessimistic, in that it will return TRUE in cases where composition
+     * modes cannot be easily determined in advance (e.g. when data-defined overrides are
+     * in place for composition modes).
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+
+    /**
      * Multiply opacity by \a opacityFactor.
      *
      * This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
@@ -205,6 +218,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
 
     bool requiresAdvancedEffects() const override;
+    bool hasNonDefaultCompositionMode() const override;
     Q_DECL_DEPRECATED void toSld( QDomNode &parent, const QVariantMap &props ) const override SIP_DEPRECATED;
     bool toSld( QDomNode &parent, QgsSldExportContext &context ) const override;
     void multiplyOpacity( double opacityFactor ) override;

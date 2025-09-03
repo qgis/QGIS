@@ -65,6 +65,11 @@ QString QgsOrderByExpressionAlgorithm::shortHelpString() const
                       "which is available in the expression builder." );
 }
 
+QString QgsOrderByExpressionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Sorts a vector layer according to an expression." );
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsOrderByExpressionAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;

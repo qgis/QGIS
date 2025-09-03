@@ -95,7 +95,7 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
     connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stkwBundleType, &QStackedWidget::setCurrentIndex );
     connect( stkwBundleType, &QStackedWidget::currentChanged, cmbIdentityTypes, &QComboBox::setCurrentIndex );
 
-    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] { validateIdentity(); } );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { validateIdentity(); } );
     connect( stkwBundleType, &QStackedWidget::currentChanged, this, &QgsAuthImportIdentityDialog::validateIdentity );
 
     cmbIdentityTypes->setCurrentIndex( 0 );

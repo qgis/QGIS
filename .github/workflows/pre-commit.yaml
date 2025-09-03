@@ -3,6 +3,9 @@ name: Pre-commit checks
 on:
   pull_request_target:
   push:
+    branches:
+      - master
+      - release-*
   issue_comment:
     types: [created]
 
@@ -16,7 +19,7 @@ jobs:
       issues: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 200
 

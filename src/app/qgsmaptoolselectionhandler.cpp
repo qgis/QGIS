@@ -207,7 +207,7 @@ void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
       setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
       mOnMouseMoveDelayTimer = std::make_unique<QTimer>();
       mOnMouseMoveDelayTimer->setSingleShot( true );
-      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [=] {
+      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [this, e] {
         if ( !mMoveLastCursorPos.isNull() )
         {
           setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( mMoveLastCursorPos ) ), e->modifiers() );

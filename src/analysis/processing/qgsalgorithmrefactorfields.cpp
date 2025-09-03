@@ -41,6 +41,11 @@ QString QgsRefactorFieldsAlgorithm::shortHelpString() const
                       "enforced by the algorithm." );
 }
 
+QString QgsRefactorFieldsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Allows editing the structure of the attributes table of a vector layer, permitting field renaming, creation and deletion." );
+}
+
 QStringList QgsRefactorFieldsAlgorithm::tags() const
 {
   return QObject::tr( "attributes,table" ).split( ',' );
@@ -64,6 +69,11 @@ QString QgsRefactorFieldsAlgorithm::outputName() const
 QList<int> QgsRefactorFieldsAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsRefactorFieldsAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsRefactorFieldsAlgorithm::sourceFlags() const

@@ -501,7 +501,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         //! Scale of symbology
         double symbologyScale = 1.0;
 
-        //! If not empty, only features intersecting the extent will be saved
+        /**
+         * If not empty, only features intersecting the extent will be saved.
+         *
+         * The filter extent should be in the destination CRS (if transforming), or the layer's
+         * CRS if no valid transform is set.
+         */
         QgsRectangle filterExtent;
 
         /**

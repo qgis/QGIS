@@ -363,7 +363,7 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget
   mOrientationComboBox->addItem( tr( "Automatic" ), static_cast<int>( QgsCurvedLineCallout::Automatic ) );
   mOrientationComboBox->addItem( tr( "Clockwise" ), static_cast<int>( QgsCurvedLineCallout::Clockwise ) );
   mOrientationComboBox->addItem( tr( "Counter Clockwise" ), static_cast<int>( QgsCurvedLineCallout::CounterClockwise ) );
-  connect( mOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
+  connect( mOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
     mCallout->setOrientation( static_cast<QgsCurvedLineCallout::Orientation>( mOrientationComboBox->itemData( index ).toInt() ) );
     emit changed();
   } );
@@ -389,9 +389,9 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsMapLayer *vl, QWidget
 
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsCurvedLineCalloutWidget::lineSymbolChanged );
 
-  connect( mCurvatureSlider, &QSlider::valueChanged, this, [=]( int value ) { mCurvatureSpinBox->setValue( value / 10.0 ); } );
-  connect( mCurvatureSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) { whileBlocking( mCurvatureSlider )->setValue( value * 10 ); } );
-  connect( mCurvatureSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mCurvatureSlider, &QSlider::valueChanged, this, [this]( int value ) { mCurvatureSpinBox->setValue( value / 10.0 ); } );
+  connect( mCurvatureSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) { whileBlocking( mCurvatureSlider )->setValue( value * 10 ); } );
+  connect( mCurvatureSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     mCallout->setCurvature( value / 100.0 );
     emit changed();
   } );
@@ -591,51 +591,51 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsMapLayer *vl, QWidget *pare
   connect( mCalloutFillStyleButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::fillSymbolChanged );
   connect( mMarkerSymbolButton, &QgsSymbolButton::changed, this, &QgsBalloonCalloutWidget::markerSymbolChanged );
 
-  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setBottom( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setTop( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setLeft( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     QgsMargins margins = mCallout->margins();
     margins.setRight( value );
     mCallout->setMargins( margins );
     emit changed();
   } );
-  connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mMarginUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     mCallout->setMarginsUnit( mMarginUnitWidget->unit() );
     emit changed();
   } );
 
-  connect( mWedgeWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mWedgeWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     mCallout->setWedgeWidthUnit( mWedgeWidthUnitWidget->unit() );
     mCallout->setWedgeWidthMapUnitScale( mWedgeWidthUnitWidget->getMapUnitScale() );
     emit changed();
   } );
-  connect( mWedgeWidthSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mWedgeWidthSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     mCallout->setWedgeWidth( value );
     emit changed();
   } );
 
-  connect( mCornerRadiusUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mCornerRadiusUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     mCallout->setCornerRadiusUnit( mCornerRadiusUnitWidget->unit() );
     mCallout->setCornerRadiusMapUnitScale( mCornerRadiusUnitWidget->getMapUnitScale() );
     emit changed();
   } );
-  connect( mCornerRadiusSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mCornerRadiusSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     mCallout->setCornerRadius( value );
     emit changed();
   } );

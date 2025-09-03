@@ -75,7 +75,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.pushButton.setText("…")
 
         self.actionTemporaryOutput = QAction(
-            "Create Temporary Layer",
+            self.tr("Create Temporary Layer"),
             self,
         )
         self.actionTemporaryOutput.setCheckable(True)
@@ -85,7 +85,9 @@ class BatchOutputSelectionPanel(QWidget):
             self.pushButton.clicked.connect(self.showSelectionDialog)
         else:
             self.menu = QMenu(self.pushButton)
-            self.menu.addAction("Select File/Folder…", self.showSelectionDialog)
+            self.menu.addAction(
+                self.tr("Select File/Folder…"), self.showSelectionDialog
+            )
             self.menu.addAction(self.actionTemporaryOutput)
             self.pushButton.setMenu(self.menu)
 

@@ -52,7 +52,7 @@ QgsQueryHistoryDialog::QgsQueryHistoryDialog( QWidget *parent )
   mButtonBox->addButton( clearButton, QDialogButtonBox::ActionRole );
 
   connect( clearButton, &QPushButton::clicked, this, &QgsQueryHistoryDialog::clearHistory );
-  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [=]() { close(); } );
+  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
 
   vl->addWidget( mButtonBox );
 

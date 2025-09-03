@@ -257,18 +257,6 @@ class TestGdalAlgorithms(QgisTestCase):
 
         QgsProject.instance().removeMapLayer(layer)
 
-    def testOgrOutputLayerName(self):
-        self.assertEqual(GdalUtils.ogrOutputLayerName("/home/me/out.shp"), "out")
-        self.assertEqual(
-            GdalUtils.ogrOutputLayerName("d:/test/test_out.shp"), "test_out"
-        )
-        self.assertEqual(
-            GdalUtils.ogrOutputLayerName("d:/test/TEST_OUT.shp"), "TEST_OUT"
-        )
-        self.assertEqual(
-            GdalUtils.ogrOutputLayerName("d:/test/test_out.gpkg"), "test_out"
-        )
-
     def testOgrLayerNameExtraction(self):
         with tempfile.TemporaryDirectory() as outdir:
 

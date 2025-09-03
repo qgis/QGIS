@@ -2292,6 +2292,57 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   result = geomTest.orientedMinimumBoundingBox();
   resultTestWKT = QStringLiteral( "Polygon ((-57 -30, -55.5 -30, -55.5 -29, -57 -29, -57 -30))" );
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  // Issue https://github.com/qgis/QGIS/issues/62126
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point (10 10)" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QStringLiteral( "Polygon ((10 10, 10 10, 10 10, 10 10, 10 10))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point (10 20)" ) );
+  double area, angle, width, height;
+  result = geomTest.orientedMinimumBoundingBox( area, angle, width, height );
+  resultTestWKT = QStringLiteral( "Polygon ((10 20, 10 20, 10 20, 10 20, 10 20))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( area, 0.0 );
+  QCOMPARE( angle, 0.0 );
+  QCOMPARE( width, 0.0 );
+  QCOMPARE( height, 0.0 );
+
+  // Multipoint with multipart geometry
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QStringLiteral( "Polygon ((0 -5, 0 -5, 0 5, 0 5, 0 -5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  result = geomTest.orientedMinimumBoundingBox( area, angle, width, height );
+  resultTestWKT = QStringLiteral( "Polygon ((0 -5, 0 -5, 0 5, 0 5, 0 -5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( area, 0.0 );
+  QCOMPARE( angle, 0.0 );
+  QCOMPARE( width, 0.0 );
+  QCOMPARE( height, 10 );
+
+  // Multipoint with singlepart geometry
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5 )" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QStringLiteral( "Polygon ((0 5, 0 5, 0 5, 0 5, 0 5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5 )" ) );
+  result = geomTest.orientedMinimumBoundingBox( area, angle, width, height );
+  resultTestWKT = QStringLiteral( "Polygon ((0 5, 0 5, 0 5, 0 5, 0 5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( area, 0.0 );
+  QCOMPARE( angle, 0.0 );
+  QCOMPARE( width, 0.0 );
+  QCOMPARE( height, 0.0 );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point EMPTY" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QLatin1String( "" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 }
 
 void TestQgsGeometry::boundingBox()

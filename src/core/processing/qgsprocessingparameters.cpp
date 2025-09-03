@@ -1285,6 +1285,10 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
           }
           return g;
         }
+        else
+        {
+          return g;
+        }
       }
     }
   }

@@ -143,6 +143,25 @@ bool QgsRuleBasedLabeling::Rule::requiresAdvancedEffects() const
   return false;
 }
 
+bool QgsRuleBasedLabeling::Rule::hasNonDefaultCompositionMode() const
+{
+  if ( mSettings &&
+       ( mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+         || mSettings->format().hasNonDefaultCompositionMode() ) )
+    return true;
+
+  for ( Rule *rule : std::as_const( mChildren ) )
+  {
+    if ( rule->hasNonDefaultCompositionMode() )
+      return true;
+  }
+
+  return false;
+}
+
 bool QgsRuleBasedLabeling::Rule::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   // NOTE: if visitEnter returns false it means "don't visit the rule", not "abort all further visitations"
@@ -570,6 +589,11 @@ bool QgsRuleBasedLabeling::accept( QgsStyleEntityVisitorInterface *visitor ) con
 bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
 {
   return mRootRule->requiresAdvancedEffects();
+}
+
+bool QgsRuleBasedLabeling::hasNonDefaultCompositionMode() const
+{
+  return mRootRule->hasNonDefaultCompositionMode();
 }
 
 void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsMapLayerLegend : QObject
 {
 %Docstring(signature="appended")
@@ -28,6 +29,40 @@ An abstract interface for implementations of legends for one map layer.
 Constructor for QgsMapLayerLegend
 %End
 
+
+    Qgis::MapLayerLegendFlags flags() const;
+%Docstring
+Returns flags associated with the legend.
+
+.. seealso:: :py:func:`setFlag`
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 4.0
+%End
+
+    void setFlag( Qgis::MapLayerLegendFlag flag, bool on = true );
+%Docstring
+Enables or disables a particular ``flag`` (other flags are not
+affected).
+
+.. seealso:: :py:func:`flags`
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 4.0
+%End
+
+    void setFlags( Qgis::MapLayerLegendFlags flags );
+%Docstring
+Sets the ``flags`` associated with the legend.
+
+.. seealso:: :py:func:`setFlag`
+
+.. seealso:: :py:func:`flags`
+
+.. versionadded:: 4.0
+%End
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
@@ -80,6 +115,7 @@ Create new legend implementation for a point cloud ``layer``.
 Emitted when existing items/nodes got invalid and should be replaced by
 new ones
 %End
+
 };
 
 

@@ -76,7 +76,7 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QCheckBox::stateChanged, this, [=]( int state ) {
+    connect( mCheckBox, &QCheckBox::stateChanged, this, [this]( int state ) {
       if ( !mIndeterminateStateEnabled && mCheckBox->checkState() != Qt::PartiallyChecked )
       {
         mCheckBox->setTristate( false );
@@ -87,7 +87,7 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
       emit valuesChanged( state != Qt::Unchecked );
     } );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, [=]( bool state ) {
+    connect( mGroupBox, &QGroupBox::toggled, this, [this]( bool state ) {
       Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( state );
       Q_NOWARN_DEPRECATED_POP

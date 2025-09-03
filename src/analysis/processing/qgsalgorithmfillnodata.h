@@ -45,6 +45,7 @@ class QgsFillNoDataAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsFillNoDataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

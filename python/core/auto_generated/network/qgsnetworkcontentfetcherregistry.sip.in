@@ -32,7 +32,7 @@ Holds information about fetched network content.
       Failed
     };
 
-    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = 0, ContentStatus status = NotStarted,
+    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file /Transfer/ = 0, ContentStatus status = NotStarted,
                                 const QString &authConfig = QString() );
 %Docstring
 Constructs a FetchedContent with pointer to the downloaded file and

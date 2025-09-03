@@ -181,6 +181,15 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void requestRebuildRequired();
 
+    /**
+     * Updates the scene rect based on the bounds of the model.
+
+     * The bounding rectangle of the model is calculated off all components of the model, with an additional margin arounds items.
+     *  
+     * \since QGIS 4.0
+     */
+    void updateBounds();
+
   signals:
 
     /**
@@ -281,6 +290,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, QMap<QString, QgsModelComponentGraphicItem *>> mOutputItems;
     QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
+
+    static constexpr int SCENE_COMPONENT_MARGIN = 50;
 
     QgsMessageBar *mMessageBar = nullptr;
 };

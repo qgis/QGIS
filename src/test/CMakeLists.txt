@@ -30,7 +30,3 @@ GENERATE_EXPORT_HEADER(
 )
 
 target_link_libraries(qgis_test qgis_core ${QT_VERSION_BASE}::Test)
-
-set(QGIS_TEST_HDRS ${QGIS_TEST_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_test.h)
-
-install(FILES ${QGIS_TEST_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

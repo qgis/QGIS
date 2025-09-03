@@ -534,7 +534,7 @@ void QgsCodeEditorPython::populateContextMenu( QMenu *menu )
   );
 
   pyQgisHelpAction->setEnabled( hasSelectedText() );
-  pyQgisHelpAction->setShortcut( QStringLiteral( "F1" ) );
+  pyQgisHelpAction->setShortcut( QKeySequence::StandardKey::HelpContents );
   connect( pyQgisHelpAction, &QAction::triggered, this, [text, this] { showApiDocumentation( text ); } );
 
   menu->addSeparator();

@@ -40,12 +40,17 @@
 #include "qgslabelingresults.h"
 #include "qgsvectortileutils.h"
 #include "qgsunittypes.h"
+#include "qgsfeatureexpressionfilterprovider.h"
+#include "qgsgroupedfeaturefilterprovider.h"
+#include "qgssettingstree.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QScreen>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
+
+const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterised clipping masks, regardless of output format." ) );
 
 QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -1135,13 +1140,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       {
         // current job was invalidated - start a new one
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
-        mBackgroundUpdateTimer->start( 1 );
+        mBackgroundUpdateTimer->start( 100 );
       }
       else if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
-        mBackgroundUpdateTimer->start( 1 );
+        mBackgroundUpdateTimer->start( 100 );
       }
       renderInProgress = true;
     }
@@ -1151,7 +1156,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       {
         // cache was invalidated - trigger a background update
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter );
-        mBackgroundUpdateTimer->start( 1 );
+        mBackgroundUpdateTimer->start( 100 );
         renderInProgress = true;
       }
 
@@ -1195,11 +1200,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     QgsRectangle cExtent = extent();
     QSizeF size( cExtent.width() * mapUnitsToLayoutUnits(), cExtent.height() * mapUnitsToLayoutUnits() );
 
-    if ( mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
+    if ( mLayout && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
+    const bool forceVector = mLayout && ( mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector );
+
     if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-         && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
+         && ( !mLayout || !forceVector ) )
     {
       // rasterize
       double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter ) * 25.4;
@@ -1577,6 +1584,17 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   job.setFeatureFilterProvider( mLayout->renderContext().featureFilterProvider() );
 #endif
 
+  QgsGroupedFeatureFilterProvider jobFeatureFilter;
+  if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature && mAtlasFeatureFilterProvider )
+  {
+    jobFeatureFilter.addProvider( mAtlasFeatureFilterProvider.get() );
+    if ( job.featureFilterProvider() )
+    {
+      jobFeatureFilter.addProvider( job.featureFilterProvider() );
+    }
+    job.setFeatureFilterProvider( &jobFeatureFilter );
+  }
+
   // Render the map in this thread. This is done because of problems
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
@@ -1677,6 +1695,10 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   }
 
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
+  if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature )
+  {
+    mPainterJob->setFeatureFilterProvider( mAtlasFeatureFilterProvider.get() );
+  }
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();
 
@@ -1749,6 +1771,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.setSimplifyMethod( mLayout->renderContext().simplifyMethod() );
     jobMapSettings.setMaskSettings( mLayout->renderContext().maskSettings() );
     jobMapSettings.setRendererUsage( Qgis::RendererUsage::Export );
+    if ( settingForceRasterMasks->value() )
+    {
+      jobMapSettings.setFlag( Qgis::MapSettingsFlag::ForceRasterMasks, true );
+    }
   }
   else
   {
@@ -1762,16 +1788,15 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setExpressionContext( expressionContext );
 
   // layout-specific overrides of flags
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+  jobMapSettings.setRasterizedRenderingPolicy( mLayout->renderContext().rasterizedRenderingPolicy() );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::LosslessImageRendering, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering );
   jobMapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   jobMapSettings.setSelectionColor( mLayout->renderContext().selectionColor() );
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDrawSelection );
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders );
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
-  jobMapSettings.setFlag( Qgis::MapSettingsFlag::AlwaysUseGlobalMasks, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAlwaysUseGlobalMasks );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::DrawSelection );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders );
+  jobMapSettings.setFlag( Qgis::MapSettingsFlag::AlwaysUseGlobalMasks, mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::AlwaysUseGlobalMasks );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
 
@@ -2484,7 +2509,7 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   //remove atlas coverage layer if required
-  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagHideCoverageLayer )
+  if ( mLayout->reportContext().feature().isValid() && ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::HideCoverageLayer ) )
   {
     //hiding coverage layer
     int removeAt = renderLayers.indexOf( mLayout->reportContext().layer() );
@@ -2629,7 +2654,8 @@ void QgsLayoutItemMap::drawAnnotations( QPainter *painter )
     return;
 
   QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( this, painter );
-  rc.setForceVectorOutput( true );
+  if ( rc.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
+    rc.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   rc.setExpressionContext( createExpressionContext() );
   QList< QgsMapLayer * > layers = layersToRender( &rc.expressionContext() );
 
@@ -2917,8 +2943,16 @@ void QgsLayoutItemMap::refreshLabelMargin( bool updateItem )
 
 void QgsLayoutItemMap::updateAtlasFeature()
 {
-  if ( !atlasDriven() || !mLayout->reportContext().layer() )
+  if ( !mLayout->reportContext().layer() || !mLayout->reportContext().feature().isValid() )
     return; // nothing to do
+
+  QgsFeatureExpressionFilterProvider *filter = new QgsFeatureExpressionFilterProvider();
+  filter->setFilter( mLayout->reportContext().layer()->id(), QgsExpression( QStringLiteral( "@id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
+  mAtlasFeatureFilterProvider.reset( new QgsGroupedFeatureFilterProvider() );
+  mAtlasFeatureFilterProvider->addProvider( filter );
+
+  if ( !atlasDriven() )
+    return; // nothing else to do
 
   QgsRectangle bounds = computeAtlasRectangle();
   if ( bounds.isNull() )
@@ -3077,7 +3111,7 @@ void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const 
   settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
 
   mStagedRendererJob = std::make_unique< QgsMapRendererStagedRenderJob >( settings,
-                       mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
+                       mLayout && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::RenderLabelsByMapLayer
                        ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
                        : QgsMapRendererStagedRenderJob::Flags() );
   mStagedRendererJob->start();

@@ -68,7 +68,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize.setHeight( std::max( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 
   // If project colors change, we need to redraw the button, as it may be set to follow a project color
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [this] {
     setButtonBackground();
   } );
 }

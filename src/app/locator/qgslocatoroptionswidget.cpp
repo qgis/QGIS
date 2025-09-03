@@ -108,7 +108,7 @@ QWidget *QgsLocatorFiltersModel::configButton( const QModelIndex &index, QWidget
     layout->addWidget( bt );
     w->setLayout( layout );
 
-    connect( bt, &QToolButton::clicked, this, [=]() { filter->openConfigWidget( bt ); } );
+    connect( bt, &QToolButton::clicked, this, [filter, bt]() { filter->openConfigWidget( bt ); } );
     bt->setMaximumSize( mIconSize, mIconSize );
     bt->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     bt->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );

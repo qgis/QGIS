@@ -38,6 +38,7 @@ class QgsRasterStatisticsAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsRasterStatisticsAlgorithm *createInstance() const override SIP_FACTORY;
 

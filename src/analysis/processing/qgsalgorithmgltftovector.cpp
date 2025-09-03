@@ -60,6 +60,11 @@ QString QgsGltfToVectorFeaturesAlgorithm::groupId() const
 
 QString QgsGltfToVectorFeaturesAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm converts GLTF content to standard vector layer formats." );
+}
+
+QString QgsGltfToVectorFeaturesAlgorithm::shortDescription() const
+{
   return QObject::tr( "Converts GLTF content to standard vector layer formats." );
 }
 

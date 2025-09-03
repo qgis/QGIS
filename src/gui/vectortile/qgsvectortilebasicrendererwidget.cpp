@@ -339,7 +339,7 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
 
   if ( mMapCanvas )
   {
-    connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [=]( double scale ) {
+    connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [this]( double scale ) {
       const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
       const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() ) : scale;
       const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
@@ -353,11 +353,11 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
     mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 ) ) );
   }
 
-  connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [=]( bool filter ) {
+  connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [this]( bool filter ) {
     mProxyModel->setFilterVisible( filter );
   } );
 
-  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [this]( const QString &text ) {
     mProxyModel->setFilterString( text );
   } );
 
@@ -485,7 +485,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), QgsStyle::defaultStyle(), vectorLayer, panel );
     widget->setContext( context );
     widget->setPanelTitle( style.styleName() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else

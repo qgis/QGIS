@@ -51,7 +51,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     spinHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
@@ -69,7 +69,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
 
   // enabled
   grpEnable->setChecked( mDeco.enabled() );
-  connect( grpEnable, &QGroupBox::toggled, this, [=] { updateEnabledColorButtons(); } );
+  connect( grpEnable, &QGroupBox::toggled, this, [this] { updateEnabledColorButtons(); } );
 
   wgtImagePath->setFilePath( mDeco.imagePath() );
   connect( wgtImagePath, &QgsFileWidget::fileChanged, this, &QgsDecorationImageDialog::updateImagePath );
@@ -83,8 +83,8 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select SVG Image Outline Color" ) );
-  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawImage(); } );
-  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawImage(); } );
+  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawImage(); } );
+  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawImage(); } );
 
   drawImage();
 }

@@ -203,14 +203,14 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
   sEditorDialog->setTable( table );
 
   connect( frame, &QgsLayoutFrame::destroyed, sEditorDialog, &QMainWindow::close );
-  auto updateName = [frame] { sEditorDialog->setWindowTitle( QString( "%1 - %2 " ).arg( sEditorDialog->tr( "Table Designer" ) ).arg( frame->displayName() ) ); };
+  auto updateName = [frame] { sEditorDialog->setWindowTitle( QString( "%1 - %2 " ).arg( tr( "Table Designer" ) ).arg( frame->displayName() ) ); };
   connect( frame, &QgsLayoutFrame::changed, sEditorDialog, updateName );
   updateName();
 
   if ( parent )
     connect( parent, &QWidget::destroyed, sEditorDialog, &QMainWindow::close );
 
-  connect( sEditorDialog, &QgsTableEditorDialog::tableChanged, table, [=] {
+  connect( sEditorDialog, &QgsTableEditorDialog::tableChanged, table, [table] {
     table->beginCommand( tr( "Change Table Contents" ) );
     table->setTableContents( sEditorDialog->tableContents() );
 
@@ -249,7 +249,7 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
     table->endCommand();
   } );
 
-  connect( sEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [=]( bool included ) {
+  connect( sEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [table]( bool included ) {
     table->beginCommand( tr( "Change Table Header" ) );
     table->setIncludeTableHeader( included );
     table->endCommand();

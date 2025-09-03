@@ -151,11 +151,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   editorSplit->setSizes( QList<int>( { 175, 300 } ) );
 
   functionsplit->setCollapsible( 0, false );
-  connect( mShowHelpButton, &QPushButton::clicked, this, [=]() {
+  connect( mShowHelpButton, &QPushButton::clicked, this, [this]() {
     functionsplit->setSizes( QList<int>( { mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(), mHelpAndValuesWidget->minimumWidth() } ) );
     mShowHelpButton->setEnabled( false );
   } );
-  connect( functionsplit, &QSplitter::splitterMoved, this, [=]( int, int ) {
+  connect( functionsplit, &QSplitter::splitterMoved, this, [this]( int, int ) {
     mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
   } );
 

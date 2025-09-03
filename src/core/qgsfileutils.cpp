@@ -368,7 +368,7 @@ bool pathIsLikelyCloudStorage( QString path )
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
 #ifdef _MSC_VER
-  auto pathType = [ = ]( const QString & path ) -> Qgis::DriveType
+  auto pathType = []( const QString & path ) -> Qgis::DriveType
   {
     std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
     const UINT type = GetDriveTypeW( pathArray.get() );

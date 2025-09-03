@@ -207,7 +207,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( mDashPatternUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::mDashPatternUnitWidget_changed );
   connect( mDrawInsideCheckBox, &QCheckBox::stateChanged, this, &QgsSimpleLineSymbolLayerWidget::mDrawInsideCheckBox_stateChanged );
   connect( mPatternOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::patternOffsetUnitChanged );
-  connect( mCheckAlignDash, &QCheckBox::toggled, this, [=] {
+  connect( mCheckAlignDash, &QCheckBox::toggled, this, [this] {
     mCheckDashCorners->setEnabled( mCheckAlignDash->isChecked() );
     if ( !mCheckAlignDash->isChecked() )
       mCheckDashCorners->setChecked( false );
@@ -218,7 +218,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
       emit changed();
     }
   } );
-  connect( mCheckDashCorners, &QCheckBox::toggled, this, [=] {
+  connect( mCheckDashCorners, &QCheckBox::toggled, this, [this] {
     if ( mLayer )
     {
       mLayer->setTweakDashPatternOnCorners( mCheckDashCorners->isChecked() );
@@ -242,7 +242,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
-  connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mLayer )
     {
       mLayer->setRingFilter( static_cast<QgsLineSymbolLayer::RenderRingFilter>( mRingFilterComboBox->currentData().toInt() ) );
@@ -270,14 +270,14 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
   connect( spinPatternOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::patternOffsetChanged );
 
-  connect( mTrimStartDistanceSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mTrimStartDistanceSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mLayer )
       return;
 
     mLayer->setTrimDistanceStart( value );
     emit changed();
   } );
-  connect( mTrimDistanceStartUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mTrimDistanceStartUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( !mLayer )
       return;
 
@@ -285,14 +285,14 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
     mLayer->setTrimDistanceStartMapUnitScale( mTrimDistanceStartUnitWidget->getMapUnitScale() );
     emit changed();
   } );
-  connect( mTrimDistanceEndSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mTrimDistanceEndSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mLayer )
       return;
 
     mLayer->setTrimDistanceEnd( value );
     emit changed();
   } );
-  connect( mTrimDistanceEndUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mTrimDistanceEndUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( !mLayer )
       return;
 
@@ -1897,7 +1897,7 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
-  connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mLayer )
     {
       mLayer->setRingFilter( static_cast<QgsLineSymbolLayer::RenderRingFilter>( mRingFilterComboBox->currentData().toInt() ) );
@@ -1921,7 +1921,7 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   connect( mCheckCentralPoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( mCheckCurvePoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
   connect( mCheckSegmentCentralPoint, &QCheckBox::toggled, this, &QgsMarkerLineSymbolLayerWidget::setPlacement );
-  connect( mCheckPlaceOnEveryPart, &QCheckBox::toggled, this, [=] {
+  connect( mCheckPlaceOnEveryPart, &QCheckBox::toggled, this, [this] {
     if ( mLayer )
     {
       mLayer->setPlaceOnEveryPart( mCheckPlaceOnEveryPart->isChecked() );
@@ -2143,7 +2143,7 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
-  connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mRingFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mLayer )
     {
       mLayer->setRingFilter( static_cast<QgsLineSymbolLayer::RenderRingFilter>( mRingFilterComboBox->currentData().toInt() ) );
@@ -2172,7 +2172,7 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   connect( mCheckCurvePoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
   connect( mCheckSegmentCentralPoint, &QCheckBox::toggled, this, &QgsHashedLineSymbolLayerWidget::setPlacement );
 
-  connect( mCheckPlaceOnEveryPart, &QCheckBox::toggled, this, [=] {
+  connect( mCheckPlaceOnEveryPart, &QCheckBox::toggled, this, [this] {
     if ( mLayer )
     {
       mLayer->setPlaceOnEveryPart( mCheckPlaceOnEveryPart->isChecked() );
@@ -3073,7 +3073,7 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QgsVec
 
   mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Feature" ), static_cast<int>( Qgis::SymbolCoordinateReference::Feature ) );
   mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Map Extent" ), static_cast<int>( Qgis::SymbolCoordinateReference::Viewport ) );
-  connect( mCoordinateReferenceComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mCoordinateReferenceComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setCoordinateReference( static_cast<Qgis::SymbolCoordinateReference>( mCoordinateReferenceComboBox->currentData().toInt() ) );
@@ -3084,7 +3084,7 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QgsVec
   mClipModeComboBox->addItem( tr( "Clip During Render Only" ), static_cast<int>( Qgis::LineClipMode::ClipPainterOnly ) );
   mClipModeComboBox->addItem( tr( "Clip Lines Before Render" ), static_cast<int>( Qgis::LineClipMode::ClipToIntersection ) );
   mClipModeComboBox->addItem( tr( "No Clipping" ), static_cast<int>( Qgis::LineClipMode::NoClipping ) );
-  connect( mClipModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mClipModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setClipMode( static_cast<Qgis::LineClipMode>( mClipModeComboBox->currentData().toInt() ) );
@@ -3210,7 +3210,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
   mClipModeComboBox->addItem( tr( "Marker Centroid Within Shape" ), static_cast<int>( Qgis::MarkerClipMode::CentroidWithin ) );
   mClipModeComboBox->addItem( tr( "Marker Completely Within Shape" ), static_cast<int>( Qgis::MarkerClipMode::CompletelyWithin ) );
   mClipModeComboBox->addItem( tr( "No Clipping" ), static_cast<int>( Qgis::MarkerClipMode::NoClipping ) );
-  connect( mClipModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mClipModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setClipMode( static_cast<Qgis::MarkerClipMode>( mClipModeComboBox->currentData().toInt() ) );
@@ -3220,7 +3220,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
 
   mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Feature" ), static_cast<int>( Qgis::SymbolCoordinateReference::Feature ) );
   mCoordinateReferenceComboBox->addItem( tr( "Align Pattern to Map Extent" ), static_cast<int>( Qgis::SymbolCoordinateReference::Viewport ) );
-  connect( mCoordinateReferenceComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mCoordinateReferenceComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setCoordinateReference( static_cast<Qgis::SymbolCoordinateReference>( mCoordinateReferenceComboBox->currentData().toInt() ) );
@@ -3235,21 +3235,21 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
 
   mRandomXOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
   mRandomYOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches << Qgis::RenderUnit::Percentage );
-  connect( mRandomXSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double d ) {
+  connect( mRandomXSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double d ) {
     if ( mLayer )
     {
       mLayer->setMaximumRandomDeviationX( d );
       emit changed();
     }
   } );
-  connect( mRandomYSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double d ) {
+  connect( mRandomYSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double d ) {
     if ( mLayer )
     {
       mLayer->setMaximumRandomDeviationY( d );
       emit changed();
     }
   } );
-  connect( mRandomXOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mRandomXOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setRandomDeviationXUnit( mRandomXOffsetUnitWidget->unit() );
@@ -3257,7 +3257,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       emit changed();
     }
   } );
-  connect( mRandomYOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mRandomYOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setRandomDeviationYUnit( mRandomYOffsetUnitWidget->unit() );
@@ -3265,7 +3265,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
       emit changed();
     }
   } );
-  connect( mSeedSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int v ) {
+  connect( mSeedSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int v ) {
     if ( mLayer )
     {
       mLayer->setSeed( v );
@@ -3275,7 +3275,7 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsV
 
   mAngleSpinBox->setShowClearButton( true );
   mAngleSpinBox->setClearValue( 0 );
-  connect( mAngleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double d ) {
+  connect( mAngleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double d ) {
     if ( mLayer )
     {
       mLayer->setAngle( d );
@@ -4196,7 +4196,7 @@ QgsAnimatedMarkerSymbolLayerWidget::QgsAnimatedMarkerSymbolLayerWidget( QgsVecto
 
   mFrameRateSpin->setClearValue( 10 );
   mFrameRateSpin->setShowClearButton( true );
-  connect( mFrameRateSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mFrameRateSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     mLayer->setFrameRate( value );
     emit changed();
   } );
@@ -4468,7 +4468,7 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRasterFillSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::mRotationSpinBox_valueChanged );
 
-  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( !mLayer )
     {
       return;
@@ -4477,7 +4477,7 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
     mLayer->setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
     emit changed();
   } );
-  connect( mWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=]( double d ) {
+  connect( mWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( double d ) {
     if ( !mLayer )
     {
       return;
@@ -4486,7 +4486,7 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
     emit changed();
   } );
 
-  connect( mHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=]( double d ) {
+  connect( mHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( double d ) {
     if ( !mLayer )
     {
       return;
@@ -4685,7 +4685,7 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
-  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
@@ -4694,7 +4694,7 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
-  connect( spinWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( spinWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setWidth( spinWidth->value() );
@@ -4702,7 +4702,7 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
-  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
@@ -4713,7 +4713,7 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
 
 
   spinOffset->setClearValue( 0.0 );
-  connect( spinOffset, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double val ) {
+  connect( spinOffset, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double val ) {
     if ( mLayer )
     {
       mLayer->setOffset( val );
@@ -4721,14 +4721,14 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
-  connect( cboCapStyle, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( cboCapStyle, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
       emit changed();
     }
   } );
-  connect( cboJoinStyle, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( cboJoinStyle, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
@@ -4737,7 +4737,7 @@ QgsRasterLineSymbolLayerWidget::QgsRasterLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsRasterLineSymbolLayerWidget::imageSourceChanged );
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, [=]( double opacity ) {
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, [this]( double opacity ) {
     if ( mLayer )
     {
       mLayer->setOpacity( opacity );
@@ -4855,7 +4855,7 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( Qg
 
   connect( modificationExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, &QgsGeometryGeneratorSymbolLayerWidget::updateExpression );
   connect( cbxGeometryType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType );
-  connect( mUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( !mBlockSignals )
     {
       mLayer->setUnits( mUnitWidget->unit() );
@@ -4952,7 +4952,7 @@ QgsRandomMarkerFillSymbolLayerWidget::QgsRandomMarkerFillSymbolLayerWidget( QgsV
   connect( mPointCountSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::countChanged );
   connect( mDensityAreaSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::densityAreaChanged );
   connect( mSeedSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::seedChanged );
-  connect( mClipPointsCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mClipPointsCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     if ( mLayer )
     {
       mLayer->setClipPoints( checked );
@@ -5095,21 +5095,21 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
   mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
   mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );
 
-  connect( btnChangeColor, &QgsColorButton::colorChanged, this, [=]( const QColor &color ) {
+  connect( btnChangeColor, &QgsColorButton::colorChanged, this, [this]( const QColor &color ) {
     if ( mLayer )
     {
       mLayer->setColor( color );
       emit changed();
     }
   } );
-  connect( btnChangeColor2, &QgsColorButton::colorChanged, this, [=]( const QColor &color ) {
+  connect( btnChangeColor2, &QgsColorButton::colorChanged, this, [this]( const QColor &color ) {
     if ( mLayer )
     {
       mLayer->setColor2( color );
       emit changed();
     }
   } );
-  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, [=] {
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, [this] {
     if ( btnColorRamp->isNull() )
       return;
 
@@ -5120,7 +5120,7 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
     }
   } );
 
-  connect( radioTwoColor, &QAbstractButton::toggled, this, [=] {
+  connect( radioTwoColor, &QAbstractButton::toggled, this, [this] {
     if ( mLayer )
     {
       if ( radioTwoColor->isChecked() )
@@ -5144,7 +5144,7 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
-  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
@@ -5153,7 +5153,7 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
     }
   } );
 
-  connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setWidth( spinWidth->value() );
@@ -5161,7 +5161,7 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
     }
   } );
 
-  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
@@ -5171,7 +5171,7 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
   } );
 
   spinOffset->setClearValue( 0.0 );
-  connect( spinOffset, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double val ) {
+  connect( spinOffset, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double val ) {
     if ( mLayer )
     {
       mLayer->setOffset( val );
@@ -5179,14 +5179,14 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
     }
   } );
 
-  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
       emit changed();
     }
   } );
-  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
@@ -5277,7 +5277,7 @@ QgsFilledLineSymbolLayerWidget::QgsFilledLineSymbolLayerWidget( QgsVectorLayer *
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
-  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mPenWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setWidthUnit( mPenWidthUnitWidget->unit() );
@@ -5286,7 +5286,7 @@ QgsFilledLineSymbolLayerWidget::QgsFilledLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
-  connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setWidth( spinWidth->value() );
@@ -5294,7 +5294,7 @@ QgsFilledLineSymbolLayerWidget::QgsFilledLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
-  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer )
     {
       mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
@@ -5304,7 +5304,7 @@ QgsFilledLineSymbolLayerWidget::QgsFilledLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   spinOffset->setClearValue( 0.0 );
-  connect( spinOffset, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double val ) {
+  connect( spinOffset, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double val ) {
     if ( mLayer )
     {
       mLayer->setOffset( val );
@@ -5312,14 +5312,14 @@ QgsFilledLineSymbolLayerWidget::QgsFilledLineSymbolLayerWidget( QgsVectorLayer *
     }
   } );
 
-  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
       emit changed();
     }
   } );
-  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer )
     {
       mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
@@ -5397,35 +5397,35 @@ QgsLinearReferencingSymbolLayerWidget::QgsLinearReferencingSymbolLayerWidget( Qg
   mLabelOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mAverageAngleUnit->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
-  connect( mComboQuantity, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mComboQuantity, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setLabelSource( mComboQuantity->currentData().value<Qgis::LinearReferencingLabelSource>() );
       emit changed();
     }
   } );
-  connect( mTextFormatButton, &QgsFontButton::changed, this, [=] {
+  connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setTextFormat( mTextFormatButton->textFormat() );
       emit changed();
     }
   } );
-  connect( spinInterval, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=] {
+  connect( spinInterval, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setInterval( spinInterval->value() );
       emit changed();
     }
   } );
-  connect( mSpinSkipMultiples, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=] {
+  connect( mSpinSkipMultiples, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setSkipMultiplesOf( mSpinSkipMultiples->value() );
       emit changed();
     }
   } );
-  connect( mCheckRotate, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mCheckRotate, &QCheckBox::toggled, this, [this]( bool checked ) {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setRotateLabels( checked );
@@ -5434,7 +5434,7 @@ QgsLinearReferencingSymbolLayerWidget::QgsLinearReferencingSymbolLayerWidget( Qg
     mSpinAverageAngleLength->setEnabled( checked );
     mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
   } );
-  connect( mCheckShowMarker, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mCheckShowMarker, &QCheckBox::toggled, this, [this]( bool checked ) {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setShowMarker( checked );
@@ -5442,21 +5442,21 @@ QgsLinearReferencingSymbolLayerWidget::QgsLinearReferencingSymbolLayerWidget( Qg
     }
   } );
 
-  connect( mSpinLabelOffsetX, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=] {
+  connect( mSpinLabelOffsetX, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setLabelOffset( QPointF( mSpinLabelOffsetX->value(), mSpinLabelOffsetY->value() ) );
       emit changed();
     }
   } );
-  connect( mSpinLabelOffsetY, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=] {
+  connect( mSpinLabelOffsetY, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setLabelOffset( QPointF( mSpinLabelOffsetX->value(), mSpinLabelOffsetY->value() ) );
       emit changed();
     }
   } );
-  connect( mLabelOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mLabelOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setLabelOffsetUnit( mLabelOffsetUnitWidget->unit() );
@@ -5465,7 +5465,7 @@ QgsLinearReferencingSymbolLayerWidget::QgsLinearReferencingSymbolLayerWidget( Qg
     }
   } );
 
-  connect( mComboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mComboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       const Qgis::LinearReferencingPlacement placement = mComboPlacement->currentData().value<Qgis::LinearReferencingPlacement>();
@@ -5485,14 +5485,14 @@ QgsLinearReferencingSymbolLayerWidget::QgsLinearReferencingSymbolLayerWidget( Qg
     }
   } );
 
-  connect( mSpinAverageAngleLength, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=] {
+  connect( mSpinAverageAngleLength, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setAverageAngleLength( mSpinAverageAngleLength->value() );
       emit changed();
     }
   } );
-  connect( mAverageAngleUnit, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mAverageAngleUnit, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( mLayer && !mBlockChangesSignal )
     {
       mLayer->setAverageAngleUnit( mAverageAngleUnit->unit() );
@@ -5580,7 +5580,7 @@ void QgsLinearReferencingSymbolLayerWidget::changeNumberFormat()
     widget->setPanelTitle( tr( "Number Format" ) );
     widget->setFormat( mLayer->numericFormat() );
     widget->registerExpressionContextGenerator( this );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       if ( !mBlockChangesSignal )
       {
         mLayer->setNumericFormat( widget->format() );

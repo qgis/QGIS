@@ -450,7 +450,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
               messageBar
             );
 
-            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [=]() {
+            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [lambda, messageBar, macroMsg]() {
               lambda();
               messageBar->popWidget( macroMsg );
             } );
@@ -483,7 +483,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
             messageBar
           );
 
-          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [=]() {
+          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [messageBar, expressionFromProjectMsg]() {
             QgsProject::instance()->loadFunctionsFromProject( true );
             messageBar->popWidget( expressionFromProjectMsg );
           } );
@@ -501,7 +501,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
 void QgsGui::initCalloutWidgets()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [=]() {
+  std::call_once( initialized, []() {
     auto _initCalloutWidgetFunction = []( const QString &name, QgsCalloutWidgetFunc f ) {
       QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
 

@@ -40,7 +40,7 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   mSpinZMax->setClearValue( 14 );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );

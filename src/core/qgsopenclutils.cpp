@@ -92,7 +92,7 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
 void QgsOpenClUtils::init()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
+  std::call_once( initialized, []( )
   {
 #ifdef Q_OS_MAC
     QLibrary openCLLib { QStringLiteral( "/System/Library/Frameworks/OpenCL.framework/Versions/Current/OpenCL" ) };
@@ -694,7 +694,7 @@ cl::Context QgsOpenClUtils::context()
 {
   static cl::Context context;
   static std::once_flag contextCreated;
-  std::call_once( contextCreated, [ = ]()
+  std::call_once( contextCreated, []()
   {
     if ( available() && cl::Platform::getDefault()() && cl::Device::getDefault()() )
     {

@@ -973,12 +973,27 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QList<QgsRendererRange> ranges;
       ranges.append( QgsRendererRange( 0, 1, new QgsMarkerSymbol(), "0-1" ) );
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
+      ranges.append( QgsRendererRange( 2, 3, new QgsMarkerSymbol(), "2-3" ) );
       auto c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
 
       std::unique_ptr<QgsRuleBasedRenderer> r( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
-      QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" >= 0.000000 AND \"id\" <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.000000 AND \"id\" <= 2.000000" );
+      QCOMPARE( r->rootRule()->children().size(), 3 );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000 AND \"id\" <= 2.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[2]->filterExpression(), "\"id\" > 2.0000000000000000" );
+
+      // Next try the same with inverted ranges
+      ranges.clear();
+      ranges.append( QgsRendererRange( 2, 3, new QgsMarkerSymbol(), "2-3" ) );
+      ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
+      ranges.append( QgsRendererRange( 0, 1, new QgsMarkerSymbol(), "0-1" ) );
+      c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
+
+      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      QCOMPARE( r->rootRule()->children().size(), 3 );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" > 2.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000 AND \"id\" <= 2.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[2]->filterExpression(), "\"id\" <= 1.0000000000000000" );
 
       // Next try with an expression based range
       ranges.clear();
@@ -988,8 +1003,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(id / 2) >= 0.000000 AND (id / 2) <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(id / 2) > 1.000000 AND (id / 2) <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(id / 2) <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(id / 2) > 1.0000000000000000" );
 
       // Last try with an expression which is just a quoted field name
       ranges.clear();
@@ -999,8 +1014,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" >= 0.000000 AND \"id\" <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.000000 AND \"id\" <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000" );
 
       // Next try with a complex name
       ranges.clear();
@@ -1010,8 +1025,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"fa_cy-fie+ld\" >= 0.000000 AND \"fa_cy-fie+ld\" <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"fa_cy-fie+ld\" > 1.000000 AND \"fa_cy-fie+ld\" <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"fa_cy-fie+ld\" <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"fa_cy-fie+ld\" > 1.0000000000000000" );
     }
 
     void testConvertFromGraduatedRendererNoLayer()
@@ -1040,8 +1055,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       std::unique_ptr<QgsRuleBasedRenderer> r( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" >= 0.000000 AND \"id\" <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.000000 AND \"id\" <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000" );
 
       // Next try with an expression based range
       ranges.clear();
@@ -1051,8 +1066,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(id / 2) >= 0.000000 AND (id / 2) <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(id / 2) > 1.000000 AND (id / 2) <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(id / 2) <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(id / 2) > 1.0000000000000000" );
 
       // Last try with an expression which is just a quoted field name
       ranges.clear();
@@ -1062,8 +1077,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" >= 0.000000 AND \"id\" <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.000000 AND \"id\" <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000" );
 
       // Next try with a complex name -- in this case since we don't have a layer or
       // actual field names available, we must assume the complex field name is actually an expression
@@ -1074,8 +1089,8 @@ class TestQgsRuleBasedRenderer : public QgsTest
 
       r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
       QCOMPARE( r->rootRule()->children().size(), 2 );
-      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(fa_cy-fie+ld) >= 0.000000 AND (fa_cy-fie+ld) <= 1.000000" );
-      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(fa_cy-fie+ld) > 1.000000 AND (fa_cy-fie+ld) <= 2.000000" );
+      QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(fa_cy-fie+ld) <= 1.0000000000000000" );
+      QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(fa_cy-fie+ld) > 1.0000000000000000" );
     }
 
     void testConvertFromEmbedded()

@@ -173,3 +173,15 @@ void removeFiles(const std::vector<std::string> &tileOutputFiles, bool removePar
         fs::remove(outputDir);
     }
 }
+
+fs::path fileStem(const std::string &filename)
+{
+    fs::path inputBasename = fs::path(filename).stem();
+            
+    while(inputBasename.has_extension())
+    {
+        inputBasename = inputBasename.stem(); 
+    }
+
+    return inputBasename;
+}

@@ -46,10 +46,15 @@ QString QgsConvertGeometryTypeAlgorithm::groupId() const
 
 QString QgsConvertGeometryTypeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates a new layer based on an existing one, with a different type of geometry.\n\n"
+  return QObject::tr( "This algorithm generates a new layer based on an existing one, with a different type of geometry.\n\n"
                       "Not all conversions are possible. For instance, a line layer can be converted to a "
                       "point layer, but a point layer cannot be converted to a line layer.\n\n"
                       "See the \"Polygonize\" or \"Lines to polygons\" algorithms for alternative options." );
+}
+
+QString QgsConvertGeometryTypeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Converts the geometries from a vector layer to a different geometry type." );
 }
 
 QgsConvertGeometryTypeAlgorithm *QgsConvertGeometryTypeAlgorithm::createInstance() const
@@ -80,7 +85,7 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   }
 
   const int typeIndex = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context );
-  Qgis::WkbType outputWkbType;
+  Qgis::WkbType outputWkbType = Qgis::WkbType::Unknown;
 
   if ( typeIndex == 0 ) // centroids
   {
@@ -101,6 +106,10 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   else if ( typeIndex == 4 ) // polygons
   {
     outputWkbType = Qgis::WkbType::Polygon;
+  }
+  else
+  {
+    throw QgsProcessingException( QObject::tr( "Invalid TYPE parameter value: %1" ).arg( typeIndex ) );
   }
 
   // preserve Z/M values

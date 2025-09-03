@@ -14,10 +14,8 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultipoint.h"
-#include "qgsapplication.h"
-#include "qgsgeometryutils.h"
 #include "qgspoint.h"
-#include "qgswkbptr.h"
+#include "qgsvertexid.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
@@ -152,7 +150,7 @@ bool QgsMultiPoint::fromWkt( const QString &wkt )
     collectionWkt.replace( '(', QLatin1String( "((" ) ).replace( ')', QLatin1String( "))" ) ).replace( ',', QLatin1String( "),(" ) );
   }
 
-  return fromCollectionWkt( collectionWkt, QVector<QgsAbstractGeometry *>() << new QgsPoint, QStringLiteral( "Point" ) );
+  return fromCollectionWkt( collectionWkt, { Qgis::WkbType::Point }, QStringLiteral( "Point" ) );
 }
 
 void QgsMultiPoint::clear()

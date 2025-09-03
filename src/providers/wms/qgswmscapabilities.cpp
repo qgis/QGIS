@@ -1793,7 +1793,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       tileMatrix.scaleDenom = secondChildElement.firstChildElement( QStringLiteral( "ScaleDenominator" ) ).text().toDouble();
 
-      QStringList topLeft = secondChildElement.firstChildElement( QStringLiteral( "TopLeftCorner" ) ).text().split( ' ' );
+      QStringList topLeft = secondChildElement.firstChildElement( QStringLiteral( "TopLeftCorner" ) ).text().split( ' ', Qt::SkipEmptyParts );
       if ( topLeft.size() == 2 )
       {
         if ( invert )
@@ -1856,8 +1856,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     QDomElement bbox = childElement.firstChildElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
     if ( !bbox.isNull() )
     {
-      QStringList ll = bbox.firstChildElement( QStringLiteral( "ows:LowerCorner" ) ).text().split( ' ' );
-      QStringList ur = bbox.firstChildElement( QStringLiteral( "ows:UpperCorner" ) ).text().split( ' ' );
+      QStringList ll = bbox.firstChildElement( QStringLiteral( "ows:LowerCorner" ) ).text().split( ' ', Qt::SkipEmptyParts );
+      QStringList ur = bbox.firstChildElement( QStringLiteral( "ows:UpperCorner" ) ).text().split( ' ', Qt::SkipEmptyParts );
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
@@ -1872,8 +1872,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           !bbox.isNull();
           bbox = bbox.nextSiblingElement( QStringLiteral( "ows:BoundingBox" ) ) )
     {
-      QStringList ll = bbox.firstChildElement( QStringLiteral( "ows:LowerCorner" ) ).text().split( ' ' );
-      QStringList ur = bbox.firstChildElement( QStringLiteral( "ows:UpperCorner" ) ).text().split( ' ' );
+      QStringList ll = bbox.firstChildElement( QStringLiteral( "ows:LowerCorner" ) ).text().split( ' ', Qt::SkipEmptyParts );
+      QStringList ur = bbox.firstChildElement( QStringLiteral( "ows:UpperCorner" ) ).text().split( ' ', Qt::SkipEmptyParts );
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {

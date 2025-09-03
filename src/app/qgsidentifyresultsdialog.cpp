@@ -1721,11 +1721,11 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   mActionPopup->addAction( tr( "Clear Results" ), this, &QgsIdentifyResultsDialog::clear );
   mActionPopup->addAction( tr( "Clear Highlights" ), this, &QgsIdentifyResultsDialog::clearHighlights );
   mActionPopup->addAction( tr( "Highlight All" ), this, &QgsIdentifyResultsDialog::highlightAll );
-  mActionPopup->addAction( tr( "Highlight Layer" ), this, [=] { highlightLayer(); } );
+  mActionPopup->addAction( tr( "Highlight Layer" ), this, [this] { highlightLayer(); } );
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
-    mActionPopup->addAction( tr( "Activate Layer" ), this, [=] { activateLayer(); } );
-    mActionPopup->addAction( tr( "Layer Properties…" ), this, [=] { layerProperties(); } );
+    mActionPopup->addAction( tr( "Activate Layer" ), this, [this] { activateLayer(); } );
+    mActionPopup->addAction( tr( "Layer Properties…" ), this, [this] { layerProperties(); } );
   }
   mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand All" ), this, &QgsIdentifyResultsDialog::expandAll );

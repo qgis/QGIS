@@ -63,8 +63,8 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 
   // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );
-  connect( mScalarMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double ) { minMaxChanged(); } );
-  connect( mScalarMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double ) { minMaxChanged(); } );
+  connect( mScalarMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { minMaxChanged(); } );
+  connect( mScalarMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { minMaxChanged(); } );
   connect( mScalarEdgeStrokeWidthVariableRadioButton, &QRadioButton::toggled, this, &QgsMeshRendererScalarSettingsWidget::onEdgeStrokeWidthMethodChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
@@ -143,6 +143,17 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer()
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
 
+  if ( std::abs( max ) < 1e-2 )
+  {
+    mScalarMinSpinBox->setDecimals( 8 );
+    mScalarMaxSpinBox->setDecimals( 8 );
+  }
+  else
+  {
+    mScalarMinSpinBox->setDecimals( 2 );
+    mScalarMaxSpinBox->setDecimals( 2 );
+  }
+
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
 
@@ -219,6 +230,18 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   const double min = metadata.minimum();
   const double max = metadata.maximum();
+
+  if ( std::abs( max ) < 1e-2 )
+  {
+    mScalarMinSpinBox->setDecimals( 8 );
+    mScalarMaxSpinBox->setDecimals( 8 );
+  }
+  else
+  {
+    mScalarMinSpinBox->setDecimals( 2 );
+    mScalarMaxSpinBox->setDecimals( 2 );
+  }
+
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );

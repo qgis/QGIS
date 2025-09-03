@@ -15,6 +15,8 @@
 
 #include "qgssensorthingsdataitemguiprovider.h"
 #include "moc_qgssensorthingsdataitemguiprovider.cpp"
+
+#include "qgsapplication.h"
 #include "qgssensorthingsdataitems.h"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectiondialog.h"
@@ -103,7 +105,7 @@ void QgsSensorThingsDataItemGuiProvider::duplicateConnection( QgsDataItem *item 
 
 void QgsSensorThingsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsSensorThingsConnectionDialog dlg;
+  QgsSensorThingsConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 

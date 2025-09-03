@@ -43,7 +43,7 @@ from qgis.gui import QgsFormAnnotation
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
-from utilities import unitTestDataPath
+from utilities import getTestFont, unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -63,8 +63,9 @@ class TestQgsAnnotation(QgisTestCase):
         a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
         a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         doc = QTextDocument()
+        font = getTestFont("Bold")
         doc.setHtml(
-            '<p style="font-family: arial; font-weight: bold; font-size: 40px;">test annotation</p>'
+            f'<p style="font-family: {font.family()}; font-weight: bold; font-size: 40px;">test annotation</p>'
         )
         a.setDocument(doc)
         im = self.renderAnnotation(a, QPointF(20, 30))
@@ -83,8 +84,9 @@ class TestQgsAnnotation(QgisTestCase):
         a.setFrameSizeMm(QSizeF(300 / 3.7795275, 200 / 3.7795275))
         a.setFrameOffsetFromReferencePointMm(QPointF(40 / 3.7795275, 50 / 3.7795275))
         doc = QTextDocument()
+        font = getTestFont("Bold")
         doc.setHtml(
-            '<p style="font-family: arial; font-weight: bold; font-size: 40px;">test annotation</p>'
+            f'<p style="font-family: {font.family()}; font-weight: bold; font-size: 40px;">test annotation</p>'
         )
         a.setDocument(doc)
         self.assertTrue(self.renderAnnotationInLayout("text_annotation_in_layout", a))
@@ -239,6 +241,7 @@ class TestQgsAnnotation(QgisTestCase):
         a.setFilePath(svg)
         self.assertTrue(self.renderAnnotationInLayout("svg_annotation_in_layout", a))
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testHtmlAnnotation(self):
         """test rendering a html annotation"""
         a = QgsHtmlAnnotation()
@@ -256,6 +259,7 @@ class TestQgsAnnotation(QgisTestCase):
         im = self.renderAnnotation(clone, QPointF(20, 30))
         self.assertTrue(self.image_check("html_annotation", "html_annotation", im))
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testHtmlAnnotationSetHtmlSource(self):
         """test rendering html annotation where the html is set directly (not from file)"""
         a = QgsHtmlAnnotation()
@@ -271,6 +275,7 @@ class TestQgsAnnotation(QgisTestCase):
             self.image_check("html_annotation_html_source", "html_annotation", im)
         )
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testHtmlAnnotationInLayout(self):
         """test rendering a svg annotation"""
         a = QgsHtmlAnnotation()
@@ -282,6 +287,7 @@ class TestQgsAnnotation(QgisTestCase):
         a.setSourceFile(html)
         self.assertTrue(self.renderAnnotationInLayout("html_annotation_in_layout", a))
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testHtmlAnnotationWithFeature(self):
         """test rendering a html annotation with a feature"""
         layer = QgsVectorLayer(
@@ -346,6 +352,7 @@ class TestQgsAnnotation(QgisTestCase):
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.image_check("relative_style", "relative_style", im))
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testMargins(self):
         """test rendering an annotation with margins"""
         a = QgsHtmlAnnotation()

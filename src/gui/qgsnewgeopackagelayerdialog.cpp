@@ -128,12 +128,12 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mCheckBoxCreateSpatialIndex->setChecked( true );
 
   const QgsSettings settings;
-  mDatabase->setStorageMode( QgsFileWidget::SaveFile );
-  mDatabase->setFilter( tr( "GeoPackage" ) + " (*.gpkg)" );
-  mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File…" ) );
-  mDatabase->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
-  mDatabase->setConfirmOverwrite( false );
-  connect( mDatabase, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  mFileName->setStorageMode( QgsFileWidget::SaveFile );
+  mFileName->setFilter( tr( "GeoPackage" ) + " (*.gpkg)" );
+  mFileName->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File…" ) );
+  mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
+  mFileName->setConfirmOverwrite( false );
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     const QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
@@ -152,7 +152,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   completer->setCompletionRole( static_cast<int>( QgsProviderConnectionModel::CustomRole::Uri ) );
   completer->setCompletionMode( QCompleter::PopupCompletion );
   completer->setFilterMode( Qt::MatchContains );
-  mDatabase->lineEdit()->setCompleter( completer );
+  mFileName->lineEdit()->setCompleter( completer );
 }
 
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -162,7 +162,7 @@ void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &cr
 
 void QgsNewGeoPackageLayerDialog::lockDatabasePath()
 {
-  mDatabase->setReadOnly( true );
+  mFileName->setReadOnly( true );
 }
 
 void QgsNewGeoPackageLayerDialog::mFieldTypeBox_currentIndexChanged( int )
@@ -208,7 +208,7 @@ void QgsNewGeoPackageLayerDialog::mLayerIdentifierEdit_textEdited( const QString
 
 void QgsNewGeoPackageLayerDialog::checkOk()
 {
-  const bool ok = !mDatabase->filePath().isEmpty() && !mTableNameEdit->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1;
+  const bool ok = !mFileName->filePath().isEmpty() && !mTableNameEdit->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1;
 
   mOkButton->setEnabled( ok );
 }
@@ -318,7 +318,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     }
   }
 
-  QString fileName( mDatabase->filePath() );
+  QString fileName( mFileName->filePath() );
   if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
     fileName += QLatin1String( ".gpkg" );
 

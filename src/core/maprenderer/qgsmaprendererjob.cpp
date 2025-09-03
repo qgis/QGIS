@@ -52,6 +52,7 @@
 #include "qgsmeshlayerlabeling.h"
 #include "qgsrasterlabeling.h"
 #include "qgsgeos.h"
+#include "qgspainting.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
 const QgsSettingsEntryString *QgsMapRendererJob::settingsMaskBackend = new QgsSettingsEntryString( QStringLiteral( "mask-backend" ), QgsSettingsTree::sTreeMap, QString(), QStringLiteral( "Backend engine to use for selective masking" ) );
@@ -314,6 +315,63 @@ bool QgsMapRendererJob::prepareLabelCache() const
   return canCache;
 }
 
+bool QgsMapRendererJob::labelingHasNonDefaultCompositionModes() const
+{
+  const QList<QgsMapLayer *> layers = mSettings.layers();
+  for ( QgsMapLayer *ml : layers )
+  {
+    if ( !QgsPalLabeling::staticWillUseLayer( ml ) )
+      continue;
+
+    switch ( ml->type() )
+    {
+      case Qgis::LayerType::Vector:
+      {
+        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( ml );
+        if ( vl->labelsEnabled() && vl->labeling()->hasNonDefaultCompositionMode() )
+        {
+          return true;
+        }
+        break;
+      }
+
+      case Qgis::LayerType::Mesh:
+      {
+        QgsMeshLayer *l = qobject_cast< QgsMeshLayer *>( ml );
+        if ( l->labelsEnabled() && l->labeling()->hasNonDefaultCompositionMode() )
+        {
+          return true;
+        }
+        break;
+      }
+
+      case Qgis::LayerType::Raster:
+      {
+        QgsRasterLayer *l = qobject_cast< QgsRasterLayer *>( ml );
+        if ( l->labelsEnabled() && l->labeling()->hasNonDefaultCompositionMode() )
+        {
+          return true;
+        }
+        break;
+      }
+
+      case Qgis::LayerType::VectorTile:
+      {
+        // TODO -- add detection of advanced labeling effects for vector tile layers
+        break;
+      }
+
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::PointCloud:
+      case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledScene:
+        break;
+    }
+  }
+
+  return false;
+}
 
 bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
@@ -582,7 +640,9 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
 
     if ( mFeatureFilterProvider )
+    {
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );
+    }
 
     QgsMapLayerStyleOverride styleOverride( ml );
     if ( mSettings.layerStyleOverrides().contains( ml->id() ) )
@@ -611,7 +671,8 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     const QgsElevationShadingRenderer shadingRenderer = mSettings.elevationShadingRenderer();
 
     // if we can use the cache, let's do it and avoid rendering!
-    const bool canUseCache = !mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mCache;
+    const bool canUseCache = mSettings.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default
+                             && mCache;
     if ( canUseCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
@@ -851,6 +912,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   }
   labelJob.context.setMaskIdProvider( &labelJob.maskIdProvider );
 
+  const bool hasNonDefaultComposition = labelingHasNonDefaultCompositionModes();
+
   // Prepare second pass jobs
   // - For raster rendering or vector rendering if effects are involved
   // 1st pass, 2nd pass and mask are rendered in QImage and composed in composeSecondPass
@@ -859,12 +922,15 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // masked symbol layer rendering during second pass, which is rendered in QPicture, second
   // pass job picture
 
-  // Allocate an image for labels
-  if ( !labelJob.img && !forceVector )
+  // Allocate an image or picture for labels, as suitable.
+  // If we have some non-default label composition modes, we CAN'T render to an image as that
+  // "flattens" composition modes and prevents them interacting with underlying layers.
+  const bool canUseImage = !forceVector && !hasNonDefaultComposition;
+  if ( !labelJob.img && canUseImage )
   {
     labelJob.img = allocateImage( QStringLiteral( "labels" ) );
   }
-  else if ( !labelJob.picture && forceVector )
+  else if ( !labelJob.picture && !canUseImage )
   {
     labelJob.picture.reset( new QPicture() );
   }
@@ -1083,7 +1149,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context.setCoordinateTransform( ct );
 
   // no cache, no image allocation
-  if ( mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
+  if ( mSettings.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default )
     return job;
 
   // if we can use the cache, let's do it and avoid rendering!
@@ -1315,6 +1381,12 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
     painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
     painter.setOpacity( 1.0 );
     painter.drawImage( 0, 0, *labelJob.img );
+  }
+  else if ( labelJob.picture && labelJob.complete )
+  {
+    painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+    painter.setOpacity( 1.0 );
+    QgsPainting::drawPicture( &painter, QPointF( 0, 0 ), *labelJob.picture );
   }
   // when checking for a label cache image, we only look for those which would be drawn between 30% and 300% of the
   // original size. We don't want to draw massive pixelated labels on top of everything else, and we also don't need

@@ -1,0 +1,96 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacconnection.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsStacConnection : QgsAbstractProviderConnection
+{
+%Docstring(signature="appended")
+Represents connections to STAC catalogs.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsstacconnection.h"
+%End
+  public:
+
+
+    QgsStacConnection( const QString &name );
+%Docstring
+Constructor for QgsStacConnection, using the stored settings with the
+specified connection ``name``.
+%End
+
+    QgsStacConnection( const QString &uri, const QVariantMap &configuration );
+%Docstring
+Constructor for QgsStacConnection, using the a specific connection
+details.
+%End
+
+    virtual void store( const QString &name ) const;
+
+    virtual void remove( const QString &name ) const;
+
+
+    struct Data
+    {
+      QString url;
+      QString authCfg;
+      QString username;
+      QString password;
+      QgsHttpHeaders httpHeaders;
+    };
+
+    static QString encodedUri( const Data &conn );
+%Docstring
+Returns connection data encoded as a string
+%End
+    static Data decodedUri( const QString &uri );
+%Docstring
+Decodes connection string to a data structure
+%End
+
+    static QStringList connectionList();
+%Docstring
+Returns list of existing connections, unless the hidden ones
+%End
+    static Data connection( const QString &name );
+%Docstring
+Returns connection details
+%End
+    static void deleteConnection( const QString &name );
+%Docstring
+Removes a connection from the list
+%End
+    static void addConnection( const QString &name, const Data &conn );
+%Docstring
+Adds a new connection to the list
+%End
+    static QString selectedConnection();
+%Docstring
+Returns last used connection
+%End
+    static void setSelectedConnection( const QString &connName );
+%Docstring
+Saves name of the last used connection
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacconnection.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

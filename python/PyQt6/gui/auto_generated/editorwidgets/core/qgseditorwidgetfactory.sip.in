@@ -61,6 +61,13 @@ Returns The human readable identifier name of this widget type
 :return: a name
 %End
 
+    virtual bool isReadOnly() const;
+%Docstring
+Returns true if this widget is a read-only widget.
+
+.. versionadded:: 3.44
+%End
+
     virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 /Factory/;
 %Docstring
 Override this in your implementation. Create a new configuration widget

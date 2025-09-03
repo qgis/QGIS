@@ -67,6 +67,11 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::shortHelpString() const
                       "created at the antimeridian." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitGeometryAtAntimeridianAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QList<int> QgsSplitGeometryAtAntimeridianAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );

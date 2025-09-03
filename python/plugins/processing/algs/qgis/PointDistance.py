@@ -26,6 +26,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsFeatureRequest,
     QgsField,
@@ -71,6 +72,9 @@ class PointDistance(QgisAlgorithm):
 
     def groupId(self):
         return "vectoranalysis"
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
 
     def __init__(self):
         super().__init__()

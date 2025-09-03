@@ -38,6 +38,7 @@ class QgsExplodeHstoreAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;

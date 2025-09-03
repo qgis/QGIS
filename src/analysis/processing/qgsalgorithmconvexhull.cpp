@@ -54,6 +54,11 @@ QString QgsConvexHullAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
+QString QgsConvexHullAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the convex hull for each feature in an input layer." );
+}
+
 QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
 {
   return new QgsConvexHullAlgorithm();

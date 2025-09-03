@@ -96,6 +96,7 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   {
     int arg = 0;
     const QList< QgsExpressionNode * > argList = args->list();
+    argValues.reserve( argList.size() );
     for ( QgsExpressionNode *n : argList )
     {
       QVariant v;
@@ -1358,6 +1359,67 @@ static QVariant fcnMakeDateTime( const QVariantList &values, const QgsExpression
   return QVariant( QDateTime( date, time ) );
 }
 
+static QVariant fcnTimeZoneFromId( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QString timeZoneId = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  QTimeZone tz;
+  if ( !timeZoneId.isEmpty() )
+  {
+    tz = QTimeZone( timeZoneId.toUtf8() );
+  }
+
+  if ( !tz.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "'%1' is not a valid time zone ID" ).arg( timeZoneId ) );
+    return QVariant();
+  }
+  return QVariant::fromValue( tz );
+}
+
+static QVariant fcnGetTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  if ( datetime.isValid() )
+  {
+    return QVariant::fromValue( datetime.timeZone() );
+  }
+  return QVariant();
+}
+
+static QVariant fcnSetTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  const QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( values.at( 1 ), parent );
+  if ( datetime.isValid() && tz.isValid() )
+  {
+    datetime.setTimeZone( tz );
+    return QVariant::fromValue( datetime );
+  }
+  return QVariant();
+}
+
+static QVariant fcnConvertTimeZone( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QDateTime datetime = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
+  const QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( values.at( 1 ), parent );
+  if ( datetime.isValid() && tz.isValid() )
+  {
+    return QVariant::fromValue( datetime.toTimeZone( tz ) );
+  }
+  return QVariant();
+}
+
+static QVariant fcnTimeZoneToId( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QTimeZone timeZone = QgsExpressionUtils::getTimeZoneValue( values.at( 0 ), parent );
+  if ( timeZone.isValid() )
+  {
+    return QString( timeZone.id() );
+  }
+  return QVariant();
+}
+
 static QVariant fcnMakeInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const double years = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
@@ -2606,7 +2668,7 @@ static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionC
 
   if ( !crs.isValid() )
   {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to cordinate reference system" ).arg( definition ) );
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to coordinate reference system" ).arg( definition ) );
   }
 
   return QVariant::fromValue( crs );
@@ -8008,7 +8070,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   // Helper functions for geometry tests
 
   // Test function for linestring geometries, returns TRUE if test passes
-  auto testLinestring = [ = ]( const QgsGeometry intersection, double & overlapValue ) -> bool
+  auto testLinestring = [minOverlap, requireMeasures]( const QgsGeometry intersection, double & overlapValue ) -> bool
   {
     bool testResult { false };
     // For return measures:
@@ -8045,7 +8107,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   };
 
   // Test function for polygon geometries, returns TRUE if test passes
-  auto testPolygon = [ = ]( const QgsGeometry intersection, double & radiusValue, double & overlapValue ) -> bool
+  auto testPolygon = [minOverlap, requireMeasures, minInscribedCircleRadius]( const QgsGeometry intersection, double & radiusValue, double & overlapValue ) -> bool
   {
     // overlap and inscribed circle tests must be checked both (if the values are != -1)
     bool testResult { false };
@@ -8646,6 +8708,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "minutes" ), true, 0 )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "seconds" ), true, 0 ),
                                             fcnMakeInterval, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "timezone_from_id" ), { QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ) }, fcnTimeZoneFromId, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "timezone_id" ), { QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnTimeZoneToId, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "get_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) }, fcnGetTimeZone, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "set_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnSetTimeZone, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "convert_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnConvertTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )

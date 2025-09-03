@@ -8,7 +8,7 @@
 
 
 
-class Qgs25DRendererWidget : QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
+class Qgs25DRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")
 A widget for configuring a Qgs25DRenderer.

@@ -66,10 +66,11 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
-  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [=]( const QImage &image ) {
-    image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
-    mEngine->setRenderCaptureEnabled( false );
-    emit savedAsImage( mCaptureFileName );
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [this]( const QImage &image ) {
+    if ( image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() ) )
+    {
+      emit savedAsImage( mCaptureFileName );
+    }
   } );
 
   setCursor( Qt::OpenHandCursor );
@@ -168,7 +169,7 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 
   resetView();
 
-  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [=]( QPoint point ) {
+  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [this]( QPoint point ) {
     QCursor::setPos( mapToGlobal( point ) );
   } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMapSettings, &Qgs3DMapSettings::setCameraMovementSpeed );
@@ -211,12 +212,11 @@ void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFo
 
   mCaptureFileName = fileName;
   mCaptureFileFormat = fileFormat;
-  mEngine->setRenderCaptureEnabled( true );
   // Setup a frame action that is used to wait until next frame
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [=]( float ) {
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [this, screenCaptureFrameAction]( float ) {
     mEngine->requestCaptureImage();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();
@@ -232,7 +232,7 @@ void Qgs3DMapCanvas::captureDepthBuffer()
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [=]( float ) {
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [this, screenCaptureFrameAction]( float ) {
     mEngine->requestDepthBufferCapture();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();
@@ -277,12 +277,15 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
     return true;
   }
 
-  if ( event->type() == QEvent::ShortcutOverride )
+  // ShortcutOverride is sent if the pressed key is "claimed" by a shortcut,
+  // but we are given a chance to handle it anyway. We need to basically treat
+  // it as if it were a KeyPress.
+  if ( event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease || event->type() == QEvent::ShortcutOverride )
   {
     // if the camera controller will handle a key event, don't allow it to propagate
     // outside of the 3d window or it may be grabbed by a parent window level shortcut
     // and accordingly never be received by the camera controller
-    if ( cameraController() && cameraController()->willHandleKeyEvent( static_cast<QKeyEvent *>( event ) ) )
+    if ( cameraController() && cameraController()->keyboardEventFilter( static_cast<QKeyEvent *>( event ) ) )
     {
       event->accept();
       return true;

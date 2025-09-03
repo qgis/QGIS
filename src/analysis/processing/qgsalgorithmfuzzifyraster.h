@@ -84,6 +84,7 @@ class QgsFuzzifyRasterLinearMembershipAlgorithm : public QgsFuzzifyRasterAlgorit
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsFuzzifyRasterLinearMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -107,6 +108,7 @@ class QgsFuzzifyRasterPowerMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsFuzzifyRasterPowerMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -132,6 +134,7 @@ class QgsFuzzifyRasterLargeMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsFuzzifyRasterLargeMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -155,6 +158,7 @@ class QgsFuzzifyRasterSmallMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsFuzzifyRasterSmallMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -178,6 +182,7 @@ class QgsFuzzifyRasterGaussianMembershipAlgorithm : public QgsFuzzifyRasterAlgor
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsFuzzifyRasterGaussianMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -201,6 +206,7 @@ class QgsFuzzifyRasterNearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsFuzzifyRasterNearMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

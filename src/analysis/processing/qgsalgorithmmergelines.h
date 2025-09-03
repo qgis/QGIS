@@ -42,6 +42,7 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     QgsMergeLinesAlgorithm *createInstance() const override SIP_FACTORY;
 

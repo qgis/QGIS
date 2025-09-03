@@ -79,13 +79,21 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         """
         return "examplescripts"
 
+    def shortDescription(self) -> str:
+        """
+        Returns an optional translated short description of the algorithm, displayed
+        on hover in Processing Toolbox. This should be at most a single sentence, e.g.,
+        “Converts 2D features to 3D by sampling a DEM raster.”
+        """
+        return "Example algorithm short description on hover"
+
     def shortHelpString(self) -> str:
         """
-        Returns a localised short helper string for the algorithm. This string
-        should provide a basic description about what the algorithm does and the
+        Returns a localised helper string for the algorithm displayed in the dialog.
+        This string should provide a basic description about what the algorithm does and the
         parameters and outputs associated with it.
         """
-        return "Example algorithm short description"
+        return "Example algorithm description"
 
     def initAlgorithm(self, config: Optional[dict[str, Any]] = None):
         """
@@ -95,13 +103,16 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
 
         # We add the input vector features source. It can have any kind of
         # geometry.
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(
-                self.INPUT,
-                "Input layer",
-                [QgsProcessing.SourceType.TypeVectorAnyGeometry],
-            )
+
+        input_layer = QgsProcessingParameterFeatureSource(
+            self.INPUT,
+            "Input layer",
+            [QgsProcessing.SourceType.TypeVectorAnyGeometry],
         )
+        input_layer.setHelp(
+            "A descriptive, translated string explaining the parameter’s behavior and use in depth."
+        )
+        self.addParameter(input_layer)
 
         # We add a feature sink in which to store our processed features (this
         # usually takes the form of a newly created vector layer when the

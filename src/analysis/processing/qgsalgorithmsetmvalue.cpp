@@ -54,6 +54,11 @@ QString QgsSetMValueAlgorithm::shortHelpString() const
                       "the initial M value for all geometries." );
 }
 
+QString QgsSetMValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Sets the M value for geometries in a layer." );
+}
+
 QString QgsSetMValueAlgorithm::outputName() const
 {
   return QObject::tr( "M Added" );

@@ -45,8 +45,8 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
   // Init directory watcher
   static QFileSystemWatcher dirWatcher;
-  std::call_once( initDirWatcher, [=] {
-    QObject::connect( &dirWatcher, &QFileSystemWatcher::directoryChanged, qApp, [=]( const QString &path ) {
+  std::call_once( initDirWatcher, [] {
+    QObject::connect( &dirWatcher, &QFileSystemWatcher::directoryChanged, qApp, []( const QString &path ) {
       QgsMessageLog::logMessage( QStringLiteral( "Directory '%1' has changed: project information cache cleared." ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
       AVAILABLE_PROJECTS.clear();
     } );

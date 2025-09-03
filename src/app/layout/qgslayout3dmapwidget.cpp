@@ -67,13 +67,13 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [=]( Qgs3DMapCanvasWidget *widget ) {
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [this]( Qgs3DMapCanvasWidget *widget ) {
     copy3DMapSettings( widget );
   } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
-  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [=]( Qgs3DMapCanvasWidget *widget ) { copyCameraPose( widget ); } );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [this]( Qgs3DMapCanvasWidget *widget ) { copyCameraPose( widget ); } );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;

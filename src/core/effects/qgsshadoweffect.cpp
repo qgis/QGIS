@@ -27,6 +27,11 @@ QgsShadowEffect::QgsShadowEffect()
 
 }
 
+Qgis::PaintEffectFlags QgsShadowEffect::flags() const
+{
+  return Qgis::PaintEffectFlag::RequiresRasterization;
+}
+
 void QgsShadowEffect::draw( QgsRenderContext &context )
 {
   if ( !enabled() || !context.painter() || source().isNull() )
@@ -34,6 +39,13 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   if ( context.feedback() && context.feedback()->isCanceled() )
     return;
+
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    //just draw unmodified source, we can't render this effect when forcing vectors
+    drawSource( *context.painter() );
+    return;
+  }
 
   QImage colorisedIm = sourceAsImage( context ).copy();
 

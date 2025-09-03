@@ -8,7 +8,7 @@
 
 
 
-class QgsTableWidgetBase : QWidget, protected Ui::QgsTableWidgetUiBase
+class QgsTableWidgetBase : QWidget
 {
 %Docstring(signature="appended")
 Base widget allowing editing a collection, using a table.

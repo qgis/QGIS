@@ -32,7 +32,7 @@ QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mFileWidget->setDialogTitle( tr( "Open GPX Dataset" ) );
   mFileWidget->setFilter( QStringLiteral( "%1 (*.gpx *.GPX)" ).arg( tr( "GPX files" ) ) );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mGpxPath = path;
     emit enableButtons( !mGpxPath.isEmpty() );
   } );

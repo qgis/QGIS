@@ -1302,6 +1302,7 @@ The development version
     {
       UsersCannotToggleEditing,
       IsBasemapLayer,
+      Is3DBasemapLayer,
     };
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
@@ -1318,6 +1319,7 @@ The development version
       IsBasemapSource,
       FastExtent2D,
       FastExtent3D,
+      Is3DBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
@@ -1544,6 +1546,13 @@ The development version
     typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
 
 
+    enum class RasterizedRenderingPolicy
+    {
+      Default,
+      PreferVector,
+      ForceVector,
+    };
+
     enum class MapSettingsFlag
     {
       Antialiasing,
@@ -1593,6 +1602,7 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
+      RenderLayerTree
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -1605,6 +1615,14 @@ The development version
     };
 
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
+
+
+    enum class PaintEffectFlag
+    {
+      RequiresRasterization,
+    };
+
+    typedef QFlags<Qgis::PaintEffectFlag> PaintEffectFlags;
 
 
 
@@ -1867,6 +1885,13 @@ The development version
       FirstAndLastLabels,
     };
 
+
+    enum class PlotAxisType
+    {
+      Interval,
+      Categorical,
+    };
+
     enum class DpiMode
     {
       All,
@@ -2014,6 +2039,7 @@ The development version
     {
       RegeneratesPrimaryKey,
       RegeneratesPrimaryKeyInSomeScenarios,
+      RespectsEllipsoid,
     };
 
     typedef QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> ProcessingAlgorithmDocumentationFlags;
@@ -2479,6 +2505,14 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+    enum class MapLayerLegendFlag
+    {
+      ExcludeByDefault,
+    };
+
+    typedef QFlags<Qgis::MapLayerLegendFlag> MapLayerLegendFlags;
+
+
     enum class LegendComponent
       {
       Undefined,
@@ -2879,6 +2913,26 @@ The development version
       PaperUnits,
       ScreenUnits
     };
+
+    enum class LayoutRenderFlag
+    {
+      Debug,
+      OutlineOnly,
+      Antialiasing,
+      UseAdvancedEffects,
+      ForceVectorOutput,
+      HideCoverageLayer,
+      DrawSelection,
+      DisableTiledRasterLayerRenders,
+      RenderLabelsByMapLayer,
+      LosslessImageRendering,
+      SynchronousLegendGraphics,
+      AlwaysUseGlobalMasks,
+      LimitCoverageLayerRenderToCurrentFeature,
+    };
+
+    typedef QFlags<Qgis::LayoutRenderFlag> LayoutRenderFlags;
+
 
     enum class PictureFormat
       {
@@ -3309,6 +3363,10 @@ The development version
       ResizeRightUp,
       ResizeLeftDown,
       ResizeRightDown,
+      RotateTopLeft,
+      RotateTopRight,
+      RotateBottomLeft,
+      RotateBottomRight,
       SelectItem,
       NoAction
     };
@@ -3345,6 +3403,14 @@ The development version
       Adaptive,
       AreaError,
       ConstantDensity
+    };
+
+    enum class StacObjectType
+    {
+      Unknown,
+      Catalog,
+      Collection,
+      Item,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -3419,6 +3485,13 @@ GEOS Patch version number linked
 GEOS string version linked
 
 .. versionadded:: 3.20
+%End
+
+    static bool hasQtWebkit();
+%Docstring
+Returns ``True`` if the QGIS build contains QtWebkit.
+
+.. versionadded:: 4.0
 %End
 
     static QString geoNone();
@@ -3555,6 +3628,8 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 
+QFlags<Qgis::PaintEffectFlag> operator|(Qgis::PaintEffectFlag f1, QFlags<Qgis::PaintEffectFlag> f2);
+
 QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
@@ -3620,6 +3695,10 @@ QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFla
 QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
 
 QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
+
+QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
+
+QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
 
 
 
@@ -3728,7 +3807,7 @@ for incorrect numbers of digits between thousand separators
 .. versionadded:: 3.4
 %End
 
-int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 %Docstring
 Compares two QVariant values.
 
@@ -3739,6 +3818,10 @@ various QVariant data types (such as strings, numeric values, dates and
 times)
 
 Invalid < NULL < Values
+
+Since QGIS 4.0 the ``strictTypeCheck`` argument can be used to specify
+that variants of different types should be compared using their userType
+ID only, and not attempt to check the actual variant value.
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 

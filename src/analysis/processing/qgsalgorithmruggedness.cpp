@@ -56,6 +56,11 @@ QString QgsRuggednessAlgorithm::shortHelpString() const
                         "difference in elevation from a center cell and the 8 cells surrounding it." );
 }
 
+QString QgsRuggednessAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the quantitative measurement of terrain heterogeneity described by Riley et al. (1999)." );
+}
+
 QgsRuggednessAlgorithm *QgsRuggednessAlgorithm::createInstance() const
 {
   return new QgsRuggednessAlgorithm();

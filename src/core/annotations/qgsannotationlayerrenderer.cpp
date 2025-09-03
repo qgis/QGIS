@@ -124,8 +124,15 @@ bool QgsAnnotationLayerRenderer::render()
 
 bool QgsAnnotationLayerRenderer::forceRasterRender() const
 {
-  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
-    return false;
+  switch ( renderContext()->rasterizedRenderingPolicy() )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      return false;
+  }
 
   if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
     return true;

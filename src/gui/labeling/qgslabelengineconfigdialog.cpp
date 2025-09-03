@@ -52,7 +52,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
 
   mPreviousEngineVersion = engineSettings.placementVersion();
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( static_cast<int>( mPreviousEngineVersion ) ) );
-  connect( mPlacementVersionComboBox, &QComboBox::currentTextChanged, this, [=]() {
+  connect( mPlacementVersionComboBox, &QComboBox::currentTextChanged, this, [this]() {
     if ( static_cast<Qgis::LabelPlacementEngineVersion>( mPlacementVersionComboBox->currentData().toInt() ) != mPreviousEngineVersion )
     {
       mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::MessageLevel::Warning );

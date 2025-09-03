@@ -38,7 +38,7 @@ QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool us
 
   mDockToggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   mDockToggleButton->setToolTip( tr( "Dock Code Editor" ) );
-  connect( mDockableWidgetHelper.get(), &QgsDockableWidgetHelper::closed, this, [=]() {
+  connect( mDockableWidgetHelper.get(), &QgsDockableWidgetHelper::closed, this, [this]() {
     close();
   } );
 

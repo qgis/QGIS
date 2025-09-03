@@ -73,6 +73,7 @@ class TestQgsIdentify : public QObject
     void testPolygonZ();
     void identifyPointCloud();
     void identifyVirtualPointCloud();
+    void testSearchRadius();
 
   private:
     void doAction();
@@ -1324,6 +1325,27 @@ void TestQgsIdentify::identifyVirtualPointCloud()
   double z = result.at( 0 ).mDerivedAttributes[QStringLiteral( "Z" )].toDouble();
   QGSCOMPARENEAR( z, 74.91, 0.001 );
 #endif
+}
+
+void TestQgsIdentify::testSearchRadius()
+{
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  canvas.setFrameStyle( 0 );
+  canvas.resize( 600, 400 );
+  auto tool = std::make_unique<QgsMapToolIdentify>( &canvas );
+  canvas.setExtent( QgsRectangle( 5, 45, 9, 47 ) );
+
+  QCOMPARE( tool->searchRadiusMM(), 2 );
+  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.04724, 0.001 );
+
+  // magnify canvas, search radius should decrease
+  canvas.setMagnificationFactor( 2 );
+  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.02362, 0.001 );
+
+  // de-magnify canvas, search radius should increase
+  canvas.setMagnificationFactor( 0.5 );
+  QGSCOMPARENEAR( tool->searchRadiusMU( &canvas ), 0.09448, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsIdentify )

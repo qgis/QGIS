@@ -40,7 +40,7 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
   QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
-  connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [=] {
+  connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Export3DAnimation/fileNameTemplate" ), mTemplateLineEdit->text() );
   } );
@@ -51,30 +51,30 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
   mOutputDirFileWidget->setDefaultRoot( settings.value( QStringLiteral( "Export3DAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
   mOutputDirFileWidget->setFilePath( settings.value( QStringLiteral( "Export3DAnimation/lastDir" ), QString(), QgsSettings::App ).toString() );
 
-  connect( mOutputDirFileWidget, &QgsFileWidget::fileChanged, this, [=] {
+  connect( mOutputDirFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Export3DAnimation/lastDir" ), mOutputDirFileWidget->filePath(), QgsSettings::App );
   } );
 
   mFpsSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/fps" ), 30 ).toInt() );
-  connect( mFpsSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [=] {
+  connect( mFpsSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Export3DAnimation/fps" ), mFpsSpinBox->value() );
   } );
 
   mWidthSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/width" ), 800 ).toInt() );
-  connect( mWidthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [=] {
+  connect( mWidthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Export3DAnimation/width" ), mWidthSpinBox->value() );
   } );
 
   mHeightSpinBox->setValue( settings.value( QStringLiteral( "Export3DAnimation/height" ), 600 ).toInt() );
-  connect( mHeightSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [=] {
+  connect( mHeightSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QgsSpinBox::valueChanged ), this, [this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Export3DAnimation/height" ), mHeightSpinBox->value() );
   } );
 
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#create-animation" ) );
   } );
 

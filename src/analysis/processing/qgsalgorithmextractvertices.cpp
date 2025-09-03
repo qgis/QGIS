@@ -49,7 +49,12 @@ QString QgsExtractVerticesAlgorithm::groupId() const
 
 QString QgsExtractVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points representing the vertices in the input geometries. The attributes associated to each point are the same ones associated to the feature that the point belongs to." ) + QStringLiteral( "\n\n" ) + QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
+  return QObject::tr( "This algorithm takes a vector layer and generates a point layer with points representing the vertices of the input geometries. The attributes associated to each point are the same ones associated to the feature that the point belongs to." ) + QStringLiteral( "\n\n" ) + QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
+}
+
+QString QgsExtractVerticesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a point layer with points representing the vertices of the input geometries." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsExtractVerticesAlgorithm::documentationFlags() const

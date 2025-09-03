@@ -59,13 +59,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     QString mQuery;
 
     // login
-    QString mUserName;
-    QString mPassword;
-
-    // server access
-    QString mService;
-    QString mDatabaseName;
-    QString mHost;
+    QgsDataSourceUri mUri;
 
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;

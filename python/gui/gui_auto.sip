@@ -439,6 +439,7 @@
 %Include auto_generated/processing/qgsprocessingfavoritealgorithmmanager.sip
 %Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
+%Include auto_generated/processing/qgsprocessingguiutils.sip
 %Include auto_generated/processing/qgsprocessinghistoryprovider.sip
 %Include auto_generated/processing/qgsprocessinghistorywidget.sip
 %Include auto_generated/processing/qgsprocessingmaplayercombobox.sip

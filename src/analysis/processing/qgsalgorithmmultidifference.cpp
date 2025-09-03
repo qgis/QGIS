@@ -60,6 +60,11 @@ QString QgsMultiDifferenceAlgorithm::shortHelpString() const
                         "be manually updated." );
 }
 
+QString QgsMultiDifferenceAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Extracts features from a layer that fall completely outside or only partially overlap the features from other layer(s)." );
+}
+
 QgsProcessingAlgorithm *QgsMultiDifferenceAlgorithm::createInstance() const
 {
   return new QgsMultiDifferenceAlgorithm();

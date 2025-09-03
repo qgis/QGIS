@@ -1,0 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacprovider.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsStacProvider
+{
+%Docstring(signature="appended")
+Class for storing a STAC collection's provider data.
+
+The object provides information about a provider. A provider is any of
+the organizations that captures or processes the content of the
+Collection and therefore influences the data offered by this Collection.
+May also include information about the final storage provider hosting
+the data.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsstacprovider.h"
+%End
+  public:
+
+    QgsStacProvider( const QString &name, const QString &description, const QStringList &roles, const QString &url );
+%Docstring
+QgsStacProvider constructor
+
+:param name: The name of the organization or the individual.
+:param description: Multi-line description to add further provider
+                    information such as processing details for
+                    processors and producers, hosting details for hosts
+                    or basic contact information. CommonMark 0.29 syntax
+                    MAY be used for rich text representation.
+:param roles: Roles of the provider. Any of licensor, producer,
+              processor or host.
+:param url: Homepage on which the provider describes the dataset and
+            publishes contact information.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of the organization or the individual.
+%End
+
+    QString description() const;
+%Docstring
+Returns a multi-line description to add further provider information
+such as processing details for processors and producers, hosting details
+for hosts or basic contact information. CommonMark 0.29 syntax MAY be
+used for rich text representation.
+%End
+
+    QStringList roles() const;
+%Docstring
+Returns the roles of the provider. Any of licensor, producer, processor
+or host.
+%End
+
+    QString url() const;
+%Docstring
+Returns the url of a homepage on which the provider describes the
+dataset and publishes contact information.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacprovider.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

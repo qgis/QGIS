@@ -37,6 +37,7 @@
 #include "qgstiledscenetile.h"
 #include "qgsreadwritelocker.h"
 #include "qgstiledownloadmanager.h"
+#include "qgsellipsoidutils.h"
 
 #include <QUrl>
 #include <QIcon>
@@ -923,7 +924,7 @@ QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QgsCesiumTilesData
 
 Qgis::DataProviderFlags QgsCesiumTilesDataProvider::flags() const
 {
-  return Qgis::DataProviderFlag::FastExtent2D;
+  return mProviderFlags;
 }
 
 Qgis::TiledSceneProviderCapabilities QgsCesiumTilesDataProvider::capabilities() const
@@ -987,7 +988,16 @@ bool QgsCesiumTilesDataProvider::init()
         return false;
       }
 
-      mShared->mLayerMetadata.setTitle( QString::fromStdString( assetInfoJson["name"].get<std::string>() ) );
+      const QString name = QString::fromStdString( assetInfoJson["name"].get<std::string>() );
+      if ( name.compare( QLatin1String( "Google Photorealistic 3D Tiles" ), Qt::CaseInsensitive ) == 0 )
+      {
+        // consider Google Photorealistic 3D Tiles as a basemap source, as this completely covers
+        // the globe and contains embedded terrain
+        mProviderFlags.setFlag( Qgis::DataProviderFlag::IsBasemapSource, true );
+        mProviderFlags.setFlag( Qgis::DataProviderFlag::Is3DBasemapSource, true );
+      }
+
+      mShared->mLayerMetadata.setTitle( name );
       mShared->mLayerMetadata.setAbstract( QString::fromStdString( assetInfoJson["description"].get<std::string>() ) );
       const QString attribution = QString::fromStdString( assetInfoJson["attribution"].get<std::string>() );
       if ( !attribution.isEmpty() )

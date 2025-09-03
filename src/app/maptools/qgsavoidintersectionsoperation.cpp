@@ -82,7 +82,7 @@ QgsAvoidIntersectionsOperation::Result QgsAvoidIntersectionsOperation::apply( Qg
         QgsMessageBarItem *messageBarItem = QgisApp::instance()->messageBar()->createMessage( tr( "Avoid overlaps" ), tr( "Only the largest of multiple created geometries was preserved." ) );
         QPushButton *restoreButton = new QPushButton( tr( "Restore others" ) );
         QPointer<QgsVectorLayer> layerPtr( layer );
-        connect( restoreButton, &QPushButton::clicked, restoreButton, [=] {
+        connect( restoreButton, &QPushButton::clicked, restoreButton, [layerPtr, removedFeatures] {
           if ( !layerPtr )
             return;
           layerPtr->beginEditCommand( tr( "Restored geometry parts removed by avoid overlaps" ) );

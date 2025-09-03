@@ -81,11 +81,11 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( lstRecent, &QTreeView::clicked, this, &QgsProjectionSelectionTreeWidget::lstRecentClicked );
   connect( lstCoordinateSystems->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged );
   connect( lstRecent->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged );
-  connect( cbxHideDeprecated, &QCheckBox::toggled, this, [=]( bool selected ) {
+  connect( cbxHideDeprecated, &QCheckBox::toggled, this, [this]( bool selected ) {
     mCrsModel->setFilterDeprecated( selected );
     mRecentCrsModel->setFilterDeprecated( selected );
   } );
-  connect( leSearch, &QgsFilterLineEdit::textChanged, this, [=]( const QString &filter ) {
+  connect( leSearch, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filter ) {
     mCrsModel->setFilterString( filter );
     mRecentCrsModel->setFilterString( filter );
     if ( filter.length() >= 3 )
@@ -128,14 +128,14 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mCheckBoxNoProjection->setHidden( true );
   mCheckBoxNoProjection->setEnabled( false );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [=] {
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [this] {
     if ( !mBlockSignals )
     {
       emit crsSelected();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
   } );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [this]( bool checked ) {
     if ( mCheckBoxNoProjection->isEnabled() )
     {
       mFrameProjections->setDisabled( checked );

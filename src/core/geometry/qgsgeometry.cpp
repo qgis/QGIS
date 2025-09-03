@@ -1241,7 +1241,17 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
-  QgsGeos geos( d->geometry.get() );
+  // We're trying adding the reshape line's vertices to the geometry so that
+  // snap to segment always produces a valid reshape
+  QgsPointSequence reshapePoints;
+  reshapeLineString.points( reshapePoints );
+  QgsGeometry tmpGeom( *this );
+  for ( const QgsPoint &v : std::as_const( reshapePoints ) )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
+  QgsGeos geos( tmpGeom.get() );
   QgsGeometryEngine::EngineOperationResult errorCode = QgsGeometryEngine::Success;
   mLastError.clear();
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
@@ -1336,6 +1346,19 @@ QgsBox3D QgsGeometry::boundingBox3D() const
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
   mLastError.clear();
+
+  if ( isNull() )
+    return QgsGeometry();
+
+  if ( type() == Qgis::GeometryType::Point && d->geometry->partCount() == 1 )
+  {
+    area = 0;
+    angle = 0;
+    width = 0;
+    height = 0;
+    return QgsGeometry::fromRect( d->geometry->boundingBox() );
+  }
+
   QgsInternalGeometryEngine engine( *this );
   const QgsGeometry res = engine.orientedMinimumBoundingBox( area, angle, width, height );
   if ( res.isNull() )
@@ -3086,7 +3109,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::mergeLines() const
+QgsGeometry QgsGeometry::mergeLines( const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry )
   {
@@ -3101,7 +3124,7 @@ QgsGeometry QgsGeometry::mergeLines() const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result( geos.mergeLines( &mLastError ) );
+  QgsGeometry result( geos.mergeLines( &mLastError, parameters ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -4506,4 +4529,78 @@ QgsPointXY QgsGeometry::Error::where() const
 bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
+}
+
+QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
+{
+  if ( isNull() )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
+  if ( !curve )
+  {
+    return QgsGeometry();
+  }
+
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::chamferVertex( curve, vertexIndex, distance1, distance2 ) );
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
+{
+  if ( isNull() )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( d->geometry->simplifiedTypeRef() );
+  if ( !curve )
+  {
+    return QgsGeometry();
+  }
+
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::filletVertex( curve, vertexIndex, radius, segments ) );
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                  const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                  double distance1, double distance2 ) const
+{
+  std::unique_ptr<QgsLineString> result( QgsGeometryUtils::createChamferGeometry(
+      segment1Start, segment1End, segment2Start, segment2End, distance1, distance2 ) );
+
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                 const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                 double radius, int segments ) const
+{
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::createFilletGeometry(
+        segment1Start, segment1End, segment2Start, segment2End, radius, segments ) );
+
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
 }

@@ -1,0 +1,107 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsvectorlayerplotdatagatherer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorLayerAbstractPlotDataGatherer : QgsTask
+{
+%Docstring(signature="appended")
+An abstract vector layer plot data gatherer base class.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerplotdatagatherer.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsVectorLayerAbstractPlotDataGatherer *item = dynamic_cast< QgsVectorLayerAbstractPlotDataGatherer * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( item ) != NULL )
+      {
+        sipType = sipType_QgsVectorLayerXyPlotDataGatherer;
+      }
+      else
+      {
+        sipType = sipType_QgsVectorLayerAbstractPlotDataGatherer;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+%End
+  public:
+
+    QgsVectorLayerAbstractPlotDataGatherer();
+    virtual ~QgsVectorLayerAbstractPlotDataGatherer();
+
+    virtual QgsPlotData data() const = 0;
+%Docstring
+Returns the plot data
+%End
+
+};
+
+
+class QgsVectorLayerXyPlotDataGatherer : QgsVectorLayerAbstractPlotDataGatherer
+{
+%Docstring(signature="appended")
+An vector layer plot data gatherer class for XY series.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerplotdatagatherer.h"
+%End
+  public:
+
+    struct XySeriesDetails
+    {
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() );
+
+      QString xExpression;
+      QString yExpression;
+      QString filterExpression;
+    };
+
+    QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval, const QStringList &predefinedCategories = QStringList() );
+%Docstring
+The class constructor.
+
+:param iterator: a feature iterator
+:param expressionContext: an expression conext
+:param seriesDetails: a list of XY series details
+:param xAxisType: the type of X axis - interval or categorical - which
+                  will decide whether X values are interval based based
+                  or categories' index
+:param predefinedCategories: a list of predefined categories, only used
+                             when the X axis type is set to
+                             :py:class:`Qgis`.PlotAxisType.Categorical
+%End
+    ~QgsVectorLayerXyPlotDataGatherer();
+
+    virtual bool run();
+
+
+    virtual QgsPlotData data() const;
+
+
+  protected:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsvectorlayerplotdatagatherer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

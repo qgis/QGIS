@@ -37,7 +37,7 @@ QString QgsGeometryCheckGapAlgorithm::displayName() const
 
 QString QgsGeometryCheckGapAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect gaps between polygons smaller than a given area" );
+  return QObject::tr( "Detects gaps between polygons smaller than a given area." );
 }
 
 QStringList QgsGeometryCheckGapAlgorithm::tags() const
@@ -62,7 +62,7 @@ QString QgsGeometryCheckGapAlgorithm::shortHelpString() const
                       "If an allowed gaps layer is given, the gaps contained in polygons from this layer will be ignored.\n"
                       "An optional buffer can be applied to the allowed gaps.\n\n"
                       "The neighbors output layer is needed for the fix geometry (gaps) algorithm. It is a 1-N "
-                      "relational table for correspondance between a gap and the unique id of its neighbor features." );
+                      "relational table for correspondence between a gap and the unique id of its neighbor features." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckGapAlgorithm::flags() const

@@ -56,13 +56,16 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
+    void start() override;
 
     ~QgsTiledSceneChunkLoader();
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
+    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
+    double mZValueScale;
+    double mZValueOffset;
     QgsTiledSceneIndex mIndex;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     Qt3DCore::QEntity *mEntity = nullptr;

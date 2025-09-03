@@ -54,6 +54,11 @@ QString QgsExtentFromLayerAlgorithm::shortHelpString() const
                       "extent can be enlarged to a rounded value." );
 }
 
+QString QgsExtentFromLayerAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a vector layer with the minimum bounding box that covers the input layer." );
+}
+
 QString QgsExtentFromLayerAlgorithm::svgIconPath() const
 {
   return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmExtractLayerExtent.svg" ) );

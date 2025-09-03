@@ -34,6 +34,7 @@
 
 
 #include <iostream>
+#include <memory>
 
 #define LEFT(x) (2*x+1)
 #define RIGHT(x) (2*x+2)

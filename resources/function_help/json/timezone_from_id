@@ -1,0 +1,23 @@
+{
+  "name": "timezone_from_id",
+  "type": "function",
+  "groups": ["Conversions", "Date and Time"],
+  "description": "Creates a timezone object from a string ID (from the IANA timezone database). The ID must be one of the available system IDs or a valid UTC-with-offset ID.",
+  "arguments": [{
+    "arg": "id",
+    "description": "string containing the time zone ID"
+  }],
+  "examples": [{
+    "expression": "timezone_from_id('Australia/Brisbane')",
+    "returns": "AEST timezone object"
+  },
+  {
+    "expression": "timezone_from_id('UTC+10:30')",
+    "returns": "UTC+10:30 timezone object"
+  },
+  {
+    "expression": "timezone_from_id('UTC-3')",
+    "returns": "UTC-03 timezone object"
+  }],
+  "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
+}

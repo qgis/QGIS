@@ -11,7 +11,7 @@
 
 
 
-class QgsOWSSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
+class QgsOWSSourceSelect : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")
 Dialog to create connections and add layers WCS etc.

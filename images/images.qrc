@@ -339,6 +339,7 @@
         <file>themes/default/mActionKeyboardShortcuts.svg</file>
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.svg</file>
+        <file>themes/default/mActionLayers.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
         <file>themes/default/mActionLockItems.svg</file>
@@ -1022,6 +1023,7 @@
         <file>themes/default/mIconQt.svg</file>
         <file>themes/default/mIconStoredQueries.svg</file>
         <file>themes/default/mIconQueryHistory.svg</file>
+        <file>themes/default/mToggleAliases.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

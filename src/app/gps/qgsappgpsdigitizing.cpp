@@ -125,10 +125,10 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mUpdateGpsDetailsAction );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] {
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   } );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
     setTransformContext( QgsProject::instance()->transformContext() );
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, transformContext() );
   } );
@@ -136,7 +136,7 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
 
   setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
     setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
@@ -146,13 +146,13 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsAppGpsDigitizing::gpsSettingsChanged );
   gpsSettingsChanged();
 
-  connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, [=]( QgsMapLayer *layer ) {
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, []( QgsMapLayer *layer ) {
     if ( QgsProject::instance()->gpsSettings()->destinationFollowsActiveLayer() )
     {
       QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast<QgsVectorLayer *>( layer ) );
     }
   } );
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationFollowsActiveLayerChanged, this, [=]( bool enabled ) {
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::destinationFollowsActiveLayerChanged, this, []( bool enabled ) {
     if ( enabled )
     {
       QgsProject::instance()->gpsSettings()->setDestinationLayer( qobject_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() ) );
@@ -164,7 +164,7 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   }
 
   setAutomaticallyAddTrackVertices( QgsProject::instance()->gpsSettings()->automaticallyAddTrackVertices() );
-  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [=]( bool enabled ) {
+  connect( QgsProject::instance()->gpsSettings(), &QgsProjectGpsSettings::automaticallyAddTrackVerticesChanged, this, [this]( bool enabled ) {
     setAutomaticallyAddTrackVertices( enabled );
   } );
 

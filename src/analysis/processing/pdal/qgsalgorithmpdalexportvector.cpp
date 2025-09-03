@@ -52,6 +52,11 @@ QString QgsPdalExportVectorAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm exports point cloud data to a vector layer with 3D points (a GeoPackage), optionally with extra attributes." );
 }
 
+QString QgsPdalExportVectorAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a point cloud to a vector layer with 3D points." );
+}
+
 QgsPdalExportVectorAlgorithm *QgsPdalExportVectorAlgorithm::createInstance() const
 {
   return new QgsPdalExportVectorAlgorithm();

@@ -110,7 +110,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMa
 
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#mesh-calculator" ) );
   } );
 

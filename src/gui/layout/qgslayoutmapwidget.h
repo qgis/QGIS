@@ -34,6 +34,7 @@ class QgsLayoutItemMapOverview;
 class QgsLayoutMapLabelingWidget;
 class QgsLayoutMapClippingWidget;
 class QgsBookmarkManagerProxyModel;
+class QgsReferencedRectangle;
 
 /**
  * \ingroup gui
@@ -144,6 +145,7 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
     void showLabelSettings();
     void showClipSettings();
     void switchToMoveContentTool();
+    void aboutToShowLayersMenu();
     void aboutToShowBookmarkMenu();
 
   private:
@@ -153,7 +155,9 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
     QgsLayoutDesignerInterface *mInterface = nullptr;
     QPointer<QgsLayoutMapLabelingWidget> mLabelWidget;
     QPointer<QgsLayoutMapClippingWidget> mClipWidget;
+    QMenu *mLayersMenu = nullptr;
     QMenu *mBookmarkMenu = nullptr;
+    QgsMapLayerProxyModel *mMapLayerModel = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
     QString mReportTypeString;
     int mBlockThemeComboChanges = 0;
@@ -190,6 +194,8 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
      * The order will match the layer order from the map canvas
      */
     QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
+
+    void setToCustomExtent( const QgsReferencedRectangle &extent );
 };
 
 /**

@@ -11,7 +11,7 @@
 
 
 
-class QgsColorRampShaderWidget : QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class QgsColorRampShaderWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget for configuring numeric ranges associated with a color ramp.

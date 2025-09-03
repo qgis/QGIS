@@ -42,7 +42,7 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
   mAnchorTextPointComboBox->addItem( tr( "Center of Text" ), static_cast<int>( QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
   mAnchorTextPointComboBox->addItem( tr( "End of Text" ), static_cast<int>( QgsLabelLineSettings::AnchorTextPoint::EndOfText ) );
 
-  connect( mPercentPlacementComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mPercentPlacementComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mBlockSignals )
       emit changed();
 
@@ -56,24 +56,24 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
       mBlockSignals = false;
     }
   } );
-  connect( mCustomPlacementSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double ) {
+  connect( mCustomPlacementSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mAnchorTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mAnchorTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mBlockSignals )
       emit changed();
 
     updateAnchorTypeHint();
   } );
 
-  connect( mClippingComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mClippingComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mAnchorTextPointComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mAnchorTextPointComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mBlockSignals )
       emit changed();
 

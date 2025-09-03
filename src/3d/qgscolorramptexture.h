@@ -43,12 +43,16 @@ class QgsColorRampTextureGenerator : public Qt3DRender::QTextureImageDataGenerat
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override;
 
-    bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
+    qintptr id() const override
+    {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<QgsColorRampTextureGenerator>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<QgsColorRampTextureGenerator>::id );
+#endif
+    }
 
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
-    QT3D_FUNCTOR( QgsColorRampTextureGenerator )
-    Q_NOWARN_DEPRECATED_POP
+    bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 
   private:
     QgsColorRampShader mColorRampShader;

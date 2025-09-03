@@ -250,7 +250,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 {
   mFlags = flags;
 
-  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level )>( &QgsMessageLog::messageReceived ), QgsApplication::instance(), [=]( const QString &message, const QString &, Qgis::MessageLevel level ) {
+  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level )>( &QgsMessageLog::messageReceived ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level ) {
     if ( level == Qgis::MessageLevel::Critical )
     {
       if ( !message.contains( QLatin1String( "DeprecationWarning:" ) ) )
@@ -872,7 +872,6 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
       std::cout << "Notes\n";
       std::cout << "----------------\n\n";
 
-      QStringList flags;
       for ( Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList<Qgis::ProcessingAlgorithmDocumentationFlag>() )
       {
         if ( alg->documentationFlags() & flag )
@@ -1349,6 +1348,9 @@ void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, con
             break;
           case Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKeyInSomeScenarios:
             documentationFlags << QStringLiteral( "regenerates_primary_key_in_some_scenarios" );
+            break;
+          case Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid:
+            documentationFlags << QStringLiteral( "respects_ellipsoid" );
             break;
         }
         algorithmJson.insert( QStringLiteral( "documentation_flags" ), documentationFlags );

@@ -206,11 +206,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           else if ( value.has_double_value() )
             f.setAttribute( fieldIndex, value.double_value() );
           else if ( value.has_int_value() )
-            f.setAttribute( fieldIndex, static_cast<int>( value.int_value() ) );
+            f.setAttribute( fieldIndex, static_cast<long long>( value.int_value() ) );
           else if ( value.has_uint_value() )
-            f.setAttribute( fieldIndex, static_cast<int>( value.uint_value() ) );
+            f.setAttribute( fieldIndex, static_cast<long long>( value.uint_value() ) );
           else if ( value.has_sint_value() )
-            f.setAttribute( fieldIndex, static_cast<int>( value.sint_value() ) );
+            f.setAttribute( fieldIndex, static_cast<long long>( value.sint_value() ) );
           else if ( value.has_bool_value() )
             f.setAttribute( fieldIndex, static_cast<bool>( value.bool_value() ) );
           else

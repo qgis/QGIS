@@ -50,6 +50,13 @@ class GUI_EXPORT QgsMessageLogViewer : public QDialog, private Ui::QgsMessageLog
      */
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
+    /**
+     * Activates the tab whose title matches the given \a tag, if any.
+     *
+     * \since QGIS 3.44
+     */
+    void showTab( const QString &tag );
+
   protected:
     void closeEvent( QCloseEvent *e ) override;
     void reject() override;

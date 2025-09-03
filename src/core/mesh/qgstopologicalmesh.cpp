@@ -824,7 +824,7 @@ bool QgsTopologicalMesh::renumberVertices( QVector<int> &oldToNewIndex ) const
     nonThreadedVertex.insert( i );
   }
 
-  auto sortedNeighbor = [ = ]( QList<int> &neighbors, int index )
+  auto sortedNeighbor = [circulators]( QList<int> &neighbors, int index )
   {
     const QgsMeshVertexCirculator &circ = circulators.at( index );
 

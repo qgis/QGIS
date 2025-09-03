@@ -37,7 +37,7 @@ QString QgsGeometryCheckLineIntersectionAlgorithm::displayName() const
 
 QString QgsGeometryCheckLineIntersectionAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect intersections between different lines" );
+  return QObject::tr( "Detects intersections between different lines." );
 }
 
 QStringList QgsGeometryCheckLineIntersectionAlgorithm::tags() const

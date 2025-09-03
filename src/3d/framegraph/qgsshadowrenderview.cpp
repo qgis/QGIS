@@ -120,6 +120,7 @@ Qt3DRender::QLayer *QgsShadowRenderView::entityCastingShadowsLayer() const
   return mEntityCastingShadowsLayer;
 }
 
+
 void QgsShadowRenderView::setMapSize( int width, int height )
 {
   mMapTexture->setSize( width, height );

@@ -220,10 +220,10 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
       color.getRgbF( &red, &green, &blue, &alpha );
-      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
-             qgsDoubleToString( green ),
-             qgsDoubleToString( blue ),
-             qgsDoubleToString( alpha ) );
+      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red, 7 ),
+             qgsDoubleToString( green, 7 ),
+             qgsDoubleToString( blue, 7 ),
+             qgsDoubleToString( alpha, 7 ) );
     }
 
     case QColor::Hsv:

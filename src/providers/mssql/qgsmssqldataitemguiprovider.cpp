@@ -17,6 +17,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldataitemguiprovider.h"
 #include "moc_qgsmssqldataitemguiprovider.cpp"
+#include "qgsapplication.h"
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlsourceselect.h"
@@ -188,7 +189,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
 
 void QgsMssqlDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsMssqlNewConnection nc( nullptr );
+  QgsMssqlNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     item->refreshConnections();
@@ -336,7 +337,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
       std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, destUri, QStringLiteral( "mssql" ), srcLayer->crs(), providerOptions ) );
 
       // when export is successful:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [connectionItemPointer]() {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to MS SQL Server database" ), tr( "Import was successful." ) );
         if ( connectionItemPointer )
@@ -349,7 +350,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
       } );
 
       // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [connectionItemPointer]( Qgis::VectorExportResult error, const QString &errorMessage ) {
         if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();

@@ -31,13 +31,13 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   mCellMenu = new QMenu( this );
   setColumnCount( 0 );
   setRowCount( 0 );
-  connect( this, &QgsTableEditorWidget::cellChanged, this, [=] {
+  connect( this, &QgsTableEditorWidget::cellChanged, this, [this] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
 
   setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( this, &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( this, &QWidget::customContextMenuRequested, this, [this]( const QPoint &point ) {
     mCellMenu->clear();
     if ( canMergeSelection() )
     {
@@ -55,7 +55,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 
 
   horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [this]( const QPoint &point ) {
     const int column = horizontalHeader()->logicalIndexAt( point.x() );
 
     QSet<int> selectedColumns;
@@ -96,7 +96,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   } );
 
   verticalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( verticalHeader(), &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( verticalHeader(), &QWidget::customContextMenuRequested, this, [this]( const QPoint &point ) {
     const int row = verticalHeader()->logicalIndexAt( point.y() );
 
     QSet<int> selectedRows;
@@ -142,7 +142,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   setItemDelegate( delegate );
 
 
-  connect( this, &QTableWidget::cellDoubleClicked, this, [=] {
+  connect( this, &QTableWidget::cellDoubleClicked, this, [this] {
     if ( QgsTableEditorDelegate *d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
     {
       d->setWeakEditorMode( false );

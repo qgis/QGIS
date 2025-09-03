@@ -14,9 +14,11 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+
 #include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
 #include "moc_qgshanadataitemguiprovider.cpp"
+#include "qgsapplication.h"
 #include "qgshananewconnection.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanasourceselect.h"
@@ -203,7 +205,7 @@ QWidget *QgsHanaDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDa
 
 void QgsHanaDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsHanaNewConnection nc( nullptr );
+  QgsHanaNewConnection nc( QgsApplication::instance()->activeWindow() );
   if ( nc.exec() )
   {
     item->refresh();
@@ -470,14 +472,14 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
         );
 
         // when export is successful:
-        connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
+        connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [connectionItemPointer, toSchema]() {
           QMessageBox::information( nullptr, tr( "Import to SAP HANA database" ), tr( "Import was successful." ) );
           if ( connectionItemPointer )
             connectionItemPointer->refreshSchema( toSchema );
         } );
 
         // when an error occurs:
-        connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+        connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [connectionItemPointer, toSchema]( Qgis::VectorExportResult error, const QString &errorMessage ) {
           if ( error != Qgis::VectorExportResult::UserCanceled )
           {
             QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();

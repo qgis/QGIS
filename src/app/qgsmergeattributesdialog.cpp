@@ -455,7 +455,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QMetaType::Type column
   newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
   newComboBox->addItem( tr( "Set to NULL" ), QStringLiteral( "null" ) );
 
-  connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]() {
+  connect( newComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this, newComboBox, column]() {
     bool isManual = newComboBox->currentData() == QLatin1String( "manual" );
     updateManualWidget( column, isManual );
     refreshMergedValue( column );

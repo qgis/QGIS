@@ -792,6 +792,100 @@ class TestQgsMapCanvas(QgisTestCase):
         self.assertEqual(c2.center().y(), 46.25)
         self.assertAlmostEqual(c2.magnificationFactor(), 4 / dpr, 0)
 
+    def testZoomToFeatureExtent(self):
+        """
+        Test zoom to feature extent when scale lock is off
+        """
+
+        c = QgsMapCanvas()
+        self.assertEqual(c.size().width(), 640)
+        self.assertEqual(c.size().height(), 480)
+
+        c.setExtent(QgsRectangle(5, 45, 9, 47))
+        self.assertAlmostEqual(c.extent().xMinimum(), 5.0, 2)
+        self.assertAlmostEqual(c.extent().xMaximum(), 9.0, 2)
+        self.assertAlmostEqual(c.extent().yMinimum(), 44.5, 2)
+        self.assertAlmostEqual(c.extent().yMaximum(), 47.5, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 1, 1)
+
+        c.zoomToFeatureExtent(QgsRectangle(5, 45, 9, 47))
+        # zoom to feature extent will add a 5% buffer
+        self.assertAlmostEqual(c.extent().xMinimum(), 4.9, 2)
+        self.assertAlmostEqual(c.extent().xMaximum(), 9.1, 2)
+        self.assertAlmostEqual(c.extent().yMinimum(), 44.425, 2)
+        self.assertAlmostEqual(c.extent().yMaximum(), 47.575, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 1, 1)
+
+        # empty rect (eg point extent)
+        c.zoomToFeatureExtent(QgsRectangle(15, 35, 15, 35))
+        # extent width/height should remain the same, just be re-centered
+        self.assertAlmostEqual(c.extent().xMinimum(), 12.9, 2)
+        self.assertAlmostEqual(c.extent().xMaximum(), 17.1, 2)
+        self.assertAlmostEqual(c.extent().yMinimum(), 33.425, 2)
+        self.assertAlmostEqual(c.extent().yMaximum(), 36.575, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 1, 1)
+
+    def testZoomToFeatureExtentScaleLocked(self):
+        """
+        Test zoom to feature extent when scale lock is on
+        """
+
+        c = QgsMapCanvas()
+        dpr = c.mapSettings().devicePixelRatio()
+        self.assertEqual(c.size().width(), 640)
+        self.assertEqual(c.size().height(), 480)
+
+        c.setExtent(QgsRectangle(5, 45, 9, 47))
+        self.assertAlmostEqual(c.extent().xMinimum(), 5.0, 2)
+        self.assertAlmostEqual(c.extent().xMaximum(), 9.0, 2)
+        self.assertAlmostEqual(c.extent().yMinimum(), 44.5, 2)
+        self.assertAlmostEqual(c.extent().yMaximum(), 47.5, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 1, 1)
+        scale = c.scale()
+        c.setScaleLocked(True)
+        self.assertAlmostEqual(c.magnificationFactor(), 1, 5)
+
+        # Test setExtent
+        c.zoomToFeatureExtent(QgsRectangle(6, 45.5, 8, 46))
+        # scale must remain locked
+        self.assertAlmostEqual(c.scale(), scale, 6)
+        # 5% margin should be added to feature extent
+        self.assertAlmostEqual(c.extent().xMinimum(), 5.955, 2)
+        self.assertAlmostEqual(c.extent().xMaximum(), 8.044, 2)
+        self.assertAlmostEqual(c.extent().yMinimum(), 44.967, 2)
+        self.assertAlmostEqual(c.extent().yMaximum(), 46.533, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 1.9047, 2)
+
+        # zoom right in
+        c.zoomToFeatureExtent(QgsRectangle(7.2, 47.1, 7.4, 47.3))
+        # scale must remain locked
+        self.assertAlmostEqual(c.scale(), scale, 6)
+        self.assertAlmostEqual(c.extent().xMinimum(), 7.155, 2)
+        self.assertAlmostEqual(c.extent().xMaximum(), 7.4447, 2)
+        self.assertAlmostEqual(c.extent().yMinimum(), 47.0914, 2)
+        self.assertAlmostEqual(c.extent().yMaximum(), 47.3085, 2)
+        self.assertAlmostEqual(c.magnificationFactor(), 14.20561, 0)
+
+        # zoom right out
+        c.zoomToFeatureExtent(QgsRectangle(4.2, 43.1, 10.4, 53.3))
+        # scale must remain locked
+        self.assertAlmostEqual(c.scale(), scale, 6)
+        self.assertAlmostEqual(c.extent().xMinimum(), -0.009, 1)
+        self.assertAlmostEqual(c.extent().xMaximum(), 14.609, 1)
+        self.assertAlmostEqual(c.extent().yMinimum(), 42.717, 1)
+        self.assertAlmostEqual(c.extent().yMaximum(), 53.682, 1)
+        self.assertAlmostEqual(c.magnificationFactor(), 0.287, 1)
+
+        # empty extent
+        c.zoomToFeatureExtent(QgsRectangle(12.5, 13.1, 12.5, 13.1))
+        # scale must remain locked
+        self.assertAlmostEqual(c.scale(), scale, 6)
+        self.assertAlmostEqual(c.extent().xMinimum(), 8.506, 1)
+        self.assertAlmostEqual(c.extent().xMaximum(), 16.493, 1)
+        self.assertAlmostEqual(c.extent().yMinimum(), 10.105, 1)
+        self.assertAlmostEqual(c.extent().yMaximum(), 16.094, 1)
+        self.assertAlmostEqual(c.magnificationFactor(), 0.287906, 2)
+
     def test_rendered_items(self):
         canvas = QgsMapCanvas()
         canvas.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))

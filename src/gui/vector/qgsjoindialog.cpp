@@ -34,7 +34,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   , mLayer( layer )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
   } );
 

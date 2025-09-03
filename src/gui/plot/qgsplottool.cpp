@@ -28,7 +28,7 @@ QgsPlotTool::QgsPlotTool( QgsPlotCanvas *canvas, const QString &name )
   , mCanvas( canvas )
   , mToolName( name )
 {
-  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [=] {
+  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [this] {
     mCanvas = nullptr;
   } );
 }

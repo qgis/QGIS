@@ -101,12 +101,12 @@ class QgsGrassTools : public QgsDockWidget, public Ui::QgsGrassToolsBase
     void regionChanged();
 
   private:
-    // data offset to Qt::UserRole for items data
-    enum DataOffset
+    // custom Qt::UserRoles for items data
+    enum class DataRole : int
     {
-      Label, // original label
-      Name,  // module name
-      Search // search text
+      Label = Qt::UserRole,     // original label
+      Name = Qt::UserRole + 1,  // module name
+      Search = Qt::UserRole + 2 // search text
     };
 
     // debug item recursively, return number of errors

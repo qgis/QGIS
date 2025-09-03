@@ -19,10 +19,9 @@
 
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 
-#include "lazperf/readers.hpp"
+#include "lazperf/vlr.hpp"
 
 // QgsLazInfo
 
@@ -294,7 +293,7 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
   return lazInfo;
 }
 
-QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
+QgsLazInfo QgsLazInfo::fromUrl( QUrl &url, const QString &authcfg )
 {
   QgsLazInfo lazInfo;
 
@@ -306,6 +305,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
     QgsBlockingNetworkRequest req;
+    req.setAuthCfg( authcfg );
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
@@ -327,6 +327,13 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QByteArray lazHeaderData = reply.content();
 
     lazInfo.parseRawHeader( lazHeaderData.data(), lazHeaderData.size() );
+
+    // If request was redirected, let's update our url for all next calls
+    const QUrl requestedUrl = reply.request().url();
+    if ( requestedUrl != url && authcfg.isEmpty() )
+    {
+      url.setUrl( requestedUrl.toString() );
+    }
   }
 
   // Fetch VLR data
@@ -339,6 +346,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     QByteArray vlrRequestRange = QStringLiteral( "bytes=%1-%2" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 ).toLocal8Bit();
     nr.setRawHeader( "Range", vlrRequestRange );
     QgsBlockingNetworkRequest req;
+    req.setAuthCfg( authcfg );
     QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
     if ( errCode != QgsBlockingNetworkRequest::NoError )
     {

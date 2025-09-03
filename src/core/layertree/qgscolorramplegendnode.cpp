@@ -212,7 +212,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
-    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
     // setup a minimal expression context
@@ -412,7 +412,7 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
-    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
     // setup a minimal expression context

@@ -49,7 +49,10 @@ struct QgsWFSConstants
     static const QString URI_PARAM_PAGING_ENABLED;
     static const QString URI_PARAM_PAGE_SIZE;
     static const QString URI_PARAM_WFST_1_1_PREFER_COORDINATES;
+    //! Internally set after the feature type has been determined (with or without an initial getFeature)
     static const QString URI_PARAM_SKIP_INITIAL_GET_FEATURE;
+    //! User-controlled flag to force an initial getFeature, e.g. to identify Z geometries
+    static const QString URI_PARAM_FORCE_INITIAL_GET_FEATURE;
     static const QString URI_PARAM_GEOMETRY_TYPE_FILTER;
     static const QString URI_PARAM_SQL;
     static const QString URI_PARAM_HTTPMETHOD;

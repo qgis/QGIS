@@ -20,6 +20,8 @@ __date__ = "January 2017"
 __copyright__ = "(C) 2017, Jorge Gustavo Rocha"
 
 import os
+import pathlib
+import tempfile
 
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtXml import QDomDocument
@@ -32,6 +34,7 @@ from qgis.core import (
     QgsLinePatternFillSymbolLayer,
     QgsMarkerLineSymbolLayer,
     QgsPointXY,
+    QgsRasterMarkerSymbolLayer,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
     QgsSimpleMarkerSymbolLayer,
@@ -138,7 +141,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
             # stroke-opacity=0.1
             self.assertEqual(
                 props["line_color"],
-                "0,62,186,25,rgb:0,0.24313725490196078,0.72941176470588232,0.09803921568627451",
+                "0,62,186,25,rgb:0,0.2431373,0.7294118,0.0980392",
             )
 
         testLineColor()
@@ -467,7 +470,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
             # stroke-opacity=0.1
             self.assertEqual(
                 props["line_color"],
-                "0,62,186,24,rgb:0,0.24313725490196078,0.72941176470588232,0.09411764705882353",
+                "0,62,186,24,rgb:0,0.2431373,0.7294118,0.0941176",
             )
 
         testLineColor()
@@ -615,6 +618,55 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertTrue(result)
 
         _check_layer(layer)
+
+    def test_read_QgsRasterMarkerSymbolLayer_remote(self):
+        """Test reading raster markers"""
+        file_path = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-remote.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(marker.path(), "file://localhost/image.png")
+
+    def test_read_QgsRasterMarkerSymbolLayer_local(self):
+        """Test reading raster markers"""
+        file_path = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-local.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(marker.path(), "QgsRasterMarkerSymbolLayer-local.gif")
+
+    def test_read_QgsRasterMarkerSymbolLayer_embedded_inlineelement(self):
+        file_path = os.path.join(
+            TEST_DATA_DIR, "symbol_layer/QgsRasterMarkerSymbolLayer-embedded_inline.sld"
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(
+            marker.path(),
+            f"base64:iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+        )
+
+    def test_read_QgsRasterMarkerSymbolLayer_embedded_datauri(self):
+        file_path = os.path.join(
+            TEST_DATA_DIR,
+            "symbol_layer/QgsRasterMarkerSymbolLayer-embedded_datauri.sld",
+        )
+        maplayer = QgsVectorLayer("Point?crs=epsg:3111&field=pk:int", "vl", "memory")
+        maplayer.loadSldStyle(file_path)
+        marker = maplayer.renderer().symbol().symbolLayers()[0]
+        self.assertEqual(marker.__class__, QgsRasterMarkerSymbolLayer)
+        self.assertEqual(
+            marker.path(),
+            f"data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+        )
 
 
 if __name__ == "__main__":

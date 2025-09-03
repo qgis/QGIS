@@ -86,7 +86,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRe
 }
 
 //! Clone the object
-QgsFeatureFilterProvider *QgsAccessControl::clone() const
+QgsAccessControl *QgsAccessControl::clone() const
 {
   return new QgsAccessControl( *this );
 }

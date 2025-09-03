@@ -43,11 +43,15 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
   const QgsSettings settings;
   mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
-  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this] {
     mCurrentCrs.updateDefinition();
     mLayerCrs.updateDefinition();
     mProjectCrs.updateDefinition();
     mDefaultCrs.updateDefinition();
+  } );
+
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [this] {
+    mProjectCrs = QgsProject::instance()->crs();
   } );
 }
 
@@ -75,11 +79,11 @@ QVariant StandardCoordinateReferenceSystemsModel::data( const QModelIndex &index
       switch ( option )
       {
         case QgsProjectionSelectionWidget::ProjectCrs:
-          return tr( "Project CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Project CRS: %1" ).arg( mProjectCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::DefaultCrs:
-          return tr( "Default CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Default CRS: %1" ).arg( mDefaultCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::LayerCrs:
-          return tr( "Layer CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Layer CRS: %1" ).arg( mLayerCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::CrsNotSet:
           return mNotSetText;
         case QgsProjectionSelectionWidget::CurrentCrs:

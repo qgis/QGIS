@@ -41,7 +41,7 @@ QString QgsFileDownloaderAlgorithm::displayName() const
 
 QString QgsFileDownloaderAlgorithm::shortDescription() const
 {
-  return tr( "Downloads a URL to the file system with an HTTP(S) GET or POST request" );
+  return tr( "Downloads a URL to the file system with an HTTP(S) GET or POST request." );
 }
 
 QStringList QgsFileDownloaderAlgorithm::tags() const

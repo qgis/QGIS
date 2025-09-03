@@ -859,6 +859,16 @@ effects such as blend modes, which require output in raster formats to
 be fully respected.
 %End
 
+    bool hasNonDefaultCompositionMode() const;
+%Docstring
+Returns ``True`` if any component of the font format requires a
+non-default composition mode.
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
+%End
+
     bool fontFound() const;
 %Docstring
 Returns ``True`` if the specified font was found on the system, or

@@ -153,7 +153,7 @@ pointing towards north. The angle should range from 0 to 360.
 %Docstring
 Writes camera configuration to the given DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, QgsVector3D savedOrigin );
 %Docstring
 Reads camera configuration from the given DOM element
 %End
@@ -214,11 +214,12 @@ coordinates after the zoom.
 .. versionadded:: 3.42
 %End
 
-    bool willHandleKeyEvent( QKeyEvent *event );
+    bool keyboardEventFilter( QKeyEvent *event );
 %Docstring
-Returns ``True`` if the camera controller will handle the specified key
-``event``, preventing it from being instead handled by parents of the 3D
-window before the controller ever receives it.
+If the event is relevant, handles the event and returns ``True``,
+otherwise ``False``.
+
+.. versionadded:: 3.44
 %End
 
     void setOrigin( const QgsVector3D &origin );
@@ -294,6 +295,35 @@ ellipsoid
 %Docstring
 Returns the origin of the scene in map coordinates
 
+.. versionadded:: 3.44
+%End
+
+    void rotateCameraToHome();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToTop();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToNorth();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToEast();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToSouth();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToWest();
+%Docstring
+.. versionadded:: 3.44
+%End
+    void rotateCameraToBottom();
+%Docstring
 .. versionadded:: 3.44
 %End
 

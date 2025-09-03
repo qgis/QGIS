@@ -30,6 +30,7 @@
 
 class QgsAnnotation;
 class QgsRenderedFeatureHandlerInterface;
+class QgsGroupedFeatureFilterProvider;
 
 /**
  * \ingroup core
@@ -320,6 +321,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     Q_OBJECT
 
   public:
+
+    /**
+     * Settings entry - Whether to force rasterised clipping masks, regardless of output format.
+     *
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryBool *settingForceRasterMasks SIP_SKIP;
 
     /**
      * Scaling modes used for the serial rendering (atlas)
@@ -1225,6 +1233,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     QgsLayoutItemMapAtlasClippingSettings *mAtlasClippingSettings = nullptr;
     QgsLayoutItemMapItemClipPathSettings *mItemClippingSettings = nullptr;
+
+    std::unique_ptr<QgsGroupedFeatureFilterProvider> mAtlasFeatureFilterProvider;
 
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation

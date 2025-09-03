@@ -304,6 +304,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool mValid = false;
 
     OGRwkbGeometryType mOGRGeomType = wkbUnknown;
+    QgsCoordinateReferenceSystem mCrs;
 
     //! Whether the next call to featureCount() should refresh the feature count
     mutable bool mRefreshFeatureCount = true;

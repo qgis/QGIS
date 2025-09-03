@@ -34,13 +34,6 @@ qgis:executesql: >
 
   The result of the query will be added as a new layer.
 
-qgis:findprojection: >
-  This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
-
-  The expected area which the layer should reside in must be specified via the target area parameter.
-
-  The algorithm operates by testing the layer's extent in every known reference system and listing any in which the bounds would fall near the target area if the layer was in this projection.
-
 qgis:generatepointspixelcentroidsalongline: >
   This algorithm generates a point vector layer from an input raster and line layer.
   The points correspond to the pixel centroids that intersect the line layer.
@@ -57,9 +50,6 @@ qgis:idwinterpolation: >
   Generates an Inverse Distance Weighted (IDW) interpolation of a point vector layer.
 
   Sample points are weighted during interpolation such that the influence of one point relative to another declines with distance from the unknown point you want to create.
-
-qgis:importintospatialite: >
-  This algorithm imports a vector layer into a SpatiaLite database, creating a new table.
 
 qgis:knearestconcavehull: >
   This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
@@ -78,13 +68,6 @@ qgis:listuniquevalues: >
 
 qgis:meanandstandarddeviationplot: >
   This algorithm creates a box plot with mean and standard deviation values.
-
-qgis:minimumboundinggeometry: >
-  This algorithm creates geometries which enclose the features from an input layer.
-
-  Numerous enclosing geometry types are supported, including bounding boxes (envelopes), oriented rectangles, circles and convex hulls.
-
-  Optionally, the features can be grouped by a field. If set, this causes the output layer to contain one feature per grouped value with a minimal geometry covering just the features with matching values.
 
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.

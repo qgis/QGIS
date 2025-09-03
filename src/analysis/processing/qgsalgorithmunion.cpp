@@ -40,6 +40,11 @@ QString QgsUnionAlgorithm::groupId() const
   return QStringLiteral( "vectoroverlay" );
 }
 
+QStringList QgsUnionAlgorithm::tags() const
+{
+  return QObject::tr( "overlap,clip,union,not overlap" ).split( ',' );
+}
+
 QString QgsUnionAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm checks overlaps between features within the Input layer and creates separate features for overlapping "
@@ -50,6 +55,12 @@ QString QgsUnionAlgorithm::shortHelpString() const
                         "the other one, creating a layer containing all the portions from both Input and Overlay layers. "
                         "The attribute table of the Union layer is filled with attribute values from the respective original layer "
                         "for non-overlapping features, and attribute values from both layers for overlapping features." );
+}
+
+QString QgsUnionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Checks overlaps between features on the same layer or on two different layers "
+                      "and creates separate features for overlapping and non-overlapping parts." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsUnionAlgorithm::documentationFlags() const

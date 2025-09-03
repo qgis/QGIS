@@ -37,7 +37,7 @@ QString QgsGeometryCheckDuplicateAlgorithm::displayName() const
 
 QString QgsGeometryCheckDuplicateAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Detect duplicate geometries" );
+  return QObject::tr( "Detects duplicate geometries." );
 }
 
 QStringList QgsGeometryCheckDuplicateAlgorithm::tags() const

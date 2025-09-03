@@ -58,7 +58,7 @@ QString QgsSplitLinesByLengthAlgorithm::shortHelpString() const
 
 QString QgsSplitLinesByLengthAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Splits lines into parts which are no longer than a specified length." );
+  return QObject::tr( "Splits lines into parts which are not longer than a specified length." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitLinesByLengthAlgorithm::documentationFlags() const

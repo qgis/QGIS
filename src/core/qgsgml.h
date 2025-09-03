@@ -230,9 +230,10 @@ class CORE_EXPORT QgsGmlStreamingParser
      * Creates a set of points from a coordinate string.
      * \param points list that will contain the created points
      * \param coordString the text containing the coordinates
+     * \param dimension number of dimensions determined from the coordinate string
      * \returns 0 in case of success
      */
-    int pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const;
+    int pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString, int *dimension = nullptr ) const;
 
     /**
      * Creates a set of points from a gml:posList or gml:pos coordinate string.
@@ -241,12 +242,12 @@ class CORE_EXPORT QgsGmlStreamingParser
      * \param dimension number of dimensions
      * \returns 0 in case of success
       */
-    int pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const;
+    int pointsFromPosListString( QList<QgsPoint> &points, const QString &coordString, int dimension ) const;
 
-    int pointsFromString( QList<QgsPointXY> &points, const QString &coordString ) const;
-    int getPointWKB( QByteArray &wkbPtr, const QgsPointXY & ) const;
-    int getLineWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const;
-    int getRingWKB( QByteArray &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const;
+    int pointsFromString( QList<QgsPoint> &points, const QString &coordString, int *dimension = nullptr ) const;
+    int getPointWKB( QByteArray &wkbPtr, const QgsPoint &, int dimension ) const;
+    int getLineWKB( QByteArray &wkbPtr, const QList<QgsPoint> &lineCoordinates, int dimension ) const;
+    int getRingWKB( QByteArray &wkbPtr, const QList<QgsPoint> &ringCoordinates, int dimension ) const;
 
     /**
      * Creates a multiline from the information in mCurrentWKBFragments and

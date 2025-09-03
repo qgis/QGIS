@@ -60,6 +60,12 @@ class CORE_EXPORT QgsOrientedBox3D
     QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
 
     /**
+     * Constructor for a oriented box, with a specified center, half sizes in each dimension and rotation.
+     * \since QGIS 4.0
+     */
+    QgsOrientedBox3D( const QgsVector3D &center, const QgsVector3D &halfSizes, const QQuaternion &quaternion );
+
+    /**
      * Constructs an oriented box from an axis-aligned bounding box.
      */
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
@@ -143,6 +149,12 @@ class CORE_EXPORT QgsOrientedBox3D
      * Returns size of sides of the box.
      */
     QgsVector3D size() const SIP_HOLDGIL;
+
+    /**
+     * Returns size of the longest side of the box.
+     * \since QGIS 4.0
+     */
+    double longestSide() const SIP_HOLDGIL;
 
     /**
      * Reprojects corners of this box using the given coordinate \a transform

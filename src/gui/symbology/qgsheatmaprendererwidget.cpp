@@ -177,7 +177,7 @@ void QgsHeatmapRendererWidget::showLegendSettings()
     legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mRenderer->legendSettings() );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [=] {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [this, legendPanel] {
       mRenderer->setLegendSettings( legendPanel->settings() );
       emit widgetChanged();
     } );

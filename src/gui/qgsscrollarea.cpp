@@ -20,9 +20,14 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QAbstractItemView>
+#include <QComboBox>
+#include <QAbstractSpinBox>
+#include <QAbstractButton>
+#include <QAbstractSlider>
+#include <QDateTimeEdit>
 
 // milliseconds to swallow child wheel events for after a scroll occurs
-#define TIMEOUT 1000
+constexpr qint64 TIMEOUT = 1000;
 
 QgsScrollArea::QgsScrollArea( QWidget *parent )
   : QScrollArea( parent )
@@ -48,18 +53,18 @@ void QgsScrollArea::resizeEvent( QResizeEvent *event )
 
 void QgsScrollArea::scrollOccurred()
 {
-  mTimer.setSingleShot( true );
-  mTimer.start( TIMEOUT );
+  mTimer.restart();
+  mTimerActive = true;
 }
 
 bool QgsScrollArea::hasScrolled() const
 {
-  return mTimer.isActive();
+  return mTimerActive && mTimer.elapsed() < TIMEOUT;
 }
 
 void QgsScrollArea::resetHasScrolled()
 {
-  mTimer.stop();
+  mTimerActive = false;
 }
 
 void QgsScrollArea::setVerticalOnly( bool verticalOnly )
@@ -125,7 +130,11 @@ bool ScrollAreaFilter::eventFilter( QObject *obj, QEvent *event )
         // scrolling scroll area - kick off the timer to block wheel events in children
         mScrollAreaWidget->scrollOccurred();
       }
-      else
+      else if ( qobject_cast< QComboBox * >( obj )
+                || qobject_cast< QAbstractSpinBox * >( obj )
+                || qobject_cast< QAbstractButton *>( obj )
+                || qobject_cast< QAbstractSlider *>( obj )
+                || qobject_cast< QDateTimeEdit * >( obj ) )
       {
         if ( mScrollAreaWidget->hasScrolled() )
         {

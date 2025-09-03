@@ -145,7 +145,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QDir::homePath() ).toString() );
   mFilename->setConfirmOverwrite( false );
-  connect( mFilename, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     if ( !filePath.isEmpty() )
       mLastUsedFilename = filePath;

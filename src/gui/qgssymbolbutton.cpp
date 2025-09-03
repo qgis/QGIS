@@ -174,7 +174,7 @@ void QgsSymbolButton::showSettingsDialog()
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), QgsStyle::defaultStyle(), mLayer, panel );
     widget->setPanelTitle( mDialogTitle );
     widget->setContext( symbolContext );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolFromWidget( widget ); } );
     panel->openPanel( widget );
   }
   else
@@ -535,7 +535,7 @@ void QgsSymbolButton::prepareMenu()
     alphaRamp->setColor( alphaColor );
     QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
     alphaAction->setDismissOnColorSelection( false );
-    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [=]( const QColor &color ) {
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [this]( const QColor &color ) {
       const double opacity = color.alphaF();
       mSymbol->setOpacity( opacity );
       updatePreview();
@@ -775,7 +775,7 @@ void QgsSymbolButton::showColorDialog()
       colorWidget->setPreviousColor( currentColor );
     }
 
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &newColor ) {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this]( const QColor &newColor ) {
       if ( newColor.isValid() )
       {
         setColor( newColor );

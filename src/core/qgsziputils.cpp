@@ -85,6 +85,11 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         if ( zip_fread( file, buf.get(), len ) != -1 )
         {
           const QString fileName( stat.name );
+          if ( fileName.endsWith( "/" ) )
+          {
+            continue;
+          }
+
           const QFileInfo newFile( QDir( dir ), fileName );
 
           if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + QStringLiteral( "/" ) ).startsWith( QDir( dir ).absolutePath() + QStringLiteral( "/" ) ) )

@@ -52,6 +52,11 @@ QString QgsVirtualRasterCalculatorAlgorithm::groupId() const
 
 QString QgsVirtualRasterCalculatorAlgorithm::shortHelpString() const
 {
+  return QObject::tr( "This algorithm performs algebraic operations using raster layers and generates in-memory result." );
+}
+
+QString QgsVirtualRasterCalculatorAlgorithm::shortDescription() const
+{
   return QObject::tr( "Performs algebraic operations using raster layers and generates in-memory result." );
 }
 

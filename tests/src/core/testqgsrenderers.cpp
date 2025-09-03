@@ -203,7 +203,7 @@ bool TestQgsRenderers::checkEmptyRender( const QString &testName, QgsVectorLayer
   QgsMapSettings ms;
   const QgsRectangle extent( -180, -90, 180, 90 );
   ms.setExtent( extent );
-  ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+  ms.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   ms.setOutputDpi( 96 );
   ms.setLayers( QList<QgsMapLayer *>() << layer );
   QgsMultiRenderChecker myChecker;
@@ -266,7 +266,7 @@ bool TestQgsRenderers::imageCheck( const QString &testType )
   // gives correct extent. Forced to fixed extend however to avoid problems in future.
   const QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
   mMapSettings->setExtent( extent );
-  mMapSettings->setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
+  mMapSettings->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + testType );

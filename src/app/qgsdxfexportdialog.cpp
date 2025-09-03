@@ -771,7 +771,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mDeselectDataDefinedBlocks, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deselectDataDefinedBlocks );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDxfExportDialog::showHelp );
 
-  connect( mFileName, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "qgis/lastDxfDir" ), tmplFileInfo.absolutePath() );

@@ -75,7 +75,7 @@ void QgsDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsDbscanClusteringAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Clusters point features based on a 2D implementation of Density-based spatial clustering of applications with noise (DBSCAN) algorithm.\n\n"
+  return QObject::tr( "This algorithm clusters point features based on a 2D implementation of Density-based spatial clustering of applications with noise (DBSCAN) algorithm.\n\n"
                       "The algorithm requires two parameters, a minimum cluster size (“minPts”), and the maximum distance allowed between clustered points (“eps”)." );
 }
 

@@ -89,6 +89,8 @@ Constructor for QgsTiledSceneLayer.
 
     virtual QgsMapLayerElevationProperties *elevationProperties();
 
+    virtual Qgis::MapLayerProperties properties() const;
+
 
     QgsTiledSceneRenderer *renderer();
 %Docstring

@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgslegendsettings.h"
 #include "qgslayertree.h"
 #include "qgsexpressioncontext.h"
@@ -102,7 +103,37 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
 };
 
+#ifndef SIP_RUN
+/**
+ * \ingroup core
+ * \brief A layout item subclass for map legend filtering.
+ * \note Not available in Python bindings
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsLegendFilterProxyModel : public QgsLayerTreeFilterProxyModel
+{
+    Q_OBJECT
+  public:
 
+    /**
+     * Constructor for QgsLegendFilterProxyModel, with the specified \a parent object.
+     */
+    QgsLegendFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether the legend is showing the default legend for a project (as opposed
+     * to a customised legend).
+     */
+    void setIsDefaultLegend( bool isDefault );
+
+  private:
+
+    bool layerShown( QgsMapLayer *layer ) const override;
+
+    bool mIsDefaultLegend = true;
+
+};
+#endif
 
 /**
  * \ingroup core

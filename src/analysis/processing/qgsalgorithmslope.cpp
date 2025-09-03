@@ -53,6 +53,11 @@ QString QgsSlopeAlgorithm::shortHelpString() const
                       "is expressed in degrees." );
 }
 
+QString QgsSlopeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the angle of inclination of the terrain from an input raster layer." );
+}
+
 QgsSlopeAlgorithm *QgsSlopeAlgorithm::createInstance() const
 {
   return new QgsSlopeAlgorithm();

@@ -43,6 +43,7 @@ class QgsBatchNominatimGeocodeAlgorithm : public QgsBatchGeocodeAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsBatchNominatimGeocodeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

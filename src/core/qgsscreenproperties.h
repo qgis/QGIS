@@ -126,6 +126,16 @@ class CORE_EXPORT QgsScreenProperties
     double mPhysicalDpi = 96;
 };
 
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#elif defined(_MSC_VER)
+__pragma( warning( push ) )
+__pragma( warning( disable: 4273 ) )
+#endif
+#endif
+
 /**
  * Returns a hash for a screen \a properties.
  *
@@ -135,5 +145,13 @@ CORE_EXPORT inline uint qHash( const QgsScreenProperties &properties ) SIP_SKIP
 {
   return qHash( properties.devicePixelRatio() ) + qHash( properties.physicalDpi() );
 }
+
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+__pragma( warning( pop ) )
+#endif
+#endif
 
 #endif // QGSSCREENPROPERTIES_H

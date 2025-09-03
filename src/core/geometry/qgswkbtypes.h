@@ -800,7 +800,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see isMultiType()
      * \see singleType()
      */
-    static bool isSingleType( Qgis::WkbType type ) SIP_HOLDGIL
+    Q_INVOKABLE static bool isSingleType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       return ( type != Qgis::WkbType::Unknown && !isMultiType( type ) );
     }
@@ -810,7 +810,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see isSingleType()
      * \see multiType()
      */
-    static bool isMultiType( Qgis::WkbType type ) SIP_HOLDGIL
+    Q_INVOKABLE static bool isMultiType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -866,7 +866,7 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Returns TRUE if the WKB type is a curved type or can contain curved geometries.
      */
-    static bool isCurvedType( Qgis::WkbType type ) SIP_HOLDGIL
+    Q_INVOKABLE static bool isCurvedType( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( flatType( type ) )
       {
@@ -909,7 +909,7 @@ class CORE_EXPORT QgsWkbTypes
      * Invalid geometry types will return a dimension of 0.
      * \see wkbDimensions()
      */
-    static int coordDimensions( Qgis::WkbType type ) SIP_HOLDGIL
+    Q_INVOKABLE static int coordDimensions( Qgis::WkbType type ) SIP_HOLDGIL
     {
       if ( type == Qgis::WkbType::Unknown || type == Qgis::WkbType::NoGeometry )
         return 0;
@@ -1011,14 +1011,14 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Returns a non-translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
-    static QString displayString( Qgis::WkbType type ) SIP_HOLDGIL;
+    Q_INVOKABLE static QString displayString( Qgis::WkbType type ) SIP_HOLDGIL;
 
     /**
      * Returns a translated display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      *
      * \since QGIS 3.18
      */
-    static QString translatedDisplayString( Qgis::WkbType type ) SIP_HOLDGIL;
+    Q_INVOKABLE static QString translatedDisplayString( Qgis::WkbType type ) SIP_HOLDGIL;
 
     /**
      * Returns a display string for a geometry type.
@@ -1033,7 +1033,7 @@ class CORE_EXPORT QgsWkbTypes
      * - Invalid Geometry
      *
      */
-    static QString geometryDisplayString( Qgis::GeometryType type ) SIP_HOLDGIL;
+    Q_INVOKABLE static QString geometryDisplayString( Qgis::GeometryType type ) SIP_HOLDGIL;
 
     /**
      * Tests whether a WKB type contains the z-dimension.
@@ -1041,7 +1041,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see addZ()
      * \see hasM()
      */
-    static bool hasZ( Qgis::WkbType type ) SIP_HOLDGIL
+    Q_INVOKABLE static bool hasZ( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -1095,7 +1095,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see addM()
      * \see hasZ()
      */
-    static bool hasM( Qgis::WkbType type ) SIP_HOLDGIL
+    Q_INVOKABLE static bool hasM( Qgis::WkbType type ) SIP_HOLDGIL
     {
       switch ( type )
       {

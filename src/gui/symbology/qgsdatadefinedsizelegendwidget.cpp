@@ -121,7 +121,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
     mPreviewModel->setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
   viewLayerTree->setModel( mPreviewModel );
 
-  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] { emit widgetChanged(); } );
+  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { emit widgetChanged(); } );
   connect( radDisabled, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( radSeparated, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
@@ -130,7 +130,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsPanelWidget::widgetChanged );
   connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
-  connect( radCollapsed, &QRadioButton::toggled, this, [=]( bool toggled ) { groupBoxOptions->setEnabled( toggled ); } );
+  connect( radCollapsed, &QRadioButton::toggled, this, [this]( bool toggled ) { groupBoxOptions->setEnabled( toggled ); } );
   updatePreview();
 }
 

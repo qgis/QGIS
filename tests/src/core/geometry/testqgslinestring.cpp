@@ -2658,7 +2658,7 @@ void TestQgsLineString::interpolatePoint()
 void TestQgsLineString::visitPoints()
 {
   QgsLineString ls;
-  ls.visitPointsByRegularDistance( 1, [=]( double, double, double, double, double, double, double, double, double, double, double, double ) -> bool {
+  ls.visitPointsByRegularDistance( 1, []( double, double, double, double, double, double, double, double, double, double, double, double ) -> bool {
     return true;
   } ); // no crash
 

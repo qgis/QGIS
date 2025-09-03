@@ -16,8 +16,7 @@
 #ifndef QGSSTACASSET_H
 #define QGSSTACASSET_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsmimedatautils.h"
 
@@ -26,10 +25,9 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC asset's data
+ * \brief Class for storing a STAC asset's data.
  *
- * \note Not available in python bindings
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacAsset
 {
@@ -44,7 +42,7 @@ class CORE_EXPORT QgsStacAsset
     //! Returns the URI to the asset object
     QString href() const;
 
-    //! Returns the the displayed title for clients and users.
+    //! Returns the displayed title for clients and users.
     QString title() const;
 
     /**

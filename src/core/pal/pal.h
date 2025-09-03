@@ -119,7 +119,7 @@ namespace pal
        */
       void removeLayer( Layer *layer );
 
-      //! Cancelation check callback function
+      //! Cancellation check callback function
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
@@ -271,7 +271,7 @@ namespace pal
       void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
 
       /**
-       * Returns the rules which the labeling solution must satisify.
+       * Returns the rules which the labeling solution must satisfy.
        *
        * \see setRules()
        * \since QGIS 3.40

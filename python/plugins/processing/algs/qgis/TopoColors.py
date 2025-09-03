@@ -27,6 +27,8 @@ from collections import defaultdict
 
 from qgis.core import (
     QgsField,
+    QgsFields,
+    QgsProcessingUtils,
     QgsFeatureSink,
     QgsGeometry,
     QgsSpatialIndex,
@@ -122,6 +124,11 @@ class TopoColor(QgisAlgorithm):
     def displayName(self):
         return self.tr("Topological coloring")
 
+    def shortDescription(self):
+        return self.tr(
+            "Assigns a color index to polygon features, so no adjacent polygons share the same color index."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
@@ -133,8 +140,9 @@ class TopoColor(QgisAlgorithm):
         balance_by = self.parameterAsEnum(parameters, self.BALANCE, context)
         min_distance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 
-        fields = source.fields()
-        fields.append(QgsField("color_id", QMetaType.Type.Int))
+        newFields = QgsFields()
+        newFields.append(QgsField("color_id", QMetaType.Type.Int))
+        fields = QgsProcessingUtils.combineFields(source.fields(), newFields)
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,

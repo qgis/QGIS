@@ -56,16 +56,19 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     //! Constructs loader for the given chunk node
     QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator );
 
+    void start() override;
+
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private slots:
     void onHeightMapReady( int jobId, const QByteArray &heightMap );
 
   private:
-    int mHeightMapJobId;
+    int mHeightMapJobId = -1;
     QByteArray mHeightMap;
-    int mResolution;
-    float mSkirtHeight;
+    int mResolution = 0;
+    float mSkirtHeight = 0;
+    QgsTerrainGenerator *mTerrainGenerator;
 };
 
 

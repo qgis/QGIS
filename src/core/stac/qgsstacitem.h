@@ -16,8 +16,7 @@
 #ifndef QGSSTACITEM_H
 #define QGSSTACITEM_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsrange.h"
 #include "qgsstacobject.h"
@@ -28,11 +27,9 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Item's data
+ * \brief Class for storing a STAC Item's data.
  *
- * \note Not available in python bindings
- *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacItem : public QgsStacObject
 {
@@ -58,7 +55,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
                  const QMap< QString, QgsStacAsset > &assets,
                  const QgsBox3D &bbox );
 
-    QgsStacObject::Type type() const override;
+    Qgis::StacObjectType type() const override;
     QString toHtml() const override;
 
     //! Returns the full footprint of the asset represented by this item, in WGS84
@@ -92,25 +89,29 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     void setCollection( const QString &collection );
 
     /**
-     *  Returns the single nominal date/time for the item, stored in the item's \a properties().
-     *  If a temporal interval is more appropriate for this item then a null QDateTime is returned
-     *  and the interval may be retrieved with dateTimeRange()
-     *  \see hasDateTimeRange()
-     *  \see dateTimeRange()
+     * Returns the single nominal date/time for the item, stored in the item's properties().
+     *
+     * If a temporal interval is more appropriate for this item then a null QDateTime is returned
+     * and the interval may be retrieved with dateTimeRange().
+     *
+     * \see hasDateTimeRange()
+     * \see dateTimeRange()
      */
     QDateTime dateTime() const;
 
     /**
-     *  Returns TRUE if a temporal interval is available for this item, FALSE if a single QDateTime is available.
-     *  \see hasDateTimeRange()
-     *  \see dateTime()
+     * Returns TRUE if a temporal interval is available for this item, FALSE if a single QDateTime is available.
+     *
+     * \see hasDateTimeRange()
+     * \see dateTime()
      */
     bool hasDateTimeRange() const;
 
     /**
-     *  Returns the temporal interval stored in the item's \a properties()
-     *  \see hasDateTimeRange()
-     *  \see dateTime()
+     * Returns the temporal interval stored in the item's properties().
+     *
+     * \see hasDateTimeRange()
+     * \see dateTime()
      */
     QgsDateTimeRange dateTimeRange() const;
 

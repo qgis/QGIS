@@ -395,7 +395,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
   connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mCalendarPopupCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mAllowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [=]( bool checked ) {
+  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [this]( bool checked ) {
     //reset to default value when unchecking
     if ( !checked )
     {

@@ -60,11 +60,11 @@ QgsAppGpsLogging::QgsAppGpsLogging( QgsAppGpsConnection *connection, QObject *pa
   : QObject( parent )
   , mConnection( connection )
 {
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [this] {
     if ( mGpkgLogger )
       mGpkgLogger->setTransformContext( QgsProject::instance()->transformContext() );
   } );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
     if ( mGpkgLogger )
       mGpkgLogger->setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
@@ -72,7 +72,7 @@ QgsAppGpsLogging::QgsAppGpsLogging( QgsAppGpsConnection *connection, QObject *pa
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsLogging::gpsConnected );
   connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsAppGpsLogging::gpsDisconnected );
 
-  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [=] {
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [this] {
     if ( mGpkgLogger )
       mGpkgLogger->updateGpsSettings();
   } );

@@ -55,6 +55,11 @@ QString QgsNearestNeighbourAnalysisAlgorithm::shortHelpString() const
                       "Output is generated as an HTML file with the computed statistical values." );
 }
 
+QString QgsNearestNeighbourAnalysisAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Performs nearest neighbor analysis for a point layer." );
+}
+
 QString QgsNearestNeighbourAnalysisAlgorithm::svgIconPath() const
 {
   return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNearestNeighbour.svg" ) );
@@ -63,6 +68,11 @@ QString QgsNearestNeighbourAnalysisAlgorithm::svgIconPath() const
 QIcon QgsNearestNeighbourAnalysisAlgorithm::icon() const
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNearestNeighbour.svg" ) );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsNearestNeighbourAnalysisAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
 }
 
 QgsNearestNeighbourAnalysisAlgorithm *QgsNearestNeighbourAnalysisAlgorithm::createInstance() const

@@ -408,6 +408,9 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            // warnings triggered from KDE libraries, not related to QGIS
            msg.contains( QLatin1String( "This plugin supports grabbing the mouse only for popup windows" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "KServiceTypeTrader" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "No node found for item that was just removed" ), Qt::CaseInsensitive ) || msg.contains( QLatin1String( "Audio notification requested" ), Qt::CaseInsensitive ) ||
 
+           // something from deep within Qt6 (looks like a malformed SVG in a platform theme), not related to us
+           msg.contains( QLatin1String( "The requested buffer size is too big, ignoring" ) ) ||
+
            // coming from WebEngine:
            msg.contains( QLatin1String( "An OpenGL Core Profile was requested, but it is not supported on the current platform" ), Qt::CaseInsensitive ) )
         break;
@@ -419,6 +422,7 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       // Only seems to happen on windows
       if ( !msg.startsWith( QLatin1String( "QColor::setNamedColor: Unknown color name 'param" ), Qt::CaseInsensitive )
            && !msg.startsWith( QLatin1String( "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead" ), Qt::CaseInsensitive )
+           && !msg.startsWith( QLatin1String( "QBuffer::seek: Invalid pos" ), Qt::CaseInsensitive ) // raised internally by QImageReader when reading some malformed images -- this causes a deadlock if we try to show in messagebar, as showing in messagebar requires another QImageReader and is internally locked by Qt
            && !msg.startsWith( QLatin1String( "Logged warning" ), Qt::CaseInsensitive ) )
       {
         // TODO: Verify this code in action.
@@ -1542,6 +1546,31 @@ int main( int argc, char *argv[] )
   // set max. thread count
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
   QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
+
+  QFont defaultFont = QApplication::font();
+  bool defaultFontCustomized = false;
+  const double fontSize = settings.value( QStringLiteral( "/app/fontPointSize" ), defaultFont.pointSizeF() ).toDouble();
+  if ( fontSize != defaultFont.pointSizeF() )
+  {
+    defaultFont.setPointSizeF( fontSize );
+    defaultFontCustomized = true;
+  }
+
+  QString fontFamily = settings.value( QStringLiteral( "/app/fontFamily" ), defaultFont.family() ).toString();
+  if ( fontFamily != defaultFont.family() )
+  {
+    const QFont tempFont( fontFamily );
+    if ( tempFont.family() == fontFamily )
+    {
+      // font exists on system, proceed
+      defaultFont.setFamily( fontFamily );
+      defaultFontCustomized = true;
+    }
+  }
+  if ( defaultFontCustomized )
+  {
+    QApplication::setFont( defaultFont );
+  }
 
   QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );

@@ -41,7 +41,7 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
 
   mTreeView->setItemDelegateForColumn( 1, new CostDelegate( static_cast<int>( QgsRuntimeProfilerNode::CustomRole::Elapsed ), static_cast<int>( QgsRuntimeProfilerNode::CustomRole::ParentElapsed ), mTreeView ) );
 
-  connect( mProfiler, &QgsRuntimeProfiler::groupAdded, this, [=]( const QString &group ) {
+  connect( mProfiler, &QgsRuntimeProfiler::groupAdded, this, [this]( const QString &group ) {
     mCategoryComboBox->addItem( QgsRuntimeProfiler::translateGroupName( group ).isEmpty() ? group : QgsRuntimeProfiler::translateGroupName( group ), group );
     if ( mCategoryComboBox->count() == 1 )
     {
@@ -50,7 +50,7 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
     }
   } );
 
-  connect( mCategoryComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mCategoryComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mProxyModel->setGroup( mCategoryComboBox->currentData().toString() );
   } );
 

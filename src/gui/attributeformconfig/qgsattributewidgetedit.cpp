@@ -135,7 +135,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
 
   disconnect( mWidgetTypeComboBoxConnection );
 
-  mWidgetTypeComboBoxConnection = connect( mWidgetTypeComboBox, &QComboBox::currentTextChanged, this, [=]() {
+  mWidgetTypeComboBoxConnection = connect( mWidgetTypeComboBox, &QComboBox::currentTextChanged, this, [this, relation, config]() {
     const QString widgetId = mWidgetTypeComboBox->currentData().toString();
 
     mWidgetTypePlaceholderLayout->removeWidget( mConfigWidget );

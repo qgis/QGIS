@@ -278,7 +278,7 @@ bool PointSet::containsPoint( double x, double y ) const
 
     return result;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -617,7 +617,7 @@ void PointSet::offsetCurveByDistance( double distance )
     x = std::move( newX );
     y = std::move( newY );
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -907,7 +907,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
 
     return QgsGeometryUtilsBase::sqrDistance2D( px, py, nx, ny );
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -954,7 +954,7 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       }
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -1023,7 +1023,7 @@ geos::unique_ptr PointSet::interpolatePoint( double distance ) const
     geos::unique_ptr res( GEOSInterpolate_r( QgsGeosContext::get(), thisGeos, distance ) );
     return res;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     return nullptr;
@@ -1041,7 +1041,7 @@ double PointSet::lineLocatePoint( const GEOSGeometry *point ) const
   {
     distance = GEOSProject_r( QgsGeosContext::get(), thisGeos, point );
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     return -1;
@@ -1076,7 +1076,7 @@ double PointSet::length() const
     ( void )GEOSLength_r( geosctxt, mGeos, &mLength );
     return mLength;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -1103,7 +1103,7 @@ double PointSet::area() const
     mArea = std::fabs( mArea );
     return mArea;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -1137,7 +1137,7 @@ QString PointSet::toWkt() const
 
     return res;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
