@@ -2092,7 +2092,7 @@ class CORE_EXPORT Qgis
     /**
      * Join styles for 3D buffers.
      *
-     * \since QGIS 3.46
+     * \since QGIS 4.0
      */
     enum class JoinStyle3D : int
     {

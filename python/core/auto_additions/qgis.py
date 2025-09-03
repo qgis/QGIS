@@ -3860,7 +3860,7 @@ Qgis.JoinStyle3D.Flat.__doc__ = "Flat ends and constant width along the linestri
 Qgis.JoinStyle3D.CylindersAndSpheres.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
 Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
 
-.. versionadded:: 3.46
+.. versionadded:: 4.0
 
 * ``Round``: Smooth, rounded buffer around the input geometry
 * ``Flat``: Flat ends and constant width along the linestring
