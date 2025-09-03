@@ -107,7 +107,8 @@ RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 ENV PATH="/instantclient_21_16:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_21_16"
 
-# SFCGAL dependency installation (will be a package asap)
+# SFCGAL dependency installation
+# CI needs to be updated to fedora 42 to be able to use SFCGAL 2.0 package
 RUN dnf install -y CGAL-devel \
     && cd /tmp/ \
     && wget https://gitlab.com/sfcgal/SFCGAL/-/archive/v${SFCGAL_VERSION}/SFCGAL-v${SFCGAL_VERSION}.tar.gz \
