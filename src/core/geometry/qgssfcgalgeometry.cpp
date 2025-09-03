@@ -127,11 +127,10 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::fromWkb( const QgsConstWkb
 QByteArray QgsSfcgalGeometry::asWkb( QgsAbstractGeometry::WkbFlags ) const
 {
   sfcgal::errorHandler()->clearText( &mLastError );
-  QgsConstWkbPtr ptr = QgsSfcgalEngine::toWkb( mSfcgalGeom.get(), &mLastError );
+  QByteArray wkbArray = QgsSfcgalEngine::toWkb( mSfcgalGeom.get(), &mLastError );
   CHECK_SUCCESS( &mLastError, QByteArray() );
 
-  const unsigned char *wkbUnsignedPtr = ptr;
-  return QByteArray( reinterpret_cast<const char *>( wkbUnsignedPtr ), ptr.remaining() );
+  return wkbArray;
 }
 
 QString QgsSfcgalGeometry::asWkt( int precision ) const

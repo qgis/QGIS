@@ -303,16 +303,16 @@ std::unique_ptr<QgsAbstractGeometry> QgsSfcgalEngine::toAbstractGeometry( const 
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, out );
 
-  QgsConstWkbPtr ptr = QgsSfcgalEngine::toWkb( geom, errorMsg );
+  QByteArray wkbArray = QgsSfcgalEngine::toWkb( geom, errorMsg );
   CHECK_SUCCESS( errorMsg, out );
 
-  out = QgsGeometryFactory::geomFromWkb( ptr );
+  QgsConstWkbPtr wkbPtr( wkbArray );
+  out = QgsGeometryFactory::geomFromWkb( wkbPtr );
   if ( !out )
   {
     Qgis::WkbType sfcgalType = QgsSfcgalEngine::wkbType( geom );
-    QgsConstWkbPtr ptrError = QgsSfcgalEngine::toWkb( geom );
     sfcgal::errorHandler()->addText( QStringLiteral( "WKB contains unmanaged geometry type (WKB:%1 / SFCGAL:%2" ) //
-                                     .arg( static_cast<int>( ptrError.readHeader() ) )                          //
+                                     .arg( static_cast<int>( wkbPtr.readHeader() ) )                          //
                                      .arg( static_cast<int>( sfcgalType ) ),
                                      __FILE__, __FUNCTION__, __LINE__ );
   }
@@ -380,17 +380,24 @@ sfcgal::shared_geom QgsSfcgalEngine::fromWkt( const QString &wkt, QString *error
   return sfcgal::unique_geom( out );
 }
 
-QgsConstWkbPtr QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorMsg )
+QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
-  CHECK_NOT_NULL( geom, QgsConstWkbPtr( nullptr, 0 ) );
+  CHECK_NOT_NULL( geom, QByteArray() );
 
   char *wkbHex;
   size_t len = 0;
   sfcgal_geometry_as_wkb( geom, &wkbHex, &len );
-  CHECK_SUCCESS( errorMsg, QgsConstWkbPtr( nullptr, 0 ) );
+  QByteArray wkbArray( wkbHex, static_cast<int>( len ) );
 
-  return QgsConstWkbPtr( reinterpret_cast<unsigned char *>( wkbHex ), static_cast<int>( len ) );
+#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+  sfcgal_free_buffer( wkbHex );
+#else
+  free( wkbHex );
+#endif
+
+  CHECK_SUCCESS( errorMsg, QByteArray() );
+  return wkbArray;
 }
 
 QString QgsSfcgalEngine::toWkt( const sfcgal::geometry *geom, int numDecimals, QString *errorMsg )
@@ -685,7 +692,8 @@ QgsPoint QgsSfcgalEngine::centroid( const sfcgal::geometry *geom, QString *error
   CHECK_SUCCESS( errorMsg, QgsPoint() );
   CHECK_NOT_NULL( result, QgsPoint() );
 
-  QgsConstWkbPtr wkbPtr = QgsSfcgalEngine::toWkb( result, errorMsg );
+  QByteArray wkbArray = QgsSfcgalEngine::toWkb( result, errorMsg );
+  QgsConstWkbPtr wkbPtr( wkbArray );
   QgsPoint out;
   out.fromWkb( wkbPtr );
 
