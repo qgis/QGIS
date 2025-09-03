@@ -40,6 +40,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgstriangularmesh.h"
 #include "qgsscalecalculator.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgscoordinatereferencesystem.h"
@@ -1700,8 +1701,7 @@ namespace QgsWms
               break;
             }
           }
-
-          if ( layer->type() == Qgis::LayerType::Raster )
+          else if ( layer->type() == Qgis::LayerType::Raster )
           {
             QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
             if ( !rasterLayer )
@@ -1724,12 +1724,20 @@ namespace QgsWms
             }
             ( void ) featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
           }
-
-          if ( layer->type() == Qgis::LayerType::Mesh )
+          else if ( layer->type() == Qgis::LayerType::Mesh )
           {
             QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
             QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
+
+            const QgsTriangularMesh *mesh = meshLayer->triangularMesh();
+            if ( !mesh )
+            {
+              meshLayer->updateTriangularMesh( renderContext.coordinateTransform() );
+              mesh = meshLayer->triangularMesh();
+            }
+
             ( void ) featureInfoFromMeshLayer( meshLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
+
           }
 
         }
@@ -2244,14 +2252,14 @@ namespace QgsWms
 
       if ( groupMeta.isScalar() )
       {
-        const QgsMeshDatasetValue scalarValue = layer->datasetValueUncached( renderContext, index, *infoPoint, searchRadius ); //
+        const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, *infoPoint, searchRadius ); //
         scalarDoubleValue = scalarValue.scalar();
         attribute.insert( "Scalar Value", std::isnan( scalarDoubleValue ) ? "no data" : QLocale().toString( scalarDoubleValue ) );
       }
 
       if ( groupMeta.isVector() )
       {
-        const QgsMeshDatasetValue vectorValue = layer->datasetValueUncached( renderContext, index, *infoPoint, searchRadius ); //
+        const QgsMeshDatasetValue vectorValue = layer->datasetValue( index, *infoPoint, searchRadius ); //
         const double vectorX = vectorValue.x();
         const double vectorY = vectorValue.y();
         if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
