@@ -66,7 +66,6 @@ RUN  apt-get update \
     poppler-utils \
     pyqt6-dev \
     pyqt6-dev-tools \
-    pyqt6-webengine \
     python3-gdal \
     python3-mock \
     python3-nose2 \
