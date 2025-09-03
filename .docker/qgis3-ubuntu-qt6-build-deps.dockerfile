@@ -53,6 +53,11 @@ RUN  apt-get update \
     libqt6sql6-sqlite \
     libqt6uitools6 \
     libqt6xml6 \
+    libqt6pdf6 \
+    libqt6webengine6-data \
+    libqt6webenginecore6 \
+    libqt6webenginecore6-bin \
+    libqt6webenginewidgets6 \
     libspatialindex7 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
@@ -61,6 +66,7 @@ RUN  apt-get update \
     poppler-utils \
     pyqt6-dev \
     pyqt6-dev-tools \
+    pyqt6-webengine \
     python3-gdal \
     python3-mock \
     python3-nose2 \
@@ -75,6 +81,7 @@ RUN  apt-get update \
     python3-pyqt6.qtpositioning \
     python3-pyqt6.qtmultimedia \
     python3-pyqt6.qtserialport \
+    python3-pyqt6.qtwebengine \
     python3-termcolor \
     python3-yaml \
     qpdf \
@@ -239,6 +246,8 @@ RUN  apt-get update \
     qt6-tools-dev-tools \
     qt6-base-private-dev \
     qt6-5compat-dev \
+    qt6-webengine-dev \
+    qt6-pdf-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
