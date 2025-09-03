@@ -1492,8 +1492,34 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
 {
   if ( !curve )
     throw QgsInvalidArgumentException( "Curve is null." );
-  if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
-    throw QgsInvalidArgumentException( "Vertex index out of range." );
+  if ( curve->isClosed() )
+  {
+    if ( curve->numPoints() < 4 )
+      throw QgsInvalidArgumentException( "Closed curve must have at least 4 vertex." );
+    if ( vertexIndex < 0 || vertexIndex > curve->numPoints() - 1 )
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in [0, %2]." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+  }
+  else
+  {
+    if ( curve->numPoints() < 3 )
+      throw QgsInvalidArgumentException( "Opened curve must have at least 3 points." );
+    if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in ]0, %2[." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+  }
+
+  // Extract the three consecutive vertices
+  QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
+  const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
+  QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
+  if ( curve->isClosed() )
+  {
+    if ( vertexIndex - 1 < 0 )
+      pPrev = curve->vertexAt( QgsVertexId( 0, 0, curve->numPoints() - 2 ) );
+    if ( vertexIndex + 1 >= curve->numPoints() )
+      pNext = curve->vertexAt( QgsVertexId( 0, 0, 1 ) );
+  }
+
+  QgsPoint firstNewPoint, lastNewPoint;
 
   // Apply symmetric distance if distance2 is negative
   if ( distance2 <= 0 )
@@ -1502,32 +1528,34 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
   if ( distance1 <= 0 || distance2 <= 0 )
     throw QgsInvalidArgumentException( "Negative distances." );
 
-  // Extract the three consecutive vertices
-  const QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
-  const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
-  const QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
-
   // Create chamfer
-  QgsPoint chamferStart, chamferEnd;
-  createChamfer( pPrev, p, p, pNext, distance1, distance2, chamferStart, chamferEnd );
+  createChamfer( pPrev, p, p, pNext, distance1, distance2, firstNewPoint, lastNewPoint );
 
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
     QVector<QgsPoint> points;
 
-    // Add points before the chamfered vertex
-    for ( int i = 0; i < vertexIndex; ++i )
+    int min = 0;
+    if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
+      min = 1;
+
+    // Add points before the operated vertex
+    for ( int i = min; i < vertexIndex; ++i )
     {
       points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
 
     // Add chamfer points
-    points.append( chamferStart );
-    points.append( chamferEnd );
+    points.append( firstNewPoint );
+    points.append( lastNewPoint );
 
-    // Add points after the chamfered vertex
-    for ( int i = vertexIndex + 1; i < curve->numPoints(); ++i )
+    int max = curve->numPoints();
+    if ( curve->isClosed() && vertexIndex == 0 )
+      max = curve->numPoints() - 1;
+
+    // Add points after the operated vertex
+    for ( int i = vertexIndex + 1; i < max; ++i )
     {
       points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
@@ -1540,7 +1568,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
   {
     auto newCompound = std::make_unique<QgsCompoundCurve>();
 
-    // Find which subcurve contains the vertex to chamfer
+    // Find which subcurve contains the vertex to operate
     int globalVertexIndex = 0;
     int targetCurveIndex = -1;
     int vertexInCurve = -1;
@@ -1569,7 +1597,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
     // Add curves before the target curve
     for ( int i = 0; i < targetCurveIndex; ++i )
     {
-      newCompound->addCurve( compound->curveAt( i )->clone() );
+      QgsCurve *tmpCurv = compound->curveAt( i )->clone();
+      if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
+      {
+        tmpCurv->insertVertex( QgsVertexId( 0, 0, 1 ), lastNewPoint );
+        tmpCurv->deleteVertex( QgsVertexId( 0, 0, 0 ) );
+      }
+      newCompound->addCurve( tmpCurv );
     }
 
     // Handle the curve containing the vertex
@@ -1580,7 +1614,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
       {
         beforePoints.append( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
       }
-      beforePoints.append( chamferStart );
+      beforePoints.append( firstNewPoint );
 
       if ( beforePoints.size() > 1 )
       {
@@ -1590,13 +1624,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
     }
 
     auto chamferLine = std::make_unique<QgsLineString>(
-                         QVector<QgsPoint> { chamferStart, chamferEnd } );
+                         QVector<QgsPoint> { firstNewPoint, lastNewPoint }
+                       );
     newCompound->addCurve( chamferLine.release() );
 
     if ( vertexInCurve < targetCurve->numPoints() - 1 )
     {
       QVector<QgsPoint> afterPoints;
-      afterPoints.append( chamferEnd );
+      afterPoints.append( lastNewPoint );
       for ( int j = vertexInCurve + 1; j < targetCurve->numPoints(); ++j )
       {
         afterPoints.append( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
@@ -1612,7 +1647,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
     // Add curves after the target curve
     for ( int i = targetCurveIndex + 1; i < compound->nCurves(); ++i )
     {
-      newCompound->addCurve( compound->curveAt( i )->clone() );
+      QgsCurve *tmpCurv = compound->curveAt( i )->clone();
+      if ( curve->isClosed() && vertexIndex == 0 )
+      {
+        tmpCurv->insertVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ), firstNewPoint );
+        tmpCurv->deleteVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ) );
+      }
+      newCompound->addCurve( tmpCurv );
     }
 
     return newCompound;
@@ -1627,15 +1668,37 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
 {
   if ( !curve )
     throw QgsInvalidArgumentException( "Curve is null." );
-  if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
-    throw QgsInvalidArgumentException( "Vertex index out of range." );
-  if ( radius <= 0 )
-    throw QgsInvalidArgumentException( "Radius <= 0." );
+  if ( curve->isClosed() )
+  {
+    if ( curve->numPoints() < 4 )
+      throw QgsInvalidArgumentException( "Closed curve must have at least 4 vertex." );
+    if ( vertexIndex < 0 || vertexIndex > curve->numPoints() - 1 )
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in [0, %2]." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+  }
+  else
+  {
+    if ( curve->numPoints() < 3 )
+      throw QgsInvalidArgumentException( "Opened curve must have at least 3 points." );
+    if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in ]0, %2[." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+  }
 
   // Extract the three consecutive vertices
-  const QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
+  QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
   const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
-  const QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
+  QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
+  if ( curve->isClosed() )
+  {
+    if ( vertexIndex - 1 < 0 )
+      pPrev = curve->vertexAt( QgsVertexId( 0, 0, curve->numPoints() - 2 ) );
+    if ( vertexIndex + 1 >= curve->numPoints() )
+      pNext = curve->vertexAt( QgsVertexId( 0, 0, 1 ) );
+  }
+
+  QgsPoint firstNewPoint, lastNewPoint;
+
+  if ( radius <= 0 )
+    throw QgsInvalidArgumentException( "Radius <= 0." );
 
   double rad = std::min( radius, pPrev.distance( p ) * 0.95 );
   rad = std::min( rad, pNext.distance( p ) * 0.95 );
@@ -1644,13 +1707,20 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
   QgsPoint filletPoints[3];
   createFilletArray( pPrev, p, p, pNext, rad, filletPoints );
 
+  firstNewPoint = filletPoints[0];
+  lastNewPoint = filletPoints[2];
+
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
   {
     QVector<QgsPoint> points;
 
-    // Add points before the filleted vertex
-    for ( int i = 0; i < vertexIndex; ++i )
+    int min = 0;
+    if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
+      min = 1;
+
+    // Add points before the operated vertex
+    for ( int i = min; i < vertexIndex; ++i )
     {
       points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
@@ -1670,8 +1740,12 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
       points.append( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
 
-    // Add points after the filleted vertex
-    for ( int i = vertexIndex + 1; i < curve->numPoints(); ++i )
+    int max = curve->numPoints();
+    if ( curve->isClosed() && vertexIndex == 0 )
+      max = curve->numPoints() - 1;
+
+    // Add points after the operated vertex
+    for ( int i = vertexIndex + 1; i < max; ++i )
     {
       points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
@@ -1684,7 +1758,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
   {
     auto newCompound = std::make_unique<QgsCompoundCurve>();
 
-    // Find which subcurve contains the vertex to fillet
+    // Find which subcurve contains the vertex to operate
     int globalVertexIndex = 0;
     int targetCurveIndex = -1;
     int vertexInCurve = -1;
@@ -1713,7 +1787,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
     // Add curves before the target curve
     for ( int i = 0; i < targetCurveIndex; ++i )
     {
-      newCompound->addCurve( compound->curveAt( i )->clone() );
+      QgsCurve *tmpCurv = compound->curveAt( i )->clone();
+      if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
+      {
+        tmpCurv->insertVertex( QgsVertexId( 0, 0, 1 ), lastNewPoint );
+        tmpCurv->deleteVertex( QgsVertexId( 0, 0, 0 ) );
+      }
+      newCompound->addCurve( tmpCurv );
     }
 
     // Handle the curve containing the vertex
@@ -1724,7 +1804,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
       {
         beforePoints.append( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
       }
-      beforePoints.append( filletPoints[0] );
+      beforePoints.append( firstNewPoint );
 
       if ( beforePoints.size() > 1 )
       {
@@ -1756,7 +1836,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
     if ( vertexInCurve < targetCurve->numPoints() - 1 )
     {
       QVector<QgsPoint> afterPoints;
-      afterPoints.append( filletPoints[2] );
+      afterPoints.append( lastNewPoint );
       for ( int j = vertexInCurve + 1; j < targetCurve->numPoints(); ++j )
       {
         afterPoints.append( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
@@ -1772,7 +1852,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
     // Add curves after the target curve
     for ( int i = targetCurveIndex + 1; i < compound->nCurves(); ++i )
     {
-      newCompound->addCurve( compound->curveAt( i )->clone() );
+      QgsCurve *tmpCurv = compound->curveAt( i )->clone();
+      if ( curve->isClosed() && vertexIndex == 0 )
+      {
+        tmpCurv->insertVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ), firstNewPoint );
+        tmpCurv->deleteVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ) );
+      }
+      newCompound->addCurve( tmpCurv );
     }
 
     return newCompound;

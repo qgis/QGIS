@@ -3194,17 +3194,17 @@ void TestQgsGeometry::chamferFillet()
   g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
   QCOMPARE( g.lastError(), "" );
   g.chamfer( 1, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Chamfer needs curve geometry." );
+  QCOMPARE( g.lastError(), "Operation 'chamfer' needs curve geometry." );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 1, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Vertex index out of range." );
+  QCOMPARE( g.lastError(), "Opened curve must have at least 3 points." );
 
-  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 5, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Vertex index out of range." );
+  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in ]0, 2[." );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
@@ -3218,11 +3218,66 @@ void TestQgsGeometry::chamferFillet()
   QCOMPARE( g.lastError(), "" );
   QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15))" );
 
-  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 ))" ) );
+  // chamfer first vertex
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 0, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 18, 7.5 15, 10 15, 10 20, 5 20, 5 18))" );
+
+  // chamfer last vertex
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 4, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((10 15, 10 20, 5 20, 5 18, 7.5 15, 10 15))" );
+
+  // chamfer outer ring preserve hole
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15),(6 16, 8 16, 8 18, 6 16))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 1, 3.0, 2.5 );
   QCOMPARE( g.lastError(), "" );
-  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15), (6 16, 8 16, 8 18, 6 16 ))" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15),(6 16, 8 16, 8 18, 6 16))" );
+
+  // chamfer hole, preserve outer ring
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15),(6 16, 8 16, 8 18, 6 16))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 6, 1.0, 1.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 10 15, 10 20, 5 20, 5 15),(6 16, 7 16, 8 17.5, 8 18, 6 16))" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.fillet( 1, 2.0, 4 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 8.62 15.1, 9.18 15.38, 9.62 15.82, 9.9 16.38, 10 20, 5 20, 5 15))" );
+
+  // with Z coordinates
+  g = QgsGeometry::fromWkt( QStringLiteral( "PolygonZ(( 5 15 0, 10 15 10, 10 20 -5, 5 20 -1 , 5 15 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.fillet( 1, 2.0, 4 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon Z ((5 15 0, 8.62 15.1 5.6, 9.18 15.38 5.2, 9.62 15.82 4.8, 9.9 16.38 4.4, 10 20 -5, 5 20 -1, 5 15 0))" );
+
+  // Compound curve
+  g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 0, 1.0 );
+  QCOMPARE( g.lastError(), "Vertex index out of range. 0 must be in ]0, 5[." );
+
+  // Compound curve chamfer CircurlarString
+  g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 3, 1.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "CompoundCurve ((0 0, 10 0),(10 0, 11.41 0.59, 11.62 1.08),(11.62 1.08, 12 3),(12 2, 12 4, 10 4))" );
+
+  // Compound curve chamfer last vertex
+  g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 0 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 5, 1.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "CompoundCurve ((1 0, 10 0),CircularString (6.27 -0.74, 11.41 0.59, 12 2),(12 2, 12 4, 0.95 0.32),(0.95 0.32, 1 0))" );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )
