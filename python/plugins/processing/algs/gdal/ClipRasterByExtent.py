@@ -37,6 +37,7 @@ from qgis.core import (
     QgsProcessingParameterRasterDestination,
     QgsProcessingRasterLayerDefinition,
     QgsProcessingUtils,
+    QgsWmsUtils,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
@@ -217,7 +218,7 @@ class ClipRasterByExtent(GdalAlgorithm):
             )
             res_xml_wms, xml_wms_error = GdalUtils.gdal_wms_xml_description_file(
                 inLayer,
-                GdalUtils._get_wms_version(inLayer),
+                QgsWmsUtils.wmsVersion(inLayer),
                 bbox,
                 width,
                 height,

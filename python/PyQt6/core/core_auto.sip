@@ -216,6 +216,7 @@
 %Include auto_generated/qgsvirtuallayerdefinition.sip
 %Include auto_generated/qgsvirtuallayerdefinitionutils.sip
 %Include auto_generated/qgsvirtuallayertask.sip
+%Include auto_generated/qgswmsutils.sip
 %Include auto_generated/qgsxmlutils.sip
 %Include auto_generated/qgsziputils.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
