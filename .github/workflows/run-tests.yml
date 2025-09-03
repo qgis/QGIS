@@ -51,7 +51,6 @@ jobs:
             with-clazy: ON
             with-grass7: OFF
             with-grass8: OFF
-            with-webengine: OFF
             with-pdf4qt: OFF
             with-compile-commands: ON
             with-model-test: ON
@@ -74,7 +73,6 @@ jobs:
             with-clazy: OFF
             with-grass7: OFF
             with-grass8: ON
-            with-webengine: ON
             with-pdf4qt: ON
             with-compile-commands: OFF
             with-model-test: OFF
@@ -171,7 +169,6 @@ jobs:
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
-                     --env WITH_QTWEBENGINE=${{ matrix.with-webengine }} \
                      --env WITH_PDF4QT=${{ matrix.with-pdf4qt }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
