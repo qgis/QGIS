@@ -219,7 +219,7 @@ void TestQgsVertexTool::init()
   mLayerMultiLine = new QgsVectorLayer( QStringLiteral( "MultiLineString?" ), QStringLiteral( "layer multiline" ), QStringLiteral( "memory" ) );
   mLayerMultiLine->setCrs( mFake27700 );
   QVERIFY( mLayerMultiLine->isValid() );
-  mLayerLineReprojected = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLineReprojected = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3857" ), QStringLiteral( "layer line reprojected" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineReprojected->isValid() );
   mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPolygon->isValid() );
@@ -233,7 +233,7 @@ void TestQgsVertexTool::init()
   mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?" ), QStringLiteral( "layer pointz" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPointZ->isValid() );
   mLayerPointZ->setCrs( mFake27700 );
-  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?" ), QStringLiteral( "layer line z" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineZ->isValid() );
   mLayerLineZ->setCrs( mFake27700 );
   mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
@@ -288,7 +288,8 @@ void TestQgsVertexTool::init()
 
   mLayerLineReprojected->startEditing();
   mLayerLineReprojected->addFeature( lineF13857 );
-  mFidLineF13857 = lineF13857.id();
+  mLayerLineReprojected->commitChanges();
+  mFidLineF13857 = *( mLayerLineReprojected->allFeatureIds().begin() );
   QCOMPARE( mLayerLineReprojected->featureCount(), ( long ) 1 );
 
   mLayerPolygon->startEditing();
@@ -1014,6 +1015,9 @@ void TestQgsVertexTool::testConvertVertex()
 
 void TestQgsVertexTool::testMoveMultipleVertices()
 {
+  mLayerLineReprojected->startEditing();
+  QCOMPARE( mLayerLineReprojected->undoStack()->index(), 0 );
+
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228838 6428900, -228838 6428903)" ) );
 
@@ -1035,7 +1039,7 @@ void TestQgsVertexTool::testMoveMultipleVertices()
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
-  QCOMPARE( mLayerLineReprojected->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLineReprojected->undoStack()->index(), 1 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228840 6428899, -228840 6428902)" ) );
 
