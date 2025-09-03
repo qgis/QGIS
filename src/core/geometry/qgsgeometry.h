@@ -3323,6 +3323,8 @@ class CORE_EXPORT QgsGeometry
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
+    QgsGeometry doChamferFillet( const QString &op, int vertexIndex, double distance1, double distance2, int segments ) const;
+
     friend class QgsInternalGeometryEngine;
 
 }; // class QgsGeometry
