@@ -575,12 +575,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
 
     /**
-     * Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
-     * \returns The provider metadata
-     */
-    virtual QVariantMap metadata() const { return QVariantMap(); }
-
-    /**
      * Gets the translated metadata key.
      * \param mdKey The metadata key
      * \returns The translated metadata value

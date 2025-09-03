@@ -748,22 +748,3 @@ class GdalUtils:
         width = bbox_width * dpi / (scale * meters_per_inch)
 
         return math.ceil(width), math.ceil(width * bbox_ratio)
-
-    @staticmethod
-    def _get_wms_version(layer):
-        """
-        This should be replaced as soon as we have a better way
-        to get the WMS version from a layer or its provider.
-        """
-        version = None
-        provider = layer.dataProvider()
-        string = (
-            "<td>"
-            + QCoreApplication.translate("QgsWmsProvider", "WMS Version")
-            + "</td><td>(\\d\\.\\d(\\.\\d)?)</td>"
-        )
-        result = re.search(string, provider.htmlMetadata())
-        if result:
-            version = result.group(1)
-
-        return version

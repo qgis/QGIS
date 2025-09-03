@@ -643,6 +643,7 @@ set(QGIS_CORE_SRCS
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
+  qgswmsutils.cpp
 
   browser/qgsbrowsermodel.cpp
   browser/qgsbrowserproxymodel.cpp
@@ -1355,6 +1356,7 @@ set(QGIS_CORE_HDRS
   qgsvirtuallayertask.h
   qgswebpage.h
   qgswebview.h
+  qgswmsutils.h
   qgsxmlutils.h
   qgsziputils.h
   qobjectuniqueptr.h
