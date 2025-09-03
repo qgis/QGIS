@@ -137,7 +137,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    QString geometryType() const SIP_HOLDGIL;
+    QString geometryType() const SIP_THROW( QgsNotSupportedException ) SIP_HOLDGIL;
 
     /**
      * Clones the geometry by performing a deep copy
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    std::unique_ptr<QgsSfcgalGeometry> boundary() const;
+    std::unique_ptr<QgsSfcgalGeometry> boundary() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns true if this == other geometry
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool operator==( const QgsSfcgalGeometry &other ) const;
+    bool operator==( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns true if this != other geometry
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool operator!=( const QgsSfcgalGeometry &other ) const;
+    bool operator!=( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns true if this == other geometry modulo \a epsilon distance
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const;
+    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    int dimension() const;
+    int dimension() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the \a geom part count.
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool addZValue( double zValue = 0 );
+    bool addZValue( double zValue = 0 ) SIP_THROW( QgsNotSupportedException );
 
     /**
      * Adds a m-dimension to the geometry, initialized to a preset value (existing M values remains unchanged).
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool addMValue( double mValue = 0 );
+    bool addMValue( double mValue = 0 ) SIP_THROW( QgsNotSupportedException );
 
     /**
      * Drops the z coordinate of the geometry
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool dropZValue();
+    bool dropZValue() SIP_THROW( QgsNotSupportedException );
 
     /**
      * Drops the m coordinate of the geometry
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool dropMValue();
+    bool dropMValue() SIP_THROW( QgsNotSupportedException );
 
     /**
      * Swaps the x and y coordinates of the geometry
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    void swapXy();
+    void swapXy() SIP_THROW( QgsNotSupportedException );
 
     /**
      * Checks if \a geom is valid.
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    double length() const;
+    double length() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Checks this geometry is simple.
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    bool isSimple() const;
+    bool isSimple() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Calculates the centroid of this geometry.
@@ -400,7 +400,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    QgsPoint centroid() const;
+    QgsPoint centroid() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Translate this geometry by vector \a translation.
@@ -415,7 +415,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const;
+    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Scale this geometry by vector \a scaleFactor.
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    std::unique_ptr<QgsSfcgalGeometry> envelope() const;
+    std::unique_ptr<QgsSfcgalGeometry> envelope() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Cover test on 2D or 3D geometries
@@ -635,7 +635,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const;
+    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Calculate an extrusion of the original geometry.

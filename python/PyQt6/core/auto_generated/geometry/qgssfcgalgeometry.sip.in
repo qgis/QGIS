@@ -109,7 +109,7 @@ geometry.
          polygon etc.)
 %End
 
-    QString geometryType() const /HoldGIL/;
+    QString geometryType() const  /HoldGIL/;
 %Docstring
 Returns type of the geometry as a OGC string in CamelCase
 
