@@ -36,6 +36,7 @@ CMakePresets.json
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
 /build*
+debian/
 Makefile
 Testing/*
 Thumb.db
