@@ -480,7 +480,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \see blockingPost()
      * \since QGIS 3.6
      */
-    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr, bool logError = true );
 
     /**
      * Posts a POST request to obtain the contents of the target \a request, using the given \a data, and returns a new
@@ -502,7 +502,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \see blockingGet()
      * \since QGIS 3.6
      */
-    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr, bool logError = true);
 
     /**
      * Sets a request pre-processor function, which allows manipulation of a network request before it is processed.

@@ -241,6 +241,20 @@ Sets the authentication config id which should be used during the
 request.
 
 .. seealso:: :py:func:`authCfg`
+ %End
+
+    bool logError();
+%Docstring
+Returns whether error messages are logged in the console.
+
+.. seealso:: :py:func:`setLogError`
+%End
+
+void setLogError( bool logError );
+%Docstring
+Sets whether error messages are logged in the console to logError.
+
+.. seealso:: :py:func:`logError`
 %End
 
   public slots:
