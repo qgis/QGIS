@@ -582,7 +582,7 @@ Installation of all needed build dependencies:
 To build,
 
 ```bash
-cmake .. -DWITH_QTWEBKIT=OFF -DWITH_QTWEBENGINE=ON
+cmake ..
 ```
 
 ## 3.12. Building on Linux with vcpkg
@@ -606,7 +606,6 @@ cmake -S . \
       -GNinja \
       -DCMAKE_BUILD_TYPE=Debug \
       -DWITH_VCPKG=ON \
-      -DWITH_QTWEBKIT=OFF \
       -DWITH_BINDINGS=ON \
       -DVCPKG_TARGET_TRIPLET=x64-linux-dynamic-release \
       -DVCPKG_HOST_TRIPLET=x64-linux-dynamic-release
@@ -818,7 +817,6 @@ Open a _Developer PowerShell for VS 2022_
 cmake -S . `
       -B build `
       -DSDK_PATH="path/to/vcpkg-export-[date]" `
-      -DWITH_QTWEBKIT=OFF `
       -DVCPKG_TARGET_TRIPLET=x64-windows-release `
       -DFLEX_EXECUTABLE="path/to/flex-executable" `
       -DBISON_EXECUTABLE="path/to/bison-executable"
@@ -849,7 +847,6 @@ This will require some time, cpu and disk space.
 cmake -S . `
       -B build `
       -D WITH_VCPKG=ON `
-      -D WITH_QTWEBKIT=OFF `
       -D VCPKG_TARGET_TRIPLET=x64-windows-release `
       -D VCPKG_HOST_TRIPLET=x64-windows-release
 ```
@@ -1080,7 +1077,6 @@ cmake -S . \
       -G Ninja \
       -B build \
       -D WITH_VCPKG=ON \
-      -D WITH_QTWEBKIT=OFF \
       -D WITH_BINDINGS=ON \
       -D VCPKG_TARGET_TRIPLET="$TRIPLET" \
       -D VCPKG_HOST_TRIPLET="$TRIPLET"
