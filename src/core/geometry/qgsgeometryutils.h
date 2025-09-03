@@ -1420,5 +1420,23 @@ class CORE_EXPORT QgsGeometryUtils
                                    QgsPoint filletPoints[3],
                                    double epsilon = 1e-8 ) SIP_SKIP;
 
+  private:
+
+    /**
+     * Applies fillet/chamfer to a vertex in a curve geometry.
+     * \param operation chamfer or fillet string
+     * \param curve input curve geometry
+     * \param vertexIndex index of vertex to fillet
+     * \param value1 fillet radius or chamfer distance1
+     * \param value2 chamfer distance2
+     * \param segments fillet number of segments for arc discretization (≤0 for circular arc)
+     * \returns new geometry with fillet/chamfer applied, or None on failure
+     * \throws QgsInvalidArgumentException
+     * \since QGIS 4.0
+     */
+    static std::unique_ptr< QgsAbstractGeometry > doChamferFilletOnVertex(
+      const QString &operation, const QgsCurve *curve, int vertexIndex,
+      double value1, double value2, int segments
+    );
 };
 #include "qgsgeometryutils_base.h"
