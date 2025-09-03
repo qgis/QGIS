@@ -1733,9 +1733,7 @@ namespace QgsWms
             if ( !mesh )
             {
               meshLayer->updateTriangularMesh( renderContext.coordinateTransform() );
-              mesh = meshLayer->triangularMesh();
             }
-
             ( void ) featureInfoFromMeshLayer( meshLayer, mapSettings, &layerInfoPoint, renderContext, result, layerElement, version );
 
           }
