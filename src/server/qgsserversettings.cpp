@@ -77,6 +77,9 @@ void QgsServerSettings::initSettings()
   const Setting sIgnoreBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Ignore bad layers" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
   mSettings[sIgnoreBadLayers.envVar] = sIgnoreBadLayers;
 
+  const Setting sIgnoreRenderingErrors = { QgsServerSettingsEnv::QGIS_SERVER_IGNORE_RENDERING_ERRORS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Ignore rendering errors" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
+  mSettings[sIgnoreRenderingErrors.envVar] = sIgnoreRenderingErrors;
+
   // retry bad layers
   const Setting sRetryBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_RETRY_BAD_LAYERS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Retry bad layers" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
   mSettings[sRetryBadLayers.envVar] = sRetryBadLayers;
@@ -414,6 +417,11 @@ qlonglong QgsServerSettings::apiWfs3MaxLimit() const
 bool QgsServerSettings::ignoreBadLayers() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS ).toBool();
+}
+
+bool QgsServerSettings::ignoreRenderingErrors() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_RENDERING_ERRORS ).toBool();
 }
 
 bool QgsServerSettings::retryBadLayers() const

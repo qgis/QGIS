@@ -3483,7 +3483,7 @@ namespace QgsWms
     renderJob.render( mapSettings, image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
-    if ( !renderJob.errors().isEmpty() )
+    if ( !renderJob.errors().isEmpty() && !mContext.settings().ignoreRenderingErrors() )
     {
       const QgsMapRendererJob::Error e = renderJob.errors().at( 0 );
 
@@ -3943,10 +3943,16 @@ namespace QgsWms
 
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
   {
+    if( mContext.settings().ignoreRenderingErrors() )
+    {
+      return;
+    }
+
     if ( !layout )
     {
       return;
     }
+
     QList<QgsLayoutItemMap *> mapList;
     layout->layoutItems( mapList );
 
