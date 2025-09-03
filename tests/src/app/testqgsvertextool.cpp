@@ -158,15 +158,15 @@ class TestQgsVertexTool : public QObject
     QgisApp *mQgisApp = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsVertexTool *mVertexTool = nullptr;
-    QgsVectorLayer *mLayerLine = nullptr;
-    QgsVectorLayer *mLayerMultiLine = nullptr;
-    QgsVectorLayer *mLayerPolygon = nullptr;
-    QgsVectorLayer *mLayerMultiPolygon = nullptr;
-    QgsVectorLayer *mLayerPoint = nullptr;
-    QgsVectorLayer *mLayerPointZ = nullptr;
-    QgsVectorLayer *mLayerLineZ = nullptr;
-    QgsVectorLayer *mLayerCompoundCurve = nullptr;
-    QgsVectorLayer *mLayerLineReprojected = nullptr;
+    QPointer< QgsVectorLayer > mLayerLine;
+    QPointer< QgsVectorLayer > mLayerMultiLine;
+    QPointer< QgsVectorLayer > mLayerPolygon;
+    QPointer< QgsVectorLayer > mLayerMultiPolygon;
+    QPointer< QgsVectorLayer > mLayerPoint;
+    QPointer< QgsVectorLayer > mLayerPointZ;
+    QPointer< QgsVectorLayer > mLayerLineZ;
+    QPointer< QgsVectorLayer > mLayerCompoundCurve;
+    QPointer< QgsVectorLayer > mLayerLineReprojected;
     QgsFeatureId mFidLineZF1 = 0;
     QgsFeatureId mFidLineZF2 = 0;
     QgsFeatureId mFidLineZF3 = 0;
@@ -208,13 +208,10 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mFake27700.authid(), QString() );
 
   mQgisApp = new QgisApp();
+}
 
-  mCanvas = new QgsMapCanvas();
-
-  mCanvas->setDestinationCrs( mFake27700 );
-
-  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
-
+void TestQgsVertexTool::init()
+{
   // make testing layers
   mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   mLayerLine->setCrs( mFake27700 );
@@ -244,37 +241,7 @@ void TestQgsVertexTool::initTestCase()
   mLayerCompoundCurve->setCrs( mFake27700 );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
 
-  mCanvas->setFrameStyle( QFrame::NoFrame );
-  mCanvas->resize( 512, 512 );
-  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
-  mCanvas->show(); // to make the canvas resize
-  mCanvas->hide();
-  QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
-  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
-
-  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
-  mCanvas->setSnappingUtils( snappingUtils );
-
-  snappingUtils->locatorForLayer( mLayerLine )->init();
-  snappingUtils->locatorForLayer( mLayerMultiLine )->init();
-  snappingUtils->locatorForLayer( mLayerLineReprojected )->init();
-  snappingUtils->locatorForLayer( mLayerPolygon )->init();
-  snappingUtils->locatorForLayer( mLayerMultiPolygon )->init();
-  snappingUtils->locatorForLayer( mLayerPoint )->init();
-  snappingUtils->locatorForLayer( mLayerPointZ )->init();
-  snappingUtils->locatorForLayer( mLayerLineZ )->init();
-  snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
-
-  // create vertex tool
-  mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
-
-  mCanvas->setMapTool( mVertexTool );
-}
-
-void TestQgsVertexTool::init()
-{
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromWkt( "LineString (2 1, 1 1, 1 3)" ) );
 
@@ -372,8 +339,40 @@ void TestQgsVertexTool::init()
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
 
   QgsProject::instance()->setTopologicalEditing( false );
+
+  mCanvas = new QgsMapCanvas();
+
   mCanvas->setDestinationCrs( mFake27700 );
+
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
+
+  mCanvas->setFrameStyle( QFrame::NoFrame );
+  mCanvas->resize( 512, 512 );
+  mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
+  mCanvas->show(); // to make the canvas resize
+  mCanvas->hide();
+  QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
+  QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
+
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
+
+  QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
+  mCanvas->setSnappingUtils( snappingUtils );
+
+  snappingUtils->locatorForLayer( mLayerLine )->init();
+  snappingUtils->locatorForLayer( mLayerMultiLine )->init();
+  snappingUtils->locatorForLayer( mLayerLineReprojected )->init();
+  snappingUtils->locatorForLayer( mLayerPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerMultiPolygon )->init();
+  snappingUtils->locatorForLayer( mLayerPoint )->init();
+  snappingUtils->locatorForLayer( mLayerPointZ )->init();
+  snappingUtils->locatorForLayer( mLayerLineZ )->init();
+  snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
+
+  // create vertex tool
+  mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
+
+  mCanvas->setMapTool( mVertexTool );
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setEnabled( false );
@@ -391,6 +390,8 @@ void TestQgsVertexTool::cleanup()
   mLayerPointZ->rollBack();
   mLayerLineZ->rollBack();
   mLayerCompoundCurve->rollBack();
+
+  QgsProject::instance()->clear();
 }
 
 //runs after all tests
@@ -548,6 +549,8 @@ void TestQgsVertexTool::testMoveVertex()
 
   mouseClick( 2, 1, Qt::LeftButton );
   mouseClick( 2, 2, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->undoStack()->count(), 2 );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 1 1, 1 3)" ) );
