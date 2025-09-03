@@ -156,49 +156,48 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Co
     return geometry;
   }
 
-  // Handle srsName if context has information about the layer and the transformation context
-  if ( context.layer )
+  // Handle srsName
+  // Check if the XY coordinates of geometry need to be swapped by checking the srs from the GML
+  QgsCoordinateReferenceSystem geomSrs;
+  if ( geometryTypeElement.hasAttribute( QStringLiteral( "srsName" ) ) )
   {
-    QgsCoordinateReferenceSystem geomSrs;
+    QString srsName { geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) };
 
-    if ( geometryTypeElement.hasAttribute( QStringLiteral( "srsName" ) ) )
+    // The logic here follows WFS GeoServer conventions from https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html
+    const bool ignoreAxisOrientation { srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) || srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+
+    // GDAL does not recognise http://www.opengis.net/gml/srs/epsg.xml#4326 but it does
+    // http://www.opengis.net/def/crs/EPSG/0/4326 so, let's try that
+    if ( srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) )
     {
-      QString srsName { geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) };
-
-      // The logic here follows WFS GeoServer conventions from https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html
-      const bool ignoreAxisOrientation { srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) || srsName.startsWith( QLatin1String( "EPSG:" ) ) };
-
-      // GDAL does not recognise http://www.opengis.net/gml/srs/epsg.xml#4326 but it does
-      // http://www.opengis.net/def/crs/EPSG/0/4326 so, let's try that
-      if ( srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) )
+      const auto parts { srsName.split( QRegularExpression( QStringLiteral( R"raw(/|#|\.)raw" ) ) ) };
+      if ( parts.length() == 10 )
       {
-        const auto parts { srsName.split( QRegularExpression( QStringLiteral( R"raw(/|#|\.)raw" ) ) ) };
-        if ( parts.length() == 10 )
-        {
-          srsName = QStringLiteral( "http://www.opengis.net/def/crs/%1/0/%2" ).arg( parts[ 7 ].toUpper(), parts[ 9 ] );
-        }
+        srsName = QStringLiteral( "http://www.opengis.net/def/crs/%1/0/%2" ).arg( parts[ 7 ].toUpper(), parts[ 9 ] );
       }
-      geomSrs.createFromUserInput( srsName );
-      if ( geomSrs.isValid() && geomSrs != context.layer->crs() )
+    }
+    geomSrs.createFromUserInput( srsName );
+    if ( geomSrs.isValid() && geomSrs.hasAxisInverted() && !ignoreAxisOrientation )
+    {
+      geometry.get()->swapXy();
+    }
+  }
+
+  // Apply a coordinate transformation if context has information about the layer and the transformation context
+  if ( geomSrs.isValid() && context.layer && geomSrs != context.layer->crs() )
+  {
+    const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
+    try
+    {
+      const Qgis::GeometryOperationResult result = geometry.transform( transformer );
+      if ( result != Qgis::GeometryOperationResult::Success )
       {
-        if ( geomSrs.hasAxisInverted() && ! ignoreAxisOrientation )
-        {
-          geometry.get()->swapXy();
-        }
-        const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
-        try
-        {
-          const Qgis::GeometryOperationResult result = geometry.transform( transformer );
-          if ( result != Qgis::GeometryOperationResult::Success )
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( qgsEnumValueToKey( result ) ), 2 );
-          }
-        }
-        catch ( QgsCsException & )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "CS error transforming geometry" ), 2 );
-        }
+        QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( qgsEnumValueToKey( result ) ), 2 );
       }
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "CS error transforming geometry" ), 2 );
     }
   }
 
