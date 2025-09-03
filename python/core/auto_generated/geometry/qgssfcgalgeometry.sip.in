@@ -109,7 +109,7 @@ geometry.
          polygon etc.)
 %End
 
-    QString geometryType() const /HoldGIL/;
+    QString geometryType() const throw( QgsNotSupportedException ) /HoldGIL/;
 %Docstring
 Returns type of the geometry as a OGC string in CamelCase
 
@@ -186,7 +186,7 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> boundary() const;
+    std::unique_ptr<QgsSfcgalGeometry> boundary() const throw( QgsNotSupportedException );
 %Docstring
 Returns the closure of the combinatorial boundary of the geometry (ie
 the topological boundary of the geometry). For instance, a polygon
@@ -205,11 +205,11 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    bool operator==( const QgsSfcgalGeometry &other ) const;
+    bool operator==( const QgsSfcgalGeometry &other ) const throw( QgsNotSupportedException );
 
-    bool operator!=( const QgsSfcgalGeometry &other ) const;
+    bool operator!=( const QgsSfcgalGeometry &other ) const throw( QgsNotSupportedException );
 
-    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const;
+    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const throw( QgsNotSupportedException );
 %Docstring
 Returns true if this == other geometry modulo ``epsilon`` distance
 
@@ -228,7 +228,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    int dimension() const;
+    int dimension() const throw( QgsNotSupportedException );
 %Docstring
 Returns the inherent dimension of the geometry. For example, this is 0
 for a point geometry, 1 for a linestring and 2 for a polygon.
@@ -262,7 +262,7 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 geometry.
 %End
 
-    bool addZValue( double zValue = 0 );
+    bool addZValue( double zValue = 0 ) throw( QgsNotSupportedException );
 %Docstring
 Adds a z-dimension to the geometry, initialized to a preset value
 (existing Z values remains unchanged).
@@ -281,7 +281,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    bool addMValue( double mValue = 0 );
+    bool addMValue( double mValue = 0 ) throw( QgsNotSupportedException );
 %Docstring
 Adds a m-dimension to the geometry, initialized to a preset value
 (existing M values remains unchanged).
@@ -300,7 +300,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    bool dropZValue();
+    bool dropZValue() throw( QgsNotSupportedException );
 %Docstring
 Drops the z coordinate of the geometry
 
@@ -316,7 +316,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    bool dropMValue();
+    bool dropMValue() throw( QgsNotSupportedException );
 %Docstring
 Drops the m coordinate of the geometry
 
@@ -332,7 +332,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    void swapXy();
+    void swapXy() throw( QgsNotSupportedException );
 %Docstring
 Swaps the x and y coordinates of the geometry
 
@@ -378,7 +378,7 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 geometry.
 %End
 
-    double length() const;
+    double length() const throw( QgsNotSupportedException );
 %Docstring
 Computes the max length of ``geom``.
 
@@ -394,7 +394,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    bool isSimple() const;
+    bool isSimple() const throw( QgsNotSupportedException );
 %Docstring
 Checks this geometry is simple.
 
@@ -412,7 +412,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    QgsPoint centroid() const;
+    QgsPoint centroid() const throw( QgsNotSupportedException );
 %Docstring
 Calculates the centroid of this geometry.
 
@@ -428,7 +428,7 @@ This method requires a QGIS build based on SFCGAL 2.1 or later.
                                   earlier.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const;
+    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const throw( QgsNotSupportedException );
 %Docstring
 Translate this geometry by vector ``translation``.
 
@@ -605,7 +605,7 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 returned geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> envelope() const;
+    std::unique_ptr<QgsSfcgalGeometry> envelope() const throw( QgsNotSupportedException );
 %Docstring
 Calculate the envelope (bounding box).
 
@@ -672,7 +672,7 @@ be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 geometry.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const;
+    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const throw( QgsNotSupportedException );
 %Docstring
 Simplifies a geometry using the CGAL algorithm
 
