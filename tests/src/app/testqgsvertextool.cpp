@@ -77,6 +77,7 @@ class TestQgsVertexTool : public QObject
     void testAddVertexAtEndpoint();
     void testAddVertexDoubleClick();
     void testAddVertexDoubleClickWithShift();
+    void testAddVertexZ();
     void testAvoidIntersections();
     void testDeleteVertex();
     void testConvertVertex();
@@ -728,6 +729,66 @@ void TestQgsVertexTool::testAddVertex()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+}
+
+
+void TestQgsVertexTool::testAddVertexZ()
+{
+  // add vertex in linestringZ
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  // in middle of segment
+  mouseClick( 6.5, 5.5, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 2 );
+  mouseClick( 7, 6, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 6 333, 7 5 1)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 5 1)" ) );
+
+  // inserting vertex via double-click
+  mouseDoubleClick( 5.2, 5.2, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 5.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 5 5.5 333, 6 6 1, 7 5 1)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 5 1)" ) );
+
+  // insert vertex at endpoint
+
+  // offset of the endpoint marker - currently set as 15px away from the last vertex in direction of the line
+  const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+  mouseMove( 5, 5 ); // first we need to move to the vertex
+  mouseClick( 5 - offsetInMapUnits / M_SQRT2, 5 - offsetInMapUnits / M_SQRT2, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingEndpoint );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 0 );
+  mouseClick( 5, 4, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 4 333, 5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 5 1)" ) );
 }
 
 void TestQgsVertexTool::testAddVertexAtEndpoint()
