@@ -470,7 +470,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
 
     // make sure all nodes leading to children are always loaded
     // so that zooming out does not create issues
-    double dist = bbox.center().distanceToPoint( sceneContext.cameraPos );
+    float dist = bbox.center().distanceToPoint( sceneContext.cameraPos );
     residencyRequests.push_back( ResidencyRequest( node, dist, node->level() ) );
 
     if ( !node->entity() && node->hasData() )
@@ -521,7 +521,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
             if ( Qgs3DUtils::isCullable( childBbox, sceneContext.viewProjectionMatrix ) )
               continue;
 
-            double dist = childBbox.center().distanceToPoint( sceneContext.cameraPos );
+            float dist = childBbox.center().distanceToPoint( sceneContext.cameraPos );
             residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
           }
         }
@@ -548,7 +548,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
           for ( int i = 0; i < node->childCount(); ++i )
           {
             const QgsAABB childBbox = Qgs3DUtils::mapToWorldExtent( children[i]->box3D(), mMapSettings->origin() );
-            double dist = childBbox.center().distanceToPoint( sceneContext.cameraPos );
+            float dist = childBbox.center().distanceToPoint( sceneContext.cameraPos );
             residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
           }
         }
