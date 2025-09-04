@@ -147,7 +147,7 @@ class TestQgs3DRendering : public QgsTest
      * \param dtmHiResPath dtm layer path will be used with no cache
      * \param featExtent extent to find the feature
      * \param expectedZ feature Z coordinate values
-     * \param expectedCacheSize 
+     * \param expectedCacheSize
      */
     void doCheckElevation( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs, const QString &dataPath, const QString &dtmPath, //
                            const QString &dtmHiResPath, const QgsRectangle &featExtent, const QVector<float> &expectedZ, float expectedCacheSize );
@@ -2885,13 +2885,13 @@ void TestQgs3DRendering::testChunkedEntityElevationDtm()
                     QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                      //
                     testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm.tif" ), //
                     QgsRectangle( 321900, 130360, 321930, 130390 ),                                                    //
-                    QVector<float> { 306.0f, 309.0f, 309.0f, 309.0f, 309.0f, 309.0f }, 87 );
+                    QVector<float> { 306.0f, 309.0f, 309.0f, 309.0f, 309.0f, 309.0f }, 64 );
 
   doCheckElevation( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                    //
                     QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                      //
                     testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm.tif" ), //
                     QgsRectangle( 321875, 130109, 321883, 130120 ),                                                    //
-                    QVector<float> { 231.0f, 231.0f, 228.0f, 228.0f, 231.0f, 228.0f }, 87 );
+                    QVector<float> { 231.0f, 231.0f, 228.0f, 228.0f, 231.0f, 228.0f }, 64 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
