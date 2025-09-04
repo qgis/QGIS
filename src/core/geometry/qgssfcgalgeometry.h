@@ -135,7 +135,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException ) SIP_HOLDGIL;
 
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     std::unique_ptr<QgsSfcgalGeometry> boundary() const SIP_THROW( QgsNotSupportedException );
 
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This operator requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool operator==( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException );
 
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This operator requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool operator!=( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException );
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const SIP_THROW( QgsNotSupportedException );
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     int dimension() const SIP_THROW( QgsNotSupportedException );
 
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool addZValue( double zValue = 0 ) SIP_THROW( QgsNotSupportedException );
 
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool addMValue( double mValue = 0 ) SIP_THROW( QgsNotSupportedException );
 
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool dropZValue() SIP_THROW( QgsNotSupportedException );
 
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool dropMValue() SIP_THROW( QgsNotSupportedException );
 
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      * If an error was encountered during the operation, more information can be retrieved
      * by calling lastError() on the geometry.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     void swapXy() SIP_THROW( QgsNotSupportedException );
 
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     double length() const SIP_THROW( QgsNotSupportedException );
 
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     bool isSimple() const SIP_THROW( QgsNotSupportedException );
 
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     QgsPoint centroid() const SIP_THROW( QgsNotSupportedException );
 
@@ -413,7 +413,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const SIP_THROW( QgsNotSupportedException );
 
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     std::unique_ptr<QgsSfcgalGeometry> envelope() const SIP_THROW( QgsNotSupportedException );
 
@@ -633,7 +633,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      */
     std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const SIP_THROW( QgsNotSupportedException );
 
