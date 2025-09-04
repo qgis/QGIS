@@ -20,16 +20,6 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QLabel" name="mVal1Label">
-     <property name="text">
-      <string>Distance</string>
-     </property>
-     <property name="buddy">
-      <cstring>mValue1SpinBox</cstring>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="2">
     <widget class="QgsDoubleSpinBox" name="mValue1SpinBox">
      <property name="sizePolicy">
@@ -43,22 +33,6 @@
      </property>
      <property name="maximum">
       <double>999999.989999999990687</double>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QComboBox" name="mOperationComboBox"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mOperationLabel">
-     <property name="text">
-      <string>Operation</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="buddy">
-      <cstring>mOperationComboBox</cstring>
      </property>
     </widget>
    </item>
@@ -78,6 +52,29 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mVal1Label">
+     <property name="text">
+      <string>Distance</string>
+     </property>
+     <property name="buddy">
+      <cstring>mValue1SpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mOperationLabel">
+     <property name="text">
+      <string>Operation</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="buddy">
+      <cstring>mOperationComboBox</cstring>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0">
     <widget class="QLabel" name="mVal2Label">
      <property name="enabled">
@@ -94,6 +91,39 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="2">
+    <widget class="QComboBox" name="mOperationComboBox"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="mVal1Locker">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/unlocked.svg</normaloff>
+       <normalon>:/images/themes/default/locked.svg</normalon>:/images/themes/default/unlocked.svg</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="mVal2Locker">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/unlocked.svg</normaloff>
+       <normalon>:/images/themes/default/locked.svg</normalon>:/images/themes/default/unlocked.svg</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -103,6 +133,8 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

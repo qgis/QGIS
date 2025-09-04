@@ -4533,7 +4533,7 @@ bool QgsGeometry::Error::hasWhere() const
 
 QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, double distance1, double distance2, int segments ) const
 {
-  QgsDebugMsgLevel( QStringLiteral( "============== %1 starts: %2" ).arg( op ).arg( asWkt( 2 ) ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 starts: %2" ).arg( op ).arg( asWkt( 2 ) ), 3 );
   if ( isNull() )
   {
     return QgsGeometry();
@@ -4553,7 +4553,6 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
 
   if ( geomType == Qgis::GeometryType::Line )
   {
-    QgsDebugMsgLevel( QStringLiteral( "input geom IS Line" ), 1 );
     if ( isMultipart() )
     {
       modifiedPart = vertexId.part;
@@ -4568,8 +4567,6 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
   }
   else if ( geomType == Qgis::GeometryType::Polygon )
   {
-    QgsDebugMsgLevel( QStringLiteral( "input geom IS Polygon" ), 1 );
-
     QgsPolygon *poly;
     if ( isMultipart() )
     {
@@ -4619,13 +4616,8 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
     return QgsGeometry();
   }
 
-  //QgsGeometry resultGeom( std::move( result ) );
-
-  QgsDebugMsgLevel( QStringLiteral( "Temp result Wkt: %1" ).arg( result->asWkt( 2 ) ), 1 );
   if ( result->isEmpty() )
     return QgsGeometry( std::move( result ) );
-
-  QgsDebugMsgLevel( QStringLiteral( "modifiedPart %1, modifiedRing %2" ).arg( modifiedPart ).arg( modifiedRing ), 1 );
 
   auto updatePolygon = []( const QgsPolygon * inputPoly, QgsAbstractGeometry * result, int modifiedRing ) -> QgsPolygon *
   {
@@ -4657,7 +4649,6 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
   std::unique_ptr<QgsAbstractGeometry> finalGeom;
   if ( geomType == Qgis::GeometryType::Line )
   {
-    QgsDebugMsgLevel( QStringLiteral( "input geom was Line modifiedPart %1" ).arg( modifiedPart ), 1 );
     if ( modifiedPart >= 0 )
     {
       QgsMultiLineString newMultiLine;
@@ -4686,7 +4677,6 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
   else
   {
     // geomType == Qgis::GeometryType::Polygon
-    QgsDebugMsgLevel( QStringLiteral( "input geom was Polygon modifiedPart %1, modifiedRing %2 " ).arg( modifiedPart ).arg( modifiedRing ), 1 );
     if ( modifiedPart >= 0 )
     {
       QgsMultiPolygon newMultiPoly;
@@ -4714,6 +4704,8 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
   }
 
   QgsGeometry finalResult( std::move( finalGeom ) );
+
+  QgsDebugMsgLevel( QStringLiteral( "Final result Wkt: %1" ).arg( finalResult.asWkt( 2 ) ), 3 );
 
   return finalResult;
 }
