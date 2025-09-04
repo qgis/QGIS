@@ -574,8 +574,7 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
   }
   else if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( mComponent.get() ) )
   {
-    QgsProcessingModelParameter parameterComponent = mModel->parameterComponent( param->parameterName() );
-    parameterComponent.setLinksCollapsed( edge, folded );
+    mModel->parameterComponent( param->parameterName() ).setLinksCollapsed( edge, folded );
   }
   else if ( QgsProcessingModelOutput *output = dynamic_cast<QgsProcessingModelOutput *>( mComponent.get() ) )
   {
@@ -1273,11 +1272,10 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         QString name = param->name();
         QString title = param->description();
 
-
         QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
         QString parameterValueAsString;
 
-        if ( paramSources.size() > 0 )
+        if ( paramSources.empty() )
         {
           QgsProcessingModelChildParameterSource firstParameterSource = paramSources[0];
 
