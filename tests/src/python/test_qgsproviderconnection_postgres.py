@@ -1084,6 +1084,36 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             overviews,
         )
 
+        # look for original overviews after move - should be empty
+        sqlTables = """
+        SELECT * FROM pg_catalog.pg_tables 
+        WHERE schemaname = 'qgis_test' 
+        AND tablename LIKE '%raster_for_move'
+        ORDER BY tablename;
+        """
+
+        tables = conn.executeSql(sqlTables)
+
+        self.assertEqual(
+            [],
+            tables,
+        )
+
+        # look for overviews after move in the new schema - should be present
+        sqlTables = """
+        SELECT * FROM pg_catalog.pg_tables 
+        WHERE schemaname = 'qgis_schema_test' 
+        AND tablename LIKE '%raster_for_move'
+        ORDER BY tablename;
+        """
+
+        tables = conn.executeSql(sqlTables)
+
+        self.assertEqual(
+            ["o_2_raster_for_move", "o_4_raster_for_move", "raster_for_move"],
+            tables,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
