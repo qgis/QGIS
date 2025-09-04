@@ -2311,7 +2311,7 @@ void TestQgsLineString::extend()
   QCOMPARE( ls.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 1, 3 ) );
   QCOMPARE( ls.boundingBox(), QgsRectangle( -1, 0, 1, 3 ) );
 
- 
+  QgsLineString lsStackedStart;
   lsStackedStart.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) );
   lsStackedStart.extend( 1, 0 );  
   QCOMPARE( lsStackedStart.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 3, 0 ) );

@@ -1832,14 +1832,14 @@ void QgsLineString::extend( double startDistance, double endDistance, bool stric
     // Check for stacked vertices at start
     double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
                                    std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
-    
+
     if ( qgsDoubleNear( currentLen, 0.0 ) )
     {
       if ( strict )
       {
         throw QgsException( QObject::tr( "Extending linestring failed. Start segment has zero length." ) );
       }
-      
+
       // Find first non-duplicate vertex from start
       int nextVertex = 1;
       while ( nextVertex < mX.size() && qgsDoubleNear( currentLen, 0.0 ) )
@@ -1849,7 +1849,7 @@ void QgsLineString::extend( double startDistance, double endDistance, bool stric
         if ( qgsDoubleNear( currentLen, 0.0 ) )
           nextVertex++;
       }
-      
+
       if ( nextVertex < mX.size() && !qgsDoubleNear( currentLen, 0.0 ) )
       {
         const double newLen = currentLen + startDistance;
@@ -1872,14 +1872,14 @@ void QgsLineString::extend( double startDistance, double endDistance, bool stric
     // Check for stacked vertices at end
     double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
                                    std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
-    
+
     if ( qgsDoubleNear( currentLen, 0.0 ) )
     {
       if ( strict )
       {
         throw QgsException( QObject::tr( "Extending linestring failed. End segment has zero length." ) );
       }
-      
+
       // Find first non-duplicate vertex from end
       int prevVertex = last - 1;
       while ( prevVertex >= 0 && qgsDoubleNear( currentLen, 0.0 ) )
@@ -1889,7 +1889,7 @@ void QgsLineString::extend( double startDistance, double endDistance, bool stric
         if ( qgsDoubleNear( currentLen, 0.0 ) )
           prevVertex--;
       }
-      
+
       if ( prevVertex >= 0 && !qgsDoubleNear( currentLen, 0.0 ) )
       {
         const double newLen = currentLen + endDistance;
