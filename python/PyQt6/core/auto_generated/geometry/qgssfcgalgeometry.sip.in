@@ -121,8 +121,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> clone() const;
@@ -201,8 +200,7 @@ the geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool operator==( const QgsSfcgalGeometry &other ) const;
@@ -224,8 +222,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     int dimension() const;
@@ -241,8 +238,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     int partCount() const;
@@ -277,8 +273,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool addMValue( double mValue = 0 );
@@ -296,8 +291,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool dropZValue();
@@ -312,8 +306,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool dropMValue();
@@ -328,8 +321,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     void swapXy();
@@ -342,8 +334,7 @@ If an error was encountered during the operation, more information can
 be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
 geometry.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool isValid() const;
@@ -390,8 +381,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool isSimple() const;
@@ -408,8 +398,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     QgsPoint centroid() const;
@@ -424,8 +413,7 @@ geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const;
@@ -442,8 +430,7 @@ returned geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const;
@@ -617,8 +604,7 @@ returned geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     bool covers( const QgsSfcgalGeometry &otherGeom ) const;
@@ -688,8 +674,7 @@ returned geometry.
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0 or
-                                  earlier.
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const;
