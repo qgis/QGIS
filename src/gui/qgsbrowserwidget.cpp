@@ -589,7 +589,7 @@ void QgsBrowserWidget::navigateToPath()
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( path ) );
+      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( path ) );
     }
     return;
   }
@@ -603,7 +603,7 @@ void QgsBrowserWidget::navigateToPath()
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( displayPath ) );
+      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( displayPath ) );
     }
     return;
   }
@@ -614,7 +614,7 @@ void QgsBrowserWidget::navigateToPath()
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Path does not exist: %1" ).arg( displayPath ) );
+      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( displayPath ) );
     }
     return;
   }
