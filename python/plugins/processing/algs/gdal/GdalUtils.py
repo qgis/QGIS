@@ -49,6 +49,8 @@ from qgis.core import (
     QgsPointXY,
     QgsDistanceArea,
     QgsRasterLayer,
+    QgsWmsUtils,
+    QgsProcessingRasterLayerDefinition,
 )
 
 from qgis.PyQt.QtCore import (
@@ -369,9 +371,16 @@ class GdalUtils:
         return GdalUtils.gdal_connection_details_from_layer(layer)
 
     @staticmethod
-    def gdal_connection_details_from_layer(layer: QgsMapLayer) -> GdalConnectionDetails:
+    def gdal_connection_details_from_layer(
+        layer: QgsMapLayer,
+        parameter_name: Optional[str] = "",
+        parameters: Optional[dict] = {},
+        context: Optional[QgsProcessingContext] = None,
+        extent: Optional[QgsRectangle] = None,
+    ) -> GdalConnectionDetails:
         """
         Builds GDAL connection details from a QGIS map layer
+        and related settings
         """
         provider = layer.providerType()
         if provider == "spatialite":
@@ -520,6 +529,53 @@ class GdalUtils:
             return GdalConnectionDetails(
                 connection_string=gdal_source, format='"PostGISRaster"'
             )
+        elif provider.lower() == "wms":
+            if parameter_name and parameters and context and extent:
+                # Create an XML description file for the WMS
+                parameter_value = parameters[parameter_name]
+                scale, dpi = 0, 0
+                if layer.providerType() == "wms" and isinstance(
+                    parameter_value, QgsProcessingRasterLayerDefinition
+                ):
+                    scale = parameter_value.referenceScale
+                    dpi = parameter_value.dpi
+
+                if scale > 0:
+                    distanceArea = None
+                    if layer.crs().isGeographic():
+                        distanceArea = QgsDistanceArea()
+                        distanceArea.setSourceCrs(
+                            layer.crs(), context.transformContext()
+                        )
+                        distanceArea.setEllipsoid(layer.crs().ellipsoidAcronym())
+
+                    width, height = GdalUtils._wms_dimensions_for_scale(
+                        extent, layer.crs(), scale, dpi, distanceArea
+                    )
+                    wms_description_file_path = QgsProcessingUtils.generateTempFilename(
+                        "wms_description_file.xml", context
+                    )
+                    res_xml_wms, xml_wms_error = (
+                        GdalUtils.gdal_wms_xml_description_file(
+                            layer,
+                            QgsWmsUtils.wmsVersion(layer),
+                            extent,
+                            width,
+                            height,
+                            wms_description_file_path,
+                        )
+                    )
+                    if res_xml_wms:
+                        return GdalConnectionDetails(
+                            connection_string=wms_description_file_path
+                        )
+                    else:
+                        message = "Cannot create XML description file for WMS layer. Details: {}".format(
+                            xml_wms_error
+                        )
+                        QgsMessageLog.logMessage(
+                            message, "Processing", Qgis.MessageLevel.Warning
+                        )
 
         ogrstr = str(layer.source()).split("|")[0]
         path, ext = os.path.splitext(ogrstr)
@@ -715,7 +771,7 @@ class GdalUtils:
         crs: QgsCoordinateReferenceSystem,
         scale: int,
         dpi: float = 96.0,
-        distanceArea=Optional[QgsDistanceArea],
+        distanceArea: Optional[QgsDistanceArea] = None,
     ) -> tuple[int, int]:
         """
         Returns a tuple with WIDTH and HEIGHT in pixels that would match
