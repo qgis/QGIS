@@ -118,9 +118,8 @@ void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentN
   }
 }
 
-float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
+void QgsDemTerrainGenerator::heightAndQualityAt( double x, double y, float &height, int &quality ) const
 {
-  Q_UNUSED( context )
   if ( mRootNode != nullptr )
   {
     QMutexLocker locker( &mRootNodeMutex );
@@ -154,6 +153,7 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     const char *heightMapData = nullptr;
     if ( mLoaderMap.contains( foundKey ) )
     {
+      quality = found->tileId().d;
       heightMapData = mLoaderMap[foundKey].constData();
     }
     else
@@ -164,6 +164,7 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
       {
         mLoaderMap.insert( foundKey, loader->heightMap() );
         cleanupHeightMapCache( found );
+        quality = found->tileId().d;
         heightMapData = loader->heightMap();
       }
       else // no load in current tile, check for map in parents
@@ -176,12 +177,14 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
           {
             if ( !loader->heightMap().isEmpty() )
             {
+              quality = parent->tileId().d;
               heightMapData = loader->heightMap();
               break;
             }
           }
           else if ( mLoaderMap.contains( parent->tileId().text() ) )
           {
+            quality = parent->tileId().d;
             heightMapData = mLoaderMap[parent->tileId().text()].constData();
             break;
           }
@@ -201,21 +204,54 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
       cellY = std::clamp( cellY, 0, mResolution - 1 );
 
       const float *data = ( const float * ) heightMapData;
-
-      return data[cellX + cellY * mResolution];
+      height = data[cellX + cellY * mResolution];
+      return;
     }
   }
 
   // if we have no rootNode or if we were not able to find better height map data, we fallback to coarse DEM data
   if ( mHeightMapGenerator )
   {
-    return mHeightMapGenerator->heightAt( x, y );
+    quality = 0;
+    height = mHeightMapGenerator->heightAt( x, y );
   }
   else
   {
-    return 0;
+    quality = -1;
+    height = 0;
   }
 }
+
+float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
+{
+  Q_UNUSED( context )
+  float height;
+  int quality;
+  // qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y;
+  heightAndQualityAt( x, y, height, quality );
+  return height;
+}
+
+int QgsDemTerrainGenerator::qualityAt( double x, double y, const Qgs3DRenderContext &context ) const
+{
+  Q_UNUSED( context )
+  float height;
+  int quality;
+  // qDebug() << "QgsDemTerrainGenerator::qualityAt" << this << x << y;
+  heightAndQualityAt( x, y, height, quality );
+  return quality;
+}
+
+int QgsDemTerrainGenerator::cacheSize()
+{
+  return mLoaderMap.size();
+}
+
+bool QgsDemTerrainGenerator::isTileInCache( const QString &tileText )
+{
+  return mLoaderMap.contains( tileText );
+}
+
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {

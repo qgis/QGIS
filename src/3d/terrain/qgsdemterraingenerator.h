@@ -77,9 +77,21 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
+
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
+    int qualityAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+
+    //! Returns height map cache size
+    int cacheSize();
+
+    /**
+     * Checks if the tile is in the cache
+     * \param tileText text version of the tile
+     * \return true if the tile is in the cache
+     */
+    bool isTileInCache( const QString &tileText );
 
   signals:
     //! emitted when an hi-res DEM tile has been received
@@ -91,6 +103,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
   private:
     void updateGenerator();
     void cleanupHeightMapCache( const QgsChunkNode *currentNode ) const;
+    void heightAndQualityAt( double x, double y, float &height, int &quality ) const;
 
     QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 

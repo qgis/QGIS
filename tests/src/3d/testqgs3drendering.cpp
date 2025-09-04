@@ -137,9 +137,22 @@ class TestQgs3DRendering : public QgsTest
     void do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount,        //
                           Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr, //
                           Qgis::AltitudeClamping altitudeClamping = Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding altitudeBinding = Qgis::AltitudeBinding::Centroid );
-    void checkLowestZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData );
-    void docCheckElevationDtm( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs, const QString &dataPath, const QString &dtmPath, //
-                               const QString &dtmHiResPath, const QgsRectangle &featExtent, const QVector<float> &expectedZ );
+
+    /**
+     * Checks projet demgenerator has got fine dtm elevation data and checks feature Z coordinates
+     * \param fullExtent
+     * \param crs
+     * \param dataPath data layer path
+     * \param dtmPath dtm layer path
+     * \param dtmHiResPath dtm layer path will be used with no cache
+     * \param featExtent extent to find the feature
+     * \param expectedZ feature Z coordinate values
+     * \param expectedCacheSize 
+     */
+    void doCheckElevation( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs, const QString &dataPath, const QString &dtmPath, //
+                           const QString &dtmHiResPath, const QgsRectangle &featExtent, const QVector<float> &expectedZ, float expectedCacheSize );
+
+    void doCheckFeatureZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData );
 
 
     std::unique_ptr<QgsProject> mProject;
@@ -2692,8 +2705,8 @@ void TestQgs3DRendering::test3DSceneExporterBig()
   delete scene;
 }
 
-void TestQgs3DRendering::checkLowestZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, //
-                                       QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData )
+void TestQgs3DRendering::doCheckFeatureZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, //
+                                          QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData )
 {
   std::unique_ptr<Qt3DCore::QEntity> entity;
   Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( map );
@@ -2711,18 +2724,22 @@ void TestQgs3DRendering::checkLowestZ( QgsFeature f, QVector<float> expectedZ, Q
 
   QCOMPARE( entity->children().size(), 1 );
 
-  for ( QObject *child : entity->children() ) // search 3d entity
+  // search 3d entity
+  for ( QObject *child : entity->children() )
   {
     Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
     if ( childEntity )
     {
-      for ( QObject *comp : childEntity->children() ) // search geometry renderer
+      // search geometry renderer
+      for ( QObject *comp : childEntity->children() )
       {
         Qt3DRender::QGeometryRenderer *childComp = qobject_cast<Qt3DRender::QGeometryRenderer *>( comp );
         if ( childComp )
         {
           QVERIFY( childComp->geometry() );
-          for ( Qt3DQAttribute *attrib : childComp->geometry()->attributes() ) // search position attribute
+
+          // search position attribute
+          for ( Qt3DQAttribute *attrib : childComp->geometry()->attributes() )
           {
             if ( attrib->name() == Qt3DQAttribute::defaultPositionAttributeName() )
             {
@@ -2733,18 +2750,14 @@ void TestQgs3DRendering::checkLowestZ( QgsFeature f, QVector<float> expectedZ, Q
               for ( uint i = 0; i < attrib->count(); ++i )
               {
                 float z = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 2];
-                if ( z != expectedZ[static_cast<int>( i )] )
+                float expZ = expectedZ[static_cast<int>( i )];
+                if ( z != expZ )
                 {
-                  qWarning() << "actual[" << i << "]=" << z << "/ expected= " << expectedZ[static_cast<int>( i )];
-                  for ( uint j = 0; j < attrib->count(); ++j )
-                  {
-                    float x = ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 0];
-                    float y = ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 1];
-                    z = ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 2];
-                    qWarning() << x << "," << y << "," << z;
-                  }
+                  float x = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 0];
+                  float y = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 1];
+                  qWarning() << "Z not match at:" << x << "," << y << "! Actual[" << i << "]=" << z << "/ expected= " << expZ;
                 }
-                QCOMPARE( z, expectedZ[static_cast<int>( i )] );
+                QCOMPARE( z, expZ );
               }
               break;
             }
@@ -2757,13 +2770,11 @@ void TestQgs3DRendering::checkLowestZ( QgsFeature f, QVector<float> expectedZ, Q
 }
 
 
-void TestQgs3DRendering::docCheckElevationDtm( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs,      //
-                                               const QString &dataPath, const QString &dtmPath, const QString &dtmHiResPath, //
-                                               const QgsRectangle &featExtent, const QVector<float> &expectedZ )
+void TestQgs3DRendering::doCheckElevation( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs,      //
+                                           const QString &dataPath, const QString &dtmPath, const QString &hiResDtmPath, //
+                                           const QgsRectangle &featExtent, const QVector<float> &expectedZ, float expectedCacheSize )
 {
-  qDebug() << "====================================";
-  qDebug() << "=============== docCheckElevationDtm";
-  qDebug() << "====================================";
+  qDebug() << "=============== doCheckElevation for feature within" << featExtent.asWktCoordinates();
   QgsVectorLayer *layerData = new QgsVectorLayer( dataPath, "data", "ogr" );
   QgsRasterLayer *layerDtm = new QgsRasterLayer( dtmPath, "dtm", "gdal" );
 
@@ -2813,10 +2824,10 @@ void TestQgs3DRendering::docCheckElevationDtm( const QgsRectangle &fullExtent, c
   layerData->setRenderer3D( renderer3d );
 
   // build full res terrain generator
-  QgsRasterLayer *layerDtmHiRes = new QgsRasterLayer( dtmHiResPath, "dtm", "gdal" );
-  QgsDemTerrainGenerator fullResDem;
-  fullResDem.setLayer( layerDtmHiRes );
-  fullResDem.setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
+  QgsRasterLayer *hiResDtmLayer = new QgsRasterLayer( hiResDtmPath, "dtm", "gdal" );
+  QgsDemTerrainGenerator hiResNoCacheDtm;
+  hiResNoCacheDtm.setLayer( hiResDtmLayer );
+  hiResNoCacheDtm.setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
 
   // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -2833,84 +2844,54 @@ void TestQgs3DRendering::docCheckElevationDtm( const QgsRectangle &fullExtent, c
   QgsPointXY centroid = f.geometry().centroid().asPoint();
 
   // =========== set camera position
-  qDebug() << "=============== before setLookingAtPoint";
   scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1000, 0.0, 0.0 );
 
   // Calling captureSceneImage to wait for Qgs3DMapScene::Ready
   Qgs3DUtils::captureSceneImage( engine, scene );
   QCOMPARE( scene->sceneState(), Qgs3DMapScene::Ready );
-  qDebug() << "=============== after setLookingAtPoint";
-
-  // try to load other DTM tiles by moving the camera
-  int h = 1000;
-  for ( int x = -100; x <= 100; x += 50 )
-    for ( int y = -100; y <= 100; y += 50 )
-    // for ( int h = 100; h < 1000; h += 100 )
-    {
-      // QgsVector3D inWorld = mapSettings->mapToWorldCoordinates( QgsVector3D( centroid.y() + y, centroid.x() + x, 0.0 ) );
-      qDebug() << "=============== before setLookingAtPoint2" << centroid.x() + x << centroid.y() + y; //<< inWorld.x() << inWorld.y();
-      scene->cameraController()->setLookingAtPoint( QgsVector3D( x, y, 0 ), h, 0.0, 0.0 );
-      Qgs3DUtils::captureSceneImage( engine, scene );
-      qDebug() << "=============== after setLookingAtPoint2";
-    }
 
   // lowest Z is computed above terrain
-  float fullResZ;
-  qDebug() << "Check elevation around x/y:" << centroid.x() << "/" << centroid.y();
+  float hiResNoCacheZ;
+  int hiResNoCacheQ;
   for ( int x = -5; x <= 5; x += 1 )
     for ( int y = -5; y <= 5; y += 1 )
     {
       double tx = centroid.x() + x;
       double ty = centroid.y() + y;
-      fullResZ = fullResDem.heightAt( tx, ty, Qgs3DRenderContext() );
-      float z = mapSettings->terrainGenerator()->heightAt( tx, ty, Qgs3DRenderContext() );
-      if ( std::abs( fullResZ - z ) > 1.0 )
-        qDebug() << tx << "," << ty << "," << fullResZ * demTerrainSettings->verticalScale() << "vs" << z * demTerrainSettings->verticalScale();
-      QVERIFY( std::abs( fullResZ - z ) <= 1.0 );
+      if ( fullExtent.contains( tx, ty ) )
+      {
+        hiResNoCacheZ = hiResNoCacheDtm.heightAt( tx, ty, Qgs3DRenderContext() );
+        hiResNoCacheQ = hiResNoCacheDtm.qualityAt( tx, ty, Qgs3DRenderContext() );
+        float z = mapSettings->terrainGenerator()->heightAt( tx, ty, Qgs3DRenderContext() );
+        int q = mapSettings->terrainGenerator()->qualityAt( tx, ty, Qgs3DRenderContext() );
+        if ( std::abs( hiResNoCacheZ - z ) > 1.0 )
+          qDebug() << "Diff in z will checking elevation at [" << tx << ty << "], nocache z:"              //
+                   << hiResNoCacheZ * demTerrainSettings->verticalScale() << "(q:" << hiResNoCacheQ << ")" //
+                   << "vs cache z:"                                                                        //
+                   << z * demTerrainSettings->verticalScale() << "(q:" << q << ")";
+        QVERIFY2( hiResNoCacheQ < q, QStringLiteral( "fullRezQ:%1 / q:%2" ).arg( hiResNoCacheQ ).arg( q ).toStdString().c_str() );
+      }
     }
 
-  checkLowestZ( f, expectedZ, mapSettings, symbolTerrain, layerData );
+  QCOMPARE( dynamic_cast<QgsDemTerrainGenerator *>( mapSettings->terrainGenerator() )->cacheSize(), expectedCacheSize );
+
+  doCheckFeatureZ( f, expectedZ, mapSettings, symbolTerrain, layerData );
 }
 
 
 void TestQgs3DRendering::testChunkedEntityElevationDtm()
 {
-  docCheckElevationDtm( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                    //
-                        QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                      //
-                        testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm.tif" ), //
-                        QgsRectangle( 321900, 130360, 321930, 130390 ),                                                    //
-                        QVector<float> { 306.0f, 309.0f, 309.0f, 309.0f, 309.0f, 309.0f } );
+  doCheckElevation( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                    //
+                    QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                      //
+                    testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm.tif" ), //
+                    QgsRectangle( 321900, 130360, 321930, 130390 ),                                                    //
+                    QVector<float> { 306.0f, 309.0f, 309.0f, 309.0f, 309.0f, 309.0f }, 87 );
 
-  docCheckElevationDtm( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                    //
-                        QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                      //
-                        testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm.tif" ), //
-                        QgsRectangle( 321875, 130109, 321883, 130120 ),                                                    //
-                        QVector<float> { 228.0f, 234.0f, 231.0f, 228.0f, 231.0f, 228.0f } );
-
-  // docCheckElevationDtm( QgsRectangle( 60000, 60000, 70000, 70000 ),  //
-  //                       QgsCoordinateReferenceSystem( "EPSG:2169" ), //
-  //                       "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/routes.gpkg.gz",
-  //                       "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
-  //                       "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
-  //                       QgsRectangle( 62780, 64545, 62784, 64555 ),                                                                         //
-  //                       QVector<float> { 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
-  //                                        1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
-  //                                        1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
-  //                                        1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
-  //                                        1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, //
-  //                                        1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f, 1128.0f } );
-
-  // docCheckElevationDtm( QgsRectangle( 60000, 60000, 70000, 70000 ),  //
-  //                       QgsCoordinateReferenceSystem( "EPSG:2169" ), //
-  //                       "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/routes.gpkg.gz",
-  //                       "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
-  //                       "/home/bde/prog/2010_25_lille_3d/QGIS-3D-projects-public/luxembourg-sanem/terrain.tif",                             //
-  //                       QgsRectangle( 63265, 65796, 63260, 65802 ),                                                                         // id: 3118
-  //                       QVector<float> { 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
-  //                                        1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
-  //                                        1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
-  //                                        1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, 1170.0f, //
-  //                                        1170.0f, 1170.0f, 1170.0f, 1170.0f } );
+  doCheckElevation( QgsRectangle( 321875, 130109, 321930, 130390 ),                                                    //
+                    QgsCoordinateReferenceSystem( "EPSG:27700" ),                                                      //
+                    testDataPath( "/3d/buildings.shp" ), testDataPath( "/3d/dtm.tif" ), testDataPath( "/3d/dtm.tif" ), //
+                    QgsRectangle( 321875, 130109, 321883, 130120 ),                                                    //
+                    QVector<float> { 231.0f, 231.0f, 228.0f, 228.0f, 231.0f, 228.0f }, 87 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
