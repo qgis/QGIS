@@ -363,7 +363,7 @@ jobs:
           sudo df -h
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .
@@ -471,7 +471,7 @@ jobs:
         run: docker tag ${{ steps.docker-build.outputs.imageid }} qgis3-build-deps-binary-image
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .
