@@ -135,7 +135,7 @@ class QgsDemHeightMapGenerator : public QObject
     struct JobData
     {
         JobData( const QgsChunkNode *jobNode )
-          : node( jobNode )
+          : jobId( -1 ), node( jobNode ), extent(), future(), timer()
         {}
 
         int jobId;
