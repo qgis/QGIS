@@ -147,6 +147,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfieldcalculator.cpp
+  processing/qgsalgorithmfileuploader.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfillsinkswangliu.cpp
@@ -423,6 +424,7 @@ set(QGIS_ANALYSIS_HDRS
   processing/qgsalgorithmbatchgeocode.h
   processing/qgsalgorithmbatchnominatimgeocode.h
   processing/qgsalgorithmfiledownloader.h
+  processing/qgsalgorithmfileuploader.h
   processing/qgsalgorithmimportphotos.h
   processing/qgsnativealgorithms.h
   processing/qgsprojectstylealgorithms.h
