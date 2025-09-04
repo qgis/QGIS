@@ -24,7 +24,6 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (
-    QgsDistanceArea,
     QgsRasterFileWriter,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
@@ -36,11 +35,9 @@ from qgis.core import (
     QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
     QgsProcessingRasterLayerDefinition,
-    QgsProcessingUtils,
-    QgsWmsUtils,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -193,48 +190,20 @@ class ClipRasterByExtent(GdalAlgorithm):
                 )
             )
 
+        input_details = GdalUtils.gdal_connection_details_from_layer(
+            inLayer,
+            self.INPUT,
+            parameters,
+            context,
+            bbox,
+        )
+
         arguments = []
 
-        # If it's a WMS layer and scale/DPI were given, craft a XML description file
-        if inLayer.providerType() == "wms" and isinstance(
+        # If not a WMS or scale/DPI were not given, add -projwin
+        if inLayer.providerType() != "wms" or not isinstance(
             parameters[self.INPUT], QgsProcessingRasterLayerDefinition
         ):
-            # If the scale is greater than 0, we'll have a QgsProcessingRasterLayerDefinition
-            param_def = parameters[self.INPUT]
-            scale = param_def.referenceScale
-            dpi = param_def.dpi
-
-            distanceArea = None
-            if inLayer.crs().isGeographic():
-                distanceArea = QgsDistanceArea()
-                distanceArea.setSourceCrs(inLayer.crs(), context.transformContext())
-                distanceArea.setEllipsoid(inLayer.crs().ellipsoidAcronym())
-
-            width, height = GdalUtils._wms_dimensions_for_scale(
-                bbox, inLayer.crs(), scale, dpi, distanceArea
-            )
-            wms_description_file_path = QgsProcessingUtils.generateTempFilename(
-                "wms_description_file.xml", context
-            )
-            res_xml_wms, xml_wms_error = GdalUtils.gdal_wms_xml_description_file(
-                inLayer,
-                QgsWmsUtils.wmsVersion(inLayer),
-                bbox,
-                width,
-                height,
-                wms_description_file_path,
-            )
-            if not res_xml_wms:
-                raise QgsProcessingException(
-                    "Cannot create XML description file for WMS layer. Details: {}".format(
-                        xml_wms_error
-                    )
-                )
-            input_details = GdalConnectionDetails(
-                connection_string=wms_description_file_path
-            )
-        else:
-            input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
             arguments.extend(
                 [
                     "-projwin",
