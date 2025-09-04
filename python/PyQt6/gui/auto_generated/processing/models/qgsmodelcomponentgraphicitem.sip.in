@@ -330,6 +330,8 @@ Updates the item's button positions, based on the current item rect.
 %Docstring
 Returns the fallback color if the parameter or output does not have a
 specific color.
+
+.. versionadded:: 4.0
 %End
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);

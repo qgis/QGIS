@@ -462,7 +462,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual ~QgsProcessingParameterDefinition() = default;
 
     /**
-     * Returns the color to use for the parameter type in model designer windows.
+     * Returns the color to use for the parameter in model designer windows.
+     *
+     * The default implementation retrieves the color from the parameter type, see QgsProcessingParameterType::modelColor().
      *
      * \since QGIS 4.0
      */

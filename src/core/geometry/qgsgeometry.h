@@ -381,11 +381,6 @@ class CORE_EXPORT QgsGeometry
         double outerRadius, double innerRadius = 0 );
 
     /**
-     * Returns a user friendly name as a string out of the type
-     */
-    static QString name( Qgis::GeometryType type );
-
-    /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
      * This class will take ownership of the buffer.
      * \note not available in Python bindings
@@ -408,11 +403,6 @@ class CORE_EXPORT QgsGeometry
      * \see wkbType
      */
     Qgis::GeometryType type() const SIP_HOLDGIL;
-
-    /**
-     * Returns the type name as a QString
-     */
-    QString typeName() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the geometry is empty (eg a linestring with no vertices,

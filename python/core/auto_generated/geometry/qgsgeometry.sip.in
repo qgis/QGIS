@@ -329,11 +329,6 @@ Polygon geometry.
 .. versionadded:: 3.40
 %End
 
-    static QString name( Qgis::GeometryType type );
-%Docstring
-Returns a user friendly name as a string out of the type
-%End
-
 
     void fromWkb( const QByteArray &wkb );
 %Docstring
@@ -353,11 +348,6 @@ etc.)
 Returns type of the geometry as a :py:class:`Qgis`.GeometryType
 
 .. seealso:: :py:func:`wkbType`
-%End
-
-    QString typeName() const /HoldGIL/;
-%Docstring
-Returns the type name as a string
 %End
 
     bool isEmpty() const /HoldGIL/;
