@@ -104,6 +104,9 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
 
     QgsFeature mSourceFeature;
 
+    //! limits number of call to updateGeometryAndRubberBand
+    long mLastMouseMove = 0;
+
     void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
 
     void createUserInputWidget();

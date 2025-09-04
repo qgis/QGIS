@@ -111,9 +111,15 @@ void TestQgsMapToolChamferFillet::initTestCase()
 
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( 8 );
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( "chamfer" );
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->setValue( false );
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->setValue( true );
 
   QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value(), 8 );
   QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), "chamfer" );
+  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->value(), false );
+  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->value(), true );
+
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->setValue( false );
 }
 
 //runs after all tests

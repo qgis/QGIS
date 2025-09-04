@@ -16,6 +16,7 @@
 #include <QGraphicsProxyWidget>
 #include <QGridLayout>
 #include <QLabel>
+#include <QDateTime>
 
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsdoublespinbox.h"
@@ -84,21 +85,20 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
 
   if ( !mModifiedGeometry.isGeosValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "mModifiedGeometry: %1" ).arg( mModifiedGeometry.asWkt( 2 ) ), 1 );
-
+    QString message;
     QString lastError;
     int i = 0;
     for ( QgsAbstractGeometry::const_part_iterator ite = mModifiedGeometry.const_parts_begin(); ite != mModifiedGeometry.const_parts_end(); ite++ )
     {
       if ( !( *ite )->isValid( lastError ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Part %1 is not valid: %2" ).arg( i ).arg( ( *ite )->asWkt( 2 ) ), 1 );
+        message += QStringLiteral( "Invalid part %1: '%2' (WKT: %3)" ).arg( i ).arg( lastError ).arg( ( *ite )->asWkt( 2 ) );
         break;
       }
       i++;
     }
 
-    emit messageEmitted( tr( "Generated geometry is not valid (part:%1): %1" ).arg( i ).arg( mModifiedGeometry.lastError() ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ) + message, Qgis::MessageLevel::Critical );
     // no cancel, continue editing.
     return;
   }
@@ -161,7 +161,6 @@ void QgsMapToolChamferFillet::calculateDistances( const QgsPointXY &mapPoint, do
     value1 = beforeInter.distance( mVertexPoint );
     value2 = afterInter.distance( mVertexPoint );
   }
-  QgsDebugMsgLevel( QStringLiteral( "dist between %1 and %2: %3 / %4" ).arg( mapPoint.asWkt() ).arg( mVertexPoint.asWkt( 2 ) ).arg( value1 ).arg( value2 ), 1 );
 }
 
 void QgsMapToolChamferFillet::keyPressEvent( QKeyEvent *e )
@@ -178,8 +177,6 @@ void QgsMapToolChamferFillet::keyPressEvent( QKeyEvent *e )
 
 void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsDebugMsgLevel( "Enter", 1 );
-
   if ( e->button() == Qt::RightButton )
   {
     cancel();
@@ -188,14 +185,12 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( mOriginalGeometry.isNull() )
   {
-    QgsDebugMsgLevel( "First click", 1 );
     // first click, get feature to modify
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
 
     QgsPointLocator::Match match;
 
-    QgsDebugMsgLevel( "using snap on area", 1 );
     match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
 
     if ( auto *lLayer = match.layer() )
@@ -238,7 +233,6 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         {
           emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using chamfer/fillet tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
         }
-        QgsDebugMsgLevel( "First vertex found", 1 );
       }
     }
 
@@ -247,11 +241,12 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
       cancel();
     }
+
+    // force rubberband update
+    canvasMoveEvent( e );
   }
   else
   {
-    QgsDebugMsgLevel( "Second click will apply changes", 1 );
-
     // second click - apply changes
     double value1, value2;
     calculateDistances( e->mapPoint(), value1, value2 );
@@ -271,21 +266,24 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     applyOperation( value1, value2, e->modifiers() );
   }
-  QgsDebugMsgLevel( "Exit", 1 );
 }
 
 void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mOriginalGeometry.isNull() || !mRubberBand )
   {
-    QgsDebugMsgLevel( "move without nothing selected", 1 );
     QgsPointLocator::Match match;
     match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
     mSnapIndicator->setMatch( match );
     return;
   }
 
-  QgsDebugMsgLevel( "move with something selected", 1 );
+  // reduce the number of call to max 1 per 100ms
+  long currTime = QDateTime::currentMSecsSinceEpoch();
+  if ( currTime - mLastMouseMove < 100 )
+    return;
+  mLastMouseMove = currTime;
+
   mGeometryModified = true;
 
   const QgsPointXY mapPoint = e->mapPoint();
@@ -307,6 +305,14 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     value1 = ( value1 + value2 ) / 2.0;
   }
+
+  bool locked = QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->value();
+  if ( locked )
+    value1 = QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1->value();
+
+  locked = QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->value();
+  if ( locked )
+    value2 = QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2->value();
 
   if ( mUserInputWidget )
   {
@@ -413,12 +419,12 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
 
   if ( op == "chamfer" )
   {
-    QgsDebugMsgLevel( QStringLiteral( "will chamfer %1 / %2" ).arg( value1 ).arg( value2 ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "will chamfer %1 / %2" ).arg( value1 ).arg( value2 ), 3 );
     newGeom = mManipulatedGeometry.chamfer( mVertexIndex, value1, value2 );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "will fillet %1 / %2" ).arg( value1 ).arg( segments ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "will fillet %1 / %2" ).arg( value1 ).arg( segments ), 3 );
     newGeom = mManipulatedGeometry.fillet( mVertexIndex, value1, segments );
   }
 
@@ -433,6 +439,7 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
   }
   else
   {
+    mGeometryModified = true;
     mModifiedGeometry = newGeom;
     mRubberBand->setToGeometry( mModifiedGeometry, mSourceLayer );
   }
@@ -465,23 +472,41 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
     if ( op == "chamfer" )
     {
       mVal1Label->setText( tr( "Distance 1" ) );
-      mVal2Label->setText( tr( "Distance 2" ) );
       mValue1SpinBox->setDecimals( 6 );
       mValue1SpinBox->setClearValue( 0.001 );
+      const double value1 = QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1->value();
+      mValue1SpinBox->setValue( value1 );
+
+      mVal2Label->setText( tr( "Distance 2" ) );
       mValue2SpinBox->setDecimals( 6 );
       mValue2SpinBox->setClearValue( 0.001 );
+      const double value2 = QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2->value();
+      mValue2SpinBox->setValue( value2 );
+
+      mVal2Locker->setEnabled( true );
     }
     else
     {
       mVal1Label->setText( tr( "Radius" ) );
-      mVal2Label->setText( tr( "Fillet segments" ) );
       mValue1SpinBox->setDecimals( 6 );
       mValue1SpinBox->setClearValue( 0.001 );
+      const double value1 = QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1->value();
+      mValue1SpinBox->setValue( value1 );
+
+      mVal2Label->setText( tr( "Fillet segments" ) );
       mValue2SpinBox->setDecimals( 0 );
       mValue2SpinBox->setClearValue( 6.0 );
       const int segments = QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value();
       mValue2SpinBox->setValue( segments );
+
+      mVal2Locker->setEnabled( false );
     }
+
+    bool checked = QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->value();
+    mVal1Locker->setChecked( checked );
+
+    checked = QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->value();
+    mVal2Locker->setChecked( checked );
   };
 
   updateLabels( op );
@@ -497,14 +522,27 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
            } );
 
   connect( mValue1SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
-           [this]( const double ) { emit distanceConfigChanged(); } );
+           [this]( const double value ) {
+             QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1->setValue( value );
+             emit distanceConfigChanged();
+           } );
 
   connect( mValue2SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
            [this]( const double value ) {
              if ( operation() == "fillet" )
                QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( static_cast<int>( value ) );
+             else
+               QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2->setValue( value );
              emit distanceConfigChanged();
            } );
+
+  connect( mVal1Locker, &QPushButton::clicked, this, [this]( bool checked ) {
+    QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->setValue( checked );
+    emit distanceConfigChanged(); } );
+
+  connect( mVal2Locker, &QPushButton::clicked, this, [this]( bool checked ) {
+    QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->setValue( checked );
+    emit distanceConfigChanged(); } );
 
   mValue1SpinBox->installEventFilter( this );
   mValue2SpinBox->installEventFilter( this );

@@ -97,6 +97,14 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsDigitizingChamfer
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment = new QgsSettingsEntryInteger( QStringLiteral( "chamferfillet-fillet-segment" ), QgsSettingsTree::sTreeDigitizing, 8, QStringLiteral( "For fillet operation, number of segment used to create the arc." ), Qgis::SettingsOption(), 1, 64 );
 
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1 = new QgsSettingsEntryDouble( QStringLiteral( "chamferfillet-fillet-value1" ), QgsSettingsTree::sTreeDigitizing, 0.0, QStringLiteral( "For fillet/chamfer operations, radius or distance1." ) );
+
+const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2 = new QgsSettingsEntryDouble( QStringLiteral( "chamferfillet-fillet-value2" ), QgsSettingsTree::sTreeDigitizing, 0.0, QStringLiteral( "For chamfer operation, distance2." ) );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1 = new QgsSettingsEntryBool( QStringLiteral( "chamferfillet-fillet-lock1" ), QgsSettingsTree::sTreeDigitizing, false, QStringLiteral( "For fillet/chamfer operations, locks distance1." ) );
+
+const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2 = new QgsSettingsEntryBool( QStringLiteral( "chamferfillet-fillet-lock2" ), QgsSettingsTree::sTreeDigitizing, false, QStringLiteral( "For fillet/chamfer operations, locks distance2." ) );
+
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsDigitizingConvertToCurve = new QgsSettingsEntryBool( QStringLiteral( "convert-to-curve" ), QgsSettingsTree::sTreeDigitizing, false );
 
 const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance = new QgsSettingsEntryDouble( QStringLiteral( "convert-to-curve-angle-tolerance" ), QgsSettingsTree::sTreeDigitizing, 1e-6 );
