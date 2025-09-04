@@ -89,9 +89,6 @@ class TestQgs3DRendering : public QgsTest
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
-    void testChunkedEntityElevationDtm();
-
-  private:
     void testLights();
     void testFlatTerrain();
     void testDemTerrain();
@@ -131,7 +128,9 @@ class TestQgs3DRendering : public QgsTest
     void test3DSceneExporter();
     void test3DSceneExporterBig();
     void test3DSceneExporterDEM();
+    void testChunkedEntityElevationDtm();
 
+  private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
 
     void do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount,        //
