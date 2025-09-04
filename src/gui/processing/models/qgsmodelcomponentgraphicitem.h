@@ -370,6 +370,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     /**
      * Returns the fallback color if the parameter or output does not have a specific color.
+     * 
+     * \since QGIS 4.0
      */
     QColor fallbackColor() const { return mFallbackColor; };
 

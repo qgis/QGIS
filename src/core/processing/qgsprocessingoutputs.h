@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     /**
     * Returns the color to use for the output in model designer windows.
     *
-    * \since QGIS 3.44
+    * \since QGIS 4.0
     */
     virtual QColor modelColor() const;
 

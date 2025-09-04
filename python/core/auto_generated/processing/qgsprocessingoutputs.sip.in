@@ -70,7 +70,7 @@ Constructor for QgsProcessingOutputDefinition.
 %Docstring
 Returns the color to use for the output in model designer windows.
 
-.. versionadded:: 3.44
+.. versionadded:: 4.0
 %End
 
     virtual QString type() const = 0;
