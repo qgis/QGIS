@@ -27,6 +27,8 @@
 #include "qgsvector3d.h"
 #include "qgis_core.h"
 #include "qgsgeometry.h"
+#include "qgsexception.h"
+#include "qgslogger.h"
 
 class QgsGeometry;
 class QgsSfcgalGeometry;
@@ -53,6 +55,16 @@ class QgsSfcgalGeometry;
     QgsDebugError( sfcgal::errorHandler()->getFullText() );                                           \
     return ( defaultObj );                                                                            \
   }
+
+/// check if no error has been caught else add stacktrace entry, log the stacktrace and throw an exception
+#define THROW_ON_ERROR(errorMsg) \
+  if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ), __FILE__, __FUNCTION__, __LINE__ ) ) \
+  {                                                                                                   \
+    QgsDebugError( sfcgal::errorHandler()->getFullText() );                                           \
+    throw QgsSfcgalException( sfcgal::errorHandler()->getFullText() );                                \
+  }
+
+
 
 /**
  * Contains SFCGAL related utilities and functions.

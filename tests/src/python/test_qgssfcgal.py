@@ -18,6 +18,7 @@ from qgis.core import (
     QgsConstWkbPtr,
     QgsPoint,
     QgsPolyhedralSurface,
+    QgsSfcgalException,
     QgsSfcgalGeometry,
     QgsVector3D,
 )
@@ -30,9 +31,7 @@ class TestQgsSFCGAL(QgisTestCase):
 
     def test_constructor(self):
         default_geom = QgsSfcgalGeometry(QgsPolyhedralSurface())
-        is_empty = default_geom.isEmpty()
-        self.assertFalse(default_geom.lastError())
-        self.assertTrue(is_empty)
+        self.assertTrue(default_geom.isEmpty())
 
         surface = QgsPolyhedralSurface()
         surface_wkt = "POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 1 0,0 0 0)))"
@@ -41,67 +40,44 @@ class TestQgsSFCGAL(QgisTestCase):
         self.assertEqual(surface.numPatches(), 1)
         self.assertTrue(surface.is3D())
         geom_surface = QgsSfcgalGeometry(surface)
-        is_empty = geom_surface.isEmpty()
-        self.assertFalse(geom_surface.lastError())
-        self.assertFalse(is_empty)
-        wkt_out = geom_surface.asWkt(0)
-        self.assertFalse(geom_surface.lastError())
-        self.assertEqual(wkt_out, surface_wkt)
+        self.assertFalse(geom_surface.isEmpty())
+        self.assertEqual(geom_surface.asWkt(0), surface_wkt)
 
         point = QgsSfcgalGeometry(QgsPoint(2, 3))
-        is_empty = point.isEmpty()
-        self.assertFalse(point.lastError())
-        self.assertFalse(is_empty)
-        is_valid = point.isValid()
-        self.assertFalse(point.lastError())
-        self.assertTrue(is_valid)
-        wkt_out = point.asWkt(0)
-        self.assertFalse(point.lastError())
-        self.assertEqual(wkt_out, "POINT (2 3)")
+        self.assertFalse(point.isEmpty())
+        self.assertTrue(point.isValid())
+        self.assertEqual(point.asWkt(0), "POINT (2 3)")
+
+        # try to create a geometry from an invalid wkt
+        with self.assertRaises(QgsSfcgalException):
+            QgsSfcgalGeometry.fromWkt("POINT (33 2, 1 2)")
 
     def test_from_wkt(self):
         tin_wkt = "TIN M (((0 0 3,0 1 3,1 1 3,0 0 3)))"
         geom = QgsSfcgalGeometry.fromWkt(tin_wkt)
-        self.assertFalse(geom.lastError())
         self.assertTrue(isinstance(geom, QgsSfcgalGeometry))
-        is_empty = geom.isEmpty()
-        self.assertFalse(geom.lastError())
-        self.assertFalse(is_empty)
+        self.assertFalse(geom.isEmpty())
 
-        wkt_out = geom.asWkt(0)
-        self.assertFalse(geom.lastError())
-        self.assertEqual(wkt_out, tin_wkt)
+        self.assertEqual(geom.asWkt(0), tin_wkt)
 
     def test_from_wkb(self):
         wkb_in = b"\x01\xf8\x03\x00\x00\x02\x00\x00\x00\x01\xf9\x03\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xf9\x03\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
         geom = QgsSfcgalGeometry.fromWkb(QgsConstWkbPtr(wkb_in))
-        self.assertFalse(geom.lastError())
         self.assertTrue(isinstance(geom, QgsSfcgalGeometry))
-        is_empty = geom.isEmpty()
-        self.assertFalse(geom.lastError())
-        self.assertFalse(is_empty)
+        self.assertFalse(geom.isEmpty())
 
         expected_wkt = "TIN Z (((0 0 0,1 0 0,0 1 0,0 0 0)),((1 0 0,1 1 0,0 1 0,1 0 0)))"
-        wkt_out = geom.asWkt(0)
-        self.assertFalse(geom.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(geom.asWkt(0), expected_wkt)
 
-        wkb_out = geom.asWkb()
-        self.assertFalse(geom.lastError())
-        self.assertEqual(wkb_out, wkb_in)
+        self.assertEqual(geom.asWkb(), wkb_in)
 
     def test_is_valid(self):
         surface_wkt = "POLYHEDRALSURFACE Z (((0 0 0,0 100 0,100 100 0,100 0 0,0 0 0)),((0 0 0,50 50 50,0 100 0,0 0 0)),((100 0 0,100 100 0,50 50 50,100 0 0)))"
         sfcgal_geom = QgsSfcgalGeometry.fromWkt(surface_wkt)
-        self.assertFalse(sfcgal_geom.lastError())
 
-        is_empty = sfcgal_geom.isEmpty()
-        self.assertFalse(sfcgal_geom.lastError())
-        self.assertFalse(is_empty)
+        self.assertFalse(sfcgal_geom.isEmpty())
 
-        is_valid = sfcgal_geom.isValid()
-        self.assertFalse(sfcgal_geom.lastError())
-        self.assertTrue(is_valid)
+        self.assertTrue(sfcgal_geom.isValid())
 
     def test_part_count(self):
         geoms = [
@@ -127,13 +103,9 @@ class TestQgsSFCGAL(QgisTestCase):
         ]
         for geom in geoms:
             sfcgal_geom = QgsSfcgalGeometry.fromWkt(geom[0])
-            self.assertFalse(sfcgal_geom.lastError())
-            wkt_out = sfcgal_geom.asWkt(0)
-            self.assertFalse(sfcgal_geom.lastError())
-            self.assertEqual(wkt_out, geom[0])
+            self.assertEqual(sfcgal_geom.asWkt(0), geom[0])
 
             part_count = sfcgal_geom.partCount()
-            self.assertFalse(sfcgal_geom.lastError())
             self.assertEqual(part_count, geom[1])
 
     def test_area(self):
@@ -153,137 +125,100 @@ class TestQgsSFCGAL(QgisTestCase):
         for geom in geoms:
             sfcgal_geom = QgsSfcgalGeometry.fromWkt(geom[0])
 
-            self.assertFalse(sfcgal_geom.lastError())
-            wkt_out = sfcgal_geom.asWkt(0)
-            self.assertFalse(sfcgal_geom.lastError())
-            self.assertEqual(wkt_out, geom[0])
-
-            area = sfcgal_geom.area()
-            self.assertFalse(sfcgal_geom.lastError())
-            self.assertAlmostEqual(area, geom[1], 5)
+            self.assertEqual(sfcgal_geom.asWkt(0), geom[0])
+            self.assertAlmostEqual(sfcgal_geom.area(), geom[1], 5)
 
     def test_scale(self):
         wkt = "LINESTRING Z (0 0 0,1 0 0,0 1 0,0 0 1,0 0 0)"
         sfcgal_geom = QgsSfcgalGeometry.fromWkt(wkt)
-        self.assertFalse(sfcgal_geom.lastError())
 
         scaled_geom = sfcgal_geom.scale(QgsVector3D(1.5, 2, 0.5))
-        self.assertFalse(scaled_geom.lastError())
         expected_wkt = (
             "LINESTRING Z (0.0 0.0 0.0,1.5 0.0 0.0,0.0 2.0 0.0,0.0 0.0 0.5,0.0 0.0 0.0)"
         )
-        wkt_out = scaled_geom.asWkt(1)
-        self.assertFalse(scaled_geom.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(scaled_geom.asWkt(1), expected_wkt)
 
     def test_rotate(self):
         # 2D rotation
         wkt = "TRIANGLE ((1 1,2 2,2 1,1 1))"
         sfcgal_geom = QgsSfcgalGeometry.fromWkt(wkt)
-        self.assertFalse(sfcgal_geom.lastError())
 
         rotated_2d_geom = sfcgal_geom.rotate2D(pi / 2.0, QgsPoint(1, 1))
-        self.assertFalse(rotated_2d_geom.lastError())
         expected_wkt = "TRIANGLE ((1 1,0 2,1 2,1 1))"
-        wkt_out = rotated_2d_geom.asWkt(0)
-        self.assertFalse(rotated_2d_geom.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(rotated_2d_geom.asWkt(0), expected_wkt)
 
         # 3D rotation
         rotated_3d_geom = sfcgal_geom.rotate3D(
             pi / 2.0, QgsVector3D(2, 1, 0), QgsPoint(1, 1, 0)
         )
-        self.assertFalse(rotated_3d_geom.lastError())
         expected_wkt = "TRIANGLE Z ((1 1 0,2 2 0,2 1 0,1 1 0))"
-        wkt_out = rotated_3d_geom.asWkt(0)
-        self.assertFalse(rotated_3d_geom.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(rotated_3d_geom.asWkt(0), expected_wkt)
 
     def test_intersection(self):
-        point = QgsSfcgalGeometry(QgsPoint(2, 3))
+        invalid_polygon = QgsSfcgalGeometry(QgsPoint(2, 3))
 
         polygon1 = QgsSfcgalGeometry.fromWkt("POLYGON ((0 0,10 0,10 10,0 10,0 0))")
-        self.assertFalse(polygon1.lastError())
 
-        intersects = polygon1.intersects(point)
-        self.assertFalse(polygon1.lastError())
+        intersects = polygon1.intersects(invalid_polygon)
         self.assertTrue(intersects)
 
         polygon2 = QgsSfcgalGeometry.fromWkt("POLYGON ((-1 -1,1 -1,1 1,-1 1,-1 -1))")
-        self.assertFalse(polygon2.lastError())
-        intersects = polygon2.intersects(point)
-        self.assertFalse(polygon2.lastError())
+        intersects = polygon2.intersects(invalid_polygon)
         self.assertFalse(intersects)
 
         intersects = polygon2.intersects(polygon1)
-        self.assertFalse(polygon2.lastError())
         self.assertTrue(intersects)
 
         intersection = polygon2.intersection(polygon1)
-        self.assertFalse(intersection.lastError())
-        wkt_out = intersection.asWkt(0)
-        self.assertFalse(intersection.lastError())
         expected_intersection = "POLYGON ((0 1,0 0,1 0,1 1,0 1))"
-        self.assertEqual(wkt_out, expected_intersection)
+        self.assertEqual(intersection.asWkt(0), expected_intersection)
 
     def test_combine(self):
-        point = QgsSfcgalGeometry(QgsPoint(2, 3))
+        invalid_polygon = QgsSfcgalGeometry(QgsPoint(2, 3))
 
-        combined_geom = point.combine([QgsPoint(4, 5)])
-        self.assertFalse(combined_geom.lastError())
-        wkt_out = combined_geom.asWkt(0)
+        combined_geom = invalid_polygon.combine([QgsPoint(4, 5)])
         expected_wkt = "MULTIPOINT ((2 3),(4 5))"
-        self.assertFalse(combined_geom.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(combined_geom.asWkt(0), expected_wkt)
 
     def test_difference(self):
         polygon1 = QgsSfcgalGeometry.fromWkt("POLYGON ((0 0,10 0,10 10,0 10,0 0))")
-        self.assertFalse(polygon1.lastError())
         polygon2 = QgsSfcgalGeometry.fromWkt("POLYGON ((-1 -1,1 -1,1 1,-1 1,-1 -1))")
-        self.assertFalse(polygon2.lastError())
 
         diff_geom = polygon1.difference(polygon2)
-        self.assertFalse(diff_geom.lastError())
-        wkt_out = diff_geom.asWkt(0)
         expected_wkt = "POLYGON ((0 10,0 1,1 1,1 0,10 0,10 10,0 10))"
-        self.assertFalse(diff_geom.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(diff_geom.asWkt(0), expected_wkt)
 
     def test_triangulate(self):
         poly_wkt = "POLYGON ((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))"
         polygon = QgsSfcgalGeometry.fromWkt(poly_wkt)
-        self.assertFalse(polygon.lastError())
 
         triangulation = polygon.triangulate()
-        self.assertFalse(triangulation.lastError())
         self.assertEqual(triangulation.wkbType(), Qgis.WkbType.TIN)
         self.assertEqual(triangulation.partCount(), 10)
 
     def test_convexhull(self):
         poly_wkt = "POLYGON ((0.0 0.0,1.0 0.0,1.0 1.0,0.0 1.0,0.0 0.0),(0.2 0.2,0.2 0.8,0.8 0.8,0.8 0.2,0.2 0.2))"
         polygon = QgsSfcgalGeometry.fromWkt(poly_wkt)
-        self.assertFalse(polygon.lastError())
 
         convex_hull = polygon.convexHull()
-        self.assertFalse(convex_hull.lastError())
 
         expected_wkt = "POLYGON ((0 0,1 0,1 1,0 1,0 0))"
-        wkt_out = convex_hull.asWkt(0)
-        self.assertFalse(convex_hull.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(convex_hull.asWkt(0), expected_wkt)
 
     def test_approximate_media_axis(self):
         poly_wkt = "TRIANGLE ((1 1,2 1,2 2,1 1))"
         polygon = QgsSfcgalGeometry.fromWkt(poly_wkt)
-        self.assertFalse(polygon.lastError())
 
         medial_axis = polygon.approximateMedialAxis()
-        self.assertFalse(medial_axis.lastError())
 
         expected_wkt = "MULTILINESTRING ((1.0 1.0,1.7 1.3),(2.0 2.0,1.7 1.3))"
-        wkt_out = medial_axis.asWkt(1)
-        self.assertFalse(medial_axis.lastError())
-        self.assertEqual(wkt_out, expected_wkt)
+        self.assertEqual(medial_axis.asWkt(1), expected_wkt)
+
+        # medial axis does not work on an invalid geometry
+        invalid_polygon_wkt = "POLYGON((0 0, 2 2, 0 2, 2 0, 0 0))"
+        invalid_polygon = QgsSfcgalGeometry.fromWkt(invalid_polygon_wkt)
+        with self.assertRaises(QgsSfcgalException):
+            invalid_polygon.approximateMedialAxis()
 
 
 if __name__ == "__main__":

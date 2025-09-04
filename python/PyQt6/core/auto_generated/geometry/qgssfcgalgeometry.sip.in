@@ -36,52 +36,40 @@ Constructor with :py:class:`QgsAbstractGeometry` pointer.
 
 Will not take ownership.
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom );
 %Docstring
 Constructor with :py:class:`QgsAbstractGeometry` reference.
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QgsSfcgalGeometry( const QgsGeometry &qgsGeom );
 %Docstring
 Constructor with :py:class:`QgsGeometry` reference.
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QgsSfcgalGeometry( const QString &wkt );
 %Docstring
 Constructor from WKT
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom );
 %Docstring
 Copy constructor
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
-%End
-
-    QString lastError() const /HoldGIL/;
-%Docstring
-Returns an error string referring to the last error encountered either
-when this geometry was created or when an operation was performed on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
 
@@ -91,9 +79,8 @@ Returns the geometry converted to a QGIS geometry object. This method is
 slow to call, as it always involves re-conversion of the underlying
 SFCGAL geometry object.
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     Qgis::WkbType wkbType() const;
@@ -101,12 +88,11 @@ information can be retrieved by calling
 Returns type of the geometry as a WKB type (point / linestring / polygon
 etc.)
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 :return: type of the geometry as a WKB type (point / linestring /
          polygon etc.)
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QString geometryType() const  /HoldGIL/;
@@ -115,13 +101,12 @@ Returns type of the geometry as a OGC string in CamelCase
 
 :return: type of the geometry as a OGC string in CamelCase
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> clone() const;
@@ -137,9 +122,8 @@ Creates a new geometry from a WKB byte pointer
 
 :return: new geometry from WKB
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
@@ -150,9 +134,8 @@ Export the geometry as WKB
 
 :return: WKB data
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt );
@@ -163,9 +146,8 @@ Creates a new geometry from a WKT string.
 
 :return: new geometry from WKT
 
-If an error was encountered while creating the geometry, more
-information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the created geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QString asWkt( int precision = -1 ) const;
@@ -180,9 +162,8 @@ Export the geometry as WKT
 
 :return: WKT data
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> boundary() const;
@@ -194,13 +175,12 @@ ring in the polygon.
 
 :return: boundary for geometry. May be ``None`` for some geometry types.
 
-If an error was encountered while creating the result, more information
-can be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on
-the geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool operator==( const QgsSfcgalGeometry &other ) const;
@@ -216,13 +196,12 @@ Returns true if this == other geometry modulo ``epsilon`` distance
 
 :return: true if this == other geometry modulo ``epsilon`` distance
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     int dimension() const;
@@ -232,13 +211,12 @@ for a point geometry, 1 for a linestring and 2 for a polygon.
 
 :return: geometry dimension
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     int partCount() const;
@@ -253,9 +231,8 @@ Returns the ``geom`` part count.
 
 :return: geometry part count
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool addZValue( double zValue = 0 );
@@ -267,13 +244,12 @@ Adds a z-dimension to the geometry, initialized to a preset value
 
 :return: true if success
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool addMValue( double mValue = 0 );
@@ -285,13 +261,12 @@ Adds a m-dimension to the geometry, initialized to a preset value
 
 :return: true if success
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool dropZValue();
@@ -300,13 +275,12 @@ Drops the z coordinate of the geometry
 
 :return: true if success
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool dropMValue();
@@ -315,13 +289,12 @@ Drops the m coordinate of the geometry
 
 :return: true if success
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     void swapXy();
@@ -330,11 +303,10 @@ Swaps the x and y coordinates of the geometry
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool isValid() const;
@@ -343,8 +315,8 @@ Checks if ``geom`` is valid.
 
 :return: true if valid
 
-If the geometry is invalid, more information can be retrieved by calling
-:py:func:`~QgsSfcgalGeometry.lastError` on the geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool isEmpty() const;
@@ -353,9 +325,8 @@ Checks if ``geom`` is empty.
 
 :return: true if empty
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     double area() const;
@@ -364,9 +335,8 @@ Computes the area of ``geom``.
 
 :return: geometry area
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     double length() const;
@@ -375,13 +345,12 @@ Computes the max length of ``geom``.
 
 :return: geometry length
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool isSimple() const;
@@ -392,13 +361,12 @@ Checks this geometry is simple.
 
 :return: true if simple
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     QgsPoint centroid() const;
@@ -407,13 +375,12 @@ Calculates the centroid of this geometry.
 
 :return: geometry centroid
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const;
@@ -424,13 +391,12 @@ Translate this geometry by vector ``translation``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const;
@@ -443,9 +409,8 @@ Scale this geometry by vector ``scaleFactor``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center ) const;
@@ -457,9 +422,8 @@ returned geometry.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const;
@@ -473,9 +437,8 @@ returned geometry.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool intersects( const QgsAbstractGeometry *otherGeom ) const;
@@ -486,9 +449,8 @@ Checks if ``otherGeom`` intersects this.
 
 :return: true if intersection exists
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool intersects( const QgsSfcgalGeometry &otherGeom ) const;
@@ -499,9 +461,8 @@ Checks if ``otherGeom`` intersects this.
 
 :return: true if intersection exists
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const;
@@ -512,9 +473,8 @@ Calculate the intersection of this and ``otherGeom``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const;
@@ -525,9 +485,8 @@ Calculate the intersection of this and ``otherGeom``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList ) const;
@@ -538,9 +497,8 @@ Calculate the combination of this and ``geomList``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const;
@@ -551,9 +509,8 @@ Calculate the difference of this and ``otherGeom``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const;
@@ -564,9 +521,8 @@ Calculate the difference of this and ``otherGeom``.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> triangulate() const;
@@ -576,9 +532,8 @@ Triangulates this geometry using constraint 2D Delaunay Triangulation
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> convexHull() const;
@@ -587,9 +542,8 @@ Calculate the convex hull (bounding box).
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> envelope() const;
@@ -598,13 +552,12 @@ Calculate the envelope (bounding box).
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     bool covers( const QgsSfcgalGeometry &otherGeom ) const;
@@ -617,9 +570,8 @@ a 2D covers test is carried out.
 
 :return: true if coverage exists
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D ) const;
@@ -635,9 +587,8 @@ fails, a null pointer is returned.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle ) const;
@@ -653,9 +604,8 @@ expanding it. If the operation fails, a null pointer is returned.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const;
@@ -668,13 +618,12 @@ Simplifies a geometry using the CGAL algorithm
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-returned geometry.
-
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const;
@@ -686,9 +635,8 @@ a null pointer is returned.
 
 :return: new geometry
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
     std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const;
@@ -701,9 +649,8 @@ null pointer is returned.
 
 :return: new geometry as 2D multilinestring
 
-If an error was encountered during the operation, more information can
-be retrieved by calling :py:func:`~QgsSfcgalGeometry.lastError` on the
-geometry.
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
 %End
 
   protected:
