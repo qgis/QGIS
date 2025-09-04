@@ -1110,7 +1110,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         tables = conn.executeSql(sqlTables)
 
         self.assertEqual(
-            [["o_2_raster_for_move", "o_4_raster_for_move", "raster_for_move"]],
+            [["o_2_raster_for_move"], ["o_4_raster_for_move"], ["raster_for_move"]],
             tables,
         )
 
