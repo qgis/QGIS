@@ -844,7 +844,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
         
         // Always create a label widget for consistent styling and text selection
         QLabel *valueLabel = createStyledLabel( representedValue, showFullText );
-        attrItem->setData( 1, Qt::DisplayRole, QString() );
+        attrItem->setData( 1, Qt::DisplayRole, representedValue );
         QTreeWidget *tw = attrItem->treeWidget();
         tw->setItemWidget( attrItem, 1, valueLabel );
       }
