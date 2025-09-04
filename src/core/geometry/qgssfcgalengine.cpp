@@ -915,7 +915,7 @@ sfcgal::shared_geom QgsSfcgalEngine::buffer3D( const sfcgal::geometry *geom, dou
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
-  sfcgal_buffer3d_type_t buffer_type;
+  sfcgal_buffer3d_type_t buffer_type = sfcgal_buffer3d_type_t::SFCGAL_BUFFER3D_FLAT;
   switch ( joinStyle3D )
   {
     case Qgis::JoinStyle3D::Flat:

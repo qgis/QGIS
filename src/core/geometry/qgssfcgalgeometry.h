@@ -56,50 +56,37 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * Will not take ownership.
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom );
+    QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Constructor with QgsAbstractGeometry reference.
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom );
+    QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Constructor with QgsGeometry reference.
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QgsSfcgalGeometry( const QgsGeometry &qgsGeom );
+    QgsSfcgalGeometry( const QgsGeometry &qgsGeom ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Constructor from WKT
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
     */
-    QgsSfcgalGeometry( const QString &wkt );
+    QgsSfcgalGeometry( const QString &wkt ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Copy constructor
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
     */
-    QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom );
-
-    /**
-     * Returns an error string referring to the last error encountered
-     * either when this geometry was created or when an operation
-     * was performed on the geometry.
-     *
-     */
-    QString lastError() const SIP_HOLDGIL { return mLastError; }
+    QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Returns the underlying SFCGAL geometry
@@ -111,33 +98,29 @@ class CORE_EXPORT QgsSfcgalGeometry
      * Returns the geometry converted to a QGIS geometry object.
      * This method is slow to call, as it always involves re-conversion of the underlying SFCGAL geometry object.
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsAbstractGeometry> asQgisGeometry() const;
+    std::unique_ptr<QgsAbstractGeometry> asQgisGeometry() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * \return type of the geometry as a WKB type (point / linestring / polygon etc.)
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    Qgis::WkbType wkbType() const;
+    Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Returns type of the geometry as a OGC string in CamelCase
      * \return type of the geometry as a OGC string in CamelCase
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QString geometryType() const SIP_THROW( QgsNotSupportedException ) SIP_HOLDGIL;
+    QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
 
     /**
      * Clones the geometry by performing a deep copy
@@ -149,10 +132,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param wkbPtr WKB byte pointer
      * \return new geometry from WKB
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    static std::unique_ptr<QgsSfcgalGeometry> fromWkb( const QgsConstWkbPtr &wkbPtr );
+    static std::unique_ptr<QgsSfcgalGeometry> fromWkb( const QgsConstWkbPtr &wkbPtr ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Export the geometry as WKB
@@ -160,20 +142,18 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param flags argument specifies flags controlling WKB export behavior.
      * \return WKB data
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Creates a new geometry from a WKT string.
      * \param wkt WTK string
      * \return new geometry from WKT
      *
-     * If an error was encountered while creating the geometry, more information can be retrieved
-     * by calling lastError() on the created geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt );
+    static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt ) SIP_THROW( QgsSfcgalException );
 
     /**
      * Export the geometry as WKT
@@ -181,24 +161,21 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param precision Floating point precision for WKT coordinates. Setting to -1 yields rational number WKT (not decimal) f.e. "Point(1/3, 1/6, 1/4)". Note that this will produce WKT which is not compatible with other QGIS methods or external libraries.
      * \return WKT data
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QString asWkt( int precision = -1 ) const;
+    QString asWkt( int precision = -1 ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * \return boundary for geometry. May be NULLPTR for some geometry types.
      *
-     * If an error was encountered while creating the result, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> boundary() const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr<QgsSfcgalGeometry> boundary() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Returns true if this == other geometry
@@ -207,8 +184,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * This operator requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool operator==( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException );
+    bool operator==( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Returns true if this != other geometry
@@ -217,8 +195,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * This operator requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool operator!=( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException );
+    bool operator!=( const QgsSfcgalGeometry &other ) const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Returns true if this == other geometry modulo \a epsilon distance
@@ -226,28 +205,24 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param epsilon tolerance
      * \return true if this == other geometry modulo \a epsilon distance
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const SIP_THROW( QgsNotSupportedException );
+    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
      * 1 for a linestring and 2 for a polygon.
      * \return geometry dimension
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    int dimension() const SIP_THROW( QgsNotSupportedException );
+    int dimension() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Returns the \a geom part count.
@@ -258,119 +233,100 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \return geometry part count
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    int partCount() const;
+    int partCount() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Adds a z-dimension to the geometry, initialized to a preset value (existing Z values remains unchanged).
      * \param zValue z value to use
      * \return true if success
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool addZValue( double zValue = 0 ) SIP_THROW( QgsNotSupportedException );
+    bool addZValue( double zValue = 0 ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Adds a m-dimension to the geometry, initialized to a preset value (existing M values remains unchanged).
      * \param mValue m value to use
      * \return true if success
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool addMValue( double mValue = 0 ) SIP_THROW( QgsNotSupportedException );
+    bool addMValue( double mValue = 0 ) SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Drops the z coordinate of the geometry
      * \return true if success
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool dropZValue() SIP_THROW( QgsNotSupportedException );
+    bool dropZValue() SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Drops the m coordinate of the geometry
      * \return true if success
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool dropMValue() SIP_THROW( QgsNotSupportedException );
+    bool dropMValue() SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Swaps the x and y coordinates of the geometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    void swapXy() SIP_THROW( QgsNotSupportedException );
+    void swapXy() SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Checks if \a geom is valid.
      * \return true if valid
      *
-     * If the geometry is invalid, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool isValid() const;
+    bool isValid() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Checks if \a geom is empty.
      * \return true if empty
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool isEmpty() const;
+    bool isEmpty() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Computes the area of \a geom.
      * \return geometry area
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    double area() const;
+    double area() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Computes the max length of \a geom.
      * \return geometry length
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    double length() const SIP_THROW( QgsNotSupportedException );
+    double length() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Checks this geometry is simple.
@@ -379,28 +335,24 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \return true if simple
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool isSimple() const SIP_THROW( QgsNotSupportedException );
+    bool isSimple() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Calculates the centroid of this geometry.
      *
      * \return geometry centroid
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QgsPoint centroid() const SIP_THROW( QgsNotSupportedException );
+    QgsPoint centroid() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Translate this geometry by vector \a translation.
@@ -408,14 +360,12 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param translation translation vector (2D or 3D)
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Scale this geometry by vector \a scaleFactor.
@@ -424,11 +374,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param center optional parameter. If specified, scaling will be performed relative to this center
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * 2D Rotate this geometry around point \a center by angle \a angle
@@ -437,11 +385,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param center rotation center
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center ) const;
+    std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * 3D Rotate this geometry around axis \a axisVector by angle \a angle
@@ -451,11 +397,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param center optional parameter. If specified, rotation will be applied around axis and center point
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const;
+    std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Checks if \a otherGeom intersects this.
@@ -463,11 +407,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom geometry to perform the operation
      * \return true if intersection exists
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool intersects( const QgsAbstractGeometry *otherGeom ) const;
+    bool intersects( const QgsAbstractGeometry *otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Checks if \a otherGeom intersects this.
@@ -475,11 +417,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom geometry to perform the operation
      * \return true if intersection exists
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool intersects( const QgsSfcgalGeometry &otherGeom ) const;
+    bool intersects( const QgsSfcgalGeometry &otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the intersection of this and \a otherGeom.
@@ -487,11 +427,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom geometry to perform the operation
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the intersection of this and \a otherGeom.
@@ -499,11 +437,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom geometry to perform the operation
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the combination of this and \a geomList.
@@ -511,11 +447,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param geomList list of geometries to perform the operation
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList ) const;
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the difference of this and \a otherGeom.
@@ -523,11 +457,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom geometry to perform the operation
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the difference of this and \a otherGeom.
@@ -535,44 +467,36 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom geometry to perform the operation
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const;
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Triangulates this geometry using constraint 2D Delaunay Triangulation (keep Z if defined)
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> triangulate() const;
+    std::unique_ptr<QgsSfcgalGeometry> triangulate() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the convex hull (bounding box).
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> convexHull() const;
+    std::unique_ptr<QgsSfcgalGeometry> convexHull() const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the envelope (bounding box).
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> envelope() const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr<QgsSfcgalGeometry> envelope() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Cover test on 2D or 3D geometries
@@ -582,11 +506,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param otherGeom second geometry to perform the operation
      * \return true if coverage exists
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    bool covers( const QgsSfcgalGeometry &otherGeom ) const;
+    bool covers( const QgsSfcgalGeometry &otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate a 3D buffer where all points are at \a distance from the original geometry.
@@ -599,11 +521,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param joinStyle3D the type of buffer to compute
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D ) const;
+    std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate a 2D buffer where all points are at \a distance from the original geometry.
@@ -615,11 +535,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param joinStyle the type of buffer to compute. Only round is supported.
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle ) const;
+    std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Simplifies a geometry using the CGAL algorithm
@@ -628,14 +546,12 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param preserveTopology Whether to preserve topology during simplification
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the returned geometry.
-     *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const SIP_THROW( QgsNotSupportedException, QgsSfcgalException );
 
     /**
      * Calculate an extrusion of the original geometry.
@@ -644,11 +560,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \param extrusion extrusion vector (2D or 3D)
      * \return new geometry
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const;
+    std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate a 2D approximate medial axis of \a geom based on its straight skeleton.
@@ -658,11 +572,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \return new geometry as 2D multilinestring
      *
-     * If an error was encountered during the operation, more information can be retrieved
-     * by calling lastError() on the geometry.
-     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const;
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
 
   protected:
 
@@ -673,9 +585,6 @@ class CORE_EXPORT QgsSfcgalGeometry
 
   private:
     sfcgal::shared_geom mSfcgalGeom;
-
-    //! Last error encountered
-    mutable QString mLastError;
 };
 
 
