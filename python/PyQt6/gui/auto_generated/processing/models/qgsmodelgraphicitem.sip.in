@@ -200,7 +200,6 @@ Returns ``True`` if the parameter is set to the default parameter value.
 
   signals:
 
-
 };
 
 

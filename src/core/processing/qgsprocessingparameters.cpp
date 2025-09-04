@@ -3104,7 +3104,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
   else if ( value.userType() == qMetaTypeId<QgsRectangle>() )
   {
     const QgsGeometry g = QgsGeometry::fromRect( value.value<QgsRectangle>() );
-    return g.typeName();
+    return QgsWkbTypes::geometryDisplayString( g.type() );
   }
 
   else if ( value.userType() == qMetaTypeId<QgsReferencedRectangle>() )
@@ -3113,9 +3113,9 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
     if ( !g.isNull() )
     {
 
-      return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
+      return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), QgsWkbTypes::geometryDisplayString( g.type() ) );
     }
-    return g.typeName();
+    return QgsWkbTypes::geometryDisplayString( g.type() );
   }
 
   else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
@@ -4169,7 +4169,7 @@ QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &valu
     if ( value.userType() == qMetaTypeId< QgsGeometry>() )
     {
       const QgsGeometry g = value.value<QgsGeometry>();
-      return g.typeName();
+      return QgsWkbTypes::geometryDisplayString( g.type() );
     }
 
     else if ( value.userType() == qMetaTypeId<QgsReferencedGeometry>() )
@@ -4177,9 +4177,9 @@ QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &valu
       const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
       if ( !g.isNull() )
       {
-        return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), g.typeName() );
+        return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), QgsWkbTypes::geometryDisplayString( g.type() ) );
       }
-      return g.typeName();
+      return QgsWkbTypes::geometryDisplayString( g.type() );
     }
 
     else if ( value.userType() == QMetaType::QString )
@@ -4189,7 +4189,7 @@ QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &valu
       QgsGeometry g = QgsGeometry::fromWkt( value.toString() );
       if ( !g.isNull() )
       {
-        return g.typeName();
+        return QgsWkbTypes::geometryDisplayString( g.type() );
       }
     }
   }
