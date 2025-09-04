@@ -48,12 +48,17 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     /**
      * Returns the fill symbol for the series with matching \a index.
      */
-    QgsFillSymbol *fillSymbol( int index ) const;
+    QgsFillSymbol *fillSymbolAt( int index ) const;
 
     /**
      * Sets the fill \a symbol to use for the series with matching \a index.
      */
-    void setFillSymbol( int index, QgsFillSymbol *symbol SIP_TRANSFER );
+    void setFillSymbolAt( int index, QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the fill symbols list count.
+     */
+    int fillSymbolCount() const { return mFillSymbols.size(); }
 
     //! Returns a new bar chart.
     static QgsBarChartPlot *create() SIP_FACTORY;

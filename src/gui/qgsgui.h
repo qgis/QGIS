@@ -326,6 +326,14 @@ class GUI_EXPORT QgsGui : public QObject
     static void initCalloutWidgets() SIP_SKIP;
 
     /**
+     * Initializes plot widgets.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static void initPlotWidgets() SIP_SKIP;
+
+    /**
      *  Checks whether QWebEngineView is available to display HTML content.
      *
      * \since QGIS 3.42

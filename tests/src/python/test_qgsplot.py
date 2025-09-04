@@ -928,7 +928,7 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setFillSymbol(0, series_symbol)
+        plot.setFillSymbolAt(0, series_symbol)
 
         # set symbol for second series
         series_symbol = QgsFillSymbol.createSimple(
@@ -939,7 +939,7 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setFillSymbol(1, series_symbol)
+        plot.setFillSymbolAt(1, series_symbol)
 
         data = QgsPlotData()
         series = QgsXyPlotSeries()
@@ -1036,7 +1036,7 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setFillSymbol(0, series_symbol)
+        plot.setFillSymbolAt(0, series_symbol)
 
         # set symbol for second series
         series_symbol = QgsFillSymbol.createSimple(
@@ -1047,7 +1047,7 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setFillSymbol(1, series_symbol)
+        plot.setFillSymbolAt(1, series_symbol)
 
         data = QgsPlotData()
         series = QgsXyPlotSeries()
@@ -1140,9 +1140,9 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setLineSymbol(0, series_symbol)
+        plot.setLineSymbolAt(0, series_symbol)
         # remove default marker
-        plot.setMarkerSymbol(0, None)
+        plot.setMarkerSymbolAt(0, None)
 
         # set symbols for second series
         series_symbol = QgsLineSymbol.createSimple(
@@ -1152,7 +1152,7 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setLineSymbol(1, series_symbol)
+        plot.setLineSymbolAt(1, series_symbol)
         series_symbol = QgsMarkerSymbol.createSimple(
             {
                 "color": "#BB0000",
@@ -1162,7 +1162,7 @@ class TestQgsPlot(QgisTestCase):
                 "width": 3,
             }
         )
-        plot.setMarkerSymbol(1, series_symbol)
+        plot.setMarkerSymbolAt(1, series_symbol)
 
         data = QgsPlotData()
         series = QgsXyPlotSeries()
@@ -1258,9 +1258,9 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setLineSymbol(0, series_symbol)
+        plot.setLineSymbolAt(0, series_symbol)
         # remove default marker
-        plot.setMarkerSymbol(0, None)
+        plot.setMarkerSymbolAt(0, None)
 
         # set symbols for second series
         series_symbol = QgsLineSymbol.createSimple(
@@ -1270,7 +1270,7 @@ class TestQgsPlot(QgisTestCase):
                 "outline_width": 1,
             }
         )
-        plot.setLineSymbol(1, series_symbol)
+        plot.setLineSymbolAt(1, series_symbol)
         series_symbol = QgsMarkerSymbol.createSimple(
             {
                 "color": "#BB0000",
@@ -1280,7 +1280,7 @@ class TestQgsPlot(QgisTestCase):
                 "width": 3,
             }
         )
-        plot.setMarkerSymbol(1, series_symbol)
+        plot.setMarkerSymbolAt(1, series_symbol)
 
         data = QgsPlotData()
         series = QgsXyPlotSeries()
