@@ -1086,7 +1086,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # look for original overviews after move - should be empty
         sqlTables = """
-        SELECT * FROM pg_catalog.pg_tables 
+        SELECT tablename FROM pg_catalog.pg_tables 
         WHERE schemaname = 'qgis_test' 
         AND tablename LIKE '%raster_for_move'
         ORDER BY tablename;
@@ -1101,7 +1101,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         # look for overviews after move in the new schema - should be present
         sqlTables = """
-        SELECT * FROM pg_catalog.pg_tables 
+        SELECT tablename FROM pg_catalog.pg_tables 
         WHERE schemaname = 'qgis_schema_test' 
         AND tablename LIKE '%raster_for_move'
         ORDER BY tablename;
