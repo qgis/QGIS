@@ -113,6 +113,7 @@ void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentN
 
     if ( deleteParentData )
     {
+      qDebug() << "cleanupHeightMapCache removing tile:" << parent->tileId().text();
       mLoaderMap.remove( parent->tileId().text() );
     }
   }
