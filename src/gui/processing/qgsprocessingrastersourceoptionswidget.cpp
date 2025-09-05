@@ -52,5 +52,22 @@ int QgsProcessingRasterSourceOptionsWidget::dpi() const
   return mDpiSpinBox->value();
 }
 
+void QgsProcessingRasterSourceOptionsWidget::setWidgetParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities )
+{
+  mCapabilities = capabilities;
+  updateControlVisibility();
+}
+
+Qgis::RasterProcessingParameterCapabilities QgsProcessingRasterSourceOptionsWidget::widgetParameterCapabilities() const
+{
+  return mCapabilities;
+}
+
+void QgsProcessingRasterSourceOptionsWidget::updateControlVisibility()
+{
+  mReferenceScale->setVisible( mCapabilities.testFlag( Qgis::RasterProcessingParameterCapability::WmsScale ) );
+  mDpiSpinBox->setVisible( mCapabilities.testFlag( Qgis::RasterProcessingParameterCapability::WmsDpi ) );
+}
+
 
 ///@endcond

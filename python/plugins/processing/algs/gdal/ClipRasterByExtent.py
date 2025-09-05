@@ -24,6 +24,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (
+    Qgis,
     QgsRasterFileWriter,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
@@ -74,9 +75,17 @@ class ClipRasterByExtent(GdalAlgorithm):
             "Int8",
         ]
 
-        self.addParameter(
-            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input layer"))
+        input_param = QgsProcessingParameterRasterLayer(
+            self.INPUT, self.tr("Input layer")
         )
+        # Support advance raster options panel
+        input_param.setParameterCapabilities(
+            input_param.parameterCapabilities()
+            | Qgis.RasterProcessingParameterCapability.WmsScale
+            | Qgis.RasterProcessingParameterCapability.WmsDpi
+        )
+        self.addParameter(input_param)
+
         self.addParameter(
             QgsProcessingParameterExtent(self.EXTENT, self.tr("Clipping extent"))
         )

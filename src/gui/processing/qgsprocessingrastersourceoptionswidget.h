@@ -71,6 +71,25 @@ class GUI_EXPORT QgsProcessingRasterSourceOptionsWidget : public QgsPanelWidget,
      * \see setDpi()
      */
     int dpi() const;
+
+    /**
+     * Sets the supported \a capabilities of the raster layer parameter and updates control visibility based on them.
+     *
+     * \param capabilities Capabilities to be set to the widget.
+     * \since QGIS 4.0
+     */
+    void setWidgetParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities );
+
+    /**
+     * Returns flags containing the supported capabilities of the raster layer parameter.
+     * \since QGIS 4.0
+     */
+    Qgis::RasterProcessingParameterCapabilities widgetParameterCapabilities() const;
+
+  private:
+    void updateControlVisibility();
+
+    Qgis::RasterProcessingParameterCapabilities mCapabilities;
 };
 
 ///@endcond
