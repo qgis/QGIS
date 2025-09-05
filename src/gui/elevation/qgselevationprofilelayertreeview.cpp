@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgselevationprofilelayertreeview.h"
 #include "moc_qgselevationprofilelayertreeview.cpp"
 #include "qgslayertreenode.h"
@@ -29,6 +30,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmaplayerutils.h"
+#include "qgsprofilesourceregistry.h"
 
 #include <QHeaderView>
 #include <QContextMenuEvent>
@@ -374,6 +376,7 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
       }
 
       case QgsLayerTreeNode::NodeGroup:
+      case QgsLayerTreeNode::NodeCustom:
         break;
     }
     return true;
@@ -471,6 +474,34 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
       node->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
     }
   }
+}
+
+void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *project )
+{
+  const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
+  for ( auto *source : sources )
+  {
+    addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
+  }
+
+  populateInitialLayers( project );
+}
+
+void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )
+{
+  std::unique_ptr< QgsLayerTreeCustomNode > customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
+  customNode->setItemVisibilityChecked( true );
+  // Mark the node so that we know which custom nodes correspond to elevation profile sources
+  customNode->setCustomProperty( QStringLiteral( "source" ), QStringLiteral( "elevationProfileRegistry" ) );
+
+  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
+  if ( !node )
+    QgsDebugError( QString( "The custom node with id '%1' could not be added!" ).arg( sourceId ) );
+}
+
+void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )
+{
+  mLayerTree->removeCustomNode( sourceId );
 }
 
 QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()
