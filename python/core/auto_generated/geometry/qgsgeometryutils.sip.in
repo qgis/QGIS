@@ -1190,7 +1190,7 @@ interpolation.
                                const QgsPoint &segment2Start, const QgsPoint &segment2End,
                                double distance1, double distance2,
                                QgsPoint &chamferStart /Out/, QgsPoint &chamferEnd /Out/,
-                               double epsilon = 1e-8 ) /HoldGIL/;
+                               double epsilon = 1e-8 ) throw( QgsInvalidArgumentException ) /HoldGIL/;
 %Docstring
 Creates a chamfer between two line segments using :py:class:`QgsPoint`.
 
@@ -1207,6 +1207,8 @@ Creates a chamfer between two line segments using :py:class:`QgsPoint`.
          - chamferStart: calculated start point of the chamfer
          - chamferEnd: calculated end point of the chamfer
 
+:raises QgsInvalidArgumentException: 
+
 .. versionadded:: 4.0
 %End
 
@@ -1216,7 +1218,7 @@ Creates a chamfer between two line segments using :py:class:`QgsPoint`.
                               QgsPoint &filletPoint1 /Out/,
                               QgsPoint &filletMidPoint /Out/,
                               QgsPoint &filletPoint2 /Out/,
-                              double epsilon = 1e-8 ) /HoldGIL/;
+                              double epsilon = 1e-8 ) throw( QgsInvalidArgumentException ) /HoldGIL/;
 %Docstring
 Creates a fillet (rounded corner) between two line segments using
 :py:class:`QgsPoint`. Returns the three fillet arc points
@@ -1235,13 +1237,16 @@ parameters to define a CircularString.
          - filletMidPoint: midpoint of the fillet arc
          - filletPoint2: second tangent point of the fillet arc
 
+:raises QgsInvalidArgumentException: 
+
 .. versionadded:: 4.0
 %End
 
-    static std::unique_ptr< QgsLineString >createChamferGeometry(
+    static std::unique_ptr< QgsLineString > createChamferGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double distance1, double distance2 );
+      double distance1, double distance2
+    ) throw( QgsInvalidArgumentException );
 %Docstring
 Creates a complete chamfer geometry connecting two segments.
 
@@ -1256,13 +1261,16 @@ Creates a complete chamfer geometry connecting two segments.
 :return: :py:class:`QgsLineString` geometry connecting the segments
          through the chamfer
 
+:raises QgsInvalidArgumentException: 
+
 .. versionadded:: 4.0
 %End
 
-    static std::unique_ptr< QgsAbstractGeometry >createFilletGeometry(
+    static std::unique_ptr< QgsAbstractGeometry > createFilletGeometry(
       const QgsPoint &segment1Start, const QgsPoint &segment1End,
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
-      double radius, int segments );
+      double radius, int segments
+    ) throw( QgsInvalidArgumentException );
 %Docstring
 Creates a complete fillet geometry connecting two segments.
 
@@ -1276,12 +1284,15 @@ Creates a complete fillet geometry connecting two segments.
 
 :return: geometry connecting the segments through the fillet
 
+:raises QgsInvalidArgumentException: 
+
 .. versionadded:: 4.0
 %End
 
-    static std::unique_ptr< QgsAbstractGeometry >chamferVertex(
+    static std::unique_ptr< QgsAbstractGeometry > chamferVertex(
       const QgsCurve *curve, int vertexIndex,
-      double distance1, double distance2 );
+      double distance1, double distance2
+    ) throw( QgsInvalidArgumentException );
 %Docstring
 Applies chamfer to a vertex in a curve geometry.
 
@@ -1292,12 +1303,15 @@ Applies chamfer to a vertex in a curve geometry.
 
 :return: new geometry with chamfer applied, or None on failure
 
+:raises QgsInvalidArgumentException: 
+
 .. versionadded:: 4.0
 %End
 
-    static std::unique_ptr< QgsAbstractGeometry >filletVertex(
+    static std::unique_ptr< QgsAbstractGeometry > filletVertex(
       const QgsCurve *curve, int vertexIndex,
-      double radius, int segments );
+      double radius, int segments
+    ) throw( QgsInvalidArgumentException );
 %Docstring
 Applies fillet to a vertex in a curve geometry.
 
@@ -1308,6 +1322,8 @@ Applies fillet to a vertex in a curve geometry.
                  circular arc)
 
 :return: new geometry with fillet applied, or None on failure
+
+:raises QgsInvalidArgumentException: 
 
 .. versionadded:: 4.0
 %End

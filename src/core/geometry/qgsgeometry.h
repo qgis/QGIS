@@ -3227,12 +3227,11 @@ class CORE_EXPORT QgsGeometry
      * \param radius radius of the fillet arc
      * \param segments number of segments to use for LineString approximation (returns a CircularString when segments = 0)
      * \returns new geometry with fillet applied, or invalid geometry on failure
+     * \throws QgsInvalidArgumentException
      *
      * \since QGIS 4.0
      */
-    QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                        const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                        double radius, int segments = 8 ) const;
+    static QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments = 8 ) SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Creates a chamfer (angled corner) at the specified vertex.
@@ -3261,12 +3260,11 @@ class CORE_EXPORT QgsGeometry
      * \param distance1 distance along the first segment from intersection
      * \param distance2 distance along the second segment from intersection (if < 0, uses distance1)
      * \returns new geometry with chamfer applied, or invalid geometry on failure
+     * \throws QgsInvalidArgumentException
      *
      * \since QGIS 4.0
      */
-    QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                         const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                         double distance1, double distance2 = -1.0 ) const;
+    static QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 = -1.0 ) SIP_THROW( QgsInvalidArgumentException );
 
 
   private:
@@ -3324,6 +3322,8 @@ class CORE_EXPORT QgsGeometry
     */
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
+
+    QgsGeometry doChamferFillet( const QString &op, int vertexIndex, double distance1, double distance2, int segments ) const;
 
     friend class QgsInternalGeometryEngine;
 
