@@ -116,6 +116,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     if ( value.toString() == QLatin1String( "memory:" ) || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
     {
       saveToTemporary();
+      leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     }
     else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
