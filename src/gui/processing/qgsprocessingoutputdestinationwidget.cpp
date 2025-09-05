@@ -82,12 +82,6 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setAcceptDrops( true );
   leText->setAcceptDrops( false );
-
-  mActionTemporaryOutputIcon = new QAction(
-    QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ),
-    tr( "Temporary Output" ),
-    this
-  );
 }
 
 bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const
