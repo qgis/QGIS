@@ -19,11 +19,13 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgsmodelviewtool.h"
-#include "qgsmodelviewrubberband.h"
-#include "qgsmodelgraphicitem.h"
 #include <memory>
 
 #define SIP_NO_FILE
+
+class QgsModelViewBezierRubberBand;
+class QgsModelDesignerSocketGraphicItem;
+class QgsProcessingModelComponent;
 
 /**
  * \ingroup gui

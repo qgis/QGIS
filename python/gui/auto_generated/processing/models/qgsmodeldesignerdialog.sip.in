@@ -46,6 +46,12 @@ Ends the current undo command. This should be called after changes are
 made to the model.
 %End
 
+    void abortUndoCommand();
+%Docstring
+Aborts pending undo command, tunring last call to beginUndoCommand
+obsolete
+%End
+
     QgsProcessingModelAlgorithm *model();
 %Docstring
 Returns the model shown in the dialog.
