@@ -22,6 +22,7 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingcontext.h"
 #include <QWidget>
+#include <QAction>
 
 class QgsProcessingDestinationParameter;
 class QgsBrowserGuiModel;
@@ -122,6 +123,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
   private:
     void setAppendDestination( const QString &uri, const QgsFields &destFields );
 
+    bool isOnlyLayerName( const QString &value );
+
     QString mimeDataToPath( const QMimeData *data );
 
     const QgsProcessingDestinationParameter *mParameter = nullptr;
@@ -138,6 +141,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     bool mUseRemapping = false;
 
     QgsProcessingContext *mContext = nullptr;
+
+    QAction *mActionTemporaryOutputIcon = nullptr;
 
     friend class TestProcessingGui;
 };

@@ -9319,6 +9319,16 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 4 );
 
+  // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
+  QString layerName = QStringLiteral( "new layer" );
+  panel.setValue( layerName );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 5 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+
+
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
   panel.setValue( QStringLiteral( "test.shp" ) );
@@ -10139,12 +10149,18 @@ void TestProcessingGui::testSinkWrapper()
         QCOMPARE( spy.count(), 2 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        // test that setting value that only is layer name works
+        QString layerName = QStringLiteral( "new name" );
+        wrapper.setWidgetValue( layerName, context );
+        QCOMPARE( spy.count(), 3 );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
         break;
     }
 
     // check signal
     static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc.shp" ) );
-    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( spy.count(), 4 );
     QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/cc.shp" ) );
     delete w;
 
