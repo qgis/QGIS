@@ -123,7 +123,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
   private:
     void setAppendDestination( const QString &uri, const QgsFields &destFields );
 
-    bool isOnlyLayerName( const QString &value );
+    bool isTemporaryLayer( const QString &value );
 
     QString mimeDataToPath( const QMimeData *data );
 
