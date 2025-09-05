@@ -116,6 +116,16 @@ void QgsServerSettings::initSettings()
 
   mSettings[sApiWfs3MaxLimit.envVar] = sApiWfs3MaxLimit;
 
+  // API WFS3 root path
+  // TODO: remove when QGIS 4 is released
+#if _QGIS_VERSION_INT > 40000
+  const Setting sApiWfs3RootPath = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Root path for the OAPIF (WFS3) API" ), QStringLiteral( "/qgis/server_api_wfs3_root_path" ), QMetaType::Type::QString, QVariant( "/oapif" ), QVariant() };
+#else
+  const Setting sApiWfs3RootPath = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Root path for the OAPIF (WFS3) API" ), QStringLiteral( "/qgis/server_api_wfs3_root_path" ), QMetaType::Type::QString, QVariant( "/wfs3" ), QVariant() };
+#endif
+
+  mSettings[sApiWfs3RootPath.envVar] = sApiWfs3RootPath;
+
   // projects directory for landing page service
   const Setting sProjectsDirectories = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Directories used by the landing page service to find .qgs and .qgz projects" ), QStringLiteral( "/qgis/server_projects_directories" ), QMetaType::Type::QString, QVariant( "" ), QVariant() };
 
@@ -409,6 +419,11 @@ QString QgsServerSettings::apiResourcesDirectory() const
 qlonglong QgsServerSettings::apiWfs3MaxLimit() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_MAX_LIMIT ).toLongLong();
+}
+
+QString QgsServerSettings::apiWfs3RootPath() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH ).toString();
 }
 
 bool QgsServerSettings::ignoreBadLayers() const
