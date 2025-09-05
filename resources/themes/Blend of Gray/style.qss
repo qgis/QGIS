@@ -1241,6 +1241,17 @@ QListWidget#mOptionsListWidget::item {
     padding: 0.1em;
 }
 
+QListWidget#mOptionsListWidget::item:hover
+{
+    background-color: @hover;
+    color: @itemdarkbackground;
+}
+
+QListWidget#mOptionsListWidget::item:selected:hover {
+    background-color: @selection;
+    color: @text;
+}
+
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,
 QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab {
     width: 1.2em;
