@@ -636,7 +636,7 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   mUseTemporary = text.isEmpty();
   mUseRemapping = false;
 
-  if ( isOnlyLayerName( text ) )
+  if ( isOnlyLayerName( text ) || text.isEmpty() )
   {
     leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     mUseTemporary = true;
