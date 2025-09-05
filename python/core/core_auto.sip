@@ -521,6 +521,7 @@
 %Include auto_generated/pdf/qgspdfrenderer.sip
 %Include auto_generated/plot/qgsbarchartplot.sip
 %Include auto_generated/plot/qgslinechartplot.sip
+%Include auto_generated/plot/qgspiechartplot.sip
 %Include auto_generated/plot/qgsplotregistry.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/plot/qgsvectorlayerplotdatagatherer.sip

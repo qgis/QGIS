@@ -25,6 +25,7 @@
 #include <QSizeF>
 #include <memory>
 
+class QgsColorRamp;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
@@ -45,6 +46,7 @@ class CORE_EXPORT QgsPlot
 {
     //SIP_TYPEHEADER_INCLUDE( "qgsbarchartplot.h" );
     //SIP_TYPEHEADER_INCLUDE( "qgslinechartplot.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgspiechartplot.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -57,6 +59,10 @@ class CORE_EXPORT QgsPlot
       else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
       {
         sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<QgsPieChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsPieChartPlot;
       }
       else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
       {
@@ -817,6 +823,18 @@ class CORE_EXPORT QgsPlotDefaultSettings
      * \since QGIS 4.0
      */
     static QgsFillSymbol *barChartFillSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default fill symbol to use for pie charts.
+     * \since QGIS 4.0
+     */
+    static QgsFillSymbol *pieChartFillSymbol() SIP_FACTORY;
+
+    /**
+     * Returns the default color ramp to use for pie charts.
+     * \since QGIS 4.0
+     */
+    static QgsColorRamp *pieChartColorRamp() SIP_FACTORY;
 };
 
 #endif // QGSPLOT_H
