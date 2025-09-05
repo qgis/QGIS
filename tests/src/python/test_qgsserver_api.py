@@ -24,6 +24,7 @@ os.environ["QT_HASH_SEED"] = "1"
 from urllib import parse
 
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
@@ -382,6 +383,17 @@ class RestrictedLayerAccessControl(QgsAccessControlFilter):
 
 class QgsServerAPITest(QgsServerAPITestBase):
     """QGIS API server tests"""
+
+    def setUp(self):
+        super().setUp()
+        # TODO: Remove when QGIS 4 is released
+        # Default url will change when QGIS 4 is released, set it to /wfs3 for now
+        if Qgis.versionInt() >= 40000:
+            os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
+            iface = self.server.serverInterface()
+            iface.reloadSettings()
+            iface.serviceRegistry().cleanUp()
+            iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
 
     # Set env context manager
     @contextmanager
