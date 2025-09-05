@@ -652,8 +652,10 @@ void QgsProcessingMapLayerComboBox::onLayerChanged( QgsMapLayer *layer )
 
   if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
   {
-    // Only WMS layers will access raster advanced options for now
-    mSettingsButton->setEnabled( QgsWmsUtils::isWmsLayer( layer ) );
+    // Only WMS layers whose parameter supports WmsScale and WmsDpi will access raster advanced options for now.
+    QgsProcessingParameterRasterLayer *rasterParameter = qgis::down_cast<QgsProcessingParameterRasterLayer *>( mParameter.get() );
+    const bool supportsRasterOptions = rasterParameter->parameterCapabilities().testFlag( Qgis::RasterProcessingParameterCapability::WmsScale ) || rasterParameter->parameterCapabilities().testFlag( Qgis::RasterProcessingParameterCapability::WmsDpi );
+    mSettingsButton->setEnabled( supportsRasterOptions && QgsWmsUtils::isWmsLayer( layer ) );
   }
 
   mPrevLayer = layer;
@@ -708,6 +710,9 @@ void QgsProcessingMapLayerComboBox::showRasterSourceOptions()
     widget->setPanelTitle( tr( "%1 Options" ).arg( mParameter->description() ) );
     widget->setReferenceScale( mRasterReferenceScale );
     widget->setDpi( mRasterDpi );
+
+    QgsProcessingParameterRasterLayer *rasterParameter = qgis::down_cast<QgsProcessingParameterRasterLayer *>( mParameter.get() );
+    widget->setWidgetParameterCapabilities( rasterParameter->parameterCapabilities() );
 
     panel->openPanel( widget );
 

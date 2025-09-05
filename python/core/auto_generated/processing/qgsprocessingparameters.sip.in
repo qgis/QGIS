@@ -3053,6 +3053,24 @@ Returns the type name for the parameter class.
 Creates a new parameter using the definition from a script code.
 %End
 
+    void setParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities );
+%Docstring
+Sets the supported ``capabilities`` of the raster layer parameter.
+
+:param capabilities: Capabilities to be set to the raster layer
+                     parameter.
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::RasterProcessingParameterCapabilities parameterCapabilities() const;
+%Docstring
+Returns flags containing the supported capabilities of the raster layer
+parameter.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 class QgsProcessingParameterEnum : QgsProcessingParameterDefinition

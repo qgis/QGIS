@@ -5065,6 +5065,16 @@ QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScript
   return new QgsProcessingParameterRasterLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
 
+void QgsProcessingParameterRasterLayer::setParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities )
+{
+  mCapabilities = capabilities;
+}
+
+Qgis::RasterProcessingParameterCapabilities QgsProcessingParameterRasterLayer::parameterCapabilities() const
+{
+  return mCapabilities;
+}
+
 QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional, bool usesStaticStrings )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mOptions( options )
