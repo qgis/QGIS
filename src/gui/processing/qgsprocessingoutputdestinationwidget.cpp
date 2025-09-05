@@ -45,6 +45,12 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setupUi( this );
 
+  mActionTemporaryOutputIcon = new QAction(
+    QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ),
+    tr( "Temporary Output" ),
+    this
+  );
+
   leText->setClearButtonEnabled( false );
 
   connect( leText, &QLineEdit::textEdited, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
