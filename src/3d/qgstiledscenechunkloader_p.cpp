@@ -22,11 +22,13 @@
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeotransform.h"
+#include "qgsgltfutils.h"
 #include "qgsgltf3dutils.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsraycastingutils_p.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
+#include "qgsziputils.h"
 
 #include <QtConcurrentRun>
 
@@ -132,6 +134,42 @@ void QgsTiledSceneChunkLoader::start()
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
       mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
     }
+    else if ( format == "draco" )
+    {
+      // SLPK and Extracted SLPK have the files gzipped
+      QByteArray contentExtracted;
+      if ( content.startsWith( QByteArray( "\x1f\x8b", 2 ) ) )
+      {
+        if ( !QgsZipUtils::decodeGzip( content, contentExtracted ) )
+          return;
+      }
+      else
+      {
+        contentExtracted = content;
+      }
+
+      const QVariantMap tileMetadata = tile.metadata();
+      QgsCoordinateReferenceSystem sceneCrs = mFactory.mBoundsTransform.sourceCrs();
+
+      QgsGltfUtils::I3SNodeContext i3sContext;
+      i3sContext.materialInfo = tileMetadata["material"].toMap();
+      i3sContext.isGlobalMode = sceneCrs.type() == Qgis::CrsType::Geocentric;
+      if ( i3sContext.isGlobalMode )
+      {
+        i3sContext.nodeCenterEcef = tile.boundingVolume().box().center();
+        i3sContext.datasetToSceneTransform = QgsCoordinateTransform( mFactory.mLayerCrs, sceneCrs, mFactory.mRenderContext.transformContext() );
+      }
+
+      QString dracoLoadError;
+      tinygltf::Model model;
+      if ( !QgsGltfUtils::loadDracoModel( contentExtracted, i3sContext, model, &dracoLoadError ) )
+      {
+        errors.append( dracoLoadError );
+        return;
+      }
+
+      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), &errors );
+    }
     else
       return; // unsupported tile content type
 
@@ -173,13 +211,20 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 
 ///
 
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double zValueScale, double zValueOffset )
+QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
+      const Qgs3DRenderContext &context,
+      const QgsTiledSceneIndex &index,
+      QgsCoordinateReferenceSystem tileCrs,
+      QgsCoordinateReferenceSystem layerCrs,
+      double zValueScale,
+      double zValueOffset )
   : mRenderContext( context )
   , mIndex( index )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
 {
   mBoundsTransform = QgsCoordinateTransform( tileCrs, context.crs(), context.transformContext() );
+  mLayerCrs = layerCrs;
 }
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -346,8 +391,16 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 ///
 
-QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
-  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, zValueScale, zValueOffset ), true )
+QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity(
+      Qgs3DMapSettings *map,
+      const QgsTiledSceneIndex &index,
+      QgsCoordinateReferenceSystem tileCrs,
+      QgsCoordinateReferenceSystem layerCrs,
+      double maximumScreenError,
+      bool showBoundingBoxes,
+      double zValueScale,
+      double zValueOffset )
+  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, layerCrs, zValueScale, zValueOffset ), true )
   , mIndex( index )
 {
   setShowBoundingBoxes( showBoundingBoxes );
