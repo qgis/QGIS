@@ -2593,6 +2593,7 @@ void TestQgs3DRendering::test3DSceneExporterDEM()
   QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
   demTerrainSettings->setLayer( layerDtm );
   demTerrainSettings->setVerticalScale( 3 );
+  demTerrainSettings->setElevationOffset( -1000.0 );
   mapSettings.setTerrainSettings( demTerrainSettings );
 
   // =========== creating Qgs3DMapScene
@@ -2608,6 +2609,9 @@ void TestQgs3DRendering::test3DSceneExporterDEM()
   const int nbFaces = 165;
   const int nbFeat = 3;
 
+  // =========== check with 4 tiles ==> 1 exported objects
+  do3DSceneExport( "scene_export_dem", 2, 1, nbFeat, nbFaces, scene, layerPoly, &engine, nullptr, //
+                   Qgis::AltitudeClamping::Terrain, Qgis::AltitudeBinding::Centroid );
   // =========== check with 25 tiles ==> 3 exported objects + DEM
   do3DSceneExport( "scene_export_dem", 5, 3, nbFeat, nbFaces, scene, layerPoly, &engine, nullptr, //
                    Qgis::AltitudeClamping::Terrain, Qgis::AltitudeBinding::Centroid );

@@ -113,7 +113,7 @@ void QgsDemTerrainGenerator::cleanupHeightMapCache( const QgsChunkNode *currentN
 
     if ( deleteParentData )
     {
-      qDebug() << "cleanupHeightMapCache removing tile:" << parent->tileId().text();
+      //qDebug() << "cleanupHeightMapCache removing tile:" << parent->tileId().text();
       mLoaderMap.remove( parent->tileId().text() );
     }
   }
@@ -206,7 +206,8 @@ void QgsDemTerrainGenerator::heightAndQualityAt( double x, double y, float &heig
 
       const float *data = ( const float * ) heightMapData;
       height = data[cellX + cellY * mResolution];
-      return;
+      if ( !std::isnan( height ) ) // keep good value or continue to fetch coarse one
+        return;
     }
   }
 
@@ -228,7 +229,6 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
   Q_UNUSED( context )
   float height;
   int quality;
-  // qDebug() << "QgsDemTerrainGenerator::heightAt" << this << x << y;
   heightAndQualityAt( x, y, height, quality );
   return height;
 }
@@ -238,7 +238,6 @@ int QgsDemTerrainGenerator::qualityAt( double x, double y, const Qgs3DRenderCont
   Q_UNUSED( context )
   float height;
   int quality;
-  // qDebug() << "QgsDemTerrainGenerator::qualityAt" << this << x << y;
   heightAndQualityAt( x, y, height, quality );
   return quality;
 }
