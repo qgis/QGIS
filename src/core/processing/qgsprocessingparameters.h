@@ -2841,6 +2841,22 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
      */
     static QgsProcessingParameterRasterLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+    /**
+     * Sets the supported \a capabilities of the raster layer parameter.
+     *
+     * \param capabilities Capabilities to be set to the raster layer parameter.
+     * \since QGIS 4.0
+     */
+    void setParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities );
+
+    /**
+     * Returns flags containing the supported capabilities of the raster layer parameter.
+     * \since QGIS 4.0
+     */
+    Qgis::RasterProcessingParameterCapabilities parameterCapabilities() const;
+
+  private:
+    Qgis::RasterProcessingParameterCapabilities mCapabilities;
 };
 
 /**
