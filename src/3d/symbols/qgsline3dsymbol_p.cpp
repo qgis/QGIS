@@ -28,11 +28,16 @@
 #include "qgsvectorlayer.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgspolyhedralsurface.h"
 #include "qgsgeos.h"
 #include "qgssimplelinematerialsettings.h"
 #include "qgspolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgsmessagelog.h"
+
+#ifdef WITH_SFCGAL
+#include "qgssfcgalgeometry.h"
+#endif
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
@@ -134,11 +139,6 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
 
   // TODO: configurable
   const int nSegments = 4;
-  const Qgis::EndCapStyle endCapStyle = Qgis::EndCapStyle::Round;
-  const Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round;
-  const double mitreLimit = 0;
-
-  const QgsGeos engine( abstractGeom );
 
   double width = mSymbol->width();
   if ( qgsDoubleNear( width, 0 ) )
@@ -148,7 +148,30 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
     width = 0.001;
   }
 
-  QgsAbstractGeometry *buffered = engine.buffer( width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+  QgsAbstractGeometry *buffered = nullptr;
+
+#ifdef WITH_SFCGAL
+  // TODO: configurable
+  const Qgis::JoinStyle3D joinStyle3D = Qgis::JoinStyle3D::Round;
+  try
+  {
+    std::unique_ptr<QgsSfcgalGeometry> sfcgalGeom = std::make_unique<QgsSfcgalGeometry>( abstractGeom );
+    std::unique_ptr<QgsSfcgalGeometry> sfcgalBufferedGeom = sfcgalGeom->buffer3D( width / 2., nSegments, joinStyle3D );
+    buffered = sfcgalBufferedGeom->asQgisGeometry().release();
+  }
+  catch ( const QgsSfcgalException &sfcgalException )
+  {
+    QgsDebugError( QStringLiteral( "Failed to create a buffer for the 3D line: %1" ).arg( sfcgalException.what() ) );
+  }
+#else
+  // TODO: configurable
+  const Qgis::EndCapStyle endCapStyle = Qgis::EndCapStyle::Round;
+  const Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round;
+  const double mitreLimit = 0;
+  const QgsGeos engine( abstractGeom );
+  buffered = engine.buffer( width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+#endif
+
   if ( !buffered )
   {
     QgsDebugError( QStringLiteral( "Failed to create a buffer for the 3D line." ) );
@@ -166,6 +189,16 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
       QgsPolygon *polyBuffered = qgsgeometry_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
+      processPolygon( polyBuffered, feature.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, lineData );
+    }
+    delete buffered;
+  }
+  else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::PolyhedralSurface )
+  {
+    const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( buffered );
+    for ( int i = 0; i < polySurface->numPatches(); ++i )
+    {
+      QgsPolygon *polyBuffered = polySurface->patchN( i )->clone(); // need to clone individual geometry parts
       processPolygon( polyBuffered, feature.id(), mSymbol->offset(), mSymbol->extrusionHeight(), context, lineData );
     }
     delete buffered;
