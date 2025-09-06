@@ -236,9 +236,14 @@ void Qgs2DPlot::setSize( QSizeF size )
   mSize = size;
 }
 
-QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &, QgsPlotRenderContext & ) const
+QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext & ) const
 {
-  return QRectF( 0, 0, mSize.width(), mSize.height() );
+  const double leftMargin = context.convertToPainterUnits( mMargins.left(), Qgis::RenderUnit::Millimeters );
+  const double rightMargin = context.convertToPainterUnits( mMargins.right(), Qgis::RenderUnit::Millimeters );
+  const double topMargin = context.convertToPainterUnits( mMargins.top(), Qgis::RenderUnit::Millimeters );
+  const double bottomMargin = context.convertToPainterUnits( mMargins.bottom(), Qgis::RenderUnit::Millimeters );
+
+  return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
 const QgsMargins &Qgs2DPlot::margins() const

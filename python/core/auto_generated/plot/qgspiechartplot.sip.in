@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPieChartPlot : Qgs2DPlot
 {
 %Docstring(signature="appended")
@@ -26,6 +27,13 @@ A simple pie chart class.
 #include "qgspiechartplot.h"
 %End
   public:
+
+    enum class LabelType
+    {
+      NoLabels,
+      CategoryLabels,
+      ValueLabels,
+    };
 
     QgsPieChartPlot();
     ~QgsPieChartPlot();
@@ -68,6 +76,46 @@ Returns the fill symbols list count.
     int colorRampCount() const;
 %Docstring
 Returns the color ramps list count.
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for the pie chart labels.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for the pie chart labels.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for the pie chart labels.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for the pie chart labels.
+
+Ownership of ``format`` is transferred to the plot.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+    QgsPieChartPlot::LabelType labelType() const;
+%Docstring
+Returns the pie chart label type.
+%End
+
+    void setLabelType( QgsPieChartPlot::LabelType type );
+%Docstring
+Sets the pie chart label type.
 %End
 
     static QgsPieChartPlot *create() /Factory/;

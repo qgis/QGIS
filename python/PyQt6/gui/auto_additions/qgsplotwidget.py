@@ -12,6 +12,12 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsPieChartPlotWidget.create = staticmethod(QgsPieChartPlotWidget.create)
+    QgsPieChartPlotWidget.__overridden_methods__ = ['setPlot', 'createPlot']
+    QgsPieChartPlotWidget.__group__ = ['plot']
+except (NameError, AttributeError):
+    pass
+try:
     QgsPlotWidget.__abstract_methods__ = ['setPlot', 'createPlot']
     QgsPlotWidget.__group__ = ['plot']
 except (NameError, AttributeError):
